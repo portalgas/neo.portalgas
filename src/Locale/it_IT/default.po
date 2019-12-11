@@ -1,0 +1,572 @@
+msgid "Yes"
+msgstr "Si"
+
+msgid "No"
+msgstr "No"
+
+msgid "Subject"
+msgstr "Soggetto"
+
+msgid "January"
+msgstr "Gennaio"
+
+msgid "February"
+msgstr "Febbraio"
+
+msgid "March"
+msgstr "Marzo"
+
+msgid "April"
+msgstr "Aprile"
+
+msgid "May"
+msgstr "Maggio"
+
+msgid "June"
+msgstr "Giugno"
+
+msgid "July"
+msgstr "Luglio"
+
+msgid "August"
+msgstr "Agosto"
+
+msgid "September"
+msgstr "Settembre"
+
+msgid "October"
+msgstr "Ottobre"
+
+msgid "November"
+msgstr "Novembre"
+
+msgid "December"
+msgstr "Dicembre"
+
+msgid "Number"
+msgstr "Numero"
+
+msgid "Text"
+msgstr "testo"
+
+msgid "Customers"
+msgstr "Clienti"
+
+msgid "Customer"
+msgstr "Cliente"
+
+msgid "Data Meeting"
+msgstr "Data incontro"
+
+msgid "data_meeting"
+msgstr "Data incontro"
+
+msgid "Data Meetings"
+msgstr "Data incontri"
+
+msgid "data_meetings"
+msgstr "Data incontri"
+
+msgid "Geo Region"
+msgstr "Regione"
+
+msgid "Geo Province"
+msgstr "Provincia"
+
+msgid "Geo Comune"
+msgstr "Comune"
+
+msgid "Parent"
+msgstr "Livello superiore"
+
+msgid "Sort"
+msgstr "Ordinamento"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "First Name"
+msgstr "Nome"
+
+msgid "Last Name"
+msgstr "Cognome"
+
+msgid "Email"
+msgstr "Mail"
+
+msgid "mail"
+msgstr "Mail"
+
+msgid "Mail PEC"
+msgstr "Mail P.E.C."
+
+msgid "SDI"
+msgstr "S.D.I."
+
+msgid "Users"
+msgstr "Utenti"
+
+msgid "User"
+msgstr "Utente"
+
+msgid "Role"
+msgstr "Ruolo"
+
+msgid "Roles"
+msgstr "Ruoli"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Descri"
+msgstr "Descrizione"
+
+msgid "Description"
+msgstr "Descrizione"
+
+msgid "Type"
+msgstr "Tipologia"
+
+msgid "Types"
+msgstr "Tipologie"
+
+msgid "Year"
+msgstr "Anno"
+
+msgid "P Iva"
+msgstr "Partita iva"
+
+msgid "Cf"
+msgstr "Codice fiscale"
+
+msgid "Address"
+msgstr "Indirizzo"
+
+msgid "Telephone"
+msgstr "Telefono"
+
+msgid "Www"
+msgstr "Sito internet"
+
+msgid "Code"
+msgstr "Codice"
+
+msgid "Value"
+msgstr "Valore"
+
+msgid "Created"
+msgstr "Creato"
+
+msgid "Modified"
+msgstr "Modificato"
+
+msgid "Actions"
+msgstr "Azioni"
+
+msgid "View"
+msgstr "Visualizza"
+
+msgid "ViewMore"
+msgstr "Visualizza ulteriori dettagli"
+
+msgid "BackView"
+msgstr "Ritorna al dettaglio"
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Add"
+msgstr "Aggiungi"
+
+msgid "Delete"
+msgstr "Cancella"
+
+msgid "List"
+msgstr "Elenco"
+
+msgid "Data Ini"
+msgstr "Data inizio"
+
+msgid "data_ini"
+msgstr "Data inizio"
+
+msgid "Data Fine"
+msgstr "Data fine"
+
+msgid "data_fine"
+msgstr "Data fine"
+
+msgid "Data Range Ini"
+msgstr "Data di inizio"
+
+msgid "data_range_ini"
+msgstr "Data di inizio"
+
+msgid "Data Range Fine"
+msgstr "Data di fine"
+
+msgid "data_range_fine"
+msgstr "Data di fine"
+
+msgid "Mail Data Send"
+msgstr "Data invio mail"
+
+msgid "data_mail_send"
+msgstr "Data invio mail"
+
+msgid "Data Close"
+msgstr "Data chiusura"
+
+msgid "data_close"
+msgstr "Data chiusura"
+
+msgid "Data Invoice"
+msgstr "Data fattura"
+
+msgid "data_invoice"
+msgstr "Data fattura"
+
+msgid "data_visit"
+msgstr "Data visita"
+
+msgid "Data Visit"
+msgstr "Data visita"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Is Active"
+msgstr "Attivo"
+
+msgid "Is System"
+msgstr "Di sistema"
+
+msgid "Is Dashboard"
+msgstr "Presente nella Dashboard"
+
+msgid "Is Default Ini"
+msgstr "Valore iniziale"
+
+msgid "Is Default End"
+msgstr "Valore finale"
+
+msgid "Filter Data Field"
+msgstr "Campo data da filtrare"
+
+msgid "Filter Data Cond"
+msgstr "Condizione sulla data"
+
+msgid "Filter Data Value"
+msgstr "Giorni di differenza rispetto alla data ordiena"
+
+msgid "calendar_color"
+msgstr "Colore calendario"
+
+msgid "Geo Regions"
+msgstr "Regioni"
+
+msgid "Geo Region"
+msgstr "Regione"
+
+msgid "Geo Provinces"
+msgstr "Province"
+
+msgid "Geo Province"
+msgstr "Provincia"
+
+msgid "Geo Comunes"
+msgstr "Comuni"
+
+msgid "Geo Comune"
+msgstr "Comune"
+
+msgid "Price Types"
+msgstr "Tipologia prezzi"
+
+#
+# Impersonate
+#
+msgid "impersonateLogout"
+msgstr "Logout"
+
+msgid "Impersonate"
+msgstr "Impersonifica"
+
+msgid "MsgUserImpersonateLoginOK"
+msgstr "Login con diverso account avvenuto con successo"
+
+msgid "MsgUserImpersonateLoginKO"
+msgstr "Si è verificato un errore durante il login con un diverso account"
+
+msgid "MsgUserImpersonateLogoutOK"
+msgstr "Logout con diverso account avvenuto con successo"
+
+msgid "MsgUserImpersonateLogoutKO"
+msgstr "Si è verificato un errore durante il logout con un diverso account"
+
+#
+# btn
+#
+msgid "Submit"
+msgstr "Salva"
+
+msgid "Search"
+msgstr "Ricerca"
+
+msgid "Save"
+msgstr "Salva"
+
+msgid "Close"
+msgstr "Chiudi"
+
+msgid "Open"
+msgstr "Apri"
+
+msgid "ReAddY"
+msgstr "Aggiungi nuovo record"
+
+msgid "ReAddN"
+msgstr "Torna all'elenco"
+
+#
+# New
+#
+msgid "New User"
+msgstr "Nuovo utente"
+
+msgid "New Report"
+msgstr "Nuovo report"
+
+msgid "New Role"
+msgstr "Nuovo ruolo"
+
+msgid "New Geo Region"
+msgstr "Nuova regione"
+
+msgid "New Geo Province"
+msgstr "Nuova provincia"
+
+msgid "New Geo Comune"
+msgstr "Nuovo comune"
+
+msgid "New Pay Type"
+msgstr "Nuovo stato pagamento"
+
+msgid "New Price Type"
+msgstr "Nuova tipologia di prezzo"
+
+#
+# List
+#
+msgid "List Users"
+msgstr "Elenco utenti"
+
+msgid "List User States"
+msgstr "Elenco stati utenti"
+
+msgid "List Reports"
+msgstr "Elenco reports"
+
+msgid "List Roles"
+msgstr "Elenco ruoli"
+
+msgid "List Geo Regions"
+msgstr "Elenco regioni"
+
+msgid "List Geo Provinces"
+msgstr "Elenco province"
+
+msgid "List Geo Comunes"
+msgstr "Elenco comuni"
+
+msgid "List Pay Types"
+msgstr "Elenco stati pagamento"
+
+msgid "List Price Types"
+msgstr "Elenco tipologie di prezzo"
+
+msgid "List Menus"
+msgstr "Elenco menu"
+
+msgid "List MenuTrees"
+msgstr "Elenco alberatura menu"
+
+msgid "List MenuTreeUsers"
+msgstr "Elenco permessi menu"
+
+#
+# Edit
+#
+msgid "Edit User"
+msgstr "Modifica utente"
+
+msgid "Edit Role"
+msgstr "Modifica ruolo"
+
+msgid "Edit Report"
+msgstr "Modifica report"
+
+msgid "Edit Geo Region"
+msgstr "Modifica regione"
+
+msgid "Edit Geo Province"
+msgstr "Modifica provincia"
+
+msgid "Edit Geo Comune"
+msgstr "Modifica comune"
+
+msgid "Edit Pay Type"
+msgstr "Modifica stato pagamento"
+
+msgid "Edit Price Type"
+msgstr "Modifica tipologia di prezzo"
+
+msgid "Edit {0}"
+msgstr "Modifica {0}"
+
+#
+# Add
+#
+msgid "Add User"
+msgstr "Aggiungi utente"
+
+msgid "Add Role"
+msgstr "Aggiungi ruolo"
+
+msgid "Add Report"
+msgstr "Aggiungi report"
+
+msgid "Add Geo Region"
+msgstr "Aggiungi regione"
+
+msgid "Add Geo Province"
+msgstr "Aggiungi provincia"
+
+msgid "Add Geo Comune"
+msgstr "Aggiungi comune"
+
+msgid "Add Pay Type"
+msgstr "Aggiungi stato pagamento"
+
+msgid "Add Price Type"
+msgstr "Aggiungi tipologia di prezzo"
+
+msgid "Add {0}"
+msgstr "Aggiungi {0}"
+
+#
+# Delete
+#
+msgid "The {0} has been deleted."
+msgstr "Il {0} è stato cancellato"
+
+msgid "The quote detail calendar has been deleted"
+msgstr "Il collaboratore associato alla commessa è stato cancellato"
+
+msgid "Delete User"
+msgstr "Cancella utente"
+
+msgid "Delete Role"
+msgstr "Cancella ruolo"
+
+msgid "Delete Report"
+msgstr "Cancella report"
+
+msgid "Delete Geo Region"
+msgstr "Cancella regione"
+
+msgid "Delete Geo Province"
+msgstr "Cancella provincia"
+
+msgid "Delete Geo Comune"
+msgstr "Cancella comune"
+
+msgid "Delete Pay Type"
+msgstr "Cancella stato pagamento"
+
+msgid "Delete Price Type"
+msgstr "Cancella tipologia di prezzo"
+
+#
+# saved success
+#
+msgid "The user has been saved."
+msgstr "L'utente è stato salvato"
+
+msgid "The report has been saved."
+msgstr "Il report è stato salvato"
+
+msgid "The geo region has been saved."
+msgstr "La regione è stata salvata"
+
+msgid "The geo province has been saved."
+msgstr "La provincia è stata salvata"
+
+msgid "The geo comune has been saved."
+msgstr "Il comune è stato salvato"
+
+msgid "The {0} has been saved."
+msgstr "Il {0} è stato salvato"
+
+#
+# saved error
+#
+msgid "The {0} could not be saved. Please, try again."
+msgstr "Il {0} non è stata salvata"
+
+#
+# Related
+#
+msgid "Related Users"
+msgstr "Relazione utenti"
+
+#
+# form
+#
+msgid "FrmListEmpty"
+msgstr "Seleziona un elemento della lista"
+
+msgid "FrmListAttend"
+msgstr "---------------------------------"
+
+#
+# Msg
+#
+msgid "Did you really think you are allowed to see that?"
+msgstr "Area riservata, inserire le proprie credenziali"
+
+msgid "Username or password is incorrect"
+msgstr "Le credenziali inserite non sono corrette"
+
+msgid "Are you sure you want to delete # {0}?"
+msgstr "Sei sicuro di cancellare definitivamente il record {0}"
+
+msgid "MsgResultsNotFound"
+msgstr "Non sono stati trovati risultati"
+
+#
+# validator
+#
+msgid "This field is required"
+msgstr "campo obbligatorio"
+
+msgid "The provided value is invalid"
+msgstr "valore non valido"
+
+#
+# note
+#
+msgid "note_function_not_implement"
+msgstr "Funzionalità non ancora implementata"
+
+msgid "note_mapping_queue_table"
+msgstr "Eredita dalla tabella"
+
+msgid "note_queue_db_datasource_override"
+msgstr "Override di scope (nome definito in /Config/database.php)"
+
+msgid "note_uppercase"
+msgstr "Uppercase"
+
+msgid "note_queue_component"
+msgstr "Nome classe Component per i metodi custom"

@@ -1,0 +1,252 @@
+<?php
+namespace App\View\Helper;
+
+use Cake\View\Helper;
+use Cake\View\Helper\FormHelper;
+use Cake\View\View;
+use Cake\Core\Configure;
+
+class HtmlCustomHelper extends FormHelper
+{
+	private $debug = false;
+	public  $helpers = ['Html', 'Form'];
+
+    public function initialize(array $config)
+    {
+        // debug($config);
+    }
+
+    public function getCsrfToken() {
+        $str = '';
+        $str .= $this->getView()->getRequest()->getParam('_csrfToken');
+        return $str;
+    }
+
+    public function csrfTokenHidden() {
+        return $this->Form->hidden('CsrfToken', ['name' => '_csrfToken', 'value' => $this->getCsrfToken(), 'autocomplete' => 'off']);
+    }
+
+    public function note($value) {
+        $str = '<div class="direct-chat-text">'.$value.'</div>';
+        return $str;
+    }
+
+    public function fileUpload($entity, $field, $options=[]) {
+        if(!isset($options['name']))
+            $name = $entity->{$field}.' <i class="fa fa-download fa-lg"></i>';
+        else
+            $name = $options['name'];
+
+        $path = '/files/'.$entity->source().'/'.$field.'/'.$entity->id.'/'.$entity->{$field};
+        // debug($path);
+        $str = $this->Html->link($name, $path, ['fullBase' => true, 'target' => '_blank', 'title' => $entity->{$field}, 'escape' => false]);
+        return $str;
+    }
+
+    public function mail($value, $label='') {
+    	$str = '';
+
+    	if(!empty($value)) {
+    		if(empty($label))
+    			$label = $value;
+	    	$str = '<a href="mailto:'.$value.'" target="_blank">'.$label.'</a>';
+    	}
+    	return $str;
+    }
+
+    public function www($value, $label='') {
+    	$str = '';
+
+    	if(!empty($value)) {
+    		if(empty($label))
+    			$label = $value;
+	    	$str = '<a href="'.$value.'" target="_blank">'.$label.'</a>';
+    	}
+    	return $str;
+    }
+
+    public function mailIco($value, $ico='fa-envelope') {
+    	$str = '';
+
+    	if(!empty($value)) {
+    		if(empty($label))
+    			$label = $value;
+	    	$str = '<a href="mailto:'.$value.'" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>';
+    	}
+    	return $str;
+    }
+
+    public function drawState($state) {
+
+        $class = get_class($state); // App\Model\Entity\PayType
+        $class = explode('\\', $class);
+        $controller = ($class[count($class)-1]).'s';
+
+        $html = '';
+        if(!empty($state->css_color))
+           $html .=  '<span class="badge" style="background-color:'.$state->css_color.'">&nbsp;</span> ';
+        $html .= $this->Html->link($state->name, ['controller' => $controller, 'action' => 'view', $state->id]);
+        return $html;
+    }            
+
+    public function drawDocumentPreview($document, $options=[]) {
+
+        if(isset($options['width']))
+            $width = $options['width'];
+        else 
+            $width = '150px';
+
+        $results = '';
+
+        switch (strtolower($document->file_ext)) {
+            case 'gif':
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+                $img_path = $document->path.$document->file_name;
+                $results = '<a href="'.$img_path.'" target="_blank"><img width="'.$width.'" src="'.$img_path.'" title="'.$document->name.'" /></a>';
+            break;
+            default:
+                $results = $document->file_name;
+            break;
+        }
+
+        return $results;
+    }
+    
+    /*
+     * Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']); 
+     */
+    public function drawTruFalse($model, $value, $icons=[]) {
+
+        $html = '';
+        if($value===true) {
+            if(isset($icons['OK']))
+                $icon = $icons['OK'];
+            else
+                $icon = 'glyphicon glyphicon-ok';
+            $html .= '<span style="color:#2E8B57" class="'.$icon.'" title="'.__('Yes').'"></span>';
+        }
+        else
+        if($value===false) {
+            if(isset($icons['KO']))
+                $icon = $icons['KO'];
+            else
+                $icon = 'glyphicon glyphicon-remove';
+            $html .= '<span style="color:#dd4b39" class="'.$icon.'" title="'.__('No').'"></span>';
+        }
+        else 
+            $html .= '';
+
+        return $html;
+    } 
+
+    public function importo($value) {
+    	$str = '';
+    	if(!empty($value))
+    		$str = number_format($value, 2, ',', '.').' &euro;';
+    	return $str;
+    }
+
+    public function datepicker($fieldName, $options=[]) {
+
+		$optionDefault = ['type' => 'text', 'label' => false, 'class' => 'form-control datepicker pull-right'];
+    	if(!empty($options)) {
+    		$optionDefault = array_merge($optionDefault, $options);
+    		if(isset($options['class']))
+    			$optionDefault['class'] = 'form-control datepicker pull-right '.$options['class'];
+    	}
+    
+    	$html = '';
+    	$html .= "
+              <div class=\"form-group\">";
+        
+        if(!isset($options['label']) || $options['label']==true)
+	         $html .= "<label>".__($fieldName)."</label>";
+
+        $html .= "<div class=\"input-group date\">
+                  <div class=\"input-group-addon\">
+                    <i class=\"fa fa-calendar\"></i>
+                  </div>";
+        $html .= $this->Form->control($fieldName, $optionDefault);
+        $html .= "</div>
+              </div>
+              ";
+
+        return $html;
+    }
+
+    public function daterangepicker($fieldName, $options=[]) {
+
+		$optionDefault = ['type' => 'text', 'label' => false, 'class' => 'form-control bootstrap-daterangepicker pull-right'];
+
+		// escludo <div class="form-group input text">
+		$optionDefault += ['templates' => ['inputContainer' => '{{content}}']];
+
+    	if(!empty($options)) {
+
+    		$val = '';
+    		if(isset($options['values'])) {
+    			foreach($options['values'] as $key => $value)
+    				$val .= $value.' - ';
+
+    			$val = substr($val, 0, strlen($val)-3);
+    		}
+			$optionDefault['value'] = $val;
+
+    		$optionDefault = array_merge($optionDefault, $options);
+    		if(isset($options['class']))
+    			$optionDefault['class'] = 'form-control bootstrap-daterangepicker pull-right '.$options['class'];
+    	}
+    
+    	$html = '';
+    	$html .= "<div class=\"form-group\">";
+        
+        if(!isset($options['label']) || $options['label']==true)
+	         $html .= "<label>".__($fieldName)."</label>";
+
+        $html .= "<div class=\"input-group\">
+                  <div class=\"input-group-addon\">
+                    <i class=\"fa fa-calendar\"></i>
+                  </div>";
+        $html .= $this->Form->control($fieldName, $optionDefault);
+        $html .= "</div>
+              </div>
+              ";
+
+        return $html;
+    }
+
+    public function checkbox($results, $editResults=[], $options=[], $debug=false) {    
+        
+        $html = '';
+        foreach($results as $result) {
+
+            /*
+             * gestione valori gia' salvati per edit
+             */
+            $checked=''; 
+            if(!empty($editResults))
+            foreach($editResults as $numResult => $editResult) {
+                $checked='';
+                if($editResult->id==$result->id) {
+                    $checked='checked';
+                    unset($editResults[$numResult]);
+                    break;
+                }   
+            }
+
+            $html .= $this->Form->control('checkbox['.$result->id.']', 
+                                        ['type' => 'checkbox', 
+                                         'name' => 'checkbox.id['.$result->id.']', 
+                                         'class' => 'checkbox-inline', 
+                                         'inline' => 'checkbox',
+                                        'value' => $result->id, 
+                                        'label' => $result->name, 
+                                        'hiddenField'=>false, 
+                                        'checked' => $checked]);
+        }
+
+        return $html;
+    }
+}
