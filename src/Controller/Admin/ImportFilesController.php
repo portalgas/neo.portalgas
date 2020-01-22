@@ -20,6 +20,87 @@ class ImportFilesController extends AppController
         parent::beforeFilter($event);
     }
 
+    public function json()
+    {
+        $debug = false;
+        $continua = true;
+
+        $this->loadComponent('QueueJson');
+
+        $queuesCode = 'GDXP-PORTALGAS';
+        $organization_id = $this->Authentication->getIdentity()->organization_id;
+
+        if ($this->request->is('post')) {
+
+            if($debug) debug($this->request->getData());
+
+            /*
+             * uplaod del file
+             */
+            $config = [] ;
+            $config['upload_path']    = WWW_ROOT;          
+            $config['allowed_types']  = 'txt';            
+            $config['max_size']       = 0;   
+            $config['overwrite']      = true;
+            $config['encrypt_name']  = false;
+            $config['remove_spaces'] = true;         
+            $this->Upload->init($config);  
+            $results = $this->Upload->upload();
+            if ($results===false){
+                $continua = false;
+                $error = $this->Upload->errors();
+                debug($error);
+                $this->Flash->error($error[0]);
+            } 
+
+            $file_path_full = $config['upload_path'].$this->Upload->output('file_name');
+            if($debug) debug('file_path_full '.$file_path_full);
+
+            /*
+             * validazione
+             */
+            if($continua) {
+
+                $results = $this->QueueJson->validate($file_path_full, $queuesCode, $organization_id, $debug);
+                if($debug) debug($results);
+                if(isset($results['esito']) && !$results['esito']) {
+                    $continua = false;
+                    $this->Flash->error($results['msg']);  
+                }
+            } // end if($continua)
+
+            /*
+             * import dati queue
+             */
+            if($continua) {
+
+                $request['code'] = $queuesCode;                
+                $request['organization_id'] = $organization_id;
+                $request['id'] = $file_path_full; 
+
+                $results = $this->QueueJson->queue($request, $debug);
+                // debug($results);
+                if(isset($results['esito']) && !$results['esito']) {
+                    $continua = false;
+                    // debug($results);
+                    if(!empty($results['msg']))
+                        $msg = $results['msg'];
+                    else
+                        $msg = __('UploadValidateKo');
+                    $this->Flash->error($msg);  
+
+                    $this->set('errors', $results['results']);
+                }
+
+            } // end if($continua)
+
+            if($continua) {
+                $this->Flash->success(__('UploadValidateOk'));
+            }
+
+        } // end post              
+    }
+
     public function xml()
     {
         $this->loadComponent('QueueXml');
@@ -51,7 +132,8 @@ class ImportFilesController extends AppController
             if ($results===false){
                 $continua = false;
                 $error = $this->Upload->errors();
-                $this->Flash->error($error);
+                debug($error);
+                $this->Flash->error($error[0]);
             } 
 
             $file_path_full = $config['upload_path'].$this->Upload->output('file_name');

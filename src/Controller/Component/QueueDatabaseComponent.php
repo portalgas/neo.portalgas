@@ -41,8 +41,8 @@ class QueueDatabaseComponent extends QueueComponent {
         $this->uuid = $uuid;
         $this->queue_id = $queue->id;
 
-        $component = $this->_getComponent($queue);
-        $this->_registry->load($component); // custom MappingDwweMago
+        $this->setComponent($queue);
+        $this->_registry->load($this->component); // custom MappingDwweMago
 
         $id = $request['id'];
 
@@ -113,7 +113,7 @@ class QueueDatabaseComponent extends QueueComponent {
 
             if(empty($masterEntitys)) {
 
-                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $component, $value, $master_column);
+                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $master_column);
                 
                 $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default);
 
@@ -136,7 +136,7 @@ class QueueDatabaseComponent extends QueueComponent {
             else 
             foreach($masterEntitys as $masterEntity) {
 
-                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $component, $value, $master_column, $masterEntity);
+                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $master_column, $masterEntity);
 
                 $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default);
 
@@ -181,7 +181,7 @@ class QueueDatabaseComponent extends QueueComponent {
     /*
      * conversione al nuovo valore
      */
-    private function _convertingValue($mapping, $component, $value, $master_column, $masterEntity=[]) {
+    private function _convertingValue($mapping, $value, $master_column, $masterEntity=[]) {
 
         $mapping_type_code = $mapping->mapping_type->code;
 
@@ -189,9 +189,9 @@ class QueueDatabaseComponent extends QueueComponent {
         switch ($mapping_type_code) {
             case 'FUNCTION':
                 if(!empty($masterEntity) && !empty($masterEntity->{$master_column}))
-                    $data = $this->_registry->{$component}->{$value}($masterEntity->{$master_column});
+                    $data = $this->_registry->{$this->component}->{$value}($masterEntity->{$master_column});
                 else
-                    $data = $this->_registry->{$component}->{$value}();
+                    $data = $this->_registry->{$this->component}->{$value}();
             break;
             case 'CURRENTDATE':
                 $data = new Time(date('Y-m-d'));
@@ -212,7 +212,7 @@ class QueueDatabaseComponent extends QueueComponent {
                 }
             break;
             case 'PARAMETER-EXT':
-                $data = $this->request->getData($value);
+                $data = $this->controller->request->getData($value);
             break;
             case 'DEFAULT':
                 if(!empty($masterEntity)) {

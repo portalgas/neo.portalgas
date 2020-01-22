@@ -276,3 +276,16 @@ Configure::write('QueueLogs.shell', false);
 Configure::write('site.name', 'PortAlGas');
 Configure::write('site.url', 'https://www.portalgas.it');
 Configure::write('backoffice.url', 'https://www.portalgas.it/my');
+
+Configure::write('SupplierOrganizationStatoIni', 'Y');
+Configure::write('SupplierOrganizationMailOrderOpenIni', 'Y');
+Configure::write('SupplierOrganizationMailOrderCloseIni', 'Y');
+Configure::write('SupplierOrganizationOwnerArticlesIni', 'REFERENT');  
+Configure::write('SupplierOrganizationCanViewOrdersIni', 'Y');
+Configure::write('SupplierOrganizationCanViewOrdersUserIni', 'Y');
+Configure::write('SupplierOrganizationCanPromotionsIni', 'Y');
+
+
+Configure::write('Gdxp.protocolVersion', '1.0');
+Configure::write('Gdxp.applicationSignature', 'PortAlGas');
+Configure::write('Gdxp.file.prefix', 'gdxp-');

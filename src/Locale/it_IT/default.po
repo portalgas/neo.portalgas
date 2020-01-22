@@ -544,14 +544,86 @@ msgstr "Sei sicuro di cancellare definitivamente il record {0}"
 msgid "MsgResultsNotFound"
 msgstr "Non sono stati trovati risultati"
 
+msgid "MsgSearchParameters"
+msgstr "Imposta i parametri di ricerca"
+
 #
 # validator
 #
+#
+# validator
+#
+msgid "Parameters required"
+msgstr "I parametri passati non sono completi"
+
+msgid "This field cannot be left empty"
+msgstr "il campo non può essere vuoto"
+
+msgid "This value does not exist"
+msgstr "il valore non esiste"
+
 msgid "This field is required"
 msgstr "campo obbligatorio"
 
 msgid "The provided value is invalid"
 msgstr "valore non valido"
+
+msgid "Offer detail offer_type_ids required"
+msgstr "Non è stata scelta una tipologia di servizio"
+
+msgid "Offer detail offer_collaborator_ids required"
+msgstr "Non è stato scelto un collaboratore"
+
+msgid "Field required"
+msgstr "Non tutti i campi sono stati compilati"
+
+#
+# documents / upload
+#
+msgid "Document"
+msgstr "Documento"
+
+msgid "Documents"
+msgstr "Documenti"
+
+msgid "Document State"
+msgstr "Stato del documento"
+
+msgid "Document States"
+msgstr "Stato dei documenti"
+
+msgid "Document Type"
+msgstr "Tipologia del documento"
+
+msgid "Document Types"
+msgstr "Tipologia dei documenti"
+
+msgid "document_reference_model"
+msgstr "Riferimento"
+
+msgid "document_owner_model"
+msgstr "Proprietario"
+
+msgid "Upload File"
+msgstr "Allega documento"
+
+msgid "Upload Files"
+msgstr "Allega documenti"
+
+msgid "This file is too large"
+msgstr "Il file è troppo grande"
+
+msgid "This file is too small"
+msgstr "Il file è troppo piccolo"
+
+msgid "This file could not be uploaded completely"
+msgstr "Il file non può essere uplodato perchè è incompleto"
+
+msgid "There was no file found to upload"
+msgstr "Il file da uplodare non trovato!"
+
+msgid "This upload failed"
+msgstr "Il file non può essere caricato sul server"
 
 #
 # note

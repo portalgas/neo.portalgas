@@ -12,6 +12,7 @@ class GdxpsController extends AppController
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Auth');
     }
 
     public function beforeFilter(Event $event) {
@@ -21,23 +22,27 @@ class GdxpsController extends AppController
 
     public function beforeRender(Event $event)
     {
-        parent::beforeRender($event);
-        
-        $this->viewBuilder()->setClassName('Xml'); 
+        parent::beforeRender($event);        
     }
 
     public function index()
     {
+        $articles = [];
+        $supplier_organization_id = 0;
         $acl_supplier_organizations = $this->Auth->getAclSupplierOrganizationsList($this->user);
 
-        $articlesTable = TableRegistry::get('Articles');
+        if ($this->request->is('post')) {
 
-        $supplier_organization_id = 1641;
-        $where = ['Articles.supplier_organization_id' => $supplier_organization_id,
-                  'Articles.stato' => 'Y'];
-        $articles = $articlesTable->gets($this->user, $where);
-        // debug($articles);
-        
-        $this->set(compact('acl_supplier_organizations', 'articles'));
+            $supplier_organization_id = $this->request->getData('supplier_organization_id');
+            // debug('supplier_organization_id '.$supplier_organization_id);
+            $articlesTable = TableRegistry::get('Articles');
+
+            $where = ['Articles.supplier_organization_id' => $supplier_organization_id,
+                      'Articles.stato' => 'Y'];
+            $articles = $articlesTable->gets($this->user, $where);
+            // debug($articles);
+        } // end if ($this->request->is('post')) {
+
+        $this->set(compact('acl_supplier_organizations', 'supplier_organization_id', 'articles'));
     }
 }

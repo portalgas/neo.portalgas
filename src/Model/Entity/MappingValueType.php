@@ -10,6 +10,8 @@ use Cake\ORM\Entity;
  * @property string $code
  * @property string $name
  * @property string $match
+ * @property string|null $factory_force_value
+ * @property bool $is_force_value
  * @property bool $is_system
  * @property bool $is_active
  * @property int $sort
@@ -33,11 +35,13 @@ class MappingValueType extends Entity
         'code' => true,
         'name' => true,
         'match' => true,
+        'factory_force_value' => true,
+        'is_force_value' => true,
         'is_system' => true,
         'is_active' => true,
         'sort' => true,
         'created' => true,
         'modified' => true,
-        'mappings' => true
+        'mappings' => true,
     ];
 }

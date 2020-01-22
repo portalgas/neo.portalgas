@@ -30,7 +30,13 @@ class HtmlCustomSiteHelper extends FormHelper
                 $results = '<b>Function</b> '.$mapping->value;
             break;
             case 'DEFAULT':
-                $results = $mapping->value;
+                if(!empty($mapping->master_json_xpath))
+                    $results = $mapping->master_json_xpath;
+                else
+                if(!empty($mapping->master_xml_xpath))
+                    $results = $mapping->master_xml_xpath;
+                else
+                    $results = $mapping->value;
             break;
             case 'PARAMETER-EXT':
                 $results = '<b>Param</b> '.$mapping->value;

@@ -911,7 +911,7 @@ class UploadComponent extends Component {
 		}
 
 		if (isset($this->_mimes[$ext]))
-		{
+		{   
 			return is_array($this->_mimes[$ext])
 				? in_array($this->file_type, $this->_mimes[$ext], TRUE)
 				: ($this->_mimes[$ext] === $this->file_type);

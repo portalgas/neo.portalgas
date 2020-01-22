@@ -41,7 +41,7 @@ class MappingValueTypesTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->hasMany('Mappings', [
-            'foreignKey' => 'mapping_value_type_id'
+            'foreignKey' => 'mapping_value_type_id',
         ]);
     }
 
@@ -73,6 +73,15 @@ class MappingValueTypesTable extends Table
             ->scalar('match')
             ->requirePresence('match', 'create')
             ->notEmptyString('match');
+
+        $validator
+            ->scalar('factory_force_value')
+            ->maxLength('factory_force_value', 45)
+            ->allowEmptyString('factory_force_value');
+
+        $validator
+            ->boolean('is_force_value')
+            ->notEmptyString('is_force_value');
 
         $validator
             ->boolean('is_system')

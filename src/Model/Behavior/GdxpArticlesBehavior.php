@@ -20,7 +20,7 @@ class GdxpArticlesBehavior extends TreeBehavior
     }
 
     /* 
-     * se va in conflitto, ex $organizationsTable->removeBehavior('GdxpArticles');
+     * se va in conflitto, ex $entityTable->removeBehavior('GdxpArticles');
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)  {
         $results = $query->all();
@@ -35,7 +35,7 @@ class GdxpArticlesBehavior extends TreeBehavior
 			unset($result->category_article_id);
 			unset($result->categories_article);
 			     
-			$result->description = strip_tags($result->nota).' '.strip_tags($result->ingredienti);
+			$result->description = trim(strip_tags($result->nota).' '.strip_tags($result->ingredienti));
 			unset($result->nota);
 			unset($result->ingredienti);
 			  	
@@ -53,6 +53,16 @@ class GdxpArticlesBehavior extends TreeBehavior
 			unset($result->qta_multipli);
 			unset($result->um);
 			unset($result->prezzo);
+
+			unset($result->id);
+			unset($result->organization_id);
+			unset($result->supplier_organization_id);
+			unset($result->img1);
+			unset($result->stato);
+			unset($result->flag_presente_articlesorders);
+			unset($result->category);
+			unset($result->created);
+			unset($result->modified);			
 		}
     }
 }

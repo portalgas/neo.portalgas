@@ -146,13 +146,20 @@ class UsersTable extends Table
                 'Users.email',
 				'Users.registerDate',
 				'Users.lastvisitDate',
-				'Organizations.name',
+                'Organizations.name',
+                'Organizations.cf',
+                'Organizations.piva',
 				'Organizations.mail',
 				'Organizations.www',
 				'Organizations.www2',
+                'Organizations.telefono',
+                'Organizations.indirizzo',
+                'Organizations.localita',
+                'Organizations.cap',
+                'Organizations.provincia',
 				'Organizations.lat',
 				'Organizations.lng',
-				'Organizations.img1',
+                'Organizations.img1',
 				'Organizations.template_id',
 				'Organizations.type',
 				'Organizations.paramsConfig',
@@ -161,7 +168,7 @@ class UsersTable extends Table
 				'Organizations.msgText'
             ])
             ->where($where)
-			->contain(['Organizations', 'UserProfiles', 'UserUsergroupMap' => ['Usergroups']])
+			->contain(['Organizations', 'UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
             ->first();
 
         if (!$user) {

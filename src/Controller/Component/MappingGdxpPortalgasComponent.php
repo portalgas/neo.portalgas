@@ -4,12 +4,265 @@ namespace App\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 class MappingGdxpPortalgasComponent extends Component {
 
-	public function getSupplierOrganizzation($organization_id, $vatNumber) {
-		debug($vatNumber);
-		exit;
-		return 999;
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
+	public function getEmpty($organization_id) {
+		return ' ';  // se '' l'entity non viene valorizzato
+	}
+
+	/*
+	 * definito in queue_tables. Supplier.before_save
+	 * salto _save se $action = false
+	 */
+	public function supplierExists($datas, $organization_id) {
+
+        $esito = true;
+        $action = false;
+        $code = 200;
+        $msg = '';
+        $results = [];
+
+		if(empty($datas)) {
+	        $esito = false;
+	        $code = 500;
+	        $msg = 'supplierExists - data required';
+		}
+
+		if($esito) {
+			if(isset($datas[0]))
+				$datas = current($datas);
+
+			if(!isset($datas['piva'])) {
+		        $esito = false;
+		        $code = 500;
+		        $msg = 'supplierExists - piva required';
+			}
+		}
+
+		if($esito) {
+			$vatNumber = $datas['piva'];
+
+			$suppliersTable = TableRegistry::get('Suppliers');
+
+			$where = ['Suppliers.piva' => $vatNumber];
+	        $results = $suppliersTable->find()
+			            ->where($where)
+						->first();
+			if(!empty($results))  {
+		        $esito = true;
+		        $code = 200;
+		        $msg = 'supplierExists - supplier exist with Suppliers.piva= ['.$vatNumber.'] => not insert';
+		        $action = false; // not insert
+			}
+			else {
+		        $esito = true;
+		        $code = 200;
+		        $msg = 'supplierExists - supplier not exist with Suppliers.piva = ['.$vatNumber.'] => insert';
+		        $action = true; // insert
+			}
+		}
+
+		$results = ['action' => $action, 'esito' => $esito, 'code' => $code, 'msg' => $msg, 'results' => $results];
+		// debug($results);
+		
+		return $results;
+	}
+
+
+	/*
+	 * definito in queue_tables. SupplierOrganizations.before_save
+	 * salto _save se $action = false
+	 */
+	public function supplierOrganizationsExists($datas, $organization_id) {
+
+        $esito = true;
+        $action = false;
+        $code = 200;
+        $msg = '';
+        $results = [];
+
+		if(empty($datas)) {
+	        $esito = false;
+	        $code = 500;
+	        $msg = 'supplierOrganizationsExists - data required';
+		}
+
+		if($esito) {
+			if(isset($datas[0]))
+				$datas = current($datas);
+
+			$supplier_id = $datas['supplier_id'];
+
+			$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+			$where = ['SuppliersOrganizations.organization_id' => $organization_id,
+					 'SuppliersOrganizations.supplier_id' => $supplier_id];
+	        $results = $suppliersOrganizationsTable->find()
+			            ->where($where)
+						->first();
+			if(!empty($results))  {
+		        $esito = true;
+		        $code = 200;
+		        $msg = 'supplierOrganizationsExists - supplier exist with supplier_id = ['.$supplier_id.'], organization_id = ['.$organization_id.'] => not insert';
+		        $action = false;
+			}
+			else {
+
+				/*
+				 * creo SuppliersOrganizations
+				 */
+				$suppliersTable = TableRegistry::get('Suppliers');
+				$supplier = $suppliersTable->get($supplier_id);
+				$results = $suppliersOrganizationsTable->create($organization_id, $supplier);	
+				if(!$results['esito']) {
+			        $esito = $results['esito'];
+			        $code = $results['code'];
+			        $msg = $results['msg'];
+			        $results = $results['results'];
+				}
+				else {
+			        $esito = true;
+			        $code = 200;
+			        $msg = 'supplierOrganizationsExists - supplier not exist with supplier_id = ['.$supplier_id.'], organization_id = ['.$organization_id.'] => insert';
+				}
+		        
+		        /* 
+		         * sempre a false perche' l'ho salvato prima
+		         */
+		        $action = false;
+			}
+		}
+
+		$results = ['esito' => $esito, 'action' => $action,'code' => $code, 'msg' => $msg, 'results' => $results];
+		// debug($results);
+		
+		return $results;
+	}
+
+	/*
+	 * definito in queue_tables. SupplierOrganizations.before_save
+	 * salto _save se $action = false
+	 */
+	public function articleNotArticleOrders($datas, $organization_id) {
+
+        $esito = true;
+        $action = true; // insert
+        $code = 200;
+        $msg = '';
+        $results = [];
+
+		if(empty($datas)) {
+	        $esito = false;
+	        $code = 500;
+	        $msg = 'articleNotArticleOrders - data required';
+		}
+
+		if($esito) {
+			if(isset($datas[0]))
+				$datas = current($datas);
+
+			$supplier_organization_id = $datas['supplier_organization_id'];
+
+			$articlesTable = TableRegistry::get('Articles');
+
+			$where = ['organization_id' => $organization_id,
+					 'supplier_organization_id' => $supplier_organization_id];
+
+			if(!$articlesTable->updateAll(
+			        ['flag_presente_articlesorders' => 'N']
+			        [$where]
+			    )) {
+		        $esito = false;
+		        $code = 500;
+		        $msg = 'Articles.updateAll flag_presente_articlesorders = N';	
+		        $results = $where;			
+			}
+			else {
+		        $esito = true;
+		        $code = 200;
+		        $msg = 'supplierOrganizationsExists - supplier not exist with supplier_id = ['.$supplier_id.'], organization_id = ['.$organization_id.'] => insert';
+			}	
+			
+			$action = true; // insert
+		}
+
+		$results = ['esito' => $esito, 'action' => $action,'code' => $code, 'msg' => $msg, 'results' => $results];
+		// debug($results);
+		
+		return $results;		
+	}
+
+	/*
+	 * $vatNumber = piva
+	 */
+	public function getSupplierId($organization_id, $vatNumber) {
+
+        $supplier_id = 0;
+
+		$suppliersTable = TableRegistry::get('Suppliers');
+		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+		$where = ['Suppliers.piva' => $vatNumber,
+				  // 'SuppliersOrganizations.organization_id' => $organization_id
+				 ];
+        $results = $suppliersTable->find()
+            ->where($where)
+            // ->contain(['Suppliers'])
+			->first();
+		if(!empty($results)) {
+			$supplier_id = $results->id;		
+		}
+
+		return $supplier_id;
+	}
+
+	public function getMaxArticleId($organization_id) {
+		$where = ['organization_id' => $organization_id];
+		$article_id_max = $this->getMax('Articles', 'id', $where);
+		$article_id_max++;
+
+		return $article_id_max;
+	}
+
+	public function getSupplierOrganizationIdByVatNumber($organization_id, $vatNumber) {
+
+        $supplier_organization_id = 0;
+
+		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+		$where = ['Suppliers.piva' => $vatNumber,
+				  'SuppliersOrganizations.organization_id' => $organization_id
+				 ];
+        $results = $suppliersOrganizationsTable->find()
+									            ->where($where)
+									            ->contain(['Suppliers'])
+												->first();
+		if(!empty($results)) {
+			$supplier_organization_id = $results->id;		
+		}
+
+		return $supplier_organization_id;
+	}
+
+	/*
+	 * ENUM('PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT')
+	 */ 
+	public function translateArticleUm($organization_id, $um) {
+
+		switch (strtolower($um)) {
+			case 'sacchetti':
+				$um = 'PZ';	
+			break;
+			default:
+				$um = 'PZ';
+			break;
+		}
+
+		return $um;
 	}
 }

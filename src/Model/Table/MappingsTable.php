@@ -106,6 +106,11 @@ class MappingsTable extends Table
             ->allowEmptyString('master_column');
 
         $validator
+            ->scalar('master_json_path')
+            ->maxLength('master_json_path', 255)
+            ->allowEmptyString('master_json_path');
+            
+        $validator
             ->scalar('master_xml_xpath')
             ->maxLength('master_xml_xpath', 255)
             ->allowEmptyString('master_xml_xpath');

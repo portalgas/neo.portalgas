@@ -42,6 +42,7 @@ $icon = '<i class="fa fa-circle"></i> ';
             </span>
           </a>
           <ul class="treeview-menu">
+            <li><a href="<?php echo $this->Url->build('/admin/import-files/json'); ?>"><?php echo $icon;?>File Json</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/import-files/xml'); ?>"><?php echo $icon;?>File XML</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/import-files/csv'); ?>"><?php echo $icon;?>File CSV</a></li>
           </ul>

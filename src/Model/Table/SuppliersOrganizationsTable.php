@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 /**
  * SuppliersOrganizations Model
@@ -52,7 +53,7 @@ class SuppliersOrganizationsTable extends Table
             'foreignKey' => 'supplier_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('CategorySuppliers', [
+        $this->belongsTo('CategoriesSuppliers', [
             'foreignKey' => 'category_supplier_id',
             'joinType' => 'INNER'
         ]);
@@ -64,6 +65,9 @@ class SuppliersOrganizationsTable extends Table
             'foreignKey' => 'owner_supplier_organization_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('Articles', [
+            'foreignKey' => 'supplier_organization_id'
+        ]);          
     }
 
     /**
@@ -131,10 +135,70 @@ class SuppliersOrganizationsTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['supplier_id'], 'Suppliers'));
-        $rules->add($rules->existsIn(['category_supplier_id'], 'CategorySuppliers'));
+        /*
+         * disabilita perche' al primo insert e' 0
+         * poi con AfterSave lo aggiorno
+        $rules->add($rules->existsIn(['category_supplier_id'], 'CategoriesSuppliers')); 
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
         $rules->add($rules->existsIn(['owner_supplier_organization_id'], 'OwnerSupplierOrganizations'));
-
+        */
         return $rules;
     }
+
+    public function create($organization_id, $supplier)
+    {
+        $esito = true;
+        $code = '200';
+        $msg = '';
+        $results = []; 
+
+        // debug($supplier);
+
+        $data = [];
+        $data['organization_id'] = $organization_id;
+        $data['supplier_id'] = $supplier->id;
+        $data['name'] = $supplier->name;
+        $data['category_supplier_id'] = 0;
+        $data['frequenza'] = '';
+        $data['stato'] = Configure::read('SupplierOrganizationStatoIni');
+        $data['mail_order_open'] = Configure::read('SupplierOrganizationMailOrderOpenIni');
+        $data['mail_order_close'] = Configure::read('SupplierOrganizationMailOrderCloseIni');
+        $data['owner_articles'] = Configure::read('SupplierOrganizationOwnerArticlesIni'); 
+        $data['can_view_orders'] = Configure::read('SupplierOrganizationCanViewOrdersIni');
+        $data['can_view_orders_users'] = Configure::read('SupplierOrganizationCanViewOrdersUserIni');
+        $data['can_promotions'] = Configure::read('SupplierOrganizationCanPromotionsIni');
+        
+        /*
+         * dopo il salvataggio recupero SupplierOrganization.id e aggiorno
+         */
+        $data['owner_supplier_organization_id'] = 0;
+        $data['owner_organization_id'] = 0;
+        debug($data);
+        
+        $entity = $this->newEntity();
+        $entity = $this->patchEntity($entity, $data);
+        if (!$this->save($entity)) {
+            $esito = false;
+            $code = '500';
+            $msg = '';
+            $results = $entity->getErrors();             
+        }
+        else {
+            $data['owner_supplier_organization_id'] = $entity->id;
+            $data['owner_organization_id'] = $entity->organization_id;
+            debug($data);
+
+            $entity = $this->patchEntity($entity, $data);
+            if (!$this->save($entity)) {
+                $esito = false;
+                $code = '500';
+                $msg = '';
+                $results = $entity->getErrors();             
+            }                 
+        }
+
+        $results = ['esito' => $esito, 'code' => $code, 'msg' => $msg, 'results' => $results];
+
+        return $results; 
+    }      
 }

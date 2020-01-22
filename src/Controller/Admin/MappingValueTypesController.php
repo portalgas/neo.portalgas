@@ -34,12 +34,11 @@ class MappingValueTypesController extends AppController
     public function view($id = null)
     {
         $mappingValueType = $this->MappingValueTypes->get($id, [
-            'contain' => ['Mappings']
+            'contain' => ['Mappings'],
         ]);
 
         $this->set('mappingValueType', $mappingValueType);
     }
-
 
     /**
      * Add method
@@ -52,40 +51,38 @@ class MappingValueTypesController extends AppController
         if ($this->request->is('post')) {
             $mappingValueType = $this->MappingValueTypes->patchEntity($mappingValueType, $this->request->getData());
             if ($this->MappingValueTypes->save($mappingValueType)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Mapping Value Type'));
+                $this->Flash->success(__('The mapping value type has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Mapping Value Type'));
+            $this->Flash->error(__('The mapping value type could not be saved. Please, try again.'));
         }
         $this->set(compact('mappingValueType'));
     }
-
 
     /**
      * Edit method
      *
      * @param string|null $id Mapping Value Type id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit($id = null)
     {
         $mappingValueType = $this->MappingValueTypes->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $mappingValueType = $this->MappingValueTypes->patchEntity($mappingValueType, $this->request->getData());
             if ($this->MappingValueTypes->save($mappingValueType)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Mapping Value Type'));
+                $this->Flash->success(__('The mapping value type has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Mapping Value Type'));
+            $this->Flash->error(__('The mapping value type could not be saved. Please, try again.'));
         }
         $this->set(compact('mappingValueType'));
     }
-
 
     /**
      * Delete method
@@ -99,9 +96,9 @@ class MappingValueTypesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $mappingValueType = $this->MappingValueTypes->get($id);
         if ($this->MappingValueTypes->delete($mappingValueType)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Mapping Value Type'));
+            $this->Flash->success(__('The mapping value type has been deleted.'));
         } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Mapping Value Type'));
+            $this->Flash->error(__('The mapping value type could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

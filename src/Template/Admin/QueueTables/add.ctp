@@ -31,6 +31,8 @@
               <?php
                 echo $this->Form->control('queue_id', ['options' => $queues]);
                 echo $this->Form->control('table_id', ['options' => $tables]);
+                echo $this->Form->control('before_save');
+                echo $this->Form->control('after_save');
                 echo $this->Form->control('sort');
               ?>
             </div>

@@ -140,14 +140,15 @@ class MappingsController extends AppController
                 $this->Flash->success(__('The {0} has been saved.', 'Mapping'));
 
                 if($reAdd=='Y') 
-                    $url = ['action' => 'add', '?' => ['reAdd' => $reAdd, 'queue_id' => $mapping->queue_id]];
+                    $url = ['action' => 'add', $mapping->queue_id, '?' => ['reAdd' => $reAdd]];
                 else
                     $url = ['action' => 'index'];
                 
                 return $this->redirect($url);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Mapping'));
-        }
+        } // end post
+
         $queue = $this->Mappings->Queues->get($queue_id, ['contain' => 'QueueMappingTypes']);
 
         $master_scopes = $this->Mappings->MasterScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
@@ -157,7 +158,18 @@ class MappingsController extends AppController
         $mapping_types = $this->Mappings->MappingTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         $mapping_value_types = $this->Mappings->MappingValueTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         
-        $queue_tables = $this->Mappings->QueueTables->find('list', ['keyField' => 'QueueTables.id', 'valueField' => 'Tables.name', 'order' => ['sort' => 'asc'], 'limit' => 200])->contain(['Tables']);
+        /*
+         * workaround list
+         */
+        $tmp_queue_tables = $this->Mappings->QueueTables->find('all', [
+             // 'keyField' => 'QueueTables.id', 'valueField' => 'Tables.name',
+            // 'fields' => ['keyField' => 'QueueTables.id', 'valueField' => 'Tables.name'], 
+             'order' => ['sort' => 'asc'], 'limit' => 200])->contain(['Tables']);
+        $queue_tables = [];  
+        foreach($tmp_queue_tables as $queue_table) {
+            $queue_tables[$queue_table->id] = $queue_table->table->name;
+        }
+
         $sort = $this->getSort('Mappings');
 
         $reAdds = ['Y' => __('ReAddY'), 'N' => __('ReAddN')];
@@ -198,7 +210,18 @@ class MappingsController extends AppController
         $slaveTables = $this->Mappings->SlaveTables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
         $mapping_types = $this->Mappings->MappingTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         $mapping_value_types = $this->Mappings->MappingValueTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
-        $queue_tables = $this->Mappings->QueueTables->find('list', ['keyField' => 'QueueTables.id', 'valueField' => 'Tables.name', 'order' => ['sort' => 'asc'], 'limit' => 200])->contain(['Tables']);
+        
+        /*
+         * workaround list
+         */
+        $tmp_queue_tables = $this->Mappings->QueueTables->find('all', [
+             // 'keyField' => 'QueueTables.id', 'valueField' => 'Tables.name',
+            // 'fields' => ['keyField' => 'QueueTables.id', 'valueField' => 'Tables.name'], 
+             'order' => ['sort' => 'asc'], 'limit' => 200])->contain(['Tables']);
+        $queue_tables = [];  
+        foreach($tmp_queue_tables as $queue_table) {
+            $queue_tables[$queue_table->id] = $queue_table->table->name;
+        }
 
         $this->set(compact('mapping', 'queue', 'master_scopes', 'master_tables', 'slaveScopes', 'slaveTables', 'mapping_types', 'mapping_value_types', 'queue_tables'));
     }

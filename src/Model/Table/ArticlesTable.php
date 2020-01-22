@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\SupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $SupplierOrganizations
- * @property \App\Model\Table\CategoryArticlesTable&\Cake\ORM\Association\BelongsTo $CategoryArticles
+ * @property \App\Model\Table\CategoriesArticlesTable&\Cake\ORM\Association\BelongsTo $CategoriesArticles
  *
  * @method \App\Model\Entity\KArticle get($primaryKey, $options = [])
  * @method \App\Model\Entity\KArticle newEntity($data = null, array $options = [])
@@ -170,7 +170,10 @@ class ArticlesTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
-        $rules->add($rules->existsIn(['category_article_id'], 'CategoryArticles'));
+        /*
+         * disabilita perche' all'insert e' 0        
+        $rules->add($rules->existsIn(['category_article_id'], 'CategoriesArticles'));
+        */
 
         return $rules;
     }

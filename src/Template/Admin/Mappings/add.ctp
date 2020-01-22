@@ -50,6 +50,16 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
                     echo '</div>';
                     echo '</div>';
                   break;
+                  case 'JSON':
+                    echo '<div class="row">';
+                    echo '<div class="col-md-4">'; 
+                    echo $this->Form->control('master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2']);
+                    echo '</div>';
+                    echo '<div class="col-md-8">';  
+                    echo $this->Form->control('master_json_path');
+                    echo '</div>';
+                    echo '</div>';
+                  break;
                   case 'XML':
                     echo '<div class="row">';
                     echo '<div class="col-md-4">'; 

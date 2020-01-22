@@ -23,7 +23,8 @@ class OrganizationsParamsBehavior extends TreeBehavior
      * se va in conflitto, ex $organizationsTable->removeBehavior('OrganizationsParams');
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)  {
-        debug($event);exit;
+        
+        // debug($event);exit;
         $results = $query->all();
 		
         foreach ($results as $key => $result) {

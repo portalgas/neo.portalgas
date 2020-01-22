@@ -7,6 +7,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
 use Cake\Log\Log;
+use Cake\Filesystem\File;
 
 class QueueComponent extends Component {
 
@@ -14,7 +15,8 @@ class QueueComponent extends Component {
     
     protected $last_insert_ids = [];
     protected $_registry;
-    
+    protected $component;
+
 	public function __construct(ComponentRegistry $registry, array $config = [])
 	{
         $this->_registry = $registry;
@@ -90,7 +92,7 @@ class QueueComponent extends Component {
                 }
 
                 foreach($tables as $table_id => $table) {
-
+                   
                     if($esito===false)
                         break;
 
@@ -121,13 +123,16 @@ class QueueComponent extends Component {
                             case 'DB':
                                 $datas = $this->getDatas($uuid, $queue, $mappings, $table, $table_id, $request);
                             break;
+                            case 'JSON':
+                                $datas = $this->getDatas($uuid, $queue, $mappings, $table, $table_id, $source, $request);
+                            break;
                             case 'XML':
                                 $datas = $this->getDatas($uuid, $queue, $mappings, $table, $table_id, $source, $request);
                             break;
                             case 'CSV':
                             break;
                             default:
-                                debug($queue->queue_mapping_type->code);
+                                debug('getDatas non previsto '.$queue->queue_mapping_type->code);
                                 die();    
                             break;
                         }   
@@ -171,14 +176,20 @@ class QueueComponent extends Component {
 	        case 'DB':
 	            
 	        break;
-	        case 'XML':
-	            $results = @simplexml_load_file($id);
-	            // debug($xmldata);
-	        break;
+            case 'JSON':
+                $file = new File($id);   
+                $json = $file->read(true, 'r');
+                $results = json_decode($json);
+                // debug($results);
+            break;
+            case 'XML':
+                $results = @simplexml_load_file($id);
+                // debug($xmldata);
+            break;
 	        case 'CSV':
 	        break;
 	        default:
-	            debug($queue->queue_mapping_type->code);
+	            debug('_getSources non previsto '.$queue->queue_mapping_type->code);
 	            die();    
 	        break;
 	    } 
@@ -196,6 +207,7 @@ class QueueComponent extends Component {
             if($queue_table->table->is_active) {
                 // rif table slave
                 $tables[$queue_table->table->id] = $queue_table->table;
+                $tables[$queue_table->table->id]['before_save'] = $queue_table->before_save;
             }
         }
 
@@ -227,108 +239,187 @@ class QueueComponent extends Component {
     /*
      * componente che si occupa del mapping per FUNC_
      */
-    protected function _getComponent($queue) {
+    protected function setComponent($queue) {
        
         $component = '';
         if(!empty($queue->component)) {
             $component = $queue->component; 
         }
 
-        // array_push($this->components, $component);
-
-        return $component;
+        $this->component = $component;
     }
 
-    protected function _save($uuid, $queue, $table, $datas) {
+    protected function _save($uuid, $queue, $table, $datas, $organization_id=0) {
+
+        $esito = true;
+        $action = true;
+        $code = 200;
+        $uuid = $uuid;
+        $msg = '';
+        $results = [];
 
         $slave_namespace = $queue->slave_scope->namespace;
         $slave_entity = ucfirst($table->entity);
 
+
         /*
-         * slave
+         * beforeSave
          */
-        //$this->loadModel(sprintf('App\Model\Table\%s\%sTable', $slave_namespace, $slave_entity));
-        // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'INSERT table slave ['.$slave_entity.'] in '.$slave_namespace);
-		$queueTable = TableRegistry::get('Queues');            
-        $datasource_slave = $queueTable->getDataSourceSlave($queue);
+        if(!empty($table->before_save)) {
+            $results = $this->_registry->{$this->component}->{$table->before_save}($datas, $organization_id);
+            // debug($results);
+            $this->_registry->QueueLog->logging($uuid, $queue->id, $results['msg'], $results['results'], 'INFO');
 
-        $tableRegistry = TableRegistry::get($slave_entity);
-        $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
-        $conn = $tableRegistry->getConnection($datasource_slave);
-        $conn->begin();
-
-        foreach($datas as $data) {
-           
-            // // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
-            
-            // $slaveEntity = $this->{$slave_entity}->newEntity();
-            $slaveEntity = $tableRegistry->newEntity();
-
-            // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
-            $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
-             
-            // $this->_registry->QueueLog->logging($uuid, $queue->id, 'slaveEntity', $slaveEntity);
-
-            // if ($this->{$slave_entity}->save($slaveEntity)) {
-            if(!$this->debug) {
-                    $resultSave = $tableRegistry->save($slaveEntity);
-                    if ($resultSave) {
-
-                        /*
-                         * per la gestione INNER_TABLE_PARENT (Eredita da tabella)
-                         */
-                        $primary_key = $tableRegistry->getPrimaryKey();
-                        // debug($primary_key);
-                        if(!is_array($primary_key)) {
-                            // debug($resultSave->{$primary_key});
-                            $this->last_insert_ids[$table->id] =  $resultSave->{$primary_key};
-                        }
-                        // debug($this->last_insert_ids);
-
-                        $esito = true;
-                        $code = 200;
-                        $uuid = $uuid;
-                        $msg = '';
-                        $results = [];
-                    }
-                    else {
-                        
-                        // $this->_registry->QueueLog->logging($uuid, $queue->id, 'save', $slaveEntity->getErrors(), 'ERROR');
-
-                        $esito = false;
-                        $code = 500;
-                        $uuid = $uuid;
-                        $msg = '';
-                        $results['entity'] = $data;
-                        $results['error'] = $slaveEntity->getErrors();
-                        break;
-                    }
-            } // if(!$this->debug)                                 
-        } // end foreach($datas as $data)  
-
-        if($esito)
-            $conn->commit(); 
-        else {
-            // $this->_registry->QueueLog->logging($uuid, $queue->id, 'Error', 'rollback', 'ERROR');
-            $conn->rollback();
+            $esito = $results['esito'];
+            $action = $results['action'];
         }
 
-        return ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];
+        if($esito && $action) {
+
+            /*
+             * slave
+             */
+            //$this->loadModel(sprintf('App\Model\Table\%s\%sTable', $slave_namespace, $slave_entity));
+            // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'INSERT table slave ['.$slave_entity.'] in '.$slave_namespace);
+    		$queueTable = TableRegistry::get('Queues');            
+            $datasource_slave = $queueTable->getDataSourceSlave($queue);
+
+            $tableRegistry = TableRegistry::get($slave_entity);
+            $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
+            $conn = $tableRegistry->getConnection($datasource_slave);
+            $conn->begin();
+
+            foreach($datas as $data) {
+                
+                 debug($data);
+
+                // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
+                
+                // $slaveEntity = $this->{$slave_entity}->newEntity();
+                $slaveEntity = $tableRegistry->newEntity();
+
+                if(isset($data['id']))
+                    $slaveEntity->id = $data['id'];
+                if(isset($data['organization_id']))
+                    $slaveEntity->organization_id = $data['organization_id'];
+                
+                // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
+                $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
+                 
+                $this->_registry->QueueLog->logging($uuid, $queue->id, 'slaveEntity', $slaveEntity);
+
+                // if ($this->{$slave_entity}->save($slaveEntity)) {
+                 debug($slaveEntity); 
+                if(!$this->debug) {
+                        $resultSave = $tableRegistry->save($slaveEntity);
+                        if ($resultSave) {
+
+                            $esito = true;
+
+                            /*
+                             * per la gestione INNER_TABLE_PARENT (Eredita da tabella)
+                             */
+                            $primary_key = $tableRegistry->getPrimaryKey();
+                            // debug($primary_key);
+                            if(!is_array($primary_key)) {
+                                // debug($resultSave->{$primary_key});
+                                $this->last_insert_ids[$table->id] =  $resultSave->{$primary_key};
+                            }
+                            // debug($this->last_insert_ids);
+
+                            /*
+                             * afterSave
+                             */
+                            if(!empty($table->after_save)) {
+                                $results = $this->_registry->{$this->component}->{$table->after_save}($data, $organization_id);
+
+                                $esito = $results['esito'];
+                                if(!$esito) {
+                                    $code = $results['code'];
+                                    $uuid = $results['uuid'];
+                                    $msg = $results['msg'];
+                                    $results = $results['results'];
+
+                                }
+
+                            }
+
+                            if($esito) {
+                                $esito = true;
+                                $code = 200;
+                                $uuid = $uuid;
+                                $msg = '';
+                                $results = [];                                
+                            } 
+                        }
+                        else {
+                            
+                            $this->_registry->QueueLog->logging($uuid, $queue->id, 'save', $slaveEntity->getErrors(), 'ERROR');
+
+                            $esito = false;
+                            $code = 500;
+                            $uuid = $uuid;
+                            $msg = '';
+                            $results['entity'] = $data;
+                            $results['error'] = $slaveEntity->getErrors();
+                            break;
+                        }
+                } // if(!$this->debug)   
+                else {
+                    $esito = true;
+                    $code = 200;
+                    $uuid = $uuid;
+                    $msg = 'Modalita DEBUG';
+                    $results = $slaveEntity;                    
+                }                              
+            } // end foreach($datas as $data)  
+
+            if($esito)
+                $conn->commit(); 
+            else {
+                $this->_registry->QueueLog->logging($uuid, $queue->id, 'Error', 'rollback', 'ERROR');
+                $conn->rollback();
+            }
+        } // end if($esito)
+        else {
+            $esito = $results['esito'];
+            $code = $results['code'];
+            $uuid = $uuid;
+            $msg = $results['msg'];
+            $results = [];
+        }
+
+        $results = ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];
+
+        return $results;
     }
 
     /*
      * se required => default value
      */
-    protected function _defaultValue($data, $is_required, $value_default) {
+    protected function _defaultValue($data, $is_required, $value_default, $debug=false) {
 
-        if($is_required && $data=='' && !empty($value_default)) {
+        if($is_required && $data=='' && $value_default!='') {
             $data = $value_default;                  
         }
+
+        if($debug) 
+            debug('BEFORE data '.$data.' is_required '.$is_required.' value_default '.$value_default.' AFTER data '.$data);
 
         return $data;
     }	
 
     private function _getUuid() {
         return uniqid();
-    }    
+    }  
+
+    /*
+     * definiti in mapping_value_types.factory_force_value
+     */
+    protected function castingInt($value, $slave_column='') {
+        //if($slave_column=='qta_multipli') { echo '<pre>BEFORE castingInt'; var_dump($value); echo '<pre>'; }
+        $value = (int)$value;
+        //if($slave_column=='qta_multipli') { echo '<pre>AFTER castingInt'; var_dump($value); echo '<pre>'; }
+        return $value;
+    }  
 }

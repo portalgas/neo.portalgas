@@ -30,6 +30,8 @@ class QueueTable extends Entity
     protected $_accessible = [
         'queue_id' => true,
         'table_id' => true,
+        'before_save' => true,
+        'after_save' => true,
         'sort' => true,
         'created' => true,
         'modified' => true,

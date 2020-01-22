@@ -43,22 +43,17 @@ class SuppliersTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('CategorySuppliers', [
+        $this->belongsTo('CategoriesSuppliers', [
             'foreignKey' => 'category_supplier_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('JContents', [
-            'foreignKey' => 'j_content_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('DeliveryTypes', [
-            'foreignKey' => 'delivery_type_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('OwnerOrganizations', [
             'foreignKey' => 'owner_organization_id',
             'joinType' => 'INNER'
-        ]);
+        ]); 
+        $this->hasMany('SuppliersOrganizations', [
+            'foreignKey' => 'supplier_id'
+        ]);        
     }
 
     /**
@@ -194,11 +189,18 @@ class SuppliersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['category_supplier_id'], 'CategorySuppliers'));
-        $rules->add($rules->existsIn(['j_content_id'], 'JContents'));
-        $rules->add($rules->existsIn(['delivery_type_id'], 'DeliveryTypes'));
+        $rules->add($rules->existsIn(['category_supplier_id'], 'CategoriesSuppliers'));
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
 
         return $rules;
     }
+
+    public function getByVatNumber($vatNumber) {
+
+        $where = ['Suppliers.piva' => $vatNumber];
+        $results = $this->find()
+                    ->where($where)
+                    ->first();
+        return $results;
+    }  
 }

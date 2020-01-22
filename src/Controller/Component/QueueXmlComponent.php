@@ -33,6 +33,8 @@ class QueueXmlComponent extends QueueComponent {
 	 */
 	public function getDatas($uuid, $queue, $mappings, $table, $table_id, $source, $request) {
 
+        $debug = false;
+
         /*
          * valori return
          */
@@ -44,8 +46,8 @@ class QueueXmlComponent extends QueueComponent {
         $this->uuid = $uuid;
         $this->queue_id = $queue->id;
 
-        $component = $this->_getComponent($queue);
-        $this->_registry->load($component); // custom MappingAnotherPortal
+        $this->setComponent($queue);
+        $this->_registry->load($this->component); // custom MappingAnotherPortal
 
         $organization_id = $request['organization_id'];
 
@@ -82,13 +84,19 @@ class QueueXmlComponent extends QueueComponent {
             if(!empty($mapping->master_xml_xpath)) {
                 
                 $value_xml_xpath = $source->xpath($mapping->master_xml_xpath);
-                
-                if(!empty($value_xml_xpath) && count($value_xml_xpath)===1) {
+                if($debug) debug($mapping->master_xml_xpath);
+                if($debug) debug($value_xml_xpath);
+
+                if(empty($value_xml_xpath) || count($value_xml_xpath)===1) {
                 	/*
                 	 * e' una stringa
                 	 */
-                    $value_xmls = (string)$value_xml_xpath[0];
-					$datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $component, $value, $organization_id, $value_xmls);
+                    if(!empty($value_xml_xpath))
+                        $value_xmls = (string)$value_xml_xpath[0];
+                    else 
+                        $value_xmls = '';
+
+					$datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $request, $value_xmls);
 
 	                $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default);
 
@@ -116,7 +124,7 @@ class QueueXmlComponent extends QueueComponent {
                     $value_xmls = $value_xml_xpath;
                     foreach($value_xmls as $value_xml) {
                         $value_xml = (string)$value_xml[0];
-                        $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $component, $value, $organization_id, $value_xml);
+                        $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $request, $value_xml);
 
 		                $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default);
 
@@ -141,15 +149,47 @@ class QueueXmlComponent extends QueueComponent {
                     // debug('mapping->master_xml_xpath '.$mapping->master_xml_xpath.' - value_xmls ARRAY');
                 }
             } // end if(!empty($mapping->master_xml_xpath))
+            else {
+                /* 
+                 * il valore non e' mappato nell'xml $mapping->master_xml_xpath
+                 */
+                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $request);
+
+                $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default, false);
+
+                if($mapping->is_required && $datas[$numResults][$slave_column]==='') {
+                    $esito = false;
+                    $code = 500;
+                    $uuid = $uuid;
+                    $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
+                    $results = []; 
+
+                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+                }
+
+                $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+
+                $numResults++;
+            } // end if(!empty($mapping->master_xml_xpath))
+
         } // foreach ($mappings as $mapping)
 
         /*
-         * tutti i idati di un entity / table
+         * tutti i dati di una entity / table alla volta
+         * solo il primo elemento dell'array ha tutti i campi, gli altri solo quelli che arrivano dall'xml
          */
-        // debug($datas);
+        
+        foreach($datas as $numResult => $data) {
+            if($numResult>0) {
+                $datas[$numResult] = array_merge($datas[0], $datas[$numResult]);
+
+                if(isset($datas[0]['id'])) // per Articles che e' il max
+                    $datas[$numResult]['id'] = ($datas[0]['id']+$numResult);
+            }
+        }
 
         if($esito) 
-            $result = $this->_save($uuid, $queue, $table, $datas);
+            $result = $this->_save($uuid, $queue, $table, $datas, $organization_id);
 
         if(isset($result['esito']) && !$result['esito']) {
             $esito = $result['esito'];
@@ -159,20 +199,26 @@ class QueueXmlComponent extends QueueComponent {
             $results = $result['results'];
         }
 
-        return ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];
+        $results = ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];
+
+        return $results; 
 	}
 
     /*
      * conversione al nuovo valore
      */
-    private function _convertingValue($mapping, $component, $value, $organization_id, $value_xml) {
+    private function _convertingValue($mapping, $value, $request, $value_xml='') {
 
         $mapping_type_code = $mapping->mapping_type->code;
+
+        $organization_id = 0;
+        if(!empty($request['organization_id']))
+            $organization_id = $request['organization_id'];
 
         $data = '';
         switch ($mapping_type_code) {
             case 'FUNCTION':
-                $data = $this->_registry->{$component}->{$value}($organization_id, $value_xml);
+                $data = $this->_registry->{$this->component}->{$value}($organization_id, $value_xml);
             break;
             case 'CURRENTDATE':
                 $data = new Time(date('Y-m-d'));
@@ -193,7 +239,7 @@ class QueueXmlComponent extends QueueComponent {
                 }
             break;
             case 'PARAMETER-EXT':
-                $data = $this->request->getData($value);
+                $data = $request[$value];
             break;
             case 'DEFAULT':
                 $data = $value_xml;
@@ -217,6 +263,8 @@ class QueueXmlComponent extends QueueComponent {
      */
     public function validate($xmlData, $queuesCode, $organization_id, $debug=false) {
 
+        // $debug= true;
+        
         $esito = true;
         $code = 200;
         $msg = '';
