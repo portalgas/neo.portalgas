@@ -45,7 +45,7 @@ class QueueComponent extends Component {
 
             $queuesCode = $request['code'];
             /*
-             * queues.queue_mapping_type.code = XML / CSV => nome file
+             * queues.queue_mapping_type.code = XML / JSON / CSV => nome file
              * queues.queue_mapping_type.code = DB => id tabella
              */
             $id = $request['id'];
@@ -249,7 +249,9 @@ class QueueComponent extends Component {
         $this->component = $component;
     }
 
-    protected function _save($uuid, $queue, $table, $datas, $organization_id=0) {
+    protected function _save($uuid, $queue, $table, $datas, $organization_id=0, $debug = false) {
+
+        $debug = false;
 
         $esito = true;
         $action = true;
@@ -291,7 +293,7 @@ class QueueComponent extends Component {
 
             foreach($datas as $data) {
                 
-                 debug($data);
+                 if($debug) debug($data);
 
                 // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
                 
@@ -309,7 +311,7 @@ class QueueComponent extends Component {
                 $this->_registry->QueueLog->logging($uuid, $queue->id, 'slaveEntity', $slaveEntity);
 
                 // if ($this->{$slave_entity}->save($slaveEntity)) {
-                 debug($slaveEntity); 
+                if($debug) debug($slaveEntity); 
                 if(!$this->debug) {
                         $resultSave = $tableRegistry->save($slaveEntity);
                         if ($resultSave) {
@@ -342,7 +344,7 @@ class QueueComponent extends Component {
 
                                 }
 
-                            }
+                            } // end if(!empty($table->after_save))
 
                             if($esito) {
                                 $esito = true;

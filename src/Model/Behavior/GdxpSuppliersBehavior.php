@@ -28,8 +28,8 @@ class GdxpSuppliersBehavior extends TreeBehavior
         // debug($results);exit;
         foreach ($results as $key => $result) {
 		  	
-			$result->taxCode = '';
-			$result->vatNumber = $result->vatNumber;
+			$result->taxCode = $result->cf;
+			$result->vatNumber = $result->piva;
 			unset($result->piva);
 			unset($result->cf);
 
@@ -44,7 +44,7 @@ class GdxpSuppliersBehavior extends TreeBehavior
 			unset($result->cap);
 			unset($result->provincia);
 			     
-			$result->note = strip_tags($result->nota);
+			// $result->note = strip_tags($result->nota);
 			unset($result->nota);
 			
 			$result->contacts = [

@@ -105,6 +105,7 @@ class MappingGdxpPortalgasComponent extends Component {
 	        $results = $suppliersOrganizationsTable->find()
 			            ->where($where)
 						->first();
+
 			if(!empty($results))  {
 		        $esito = true;
 		        $code = 200;
@@ -174,18 +175,19 @@ class MappingGdxpPortalgasComponent extends Component {
 					 'supplier_organization_id' => $supplier_organization_id];
 
 			if(!$articlesTable->updateAll(
-			        ['flag_presente_articlesorders' => 'N']
+			        ['flag_presente_articlesorders' => 'N'],
 			        [$where]
 			    )) {
-		        $esito = false;
-		        $code = 500;
-		        $msg = 'Articles.updateAll flag_presente_articlesorders = N';	
+		        $esito = true;
+		        $code = 200;
+		        $msg = 'Articles.updateAll flag_presente_articlesorders = N non trovati records';	
 		        $results = $where;			
 			}
 			else {
 		        $esito = true;
 		        $code = 200;
-		        $msg = 'supplierOrganizationsExists - supplier not exist with supplier_id = ['.$supplier_id.'], organization_id = ['.$organization_id.'] => insert';
+		        $msg = 'Articles.updateAll flag_presente_articlesorders = N => aggiornati records';
+		        $results = $where;			
 			}	
 			
 			$action = true; // insert

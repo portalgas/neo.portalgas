@@ -9,6 +9,7 @@ $this->end();
 
 echo $this->element('breadcrumb', ['label' => __('Article Export'), 'action' => __('index')]);
 
+echo '<div class="rowas">';
 echo $this->Form->create();
 echo '<fieldset>';
 echo '<legend>'.__('Article Export').'</legend>';
@@ -22,6 +23,7 @@ echo '</div>';
 echo '</fieldset>';
 echo $this->Form->button(__('Search'), ['class' => 'btn btn-primary pull-right']);
 echo $this->Form->end();
+echo '</div>'; // row
 
 echo '<div class="clearfix"></div>';
 
@@ -73,8 +75,13 @@ else {
             <tbody>
                 <?php foreach ($articles as $article): ?>
                 <tr>
-                    <?php 
-                    echo '<td>'.$article->img1.'</td>';
+                    <?php  
+                    echo '<td>';
+                    if(!empty($article->img1)) {
+                        $img1_path = sprintf(Configure::read('Article.img.path.full'), $article->organization_id, $article->img1);
+                        echo '<img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" />';
+                    }
+                    echo '</td>';
                     echo '<td>'.h($article->name).'</td>';
                     echo '<td>'.h($article->codice).'</td>';
                     echo '<td>'.$article->suppliers_organization->owner_organization->name.'</td>';

@@ -1,3 +1,17 @@
+.clearfix {
+  overflow: auto;
+  content: "";
+  clear: both;
+}
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+section {
+   padding: 10px 0;
+}
 fieldset {
     padding-bottom: 10px !important;
     margin-bottom: 10px !important;

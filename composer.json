@@ -33,6 +33,7 @@
         "phpoffice/phpword": "^0.16.0",
         "rkorebrits/htmltoopenxml": "^0.1.9",
         "sunra/php-simple-html-dom-parser": "^1.5",
+        "swaggest/json-schema": "^0.12.28",
         "twbs/bootstrap": "3.*"
     },
     "require-dev": {

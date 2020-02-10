@@ -54,7 +54,7 @@ class GdxpExportsController extends AppController
 
         return [
             'protocolVersion' => Configure::read('Gdxp.protocolVersion'),
-            'creationDate' => date('YmdHis'),
+            'creationDate' => date('Y-m-d'),
             'applicationSignature' => Configure::read('Gdxp.applicationSignature')
         ];
     } 

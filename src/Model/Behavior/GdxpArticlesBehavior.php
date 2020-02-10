@@ -39,19 +39,34 @@ class GdxpArticlesBehavior extends TreeBehavior
 			unset($result->nota);
 			unset($result->ingredienti);
 			  	
+			$result->um = $result->um;
+			unset($result->um_riferimento);
+
+			$result->active = true;
+						  	
 			$result->orderInfo = [
 				'packageQty' => $result->pezzi_confezione,
 				'maxQty' => $result->qta_massima,
 				'minQty' => $result->qta_minima,
 				'mulQty' => $result->qta_multipli,
-				'umPrice' => $result->um,
-				'shippingCost' => $result->prezzo
+				'umPrice' => $result->prezzo,
+				'shippingCost' => '0.0'
+				//'vatRate' => '',
+				//'availableQty' => ''
 			];
+
+
 			unset($result->pezzi_confezione);
 			unset($result->qta_massima);
 			unset($result->qta_minima);
 			unset($result->qta_multipli);
-			unset($result->um);
+            unset($result->qta);
+            unset($result->qta_minima_order);
+            unset($result->qta_massima_order);
+            unset($result->alert_to_qta);
+			unset($result->flag_presente_articlesorders);
+            unset($result->bio);
+
 			unset($result->prezzo);
 
 			unset($result->id);
@@ -59,8 +74,6 @@ class GdxpArticlesBehavior extends TreeBehavior
 			unset($result->supplier_organization_id);
 			unset($result->img1);
 			unset($result->stato);
-			unset($result->flag_presente_articlesorders);
-			unset($result->category);
 			unset($result->created);
 			unset($result->modified);			
 		}

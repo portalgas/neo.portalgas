@@ -8,6 +8,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\I18n\Time;
 use Cake\Filesystem\File;
+use \Swaggest\JsonSchema\Structure\ClassStructure;
+use \Swaggest\JsonSchema\Schema;
 
 class QueueJsonComponent extends QueueComponent {
 
@@ -258,7 +260,50 @@ class QueueJsonComponent extends QueueComponent {
         return  $data;
     }  
 
+    public function validateSchema($file_path_full, $file_schema_path_full, $debug=false) {
+        
+        $results = [];
+        $results['esito'] = true;
+
+        $file = new File($file_schema_path_full);   
+        $file_content = $file->read(true, 'r');
+        $schema_json = json_decode($file_content);
+        if($debug) debug($schema_json);
+        
+        $file = new File($file_path_full);   
+        $file_content = $file->read(true, 'r');
+        $json = json_decode($file_content);
+        if($debug) debug($json);
+        
+        try {
+            $schema = Schema::import($schema_json);
+            $schemaResults = $schema->in($json);
+            $results['msg'] = $schemaResults;
+            if($debug) debug($schemaResults);            
+        }
+        catch(\Swaggest\JsonSchema\Exception\ObjectException $e) {
+           $results['esito'] = false;
+           $results['msg'] = $e->getMessage();
+        } 
+        catch(\Swaggest\JsonSchema\Exception\TypeException $e) {
+           $results['esito'] = false;
+           $results['msg'] = $e->getMessage();
+        } 
+        catch(\Swaggest\JsonSchema\Exception\LogicException $e) {
+           $results['esito'] = false;
+           $results['msg'] = $e->getMessage();
+        }
+        catch(\Swaggest\JsonSchema\Exception\StringException $e) {
+           $results['esito'] = false;
+           $results['msg'] = $e->getMessage();
+        } 
+
+        return $results;
+    }
+
     /*
+     * non + utilizzato, sostituita da validateSchema
+     *
      * validazione per ogni path $mapping->master_json_path
      *      $mapping->mapping_type->code == 'DEFAULT'
      *      $mapping->is_required
@@ -267,7 +312,7 @@ class QueueJsonComponent extends QueueComponent {
      */
     public function validate($file_path_full, $queuesCode, $organization_id, $debug=false) {
 
-        $debug = true;
+        $debug = false;
         
         $esito = true;
         $code = 200;
@@ -377,8 +422,8 @@ class QueueJsonComponent extends QueueComponent {
         $results['esito'] = $esito;
         $results['code'] = $code;
         $results['msg'] = $msg;
-        debug($results);
-exit;
+        // debug($results);
+
         return $results;
     }
 
@@ -387,7 +432,9 @@ exit;
      *      ex blocks[0]->supplier->products[]->name
      */
     private function _getValueJson($json, $master_json_path) {
-debug($json->blocks[0]->supplier->contacts[0]);exit;
+        
+        // debug($json->blocks[0]->supplier->contacts[0]);exit;
+
         $results = [];
 
         $master_json_paths = explode('->', $master_json_path);

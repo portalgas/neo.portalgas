@@ -49,7 +49,7 @@ class ImportFilesController extends AppController
             if ($results===false){
                 $continua = false;
                 $error = $this->Upload->errors();
-                debug($error);
+                if($debug) debug($error);
                 $this->Flash->error($error[0]);
             } 
 
@@ -61,7 +61,9 @@ class ImportFilesController extends AppController
              */
             if($continua) {
 
-                $results = $this->QueueJson->validate($file_path_full, $queuesCode, $organization_id, $debug);
+                $file_schema_path_full = WWW_ROOT.'/json/json-schema.json';
+
+                $results = $this->QueueJson->validateSchema($file_path_full, $file_schema_path_full);
                 if($debug) debug($results);
                 if(isset($results['esito']) && !$results['esito']) {
                     $continua = false;
