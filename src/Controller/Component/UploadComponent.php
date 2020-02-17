@@ -261,6 +261,8 @@ class UploadComponent extends Component {
 		if(empty($mime_types) || !is_array($mime_types)){
 			$mime_types = [];
 		}
+
+		$mime_types['json'][] = 'text/plain';
 		$this->_mimes = $mime_types;
 	}
 	

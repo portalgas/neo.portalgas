@@ -260,6 +260,9 @@ class QueueJsonComponent extends QueueComponent {
         return  $data;
     }  
 
+    /*
+     * https://github.com/swaggest/php-json-schema
+     */
     public function validateSchema($file_path_full, $file_schema_path_full, $debug=false) {
         
         $results = [];

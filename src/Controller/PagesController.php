@@ -48,13 +48,6 @@ class PagesController extends AppController
      */
     public function display(...$path)
     {
-        $file = new File('/var/www/neo.portalgas/webroot/gdxp-listino.txt');           
-        $json = $file->read(true, 'r');
-        $json = json_decode($json);        
-        debug($json);        
-        debug($json->protocolVersion);
-        debug($json->blocks[0]->supplier->contacts);
-
         $count = count($path);
         if (!$count) {
             return $this->redirect('/');

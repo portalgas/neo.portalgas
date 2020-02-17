@@ -3,16 +3,13 @@
 /_sql/*
 /log/*
 /logs/*
+neo-portalgas.txt
 
 # CakePHP specific files #
 ##########################
 /config/app.php
-/config/database_staging.php
-/config/database_development.php
-/config/database_production.php
-/config/config_staging.php
-/config/config_development.php
-/config/config_production.php
+/config/database_*.php
+/config/config_*.php
 /config/.env
 /tmp/*
 /vendor/*

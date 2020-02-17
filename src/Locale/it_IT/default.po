@@ -634,6 +634,9 @@ msgstr "Funzionalità non ancora implementata"
 msgid "note_mapping_queue_table"
 msgstr "Eredita dalla tabella"
 
+msgid "note_mapping_value_type"
+msgstr "Il json ha il file schema di validazione"
+
 msgid "note_queue_db_datasource_override"
 msgstr "Override di scope (nome definito in /Config/database.php)"
 

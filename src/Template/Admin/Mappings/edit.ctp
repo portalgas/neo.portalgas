@@ -118,7 +118,7 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
                 echo '</div>';
                 echo '<div class="col-md-6">'; 
                 echo $this->Form->control('mapping_value_type_id', ['options' => $mapping_value_types, 'class' => 'form-control select2', 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
-                echo $this->HtmlCustom->note(__('note_function_not_implement'));
+                echo $this->HtmlCustom->note(__('note_mapping_value_type'));
                 echo '</div>';
                 echo '</div>';
 

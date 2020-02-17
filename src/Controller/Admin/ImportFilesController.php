@@ -39,7 +39,7 @@ class ImportFilesController extends AppController
              */
             $config = [] ;
             $config['upload_path']    = WWW_ROOT;          
-            $config['allowed_types']  = 'txt';            
+            $config['allowed_types']  = ['txt', 'json'];            
             $config['max_size']       = 0;   
             $config['overwrite']      = true;
             $config['encrypt_name']  = false;
@@ -57,7 +57,7 @@ class ImportFilesController extends AppController
             if($debug) debug('file_path_full '.$file_path_full);
 
             /*
-             * validazione
+             * validazione https://github.com/swaggest/php-json-schema
              */
             if($continua) {
 
