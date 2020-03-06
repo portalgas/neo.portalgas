@@ -274,6 +274,12 @@ class QueueComponent extends Component {
 
             $esito = $results['esito'];
             $action = $results['action'];
+			
+            if(!$action) {
+                $this->_registry->QueueLog->logging($uuid, $queue->id, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
+            }
+            else
+                $this->_registry->QueueLog->logging($uuid, $queue->id, 'function before_save '.$table->before_save.' return true => insert ', $results);			
         }
 
         if($esito && $action) {

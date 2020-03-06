@@ -293,3 +293,6 @@ Configure::write('Gdxp.file.prefix', 'gdxp-');
 // {organizaton_id} / {img1}
 Configure::write('Article.img.path.full', 'http://www.portalgas.it/images/articles/%s/%s');
 Configure::write('Article.img.preview.width', '50px');
+
+Configure::write('Supplier.img.path.full', 'http://www.portalgas.it/images/organizations/contents/%s');
+Configure::write('Supplier.img.preview.width', '50px');

@@ -547,6 +547,9 @@ msgstr "Non sono stati trovati risultati"
 msgid "MsgSearchParameters"
 msgstr "Imposta i parametri di ricerca"
 
+msgid "MsgSupplierExportVatNumberRequired"
+msgstr "Il produttore non ha la partita iva e non potrà essere importato!"
+
 #
 # validator
 #
@@ -645,3 +648,12 @@ msgstr "Uppercase"
 
 msgid "note_queue_component"
 msgstr "Nome classe Component per i metodi custom"
+
+#
+# Supplier
+#
+msgid "Supplier-VatNumber"
+msgstr "Partita iva"
+msgid "Supplier-VatNumber-short"
+msgstr "P.iva"
+

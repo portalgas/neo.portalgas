@@ -33,6 +33,31 @@ if(empty($supplier_organization_id)) {
 }
 else {
 
+    echo '<div class="info-box">';
+    echo '    <span class="info-box-icon"><i class="fa fa-info"></i></span>';
+
+    echo '<div class="info-box-content">';
+    echo '<span class="info-box-text">';
+    if(!empty($supplier_organization->supplier->img1)) {
+        $img1_path = sprintf(Configure::read('Supplier.img.path.full'), $supplier_organization->supplier->img1);
+        echo '<img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" /> ';
+    }
+    echo $supplier_organization->name;
+    echo '</span>';
+    if(empty($supplier_organization->supplier->piva)) {
+        echo '<p>';
+        echo $this->element('msg', ['msg' => __('MsgSupplierExportVatNumberRequired'), 'class' => 'danger']);
+        echo '</p>';
+    }
+    else {
+        echo '<p>';
+        echo '<span class="info-box-number">'.__('Supplier-VatNumber').': '.$supplier_organization->supplier->piva.'</span>';
+        echo '</p>';
+    }
+    echo '</div>';
+    echo '</div>';
+
+
     if(empty($articles) || $articles->count()==0)
         echo $this->element('msgResults', ['action_add' => false]);
     else {

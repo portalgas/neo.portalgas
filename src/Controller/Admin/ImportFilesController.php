@@ -20,6 +20,9 @@ class ImportFilesController extends AppController
         parent::beforeFilter($event);
     }
 
+	/*
+	 * https://github.com/madbob/GDXP/blob/master/DOC.md
+	 */
     public function json()
     {
         $debug = false;

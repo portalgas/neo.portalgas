@@ -34,6 +34,11 @@ class GdxpsController extends AppController
         if ($this->request->is('post')) {
 
             $supplier_organization_id = $this->request->getData('supplier_organization_id');
+
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $supplier_organization = $suppliersOrganizationsTable->get($supplier_organization_id, ['contain' => ['Suppliers']]);
+            $this->set(compact('supplier_organization'));
+
             // debug('supplier_organization_id '.$supplier_organization_id);
             $articlesTable = TableRegistry::get('Articles');
 
