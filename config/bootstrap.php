@@ -269,6 +269,9 @@ Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
 
+Configure::write('routes_msg_stop', ['controller' => 'Pages', 'action' => 'msg_stop', 'prefix' => 'admin']);
+Configure::write('routes_msg_not_order_state', ['controller' => 'Pages', 'action' => 'msg_not_order_state', 'prefix' => 'admin']);
+
 Configure::write('QueueLogs.database', true);
 Configure::write('QueueLogs.file', false);
 Configure::write('QueueLogs.shell', false);

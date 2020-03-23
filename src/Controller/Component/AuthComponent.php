@@ -24,14 +24,228 @@ class AuthComponent extends Component {
     }
 
     public function isRoot($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_root'), $user->group_ids))
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_root'), $user->group_ids))
             return true;
         else
             return false;
     }
 
     public function isRootSupplier($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_root_supplier'), $user->group_ids))
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_root_supplier'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * manager
+     */
+    public function isManager($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_manager'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isManagerDelivery($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_manager_delivery'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * referente
+     */
+    public function isReferente($user) {
+        if (isset($user) && $user->id != 0) {
+            if (Configure::read('developer.mode'))
+                return true;
+
+            if (array_key_exists(Configure::read('group_id_referent'), $user->group_ids))
+                return true;
+        }
+        return false;
+    }
+
+    /*
+     * super-referente, gestisce tutti i produttori 
+     */
+    public function isSuperReferente($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_super_referent'), $user->group_ids)) 
+			return true;
+		else 
+            return false;
+    }
+
+    /*
+     * referente cassa (pagamento degli utenti alla consegna)
+     */
+    public function isCassiere($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_cassiere'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * referente cassa (pagamento degli utenti alla consegna) dei produttori di cui e' referente
+     */
+    public function isReferentCassiere($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_referent_cassiere'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
+     * 		gestisce anche il pagamento del suo produttore
+     */
+    public function isReferentTesoriere($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_referent_tesoriere'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isReferentGeneric($user) {
+        if (isset($user) && $user->id != 0 && (
+                array_key_exists(Configure::read('group_id_referent'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_super_referent'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_referent_tesoriere'), $user->group_ids)
+                ))
+            return true;
+        else
+            return false;
+    }
+
+    public function isCassiereGeneric($user) {
+        if (isset($user) && $user->id != 0 && (
+                array_key_exists(Configure::read('group_id_cassiere'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_referent_cassiere'), $user->group_ids)
+                ))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     *  pagamento ai fornitori
+     */
+    public function isTesoriere($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_tesoriere'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isTesoriereGeneric($user) {
+        if (isset($user) && $user->id != 0 && (
+                array_key_exists(Configure::read('group_id_referent_tesoriere'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_tesoriere'), $user->group_ids)
+                ))
+            return true;
+        else
+            return false;
+    }
+
+    public function isStoreroom($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_storeroom'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * DES
+     */
+    public function isDes($user) {
+        if (isset($user) && $user->id != 0 && (
+                array_key_exists(Configure::read('group_id_manager_des'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_referent_des'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_super_referent_des'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_titolare_des_supplier'), $user->group_ids) ||
+                array_key_exists(Configure::read('group_id_des_supplier_all_gas'), $user->group_ids)
+                ))
+            return true;
+        else
+            return false;
+    }
+
+    public function isManagerDes($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_manager_des'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isReferenteDes($user) {
+        if (isset($user) && $user->id != 0) {
+            if (Configure::read('developer.mode'))
+                return true;
+
+            if (array_key_exists(Configure::read('group_id_referent_des'), $user->group_ids))
+                return true;
+        }
+        return false;
+    }
+
+    public function isSuperReferenteDes($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_super_referent_des'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isTitolareDesSupplier($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_titolare_des_supplier'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isReferentDesAllGas($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_des_supplier_all_gas'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+	public function isManagerUserDes($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_user_manager_des'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+    
+	public function isUserFlagPrivay($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_user_flag_privacy'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+	
+    /*
+     * gestisce i calendar events
+     */
+    public function isManagerEvents($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_events'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * verifica se un utente ha la gestione degli articoli sugli ordini
+     * dipende da 
+     * 		- Organization.hasArticlesOrder
+     * 		- User.hasArticlesOrder
+     * 
+     * anche in AppHelper, AppModel
+     */ 
+    public function isUserPermissionArticlesOrder($user) {
+        if (isset($user) && $user->organization['Organization']['hasArticlesOrder'] == 'Y' && $user->user['User']['hasArticlesOrder'] == 'Y')
             return true;
         else
             return false;
@@ -64,219 +278,5 @@ class AuthComponent extends Component {
             }
         }
         return $results;
-    }
-
-    /*
-     * manager
-     */
-    public function isManager($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_manager'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    public function isManagerDelivery($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_manager_delivery'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     * referente
-     */
-    public function isReferente($user) {
-        if ($user->id != 0) {
-            if (Configure::read('developer.mode'))
-                return true;
-
-            if (array_key_exists(Configure::read('group_id_referent'), $user->group_ids))
-                return true;
-        }
-        return false;
-    }
-
-    /*
-     * super-referente, gestisce tutti i produttori 
-     */
-    public function isSuperReferente($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_super_referent'), $user->group_ids)) 
-			return true;
-		else 
-            return false;
-    }
-
-    /*
-     * referente cassa (pagamento degli utenti alla consegna)
-     */
-    public function isCassiere($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_cassiere'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     * referente cassa (pagamento degli utenti alla consegna) dei produttori di cui e' referente
-     */
-    public function isReferentCassiere($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_referent_cassiere'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
-     * 		gestisce anche il pagamento del suo produttore
-     */
-    public function isReferentTesoriere($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_referent_tesoriere'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    public function isReferentGeneric($user) {
-        if ($user->id != 0 && (
-                array_key_exists(Configure::read('group_id_referent'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_super_referent'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_referent_tesoriere'), $user->group_ids)
-                ))
-            return true;
-        else
-            return false;
-    }
-
-    public function isCassiereGeneric($user) {
-        if ($user->id != 0 && (
-                array_key_exists(Configure::read('group_id_cassiere'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_referent_cassiere'), $user->group_ids)
-                ))
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     *  pagamento ai fornitori
-     */
-    public function isTesoriere($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_tesoriere'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    public function isTesoriereGeneric($user) {
-        if ($user->id != 0 && (
-                array_key_exists(Configure::read('group_id_referent_tesoriere'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_tesoriere'), $user->group_ids)
-                ))
-            return true;
-        else
-            return false;
-    }
-
-    public function isStoreroom($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_storeroom'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     * DES
-     */
-    public function isDes($user) {
-        if ($user->id != 0 && (
-                array_key_exists(Configure::read('group_id_manager_des'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_referent_des'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_super_referent_des'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_titolare_des_supplier'), $user->group_ids) ||
-                array_key_exists(Configure::read('group_id_des_supplier_all_gas'), $user->group_ids)
-                ))
-            return true;
-        else
-            return false;
-    }
-
-    public function isManagerDes($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_manager_des'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    public function isReferenteDes($user) {
-        if ($user->id != 0) {
-            if (Configure::read('developer.mode'))
-                return true;
-
-            if (array_key_exists(Configure::read('group_id_referent_des'), $user->group_ids))
-                return true;
-        }
-        return false;
-    }
-
-    public function isSuperReferenteDes($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_super_referent_des'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    public function isTitolareDesSupplier($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_titolare_des_supplier'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    public function isReferentDesAllGas($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_des_supplier_all_gas'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-	public function isManagerUserDes($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_user_manager_des'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-    
-	public function isUserFlagPrivay($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_user_flag_privacy'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-	
-    /*
-     * gestisce i calendar events
-     */
-    public function isManagerEvents($user) {
-        if ($user->id != 0 && array_key_exists(Configure::read('group_id_events'), $user->group_ids))
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     * verifica se un utente ha la gestione degli articoli sugli ordini
-     * dipende da 
-     * 		- Organization.hasArticlesOrder
-     * 		- User.hasArticlesOrder
-     * 
-     * anche in AppHelper, AppModel
-     */ 
-    public function isUserPermissionArticlesOrder($user) {
-        if ($user->organization['Organization']['hasArticlesOrder'] == 'Y' && $user->user['User']['hasArticlesOrder'] == 'Y')
-            return true;
-        else
-            return false;
-    }
+    }    
 }

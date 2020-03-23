@@ -4,7 +4,10 @@ use Cake\Core\Configure;
 $icon = '<i class="fa fa-circle"></i> ';
 ?>	
   <?php echo $this->fetch('tb_sidebar') ?>
-  
+
+  <?php
+  if($isRoot) {
+  ?>  
   <li class="treeview"> 
     <a href="#">
       <i class="fa fa-dashboard"></i> <span>Queue</span>
@@ -34,32 +37,58 @@ $icon = '<i class="fa fa-circle"></i> ';
             <li><a href="<?php echo $this->Url->build('/admin/mappings'); ?>"><?php echo $icon;?>Lists mappings</a></li>
           </ul>
         </li>
-
-        <li class="treeview">
-          <a href="#"><?php echo $icon;?>Import file
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="<?php echo $this->Url->build('/admin/import-files/json'); ?>"><?php echo $icon;?>File Json</a></li>
-            <li><a href="<?php echo $this->Url->build('/admin/import-files/xml'); ?>"><?php echo $icon;?>File XML</a></li>
-            <li><a href="<?php echo $this->Url->build('/admin/import-files/csv'); ?>"><?php echo $icon;?>File CSV</a></li>
-          </ul>
-        </li>
-
     </ul>
   </li>
+  <?php
+  } // if($isRoot)
 
-
+  if($isSuperReferente || $isReferentGeneric) {
+  ?>
   <li class="treeview"> 
     <a href="#">
       <i class="fa fa-dashboard"></i> <span>Interoperabilità tra gestionali</span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
+      <ul class="treeview-menu">
+        <li><a href="<?php echo $this->Url->build('/admin/gdxps/'); ?>"><?php echo $icon;?><?php echo __('Article-Export-short');?></a></li>
+
+        <li class="treeview">
+          <a href="#"><?php echo $icon;?><?php echo __('Import-File-short');?>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo $this->Url->build('/admin/import-files/json'); ?>"><?php echo $icon;?>File Json</a></li>
+            <?php
+            /*
+            <li><a href="<?php echo $this->Url->build('/admin/import-files/xml'); ?>"><?php echo $icon;?>File XML</a></li>
+            <li><a href="<?php echo $this->Url->build('/admin/import-files/csv'); ?>"><?php echo $icon;?>File CSV</a></li>
+            */
+            ?>
+          </ul>
+        </li>
+
+      </ul>
+    </a>
+  </li>
+  <?php
+  }
+
+  if($isManager) {
+  ?>
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-money"></i> <span><?php echo __('Prepaid');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/gdxps/'); ?>"><?php echo $icon;?><?php echo __('Article Export');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/cashs/supplier-organization-filter'); ?>"><?php echo $icon;?><?php echo __('Cash-Filter-Suppliers');?></a></li>
     </ul>
     </a>
   </li>
+  <?php
+  }
+  ?>

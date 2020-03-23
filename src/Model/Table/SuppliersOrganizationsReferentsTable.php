@@ -92,4 +92,18 @@ class SuppliersOrganizationsReferentsTable extends Table
 
         return $rules;
     }
+
+    public function gets($user, $where = []) {
+
+        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization_id];
+        // debug($where);
+        $results = $this->find()
+                                ->where($where)
+                                ->contain(['Users', 
+                                          'SuppliersOrganizations' => ['Suppliers', 'CategoriesSuppliers']])
+                                ->all();
+
+        // debug($results);
+        return $results;
+    }    
 }

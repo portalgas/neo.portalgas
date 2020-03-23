@@ -118,6 +118,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
              * in automatico per ogni form mi aggiunge il campo hidden _csrfToken
              * se no forzo con HtmlCustom->csrfTokenHidden()
              * per disabiliartlo (ex Api\TokensController.php) $csrf->whitelistCallback / $this->getEventManager()->off($this->Csrf);
+            */ 
             
             $csrf = new CsrfProtectionMiddleware();
             // Token check will be skipped when callback returns `true`.
@@ -127,7 +128,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 }
             });            
             $middlewareQueue->add($csrf);
-            */ 
             
             /*
              * Authentication middleware

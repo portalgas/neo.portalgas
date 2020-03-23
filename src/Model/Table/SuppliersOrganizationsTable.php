@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 /**
  * SuppliersOrganizations Model
@@ -200,5 +201,18 @@ class SuppliersOrganizationsTable extends Table
         $results = ['esito' => $esito, 'code' => $code, 'msg' => $msg, 'results' => $results];
 
         return $results; 
-    }      
+    }   
+
+    public function gets($user, $where = []) {
+
+        $where = ['SuppliersOrganizations.organization_id' => $user->organization_id];
+        // debug($where);
+        $results = $this->find()
+                                ->where($where)
+                                ->contain(['Suppliers', 'CategoriesSuppliers'])
+                                ->all();
+
+        // debug($results);
+        return $results;
+    } 
 }

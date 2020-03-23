@@ -44,12 +44,24 @@ class TokensController extends AppController
             return;
         }        
 
-		$user_salt = $this->request->query['u'];
+        $user_salt = $this->request->query['u'];
 		if(empty($user_salt)) {
 			return;
 		}
         if($debug) debug($user_salt);
 		
+        /*
+         * land page, controller / action
+         * 'prefix' => false se no prende api
+         */ 
+        $redirects = [];       
+        $c_to = $this->request->query['c_to']; 
+        $a_to = $this->request->query['a_to']; 
+        if(!empty($c_to) && !empty($a_to)) {
+            $redirects = ['controller' => $c_to, 'action' => $a_to, 'prefix' => false];
+        }
+        else
+            $redirects = ['controller' => 'admin/Dashboards', 'action' => 'index', 'prefix' => false];
 
 		$user = $this->CryptDecrypt->decrypt($user_salt);
 		$user = unserialize($user);
@@ -62,6 +74,6 @@ class TokensController extends AppController
 		
         if($debug) exit;
         
-		return $this->redirect(['controller' => 'admin/Dashboards', 'action' => 'index', 'prefix' => false]); 
+		return $this->redirect($redirects); 
     }
  }

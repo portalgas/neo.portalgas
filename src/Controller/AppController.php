@@ -68,18 +68,29 @@ class AppController extends Controller
                         'skipAuthorization' => ['login']
                     ]); // definito come middleware in src/Application.php
         // utilizza Auth $this->loadComponent('CakeImpersonate.Impersonate'); 
+        $this->loadComponent('Auth');
     }
 
     public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event); 
 
-        if(!empty($this->request->prefix) && $this->request->prefix!='admin/api') {
+        if(!empty($this->request->prefix) &&
+            $this->request->prefix!='api') // non autentico per token
+        {
             $result = $this->Authentication->getResult();
             // debug($result); 
             if ($result->isValid()) {
                 $this->user = $this->Authentication->getIdentity();
                 // debug($identity);
+                /* 
+                 * roles
+                 */
+                $isRoot = $this->Auth->isRoot($this->user);
+                $isManager = $this->Auth->isManager($this->user);
+                $isSuperReferente = $this->Auth->isSuperReferente($this->user);
+                $isReferentGeneric = $this->Auth->isReferentGeneric($this->user);
+                $this->set(compact('isRoot', 'isManager', 'isSuperReferente', 'isReferentGeneric'));
             }
             else {
                 debug($result->getStatus());

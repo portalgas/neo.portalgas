@@ -12,6 +12,21 @@ use App\Controller\AppController;
  */
 class QueueTablesController extends AppController
 {
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('Auth');
+    }
+
+    public function beforeFilter(Event $event) {
+        
+        parent::beforeFilter($event);
+
+        if(!$this->Auth->isRoot($this->user)) {
+            die("not root");
+        }
+    }
+    
     /**
      * Index method
      *

@@ -284,6 +284,21 @@ msgid "Price Types"
 msgstr "Tipologia prezzi"
 
 #
+# gdxps
+#
+msgid "Article-Export"
+msgstr "Esporta articoli in formato GDXPS"
+
+msgid "Article-Export-short"
+msgstr "Esporta articoli"
+
+msgid "Import-File"
+msgstr "Importa articoli in formato GDXPS"
+
+msgid "Import-File-short"
+msgstr "Importa articoli"
+
+#
 # Impersonate
 #
 msgid "impersonateLogout"
@@ -652,8 +667,137 @@ msgstr "Nome classe Component per i metodi custom"
 #
 # Supplier
 #
+msgid "Supplier"
+msgstr "Produttore"
+
+msgid "Supplier-Name"
+msgstr "Nome"
+
 msgid "Supplier-VatNumber"
 msgstr "Partita iva"
+
 msgid "Supplier-VatNumber-short"
 msgstr "P.iva"
 
+#
+# prepagato
+#
+msgid "Prepaid"
+msgstr "Prepagato"
+
+msgid "Cash-Filter-Suppliers"
+msgstr "Filtro produttori"
+
+#
+# M S G   system
+#
+msgid "developer.mode"
+msgstr "Modalità di sviluppo"
+
+msgid "msg_not_organization_config"
+msgstr "Il modulo non è abilitato per questo G.A.S.!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_delivery_not_visible_backoffice"
+msgstr "La consegna non è abilitata!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_order_not_visible_backoffice"
+msgstr "L'ordine non è abilitato!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_permission"
+msgstr "Non si possiedono i permessi per accedere alla pagina!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_permission_guest"
+msgstr "Non si possiedono i permessi per accedere alla pagina: bisogna essere autenticati!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_error_params"
+msgstr "Errore nel passaggio dei parametri!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_site_offline"
+msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget="_blank" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
+
+msgid "msg_prodgas_promotion_acl_no"
+msgstr "Non sei abilitato alla gestione delle promozioni.<br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_error_org_type"
+msgstr "Errore nella tipologia di organizzazione!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_error_http_referer"
+msgstr "Errore nella chiamata della pagina!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_method_not_allowed"
+msgstr "Metodo non permesso!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_order_state"
+msgstr "L'ordine ha uno stato di elaborazione che non permette l'operazione scelta!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_des_order_state_no_modify_order"
+msgstr "L'ordine non può essere modificato perchè è associato ad un ordine condiviso che ora è in lavorazione."
+
+msgid "msg_not_promotion_state"
+msgstr "La promozione ha uno stato di elaborazione che non permette l'operazione scelta!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_mail_order_open_Y"
+msgstr ""
+
+msgid "msg_mail_order_close_Y"
+msgstr ""
+
+msgid "msg_mail_order_open_N"
+msgstr "Il produttore scelto non permette di inviare la mail ai gasisti per notificare <b>l'apertura</b> dell'ordine"
+
+msgid "msg_mail_order_close_N"
+msgstr "Il produttore scelto non permette di inviare la mail ai gasisti per notificare <b>la chiusura</b> dell'ordine"
+
+msgid "msg_not_request_payment_state"
+msgstr "La richiesta di pagamento ha uno stato di elaborazione che non permette l'operazione scelta!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_delivery_visible_backoffice"
+msgstr "La consegna e i suoi ordini associati non sono abilitati agli amministratori del BackOffice<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_order_visible_backoffice"
+msgstr "L'ordine non è abilitato agli amministratori del BackOffice<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_search_not_result_users"
+msgstr "Non sono stati trovati gasisti associati al G.A.S.!"
+
+msgid "msg_search_not_result"
+msgstr "La ricerca non ha prodotto risultati."
+
+msgid "msg_search_no_parameter"
+msgstr "Valorizza i parametri della ricerca."
+
+msgid "msg_organization_not_selected"
+msgstr "Organizzazione non valorizzata, scegli quella con cui lavorare."
+
+msgid "msg_des_not_selected"
+msgstr "D.E.S. non valorizzato, scegli quello con cui lavorare."
+
+msgid "msg_des_choice"
+msgstr "Devi scegliere il tuo D.E.S."
+
+msgid "msg_des_supplier_not_associate"
+msgstr "Il G.A.S. non ha il produttore associato!"
+
+msgid "msg_des_order_not_found"
+msgstr "Ordine non trovato: potrebbe essere stato cancellato"
+
+msgid "msg_des_order_not_referent"
+msgstr "Non sei referente produttore dell'ordine!"
+
+msgid "msg_organization_payment_incomplete"
+msgstr "Completa i dati per il pagamento del canone annuo di PortAlGas"
+
+msgid "export_docs_not_found"
+msgstr "Non ci sono acquisti."
+
+msgid "upload_file_required"
+msgstr "Il file da uplodare è obbligatorio."
+
+msgid "msg_user_flag_privacy"
+msgstr "Leggi il testo sulla trattamento dei dati per la privacy"
+
+msgid "msg_user_registration_expire_success"
+msgstr "Accettazione del testo sul trattamento dei dati sulla privacy salvata con successo"
+
+msgid "msg_user_registration_expire"
+msgstr "Devi rinnovare l'iscrizione al tuo G.A.S."

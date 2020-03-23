@@ -109,6 +109,17 @@ Router::scope('/', function (RouteBuilder $routes) {
 /*
  * in App\Controller\AppController::isAuthorized gestisco i prefix / Application.php CsrfProtectionMiddleware
  */ 
+Router::prefix('api', function (RouteBuilder $routes) { 
+    $routes->setExtensions(['json', 'xml']);      
+
+    /*
+     * token da portalgas cakephp 2.x
+     */ 
+    $routes->scope('/token', ['controller' => 'Tokens'], function (RouteBuilder $routes) {
+        $routes->connect('/login', ['action' => 'login', '_method' => 'GET']);
+    }); 
+});
+
 Router::prefix('admin', function (RouteBuilder $routes) { 
     $routes->connect('/', ['controller' => 'Dashboards', 'action' => 'index']);
     $routes->fallbacks(DashedRoute::class); 
@@ -129,6 +140,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          */
         $routes->scope('/queue', ['controller' => 'Queues'], function (RouteBuilder $routes) {
                 $routes->connect('/queue', ['action' => 'queue', '_method' => 'POST']);
+        });
+
+        $routes->scope('/cashs', ['controller' => 'Cashs'], function (RouteBuilder $routes) {
+            $routes->connect('/excludedUpdate', ['action' => 'cashExcludedUpdate', '_method' => 'POST']);
         });
 
         /*

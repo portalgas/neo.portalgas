@@ -18,11 +18,16 @@ class MappingsController extends AppController
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Auth');
     }
 
     public function beforeFilter(Event $event) {
-     
+        
         parent::beforeFilter($event);
+
+        if(!$this->Auth->isRoot($this->user)) {
+            die("not root");
+        }
     }
 
     /**
