@@ -42,7 +42,8 @@ $icon = '<i class="fa fa-circle"></i> ';
   <?php
   } // if($isRoot)
 
-  if($isSuperReferente || $isReferentGeneric) {
+  // if($isSuperReferente || $isReferentGeneric) {
+  if($isRoot) {
   ?>
   <li class="treeview"> 
     <a href="#">
@@ -91,4 +92,20 @@ $icon = '<i class="fa fa-circle"></i> ';
   </li>
   <?php
   }
+
+  if($isCassiere) {
   ?>
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-bank"></i> <span><?php echo __('Cashier');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/cashiers/deliveries'); ?>"><?php echo $icon;?><?php echo __('Gestisci consegna');?></a></li>
+    </ul>
+    </a>
+  </li>
+  <?php
+  }
+  ?>  

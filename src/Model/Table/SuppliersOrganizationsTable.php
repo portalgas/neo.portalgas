@@ -205,11 +205,12 @@ class SuppliersOrganizationsTable extends Table
 
     public function gets($user, $where = []) {
 
-        $where = ['SuppliersOrganizations.organization_id' => $user->organization_id];
+        $where = array_merge(['SuppliersOrganizations.organization_id' => $user->organization_id], $where);
         // debug($where);
         $results = $this->find()
                                 ->where($where)
                                 ->contain(['Suppliers', 'CategoriesSuppliers'])
+                                ->order(['SuppliersOrganizations.name'])
                                 ->all();
 
         // debug($results);

@@ -28,8 +28,7 @@ echo $this->Html->css('AdminLTE./bower_components/bootstrap-daterangepicker/date
 echo $this->Html->css('AdminLTE./plugins/iCheck/all', ['block' => 'css']); 
 
 // DataTables 
-if(Configure::read('dataTables.active'))
-  echo $this->Html->css('AdminLTE./bower_components/datatables.net-bs/css/dataTables.bootstrap.min', ['block' => 'css']); 
+echo $this->Html->css('AdminLTE./bower_components/datatables.net-bs/css/dataTables.bootstrap.min', ['block' => 'css']); 
 
 echo $this->Html->css('style'); 
 

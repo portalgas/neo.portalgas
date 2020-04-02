@@ -7,7 +7,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * KCarts Model
+ * Carts Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
@@ -15,14 +15,14 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ArticleOrganizationsTable&\Cake\ORM\Association\BelongsTo $ArticleOrganizations
  * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\BelongsTo $Articles
  *
- * @method \App\Model\Entity\KCart get($primaryKey, $options = [])
- * @method \App\Model\Entity\KCart newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KCart[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KCart|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KCart saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KCart patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KCart[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KCart findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Cart get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Cart newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Cart[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Cart|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Cart saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Cart patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Cart[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Cart findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
@@ -57,7 +57,12 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticleOrganizations', [
+            'class' => 'Organizations',
             'foreignKey' => 'article_organization_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('ArticlesOrders', [
+            'foreignKey' => 'article_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Articles', [
@@ -122,8 +127,8 @@ class CartsTable extends Table
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['order_id'], 'Orders'));
-        $rules->add($rules->existsIn(['article_organization_id'], 'ArticleOrganizations'));
         $rules->add($rules->existsIn(['article_id'], 'Articles'));
+        $rules->add($rules->existsIn(['article_id'], 'ArticlesOrders'));
 
         return $rules;
     }

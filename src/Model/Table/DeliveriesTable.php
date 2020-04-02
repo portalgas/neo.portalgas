@@ -1,0 +1,174 @@
+<?php
+namespace App\Model\Table;
+
+use Cake\ORM\Query;
+use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+/**
+ * Deliveries Model
+ *
+ * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
+ * @property \App\Model\Table\GcalendarEventsTable&\Cake\ORM\Association\BelongsTo $GcalendarEvents
+ *
+ * @method \App\Model\Entity\Delivery get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Delivery newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Delivery[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Delivery|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Delivery saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Delivery patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Delivery[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Delivery findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ */
+class DeliveriesTable extends Table
+{
+    /**
+     * Initialize method
+     *
+     * @param array $config The configuration for the Table.
+     * @return void
+     */
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+
+        $this->setTable('k_deliveries');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
+
+        $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Organizations', [
+            'foreignKey' => 'organization_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('GcalendarEvents', [
+            'foreignKey' => 'gcalendar_event_id',
+        ]);
+        $this->hasMany('Orders', [
+            'foreignKey' => 'delivery_id',
+        ]);        
+    }
+
+    /**
+     * Default validation rules.
+     *
+     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @return \Cake\Validation\Validator
+     */
+    public function validationDefault(Validator $validator)
+    {
+        $validator
+            ->integer('id')
+            ->allowEmptyString('id', null, 'create');
+
+        $validator
+            ->scalar('luogo')
+            ->maxLength('luogo', 255)
+            ->requirePresence('luogo', 'create')
+            ->notEmptyString('luogo');
+
+        $validator
+            ->date('data')
+            ->requirePresence('data', 'create')
+            ->notEmptyDate('data');
+
+        $validator
+            ->time('orario_da')
+            ->requirePresence('orario_da', 'create')
+            ->notEmptyTime('orario_da');
+
+        $validator
+            ->time('orario_a')
+            ->requirePresence('orario_a', 'create')
+            ->notEmptyTime('orario_a');
+
+        $validator
+            ->scalar('nota')
+            ->allowEmptyString('nota');
+
+        $validator
+            ->scalar('nota_evidenza')
+            ->requirePresence('nota_evidenza', 'create')
+            ->notEmptyString('nota_evidenza');
+
+        $validator
+            ->scalar('isToStoreroom')
+            ->requirePresence('isToStoreroom', 'create')
+            ->notEmptyString('isToStoreroom');
+
+        $validator
+            ->scalar('isToStoreroomPay')
+            ->requirePresence('isToStoreroomPay', 'create')
+            ->notEmptyString('isToStoreroomPay');
+
+        $validator
+            ->scalar('stato_elaborazione')
+            ->requirePresence('stato_elaborazione', 'create')
+            ->notEmptyString('stato_elaborazione');
+
+        $validator
+            ->scalar('isVisibleFrontEnd')
+            ->notEmptyString('isVisibleFrontEnd');
+
+        $validator
+            ->scalar('isVisibleBackOffice')
+            ->notEmptyString('isVisibleBackOffice');
+
+        $validator
+            ->scalar('sys')
+            ->notEmptyString('sys');
+
+        return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
+        $rules->add($rules->existsIn(['gcalendar_event_id'], 'GcalendarEvents'));
+
+        return $rules;
+    }
+
+    public function getsList($user, $where = [], $where_order = []) {
+
+        $listResults = [];
+
+        $results = $this->gets($user, $where, $where_order);
+        if(!empty($results)) {
+            foreach($results as $result) {
+                $listResults[$result->id] = $result->luogo.' '.$result->data;
+            }
+        }
+
+        // debug($listResults);
+        return $listResults;
+    }
+
+    public function gets($user, $where = [], $where_order = []) {
+
+        $where = array_merge(['Deliveries.organization_id' => $user->organization_id,
+                              'Deliveries.isVisibleBackOffice' => 'Y'], $where);                   
+        // debug($where);
+        $results = $this->find()
+                                ->where($where)
+                                ->contain(['Orders' => [
+                                    'conditions' => $where_order,
+                                    'SuppliersOrganizations' => ['Suppliers']]])
+                                ->order(['Deliveries.data'])
+                                ->all();
+
+        // debug($results);
+        return $results;
+    }
+}

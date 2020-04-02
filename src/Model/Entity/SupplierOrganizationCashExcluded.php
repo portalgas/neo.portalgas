@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * KSupplierOrganizationCashExcluded Entity
+ * SupplierOrganizationCashExcluded Entity
  *
  * @property int $id
  * @property int $organization_id
@@ -15,7 +15,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Organization $organization
  * @property \App\Model\Entity\SupplierOrganization $supplier_organization
  */
-class KSupplierOrganizationCashExcluded extends Entity
+class SupplierOrganizationCashExcluded extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

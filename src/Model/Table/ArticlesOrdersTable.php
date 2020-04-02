@@ -7,21 +7,21 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * KArticlesOrders Model
+ * ArticlesOrders Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
  * @property \App\Model\Table\ArticleOrganizationsTable&\Cake\ORM\Association\BelongsTo $ArticleOrganizations
  * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\BelongsTo $Articles
  *
- * @method \App\Model\Entity\KArticlesOrder get($primaryKey, $options = [])
- * @method \App\Model\Entity\KArticlesOrder newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KArticlesOrder[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KArticlesOrder|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KArticlesOrder saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KArticlesOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KArticlesOrder[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KArticlesOrder findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\ArticlesOrder get($primaryKey, $options = [])
+ * @method \App\Model\Entity\ArticlesOrder newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\ArticlesOrder[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\ArticlesOrder|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\ArticlesOrder saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\ArticlesOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\ArticlesOrder[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\ArticlesOrder findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
@@ -52,6 +52,7 @@ class ArticlesOrdersTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticleOrganizations', [
+            'class' => 'Organizations',
             'foreignKey' => 'article_organization_id',
             'joinType' => 'INNER'
         ]);

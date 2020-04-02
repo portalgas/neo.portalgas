@@ -4,10 +4,10 @@ if(!empty($results)) {
 	echo $this->Html->script('supplierOrganizationCashExcludeds', ['block' => 'scriptPageInclude']);
 
 	echo $this->Form->create($results);
-	echo '<table class="table table-hover">';
+	echo '<table class="dataTables table table-striped table-hover">';
 	echo '<thead>';
 	echo '<tr>';
-	echo '<th scope="col">'.__('N').'</th>';
+	// echo '<th scope="col">'.__('N').'</th>';
 	echo '<th scope="col">'.__('Supplier-Name').'</th>';
 	echo '<th scope="col"></th>';
 	echo '<th scope="col"></th>';
@@ -20,7 +20,7 @@ if(!empty($results)) {
 		// debug($result);
 
 		echo '<tr>';
-		echo '<td>'.($numResult + 1).'</td>';
+		// echo '<td>'.($numResult + 1).'</td>';
 		echo '<td>';
 		echo $this->HtmlCustomSite->boxSupplierOrganization($result);
 		echo '</td>';
@@ -61,6 +61,11 @@ if(!empty($results)) {
 	echo '</tbody>';
 	echo '</table>';
 	echo $this->Form->end();
+
+	/* 
+	 * ordering in conflitto con i loghi
+	 */
+	echo $this->element('datatables', ['paging' => 'false', 'ordering' => 'false']);
 }
 else {
 	echo $this->element('msg');

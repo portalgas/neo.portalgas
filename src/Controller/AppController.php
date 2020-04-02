@@ -88,9 +88,11 @@ class AppController extends Controller
                  */
                 $isRoot = $this->Auth->isRoot($this->user);
                 $isManager = $this->Auth->isManager($this->user);
+                $isCassiere = $this->Auth->isCassiere($this->user);
                 $isSuperReferente = $this->Auth->isSuperReferente($this->user);
                 $isReferentGeneric = $this->Auth->isReferentGeneric($this->user);
-                $this->set(compact('isRoot', 'isManager', 'isSuperReferente', 'isReferentGeneric'));
+                
+                $this->set(compact('isRoot', 'isManager', 'isCassiere', 'isSuperReferente', 'isReferentGeneric'));
             }
             else {
                 debug($result->getStatus());

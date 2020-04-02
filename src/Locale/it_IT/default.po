@@ -680,6 +680,24 @@ msgid "Supplier-VatNumber-short"
 msgstr "P.iva"
 
 #
+# consegne
+#
+msgid "Delivery"
+msgstr "Consegna"
+
+msgid "Deliveries"
+msgstr "Consegne"
+
+#
+# ordini
+#
+msgid "Order"
+msgstr "Ordine"
+
+msgid "Orders"
+msgstr "Ordini"
+
+#
 # prepagato
 #
 msgid "Prepaid"
@@ -687,6 +705,9 @@ msgstr "Prepagato"
 
 msgid "Cash-Filter-Suppliers"
 msgstr "Filtro produttori"
+
+msgid "Cashier"
+msgstr "Cassiere"
 
 #
 # M S G   system

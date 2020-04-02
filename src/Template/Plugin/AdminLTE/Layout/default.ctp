@@ -60,6 +60,15 @@ if(Configure::read('Theme.menu_sidebar')=='close')
 "use strict";
 var objScript;
 var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
+var headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "X-Requested-With": "XMLHttpRequest",
+    "X-CSRF-Token": csrfToken
+};
+var http = axios.create({
+    headers: headers
+});
 
 $(document).ready(function(){
 

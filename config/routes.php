@@ -142,6 +142,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
                 $routes->connect('/queue', ['action' => 'queue', '_method' => 'POST']);
         });
 
+
+        $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
+            $routes->connect('/getByDelivery', ['action' => 'getByDelivery', '_method' => 'POST']);
+        });
+        $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
+            $routes->connect('/getUsersByDelivery', ['action' => 'getUsersByDelivery', '_method' => 'POST']);
+        });
         $routes->scope('/cashs', ['controller' => 'Cashs'], function (RouteBuilder $routes) {
             $routes->connect('/excludedUpdate', ['action' => 'cashExcludedUpdate', '_method' => 'POST']);
         });
