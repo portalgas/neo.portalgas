@@ -245,7 +245,7 @@ class AuthComponent extends Component {
      * anche in AppHelper, AppModel
      */ 
     public function isUserPermissionArticlesOrder($user) {
-        if (isset($user) && $user->organization['Organization']['hasArticlesOrder'] == 'Y' && $user->user['User']['hasArticlesOrder'] == 'Y')
+        if (isset($user) && $user['organization']->hasArticlesOrder == 'Y' && $user->user->hasArticlesOrder == 'Y')
             return true;
         else
             return false;
@@ -255,7 +255,7 @@ class AuthComponent extends Component {
 
         $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
 
-        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization_id];
+        $where = ['SuppliersOrganizationsReferents.organization_id' => $user['organization']->id];
         if(!$this->isSuperReferente($user))
             $where += ['user_id' => $user->id];
         // debug($where);

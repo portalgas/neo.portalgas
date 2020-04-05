@@ -180,7 +180,7 @@ class ArticlesTable extends Table
 
     public function gets($user, $where, $order=[]) {
         
-        $where += ['Articles.organization_id' => $user->organization_id];
+        $where += ['Articles.organization_id' => $user->organization->id];
         if(empty($order))
             $order = ['Articles.name asc'];
 

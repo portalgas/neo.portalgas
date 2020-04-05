@@ -12,7 +12,7 @@ function SupplierOrganizationCashExcludeds() {
 
 SupplierOrganizationCashExcludeds.prototype = {
     constructor: SupplierOrganizationCashExcludeds, //costruttore
-    ajaxUrl: '/admin/api/cashs/excludedUpdate',
+    ajaxUrl: '/admin/api/cashes/excludedUpdate',
     
     bindEvents: function () {
         var _this = this;

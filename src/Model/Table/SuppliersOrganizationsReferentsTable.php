@@ -95,7 +95,7 @@ class SuppliersOrganizationsReferentsTable extends Table
 
     public function gets($user, $where = []) {
 
-        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization_id];
+        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id];
         // debug($where);
         $results = $this->find()
                                 ->where($where)

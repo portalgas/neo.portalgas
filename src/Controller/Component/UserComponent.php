@@ -18,11 +18,14 @@ class UserComponent extends Component {
 
 	/*
 	 * se autenticato creo l'oggetto user ma persistere in Session
+	 *
+	 * $organization_id = gas scelto o gas dello user
 	 */
-	public function createUser($organization_id, $username, $debug=false) {
+	public function createUser($user_organization_id, $user_id, $organization_id, $debug=false) {
 
 		$usersTable = TableRegistry::get('Users');
-		$results = $usersTable->findByUsername($organization_id, $username);
+		$results = $usersTable->findById($user_organization_id, $user_id, $organization_id, $debug);
+		// $results = $usersTable->findByUsername($organization_id, $username);
 		
 		// debug($results);
 		if(!empty($results)) {

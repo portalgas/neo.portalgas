@@ -32,20 +32,21 @@ class OrdersController extends ApiAppController
 
         $ordersTable = TableRegistry::get('Orders');
 
-        $where = ['Orders.delivery_id' => $delivery_id];
+        $where = ['Orders.organization_id' => $this->user->organization->id,
+                  'Orders.delivery_id' => $delivery_id];
         if(!empty($orders_state_code))
-            $where = ['Orders.state_code' => $orders_state_code];
+            $where += ['Orders.state_code' => $orders_state_code];
 
         $results = $ordersTable->find()
                                 ->contain(['SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->order(['Orders.data_inizio'])
                                 ->all();
-        
+
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
-        
+
         return $this->response; 
     } 
 }

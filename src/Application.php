@@ -154,8 +154,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                             'unauthorizedRedirect' => Router::url(Configure::read('backoffice.url')),
                             // https://book.cakephp.org/authorization/1/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
-                                            return $identity->setAuthorization($authorization);
-                                },
+                                    /*
+                                     * $identity dev'essere di tipo App\Model\Entity\User
+                                     */
+                                    return $identity->setAuthorization($authorization);
+                                }
                         ]);
 
             $middlewareQueue->add($authorization);

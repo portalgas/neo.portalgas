@@ -10,6 +10,17 @@ $icon = '<i class="fa fa-circle"></i> ';
   ?>  
   <li class="treeview"> 
     <a href="#">
+      <i class="fa fa-money"></i> <span><?php echo __('OrganizationPay');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/organization-pays/index'); ?>"><?php echo $icon;?><?php echo __('List');?></a></li>
+    </ul>
+    </a>
+  </li>  
+  <li class="treeview"> 
+    <a href="#">
       <i class="fa fa-dashboard"></i> <span>Queue</span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
@@ -86,7 +97,7 @@ $icon = '<i class="fa fa-circle"></i> ';
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/cashs/supplier-organization-filter'); ?>"><?php echo $icon;?><?php echo __('Cash-Filter-Suppliers');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/cashes/supplier-organization-filter'); ?>"><?php echo $icon;?><?php echo __('Cash-Filter-Suppliers');?></a></li>
     </ul>
     </a>
   </li>

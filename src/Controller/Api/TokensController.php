@@ -35,6 +35,11 @@ class TokensController extends AppController
     /*
      * method: get
      * url: /admin/api/tokens/login?u=user_salt
+     *
+     * user_salt = 
+     *  $user_id = $this->user->id;
+     *  $user_organization_id = $this->user->organization_id;
+     *  $organization_id = $this->user->organization['Organization']['id']; // gas scelto
      */
     public function login()
     {
@@ -49,6 +54,15 @@ class TokensController extends AppController
 			return;
 		}
         if($debug) debug($user_salt);
+
+		$user = $this->CryptDecrypt->decrypt($user_salt);
+		$user = unserialize($user);
+		if($debug) debug($user);
+		
+		$user = $this->User->createUser($user['user_organization_id'], $user['user_id'], $user['organization_id'], $debug);
+		if($debug) debug($user); 
+		$session = $this->request->session();
+		$session->write('Auth', $user);
 		
         /*
          * land page, controller / action
@@ -63,17 +77,10 @@ class TokensController extends AppController
         else
             $redirects = ['controller' => 'admin/Dashboards', 'action' => 'index', 'prefix' => false];
 
-		$user = $this->CryptDecrypt->decrypt($user_salt);
-		$user = unserialize($user);
-		if($debug) debug($user);
-		
-		$user = $this->User->createUser($user['organization_id'], $user['username']);
-		if($debug) debug($user); 
-		$session = $this->request->session();
-		$session->write('Auth', $user);
-		
-        if($debug) exit;
+        if($debug) debug($redirects); 
         
+        if($debug) exit;
+
 		return $this->redirect($redirects); 
     }
  }

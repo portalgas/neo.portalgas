@@ -148,9 +148,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         });
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/getUsersByDelivery', ['action' => 'getUsersByDelivery', '_method' => 'POST']);
+            $routes->connect('/getUsersCashByDelivery', ['action' => 'getUsersCashByDelivery', '_method' => 'POST']);
         });
-        $routes->scope('/cashs', ['controller' => 'Cashs'], function (RouteBuilder $routes) {
+        $routes->scope('/cashes', ['controller' => 'Cashes'], function (RouteBuilder $routes) {
             $routes->connect('/excludedUpdate', ['action' => 'cashExcludedUpdate', '_method' => 'POST']);
+        });
+        $routes->scope('/cashiers', ['controller' => 'Cashiers'], function (RouteBuilder $routes) {
+            $routes->connect('/getCompleteUsersByDelivery', ['action' => 'getCompleteUsersByDelivery', '_method' => 'POST']);
         });
 
         /*

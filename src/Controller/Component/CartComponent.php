@@ -20,6 +20,9 @@ class CartComponent extends Component {
         //$controller->request
     }
 
+    /* 
+     * estrae solo gli users che hanno effettuato acquisti in base alla consegna
+     */
 	public function getUsersByDelivery($user, $delivery_id, $options=[], $debug=false) {
 
 		$results = [];
@@ -32,7 +35,8 @@ class CartComponent extends Component {
         $where = ['Orders.organization_id' => $user->organization->id,
    				  'Orders.delivery_id' => $delivery_id];
         if(isset($options['orders_state_code']))
-            $where = ['Orders.state_code' => $options['orders_state_code']];
+            $where += ['Orders.state_code' => $options['orders_state_code']];
+		if($debug) debug($where);
 
         $orderResults = $ordersTable->find()
                                 ->where($where)
@@ -43,7 +47,7 @@ class CartComponent extends Component {
             foreach($orderResults as $orderResult) {
                 $order_ids[] = $orderResult->id;
             }
-			debug($order_ids);
+			if($debug) debug($order_ids);
 
 			/*
 			 * estraggo acquisti
@@ -57,18 +61,23 @@ class CartComponent extends Component {
 		return $results;
 	}
 
+    /* 
+     * estrae solo gli users che hanno effettuato acquisti in base agli ordini
+     */
 	public function getUsersByOrders($user, $order_ids, $options=[], $debug=false) {
 
         $cartsTable = TableRegistry::get('Carts');
 
-        $where = ['Orders.organization_id' => $user->organization->id,
-   				  'Orders.id IN ' => $order_ids,
+        $where = ['Carts.organization_id' => $user->organization->id,
+   				  'Carts.order_id IN ' => $order_ids,
    				  'Users.organization_id' => $user->organization->id];
 
         $results = $cartsTable->find()
-        						->contains(['Users'])
+        						->contain(['Users'])
+                                ->select(['Users.id', 'Users.name', 'Users.username', 'Users.email'])
                                 ->where($where)
                                 ->order(['Users.name'])
+                                ->group(['Users.id', 'Users.name', 'Users.username', 'Users.email'])
                                 ->all();
 		
 		if($debug) debug($results);

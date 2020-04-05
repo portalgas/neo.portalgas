@@ -140,7 +140,7 @@ class DeliveriesTable extends Table
         return $rules;
     }
 
-    public function getsList($user, $where = [], $where_order = []) {
+    public function getsList($user, $where = [], $where_order = [], $debug=false) {
 
         $listResults = [];
 
@@ -155,12 +155,17 @@ class DeliveriesTable extends Table
         return $listResults;
     }
 
-    public function gets($user, $where = [], $where_order = []) {
+    public function gets($user, $where = [], $where_order = [], $debug=false) {
 
-        $where = array_merge(['Deliveries.organization_id' => $user->organization_id,
-                              'Deliveries.isVisibleBackOffice' => 'Y'], $where);                   
-        // debug($where);
-        $results = $this->find()
+        $results = [];
+
+        $where = array_merge(['Deliveries.organization_id' => $user->organization->id,
+                              'Deliveries.isVisibleBackOffice' => 'Y'], $where);
+
+        $where_order = array_merge(['Orders.organization_id' => $user->organization->id], $where_order);
+                           
+        if($debug) debug($where);
+        $deliveryResults = $this->find()
                                 ->where($where)
                                 ->contain(['Orders' => [
                                     'conditions' => $where_order,
@@ -168,7 +173,18 @@ class DeliveriesTable extends Table
                                 ->order(['Deliveries.data'])
                                 ->all();
 
+        /*
+         * estraggo le consegne che hanno ordini
+         */
+        $i=0;
+        foreach ($deliveryResults as $deliveryResult) {
+            if(!empty($deliveryResult->orders)) {
+                $results[$i] =  $deliveryResult;
+                $i++; 
+            }
+        }
         // debug($results);
+        
         return $results;
     }
 }

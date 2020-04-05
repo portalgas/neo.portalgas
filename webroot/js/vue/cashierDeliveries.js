@@ -10,7 +10,8 @@ window.onload = function () {
             });
 
     var ajaxUrlGetOrdersByDelivery = '/admin/api/orders/getByDelivery';
-    var ajaxUrlGetUsersByDelivery = '/admin/api/carts/getUsersByDelivery';
+    var ajaxUrlGetUsersByDelivery = '/admin/api/carts/getUsersCashByDelivery';
+    var ajaxUrlGetCompleteUsersByDelivery = '/admin/api/cashiers/getCompleteUsersByDelivery';
     var htmlResultOrders = $('.result-orders');
     var htmlResultUsers = $('.result-users');
 
@@ -19,7 +20,8 @@ window.onload = function () {
       el: '#vue-cashiers',
       data: {
         errors: [],
-        orders: null
+        orders: null,
+        users: null,
       },  
       methods: {
         getOrdersByDelivery: function(e) {
@@ -55,7 +57,7 @@ window.onload = function () {
                   console.log("Error: " + error);
             });            
         },
-        getUsersByDelivery: function(e) {
+        getCompleteUsersByDelivery: function(e) {
 
             let delivery_id = $("select[name='delivery_id']").val();
             console.log('delivery_id '+delivery_id);
@@ -75,7 +77,7 @@ window.onload = function () {
             }; 
             console.log(params); 
 
-            http.post(ajaxUrlGetUsersByDelivery, params)
+            http.post(ajaxUrlGetCompleteUsersByDelivery, params)
                 .then(response => {
                   console.log(response.data);
                   htmlResultUsers.removeClass('fa-lg fa fa-spinner');

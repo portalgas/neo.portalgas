@@ -6,7 +6,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 
-class CashsController extends ApiAppController
+class CashesController extends ApiAppController
 {
     public function initialize()
     {
