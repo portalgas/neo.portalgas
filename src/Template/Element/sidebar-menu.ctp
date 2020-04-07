@@ -2,20 +2,29 @@
 use Cake\Core\Configure;
 
 $icon = '<i class="fa fa-circle"></i> ';
+
+$config = Configure::read('Config');
+$portalgas_url = $config['Portalgas.url'];
+$portalgas_home = $config['Portalgas.home'];
 ?>	
   <?php echo $this->fetch('tb_sidebar') ?>
 
+  <li class="treeview"> 
+    <a href="<?php echo $portalgas_url.$portalgas_home;?>">
+      <i class="fa fa-home"></i> <span><?php echo __('PortAlGas');?></span>
+    </a>
+  </li>
   <?php
   if($isRoot) {
   ?>  
   <li class="treeview"> 
     <a href="#">
-      <i class="fa fa-money"></i> <span><?php echo __('OrganizationPay');?></span>
+      <i class="fa fa-credit-card"></i> <span><?php echo __('OrganizationPay');?></span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/organization-pays/index'); ?>"><?php echo $icon;?><?php echo __('List');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('List');?></a></li>
     </ul>
     </a>
   </li>  

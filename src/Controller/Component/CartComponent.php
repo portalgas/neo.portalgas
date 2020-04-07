@@ -34,8 +34,11 @@ class CartComponent extends Component {
 
         $where = ['Orders.organization_id' => $user->organization->id,
    				  'Orders.delivery_id' => $delivery_id];
-        if(isset($options['orders_state_code']))
-            $where += ['Orders.state_code' => $options['orders_state_code']];
+        if(isset($options['where'])) {
+            if(isset($options['where']['Orders.state_code']))
+                    $where += ['Orders.state_code' => $options['where']['Orders.state_code']];
+        }
+            
 		if($debug) debug($where);
 
         $orderResults = $ordersTable->find()
@@ -66,22 +69,37 @@ class CartComponent extends Component {
      */
 	public function getUsersByOrders($user, $order_ids, $options=[], $debug=false) {
 
+        $results = [];
+
         $cartsTable = TableRegistry::get('Carts');
 
         $where = ['Carts.organization_id' => $user->organization->id,
    				  'Carts.order_id IN ' => $order_ids,
    				  'Users.organization_id' => $user->organization->id];
 
-        $results = $cartsTable->find()
+        $fields = ['Users.organization_id', 'Users.id', 'Users.name', 'Users.username', 'Users.email'];
+
+        $cartResults = $cartsTable->find()
         						->contain(['Users'])
-                                ->select(['Users.id', 'Users.name', 'Users.username', 'Users.email'])
+                                ->select($fields)
                                 ->where($where)
                                 ->order(['Users.name'])
-                                ->group(['Users.id', 'Users.name', 'Users.username', 'Users.email'])
+                                ->group($fields)
                                 ->all();
 		
-		if($debug) debug($results);
+		if($debug) debug($cartResults);
 		
+        /*
+         * il recordset e' object(App\Model\Entity\Cart) 
+         *    'user' => object(App\Model\Entity\User) => js user.user.name!! 
+         *   => lo normalizzo
+         */
+        if(!empty($cartResults)) {
+            foreach ($cartResults as $numResults => $cartResult) {
+                $results[] = $cartResult['user'];
+            }
+        }
+
 		return $results;
 	}
 }

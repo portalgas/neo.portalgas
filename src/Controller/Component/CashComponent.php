@@ -34,4 +34,15 @@ class CashComponent extends Component {
 		
 		return $results;
 	}
+
+    /* 
+     * dato un importo, calcolo il nuovo valore di cassa di uno user
+     * ex SummaryOrders.importo 
+     */
+    public function getNewImport($user, $importo_da_pagare, $cash_importo, $debug=false) {
+
+        $results = ($cash_importo - $importo_da_pagare);       
+                
+        return $results;
+    }
 }

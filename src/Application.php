@@ -155,7 +155,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                             // https://book.cakephp.org/authorization/1/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
                                     /*
-                                     * $identity dev'essere di tipo App\Model\Entity\User
+                                     * $identity dev'essere di tipo object(App\Model\Entity\User)
                                      */
                                     return $identity->setAuthorization($authorization);
                                 }

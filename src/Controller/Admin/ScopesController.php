@@ -23,7 +23,8 @@ class ScopesController extends AppController
         parent::beforeFilter($event);
 
         if(!$this->Auth->isRoot($this->user)) {
-            die("not root");
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
     

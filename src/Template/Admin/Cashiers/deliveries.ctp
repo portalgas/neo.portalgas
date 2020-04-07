@@ -17,10 +17,10 @@ if(!empty($deliveries)) {
     <table class="table table-hover">
       <thead class="thead-light">
         <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th>gasista</th>
+          <th>summaryOrder</th>
+          <th>cash.importo</th>
+          <th>cash.importo_new</th>
         </tr>
       </thead>
       <tbody>
@@ -31,15 +31,27 @@ if(!empty($deliveries)) {
         >
           <td>{{ user.name }}</td>
           <td>
-          	<div v-if="user.summaryOrder != null">{{ user.summaryOrder.importo }} &euro;</div>
+            <div v-for="summary_order in user.summary_orders"
+            :summary_order="summary_order"
+            :key="summary_order.id"
+            > 
+            <div>{{ summary_order.order.suppliers_organization.name }}</div>
+            <div>{{ summary_order.order.state_code }}</div>
+            <div v-if="summary_order.importo == null">0,00 &euro;</div>
+            <div v-if="summary_order.importo != null">{{ summary_order.importo }} &euro;</div>
+            <div>{{ summary_order.importo_pagato }} &euro;</div>            
+            </div>
+            <p>------------------------------------------------------</p>
+            <div>
+              tot_importo {{ user.summary_delivery.tot_importo}} &euro;
+              tot_importo_pagato {{ user.summary_delivery.tot_importo_pagato}} &euro;
+            </div>
           </td>
           <td>
           	<div v-if="user.cash == null">0,00 &euro;</div>
           	<div v-if="user.cash != null">{{ user.cash.importo }} &euro;</div>
           </td>
-          <td>
-          	<div v-if="user.cash != null">{{ user.cash.note }}</div>
-          </td>
+          <td>{{ user.cash_importo_new }} &euro;</td>
         </tr>
       </tbody>
     </table>

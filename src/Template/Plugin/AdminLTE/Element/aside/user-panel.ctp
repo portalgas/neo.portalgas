@@ -6,7 +6,7 @@ if ($this->Identity->isLoggedIn()) {
 	        <?php echo $this->Html->image('avatar5.png', array('class' => 'img-circle', 'alt' => 'User Image')); ?>
 	    </div>
 	    <div class="pull-left info">
-	        <p><?php echo $this->Identity->get('username');?></p>
+	        <?php // echo '<p>'.$this->Identity->get('username').'</p>';?>
 	        <i class="fa fa-circle text-success"></i> Online
 	    </div>
 	</div>

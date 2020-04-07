@@ -35,11 +35,11 @@ class UserComponent extends Component {
 			$group_ids = [];
 			if($results->has('user_usergroup_map')) {
 				foreach($results->user_usergroup_map as $user_usergroup_map) {
-					$group_ids[$user_usergroup_map->group_id] = $user_usergroup_map->UserGroups['title'];
+					$group_ids[$user_usergroup_map->group_id] = $user_usergroup_map->user_group->title;
 				}
-				
 				unset($results->user_usergroup_map);
 			}
+			// debug($group_ids);
 			$results->group_ids = $group_ids;
 			
 			/*
@@ -50,11 +50,19 @@ class UserComponent extends Component {
 			if($results->has('user_profiles')) {
 				foreach($results->user_profiles as $user_profile) {
 					$profile_key = str_replace('profile.', '', $user_profile->profile_key);
+					/*
+					 * elimino primo e ultimo carattere se sono "
+					 */
+					if(!empty($user_profile->profile_value) && strpos(substr($user_profile->profile_value, 0, 1), '"')!==false) {
+						$user_profile->profile_value = substr($user_profile->profile_value, 1, strlen($user_profile->profile_value)-2);
+					}
+
 					$user_profiles[$profile_key] = $user_profile->profile_value;
 				}
 				
 				unset($results->user_profiles);
 			}
+			// debug($user_profiles);
 			$results->user_profiles = $user_profiles;			
 		}
 		

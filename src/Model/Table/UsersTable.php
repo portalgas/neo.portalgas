@@ -130,8 +130,6 @@ class UsersTable extends Table
      */    
     public function findById($user_organization_id, $user_id, $organization_id, $debug=false)
     {
-        $results = [];
-
         // $user_organization_id puo' essere 0
         if (empty($user_id) || empty($organization_id)) {
             return null;
@@ -199,20 +197,9 @@ class UsersTable extends Table
             ->first();
         // if($debug) debug($organization);            
 
-        $results['user'] = $user;
-        $results['organization'] = $organization;
-        // if($debug) debug($results);  
+        $user->organization = $organization;
+        // if($debug) debug($user);  
 
-       
-
-
-
-
-
-
-
-
-// fractis
         return $user;
     }
 

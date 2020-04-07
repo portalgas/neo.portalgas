@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
@@ -24,8 +24,9 @@ class OrganizationsPaysController extends AppController
         
         parent::beforeFilter($event);
 
-        if($this->Auth->isRoot($this->user)) {
-            die("not root");
+        if(!$this->Auth->isRoot($this->user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
         
@@ -36,6 +37,8 @@ class OrganizationsPaysController extends AppController
      */
     public function index()
     {
+        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+
         $this->paginate = [
             'contain' => ['Organizations'],
         ];
@@ -53,6 +56,8 @@ class OrganizationsPaysController extends AppController
      */
     public function view($id = null)
     {
+        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => ['Organizations'],
         ]);
@@ -68,6 +73,8 @@ class OrganizationsPaysController extends AppController
      */
     public function add()
     {
+        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        
         $organizationsPay = $this->OrganizationsPays->newEntity();
         if ($this->request->is('post')) {
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $this->request->getData());
@@ -92,6 +99,8 @@ class OrganizationsPaysController extends AppController
      */
     public function edit($id = null)
     {
+        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => []
         ]);

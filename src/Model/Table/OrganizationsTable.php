@@ -53,6 +53,10 @@ class OrganizationsTable extends Table
             'joinType' => 'INNER'
         ]);
 		*/
+
+        $this->hasMany('OrganizationsPays', [
+            'foreignKey' => 'organization_id',
+        ]);          
     }
 
     /**

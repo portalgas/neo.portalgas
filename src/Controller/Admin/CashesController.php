@@ -53,8 +53,9 @@ class CashesController extends AppController
      */
     public function index()
     {
-        if($this->Auth->isRoot($this->user)) {
-            die("not root");
+        if(!$this->Auth->isRoot($this->user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
         $this->paginate = [
@@ -74,8 +75,9 @@ class CashesController extends AppController
      */
     public function view($id = null)
     {
-        if($this->Auth->isRoot($this->user)) {
-            die("not root");
+        if(!$this->Auth->isRoot($this->user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
         $cash = $this->Cashes->get($id, [
@@ -93,8 +95,9 @@ class CashesController extends AppController
      */
     public function add()
     {
-        if($this->Auth->isRoot($this->user)) {
-            die("not root");
+        if(!$this->Auth->isRoot($this->user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
         $cash = $this->Cashes->newEntity();
@@ -122,8 +125,9 @@ class CashesController extends AppController
      */
     public function edit($id = null)
     {
-        if($this->Auth->isRoot($this->user)) {
-            die("not root");
+        if(!$this->Auth->isRoot($this->user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
         $cash = $this->Cashes->get($id, [
@@ -153,8 +157,9 @@ class CashesController extends AppController
      */
     public function delete($id = null)
     {
-        if($this->Auth->isRoot($this->user)) {
-            die("not root");
+        if(!$this->Auth->isRoot($this->user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
                 
         $this->request->allowMethod(['post', 'delete']);

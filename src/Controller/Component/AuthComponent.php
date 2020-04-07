@@ -23,7 +23,7 @@ class AuthComponent extends Component {
         //$controller->request
     }
 
-    public function isRoot($user) {
+    public function isRoot($user) {        
         if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_root'), $user->group_ids))
             return true;
         else
@@ -245,7 +245,7 @@ class AuthComponent extends Component {
      * anche in AppHelper, AppModel
      */ 
     public function isUserPermissionArticlesOrder($user) {
-        if (isset($user) && $user['organization']->hasArticlesOrder == 'Y' && $user->user->hasArticlesOrder == 'Y')
+        if (isset($user) && $user->organization->paramsConfig['hasArticlesOrder'] == 'Y' && $user->user->hasArticlesOrder == 'Y')
             return true;
         else
             return false;
@@ -255,7 +255,7 @@ class AuthComponent extends Component {
 
         $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
 
-        $where = ['SuppliersOrganizationsReferents.organization_id' => $user['organization']->id];
+        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id];
         if(!$this->isSuperReferente($user))
             $where += ['user_id' => $user->id];
         // debug($where);
