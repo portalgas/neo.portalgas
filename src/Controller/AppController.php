@@ -69,6 +69,12 @@ class AppController extends Controller
                     ]); // definito come middleware in src/Application.php
         // utilizza Auth $this->loadComponent('CakeImpersonate.Impersonate'); 
         $this->loadComponent('Auth');
+
+        /*
+         * gestione float nella serializzazione json
+         * se no gli importi divengono 10.00000000000000
+         */
+        ini_set("serialize_precision", 14);        
     }
 
     public function beforeFilter(Event $event) {

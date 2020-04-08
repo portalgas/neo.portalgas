@@ -69,4 +69,24 @@ class HtmlCustomSiteHelper extends FormHelper
 
         return $html;
     }
+
+    public function boxTitle($results) {
+
+        if(!isset($results['title']))
+            $results['title'] = ''; 
+
+        $html = '';
+        $html .= '<section class="content-header">';
+        $html .= '<h1>';
+        $html .= $results['title'];
+        if(isset($results['subtitle']) && !empty($results['subtitle'])) {
+            $html .= '<small>';
+            $html .= $results['subtitle'];
+            $html .= '</small>';
+        }            
+        $html .= '</h1>';
+        $html .= "</section>";
+
+        return $html;
+    }
 }

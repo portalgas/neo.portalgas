@@ -76,7 +76,8 @@ class SummaryOrderComponent extends Component {
      * estraggi i dettaglio di pagamenti di un ordine (SummaryOrders) dello user
      */
     public function getByUserByDelivery($user, $organization_id, $user_id, $delivery_id, $options, $debug=false) {
-
+ini_set("precision", 14);
+ini_set("serialize_precision", 14);
         $summaryOrdersTable = TableRegistry::get('SummaryOrders');
 
         $where = ['SummaryOrders.organization_id' => $organization_id,

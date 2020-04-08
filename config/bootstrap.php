@@ -277,8 +277,6 @@ Configure::write('QueueLogs.file', false);
 Configure::write('QueueLogs.shell', false);
 
 Configure::write('site.name', 'PortAlGas');
-Configure::write('site.url', 'https://www.portalgas.it');
-Configure::write('backoffice.url', 'https://www.portalgas.it/my');
 
 Configure::write('SupplierOrganizationStatoIni', 'Y');
 Configure::write('SupplierOrganizationMailOrderOpenIni', 'Y');

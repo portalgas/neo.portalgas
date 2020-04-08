@@ -93,6 +93,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function middleware($middlewareQueue)
     {
+        $config = Configure::read('Config');
+        $portalgas_url = $config['Portalgas.url']; 
+                
         $middlewareQueue
             // Catch any exceptions in the lower layers,
             // and make an error page/response
@@ -131,9 +134,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             
             /*
              * Authentication middleware
-             */ 
+             */            
             $authentication = new AuthenticationMiddleware($this, [
-                'unauthenticatedRedirect' => Router::url(Configure::read('backoffice.url')) 
+                'unauthenticatedRedirect' => Router::url($portalgas_url) 
             ]);
             $middlewareQueue->add($authentication);
 
@@ -144,14 +147,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                             'requireAuthorizationCheck' => true,
                             'unauthorizedHandler' => [
                                 'className' => 'Authorization.Redirect',
-                                'url' => Configure::read('backoffice.url'),
+                                'url' => $portalgas_url,
                                 'queryParam' => 'redirectUrl',
                                 'exceptions' => [
                                     MissingIdentityException::class,
                                     OtherException::class,
                                 ]
                             ],
-                            'unauthorizedRedirect' => Router::url(Configure::read('backoffice.url')),
+                            'unauthorizedRedirect' => Router::url($portalgas_url),
                             // https://book.cakephp.org/authorization/1/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
                                     /*
