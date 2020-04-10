@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -264,7 +265,7 @@ class OrdersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['supplier_organization_id'], 'SupplierOrganizations'));
+        $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
         $rules->add($rules->existsIn(['owner_supplier_organization_id'], 'OwnerSupplierOrganizations'));
         $rules->add($rules->existsIn(['delivery_id'], 'Deliveries'));
@@ -272,5 +273,85 @@ class OrdersTable extends Table
         $rules->add($rules->existsIn(['des_order_id'], 'DesOrders'));
 
         return $rules;
+    }
+
+    public function getById($user, $organization_id, $order_id, $debug=false) {
+
+        if (empty($order_id)) {
+            return null;
+        }
+
+        $results = $this->find()  
+                        ->where([
+                            'Orders.organization_id' => $organization_id,
+                            'Orders.id' => $order_id
+                        ])
+                        ->contain(['Deliveries', 'SuppliersOrganizations'])
+                        ->first();        
+
+        return $results;      
+    }
+
+    public function riapriOrdine($user, $organization_id, $order_id, $debug=false) {
+        
+    }
+
+    /*
+     * estrae l'importo totale degli acquisti di un ordine
+     * ctrl eventuali (come ExporDoc:getCartCompile() )
+     *      - totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers
+     *      - spese di trasporto  (SummaryOrderTrasport)
+     */
+    public function getTotImporto($user, $organization_id, $order_id, $debug=false) {
+        
+        $importo_totale = 0;
+
+        $order = $this->getById($user, $organization_id, $order_id, $debug);
+
+        /*
+         * SummaryOrderAggregate: estraggo eventuali dati aggregati 
+         */
+         $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
+         
+         $summaryOrderAggregateResults = $summaryOrderAggregatesTable->getByOrder($user, $organization_id, $order_id);
+         if($summaryOrderAggregateResults->count()>0) {
+            foreach ($summaryOrderAggregateResults as  $summaryOrderAggregateResult) 
+                $importo_totale += $summaryOrderAggregateResult->importo;
+                
+            if($debug) debug("SummaryOrderAggregate->importo_totale ".$importo_totale);      
+        }
+        else {
+            /*
+             * estrae l'importo totale degli acquisti (qta e qta_forzato, importo_forzato) di un ordine
+            */
+            $CartsTable = TableRegistry::get('Carts');
+            
+            $where = [];
+            $where = ['Carts.order_id' => $order_id];
+            $importo_totale = $CartsTable->getTotImporto($user, $where);
+            
+            if($debug) debug("Cart::getTotImporto() ".$importo_totale);
+        } // end if($summaryOrderAggregateResults->count()>0)
+
+        /*
+         * trasporto
+        */
+        if($order->hasTrasport=='Y') 
+            $importo_totale += $order->trasport;
+            
+        if($order->hasCostMore=='Y') 
+            $importo_totale += $order->cost_more;
+            
+        if($order->hasCostLess=='Y') 
+            $importo_totale -= $order->cost_less;
+        
+        /* 
+         *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
+         */
+        if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
+        
+        if($debug) debug("Order::getTotImporto ".$importo_totale);
+
+        return $importo_totale;
     }
 }

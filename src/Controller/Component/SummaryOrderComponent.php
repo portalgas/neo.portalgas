@@ -9,6 +9,15 @@ use Cake\Controller\ComponentRegistry;
 
 class SummaryOrderComponent extends Component {
 
+    const SALDATO_A_CASSIERE = 'CASSIERE';
+    const SALDATO_A_TESORIERE = 'TESORIERE';
+    const MODALITA_DEFINED = 'DEFINED';
+    const MODALITA_CONTANTI = 'CONTANTI';
+    const MODALITA_BONIFICO = 'BONIFICO';
+    const MODALITA_BANCOMAT = 'BANCOMAT';
+
+    protected $_registry;
+
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_registry = $registry;
@@ -16,7 +25,25 @@ class SummaryOrderComponent extends Component {
         //$controller->request
     }
 
-	public function getTotImportoByOrder($user, $organization_id, $order_id, $options, $debug=false) {
+    /*
+     * condizione per considerare un SummaryOrder pagato saldato_a != null
+     *   e non 'SummaryOrder.importo = SummaryOrder.importo_pagato'
+     * saldato_a ENUM('CASSIERE','TESORIERE')
+     */
+    public function getConditionIsSaldato($user) {
+        return ['SummaryOrders.saldato_a is not null'];
+    } 
+
+    /*
+     * condizione per considerare un SummaryOrder pagato saldato_a = null
+     *   e non 'SummaryOrder.importo != SummaryOrder.importo_pagato'
+     * saldato_a ENUM('CASSIERE','TESORIERE')
+     */
+    public function getConditionIsNotSaldato($user) {
+        return ['SummaryOrders.saldato_a is null'];
+    } 
+
+	public function getTotImportoByOrder($user, $organization_id, $order_id, $options=[], $debug=false) {
 
         $summaryOrdersTable = TableRegistry::get('SummaryOrders');
 
@@ -34,55 +61,20 @@ class SummaryOrderComponent extends Component {
 		return $results;
 	}
 
-	public function getByOrder($user, $organization_id, $order_id, $options, $debug=false) {
-
-        $summaryOrdersTable = TableRegistry::get('SummaryOrders');
-
-        $where = ['SummaryOrders.organization_id' => $organization_id,
-   				  'SummaryOrders.order_id' => $order_id];
-		if($debug) debug($where);
-
-        $results = $summaryOrdersTable->find()
-    						->contain(['Users'])
-                            ->where($where)
-                            ->order(['Users.id'])
-                            ->all();
-
-		if($debug) debug($results);
-		
-		return $results;
-	}
-
-    public function getByUserByOrder($user, $organization_id, $user_id, $order_ids, $options, $debug=false) {
-
-        $summaryOrdersTable = TableRegistry::get('SummaryOrders');
-
-        $where = ['SummaryOrders.organization_id' => $organization_id,
-                  'SummaryOrders.user_id' => $user_id,
-                  'SummaryOrders.order_id IN ' => $order_ids];
-        if($debug) debug($where);
-
-        $results = $summaryOrdersTable->find()
-                            ->contain(['Users'])
-                            ->where($where)
-                            ->all();
-
-        if($debug) debug($results);
-        
-        return $results;
-    }
-
     /* 
      * estraggi i dettaglio di pagamenti di un ordine (SummaryOrders) dello user
      */
-    public function getByUserByDelivery($user, $organization_id, $user_id, $delivery_id, $options, $debug=false) {
-ini_set("precision", 14);
-ini_set("serialize_precision", 14);
+    public function getByUserByDelivery($user, $organization_id, $user_id, $delivery_id, $options=[], $debug=false) {
+
         $summaryOrdersTable = TableRegistry::get('SummaryOrders');
 
         $where = ['SummaryOrders.organization_id' => $organization_id,
                   'SummaryOrders.user_id' => $user_id,
                   'SummaryOrders.delivery_id' => $delivery_id];
+        if(isset($options['where'])) 
+        foreach ($options['where'] as $key => $value) {
+            $where += [$key => $value];
+        }                  
         if($debug) debug($where);
 
         $results = $summaryOrdersTable->find()

@@ -36,11 +36,11 @@ if(!empty($deliveries)) {
     <table class="table table-hover" v-show="is_found === true">
       <thead class="thead-light">
         <tr>
-          <th>gasista</th>
-          <th>Orders</th>
-          <th>Importo dovuto</th>
-          <th v-show="is_cash === '1'">In cassa</th>
-          <th v-show="is_cash === '1'">Nuovo importo cassa</th>
+          <th><?php echo __('User');?></th>
+          <th class="hidden-xs"><?php echo __('Orders');?></th>
+          <th><?php echo __('ImportoDovuto');?></th>
+          <th v-show="is_cash === '1'"><?php echo __('CashIn');?></th>
+          <th v-show="is_cash === '1'"><?php echo __('CashImportoUpdate');?></th>
         </tr>
       </thead>
       <tbody>
@@ -49,14 +49,26 @@ if(!empty($deliveries)) {
           :user="user.id"
           :key="user.id"
         >
-          <td>{{ user.name }}</td>
           <td>
+            <a data-toggle="collapse" :data-target="'#user-' + user.id">{{ user.name }}</a>
+            <div v-bind:id="['user-'+user.id]" class="collapse box-collapse">
+                <div v-for="summary_order in user.summary_orders"
+                :summary_order="summary_order.id"
+                :key="summary_order.id"
+                > 
+                  <div>{{ summary_order.order.suppliers_organization.name }}</div>
+                  <div class="pull-right"><?php echo __('Importo');?> {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
+                  <div class="clearfix"></div>
+                </div>
+            </div>            
+          </td>
+          <td class="hidden-xs">
             <div v-for="summary_order in user.summary_orders"
-            :summary_order="summary_order"
+            :summary_order="summary_order.id"
             :key="summary_order.id"
             > 
               <div>{{ summary_order.order.suppliers_organization.name }}</div>
-              <div>importo {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
+              <div><?php echo __('Importo');?> {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
             </div>
           </td>
           <td>

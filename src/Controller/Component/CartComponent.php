@@ -34,9 +34,9 @@ class CartComponent extends Component {
 
         $where = ['Orders.organization_id' => $user->organization->id,
    				  'Orders.delivery_id' => $delivery_id];
-        if(isset($options['where'])) {
-            if(isset($options['where']['Orders.state_code']))
-                    $where += ['Orders.state_code' => $options['where']['Orders.state_code']];
+        if(isset($options['where'])) 
+        foreach ($options['where'] as $key => $value) {
+            $where += [$key => $value];
         }
             
 		if($debug) debug($where);
@@ -46,7 +46,7 @@ class CartComponent extends Component {
                                 ->order(['Orders.data_inizio'])
                                 ->all();
         $order_ids = [];
-        if(!empty($orderResults)) {
+        if(!empty($orderResults) && $orderResults->count()>0) {
             foreach($orderResults as $orderResult) {
                 $order_ids[] = $orderResult->id;
             }

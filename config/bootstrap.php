@@ -269,6 +269,11 @@ Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
 
+Configure::write('DB.field.date.error', '0000-00-00');
+Configure::write('DB.field.date.empty', '1970-01-01');
+Configure::write('DB.field.double.empty', '0.00');
+Configure::write('DB.field.datetime.empty', '1970-01-01 00:00:00');
+
 Configure::write('routes_msg_stop', ['controller' => 'Pages', 'action' => 'msg_stop', 'prefix' => 'admin']);
 Configure::write('routes_msg_not_order_state', ['controller' => 'Pages', 'action' => 'msg_not_order_state', 'prefix' => 'admin']);
 

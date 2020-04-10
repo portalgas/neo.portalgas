@@ -62,7 +62,7 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticlesOrders', [
-            'foreignKey' => 'article_id',
+            'foreignKey' => ['organization_id', 'article_organization_id', 'article_id', 'order_id'],
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Articles', [
@@ -131,5 +131,53 @@ class CartsTable extends Table
         $rules->add($rules->existsIn(['article_id'], 'ArticlesOrders'));
 
         return $rules;
+    }
+
+    /*
+     * $where = ['Carts.order_id' => $order_id];
+     * $where = ['Carts.user_id' => $user_id];
+     * $where = ['Orders.delivery_id' => $delivery_id];
+     */    
+    public function getTotImporto($user, $where=[], $options=[], $debug=false) {
+
+        $importo_totale = 0;
+
+        if(!empty($where)) 
+        foreach ($where as $key => $value) {
+            $where += [$key => $value];
+        }
+        $where += ['Carts.organization_id' => $user->organization->id];
+            
+        if($debug) debug($where);
+
+        $cartsResults = $this->find()
+                            ->select(['Carts.qta', 'Carts.qta_forzato', 'Carts.importo_forzato', 'ArticlesOrders.prezzo'])
+                            ->where($where) 
+                            ->contain(['Orders', 'ArticlesOrders'])
+                            ->all();
+        if(!empty($cartsResults) && $cartsResults->count()>0) {
+            foreach($cartsResults as $cartsResult) {
+
+                // if($debug) debug($cartsResult);
+
+                /*
+                 * importo
+                 */
+                if($cartsResult->importo_forzato==0) {
+                    if($cartsResult->qta_forzato>0)
+                        $importo = ($cartsResult->qta_forzato * $cartsResult->articles_order->prezzo);
+                    else
+                        $importo = ($cartsResult->qta * $cartsResult->articles_order->prezzo);
+                }
+                else
+                    $importo = $cartsResult->importo_forzato;
+                
+                $importo_totale += $importo;                
+            }
+        }
+
+        if($debug) debug($importo_totale);
+
+        return $importo_totale;
     }
 }

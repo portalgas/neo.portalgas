@@ -100,9 +100,6 @@ msgstr "Mail"
 msgid "Mail PEC"
 msgstr "Mail P.E.C."
 
-msgid "SDI"
-msgstr "S.D.I."
-
 msgid "Users"
 msgstr "Utenti"
 
@@ -282,6 +279,18 @@ msgstr "Comune"
 
 msgid "Price Types"
 msgstr "Tipologia prezzi"
+
+#
+# importi
+#
+msgid "Importo"
+msgstr "Importo"
+
+msgid "ImportoDovuto"
+msgstr "Importo dovuto"
+
+msgid "ImportoPagato"
+msgstr "Importo pagato"
 
 #
 # gdxps
@@ -708,6 +717,12 @@ msgstr "Filtro produttori"
 
 msgid "Cashier"
 msgstr "Cassiere"
+
+msgid "CashIn"
+msgstr "In cassa"
+
+msgid "CashImportoUpdate"
+msgstr "Importo cassa aggiornato"
 
 #
 # M S G   system

@@ -43,11 +43,11 @@ class OrganizationsTable extends Table
         $this->addBehavior('Timestamp');
 		$this->addBehavior('OrganizationsParams');
 		
-		/*
         $this->belongsTo('Templates', [
             'foreignKey' => 'template_id',
             'joinType' => 'INNER'
         ]);
+        /*
         $this->belongsTo('JPageCategories', [
             'foreignKey' => 'j_page_category_id',
             'joinType' => 'INNER'

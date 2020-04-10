@@ -191,14 +191,26 @@ class UsersTable extends Table
                 'Organizations.paramsConfig',
                 'Organizations.paramsFields',
                 'Organizations.hasMsg',
-                'Organizations.msgText'
+                'Organizations.msgText',
+                'Templates.id',
+                'Templates.name',
+                'Templates.descri',
+                'Templates.descri_order_cycle_life',
+                'Templates.payToDelivery',
+                'Templates.orderForceClose',
+                'Templates.orderUserPaid',
+                'Templates.orderSupplierPaid',
+                'Templates.ggArchiveStatics',
+                'Templates.hasCassiere',
+                'Templates.hasTesoriere'                
             ])
             ->where($where)
+            ->contain(['Templates'])
             ->first();
         // if($debug) debug($organization);            
 
         $user->organization = $organization;
-        // if($debug) debug($user);  
+         if($debug) debug($user);  
 
         return $user;
     }

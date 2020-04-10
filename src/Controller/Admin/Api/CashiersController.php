@@ -39,52 +39,62 @@ class CashiersController extends ApiAppController
             $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
 
             if(!empty($userResults)) {
-                
-                foreach($userResults as $numResult => $userResult) {
-
-                    $results[$numResult] = $userResult;
+            
+                $i=0;
+                foreach($userResults as $userResult) {
 
                     /*
                      * associo dettaglio acquisto per user (SummaryOrders)
                      */
-                    $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);                    
-                    $results[$numResult]['summary_orders'] = $summaryOrderResults;
+                    $options =  [];
+                    $options['where'] = $this->SummaryOrder->getConditionIsNotSaldato($this->user);
+                    $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);
+                    if(empty($summaryOrderResults) || $summaryOrderResults->count()==0) {
+                        /*
+                         * gasista ha gia' saldato
+                         */
+                    }  
+                    else {
+                        $results[$i] = $userResult;
+                        $results[$i]['summary_orders'] = $summaryOrderResults;
 
-                    /*
-                     * somma degli importi di SummaryOrder.importo (SummaryDelivery)
-                     */
-                    $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
+                        /*
+                         * somma degli importi di SummaryOrder.importo (SummaryDelivery)
+                         */
+                        $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
 
-                    $results[$numResult]['summary_delivery'] = $summaryDeliveryResults;
+                        $results[$i]['summary_delivery'] = $summaryDeliveryResults;
 
-                    /*
-                     * associo la cassa
-                     */
-                    $cashResults = $this->Cash->getByUser($this->user, $userResult->organization_id, $userResult->id, $options, $debug);
-                    $results[$numResult]['cash'] = $cashResults;
+                        /*
+                         * associo la cassa
+                         */
+                        $cashResults = $this->Cash->getByUser($this->user, $userResult->organization_id, $userResult->id, $options, $debug);
+                        $results[$i]['cash'] = $cashResults;
 
-                    /*
-                     * nuovo valore in cassa
-                     */
-                    if(isset($summaryDeliveryResults['tot_importo']))
-                        $tot_importo = $summaryDeliveryResults['tot_importo'];
-                    else
-                        $tot_importo = 0;
-                    if(isset($summaryDeliveryResults['tot_importo_pagato']))
-                        $tot_importo_pagato = $summaryDeliveryResults['tot_importo_pagato'];
-                    else
-                        $tot_importo_pagato = 0;
-                    if(isset($cashResults['importo']))
-                        $cash_importo = $cashResults['importo'];
-                    else
-                        $cash_importo = 0;
-                    $importo_da_pagare = ($tot_importo - $tot_importo_pagato);
-                    // debug('tot_importo '.$tot_importo.' tot_importo_pagato '.$tot_importo_pagato.' importo_da_pagare '.$importo_da_pagare.' cash_importo '.$cash_importo);
-                    $importo_new = $this->Cash->getNewImport($this->user, $importo_da_pagare, $cash_importo, $debug);
-                    // debug('importo_new '.$importo_new);
+                        /*
+                         * nuovo valore in cassa
+                         */
+                        if(isset($summaryDeliveryResults['tot_importo']))
+                            $tot_importo = $summaryDeliveryResults['tot_importo'];
+                        else
+                            $tot_importo = 0;
+                        if(isset($summaryDeliveryResults['tot_importo_pagato']))
+                            $tot_importo_pagato = $summaryDeliveryResults['tot_importo_pagato'];
+                        else
+                            $tot_importo_pagato = 0;
+                        if(isset($cashResults['importo']))
+                            $cash_importo = $cashResults['importo'];
+                        else
+                            $cash_importo = 0;
+                        $importo_da_pagare = ($tot_importo - $tot_importo_pagato);
+                        // debug('tot_importo '.$tot_importo.' tot_importo_pagato '.$tot_importo_pagato.' importo_da_pagare '.$importo_da_pagare.' cash_importo '.$cash_importo);
+                        $importo_new = $this->Cash->getNewImport($this->user, $importo_da_pagare, $cash_importo, $debug);
+                        // debug('importo_new '.$importo_new);
                                   
-                    $results[$numResult]['cash_importo_new'] = $importo_new;
+                        $results[$i]['cash_importo_new'] = $importo_new;
 
+                        $i++;
+                    } // if(empty($summaryOrderResults))
                 }
             } // if(!empty($userResults))
 

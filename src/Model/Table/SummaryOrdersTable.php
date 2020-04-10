@@ -40,6 +40,7 @@ class SummaryOrdersTable extends Table
         $this->setTable('k_summary_orders');
         $this->setDisplayField('id');
         $this->setPrimaryKey(['id', 'organization_id', 'user_id', 'order_id']);
+        // $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
@@ -108,4 +109,44 @@ class SummaryOrdersTable extends Table
 
         return $rules;
     }
+
+    /*
+     * precedente SummaryOrder::select_to_order()
+    */
+    public function getByOrder($user, $organization_id, $order_id, $options=[], $debug=false) {
+
+        $where = ['SummaryOrders.organization_id' => $organization_id,
+                  'SummaryOrders.order_id' => $order_id];
+        if($debug) debug($where);
+
+        $results = $this->find()
+                        ->contain(['Users'])
+                        ->where($where)
+                        ->order(['Users.name'])
+                        ->all();
+
+        if($debug) debug($results);
+        
+        return $results;
+    }
+
+    /*
+     * precedente SummaryOrder::select_to_order()
+    */
+    public function getByUserByOrder($user, $organization_id, $user_id, $order_ids, $options=[], $debug=false) {
+
+        $where = ['SummaryOrders.organization_id' => $organization_id,
+                  'SummaryOrders.user_id' => $user_id,
+                  'SummaryOrders.order_id IN ' => $order_ids];
+        if($debug) debug($where);
+
+        $results = $this->find()
+                        ->contain(['Users'])
+                        ->where($where)
+                        ->all();
+
+        if($debug) debug($results);
+        
+        return $results;
+    }    
 }

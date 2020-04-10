@@ -4,13 +4,13 @@ use Cake\Core\Configure;
 $icon = '<i class="fa fa-circle"></i> ';
 
 $config = Configure::read('Config');
-$portalgas_url = $config['Portalgas.url'];
-$portalgas_home = $config['Portalgas.home'];
+$portalgas_bo_url = $config['Portalgas.bo.url'];
+$portalgas_bo_home = $config['Portalgas.bo.home'];
 ?>	
   <?php echo $this->fetch('tb_sidebar') ?>
 
   <li class="treeview"> 
-    <a href="<?php echo $portalgas_url.$portalgas_home;?>">
+    <a href="<?php echo $portalgas_bo_url.$portalgas_bo_home;?>">
       <i class="fa fa-home"></i> <span><?php echo __('PortAlGas');?></span>
     </a>
   </li>

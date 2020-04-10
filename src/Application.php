@@ -94,7 +94,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function middleware($middlewareQueue)
     {
         $config = Configure::read('Config');
-        $portalgas_url = $config['Portalgas.url']; 
+        $portalgas_bo_url_login = $config['Portalgas.bo.url.login']; 
                 
         $middlewareQueue
             // Catch any exceptions in the lower layers,
@@ -136,7 +136,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
              * Authentication middleware
              */            
             $authentication = new AuthenticationMiddleware($this, [
-                'unauthenticatedRedirect' => Router::url($portalgas_url) 
+                'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login) 
             ]);
             $middlewareQueue->add($authentication);
 
@@ -147,14 +147,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                             'requireAuthorizationCheck' => true,
                             'unauthorizedHandler' => [
                                 'className' => 'Authorization.Redirect',
-                                'url' => $portalgas_url,
+                                'url' => $portalgas_bo_url_login,
                                 'queryParam' => 'redirectUrl',
                                 'exceptions' => [
                                     MissingIdentityException::class,
                                     OtherException::class,
                                 ]
                             ],
-                            'unauthorizedRedirect' => Router::url($portalgas_url),
+                            'unauthorizedRedirect' => Router::url($portalgas_bo_url_login),
                             // https://book.cakephp.org/authorization/1/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
                                     /*
