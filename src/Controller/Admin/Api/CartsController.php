@@ -14,7 +14,6 @@ class CartsController extends ApiAppController
         $this->loadComponent('Csrf');
         $this->loadComponent('Auth');
         $this->loadComponent('Cart');
-        $this->loadComponent('Cash');
     }
 
     public function beforeFilter(Event $event) {
@@ -68,6 +67,8 @@ class CartsController extends ApiAppController
         
         if(!empty($delivery_id)) {
 
+            $cashesTable = TableRegistry::get('Cashes');
+            
             $options = [];
             $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
 
@@ -82,7 +83,7 @@ class CartsController extends ApiAppController
                     /*
                      * associo la cassa
                      */
-                    $cashResults = $this->Cash->getByUser($this->user, $userResult->user->organization_id, $userResult->user->id, $options, $debug);                    
+                    $cashResults = $cashesTable->getByUser($this->user, $userResult->user->organization_id, $userResult->user->id, $options, $debug);                    
                     $results[$numResult]['cash'] = $cashResults;
                 }
             } // if(!empty($userResults))

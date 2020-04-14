@@ -29,11 +29,12 @@ if(!empty($deliveries)) {
   echo '</div>';
   echo '</div>';
 
-	echo '<div class="result-users" style="display:none;">';
+	// echo '<div class="result-users" style="display:none;"></div>';
 
     echo $this->HtmlCustomSite->boxTitle(['title' => "Elenco gasisti che devono saldare", 'subtitle' => 'Ordini nello stato "in carico al cassiere"']);
     ?>
-    <table class="table table-hover" v-show="is_found === true">
+    <div v-show="is_found === true">
+    <table class="table table-hover">
       <thead class="thead-light">
         <tr>
           <th><?php echo __('User');?></th>
@@ -86,6 +87,13 @@ if(!empty($deliveries)) {
         </tr>
       </tbody>
     </table>
+    <?php
+    echo '<div class="row">'; 
+    echo '<div class="col-md-12">'; 
+    echo $this->Form->control('nota', ['type' => 'textarea', 'label' => __('Cash-nota')]);
+    echo '</div>';
+    echo '</div>';
+  ?>   
 	</div>
 
 	<div class="result-orders" style="display:none;">
@@ -112,9 +120,9 @@ if(!empty($deliveries)) {
         </tr>
       </tbody>
     </table>
-	
+	</div>
+
 	<?php
-  echo '</div>';
   echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled']);
   echo $this->Form->end();
 	echo '</div>'; // vue-cashiers

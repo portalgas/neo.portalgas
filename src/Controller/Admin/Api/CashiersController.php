@@ -14,7 +14,6 @@ class CashiersController extends ApiAppController
         $this->loadComponent('Csrf');
         $this->loadComponent('Auth');
         $this->loadComponent('Cart');
-        $this->loadComponent('Cash');
         $this->loadComponent('SummaryOrder');
     }
 
@@ -34,6 +33,8 @@ class CashiersController extends ApiAppController
         $delivery_id = $this->request->getData('delivery_id');
         if(!empty($delivery_id)) {
 
+            $cashesTable = TableRegistry::get('Cashes');
+            
             $options =  [];
             $options['where'] = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
             $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
@@ -68,7 +69,7 @@ class CashiersController extends ApiAppController
                         /*
                          * associo la cassa
                          */
-                        $cashResults = $this->Cash->getByUser($this->user, $userResult->organization_id, $userResult->id, $options, $debug);
+                        $cashResults = $cashesTable->getByUser($this->user, $userResult->organization_id, $userResult->id, $options, $debug);
                         $results[$i]['cash'] = $cashResults;
 
                         /*
@@ -88,7 +89,7 @@ class CashiersController extends ApiAppController
                             $cash_importo = 0;
                         $importo_da_pagare = ($tot_importo - $tot_importo_pagato);
                         // debug('tot_importo '.$tot_importo.' tot_importo_pagato '.$tot_importo_pagato.' importo_da_pagare '.$importo_da_pagare.' cash_importo '.$cash_importo);
-                        $importo_new = $this->Cash->getNewImport($this->user, $importo_da_pagare, $cash_importo, $debug);
+                        $importo_new = $cashesTable->getNewImport($this->user, $importo_da_pagare, $cash_importo, $debug);
                         // debug('importo_new '.$importo_new);
                                   
                         $results[$i]['cash_importo_new'] = $importo_new;

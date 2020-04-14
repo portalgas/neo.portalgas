@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -87,5 +88,121 @@ class CashesTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    public function getByUser($user, $organization_id, $user_id, $options=[], $debug=false) {
+
+        $results = [];
+
+        $where = ['Cashes.organization_id' => $organization_id,
+                  'Cashes.user_id' => $user_id];
+        if($debug) debug($where);
+
+        $results = $this->find()
+                        ->where($where)
+                        ->first();
+
+        if($debug) debug($results);
+        
+        return $results;
+    }
+
+    /* 
+     * dato un importo, calcolo il nuovo valore di cassa di uno user
+     * ex SummaryOrders.importo 
+     */
+    public function getNewImport($user, $importo_da_pagare, $cash_importo, $debug=false) {
+
+        $results = ($cash_importo - $importo_da_pagare);       
+                
+        return $results;
+    }
+
+    /*
+     * il saldo precedente lo metto in cashes_histories 
+     */
+    public function insert($user, $data, $debug=false) {
+        
+        if($debug) debug($data);
+
+        $user_cash_empty = false;
+        $organization_id = $data['organization_id'];
+        $user_id = $data['user_id'];
+
+        if(empty($organization_id) || empty($user_id))
+            return false;
+
+        /*
+         * ricerco la cassa per lo user per persisterlo in cashes_histories
+         */
+        $options = [];
+        $cashResults = $this->getByUser($user, $organization_id, $user_id, $options, $debug);
+        if(!empty($cashResults))
+            $user_cash_empty = true;
+debug($cashResults);
+debug($user_cash_empty);
+        if($debug) debug("cash importo before ".$cashResults->importo);
+
+        if(isset($data['importo_da_pagare'])) {
+            /*
+             * lo devo calcolare: importo_da_pagare - importo in cassa
+             */ 
+            if(isset($cashResults['importo']))
+                $cash_importo = $cashResults['importo'];
+            else
+                $cash_importo = 0;            
+            
+            $importo_new = $this->getNewImport($user, $data['importo_da_pagare'], $cash_importo, $debug);   
+            $data['importo'] = $importo_new;
+        }
+                    
+        if(!isset($data['importo'])) 
+            $data['importo'] = 0;
+
+        /*
+         * lo user non ha una voce di cassa
+         */
+        if(!$user_cash_empty)
+            $cashResults = $this->newEntity();
+
+        $cash = $this->patchEntity($cashResults, $data);
+        if($debug) debug("cash importo after ".$cashResults->importo);
+        if (!$this->save($cash)) {
+            debug($cash->getErrors());
+            return false;
+        }
+        else {
+
+            /*
+             * la prima volta che inserisco in Cashes non creo CashesHistories
+             */
+            if($user_cash_empty) {
+                $id = $cash->id;
+
+               // $cash = $this->Cashes->get($id);
+
+                $data = [];
+                $data['id'] = null;
+                $data['cash_id'] = $id;
+                $data['organization_id'] = $cash->organization_id;
+                $data['user_id'] = $cash->user_id;
+                $data['nota'] = $cash->nota;
+                $data['importo'] = $cash->importo;
+                debug($data);
+                /*
+                 * CashesHistories
+                 */ 
+                $cashesHistoriesTable = TableRegistry::get('CashesHistories');
+                $cashesHistories = $cashesHistoriesTable->newEntity();
+                $cashesHistories = $cashesHistoriesTable->patchEntity($cashesHistories, $data);
+                if (!$cashesHistoriesTable->save($cashesHistories)) {
+                    debug($cashesHistories->getErrors());
+                    return false;
+                }                
+
+            } // end if(!$user_cash_empty)
+        }
+
+        return true;
     }
 }

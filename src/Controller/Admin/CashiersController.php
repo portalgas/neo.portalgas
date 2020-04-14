@@ -13,7 +13,6 @@ class CashiersController extends AppController
         parent::initialize();
         $this->loadComponent('Cashier');
         $this->loadComponent('Cart');
-        $this->loadComponent('Cash');
         $this->loadComponent('SummaryOrder');
         $this->loadComponent('OrderLifeCycle');
     }
@@ -93,7 +92,7 @@ class CashiersController extends AppController
                             */ 
 
                         } // foreach($summaryOrderResults as $summaryOrderResult)
-  
+
                         /*
                          * C A S S A
                          */
@@ -107,11 +106,6 @@ class CashiersController extends AppController
                             $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
 
                             /*
-                             * ricerco la cassa per lo user
-                             */
-                            $cashResults = $this->Cash->getByUser($this->user, $userResult->organization_id, $userResult->id, $options, $debug);
-                           
-                            /*
                              * nuovo valore in cassa
                              */
                             if(isset($summaryDeliveryResults['tot_importo']))
@@ -122,36 +116,15 @@ class CashiersController extends AppController
                                 $tot_importo_pagato = $summaryDeliveryResults['tot_importo_pagato'];
                             else
                                 $tot_importo_pagato = 0;
-                            if(isset($cashResults['importo']))
-                                $cash_importo = $cashResults['importo'];
-                            else
-                                $cash_importo = 0;
+
                             $importo_da_pagare = ($tot_importo - $tot_importo_pagato);
-                            // debug('tot_importo '.$tot_importo.' tot_importo_pagato '.$tot_importo_pagato.' importo_da_pagare '.$importo_da_pagare.' cash_importo '.$cash_importo);
-                            $importo_new = $this->Cash->getNewImport($this->user, $importo_da_pagare, $cash_importo, $debug);
-                            // debug($cashResults); 
-                            // debug('importo_new '.$importo_new); 
 
                             $data = [];
-                            $data['importo'] = $importo_new;
+                            $data['organization_id'] = $userResult->organization_id;
+                            $data['user_id'] = $userResult->id;
+                            $data['importo_da_pagare'] = $importo_da_pagare;
                             $data['nota'] = $nota;
-                            /*
-                             * lo user non ha una voce di cassa
-                             */
-                            if(empty($cashResults))
-                                $cashResults = $cashesTable->newEntity();
-
-                            $cashResults = $cashesTable->patchEntity($cashResults, $data);
-                            // debug($cashResults);
-                            /*
-                            if (!$cashesTable->save($data)) {
-                                debug($cashResults->getErrors());
-                            }
-                            */
-
-                            /*
-                             * k_cashes_histories
-                             */ 
+                            $cashesTable->insert($this->user, $data, $debug);
                                           
                        } // end if($is_cash==1)             
                     } // end foreach($userResults as $numResult => $userResult)
