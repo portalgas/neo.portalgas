@@ -42,6 +42,7 @@ class UserUsergroupMapTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('UserGroups', [
+            'class' => 'UserGroups',
             'foreignKey' => 'group_id',
             'joinType' => 'INNER'
         ]);
