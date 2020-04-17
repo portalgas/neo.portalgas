@@ -57,7 +57,7 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticleOrganizations', [
-            'class' => 'Organizations',
+            'className' => 'Organizations',
             'foreignKey' => 'article_organization_id',
             'joinType' => 'INNER'
         ]);
