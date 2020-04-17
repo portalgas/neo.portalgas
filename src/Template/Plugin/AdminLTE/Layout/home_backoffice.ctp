@@ -1,4 +1,9 @@
-<?php use Cake\Core\Configure; ?>
+<?php 
+use Cake\Core\Configure; 
+
+$config = Configure::read('Config');
+$portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
+?>
 
 <!DOCTYPE html>
 <html>
@@ -46,7 +51,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="https://www.portalgas.it/my">Backoffice</a>
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="<?php echo $portalgas_bo_url_login;?>">Backoffice</a>
           </li>
           <!-- li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Portfolio</a>
