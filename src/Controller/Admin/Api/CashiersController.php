@@ -49,6 +49,7 @@ class CashiersController extends ApiAppController
                      */
                     $options =  [];
                     $options['where'] = $this->SummaryOrder->getConditionIsNotSaldato($this->user);
+                    $options['where'] += ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
                     $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);
                     if(empty($summaryOrderResults) || $summaryOrderResults->count()==0) {
                         /*

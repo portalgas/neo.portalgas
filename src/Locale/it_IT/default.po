@@ -724,6 +724,9 @@ msgstr "In cassa"
 msgid "CashImportoUpdate"
 msgstr "Importo cassa aggiornato"
 
+msgid "Cash-Nota"
+msgstr "Nota di cassa"
+
 #
 # M S G   system
 #

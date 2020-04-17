@@ -62,7 +62,7 @@ class HtmlCustomSiteHelper extends FormHelper
         // $html .= $results->id;
         if(!empty($results->supplier->img1)) {
             $img1_path = sprintf(Configure::read('Supplier.img.path.full'), $results->supplier->img1);
-            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" /></span> ';
+            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
         $html .= '<span class="box-name">'.$results->name.'</span>';
         $html .= "</div>";

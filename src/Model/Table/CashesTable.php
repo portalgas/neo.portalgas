@@ -122,28 +122,42 @@ class CashesTable extends Table
      * il saldo precedente lo metto in cashes_histories 
      */
     public function insert($user, $data, $debug=false) {
-        
+    
+        // $debug=true;
+
         if($debug) debug($data);
 
-        $user_cash_empty = false;
         $organization_id = $data['organization_id'];
         $user_id = $data['user_id'];
 
         if(empty($organization_id) || empty($user_id))
             return false;
 
+        if(isset($data['importo_da_pagare']) && $data['importo_da_pagare']==0) {
+            if($debug) debug("importo_da_pagare = 0 => esco");
+            return true;
+        }
+           
         /*
-         * ricerco la cassa per lo user per persisterlo in cashes_histories
+         * ricerco la cassa per lo user per persisterlo in cashes_histories 
+         * solo se ho gia' occorrenz in Cashs
          */
         $options = [];
         $cashResults = $this->getByUser($user, $organization_id, $user_id, $options, $debug);
-        if(!empty($cashResults))
-            $user_cash_empty = true;
-debug($cashResults);
-debug($user_cash_empty);
-        if($debug) debug("cash importo before ".$cashResults->importo);
+        if(empty($cashResults))
+            $cash_history_save = false;
+        else
+            $cash_history_save = true;
 
+        if($debug) {
+            if(isset($cashResults['importo']))
+                debug("cash importo before ".$cashResults['importo']);
+            else
+                debug("cash importo before 0");
+        }
+            
         if(isset($data['importo_da_pagare'])) {
+            
             /*
              * lo devo calcolare: importo_da_pagare - importo in cassa
              */ 
@@ -160,13 +174,18 @@ debug($user_cash_empty);
             $data['importo'] = 0;
 
         /*
-         * lo user non ha una voce di cassa
+         * se non ho voci di cassa e importo = 0 esco
          */
-        if(!$user_cash_empty)
+        if(empty($cashResults) && $data['importo']==0) {
+            if($debug) debug("Non ho voci di cassa e importo = 0 => esco");
+            return true;
+        }
+
+        if(empty($cashResults))
             $cashResults = $this->newEntity();
 
         $cash = $this->patchEntity($cashResults, $data);
-        if($debug) debug("cash importo after ".$cashResults->importo);
+        if($debug) debug("cash importo after ".$cash->importo);
         if (!$this->save($cash)) {
             debug($cash->getErrors());
             return false;
@@ -176,7 +195,7 @@ debug($user_cash_empty);
             /*
              * la prima volta che inserisco in Cashes non creo CashesHistories
              */
-            if($user_cash_empty) {
+            if($cash_history_save) {
                 $id = $cash->id;
 
                // $cash = $this->Cashes->get($id);
@@ -187,8 +206,9 @@ debug($user_cash_empty);
                 $data['organization_id'] = $cash->organization_id;
                 $data['user_id'] = $cash->user_id;
                 $data['nota'] = $cash->nota;
-                $data['importo'] = $cash->importo;
-                debug($data);
+                $data['importo'] = $cash_importo; // importo precedente al salvataggio
+                if($debug) debug($data);
+                
                 /*
                  * CashesHistories
                  */ 

@@ -86,7 +86,6 @@ class CartComponent extends Component {
                                 ->order(['Users.name'])
                                 ->group($fields)
                                 ->all();
-		
 		if($debug) debug($cartResults);
 		
         /*

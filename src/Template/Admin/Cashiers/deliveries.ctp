@@ -24,16 +24,48 @@ if(!empty($deliveries)) {
 	echo $this->Form->control('delivery_id', ['options' => $deliveries, 'class' => 'form-control select2-', 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty'), 
 		// '@change' => 'getOrdersByDelivery'
 		// '@change' => 'getUsersByDelivery'
-		'@change' => 'getCompleteUsersByDelivery'
+		//'@change' => 'getCompleteUsersByDelivery'
+    '@change' => 'getData'
 		]);
   echo '</div>';
   echo '</div>';
 
-	// echo '<div class="result-users" style="display:none;"></div>';
+  echo '<div v-show="is_found_orders === false" style="display:none;" class="run-orders"></div>';
+  echo '<div v-show="is_found_orders === true" style="display:none;">';
+  echo $this->HtmlCustomSite->boxTitle(['title' => 'Elenco degli ordini nello stato "in carico al cassiere"', 'subtitle' => '']);
+  ?>
+    <table class="table table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th><?php echo __('Supplier-Name');?></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="order in orders"
+          :order="order.id"
+          :key="order.id"
+        >
+          <td> 
+          	<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-supplier" width="<?php echo Configure::read('Supplier.img.preview.width');?>" :src="'<?php echo Configure::read('Supplier.img.path.fulljs');?>'+order.suppliers_organization.supplier.img1" alt="" /></td>
+          <td>{{ order.suppliers_organization.name }}</td>
+          <td>{{ order.state_code | orderStateCode }}</td>
+          <td>{{ order.data_inizio | formatDate }}</td>
+          <td>{{ order.data_fine | formatDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+  <?php
+	echo '</div>'; // is_found_orders
 
-    echo $this->HtmlCustomSite->boxTitle(['title' => "Elenco gasisti che devono saldare", 'subtitle' => 'Ordini nello stato "in carico al cassiere"']);
+  echo '<div v-show="is_found_users === false" style="display:none;" class="run-users"></div>';
+  echo '<div v-show="is_found_users === true" style="display:none;">';
+  echo $this->HtmlCustomSite->boxTitle(['title' => "Elenco gasisti che devono saldare", 'subtitle' => 'Ordini nello stato "in carico al cassiere"']);
     ?>
-    <div v-show="is_found === true">
     <table class="table table-hover">
       <thead class="thead-light">
         <tr>
@@ -76,8 +108,8 @@ if(!empty($deliveries)) {
             {{ (user.summary_delivery.tot_importo - user.summary_delivery.tot_importo_pagato) | currency }} &euro;
           </td>
           <td v-show="is_cash === '1'">
-          	<div v-if="user.cash == null">0,00 &euro;</div>
-          	<div v-if="user.cash != null">{{ user.cash.importo | currency }} &euro;</div>
+            <div v-if="user.cash == null">0,00 &euro;</div>
+            <div v-if="user.cash != null">{{ user.cash.importo | currency }} &euro;</div>
           </td>
           <td v-show="is_cash === '1'">
             <span class="label label-success" v-if="user.cash_importo_new > 0">{{ user.cash_importo_new | currency }} &euro;</span>
@@ -90,42 +122,15 @@ if(!empty($deliveries)) {
     <?php
     echo '<div class="row">'; 
     echo '<div class="col-md-12">'; 
-    echo $this->Form->control('nota', ['type' => 'textarea', 'label' => __('Cash-nota')]);
+    echo $this->Form->control('nota', ['type' => 'textarea', 'label' => __('Cash-Nota')]);
     echo '</div>';
     echo '</div>';
-  ?>   
-	</div>
+    echo '</div>'; // is_found_users
 
-	<div class="result-orders" style="display:none;">
-    <table class="table table-hover">
-      <thead class="thead-light">
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="order in orders"
-          :order="order.id"
-          :key="order.id"
-        >
-          <td> 
-          	<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-thumbnail" :src="'<?php echo Configure::read('Supplier.img.path.fulljs');?>'+order.suppliers_organization.supplier.img1" alt="" /></td>
-          <td>{{ order.suppliers_organization.name }}</td>
-          <td>{{ order.data_inizio }}</td>
-          <td>{{ order.data_fine }}</td>
-        </tr>
-      </tbody>
-    </table>
-	</div>
-
-	<?php
-  echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled']);
-  echo $this->Form->end();
-	echo '</div>'; // vue-cashiers
+	
+    echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled']);
+    echo $this->Form->end();
+	  echo '</div>'; // vue-cashiers
 }
 else {
 	echo $this->element('msg');

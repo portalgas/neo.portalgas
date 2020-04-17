@@ -1,4 +1,6 @@
 <?php
+echo $this->HtmlCustomSite->boxTitle(['title' => "Gestisci il prepagato per produttori", 'subtitle' => 'Escludili o includili']);
+
 if(!empty($results)) {
 	
 	echo $this->Html->script('supplierOrganizationCashExcludeds', ['block' => 'scriptPageInclude']);

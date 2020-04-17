@@ -101,13 +101,7 @@ class SummaryOrderComponent extends Component {
             $tot_importo_pagato = 0;
             foreach ($summary_orders as $summary_order) {
                 $tot_importo = ($tot_importo + $summary_order->importo);
-
-                /*
-                 * importo_pagato potrebbe essere stato sovrascritto da importo dopo patchEntity
-                 * ex CashiersController::deliveries()
-                 */ 
-                $importo_pagato = $summary_order->getOriginal('importo_pagato');
-                $tot_importo_pagato = ($tot_importo_pagato + $importo_pagato);
+                $tot_importo_pagato = ($tot_importo_pagato + $summary_order->importo_pagato);
             } // foreach ($summary_orders as $summary_order)
 
             $results['organization_id'] = $organization_id;

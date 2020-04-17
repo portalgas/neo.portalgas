@@ -35,6 +35,7 @@ echo $this->Html->script('vue/vue.js', ['block' => 'scriptInclude']);
 echo $this->Html->script('vue/router.js', ['block' => 'scriptInclude']); 
 echo $this->Html->script('vue/vuex.js', ['block' => 'scriptInclude']);  
 echo $this->Html->script('vue/axios.js', ['block' => 'scriptInclude']); 
+echo $this->Html->script('moment/moment-with-locales.min.js', ['block' => 'scriptInclude']);
 
 // echo '<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>';
 // https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html

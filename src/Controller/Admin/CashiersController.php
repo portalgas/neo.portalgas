@@ -70,28 +70,33 @@ class CashiersController extends AppController
                         /*
                          * per ogni ordine/user saldo il pagamento
                          */
-                        if(!empty($summaryOrderResults)) 
-                        foreach($summaryOrderResults as $summaryOrderResult) {
-
-                            unset($summaryOrderResult->order);
-                            unset($summaryOrderResult->user);
-
-                            $order_ids[$summaryOrderResult->order_id] = $summaryOrderResult->order_id; 
-
-                            $data = [];
-                            $data['importo_pagato'] = $summaryOrderResult->importo;
-                            $data['modalita'] = $this->SummaryOrder::MODALITA_CONTANTI;
-                            $data['saldato_a'] = $this->SummaryOrder::SALDATO_A_CASSIERE; 
-
-                            $summaryOrderResult = $summaryOrdersTable->patchEntity($summaryOrderResult, $data);
-                            // debug($summaryOrderResult);
+                        if(!empty($summaryOrderResults)) {
                             /*
-                            if (!$summaryOrdersTable->save($data)) {
-                                debug($summaryOrderResult->getErrors());
-                            }
-                            */ 
+                             * somma degli importi di SummaryOrder.importo (SummaryDelivery)
+                             * lo faccio prina di salvare summaryOrders se no importo_pagato = importo
+                             */
+                            $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
+                            // debug($summaryDeliveryResults);                            
 
-                        } // foreach($summaryOrderResults as $summaryOrderResult)
+                            foreach($summaryOrderResults as $summaryOrderResult) {
+
+                                unset($summaryOrderResult->order);
+                                unset($summaryOrderResult->user);
+
+                                $order_ids[$summaryOrderResult->order_id] = $summaryOrderResult->order_id; 
+
+                                $data = [];
+                                $data['importo_pagato'] = $summaryOrderResult->importo;
+                                $data['modalita'] = $this->SummaryOrder::MODALITA_CONTANTI;
+                                $data['saldato_a'] = $this->SummaryOrder::SALDATO_A_CASSIERE; 
+
+                                $summaryOrderResult = $summaryOrdersTable->patchEntity($summaryOrderResult, $data);
+                                // debug($summaryOrderResult);
+                                if (!$summaryOrdersTable->save($summaryOrderResult)) {
+                                    debug($summaryOrderResult->getErrors());
+                                }
+                            } // foreach($summaryOrderResults as $summaryOrderResult)
+                        } // end if(!empty($summaryOrderResults))
 
                         /*
                          * C A S S A
@@ -99,11 +104,6 @@ class CashiersController extends AppController
                         if($is_cash==1) {
 
                             $cashesTable = TableRegistry::get('Cashes');
-
-                            /*
-                             * somma degli importi di SummaryOrder.importo (SummaryDelivery)
-                             */
-                            $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
 
                             /*
                              * nuovo valore in cassa
