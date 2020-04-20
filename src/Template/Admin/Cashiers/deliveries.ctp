@@ -30,7 +30,7 @@ if(!empty($deliveries)) {
   echo '</div>';
   echo '</div>';
 
-  echo '<div v-show="is_found_orders === false" style="display:none;" class="run-orders"></div>';
+  echo '<div v-show="is_found_orders === false" style="display: none;text-align: center;" class="run run-orders"><div class="spinner"></div></div>';
   echo '<div v-show="is_found_orders === true" style="display:none;">';
   echo $this->HtmlCustomSite->boxTitle(['title' => 'Elenco degli ordini nello stato "in carico al cassiere"', 'subtitle' => '']);
   ?>
@@ -62,7 +62,7 @@ if(!empty($deliveries)) {
   <?php
 	echo '</div>'; // is_found_orders
 
-  echo '<div v-show="is_found_users === false" style="display:none;" class="run-users"></div>';
+  echo '<div v-show="is_found_users === false" style="display: none;text-align: center;"  class="run run-users"><div class="spinner"></div></div>';
   echo '<div v-show="is_found_users === true" style="display:none;">';
   echo $this->HtmlCustomSite->boxTitle(['title' => "Elenco gasisti che devono saldare", 'subtitle' => 'Ordini nello stato "in carico al cassiere"']);
     ?>

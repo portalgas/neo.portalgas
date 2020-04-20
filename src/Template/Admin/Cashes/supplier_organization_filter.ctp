@@ -29,25 +29,25 @@ if(!empty($results)) {
 		echo '<td>';
 
 		/* 
-		 * produttore gia' inserito, sara' escluso dal prepagato
+		 * produttore gia' inserito in supplier_organization_cash_excludeds, sara' escluso dal prepagato
 		 */
 		$options = [];
 		$options['data-attr-id'] = $result->id;
 		$options['data-attr-type'] = 'delete-'.$result->id; 
 		$options['class'] = 'cashExcludeds btn btn-success button';
-		if(empty($result['supplierOrganizationCashExcludeds'])) 
+		if(!empty($result['supplierOrganizationCashExcludeds'])) 
 			$options['style'] = 'display:none;';
 		$label = __('Considera con il prepagato');
 		echo $this->Html->link($label, '#', $options);
 
 		/* 
-		 * produttore NON inserito, sara' considerato con il prepagato
+		 * produttore NON inserito in supplier_organization_cash_excludeds, sara' considerato con il prepagato
 		 */
 		$options = [];
 		$options['data-attr-id'] = $result->id;
 		$options['data-attr-type'] = 'insert-'.$result->id; 
 		$options['class'] = 'cashExcludeds btn btn-warning button';
-		if(!empty($result['supplierOrganizationCashExcludeds'])) 
+		if(empty($result['supplierOrganizationCashExcludeds'])) 
 			$options['style'] = 'display:none;';
 		$label = __('Escludi dal prepagato');			
 		echo $this->Html->link($label, '#', $options);

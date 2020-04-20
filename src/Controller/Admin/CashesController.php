@@ -30,12 +30,8 @@ class CashesController extends AppController
      * elenco produttori per gestione chi e' escluso dal prepagato
      */
     public function supplierOrganizationFilter()
-    {   
-        /* 
-        // fractis
-        $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y' || 
-        */
-        if(!$this->Auth->isManager($this->user)) {
+    {     
+        if(!$this->Auth->isManager($this->user) || $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }   

@@ -12,8 +12,7 @@ window.onload = function () {
     var ajaxUrlGetOrdersByDelivery = '/admin/api/orders/getByDelivery';
     var ajaxUrlGetUsersByDelivery = '/admin/api/carts/getUsersCashByDelivery';
     var ajaxUrlGetCompleteUsersByDelivery = '/admin/api/cashiers/getCompleteUsersByDelivery';
-    var htmlResultOrders = $('.run-orders');
-    var htmlResultUsers = $('.run-users');
+    var ico_spinner = 'fa-lg fa fa-spinner fa-spin';
 
     vueCashiers = new Vue({
       router,
@@ -43,14 +42,13 @@ window.onload = function () {
             console.log(ajaxUrlGetOrdersByDelivery+' delivery_id '+delivery_id);
 
             if(delivery_id==0 || delivery_id=='') {
-                htmlResultOrders.removeClass('fa fa-spinner');
+                $('.run-orders .spinner').removeClass(ico_spinner);
                 //$('#submit').addClass('disabled');
                 return;
             }
 
-            //$('.result-orders').show();
-            //htmlResultOrders.show();
-            htmlResultOrders.addClass('fa fa-spinner');
+            $('.run-orders').show();
+            $('.run-orders .spinner').addClass(ico_spinner);
 
             let params = {
                 delivery_id: delivery_id,
@@ -60,15 +58,14 @@ window.onload = function () {
             http.post(ajaxUrlGetOrdersByDelivery, params)
                 .then(response => {
                   /* console.log(response.data); */
-                  htmlResultOrders.removeClass('fa fa-spinner');
+                  $('.run-orders .spinner').removeClass(ico_spinner);
                   this.is_found_orders = true;
                   this.orders = response.data;        
                   // $('#submit').removeClass('disabled');
                 })
             .catch(error => {
-                  htmlResultOrders.removeClass('fa-lg fa fa-spinner');
+                  $('.run-orders .spinner').removeClass(ico_spinner);
                   this.is_found_orders = false;
-                  htmlResultOrders.removeClass('fa fa-spinner');
                   console.log("Error: " + error);
             });            
         },
@@ -80,14 +77,13 @@ window.onload = function () {
             console.log(ajaxUrlGetCompleteUsersByDelivery+' delivery_id '+delivery_id);
 
             if(delivery_id==0 || delivery_id=='') {
-                htmlResultUsers.removeClass('fa fa-spinner'); 
+                $('.run-users .spinner').removeClass(ico_spinner); 
                 $('#submit').addClass('disabled');
                 return;
             }
 
-            //$('.result-users').show();
-            //htmlResultUsers.show();
-            htmlResultUsers.addClass('fa fa-spinner');
+            $('.run-users').show();
+            $('.run-users .spinner').addClass(ico_spinner);
 
             let params = {
                 delivery_id: delivery_id
@@ -96,13 +92,13 @@ window.onload = function () {
             http.post(ajaxUrlGetCompleteUsersByDelivery, params)
                 .then(response => {
                   /* console.log(response.data); */
-                  htmlResultUsers.removeClass('fa fa-spinner');
+                  $('.run-users .spinner').removeClass(ico_spinner);
                   this.is_found_users = true;
                   this.users = response.data;
                   $('#submit').removeClass('disabled');
                 })
             .catch(error => {
-                 htmlResultUsers.removeClass('fa fa-spinner');
+                 $('.run-users .spinner').removeClass(ico_spinner);
                  this.is_found_users = false;
                  console.log("Error: " + error);
             });            
@@ -120,7 +116,7 @@ window.onload = function () {
         formatDate(value) {
           if (value) {
             let locale = window.navigator.userLanguage || window.navigator.language;
-            /* console.log(locale); */
+            console.log(locale);
             moment.toLocaleString(locale);
             return moment(String(value)).format('DD MMMM YYYY')
           }

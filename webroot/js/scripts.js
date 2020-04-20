@@ -14,6 +14,9 @@ Script.prototype = {
     constructor: Script, //costruttore
     fieldUpdateAjaxUrl: '/admin/api/fieldUpdate',
     da_calcolare: 3,
+    spinner: 'fa-lg fa fa-spinner fa-spin',
+    ok: 'fa-lg text-green fa fa-thumbs-o-up',
+    ko: 'fa-lg text-red fa fa-thumbs-o-down',
 
     log: function(str) { // se uso questo metodo il nuomero della riga e' sempre quello qui!!!
         if (window.console)
@@ -74,7 +77,7 @@ Script.prototype = {
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
             else
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
-            responseHtml.addClass('fa fa-spinner');
+            responseHtml.addClass(ico_spinner);
 
             var data = {
                 id: id,
@@ -97,16 +100,16 @@ Script.prototype = {
                         if (response.code) {
                         }
                         
-                        responseHtml.removeClass('fa-lg fa fa-spinner');
-                        responseHtml.addClass('fa-lg text-green fa fa-thumbs-o-up');
+                        responseHtml.removeClass(ico_spinner);
+                        responseHtml.addClass(ico_ok);
                     },
                     error: function (e) {
                         console.log(e.responseText.message);
-                        responseHtml.removeClass('fa-lg fa fa-spinner');
-                        responseHtml.addClass('fa-lg text-red fa fa-thumbs-o-down');
+                        responseHtml.removeClass(ico_spinner);
+                        responseHtml.addClass(ico_ko);
                     },
                     complete: function (e) {
-                        setTimeout( function() {responseHtml.removeClass('fa fa-thumbs-o-up').removeClass('fa fa-thumbs-o-down');} , 5000);
+                        setTimeout( function() {responseHtml.removeClass(ico_ok).removeClass(ico_ko);} , 5000);
                     }
                 });                     
         }); 

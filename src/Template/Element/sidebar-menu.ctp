@@ -9,7 +9,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
 ?>	
   <?php echo $this->fetch('tb_sidebar') ?>
 
-  <li class="treeview"> 
+  <li class=""> 
     <a href="<?php echo $portalgas_bo_url.$portalgas_bo_home;?>">
       <i class="fa fa-home"></i> <span><?php echo __('PortAlGas');?></span>
     </a>
@@ -107,8 +107,12 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
       </span>
     <ul class="treeview-menu">
       <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsCashs&amp;action=index" target=""><?php echo $icon;?>Configura</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsCashs&amp;action=ctrl" target=""><?php echo $icon;?>Prospetto utenti</a></li>      
-      <li><a href="<?php echo $this->Url->build('/admin/cashes/supplier-organization-filter'); ?>"><?php echo $icon;?><?php echo __('Prepagato per produttori');?></a></li>
+      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsCashs&amp;action=ctrl" target=""><?php echo $icon;?>Prospetto utenti</a></li>
+      <?php
+      if($this->Identity->get('organization')->paramsConfig['hasCashFilterSupplier']=='Y') {
+          echo '<li><a href="'.$this->Url->build('/admin/cashes/supplier-organization-filter').'">'.$icon.__('Prepagato per produttori').'</a></li>';
+      }   
+      ?>
     </ul>
     </a>
   </li>

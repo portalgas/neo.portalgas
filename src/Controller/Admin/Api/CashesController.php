@@ -25,11 +25,7 @@ class CashesController extends ApiAppController
      */
     public function cashExcludedUpdate() {
 
-		/*
-         fractis
-         $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y' ||
-        */
-         if(!$this->Auth->isManager($this->user)) {
+        if(!$this->Auth->isManager($this->user) || $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
