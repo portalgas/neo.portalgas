@@ -57,6 +57,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function bootstrap()
     {
+        /*
+         * https://book.cakephp.org/debugkit/3/en/index.html
+         */
+        Configure::write('DebugKit.panels', ['DebugKit.Packages' => false]);
+        $this->addPlugin('DebugKit');
+
         $this->addPlugin('Josegonzalez/Upload');
 
         parent::bootstrap();
