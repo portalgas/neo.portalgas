@@ -30,7 +30,18 @@ class GdxpsController extends AppController
         parent::beforeRender($event);        
     }
 
+    /*
+     * list suppliers gdxp
+     */
     public function index()
+    {
+        $gdxp_suppliers_index_url = Configure::read('Gdxp.suppliers.index.url');
+        $gdxp_articles_index_url = Configure::read('Gdxp.articles.index.url');
+
+        $this->set(compact('gdxp_suppliers_index_url', 'gdxp_articles_index_url'));
+    }
+
+    public function export()
     {
         $articles = [];
         $supplier_organization_id = 0;

@@ -67,13 +67,13 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   ?>
   <li class="treeview"> 
     <a href="#">
-      <i class="fa fa-dashboard"></i> <span>Interoperabilità tra gestionali</span>
+      <i class="fa fa-share-alt"></i> <span>Interoperabilità tra gestionali</span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
       <ul class="treeview-menu">
-        <li><a href="<?php echo $this->Url->build('/admin/gdxps/'); ?>"><?php echo $icon;?><?php echo __('Article-Export-short');?></a></li>
-
+        <li><a href="<?php echo $this->Url->build('/admin/gdxps/'); ?>"><?php echo $icon;?><?php echo __('Gdxp-Suppliers-index-short');?></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/gdxps/export'); ?>"><?php echo $icon;?><?php echo __('Article-Export-short');?></a></li>
         <li class="treeview">
           <a href="#"><?php echo $icon;?><?php echo __('Import-File-short');?>
             <span class="pull-right-container">

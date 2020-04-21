@@ -116,8 +116,9 @@ window.onload = function () {
         formatDate(value) {
           if (value) {
             let locale = window.navigator.userLanguage || window.navigator.language;
-            console.log(locale);
-            moment.toLocaleString(locale);
+            /* console.log(locale); */
+            moment.toLocaleString(locale)
+            moment.locale(locale);
             return moment(String(value)).format('DD MMMM YYYY')
           }
         },

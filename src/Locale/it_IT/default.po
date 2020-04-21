@@ -295,6 +295,12 @@ msgstr "Importo pagato"
 #
 # gdxps
 #
+msgid "Gdxp-Suppliers-index"
+msgstr "Elenco produttori in formato GDXP"
+
+msgid "Gdxp-Suppliers-index-short"
+msgstr "Elenco produttori"
+
 msgid "Article-Export"
 msgstr "Esporta articoli in formato GDXPS"
 
@@ -678,6 +684,9 @@ msgstr "Nome classe Component per i metodi custom"
 #
 msgid "Supplier"
 msgstr "Produttore"
+
+msgid "SupplierOrganization"
+msgstr "Produttore del G.A.S."
 
 msgid "Supplier-Name"
 msgstr "Nome"
