@@ -18,6 +18,7 @@ class QueueJsonComponent extends QueueComponent {
     private $uuid;
     private $queue_id;
     protected $_registry;
+    private $results = [];
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -36,7 +37,7 @@ class QueueJsonComponent extends QueueComponent {
 	 */
 	public function getDatas($uuid, $queue, $mappings, $table, $table_id, $source, $request) {
 
-        $debug = false;
+        $debug = true;
 
         /*
          * valori return
@@ -169,6 +170,7 @@ class QueueJsonComponent extends QueueComponent {
                     else {
                         $esito = false;
                         $code = 500;
+                        debug($mapping);
                         $msg = 'Il tag '.$mapping->master_json_path.' dev\'essere '.$mapping->mapping_value_type->match.' mentre vale '.$datas[$numResults][$slave_column];
                         break;
                     }
@@ -262,21 +264,18 @@ class QueueJsonComponent extends QueueComponent {
 
     /*
      * https://github.com/swaggest/php-json-schema
+     *
+     * json: contenuto del file json (da upload o service ecomomia solidale)
+     * schema_json
      */
-    public function validateSchema($file_path_full, $file_schema_path_full, $debug=false) {
+    // public function validateSchema($file_path_full, $file_schema_path_full, $debug=false) {
+    public function validateSchema($json, $schema_json, $debug=false) {
         
         $results = [];
         $results['esito'] = true;
 
-        $file = new File($file_schema_path_full);   
-        $file_content = $file->read(true, 'r');
-        $schema_json = json_decode($file_content);
+        if($debug) debug($json);       
         if($debug) debug($schema_json);
-        
-        $file = new File($file_path_full);   
-        $file_content = $file->read(true, 'r');
-        $json = json_decode($file_content);
-        if($debug) debug($json);
         
         try {
             $schema = Schema::import($schema_json);
@@ -311,9 +310,11 @@ class QueueJsonComponent extends QueueComponent {
      *      $mapping->mapping_type->code == 'DEFAULT'
      *      $mapping->is_required
      *      empty($mapping->value_default)
-     *      $mapping->mapping_value_type->match
+     *      $mapping->mapping_value_type->matchù
+     *
+     * json: contenuto del file json (da upload o service ecomomia solidale)
      */
-    public function validate($file_path_full, $queuesCode, $organization_id, $debug=false) {
+    public function validate($json, $queuesCode, $organization_id, $debug=false) {
 
         $debug = false;
         
@@ -322,14 +323,10 @@ class QueueJsonComponent extends QueueComponent {
         $msg = '';
         $results = [];
 
-        $file = new File($file_path_full);   
-        $json = $file->read(true, 'r');
-        $json = json_decode($json);
-
-        if(!$json) {
+        if(empty($json) || !$json) {
             $esito = false;
             $code = 500;
-            $msg = 'File '.$file_path_full.' non e\' un Json valido';
+            $msg = 'File json non e\' un Json valido';
         } 
 
         /*
@@ -430,80 +427,93 @@ class QueueJsonComponent extends QueueComponent {
         return $results;
     }
 
+    private function _extract($json, $master_json_paths, $current_item_array, $debug=false) {
+
+        $tot_item_array = count($master_json_paths);
+
+        for($current_item_array; $current_item_array < $tot_item_array; $current_item_array++) {
+
+            $node = $master_json_paths[$current_item_array];
+
+            if($debug) debug(($current_item_array+1).' di '.$tot_item_array.' nodo: <b>'.$node.'</b> da estrarre dal json');
+
+            if(is_object($json)) {
+                if($debug) debug('before OBJECT estrazione rispetto al nodo '.$node);
+                $json = $json->{$node};
+                if($debug) debug('after OBJECT estrazione rispetto al nodo '.$node);
+                // if($debug) debug($json);            
+            }
+            else 
+            if(is_string($json)) {
+                if($debug) debug('before STRING estrazione rispetto al nodo '.$node);
+                //if($debug) debug($json);
+                $json = $json->{$node};
+                if($debug) debug('after STRING estrazione rispetto al nodo '.$node);
+                //if($debug) debug($json);
+            }
+            else
+            if(is_array($json)) {
+
+                if($debug) debug('before ARRAY['.count($json).'] estrazione rispetto al nodo '.$node);
+                //if($debug) debug($json);
+                $current_item_array++;
+                foreach ($json as $j) {
+                    
+                    if(isset($j->{$node})) {
+                        
+                        /*
+                         * arrivato all'ultimo => valore da estrarre
+                         */
+                        if($current_item_array == $tot_item_array) {
+                            $this->results[] = $j->{$node};
+                        } // end if(($current_item_array+1) == $tot_item_array)
+
+                       $this->_extract($j->{$node}, $master_json_paths, $current_item_array);
+                       if($debug) debug('after ARRAY[n] estrazione rispetto al nodo '.$node);
+                       //if($debug) debug($json);
+                    } // if(isset($j->{$node}))
+                } // foreach ($json as $j)
+            }
+            else {
+                debug("type non previsto!");
+                var_dump($json);
+                exit;
+            }
+
+            /*
+             * arrivato all'ultimo => valore da estrarre
+             */
+            if(($current_item_array+1) == $tot_item_array) {
+                if($debug) debug($json);
+                $this->results[] = $json;
+            } // end if(($current_item_array+1) == $tot_item_array)
+        }
+    }
+
     /*
      * estraggo il valore dal json (string / array) scomponento $mapping->master_json_path
      *      ex blocks[0]->supplier->products[]->name
      */
     private function _getValueJson($json, $master_json_path) {
         
-        // debug($json->blocks[0]->supplier->contacts[0]);exit;
+        $debug = true;
 
-        $results = [];
+        $master_json_path = 'blocks->supplier->products->name';
+        $master_json_path = 'subject->address->street';
+        $master_json_path = 'subject->name';
+        $master_json_path = 'subject->contacts->type';
+        $master_json_path = 'blocks->supplier->contacts->type';     
+        debug($master_json_path);
+        // debug($json);
 
+        $current_item_array = 0;
         $master_json_paths = explode('->', $master_json_path);
         // debug($master_json_paths);
-        $value = $json;
-        $sequence_json_path_lasts = [];
-        foreach($master_json_paths as $numResult => $master_json_path) {
-            
-            // debug('numResult '.$numResult.' count(master_json_paths) '.count($master_json_paths));
+        
+        $this->_extract($json, $master_json_paths, $current_item_array, $debug);
 
-            if(strpos($master_json_path, '[0]')>0) { // nel json e' un array sempre di 1    
-                
-                // tolgo [0]
-                $master_json_path = substr($master_json_path, 0, strlen($master_json_path)-3);
-                $value = $value->{$master_json_path}[0];
-            }
-            else
-            if(strpos($master_json_path, '[]')>0) {
-                    /*
-                     * blocks[0]->supplier->products[]->name
-                     * e' un array, lo persisto in value
-                     */
-
-                    // tolgo []
-                    $master_json_path = substr($master_json_path, 0, strlen($master_json_path)-2);
-                    $value = $value->{$master_json_path};
-
-                    /*
-                     * in master_json_path_last persisto il nome del campo
-                    */
-                    $i = ($numResult+1);
-                    for ($i; $i < count($master_json_paths); $i++) {
-                        $sequence_json_path_lasts[] = $master_json_paths[$i];
-                    }
-
-                    break;
-            }
-            else {
-                $value = $value->{$master_json_path};
-                // $value = $json->{$path}[0]->{$path2}->{$name};                                
-            }
-        } // foreach($master_json_paths as $numResult => $master_json_path) 
-       
-        // debug($value); 
-        // debug($sequence_json_path_lasts);
-
-        if(is_array($value)) {
-            /* 
-             * e' una array (ex articoli)
-             */ 
-            foreach($value as $val) {  
-                foreach($sequence_json_path_lasts as $sequence_json_path_last) {
-                    $val = $val->{$sequence_json_path_last};
-                }
-
-                $results[] = $val;
-            } // end foreach($value as $value_json) 
-
-            $value = $val;
-        } 
-        else {
-            $results[] = $value;
-        }
-
-        // debug($results);
-
-        return $results;        
+        debug($this->results);
+        exit;
+        return $this->results;        
     }    
 }

@@ -27,7 +27,7 @@ class TestsController extends AppController
         
         $debug = true;
 
-        $request['code'] = 'GDXP-PORTALGAS';
+        $request['code'] = Configure::read('Gdxp.queue.code');
         $request['id'] = '';
 		
         $queuesTable = TableRegistry::get('Queues');

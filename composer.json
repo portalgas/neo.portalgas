@@ -10,7 +10,7 @@
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "admad/cakephp-jwt-auth": "^2.3",
-        "cakedc/enum": "~1.0",
+        "cakedc/enum": "dev-master",
         "cakephp/authentication": "^1.1",
         "cakephp/authorization": "^1.2",
         "cakephp/cakephp": "3.8.*",

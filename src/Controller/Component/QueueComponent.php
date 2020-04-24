@@ -69,14 +69,14 @@ class QueueComponent extends Component {
             }
 
             /* 
-             * se XML contentuo file, se non empty
+             * se XML o Json contentuo file, se non empty
              */
             $source = $this->_getSources($id, $queue);
             if($source===false) {
                 $esito = false;
                 $code = 500;
                 $uuid = $uuid;
-                $msg = 'File '.$id.' non aperto';
+                $msg = 'File ['.$id.'] non aperto';
                 $results = []; 
             }
 
@@ -177,10 +177,7 @@ class QueueComponent extends Component {
 	            
 	        break;
             case 'JSON':
-                $file = new File($id);   
-                $json = $file->read(true, 'r');
-                $results = json_decode($json);
-                // debug($results);
+                $results = $id;
             break;
             case 'XML':
                 $results = @simplexml_load_file($id);

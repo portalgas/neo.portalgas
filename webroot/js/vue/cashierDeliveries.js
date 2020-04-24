@@ -55,7 +55,7 @@ window.onload = function () {
                 orders_state_code: orders_state_code
             }; 
 
-            http.post(ajaxUrlGetOrdersByDelivery, params)
+            axios.post(ajaxUrlGetOrdersByDelivery, params)
                 .then(response => {
                   /* console.log(response.data); */
                   $('.run-orders .spinner').removeClass(ico_spinner);
@@ -89,7 +89,7 @@ window.onload = function () {
                 delivery_id: delivery_id
             }; 
 
-            http.post(ajaxUrlGetCompleteUsersByDelivery, params)
+            axios.post(ajaxUrlGetCompleteUsersByDelivery, params)
                 .then(response => {
                   /* console.log(response.data); */
                   $('.run-users .spinner').removeClass(ico_spinner);

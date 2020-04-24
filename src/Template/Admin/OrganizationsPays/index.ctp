@@ -32,7 +32,6 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                  <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('year') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('data_pay') ?></th>
@@ -43,15 +42,12 @@
                   <th scope="col"><?= $this->Paginator->sort('tot_articles') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('importo') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('type_pay') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($organizationsPays as $organizationsPay): ?>
                 <tr>
-                  <td><?= $this->Number->format($organizationsPay->id) ?></td>
                   <td><?= $organizationsPay->has('organization') ? $this->Html->link($organizationsPay->organization->name, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]) : '' ?></td>
                   <td><?= h($organizationsPay->year) ?></td>
                   <td><?= h($organizationsPay->data_pay) ?></td>
@@ -62,8 +58,6 @@
                   <td><?= $this->Number->format($organizationsPay->tot_articles) ?></td>
                   <td><?= $this->Number->format($organizationsPay->importo) ?></td>
                   <td><?= h($organizationsPay->type_pay) ?></td>
-                  <td><?= h($organizationsPay->created) ?></td>
-                  <td><?= h($organizationsPay->modified) ?></td>
                   <td class="actions text-right">
                       <?= $this->Html->link(__('View'), ['action' => 'view', $organizationsPay->id], ['class'=>'btn btn-info btn-xs']) ?>
                       <?= $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id], ['class'=>'btn btn-warning btn-xs']) ?>

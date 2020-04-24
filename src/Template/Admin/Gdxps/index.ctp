@@ -29,7 +29,7 @@ echo '<div v-show="is_found_suppliers === true" style="display:none;">';
           <td>{{ supplier.vat }}</td>
           <td>{{ supplier.lastchange | formatDate }}</td>
           <td><a class="btn btn-success" target="_blank" 
-            v-bind:href="'/json/gdxp-articles-'+ supplier.vat +'.json'">Scarica listino in formato GDXP</a></td>
+            v-bind:href="'/admin/import-files/jsonToService?q=vat&w='+ supplier.vat">Importa listino in formato GDXP</a></td>
         </tr>
       </tbody>
     </table>
@@ -38,7 +38,9 @@ echo '</div>'; // is_found_suppliers
 
 echo '</div>';
 
-$js = "var ajaxUrlGdxpSupplierIndex = '".$gdxp_suppliers_index_url."';";
+$js = "var ajaxUrlGdxpSupplierIndex = '".$gdxp_suppliers_index_url."';
+
+";
 
 $this->Html->scriptBlock($js, ['block' => true]);
 ?>

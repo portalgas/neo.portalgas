@@ -29,7 +29,15 @@ window.onload = function () {
             $('.run-suppliers').show();
             $('.run-suppliers .spinner').addClass(ico_spinner);
 
-            http.get(ajaxUrlGdxpSupplierIndex)
+            axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, X-Auth-Token';
+
+            var headers = {
+                  'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+                  'Access-Control-Allow-Headers': '*'
+            }
+
+            axios.get(ajaxUrlGdxpSupplierIndex, headers)
                 .then(response => {
                   console.log(response.data); 
                   $('.run-suppliers .spinner').removeClass(ico_spinner);

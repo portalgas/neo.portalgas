@@ -6,24 +6,13 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * OrganizationsPays Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- *
- * @method \App\Model\Entity\OrganizationsPay get($primaryKey, $options = [])
- * @method \App\Model\Entity\OrganizationsPay newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\OrganizationsPay[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\OrganizationsPay|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\OrganizationsPay saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\OrganizationsPay patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\OrganizationsPay[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\OrganizationsPay findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class OrganizationsPaysTable extends Table
 {
+    const BENEFICIARIO_PAY_FRANCESCO = 'Francesco';
+    const BENEFICIARIO_PAY_MARCO = 'Marco';
+    const TYPE_PAY_RITENUTA = 'Ritenuta';
+    const TYPE_PAY_RICEVUTA = 'Ricevuta';
+
     /**
      * Initialize method
      *
@@ -38,12 +27,23 @@ class OrganizationsPaysTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->addBehavior('CakeDC/Enum.Enum', ['lists' => [
+            'beneficiario_pay' => [
+                'strategy' => 'const',
+                'prefix' => 'BENEFICIARIO_PAY'
+            ],
+            'type_pay' => [
+                'strategy' => 'const',
+                'prefix' => 'TYPE_PAY'
+            ]
+        ]]);
+
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
-        ]);
+        ]);       
     }
 
     /**

@@ -57,6 +57,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function bootstrap()
     {
+        $this->addPlugin('CakeDC/Enum');
+
         /*
          * https://book.cakephp.org/debugkit/3/en/index.html
          */

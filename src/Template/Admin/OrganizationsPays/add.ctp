@@ -32,13 +32,13 @@
                 echo $this->Form->control('organization_id', ['options' => $organizations]);
                 echo $this->Form->control('year');
                 echo $this->Form->control('data_pay');
-                echo $this->Form->control('beneficiario_pay');
+                echo $this->Form->control('beneficiario_pay', ['options' => $beneficiario_pays]);
                 echo $this->Form->control('tot_users');
                 echo $this->Form->control('tot_orders');
                 echo $this->Form->control('tot_suppliers_organizations');
                 echo $this->Form->control('tot_articles');
                 echo $this->Form->control('importo');
-                echo $this->Form->control('type_pay');
+                echo $this->Form->control('type_pay', ['options' => $type_pays]);
               ?>
             </div>
             <!-- /.box-body -->

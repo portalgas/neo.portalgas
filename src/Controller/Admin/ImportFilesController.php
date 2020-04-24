@@ -5,6 +5,8 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Cake\Network\Http\Client;
+use Cake\Filesystem\File;
 
 class ImportFilesController extends AppController
 {
@@ -26,6 +28,92 @@ class ImportFilesController extends AppController
         }        
     }
 
+    /*
+     * https://github.com/madbob/GDXP/blob/master/DOC.md
+     *
+     * q = per cosa ricercare (id / vat)
+     * w = parola da ricercare
+     */
+    public function jsonToService()
+    {
+        $debug = false;
+        $continua = true;
+
+        $this->loadComponent('QueueJson');
+
+        $queuesCode = Configure::read('Gdxp.queue.code');
+        $organization_id = $this->Authentication->getIdentity()->organization_id;
+
+        $q = $this->request->getQuery('q'); // q = per cosa ricercare (id / vat)
+        $w = $this->request->getQuery('w'); // w = parola da ricercare
+        $service = $this->request->getQuery('service');
+        if(empty($service)) 
+            $service='ECONOMIASOLIDALE';
+
+        if($debug) debug($w);
+
+        $url = '';
+        switch ($service) {
+            case 'ECONOMIASOLIDALE':
+                $url = Configure::read('Gdxp.articles.index.url').'?'.$q.'='.$w;
+                break; 
+            default:
+                $continua = false;
+                die('valore service ['.$service.'] non previsto');
+                break;
+        }
+        if($debug) debug($url);
+
+        if($continua) {
+            $http = new Client();
+            $response = $http->get($url);
+            $file_content = $response->body();
+
+            $json = json_decode($file_content);
+            // if($debug) debug($json);
+
+            $schema_json = $this->_getGdxpSchemaJson();
+            // if($debug) debug($schema_json);
+
+            $results = $this->QueueJson->validateSchema($json, $schema_json);
+            if($debug) debug($results);
+            if(isset($results['esito']) && !$results['esito']) {
+                $continua = false;
+                $this->Flash->error($results['msg']);  
+            }
+
+        } // end if($continua)
+
+        /*
+         * import dati queue
+         */
+        if($continua) {
+
+            $request['code'] = $queuesCode;                
+            $request['organization_id'] = $organization_id;
+            $request['id'] = $json; 
+
+            $results = $this->QueueJson->queue($request, $debug);
+            // debug($results);
+            if(isset($results['esito']) && !$results['esito']) {
+                $continua = false;
+                // debug($results);
+                if(!empty($results['msg']))
+                    $msg = $results['msg'];
+                else
+                    $msg = __('UploadValidateKo');
+                $this->Flash->error($msg);  
+
+                $this->set('errors', $results['results']);
+            } // if(isset($results['esito']) && !$results['esito']) 
+
+        } // end if($continua)
+
+        if($continua) {
+            $this->Flash->success(__('UploadValidateOk'));
+        }
+    }
+
 	/*
 	 * https://github.com/madbob/GDXP/blob/master/DOC.md
 	 */
@@ -36,7 +124,7 @@ class ImportFilesController extends AppController
 
         $this->loadComponent('QueueJson');
 
-        $queuesCode = 'GDXP-PORTALGAS';
+        $queuesCode = Configure::read('Gdxp.queue.code');
         $organization_id = $this->Authentication->getIdentity()->organization_id;
 
         if ($this->request->is('post')) {
@@ -70,9 +158,14 @@ class ImportFilesController extends AppController
              */
             if($continua) {
 
-                $file_schema_path_full = WWW_ROOT.'/json/json-schema.json';
+                $file = new File($file_path_full);   
+                $file_content = $file->read(true, 'r');
+                $json = json_decode($file_content);
+                // debug($json);
 
-                $results = $this->QueueJson->validateSchema($file_path_full, $file_schema_path_full);
+                $schema_json = $this->_getGdxpSchemaJson();
+
+                $results = $this->QueueJson->validateSchema($json, $schema_json);
                 if($debug) debug($results);
                 if(isset($results['esito']) && !$results['esito']) {
                     $continua = false;
@@ -87,7 +180,7 @@ class ImportFilesController extends AppController
 
                 $request['code'] = $queuesCode;                
                 $request['organization_id'] = $organization_id;
-                $request['id'] = $file_path_full; 
+                $request['id'] = $json;
 
                 $results = $this->QueueJson->queue($request, $debug);
                 // debug($results);
@@ -101,7 +194,7 @@ class ImportFilesController extends AppController
                     $this->Flash->error($msg);  
 
                     $this->set('errors', $results['results']);
-                }
+                } // if(isset($results['esito']) && !$results['esito']) 
 
             } // end if($continua)
 
@@ -116,7 +209,7 @@ class ImportFilesController extends AppController
     {
         $this->loadComponent('QueueXml');
 
-        $queuesCode = 'GDXP-PORTALGAS';
+        $queuesCode = Configure::read('Gdxp.queue.code');
         $organization_id = $this->Authentication->getIdentity()->organization_id;
 
         $debug = false;
@@ -227,4 +320,16 @@ class ImportFilesController extends AppController
             }
         } // end post  
     }
+
+    private function _getGdxpSchemaJson() {
+
+        $file_schema_path_full = Configure::read('Gdxp.schema_path');
+
+        $file = new File($file_schema_path_full);   
+        $file_content = $file->read(true, 'r');
+        $schema_json = json_decode($file_content);
+        // debug($schema_json);
+
+        return $schema_json;
+    }    
 }

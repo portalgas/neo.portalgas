@@ -41,6 +41,7 @@ class OrganizationsPaysController extends AppController
 
         $this->paginate = [
             'contain' => ['Organizations'],
+            'order' => ['OrganizationsPays.year' => 'desc']
         ];
         $organizationsPays = $this->paginate($this->OrganizationsPays);
 
@@ -86,7 +87,10 @@ class OrganizationsPaysController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Organizations Pay'));
         }
         $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
-        $this->set(compact('organizationsPay', 'organizations'));
+        $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
+        $type_pays = $this->OrganizationsPays->enum('type_pay');
+        
+        $this->set(compact('organizationsPay', 'organizations', 'beneficiario_pays', 'type_pays'));
     }
 
 
