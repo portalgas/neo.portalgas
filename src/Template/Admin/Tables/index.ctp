@@ -38,6 +38,7 @@
                   <th scope="col"><?= $this->Paginator->sort('table_name') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('entity') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('where_key') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('update_key') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('is_system') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('created') ?></th>
@@ -54,6 +55,7 @@
                   <td><?= h($table->table_name) ?></td>
                   <td><?= h($table->entity) ?></td>
                   <td><?= h($table->where_key) ?></td>
+                  <td><?= h($table->update_key) ?></td>
                   <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($table, $table->is_system); ?></td>
                   <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($table, $table->is_active); ?></td>
                   <td><?= h($table->created) ?></td>

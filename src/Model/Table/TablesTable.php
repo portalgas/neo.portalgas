@@ -86,6 +86,11 @@ class TablesTable extends Table
             ->allowEmptyString('where_key');
 
         $validator
+            ->scalar('update_key')
+            ->maxLength('update_key', 100)
+            ->allowEmptyString('update_key');
+
+        $validator
             ->boolean('is_system')
             ->notEmptyString('is_system');
 

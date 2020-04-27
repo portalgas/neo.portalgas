@@ -34,6 +34,7 @@
                 echo $this->Form->control('table_name');
                 echo $this->Form->control('entity');
                 echo $this->Form->control('where_key');
+                echo $this->Form->control('update_key');
                 echo $this->Form->control('is_system');
                 echo $this->Form->control('is_active');
               ?>

@@ -22,7 +22,6 @@ class QueueComponent extends Component {
         $this->_registry = $registry;
 
         $this->_registry->load('QueueLog');
-        $this->_registry->load('MappingDwweMago');
 
         // debug($this->_registry->loaded());
 
@@ -271,7 +270,14 @@ class QueueComponent extends Component {
 
             $esito = $results['esito'];
             $action = $results['action'];
-			
+
+            /*
+             * salvo l'id del record dovresse servire per la tabella successiva 
+             * per la gestione INNER_TABLE_PARENT (Eredita da tabella)               
+             */
+            if(isset($results['results']) && isset($results['results']->id))
+                $this->last_insert_ids[$table->id] = $results['results']->id;
+
             if(!$action) {
                 $this->_registry->QueueLog->logging($uuid, $queue->id, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
             }
@@ -292,16 +298,43 @@ class QueueComponent extends Component {
             $tableRegistry = TableRegistry::get($slave_entity);
             $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
             $conn = $tableRegistry->getConnection($datasource_slave);
-            $conn->begin();
-
+            
             foreach($datas as $data) {
                 
                  if($debug) debug($data);
 
                 // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
-                
+
+                /*
+                 * insert o update
+                 */
+                $insert = false;
+                if(!empty($table->update_key)) {
+                    if(!isset($data[$table->update_key])) {
+                        $this->_registry->QueueLog->logging($uuid, $queue->id, 'Campo ['.$table->update_key.'] per valutare se INSERT / UPDATE non esiste', 'ERROR');
+
+                        $insert = true;
+                    }
+                    else
+                    if(empty($data[$table->update_key]))
+                        $insert = true;
+                    else {
+                        // debug($data[$table->update_key]);
+                        $where = [$table->update_key => $data[$table->update_key]];
+                        if($debug) debug($where);
+                        $slaveEntity = $tableRegistry->find()->where($where)->first();
+                        if($debug) debug($slaveEntity);
+
+                        if(empty($slaveEntity))
+                            $insert = true;
+                        else
+                            $insert = false;
+                    } 
+                } // if(!empty($table->update_key))
+
                 // $slaveEntity = $this->{$slave_entity}->newEntity();
-                $slaveEntity = $tableRegistry->newEntity();
+                if($insert)
+                    $slaveEntity = $tableRegistry->newEntity();
 
                 if(isset($data['id']))
                     $slaveEntity->id = $data['id'];
@@ -316,12 +349,18 @@ class QueueComponent extends Component {
                 // if ($this->{$slave_entity}->save($slaveEntity)) {
                 if($debug) debug($slaveEntity); 
                 if(!$this->debug) {
+
+                        $conn->begin();
+                        
                         $resultSave = $tableRegistry->save($slaveEntity);
                         if ($resultSave) {
+
+                            $conn->commit(); 
 
                             $esito = true;
 
                             /*
+                             * salvo l'id del record dovresse servire per la tabella successiva 
                              * per la gestione INNER_TABLE_PARENT (Eredita da tabella)
                              */
                             $primary_key = $tableRegistry->getPrimaryKey();
@@ -358,9 +397,13 @@ class QueueComponent extends Component {
                             } 
                         }
                         else {
-                            
+
+                            $conn->rollback();
+
                             $this->_registry->QueueLog->logging($uuid, $queue->id, 'save', $slaveEntity->getErrors(), 'ERROR');
 
+                            $this->_registry->QueueLog->logging($uuid, $queue->id, 'Error', 'rollback', 'ERROR');
+                            
                             $esito = false;
                             $code = 500;
                             $uuid = $uuid;
@@ -379,12 +422,6 @@ class QueueComponent extends Component {
                 }                              
             } // end foreach($datas as $data)  
 
-            if($esito)
-                $conn->commit(); 
-            else {
-                $this->_registry->QueueLog->logging($uuid, $queue->id, 'Error', 'rollback', 'ERROR');
-                $conn->rollback();
-            }
         } // end if($esito)
         else {
             $esito = $results['esito'];
@@ -404,18 +441,22 @@ class QueueComponent extends Component {
      */
     protected function _defaultValue($data, $is_required, $value_default, $debug=false) {
 
-        if($is_required && $data=='' && $value_default!='') {
-            $data = $value_default;                  
+        $data_old = $data;
+
+        if($is_required && $data==='' && $value_default!='') {
+            $data = $value_default;
+            settype($data, gettype($data_old));                  
         }
 
-        if($debug) 
-            debug('BEFORE data '.$data.' is_required '.$is_required.' value_default '.$value_default.' AFTER data '.$data);
+        if($debug) {
+            debug('BEFORE data '.$data_old.' ['.gettype($data_old).'] is_required '.$is_required.' value_default '.$value_default.' AFTER data '.$data.' ['.gettype($data).']');
+        }
 
         return $data;
     }	
 
     private function _getUuid() {
-        return uniqid();
+        return date('YmdHi').'-'.uniqid();
     }  
 
     /*

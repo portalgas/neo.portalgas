@@ -58,6 +58,7 @@
                     <th scope="col"><?= __('Table Name') ?></th>
                     <th scope="col"><?= __('Entity') ?></th>
                     <th scope="col"><?= __('Where Key') ?></th>
+                    <th scope="col"><?= __('Update Key') ?></th>
                     <th scope="col"><?= __('Is System') ?></th>
                     <th scope="col"><?= __('Is Active') ?></th>
                     <th scope="col"><?= __('Created') ?></th>
@@ -72,6 +73,7 @@
                     <td><?= h($tables->table_name) ?></td>
                     <td><?= h($tables->entity) ?></td>
                     <td><?= h($tables->where_key) ?></td>
+                    <td><?= h($tables->update_key) ?></td>
                     <td><?= h($tables->is_system) ?></td>
                     <td><?= h($tables->is_active) ?></td>
                     <td><?= h($tables->created) ?></td>

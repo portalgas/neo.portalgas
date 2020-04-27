@@ -2,6 +2,8 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
+use Cake\Event\Event;
 
 /**
  * QueueLogs Controller
@@ -19,7 +21,7 @@ class QueueLogsController extends AppController
     }
 
     public function beforeFilter(Event $event) {
-        
+
         parent::beforeFilter($event);
 
         if(!$this->Auth->isRoot($this->user)) {

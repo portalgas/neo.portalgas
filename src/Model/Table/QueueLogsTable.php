@@ -60,7 +60,7 @@ class QueueLogsTable extends Table
 
         $validator
             ->scalar('uuid')
-            ->maxLength('uuid', 25)
+            ->maxLength('uuid', 50)
             ->requirePresence('uuid', 'create')
             ->notEmptyString('uuid');
 

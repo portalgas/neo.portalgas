@@ -35,6 +35,7 @@ class AppController extends Controller
     use Traits\UtilTrait;
 
     protected $user = null;
+    protected $application_env; // development
     
     public $helpers = [
         'Modal' => [
@@ -74,7 +75,10 @@ class AppController extends Controller
          * gestione float nella serializzazione json
          * se no gli importi divengono 10.00000000000000
          */
-        ini_set("serialize_precision", 14);        
+        ini_set("serialize_precision", 14);
+
+        $this->application_env = env('APPLICATION_ENV', 'production');
+        $this->set('application_env', $this->application_env);
     }
 
     public function beforeFilter(Event $event) {

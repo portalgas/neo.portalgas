@@ -13,8 +13,10 @@
 /* 
 * errors
 */
-// debug($errors);
 if(isset($errors)) {
+
+  if($application_env='development') debug($errors);
+
     echo '<section class="content">';
     echo '<div class="row">';
     echo '<div class="col-md-12">';

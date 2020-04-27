@@ -148,6 +148,7 @@ class SuppliersOrganizationsTable extends Table
 
     public function create($organization_id, $supplier)
     {
+        $debug = false;
         $esito = true;
         $code = '200';
         $msg = '';
@@ -174,7 +175,7 @@ class SuppliersOrganizationsTable extends Table
          */
         $data['owner_supplier_organization_id'] = 0;
         $data['owner_organization_id'] = 0;
-        debug($data);
+        if($debug) debug($data);
         
         $entity = $this->newEntity();
         $entity = $this->patchEntity($entity, $data);
@@ -187,7 +188,7 @@ class SuppliersOrganizationsTable extends Table
         else {
             $data['owner_supplier_organization_id'] = $entity->id;
             $data['owner_organization_id'] = $entity->organization_id;
-            debug($data);
+            if($debug) debug($data);
 
             $entity = $this->patchEntity($entity, $data);
             if (!$this->save($entity)) {

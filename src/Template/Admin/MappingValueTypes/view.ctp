@@ -76,6 +76,7 @@
                 <th scope="col"><?= __('Master Table Id') ?></th>
                 <th scope="col"><?= __('Master Column') ?></th>
                 <th scope="col"><?= __('Master Json Path') ?></th>
+                <th scope="col"><?= __('Master Json Path Extra') ?></th>
                 <th scope="col"><?= __('Master Xml Xpath') ?></th>
                 <th scope="col"><?= __('Master Csv Num Col') ?></th>
                 <th scope="col"><?= __('Slave Scope Id') ?></th>
@@ -104,6 +105,7 @@
                 <td><?= h($mappings->master_table_id) ?></td>
                 <td><?= h($mappings->master_column) ?></td>
                 <td><?= h($mappings->master_json_path) ?></td>
+                <td><?= h($mappings->master_json_path_extra) ?></td>
                 <td><?= h($mappings->master_xml_xpath) ?></td>
                 <td><?= h($mappings->master_csv_num_col) ?></td>
                 <td><?= h($mappings->slave_scope_id) ?></td>

@@ -21,6 +21,7 @@ class MappingGdxpPortalgasComponent extends Component {
 	 */
 	public function supplierExists($datas, $organization_id) {
 
+		$debug = true;
         $esito = true;
         $action = false;
         $code = 200;
@@ -53,6 +54,7 @@ class MappingGdxpPortalgasComponent extends Component {
 	        $results = $suppliersTable->find()
 			            ->where($where)
 						->first();
+
 			if(!empty($results))  {
 		        $esito = true;
 		        $code = 200;
@@ -68,8 +70,7 @@ class MappingGdxpPortalgasComponent extends Component {
 		}
 
 		$results = ['action' => $action, 'esito' => $esito, 'code' => $code, 'msg' => $msg, 'results' => $results];
-		// debug($results);
-		
+
 		return $results;
 	}
 
@@ -80,6 +81,7 @@ class MappingGdxpPortalgasComponent extends Component {
 	 */
 	public function supplierOrganizationsExists($datas, $organization_id) {
 
+		$debug = false;
         $esito = true;
         $action = false;
         $code = 200;
@@ -105,6 +107,8 @@ class MappingGdxpPortalgasComponent extends Component {
 	        $results = $suppliersOrganizationsTable->find()
 			            ->where($where)
 						->first();
+			if($debug) debug($where);
+			if($debug) debug($results);
 
 			if(!empty($results))  {
 		        $esito = true;
@@ -216,6 +220,9 @@ class MappingGdxpPortalgasComponent extends Component {
             ->where($where)
             // ->contain(['Suppliers'])
 			->first();
+		// debug($where);
+		// debug($results);
+		
 		if(!empty($results)) {
 			$supplier_id = $results->id;		
 		}

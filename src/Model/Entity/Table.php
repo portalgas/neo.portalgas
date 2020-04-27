@@ -37,6 +37,7 @@ class Table extends Entity
         'table_name' => true,
         'entity' => true,
         'where_key' => true,
+        'update_key' => true,
         'is_system' => true,
         'is_active' => true,
         'created' => true,

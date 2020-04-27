@@ -1,11 +1,1 @@
-{
-   "count":1,
-   "results":[
-      {
-         "name":"Agricola Bargiolina",
-         "id":"990",
-         "vat":"03606010043",
-         "lastchange":"2020-04-20"
-      }
-   ]
-}
+{"count":3,"results":[{"name":"Consorzio Siciliano LeGallineFelici","id":"983","vat":"04539170870","lastchange":"2020-04-26"},{"name":"Agricola Bargiolina","id":"990","vat":"03606010043","lastchange":"2020-04-20"},{"name":"Iris Societ\u00e0 Cooperativa Agricola","id":"1206","vat":"00443150198","lastchange":"2020-04-25"}]}

@@ -38,11 +38,11 @@ class ImportFilesController extends AppController
     {
         $debug = false;
         $continua = true;
-
+        
         $this->loadComponent('QueueJson');
 
         $queuesCode = Configure::read('Gdxp.queue.code');
-        $organization_id = $this->Authentication->getIdentity()->organization_id;
+        $organization_id = $this->Authentication->getIdentity()->organization->id;
 
         $q = $this->request->getQuery('q'); // q = per cosa ricercare (id / vat)
         $w = $this->request->getQuery('w'); // w = parola da ricercare
@@ -69,9 +69,22 @@ class ImportFilesController extends AppController
             $response = $http->get($url);
             $file_content = $response->body();
 
+            if(empty($file_content)) {
+                $continua = false;
+                $this->Flash->error('dati da '.$url.' non pervenuti');  
+            }
+        }
+
+        if($continua) {
             $json = json_decode($file_content);
             // if($debug) debug($json);
+            if(empty($json)) {
+                $continua = false;
+                $this->Flash->error('dati da '.$url.' non in formato json corretto');  
+            }            
+        }
 
+        if($continua) {
             $schema_json = $this->_getGdxpSchemaJson();
             // if($debug) debug($schema_json);
 
@@ -97,12 +110,12 @@ class ImportFilesController extends AppController
             // debug($results);
             if(isset($results['esito']) && !$results['esito']) {
                 $continua = false;
-                // debug($results);
+                // debug($results); 
                 if(!empty($results['msg']))
                     $msg = $results['msg'];
                 else
-                    $msg = __('UploadValidateKo');
-                $this->Flash->error($msg);  
+                    $msg = __('ServiceJsonValidateKo');
+                $this->Flash->error($msg);
 
                 $this->set('errors', $results['results']);
             } // if(isset($results['esito']) && !$results['esito']) 
@@ -110,7 +123,22 @@ class ImportFilesController extends AppController
         } // end if($continua)
 
         if($continua) {
-            $this->Flash->success(__('UploadValidateOk'));
+
+            /*
+             * ricerco il produttore appena salvato
+             */
+            $suppliersTable = TableRegistry::get('Suppliers');
+
+            $supplier = $suppliersTable->findByPiva($w)
+                    ->contain(['SuppliersOrganizations' => function($q)  use ($organization_id) {
+                                            return $q
+                                                ->where(['organization_id' => $organization_id]);
+                                    }])
+                    ->first();
+            // debug($supplier);
+            $this->set(compact('supplier'));
+                    
+            $this->Flash->success(__('ServiceJsonValidateOk'));
         }
     }
 

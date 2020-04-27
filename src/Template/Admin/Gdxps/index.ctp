@@ -17,6 +17,7 @@ echo '<div v-show="is_found_suppliers === true" style="display:none;">';
           <th><?php echo __('P Iva');?></th>
           <th>Last change</th>
           <th>Listino</th>
+          <th>Importa</th>
         </tr>
       </thead>
       <tbody>
@@ -28,6 +29,8 @@ echo '<div v-show="is_found_suppliers === true" style="display:none;">';
           <td>{{ supplier.name }}</td>
           <td>{{ supplier.vat }}</td>
           <td>{{ supplier.lastchange | formatDate }}</td>
+          <td><a class="btn btn-success" target="_blank" 
+            v-bind:href="'<?php echo Configure::read('Gdxp.articles.index.url');?>?vat='+ supplier.vat">Visualizza listino in formato GDXP</a></td>
           <td><a class="btn btn-success" target="_blank" 
             v-bind:href="'/admin/import-files/jsonToService?q=vat&w='+ supplier.vat">Importa listino in formato GDXP</a></td>
         </tr>

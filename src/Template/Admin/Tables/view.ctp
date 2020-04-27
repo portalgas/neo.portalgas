@@ -30,6 +30,8 @@
             <dd><?= h($table->entity) ?></dd>
             <dt scope="row"><?= __('Where Key') ?></dt>
             <dd><?= h($table->where_key) ?></dd>
+            <dt scope="row"><?= __('Update Key') ?></dt>
+            <dd><?= h($table->update_key) ?></dd>
             <dt scope="row"><?= __('Id') ?></dt>
             <dd><?= $this->Number->format($table->id) ?></dd>
             <dt scope="row"><?= __('Created') ?></dt>

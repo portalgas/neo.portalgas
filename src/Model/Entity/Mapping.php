@@ -56,6 +56,7 @@ class Mapping extends Entity
         'master_table_id' => true,
         'master_column' => true,
         'master_json_path' => true,
+        'master_json_path_extra' => true,
         'master_xml_xpath' => true,
         'master_csv_num_col' => true,
         'slave_scope_id' => true,

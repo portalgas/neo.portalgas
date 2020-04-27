@@ -658,6 +658,18 @@ msgstr "Il file da uplodare non trovato!"
 msgid "This upload failed"
 msgstr "Il file non può essere caricato sul server"
 
+msgid "UploadValidateOk"
+msgstr "Il file caricato sul server"
+
+msgid "UploadValidateKo"
+msgstr "Il file non è stato caricato sul server"
+
+msgid "ServiceJsonValidateOk"
+msgstr "Dati registrati correttamente"
+
+msgid "ServiceJsonValidateKo"
+msgstr "I dati non sono stati caricati!"
+
 #
 # note
 #
