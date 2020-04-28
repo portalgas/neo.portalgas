@@ -38,7 +38,7 @@ class CashesController extends ApiAppController
         $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
 
         $where = ['SupplierOrganizationCashExcludeds.supplier_organization_id' => $supplier_organization_id,
-                  'SupplierOrganizationCashExcludeds.organization_id' => $this->user->organization_id];
+                  'SupplierOrganizationCashExcludeds.organization_id' => $this->user->organization->id];
         $supplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->find()
                                                 ->where($where)
                                                 ->first();
@@ -47,7 +47,7 @@ class CashesController extends ApiAppController
 			 * insert
 			 */
         	$data = [];
-        	$data['organization_id'] = $this->user->organization_id;
+        	$data['organization_id'] = $this->user->organization->id;
         	$data['supplier_organization_id'] = $supplier_organization_id;
 
 	        $supplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->newEntity();

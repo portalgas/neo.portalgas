@@ -34,8 +34,16 @@ class GdxpExportsController extends AppController
         $subject = $this->_getOrganization($this->user->organization);
 
         $blocks =[]; 
-        $blocks[0]['supplier'] = $this->_getSupplier($this->user, $this->user->organization_id, $supplier_organization_id); 
-        $blocks[0]['supplier']['products'] = $this->_getArticles($this->user, $this->user->organization_id, $supplier_organization_id); 
+        $supplier = $this->_getSupplier($this->user, $this->user->organization->id, $supplier_organization_id); 
+        if(!empty($supplier)) {
+            $blocks[0]['supplier'] = $supplier;
+            $blocks[0]['supplier']['products'] = $this->_getArticles($this->user, $this->user->organization->id, $supplier_organization_id); 
+
+            $suplier_name = $blocks[0]['supplier']['name'];
+        } 
+        else {
+            $suplier_name = 'Produttore non trovato';
+        } // end if(!empty($supplier))
 
         // $this->set('_rootNode', 'gdxp'); node xml
         $this->set($gdxp);
@@ -43,7 +51,7 @@ class GdxpExportsController extends AppController
         $this->set('_serialize', ['protocolVersion', 'creationDate', 'applicationSignature', 'subject', 'blocks']);
 
         // Set Force Download
-        $suplier_name = $blocks[0]['supplier']['name'];
+
         $suplier_name = str_replace(' ', '-', $suplier_name);
         $file_name = Configure::read('Gdxp.file.prefix').$suplier_name.'-'.date('YmdHis').'.json';
 
@@ -80,13 +88,13 @@ class GdxpExportsController extends AppController
     private function _getSupplier($user, $organization_id, $supplier_organization_id) {
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');        
-        
+        $results = [];
         $where = ['SuppliersOrganizations.organization_id' => $organization_id,
             'SuppliersOrganizations.id' => $supplier_organization_id,
             ];
         // debug($where);    
 
-        $results = $suppliersOrganizationsTable->find('all', [
+        $suppliersOrganizationsResults = $suppliersOrganizationsTable->find('all', [
                         'conditions' => $where,
                         'fields' => ['supplier_id']
                         /*
@@ -94,20 +102,24 @@ class GdxpExportsController extends AppController
                         */
                         ])
                         ->first();
-        $supplier_id = $results->supplier_id; 
-        // debug($results->supplier_id); 
+        // debug($suppliersOrganizationsResults);   
+        if(!empty($suppliersOrganizationsResults)) {
 
-        $suppliersTable = TableRegistry::get('Suppliers');
-        $suppliersTable->addBehavior('GdxpSuppliers');
+            $supplier_id = $suppliersOrganizationsResults->supplier_id; 
+            // debug($suppliersOrganizationsResults->supplier_id); 
 
-        $where = ['Suppliers.id' => $supplier_id,
-            ];
-        // debug($where);    
+            $suppliersTable = TableRegistry::get('Suppliers');
+            $suppliersTable->addBehavior('GdxpSuppliers');
 
-        $supplierResults = $suppliersTable->find('all', ['conditions' => $where])->first();
-        // debug($supplierResults);
+            $where = ['Suppliers.id' => $supplier_id,
+                ];
+            // debug($where);    
 
-        return $supplierResults;
+            $results = $suppliersTable->find('all', ['conditions' => $where])->first();
+            // debug($results);
+        } // end if(!empty($suppliersOrganizationsResults))            
+
+        return $results;
     }
 
     /*

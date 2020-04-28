@@ -83,7 +83,7 @@ class CartsController extends ApiAppController
                     /*
                      * associo la cassa
                      */
-                    $cashResults = $cashesTable->getByUser($this->user, $userResult->user->organization_id, $userResult->user->id, $options, $debug);                    
+                    $cashResults = $cashesTable->getByUser($this->user, $userResult->user->organization->id, $userResult->user->id, $options, $debug);                    
                     $results[$numResult]['cash'] = $cashResults;
                 }
             } // if(!empty($userResults))

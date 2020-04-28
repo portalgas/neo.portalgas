@@ -39,7 +39,7 @@ class TokensController extends AppController
      * user_salt = 
      *  $user_id = $this->user->id;
      *  $user_organization_id = $this->user->organization_id;
-     *  $organization_id = $this->user->organization['Organization']['id']; // gas scelto
+     *  $organization_id = $this->user->organization->id; // gas scelto
      */
     public function login()
     {

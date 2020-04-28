@@ -1,15 +1,18 @@
-  <section class="content-header">
-    <h1>
-      Import File
-      <small><?php echo __('JsonToService'); ?></small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
-    </ol>
-  </section>
-
-
 <?php
+use Cake\Core\Configure;
+
+echo '<section class="content-header">';
+echo '<h1>';
+echo __('Gdxp-JsonToService');
+echo '<small>'.$url.'</small>';
+echo '</h1>';
+echo '<ol class="breadcrumb">';
+echo '<li><a href="'.$this->Url->build(['controller' => 'gdxps', 'action' => 'index']).'"><i class="fa fa-dashboard"></i> '.__('Home').'</a></li>';
+echo '</ol>';
+echo '</section>';
+
+
+
 /* 
 * errors
 */
@@ -48,15 +51,13 @@ if(!empty($supplier)) {
 
     echo '<section class="content">';
     echo '<div class="row">';
-    echo '<div class="col-md-12">';
+    echo '<div class="col-md-8">';
     echo $supplier->suppliers_organizations[0]->name;
+    echo ' ';
     echo $supplier->indirizzo.' '.$supplier->localita;
     echo '</div>';
-    echo '</div>';
-
-    echo '<div class="row">';
-    echo '<div class="col-md-12">';
-    echo '<a class="btn btn-success" 
+    echo '<div class="col-md-4">';
+    echo '<a class="btn btn-info" 
             href="'.$portalgas_bo_url.'/administrator/index.php?FilterArticleArticleTypeIds_hidden=&FilterArticleCategoryArticleId=&FilterArticleFlagPresenteArticlesorders=ALL&FilterArticleSupplierId='.$id.'&FilterArticleUm=&FilterArticleStato=ALL&FilterArticleName=&option=com_cake&controller=Articles&action=context_articles_index">';
     echo 'Visualizza listino articoli importati';
     echo '</a>';

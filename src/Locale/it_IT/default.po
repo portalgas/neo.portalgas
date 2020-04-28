@@ -664,10 +664,13 @@ msgstr "Il file caricato sul server"
 msgid "UploadValidateKo"
 msgstr "Il file non è stato caricato sul server"
 
-msgid "ServiceJsonValidateOk"
+msgid "Gdxp-JsonToService"
+msgstr "Inserimento/aggiornamento dati GDXP"
+
+msgid "Gdxp-ServiceJsonValidateOk"
 msgstr "Dati registrati correttamente"
 
-msgid "ServiceJsonValidateKo"
+msgid "Gdxp-ServiceJsonValidateKo"
 msgstr "I dati non sono stati caricati!"
 
 #
@@ -749,8 +752,14 @@ msgid "Cash-Nota"
 msgstr "Nota di cassa"
 
 #
-# M S G   system
+# M S G  system
 #
+msgid "Flash-Message"
+msgstr "Messaggio"
+
+msgid "Flash-Alert"
+msgstr "Attenzione"
+
 msgid "developer.mode"
 msgstr "Modalità di sviluppo"
 

@@ -63,6 +63,7 @@ class ImportFilesController extends AppController
                 break;
         }
         if($debug) debug($url);
+        $this->set(compact('url'));
 
         if($continua) {
             $http = new Client();
@@ -114,7 +115,7 @@ class ImportFilesController extends AppController
                 if(!empty($results['msg']))
                     $msg = $results['msg'];
                 else
-                    $msg = __('ServiceJsonValidateKo');
+                    $msg = __('Gdxp-ServiceJsonValidateKo');
                 $this->Flash->error($msg);
 
                 $this->set('errors', $results['results']);
@@ -138,7 +139,7 @@ class ImportFilesController extends AppController
             // debug($supplier);
             $this->set(compact('supplier'));
                     
-            $this->Flash->success(__('ServiceJsonValidateOk'));
+            $this->Flash->success(__('Gdxp-ServiceJsonValidateOk'));
         }
     }
 

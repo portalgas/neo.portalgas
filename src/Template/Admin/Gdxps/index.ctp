@@ -5,6 +5,8 @@ echo $this->Html->script('vue/gdxpSuppliersIndex', ['block' => 'scriptPageInclud
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Gdxp-Suppliers-index'), 'subtitle' => 'economiasolidale.net']);
 
+echo $this->element('msg', ['msg' => 'Dati ottenuti interrogando il servizio <a target="_blank" href="'.$gdxp_suppliers_index_url.'">'.$gdxp_suppliers_index_url.'</a>']);
+
 echo '<div id="vue-suppliers">';
 
 echo '<div v-show="is_found_suppliers === false" style="display: none;text-align: center;" class="run run-suppliers"><div class="spinner"></div></div>';
@@ -29,9 +31,9 @@ echo '<div v-show="is_found_suppliers === true" style="display:none;">';
           <td>{{ supplier.name }}</td>
           <td>{{ supplier.vat }}</td>
           <td>{{ supplier.lastchange | formatDate }}</td>
-          <td><a class="btn btn-success" target="_blank" 
+          <td><a class="btn btn-info" target="_blank" 
             v-bind:href="'<?php echo Configure::read('Gdxp.articles.index.url');?>?vat='+ supplier.vat">Visualizza listino in formato GDXP</a></td>
-          <td><a class="btn btn-success" target="_blank" 
+          <td><a class="btn btn-info" 
             v-bind:href="'/admin/import-files/jsonToService?q=vat&w='+ supplier.vat">Importa listino in formato GDXP</a></td>
         </tr>
       </tbody>
