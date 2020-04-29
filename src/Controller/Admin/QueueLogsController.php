@@ -53,7 +53,7 @@ class QueueLogsController extends AppController
         if(!empty($where)) {
             $page = $this->request->getQuery('page');
             if(isset($page))            
-                $this->request->getQuery('page') = 0;
+                $this->request->setQuery('page', 0);
         }
         $this->set(compact('search_queue_id'));
 
