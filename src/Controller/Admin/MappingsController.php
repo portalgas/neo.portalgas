@@ -72,7 +72,8 @@ class MappingsController extends AppController
             array_push($where, ['Mappings.slave_table_id' => $search_slave_table_id]);
         }
         if(!empty($where)) {
-            if(isset($this->request->getQuery('page')))
+            $page = $this->request->getQuery('page');
+            if(isset($page))
                 $this->request->getQuery('page') = 0;
         }
         $this->set(compact('search_queue_id', 'search_master_scope_id', 'search_master_table_id', 'search_mapping_type_id', 'search_slave_scope_id', 'search_slave_table_id'));

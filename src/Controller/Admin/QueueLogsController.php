@@ -51,7 +51,8 @@ class QueueLogsController extends AppController
             array_push($where, ['QueueLogs.uuid' => $search_uuid]);
         }
         if(!empty($where)) {
-            if(isset($this->request->getQuery('page')))
+            $page = $this->request->getQuery('page');
+            if(isset($page))            
                 $this->request->getQuery('page') = 0;
         }
         $this->set(compact('search_queue_id'));
