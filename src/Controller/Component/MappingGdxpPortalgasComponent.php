@@ -263,36 +263,51 @@ class MappingGdxpPortalgasComponent extends Component {
 	 */ 
 	public function translateArticleUm($organization_id, $um) {
 
+		// debug('translateArticleUm BEFORE organization_id ['.$organization_id.'] um ['.$um.']');
+
 		switch (strtolower($um)) {
 			case 'sacchetti':
-				$um = 'PZ';	
-			break;
 			case 'pz':
 				$um = 'PZ';	
 			break;
 			case 'gr':
+			case 'grammi':
 				$um = 'GR';	
 			break;
 			case 'hg':
+			case 'etti':
+			case 'etto':
 				$um = 'HG';	
 			break;
 			case 'kg':
+			case 'chili':
+			case 'chilo':
+			case 'kilogrammi':
+			case 'kilogrammo':
 				$um = 'KG';	
 			break;
 			case 'ml':
+			case 'milligrammi':
+			case 'milligrammo':
 				$um = 'ML';	
 			break;
 			case 'dl':
+			case 'decilitri':
+			case 'decilitro':
 				$um = 'DL';	
 			break;
 			case 'lt':
+			case 'litri':
+			case 'litro':
 				$um = 'LT';	
 			break;
 			default:
 				$um = 'PZ';
 			break;
 		}
-
+		
+		// debug('translateArticleUm AFTER organization_id ['.$organization_id.'] um ['.$um.']');
+			
 		return $um;
 	}
 }

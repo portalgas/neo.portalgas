@@ -65,7 +65,7 @@ class QueueJsonComponent extends QueueComponent {
 
         foreach ($mappings as $numMapping => $mapping) {
 
-            if(!empty($debug_node)) {
+            if(!empty($debug_node) && !$debug) {
                 if($mapping->slave_column==$debug_node)
                     $debug = true;
                 else
