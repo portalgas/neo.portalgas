@@ -144,7 +144,7 @@ class MappingGdxpPortalgasComponent extends Component {
 		}
 
 		$results = ['esito' => $esito, 'action' => $action,'code' => $code, 'msg' => $msg, 'results' => $results];
-		// debug($results);
+		if($debug) debug($results);
 		
 		return $results;
 	}

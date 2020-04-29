@@ -21,7 +21,10 @@ class QueueLogComponent extends Component {
 	}
 
 	public function logging($uuid, $queue_id, $message='', $log='', $level='INFO') {
-		
+
+		if(Configure::read('QueueLogs')===false)
+			return true;
+
 		$this->_logFile($uuid, $queue_id, $message, $log, $level);
 		$this->_logDatabase($uuid, $queue_id, $message, $log, $level);
 		$this->_logShell($uuid, $queue_id, $message, $log, $level);

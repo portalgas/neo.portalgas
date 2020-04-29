@@ -47,20 +47,26 @@ if(!empty($supplier)) {
     $config = Configure::read('Config');
     $portalgas_bo_url = $config['Portalgas.bo.url'];
 
-    $id = $supplier->suppliers_organizations[0]->id;
+    $name = '';
+    if(isset($supplier->suppliers_organizations[0])) {
+        $id = $supplier->suppliers_organizations[0]->id;
+        $name = $supplier->suppliers_organizations[0]->name;
+    }
 
     echo '<section class="content">';
     echo '<div class="row">';
     echo '<div class="col-md-8">';
-    echo $supplier->suppliers_organizations[0]->name;
+    echo $name;
     echo ' ';
     echo $supplier->indirizzo.' '.$supplier->localita;
     echo '</div>';
     echo '<div class="col-md-4">';
-    echo '<a class="btn btn-info" 
-            href="'.$portalgas_bo_url.'/administrator/index.php?FilterArticleArticleTypeIds_hidden=&FilterArticleCategoryArticleId=&FilterArticleFlagPresenteArticlesorders=ALL&FilterArticleSupplierId='.$id.'&FilterArticleUm=&FilterArticleStato=ALL&FilterArticleName=&option=com_cake&controller=Articles&action=context_articles_index">';
-    echo 'Visualizza listino articoli importati';
-    echo '</a>';
+    if(isset($id)) {
+        echo '<a class="btn btn-info" 
+                href="'.$portalgas_bo_url.'/administrator/index.php?FilterArticleArticleTypeIds_hidden=&FilterArticleCategoryArticleId=&FilterArticleFlagPresenteArticlesorders=ALL&FilterArticleSupplierId='.$id.'&FilterArticleUm=&FilterArticleStato=ALL&FilterArticleName=&option=com_cake&controller=Articles&action=context_articles_index">';
+        echo 'Visualizza listino articoli importati';
+        echo '</a>';        
+    }
     echo '</div>';
     echo '</div>';
     echo '</section>';    

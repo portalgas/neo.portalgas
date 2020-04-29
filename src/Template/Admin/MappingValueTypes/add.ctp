@@ -1,18 +1,31 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\MappingValueType $mappingValueType
+ * @var \App\Model\Entity\MappingType $mappingType
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Mapping Value Types'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Mappings'), ['controller' => 'Mappings', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Mapping'), ['controller' => 'Mappings', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="mappingValueTypes form large-9 medium-8 columns content">
+<!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Mapping Type
+      <small><?php echo __('Add'); ?></small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- general form elements -->
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title"><?php echo __('Form'); ?></h3>
+          </div>
+          <!-- /.box-header -->
+          <!-- form start -->
     <?= $this->Form->create($mappingValueType) ?>
     <fieldset>
         <legend><?= __('Add Mapping Value Type') ?></legend>
@@ -26,7 +39,15 @@
             echo $this->Form->control('is_active');
             echo $this->Form->control('sort');
         ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
-</div>
+            </div>
+            <!-- /.box-body -->
+
+          <?php echo $this->Form->submit(__('Submit')); ?>
+
+          <?php echo $this->Form->end(); ?>
+        </div>
+        <!-- /.box -->
+      </div>
+  </div>
+  <!-- /.row -->
+</section>

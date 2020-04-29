@@ -277,6 +277,7 @@ Configure::write('DB.field.datetime.empty', '1970-01-01 00:00:00');
 Configure::write('routes_msg_stop', ['controller' => 'Pages', 'action' => 'msg_stop', 'prefix' => 'admin']);
 Configure::write('routes_msg_not_order_state', ['controller' => 'Pages', 'action' => 'msg_not_order_state', 'prefix' => 'admin']);
 
+Configure::write('QueueLogs', true);
 Configure::write('QueueLogs.database', true);
 Configure::write('QueueLogs.file', false);
 Configure::write('QueueLogs.shell', false);
