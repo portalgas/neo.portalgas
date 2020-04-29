@@ -306,9 +306,9 @@ class QueueComponent extends Component {
                 // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
 
                 /*
-                 * insert o update
+                 * insert o update, se viene passato la chiave (ex sku) ctrl se esiste gia' 
                  */
-                $insert = false;
+                $insert = true;
                 if(!empty($table->update_key)) {
                     if(!isset($data[$table->update_key])) {
                         $this->_registry->QueueLog->logging($uuid, $queue->id, 'Campo ['.$table->update_key.'] per valutare se INSERT / UPDATE non esiste', 'ERROR');
@@ -335,7 +335,7 @@ class QueueComponent extends Component {
                 // $slaveEntity = $this->{$slave_entity}->newEntity();
                 if($insert)
                     $slaveEntity = $tableRegistry->newEntity();
-
+               
                 if(isset($data['id']))
                     $slaveEntity->id = $data['id'];
                 if(isset($data['organization_id']))
