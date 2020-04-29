@@ -267,6 +267,27 @@ class MappingGdxpPortalgasComponent extends Component {
 			case 'sacchetti':
 				$um = 'PZ';	
 			break;
+			case 'pz':
+				$um = 'PZ';	
+			break;
+			case 'gr':
+				$um = 'GR';	
+			break;
+			case 'hg':
+				$um = 'HG';	
+			break;
+			case 'kg':
+				$um = 'KG';	
+			break;
+			case 'ml':
+				$um = 'ML';	
+			break;
+			case 'dl':
+				$um = 'DL';	
+			break;
+			case 'lt':
+				$um = 'LT';	
+			break;
 			default:
 				$um = 'PZ';
 			break;
