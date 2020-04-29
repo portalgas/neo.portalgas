@@ -85,8 +85,9 @@ class AppController extends Controller
      
         parent::beforeFilter($event); 
 
-        if(!empty($this->request->prefix) &&
-            $this->request->prefix!='api') // non autentico per token
+        $prefix = $this->request->getParam('prefix');
+        if(!empty($prefix) &&
+            $prefix!='api') // non autentico per token
         {
             $result = $this->Authentication->getResult();
             // debug($result); 
@@ -109,7 +110,7 @@ class AppController extends Controller
                 debug($result->getErrors());
                 // exit;
             } 
-        } // end if($this->request->prefix!='admin/api') 
+        } // end if($prefix!='admin/api') 
     }
     
     public function beforeRender(Event $event)

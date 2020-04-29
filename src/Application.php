@@ -144,7 +144,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
              * Authentication middleware
              */            
             $authentication = new AuthenticationMiddleware($this, [
-                'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login) 
+                /* 
+                 *  Notice: Deprecated (16384): The `unauthenticatedRedirect` configuration key on AuthenticationMiddleware is deprecated.
+                 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
+                 */ 
             ]);
             $middlewareQueue->add($authentication);
 
