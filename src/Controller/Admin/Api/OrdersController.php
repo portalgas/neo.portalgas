@@ -46,7 +46,8 @@ class OrdersController extends ApiAppController
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
-
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
         return $this->response; 
     } 
 }

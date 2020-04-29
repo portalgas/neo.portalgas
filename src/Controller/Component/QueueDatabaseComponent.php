@@ -25,7 +25,7 @@ class QueueDatabaseComponent extends QueueComponent {
         // debug($this->_registry->loaded());
 
         $this->controller = $registry->getController(); // strtolower($controller->name)
-        $this->action = strtolower($this->controller->request->action);        
+        $this->action = strtolower($this->controller->request->getParam('action'));        
 	}
 
 	public function getDatas($uuid, $queue, $mappings, $table, $table_id, $request) {

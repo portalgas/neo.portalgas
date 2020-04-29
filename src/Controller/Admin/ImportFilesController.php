@@ -68,7 +68,8 @@ class ImportFilesController extends AppController
         if($continua) {
             $http = new Client();
             $response = $http->get($url);
-            $file_content = $response->body();
+            //$file_content = $response->body();
+            $file_content = $response->getStringBody(); // getJson()/getXml() 
 
             if(empty($file_content)) {
                 $continua = false;
