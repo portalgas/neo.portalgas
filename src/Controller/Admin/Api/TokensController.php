@@ -44,7 +44,7 @@ class TokensController extends AppController
             return;
         }        
 
-		$user_salt = $this->request->query['u'];
+		$user_salt = $this->request->getQuery('u');
 		if(empty($user_salt)) {
 			return;
 		}
@@ -57,7 +57,7 @@ class TokensController extends AppController
 		
 		$user = $this->User->createUser($user['organization_id'], $user['username']);
 		if($debug) debug($user); 
-		$session = $this->request->session();
+		$session = $this->request->getSession();
 		$session->write('Auth', $user);
 		
         if($debug) exit;

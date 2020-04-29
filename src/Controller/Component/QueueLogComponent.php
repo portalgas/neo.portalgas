@@ -16,8 +16,8 @@ class QueueLogComponent extends Component {
 	{
         $this->_registry = $registry;
         $controller = $registry->getController();
-		$this->controller = strtolower($controller->name);
-		$this->action = strtolower($controller->request->action);
+		$this->controller = strtolower($controller->getName());
+		$this->action = strtolower($controller->request->getParam('action'));
 	}
 
 	public function logging($uuid, $queue_id, $message='', $log='', $level='INFO') {

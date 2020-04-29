@@ -30,7 +30,7 @@ class QueueJsonComponent extends QueueComponent {
         $this->_registry->load('QueueLog');
         // debug($this->_registry->loaded());
 
-        $this->controller = $registry->getController(); // strtolower($controller->name)
+        $this->controller = $registry->getController(); // strtolower($controller->getName())
         $this->action = strtolower($this->controller->request->getParam('action'));        
     }
 

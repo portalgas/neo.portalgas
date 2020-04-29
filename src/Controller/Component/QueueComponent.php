@@ -25,7 +25,7 @@ class QueueComponent extends Component {
 
         // debug($this->_registry->loaded());
 
-        $controller = $registry->getController(); // strtolower($controller->name)
+        $controller = $registry->getController(); // strtolower($controller->getName())
 		$action = strtolower($controller->request->action);
 	}
 
