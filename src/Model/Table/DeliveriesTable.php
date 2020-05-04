@@ -37,7 +37,7 @@ class DeliveriesTable extends Table
 
         $this->setTable('k_deliveries');
         $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
 
@@ -49,7 +49,7 @@ class DeliveriesTable extends Table
             'foreignKey' => 'gcalendar_event_id',
         ]);
         $this->hasMany('Orders', [
-            'foreignKey' => 'delivery_id',
+            'foreignKey' => ['organization_id', 'delivery_id'],
         ]);        
     }
 

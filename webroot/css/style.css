@@ -44,6 +44,20 @@ fieldset {
 }
 
 /*
+ *
+ */
+.table-col-label {
+    min-width: 50px;
+    text-align: center;
+    color:#fff;
+} 
+.table-col-label.table-col-label-alert {
+    background-color: red;
+}
+.table-col-label.table-col-label-success {
+    background-color: green;
+} 
+/*
  * search form 
  */
 .sidebar-form {color:#fff;}

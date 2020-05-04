@@ -277,7 +277,7 @@ Configure::write('DB.field.datetime.empty', '1970-01-01 00:00:00');
 Configure::write('routes_msg_stop', ['controller' => 'Pages', 'action' => 'msg_stop', 'prefix' => 'admin']);
 Configure::write('routes_msg_not_order_state', ['controller' => 'Pages', 'action' => 'msg_not_order_state', 'prefix' => 'admin']);
 
-Configure::write('QueueLogs', false);
+Configure::write('QueueLogs', false);          // disattivare in production
 Configure::write('QueueLogs.database', false); // attivare QueueLogs
 Configure::write('QueueLogs.file', false);     // attivare QueueLogs
 Configure::write('QueueLogs.shell', false);    // attivare QueueLogs
@@ -310,3 +310,15 @@ Configure::write('Gdxp.suppliers.index.url', 'http://www.economiasolidale.net/ap
 Configure::write('Gdxp.articles.index.url', 'http://www.economiasolidale.net/api/v1/get.php');
 Configure::write('Gdxp.queue.code', 'GDXP-PORTALGAS');
 Configure::write('Gdxp.schema_path', WWW_ROOT.'/json/json-schema.json');
+
+/*
+ * pagamenti
+ */
+Configure::write('OrganizationPayImportMax', 80); // massimo importo per il canone annuo
+Configure::write('costToUser', 1); // quanti euro costa ad utente
+Configure::write('OrganizationPayFasceYearStart', 2018); // anno da cui partono le fasce
+Configure::write('App.doc.upload.organizations.pays', DS.'images'.DS.'pays');
+Configure::write('App.web.doc.upload.organizations.pays', '/images/pays');
+
+Configure::write('separatoreDecimali', ',');
+Configure::write('separatoreMigliaia', '.');

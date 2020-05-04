@@ -1,11 +1,15 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-    K Organizations Pays
+    <?php __('OrganizationsPays');?>
 
     <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs']) ?></div>
   </h1>
 </section>
+
+<?php 
+echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tesoriere dopo la login visualizzarà il messaggio<br /><br />".__('msg_organization_pay_to_pay')]);
+?>
 
 <!-- Main content -->
 <section class="content">
@@ -34,43 +38,111 @@
               <tr>
                   <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('year') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('data_pay') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('beneficiario_pay') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_users') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_orders') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_suppliers_organizations') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_articles') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('beneficiario_pay') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('importo') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('type_pay') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('data_pay') ?></th>
+                  <th scope="col"><?= __('isSaldato') ?></th>
+                  <th scope="col"><?= __('doc') ?></th>
+                  <th scope="col" style="width: 85px;"><?= __('Msg attivato') ?></th>
+                  <th scope="col" style="width: 50px;"></th>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($organizationsPays as $organizationsPay): ?>
                 <tr>
-                  <td><?= $organizationsPay->has('organization') ? $this->Html->link($organizationsPay->organization->name, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]) : '' ?></td>
+                  <td>
+                    <?php
+                     $label = $organizationsPay->organization->name.' ('.$organizationsPay->organization->id.')';
+
+                     echo $this->Html->link($label, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]); 
+                    ?>
+                  </td>
                   <td><?= h($organizationsPay->year) ?></td>
-                  <td><?= h($organizationsPay->data_pay) ?></td>
-                  <td><?= h($organizationsPay->beneficiario_pay) ?></td>
                   <td><?= $this->Number->format($organizationsPay->tot_users) ?></td>
                   <td><?= $this->Number->format($organizationsPay->tot_orders) ?></td>
                   <td><?= $this->Number->format($organizationsPay->tot_suppliers_organizations) ?></td>
                   <td><?= $this->Number->format($organizationsPay->tot_articles) ?></td>
-                  <td><?= $this->Number->format($organizationsPay->importo) ?></td>
-                  <td><?= h($organizationsPay->type_pay) ?></td>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $organizationsPay->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $organizationsPay->id], ['confirm' => __('Are you sure you want to delete # {0}?', $organizationsPay->id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
+                  <td><?= h($organizationsPay->beneficiario_pay) ?></td>
+                  <?php
+                  echo '<td>';
+                  echo h($organizationsPay->importo);
+                  /*
+                  echo $this->Form->control('importo', ['type' => 'number', 'label' => false, 'inputmode' => 'numeric', 
+                      'class' => 'fieldUpdateAjax', 
+                      'data-attr-entity' => 'OrganizationsPays', 
+                      'data-attr-field' => 'importo', 
+                      'data-attr-id' => $organizationsPay->id
+                  ]);
+                  */
+                  echo '</td>';
+                  echo '<td>';
+                  echo h($organizationsPay->type_pay);
+                  echo '</td>';
+                  echo '<td>';
+                  if($organizationsPay->isSaldato)
+                    echo h($organizationsPay->data_pay);
+                  echo '</td>';
+                  if($organizationsPay->isSaldato)
+                     echo '<td class="table-col-label table-col-label-success">Saldato</td>';
+                  else
+                     echo '<td class="table-col-label table-col-label-alert">Da saldare</td>';
+                  
+                  echo '<td>';
+                  if(!empty($organizationsPay->doc_url)) {
+                      echo $this->Html->link(
+                          'Pdf',
+                          $organizationsPay->doc_url,
+                          ['class' => 'button', 'target' => '_blank']
+                      );
+                  }
+                  echo '</td>';
+
+                  $options = ['class' => 'form-control fieldUpdateAjax', 
+                              'data-attr-entity' => 'Organizations', 
+                              'data-attr-field' => 'hasMsg', 
+                              'data-attr-id' => $organizationsPay->organization->id, 'label' => false, 
+                              'value' => $organizationsPay->organization->hasMsg, 
+                              'options' => $hasMsgs];
+
+                  echo '<td>';
+                  echo $this->Form->control('hasMsg', $options);
+                  echo '</td>';
+                  echo '<td id="Organizations-'.$organizationsPay->organization->id.'"></td>';
+
+                  echo '<td class="actions text-right">';
+                  echo $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id], ['class'=>'btn btn-warning btn-xs']);
+                  /* 
+                  echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $organizationsPay->id], ['confirm' => __('Are you sure you want to delete # {0}?', $organizationsPay->id), 'class'=>'btn btn-danger btn-xs']);
+                  */ 
+                  echo '</td>';
+                echo '</tr>';
+              endforeach; 
+              ?>
             </tbody>
           </table>
         </div>
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
+
+    <div class="paginator">
+        <ul class="pagination">
+            <?= $this->Paginator->first('<< ' . __('first')) ?>
+            <?= $this->Paginator->prev('< ' . __('previous')) ?>
+            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->next(__('next') . ' >') ?>
+            <?= $this->Paginator->last(__('last') . ' >>') ?>
+        </ul>
+        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+    </div>
+
+    
     </div>
   </div>
 </section>

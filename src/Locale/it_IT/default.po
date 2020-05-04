@@ -695,6 +695,12 @@ msgid "note_queue_component"
 msgstr "Nome classe Component per i metodi custom"
 
 #
+# OrganizationPay
+#
+msgid "OrganizationPay"
+msgstr "Pagamenti"
+
+#
 # Supplier
 #
 msgid "Supplier"
@@ -855,6 +861,9 @@ msgstr "Non sei referente produttore dell'ordine!"
 
 msgid "msg_organization_payment_incomplete"
 msgstr "Completa i dati per il pagamento del canone annuo di PortAlGas"
+
+msgid "msg_organization_pay_to_pay"
+msgstr "Hai già saldato il canone annuale di PortAlGas?<a href="%" target="_blank"><br />Scarica qui il documento</a><br />Effettua un bonifico a %s<br />o paga con Satispy al numero %s"
 
 msgid "export_docs_not_found"
 msgstr "Non ci sono acquisti."

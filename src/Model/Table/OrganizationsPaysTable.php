@@ -5,13 +5,14 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class OrganizationsPaysTable extends Table
 {
     const BENEFICIARIO_PAY_FRANCESCO = 'Francesco';
     const BENEFICIARIO_PAY_MARCO = 'Marco';
-    const TYPE_PAY_RITENUTA = 'Ritenuta';
     const TYPE_PAY_RICEVUTA = 'Ricevuta';
+    const TYPE_PAY_RITENUTA = 'Ritenuta';
 
     /**
      * Initialize method
@@ -119,4 +120,80 @@ class OrganizationsPaysTable extends Table
 
         return $rules;
     }
+
+    public function isSaldato($user, $organizationsPay, $debug=false) {
+
+        if($organizationsPay->data_pay->format('Y-m-d') != Configure::read('DB.field.date.empty'))
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * in base agli utenti gestisce la fasce
+     */
+    public function getImportoLabel($user, $organization_id, $year, $tot_users, $debug=false) {
+
+        $results = [];
+
+        if($year < Configure::read('OrganizationPayFasceYearStart')) {
+            /*
+             * calcolo a persona
+             */
+            $results['importo'] = (Configure::read('costToUser') * (float)$tot_users);
+            
+            if($results['importo'] > Configure::read('OrganizationPayImportMax')) {
+                $results['importo'] = Configure::read('OrganizationPayImportMax');
+                $results['importo_nota'] = ' <span>(max)</span>';
+            }
+            else
+                $results['importo_nota'] = '';
+            
+            $results['importo_e'] = number_format($results['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+        }
+        else {
+            if($tot_users<=25) 
+                $importo = 25;
+             else
+             if($tot_users>25 && $tot_users<=50) 
+                $importo = 50;
+             else
+             if($tot_users>50 && $tot_users<=75) 
+                $importo = 75;
+             else
+             if($tot_users>75) 
+                $importo = 100;
+
+            $results['importo'] = $importo; 
+            $results['importo_e'] = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+            $results['importo_nota'] = '';
+        }
+
+        return $results;
+    }
+
+
+    /*
+     * in base agli utenti gestisce la fasce
+     */
+    public function getImporto($user, $organization_id, $year, $tot_users, $debug) {
+
+        $results = 0;
+
+        if($year >= Configure::read('OrganizationPayFasceYearStart')) {
+            if($tot_users<=25) 
+                $results = 25;
+             else
+             if($tot_users>25 && $tot_users<=50) 
+                $results = 50;
+             else
+             if($tot_users>50 && $tot_users<=75) 
+                $results = 75;
+             else
+             if($tot_users>75) 
+                $results = 100;
+        }
+
+        return $results;
+    }    
 }

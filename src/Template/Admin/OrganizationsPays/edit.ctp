@@ -29,16 +29,44 @@
           <?php echo $this->Form->create($organizationsPay, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
+                echo '<div class="row">';
+                echo '<div class="col-md-9">';               
                 echo $this->Form->control('organization_id', ['options' => $organizations]);
+                echo '</div>'; 
+                echo '<div class="col-md-3">'; 
                 echo $this->Form->control('year');
-                echo $this->Form->control('data_pay');
-                echo $this->Form->control('beneficiario_pay');
+                echo '</div>'; 
+                echo '</div>'; 
+
+                echo '<div class="row">';
+                echo '<div class="col-md-3">'; 
                 echo $this->Form->control('tot_users');
+                echo '</div>'; 
+                echo '<div class="col-md-3">'; 
                 echo $this->Form->control('tot_orders');
+                echo '</div>'; 
+                echo '<div class="col-md-3">'; 
                 echo $this->Form->control('tot_suppliers_organizations');
+                echo '</div>'; 
+                echo '<div class="col-md-3">'; 
                 echo $this->Form->control('tot_articles');
+                echo '</div>'; 
+                echo '</div>'; 
+
+                echo '<div class="row">';
+                echo '<div class="col-md-3">'; 
                 echo $this->Form->control('importo');
-                echo $this->Form->control('type_pay');
+                echo '</div>';                 
+                echo '<div class="col-md-3">'; 
+                echo $this->HtmlCustom->datepicker('data_pay', ['autocomplete' => 'off']);
+                echo '</div>'; 
+                echo '<div class="col-md-3">'; 
+                echo $this->Form->control('beneficiario_pay', ['options' => $beneficiario_pays]);  
+                echo '</div>'; 
+                echo '<div class="col-md-3">';               
+                echo $this->Form->control('type_pay', ['options' => $type_pays]);
+                echo '</div>'; 
+                echo '</div>'; 
               ?>
             </div>
             <!-- /.box-body -->

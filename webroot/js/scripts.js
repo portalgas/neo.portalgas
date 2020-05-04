@@ -14,14 +14,10 @@ Script.prototype = {
     constructor: Script, //costruttore
     fieldUpdateAjaxUrl: '/admin/api/fieldUpdate',
     da_calcolare: 3,
-    spinner: 'fa-lg fa fa-spinner fa-spin',
-    ok: 'fa-lg text-green fa fa-thumbs-o-up',
-    ko: 'fa-lg text-red fa fa-thumbs-o-down',
+    ico_spinner: 'fa-lg fa fa-spinner fa-spin',
+    ico_ok: 'fa-lg text-green fa fa-thumbs-o-up',
+    ico_ko: 'fa-lg text-red fa fa-thumbs-o-down',
 
-    log: function(str) { // se uso questo metodo il nuomero della riga e' sempre quello qui!!!
-        if (window.console)
-            console.log(str);
-    },
     bindEvents: function () {
         var _this = this;
 
@@ -77,7 +73,7 @@ Script.prototype = {
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
             else
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
-            responseHtml.addClass(ico_spinner);
+            responseHtml.addClass(this.ico_spinner);
 
             var data = {
                 id: id,
@@ -100,16 +96,16 @@ Script.prototype = {
                         if (response.code) {
                         }
                         
-                        responseHtml.removeClass(ico_spinner);
-                        responseHtml.addClass(ico_ok);
+                        responseHtml.removeClass(this.ico_spinner);
+                        responseHtml.addClass(this.ico_ok);
                     },
                     error: function (e) {
                         console.log(e.responseText.message);
-                        responseHtml.removeClass(ico_spinner);
-                        responseHtml.addClass(ico_ko);
+                        responseHtml.removeClass(this.ico_spinner);
+                        responseHtml.addClass(this.ico_ko);
                     },
                     complete: function (e) {
-                        setTimeout( function() {responseHtml.removeClass(ico_ok).removeClass(ico_ko);} , 5000);
+                        setTimeout( function() {responseHtml.removeClass(this.ico_ok).removeClass(this.ico_ko);} , 5000);
                     }
                 });                     
         }); 
