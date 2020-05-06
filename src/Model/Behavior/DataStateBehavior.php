@@ -18,7 +18,7 @@ class DataStateBehavior extends Behavior
         $this->config = $config;
     }
 
-    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options) {
+    public function beforeSave(Event $event, EntityInterface $entity) {
         $this->data($entity);
     }  
     

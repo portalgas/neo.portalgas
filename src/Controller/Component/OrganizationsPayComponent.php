@@ -7,7 +7,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 
-class OrganizationPayComponent extends Component {
+class OrganizationsPayComponent extends Component {
 
 	private $controller = '';
 	private $action = '';
@@ -36,11 +36,12 @@ class OrganizationPayComponent extends Component {
 		$results = '';
 		
 		$path_file = $this->portalgas_app_root.Configure::read('App.doc.upload.organizations.pays').DS.$organizationsPay->year.DS.$organizationsPay->organization_id.'.pdf'; 
-		
+
 		if(file_exists($path_file)) {
 			$results = $path_file;
 		}
 
+		if($debug) debug('path_file '.$path_file.' - results '.$results);
 		return $results;	
 	}
 

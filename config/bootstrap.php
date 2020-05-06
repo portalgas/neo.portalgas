@@ -319,6 +319,14 @@ Configure::write('costToUser', 1); // quanti euro costa ad utente
 Configure::write('OrganizationPayFasceYearStart', 2018); // anno da cui partono le fasce
 Configure::write('App.doc.upload.organizations.pays', DS.'images'.DS.'pays');
 Configure::write('App.web.doc.upload.organizations.pays', '/images/pays');
+Configure::write('OrganizationPayBeneficiarioMarcoLabel', 'Marco Siviero');
+Configure::write('OrganizationPayBeneficiarioMarcoIban', '....');
+Configure::write('OrganizationPayBeneficiarioMarcoCell', '339 402 8600');
+Configure::write('OrganizationPayBeneficiarioMarcoMail', 'marco@portalgas.it'); 
+Configure::write('OrganizationPayBeneficiarioFrancescoLabel', 'Francesco Actis Grosso');
+Configure::write('OrganizationPayBeneficiarioFrancescoIban', 'IT05P0347501605CC0010194166');
+Configure::write('OrganizationPayBeneficiarioFrancescoCell', '347 491 5588');
+Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco@portalgas.it'); 
 
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');

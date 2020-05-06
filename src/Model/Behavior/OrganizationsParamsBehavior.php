@@ -40,4 +40,15 @@ class OrganizationsParamsBehavior extends TreeBehavior
 			}
 		}
     }
+
+    public function beforeSave(Event $event, EntityInterface $entity) {
+       
+        //debug($entity);
+        
+        $entity->paramsConfig = json_encode($entity->paramsConfig, true);
+        $entity->paramsFields = json_encode($entity->paramsFields, true);
+        $entity->paramsPay = json_encode($entity->paramsPay, true);
+        
+        // debug($entity);
+    }     
 }

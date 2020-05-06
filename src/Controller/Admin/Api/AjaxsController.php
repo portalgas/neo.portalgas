@@ -82,9 +82,6 @@ class AjaxsController extends ApiAppController
         $data = $this->convertRequestDateToDatabase($data);
         //debug($entity);
         $entity = $entityTable->patchEntity($entity, $data);
-        unset($entity->paramsConfig);
-        unset($entity->paramsFields);
-        unset($entity->paramsPay);
         // debug($entity);
         if ($entityTable->save($entity)) {
             $results['code'] = 200;

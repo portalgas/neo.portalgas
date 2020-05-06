@@ -156,7 +156,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/cashiers', ['controller' => 'Cashiers'], function (RouteBuilder $routes) {
             $routes->connect('/getCompleteUsersByDelivery', ['action' => 'getCompleteUsersByDelivery', '_method' => 'POST']);
         });
-
+        $routes->scope('/OrganizationsPays', ['controller' => 'OrganizationsPays'], function (RouteBuilder $routes) {
+            $routes->connect('/setMsgText', ['action' => 'setMsgText', '_method' => 'POST']);
+        });
+        
         /*
          * servizi ajax
          */ 

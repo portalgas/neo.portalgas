@@ -1,3 +1,7 @@
+<?php
+echo $this->Html->script('organizationsPaysIndex', ['block' => 'scriptPageInclude']);
+?>
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
@@ -74,7 +78,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   echo h($organizationsPay->importo);
                   /*
                   echo $this->Form->control('importo', ['type' => 'number', 'label' => false, 'inputmode' => 'numeric', 
-                      'class' => 'fieldUpdateAjax', 
+                      'class' => 'customFieldUpdateAjax', 
                       'data-attr-entity' => 'OrganizationsPays', 
                       'data-attr-field' => 'importo', 
                       'data-attr-id' => $organizationsPay->id
@@ -103,17 +107,19 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   }
                   echo '</td>';
 
-                  $options = ['class' => 'form-control fieldUpdateAjax', 
-                              'data-attr-entity' => 'Organizations', 
-                              'data-attr-field' => 'hasMsg', 
-                              'data-attr-id' => $organizationsPay->organization->id, 'label' => false, 
+                  $options = ['class' => 'form-control customFieldUpdateAjax', 
+                              'data-attr-id' => $organizationsPay->id, 
+                              'label' => false, 
                               'value' => $organizationsPay->organization->hasMsg, 
                               'options' => $hasMsgs];
+
+                  if(empty($organizationsPay->doc_url))
+                    $options += ['disabled' => 'disabled'];
 
                   echo '<td>';
                   echo $this->Form->control('hasMsg', $options);
                   echo '</td>';
-                  echo '<td id="Organizations-'.$organizationsPay->organization->id.'"></td>';
+                  echo '<td id="OrganizationsPays-'.$organizationsPay->id.'"></td>';
 
                   echo '<td class="actions text-right">';
                   echo $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id], ['class'=>'btn btn-warning btn-xs']);

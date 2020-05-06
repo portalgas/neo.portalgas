@@ -19,7 +19,7 @@ class OrganizationsPaysController extends AppController
         parent::initialize();
         $this->loadComponent('Auth');
         $this->loadComponent('Total');
-        $this->loadComponent('OrganizationPay');
+        $this->loadComponent('OrganizationsPay');
     }
 
     public function beforeFilter(Event $event) {
@@ -52,7 +52,7 @@ class OrganizationsPaysController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
-        // $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        // $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         $organizations = $this->OrganizationsPays->Organizations->find()
                     ->where(['Organizations.stato' => 'Y', 'Organizations.type' => 'GAS'])
                     ->order(['Organizations.name'])
@@ -140,14 +140,14 @@ class OrganizationsPaysController extends AppController
          */
         $searchConditions = [];
         $filter_year = $this->request->getQuery('filter_year');
-        if(!empty($filter_year))
+        if(empty($filter_year))
             $filter_year = date('Y');
         if(!empty($filter_year)) {
             $searchConditions = ['OrganizationsPays.year' => $filter_year];
         }
         // debug($searchOfferStatesConditions);
 
-        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
         $this->paginate = [
             'where' => [$searchConditions],
@@ -164,9 +164,9 @@ class OrganizationsPaysController extends AppController
             /*
              * creazione path documento di pagamento 
              */
-            // debug($this->OrganizationPay->getDocPath($this->user, $organizationsPay, $debug));
-            if(!empty($this->OrganizationPay->getDocPath($this->user, $organizationsPay, $debug))) {
-                $organizationsPay->doc_url = $this->OrganizationPay->getDocUrl($this->user, $organizationsPay, $debug);
+            // debug($this->OrganizationsPay->getDocPath($this->user, $organizationsPay, $debug));
+            if(!empty($this->OrganizationsPay->getDocPath($this->user, $organizationsPay, $debug))) {
+                $organizationsPay->doc_url = $this->OrganizationsPay->getDocUrl($this->user, $organizationsPay, $debug);
             }
             else 
                 $organizationsPay->doc_url = '';
@@ -189,7 +189,7 @@ class OrganizationsPaysController extends AppController
      */
     public function view($id = null)
     {
-        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => ['Organizations'],
@@ -206,7 +206,7 @@ class OrganizationsPaysController extends AppController
      */
     public function add()
     {
-        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         
         $organizationsPay = $this->OrganizationsPays->newEntity();
         if ($this->request->is('post')) {
@@ -240,7 +240,7 @@ class OrganizationsPaysController extends AppController
      */
     public function edit($id = null)
     {
-        $this->OrganizationsPays->organizations->removeBehavior('OrganizationsParams');
+        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => []

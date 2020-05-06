@@ -18,7 +18,7 @@ class IsDefaultEndBehavior extends Behavior
     	$this->config = $config;
     }
 
-    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options) {
+    public function beforeSave(Event $event, EntityInterface $entity) {
     	
         if($entity->is_default_ini) {
         	
