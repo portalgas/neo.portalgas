@@ -7,7 +7,7 @@
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      K Organizations Pay
+      <?php echo __('Organizations Pay');?>
       <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
@@ -54,16 +54,22 @@
                 echo '</div>'; 
 
                 echo '<div class="row">';
-                echo '<div class="col-md-3">'; 
+                echo '<div class="col-md-6">'; 
                 echo $this->Form->control('importo');
-                echo '</div>';                 
-                echo '<div class="col-md-3">'; 
+                echo '</div>';     
+                echo '<div class="col-md-6">'; 
+                echo $this->Form->control('import_additional_cost');
+                echo '</div>'; 
+                echo '</div>'; 
+
+                echo '<div class="row">';
+                echo '<div class="col-md-4">'; 
                 echo $this->HtmlCustom->datepicker('data_pay', ['autocomplete' => 'off']);
                 echo '</div>'; 
-                echo '<div class="col-md-3">'; 
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('beneficiario_pay', ['options' => $beneficiario_pays]);  
                 echo '</div>'; 
-                echo '<div class="col-md-3">';               
+                echo '<div class="col-md-4">';               
                 echo $this->Form->control('type_pay', ['options' => $type_pays]);
                 echo '</div>'; 
                 echo '</div>'; 

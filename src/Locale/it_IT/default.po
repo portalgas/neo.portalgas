@@ -127,6 +127,9 @@ msgstr "Tipologia"
 msgid "Types"
 msgstr "Tipologie"
 
+msgid "Type Pay"
+msgstr "Tipologie di pagamento"
+
 msgid "Year"
 msgstr "Anno"
 
@@ -205,6 +208,15 @@ msgstr "Data di fine"
 msgid "data_range_fine"
 msgstr "Data di fine"
 
+msgid "Data Fine"
+msgstr "Data pagamento"
+
+msgid "Data Pay"
+msgstr "Data pagamento"
+
+msgid "data_pay"
+msgstr "Data pagamento"
+
 msgid "Mail Data Send"
 msgstr "Data invio mail"
 
@@ -246,6 +258,9 @@ msgstr "Valore iniziale"
 
 msgid "Is Default End"
 msgstr "Valore finale"
+
+msgid "Is Saldato"
+msgstr "E' saldato"
 
 msgid "Filter Data Field"
 msgstr "Campo data da filtrare"

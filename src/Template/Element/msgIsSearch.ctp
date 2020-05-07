@@ -16,7 +16,7 @@ if(empty($msg))
 <?php
 if($tmpl==1 || $tmpl=='ALL') {
 ?>
-	<div class="callout callout-<?php echo $class;?>">
+	<div class="callout callout-<?php echo $class;?>" style="clear: both;">
 	  <h4><i class="icon fa fa-info"></i> <?php echo $msg_header;?></h4>
 
 	  <p><?php echo $msg;?></p>
@@ -26,7 +26,7 @@ if($tmpl==1 || $tmpl=='ALL') {
 
 if($tmpl==2 || $tmpl=='ALL') {
 ?>
-	<div class="info-box">
+	<div class="info-box" style="clear: both;">
 		<span class="info-box-icon <?php echo $class2;?>"><i class="fa fa-search"></i></span>
 
 		<div class="info-box-content">

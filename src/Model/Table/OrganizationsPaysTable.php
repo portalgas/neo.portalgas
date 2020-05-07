@@ -65,11 +65,13 @@ class OrganizationsPaysTable extends Table
             ->requirePresence('year', 'create')
             ->notEmptyString('year');
 
+        /*
+         impostato valore di default Configure::read('DB.field.date.empty')
         $validator
             ->date('data_pay')
             ->requirePresence('data_pay', 'create')
             ->notEmptyDate('data_pay');
-
+        */
         $validator
             ->scalar('beneficiario_pay')
             ->maxLength('beneficiario_pay', 50)
@@ -99,6 +101,11 @@ class OrganizationsPaysTable extends Table
             ->numeric('importo')
             ->requirePresence('importo', 'create')
             ->notEmptyString('importo');
+
+        $validator
+            ->numeric('import_additional_cost')
+            ->requirePresence('import_additional_cost', 'create')
+            ->notEmptyString('import_additional_cost');
 
         $validator
             ->scalar('type_pay')

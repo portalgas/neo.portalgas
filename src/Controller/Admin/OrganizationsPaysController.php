@@ -106,6 +106,7 @@ class OrganizationsPaysController extends AppController
             $data['tot_suppliers_organizations'] = $tot_suppliers_organizations;
             $data['tot_articles'] = $tot_articles;
             $data['importo'] = $this->OrganizationsPays->getImporto($this->user, $organization->id, $year, $tot_users, $debug);
+            $data['import_additional_cost'] = 0;
             
             $data['data_pay'] = Configure::read('DB.field.date.empty');
             $data['beneficiario_pay'] = strtoupper($this->OrganizationsPays::BENEFICIARIO_PAY_MARCO);
@@ -141,16 +142,16 @@ class OrganizationsPaysController extends AppController
         $searchConditions = [];
         $filter_year = $this->request->getQuery('filter_year');
         if(empty($filter_year))
-            $filter_year = date('Y');
+            $filter_year = date('Y'); 
         if(!empty($filter_year)) {
             $searchConditions = ['OrganizationsPays.year' => $filter_year];
         }
-        // debug($searchOfferStatesConditions);
+        // debug($searchConditions);
 
         $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
         $this->paginate = [
-            'where' => [$searchConditions],
+            'conditions' => [$searchConditions],
             'contain' => ['Organizations'],
             'order' => ['OrganizationsPays.year' => 'desc'],
             'limit' => 100
@@ -176,14 +177,16 @@ class OrganizationsPaysController extends AppController
         } // foreach($organizationsPays as $organizationsPay)
 
         $hasMsgs = ['Y' => __('Si'), 'N' => __('No')];
-        
-        $this->set(compact('organizationsPays', 'hasMsgs'));
+        $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
+        $type_pays = $this->OrganizationsPays->enum('type_pay');
+
+        $this->set(compact('organizationsPays', 'hasMsgs', 'beneficiario_pays', 'type_pays'));
     }
 
     /**
      * View method
      *
-     * @param string|null $id K Organizations Pay id.
+     * @param string|null $id Organizations Pay id.
      * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -211,16 +214,16 @@ class OrganizationsPaysController extends AppController
         $organizationsPay = $this->OrganizationsPays->newEntity();
         if ($this->request->is('post')) {
             $requestData = $this->convertRequestDateToDatabase($this->request->getData());
-            if(empty($requestData->data_pay))
-                $requestData->data_pay = Configure::read('DB.field.date.empty');            
+            if(empty($requestData['data_pay']))
+                $requestData['data_pay'] = Configure::read('DB.field.date.empty');
             // debug($requestData);
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);
             if ($this->OrganizationsPays->save($organizationsPay)) {
-                $this->Flash->success(__('The {0} has been saved.', 'K Organizations Pay'));
+                $this->Flash->success(__('The {0} has been saved.', 'Organizations Pay'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Organizations Pay'));
+            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Organizations Pay'));
         }
 
         $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
@@ -234,7 +237,7 @@ class OrganizationsPaysController extends AppController
     /**
      * Edit method
      *
-     * @param string|null $id K Organizations Pay id.
+     * @param string|null $id Organizations Pay id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
@@ -246,17 +249,18 @@ class OrganizationsPaysController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $requestData = $this->convertRequestDateToDatabase($this->request->getData());
-            if(empty($requestData->data_pay))
-                $requestData->data_pay = Configure::read('DB.field.date.empty');
+            $requestData = $this->request->getData();
+            if(empty($requestData['data_pay']))
+                $requestData['data_pay'] = Configure::read('DB.field.date.empty');
+            $requestData = $this->convertRequestDateToDatabase($requestData);
             // debug($requestData);            
-            $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);
+            $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);          
             if ($this->OrganizationsPays->save($organizationsPay)) {
-                $this->Flash->success(__('The {0} has been saved.', 'K Organizations Pay'));
+                $this->Flash->success(__('The {0} has been saved.', 'Organizations Pay'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Organizations Pay'));
+            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Organizations Pay'));
         }
 
         $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
@@ -272,7 +276,7 @@ class OrganizationsPaysController extends AppController
     /**
      * Delete method
      *
-     * @param string|null $id K Organizations Pay id.
+     * @param string|null $id Organizations Pay id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -281,9 +285,9 @@ class OrganizationsPaysController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $organizationsPay = $this->OrganizationsPays->get($id);
         if ($this->OrganizationsPays->delete($organizationsPay)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'K Organizations Pay'));
+            $this->Flash->success(__('The {0} has been deleted.', 'Organizations Pay'));
         } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'K Organizations Pay'));
+            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Organizations Pay'));
         }
 
         return $this->redirect(['action' => 'index']);

@@ -73,7 +73,7 @@ Script.prototype = {
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
             else
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
-            responseHtml.addClass(this.ico_spinner);
+            responseHtml.addClass(_this.ico_spinner);
 
             var data = {
                 id: id,
@@ -96,16 +96,16 @@ Script.prototype = {
                         if (response.code) {
                         }
                         
-                        responseHtml.removeClass(this.ico_spinner);
-                        responseHtml.addClass(this.ico_ok);
+                        responseHtml.removeClass(_this.ico_spinner);
+                        responseHtml.addClass(_this.ico_ok);
                     },
                     error: function (e) {
                         console.log(e.responseText.message);
-                        responseHtml.removeClass(this.ico_spinner);
-                        responseHtml.addClass(this.ico_ko);
+                        responseHtml.removeClass(_this.ico_spinner);
+                        responseHtml.addClass(_this.ico_ko);
                     },
                     complete: function (e) {
-                        setTimeout( function() {responseHtml.removeClass(this.ico_ok).removeClass(this.ico_ko);} , 5000);
+                        setTimeout( function() {responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);} , 5000);
                     }
                 });                     
         }); 

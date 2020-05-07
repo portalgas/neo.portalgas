@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property int $tot_suppliers_organizations
  * @property int $tot_articles
  * @property float $importo
+ * @property float $import_additional_cost
  * @property string $type_pay
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
@@ -43,6 +44,7 @@ class OrganizationsPay extends Entity
         'tot_suppliers_organizations' => true,
         'tot_articles' => true,
         'importo' => true,
+        'import_additional_cost' => true,
         'type_pay' => true,
         'created' => true,
         'modified' => true,

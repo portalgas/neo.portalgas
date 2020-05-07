@@ -13,7 +13,7 @@ if(empty($msg))
 
 <?php
 if($tmpl==1 || $tmpl=='ALL') {
-	echo '<div class="callout callout-'.$class.'">';
+	echo '<div class="callout callout-'.$class.'" style="clear: both;">';
 	echo '<h4>'.$msg_header.'</h4>';
 	echo '<p>'.$msg.'</p>';
 	echo '</div>';

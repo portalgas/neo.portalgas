@@ -50,7 +50,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <th scope="col"><?= $this->Paginator->sort('importo') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('type_pay') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('data_pay') ?></th>
-                  <th scope="col"><?= __('isSaldato') ?></th>
+                  <th scope="col"><?= __('Is Saldato') ?></th>
                   <th scope="col"><?= __('doc') ?></th>
                   <th scope="col" style="width: 85px;"><?= __('Msg attivato') ?></th>
                   <th scope="col" style="width: 50px;"></th>
@@ -72,10 +72,22 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <td><?= $this->Number->format($organizationsPay->tot_orders) ?></td>
                   <td><?= $this->Number->format($organizationsPay->tot_suppliers_organizations) ?></td>
                   <td><?= $this->Number->format($organizationsPay->tot_articles) ?></td>
-                  <td><?= h($organizationsPay->beneficiario_pay) ?></td>
                   <?php
                   echo '<td>';
-                  echo h($organizationsPay->importo);
+                  echo $this->Form->control('beneficiario_pay', ['label' => false, 
+                      'options' => $beneficiario_pays,
+                      'default' => $organizationsPay->beneficiario_pay,
+                      'class' => 'form-control fieldUpdateAjax', 
+                      'data-attr-entity' => 'OrganizationsPays', 
+                      'data-attr-field' => 'beneficiario_pay', 
+                      'data-attr-id' => $organizationsPay->id
+                  ]);
+                  echo '</td>';
+
+                  echo '<td>';
+                  echo $this->HtmlCustom->importo($organizationsPay->importo);
+                  if(!empty($organizationsPay->import_additional_cost))
+                    echo ' + '.$this->HtmlCustom->importo($organizationsPay->import_additional_cost);
                   /*
                   echo $this->Form->control('importo', ['type' => 'number', 'label' => false, 'inputmode' => 'numeric', 
                       'class' => 'customFieldUpdateAjax', 
@@ -86,7 +98,14 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   */
                   echo '</td>';
                   echo '<td>';
-                  echo h($organizationsPay->type_pay);
+                  echo $this->Form->control('type_pay', ['label' => false, 
+                      'options' => $type_pays,
+                      'default' => $organizationsPay->type_pay,
+                      'class' => 'form-control fieldUpdateAjax', 
+                      'data-attr-entity' => 'OrganizationsPays', 
+                      'data-attr-field' => 'type_pay', 
+                      'data-attr-id' => $organizationsPay->id
+                  ]);
                   echo '</td>';
                   echo '<td>';
                   if($organizationsPay->isSaldato)

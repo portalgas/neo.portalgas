@@ -44,7 +44,7 @@ OrganizationsPaysIndex.prototype = {
                 console.log('customFieldUpdateAjax responseHtml ['+'#'+entity+'-'+organization_pay_id+'] undefined!');
             else
                 console.log('customFieldUpdateAjax responseHtml ['+'#'+entity+'-'+organization_pay_id+']');
-            responseHtml.addClass(this.ico_spinner);
+            $('#'+entity+'-'+organization_pay_id).addClass(_this.ico_spinner);
 
             var data = {
                 organization_pay_id: organization_pay_id,
@@ -65,18 +65,18 @@ OrganizationsPaysIndex.prototype = {
                         if (response.code) {
                         }
                         
-                        responseHtml.removeClass(this.ico_spinner);
-                        responseHtml.addClass(this.ico_ok);
+                        responseHtml.removeClass(_this.ico_spinner);
+                        responseHtml.addClass(_this.ico_ok);
 
                         alert(response.message);
                     },
                     error: function (e) {
                         console.log(e.responseText);
-                        responseHtml.removeClass(this.ico_spinner);
-                        responseHtml.addClass(this.ico_ko);
+                        responseHtml.removeClass(_this.ico_spinner);
+                        responseHtml.addClass(_this.ico_ko);
                     },
                     complete: function (e) {
-                        setTimeout( function() {responseHtml.removeClass(this.ico_ok).removeClass(this.ico_ko);} , 5000);
+                        setTimeout( function() {responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);} , 5000);
                     }
                 });                     
         }); 
