@@ -39,7 +39,11 @@ class TotalComponent extends Component {
 
 		$ordersTable = TableRegistry::get('Orders');
 		
-		$where = ['Orders.organization_id' => $organization_id];
+        if(!empty($where)) 
+        foreach ($where as $key => $value) {
+            $where += [$key => $value];
+        }		
+		$where += ['Orders.organization_id' => $organization_id];
 		
 		/*
 		 * Se e' l'anno corrente prendo anche le consegne "da definire" 

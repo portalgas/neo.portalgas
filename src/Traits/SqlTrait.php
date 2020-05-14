@@ -184,20 +184,24 @@ trait SqlTrait
         }
 
         return $id;
-    }  
+    }   
+   
+    /*
+     * converte da 10.000,00 in 10000.00
+     */   
+    public function convertImport($data) {
 
-    public function convertImport($import) {
-
-        if (!empty($import)) {
-            $import = str_replace(',', '.', $import);
+        if (!empty($data)) {
+            $data = str_replace('.', '', $data);
+            $data = str_replace(',', '.', $data);
         }
-        return $import;
-    } 
+        return $data;
+    }
 
     /*
      * converte da dd/mm/yyyy a array['year', 'month', 'day']
      */
-    public function convertDate($key, $data) {
+    public function convertDate($data) {
 
         $convertData = [];
         if (!empty($data)) {
@@ -213,20 +217,8 @@ trait SqlTrait
             }
         }
         return $convertData;
-    } 
+    }
 
-    protected function convertRequestDateToDatabase($request_data) {
-
-        foreach ($request_data as $key => $value) {
-            if ($this->stringStartsWith($key, 'data_') && !empty($value)) {
-                $request_data[$key] = $this->convertDate($key, $value);
-                // debug($key.' '.$request_data[$key]);
-            }             
-        }
-
-        return $request_data;
-    } 
-   
     public function tableTruncate($table) {
         $sqls = $table->getSchema()->truncateSql($table->getConnection());
         foreach ($sqls as $sql) {

@@ -44,6 +44,8 @@ use Cake\Http\ServerRequest;
 
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
 
+use App\Middleware\ResponseMiddleware;
+
 /**
  * Application setup class.
  *
@@ -180,6 +182,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             $middlewareQueue->add(new RequestAuthorizationMiddleware());
 
+			$middlewareQueue->add(new ResponseMiddleware());
+			
         return $middlewareQueue;
     }
 

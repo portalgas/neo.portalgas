@@ -20,6 +20,11 @@ class AjaxsController extends ApiAppController
         parent::beforeFilter($event);
     }
   
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);
+    }
+
     /*
      * aggiorna i dati del campo .fieldUpdateAjax 
      *	entity
@@ -29,16 +34,19 @@ class AjaxsController extends ApiAppController
      */
     public function fieldUpdate() {
 
+        $debug = false;
+
         $results = [];
 
         $id = $this->request->getData('id');
         $entity = $this->request->getData('entity');
         $field = $this->request->getData('field');
         $value = $this->request->getData('value');
-
+        if($debug) debug('id '.$id.' - entity '.$entity.' - field '.$field.' - value '.$value);
         $entityTable = TableRegistry::get($entity);
 
         $entity = $entityTable->get($id);
+        if($debug) debug($entity);
 
         /*
          * data_range_ini / data_range_fine
@@ -46,13 +54,16 @@ class AjaxsController extends ApiAppController
         if ($this->stringStartsWith($field, 'data_range')) {
             list($data_range_ini, $data_range_fine) = explode(' - ', $value);
 
-            $results = $this->fieldUpdateExecute($entityTable, $entity, 'data_range_ini', $data_range_ini);
-
-            if($results['code']!=200)
-                $results = $this->fieldUpdateExecute($entityTable, $entity, 'data_range_fine', $data_range_fine);
+            $data_range_ini = $this->convertDate($data_range_ini);
+            $results = $this->fieldUpdateExecute($entityTable, $entity, 'data_range_ini', $data_range_ini, $debug);
+     
+            if($results['code']==200) {
+                $data_range_fine = $this->convertDate($data_range_fine);
+                $results = $this->fieldUpdateExecute($entityTable, $entity, 'data_range_fine', $data_range_fine, $debug);
+            }
         }
         else {
-            $results = $this->fieldUpdateExecute($entityTable, $entity, $field, $value);
+            $results = $this->fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
         }
 
         if($results['code']!=200) {
@@ -67,22 +78,22 @@ class AjaxsController extends ApiAppController
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
+																				 
+		
         return $this->response; 
               
     }
 
-    private function fieldUpdateExecute($entityTable, $entity, $field, $value) {
+    private function fieldUpdateExecute($entityTable, $entity, $field, $value, $debug=false) {
 
         $results = [];
 
         $data = [];
         $data[$field] = $value;
-        $data = $this->convertRequestDateToDatabase($data);
+        if($debug) debug($data);
         //debug($entity);
         $entity = $entityTable->patchEntity($entity, $data);
-        // debug($entity);
+        if($debug) debug($entity);
         if ($entityTable->save($entity)) {
             $results['code'] = 200;
             $results['errors'] = '';
@@ -96,7 +107,7 @@ class AjaxsController extends ApiAppController
 
         return $results; 
     }
-
+ 
 
     /*
      * eventuali id da escludere
@@ -108,11 +119,11 @@ class AjaxsController extends ApiAppController
         $id = $this->request->getData('id');
         $entity = $this->request->getData('entity');
         
-        switch ($entity) {
-            case 'collaborators':
-                $conditions += ['is_active' => 1];
-            break;
-        }
+						  
+								 
+												  
+				  
+		 
         $exclude_ids = $this->request->getData('exclude_ids');
         if(!empty($exclude_ids))
             $conditions += ['id not in' => $exclude_ids];
@@ -124,8 +135,8 @@ class AjaxsController extends ApiAppController
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
+																				 
+		
         return $this->response; 
-    } 
+    }   
 }

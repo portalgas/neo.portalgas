@@ -23,8 +23,12 @@ Script.prototype = {
 
         console.log("Script bindEvents");
 
-        $("#price-type-id").change(function (e) {
-            _this.tooglePriceCollaborator();
+        $(".price-type-id").change(function (e) {
+            _this.tooglePriceCollaborator(this);
+        });
+
+        $('.importo').change(function (e) {
+            _this.formatImport(this);
         });
 
         /*
@@ -36,7 +40,7 @@ Script.prototype = {
             $(this).parent().find('.fa-minus').removeClass('fa-minus').addClass('fa-plus');
         });
 
-        $(".onFocusAllSelect").focus(function (e) {
+        $('.onFocusAllSelect').focus(function (e) {
             $(this).select();
         }); 
 
@@ -160,27 +164,28 @@ Script.prototype = {
           //endDate: moment().subtract(1, 'month'),  
         });        
     },
-    number_format: function (number, decimals, dec_point, thousands_sep) {
-        /* da 1000.5678 in 1.000,57 */
-        /* da 1000 in 1.000,00 */
+																		  
+									  
+								 
 
-        var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
-        var d = dec_point == undefined ? "." : dec_point;
-        var t = thousands_sep == undefined ? "," : thousands_sep, s = n < 0 ? "-" : "";
-        var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
+																				
+														 
+																					   
+																									
 
-        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-    },
-    tooglePriceCollaborator: function () {
+																																																		  
+	  
+    tooglePriceCollaborator: function (obj) {
         var _this = this;
-        var value = $("#price-type-id").val();
-        // console.log(value);
+        var value = $(obj).val();
+        var data_target = $(obj).attr('data-target');
+        console.log('tooglePriceCollaborator '+value+' data_target '+data_target);
         if(value==_this.da_calcolare) {
-            $('.box-price-collaborator').show();
+            $(data_target).show();
         }
         else {
-            $('.box-price-collaborator').hide();
-            // $('#price-collaborator').val('0,00');
+            $(data_target).hide();
+            // $(data_target).val('0,00');
         }
     },     
     /*
@@ -240,6 +245,40 @@ Script.prototype = {
             _this.checkboxCheckedTohidden(prefix_field);
         });
     },
+	/*
+	 * formatta l'importo float che arriva dal database
+	 */
+    formatImportToDb: function(obj) {
+        let value = $(obj).val();
+        console.log('formatImportToDb BEFORE value '+value);
+        value = this.numberFormat(value, 2, ',', '.');
+        console.log('formatImportToDb AFTER value '+value);
+        $(obj).val(value);
+    },
+    /* 
+     * formatta data da inserimento utente
+     */
+    formatImport: function(obj) {
+        let value = $(obj).val();
+        console.log('formatImport BEFORE.replace value '+value);
+        value = value.replace('.', '');
+        value = value.replace(',', '.');
+        console.log('formatImport BEFORE value '+value);
+        value = this.numberFormat(value, 2, ',', '.');
+        console.log('formatImport AFTER value '+value);
+        $(obj).val(value);
+    },
+    numberFormat: function (number, decimals, dec_point, thousands_sep) {
+        /* da 1000.5678 in 1.000,57 */
+        /* da 1000 in 1.000,00 */
+
+        var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
+        var d = dec_point == undefined ? "." : dec_point;
+        var t = thousands_sep == undefined ? "," : thousands_sep, s = n < 0 ? "-" : "";
+        var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
+
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    },
     /*
      * inserisce nel campo hidden i checkox selezionati separati da virgola => evento submit()
      */ 
@@ -279,12 +318,20 @@ Script.prototype = {
         return anchor;
     },
     init: function () {
-        this.year = new Date().getFullYear();
+	   
 
         console.log("Script.init");
+        var _this = this;
 
-        this.bindEvents();
+        _this.year = new Date().getFullYear();
+        _this.bindEvents();
 
-        this.tooglePriceCollaborator();
+        $('.importo').each(function(index) {
+            _this.formatImportToDb(this);
+        });        
+
+        $('.price-type-id').each(function(index) {
+            _this.tooglePriceCollaborator(this);
+        });
     }
 };        

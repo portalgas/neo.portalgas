@@ -111,7 +111,6 @@ class OrganizationsPaysController extends AppController
             $data['data_pay'] = Configure::read('DB.field.date.empty');
             $data['beneficiario_pay'] = strtoupper($this->OrganizationsPays::BENEFICIARIO_PAY_MARCO);
             $data['type_pay'] = strtoupper($this->OrganizationsPays::TYPE_PAY_RICEVUTA);
-            $data = $this->convertRequestDateToDatabase($data);
             if($debug) debug($data);
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $data);
             if (!$this->OrganizationsPays->save($organizationsPay)) {
@@ -213,7 +212,8 @@ class OrganizationsPaysController extends AppController
         
         $organizationsPay = $this->OrganizationsPays->newEntity();
         if ($this->request->is('post')) {
-            $requestData = $this->convertRequestDateToDatabase($this->request->getData());
+            $requestData = $this->request->getData();
+
             if(empty($requestData['data_pay']))
                 $requestData['data_pay'] = Configure::read('DB.field.date.empty');
             // debug($requestData);
@@ -250,9 +250,9 @@ class OrganizationsPaysController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $requestData = $this->request->getData();
+            
             if(empty($requestData['data_pay']))
                 $requestData['data_pay'] = Configure::read('DB.field.date.empty');
-            $requestData = $this->convertRequestDateToDatabase($requestData);
             // debug($requestData);            
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);          
             if ($this->OrganizationsPays->save($organizationsPay)) {
