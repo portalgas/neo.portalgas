@@ -11,7 +11,7 @@
         "ext-openssl": "*",
         "admad/cakephp-jwt-auth": "^2.3",
         "allanmcarvalho/cakephp-datatables": "^1.6",
-        "cakedc/enum": "dev-master",
+        "cakedc/enum": "~1.0",
         "cakephp/authentication": "^1.1",
         "cakephp/authorization": "^1.2",
         "cakephp/cakephp": "3.8.*",
