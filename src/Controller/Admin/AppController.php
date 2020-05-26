@@ -1,12 +1,11 @@
 <?php
 namespace App\Controller\Admin;
 
-use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Core\Configure;
 use App\Traits;
 
-class AppController extends Controller
+class AppController extends \App\Controller\AppController
 {
     use Traits\SqlTrait;
     use Traits\UtilTrait;

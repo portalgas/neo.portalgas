@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2020-05-18 14:41+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: Controller/DataTablesAjaxRequestTrait.php:62
+#: Controller/DataTablesAjaxRequestTrait.php:74
+#: Controller/FocSearchRequestTrait.php:55
+#: Controller/FocSearchRequestTrait.php:67
+msgid "the parameter must be a function"
+msgstr ""
+
+#: Controller/Component/DataTablesComponent.php:81
+#: Controller/Component/DataTablesComponent.php:93
+#: Controller/Component/DataTablesComponent.php:123
+msgid "The requested DataTables config was not found"
+msgstr ""
+
+#: Controller/Component/DataTablesComponent.php:84
+#: Controller/Component/DataTablesComponent.php:96
+msgid "The requested DataTables config must have at least one column"
+msgstr ""
+
+#: View/Helper/DataTablesHelper.php:51
+msgid "The requested DataTables {0} config was not configured or set to view in controller"
+msgstr ""

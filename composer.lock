@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d592f5e513f156ba8b4f4b9b26760c8",
+    "content-hash": "cc80429450a11514cad2baabc89768a0",
     "packages": [
         {
             "name": "admad/cakephp-jwt-auth",
@@ -54,6 +54,40 @@
                 "jwt"
             ],
             "time": "2018-04-20T07:58:59+00:00"
+        },
+        {
+            "name": "allanmcarvalho/cakephp-datatables",
+            "version": "1.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/allanmcarvalho/cakephp-datatables.git",
+                "reference": "c80a1d0bc100557dd75861af3086814e60204269"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/allanmcarvalho/cakephp-datatables/zipball/c80a1d0bc100557dd75861af3086814e60204269",
+                "reference": "c80a1d0bc100557dd75861af3086814e60204269",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": ">=3.7.0 <4.0.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "DataTables\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "DataTables plugin for CakePHP 3.x",
+            "time": "2020-04-18T13:55:56+00:00"
         },
         {
             "name": "aura/intl",

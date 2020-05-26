@@ -66,8 +66,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
          */
         Configure::write('DebugKit.panels', ['DebugKit.Packages' => false]);
         $this->addPlugin('DebugKit');
-
         $this->addPlugin('Josegonzalez/Upload');
+        $this->addPlugin('DataTables');
 
         parent::bootstrap();
 
@@ -193,8 +193,26 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
     {
         $service = new AuthenticationService();
-        $service->loadAuthenticator('Authentication.Session');      
-        
+        $service->setConfig([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
+
+        $fields = [
+            'username' => 'email',
+            'password' => 'password'
+        ];
+
+        // Load the authenticators, you want session first
+        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => $fields,
+            'loginUrl' => '/admin/auths/login'
+        ]);
+
+        // Load identifiers
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
+
         return $service;
     }
 

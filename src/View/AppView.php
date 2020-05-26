@@ -44,8 +44,6 @@ class AppView extends View
         $this->loadHelper('Authentication.Identity');
         $this->loadHelper('HtmlCustom');
         $this->loadHelper('HtmlCustomSite');
-        $this->loadHelper('Enum');
-
-        // Identity found in request does not implement %s $this->loadHelper('Authentication.Identity');     
+        $this->loadHelper('Enum');    
     }
 }

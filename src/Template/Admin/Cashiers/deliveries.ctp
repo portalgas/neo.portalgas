@@ -128,7 +128,7 @@ if(!empty($deliveries)) {
     echo '</div>'; // is_found_users
 
 	
-    echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled']);
+    echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled', 'disabled' => 'disabled']);
     echo $this->Form->end();
 	  echo '</div>'; // vue-cashiers
 }

@@ -43,7 +43,8 @@ window.onload = function () {
 
             if(delivery_id==0 || delivery_id=='') {
                 $('.run-orders .spinner').removeClass(ico_spinner);
-                //$('#submit').addClass('disabled');
+                // $('#submit').addClass('disabled');
+                // $('#submit').prop("disabled", true);
                 return;
             }
 
@@ -55,6 +56,9 @@ window.onload = function () {
                 orders_state_code: orders_state_code
             }; 
 
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
             axios.post(ajaxUrlGetOrdersByDelivery, params)
                 .then(response => {
                   /* console.log(response.data); */
@@ -62,6 +66,7 @@ window.onload = function () {
                   this.is_found_orders = true;
                   this.orders = response.data;        
                   // $('#submit').removeClass('disabled');
+                  // $('#submit').prop("disabled", false);
                 })
             .catch(error => {
                   $('.run-orders .spinner').removeClass(ico_spinner);
@@ -79,6 +84,7 @@ window.onload = function () {
             if(delivery_id==0 || delivery_id=='') {
                 $('.run-users .spinner').removeClass(ico_spinner); 
                 $('#submit').addClass('disabled');
+                $('#submit').prop("disabled", true);
                 return;
             }
 
@@ -89,6 +95,9 @@ window.onload = function () {
                 delivery_id: delivery_id
             }; 
 
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
             axios.post(ajaxUrlGetCompleteUsersByDelivery, params)
                 .then(response => {
                   /* console.log(response.data); */
@@ -96,6 +105,7 @@ window.onload = function () {
                   this.is_found_users = true;
                   this.users = response.data;
                   $('#submit').removeClass('disabled');
+                  $('#submit').prop("disabled", false);
                 })
             .catch(error => {
                  $('.run-users .spinner').removeClass(ico_spinner);

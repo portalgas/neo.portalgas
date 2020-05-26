@@ -265,9 +265,14 @@ Configure::write('group_id_referent_tesoriere',23);  // referente tesoriere (pag
 Configure::write('group_id_tesoriere',11); // tesoriere (pagamento ai fornitori)
 Configure::write('group_id_storeroom',9); 
 Configure::write('group_id_user',2);  
-Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
+
+/*
+ * altre tipologie di organization GAS PRODGAS PACT
+ */
+Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
+Configure::write('group_pact_supplier_manager',84);   // manager pact 
 
 Configure::write('DB.field.date.error', '0000-00-00');
 Configure::write('DB.field.date.empty', '1970-01-01');

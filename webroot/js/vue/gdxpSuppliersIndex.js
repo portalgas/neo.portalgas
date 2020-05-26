@@ -37,6 +37,9 @@ window.onload = function () {
                   'Access-Control-Allow-Headers': '*'
             }
 
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+            
             axios.get(ajaxUrlGdxpSupplierIndex)
                 .then(response => {
                   console.log(response.data); 
