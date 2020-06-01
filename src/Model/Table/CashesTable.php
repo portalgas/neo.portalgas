@@ -156,6 +156,11 @@ class CashesTable extends Table
                 debug("cash importo before 0");
         }
             
+         /*
+         * valori della cash corrente da persistere in k_cashes_histories
+         */             
+        $cash_importo = 0;            
+        $cash_nota = '';            
         if(isset($data['importo_da_pagare'])) {
             
             /*
@@ -165,7 +170,15 @@ class CashesTable extends Table
                 $cash_importo = $cashResults['importo'];
             else
                 $cash_importo = 0;            
-            
+ 
+             /*
+             * recupero la nota della cash corrente per persisterla in k_cashes_histories
+             */ 
+            if(isset($cashResults['nota']))
+                $cash_nota = $cashResults['nota'];
+            else
+                $cash_nota = '';    
+
             $importo_new = $this->getNewImport($user, $data['importo_da_pagare'], $cash_importo, $debug);   
             $data['importo'] = $importo_new;
         }
@@ -205,7 +218,7 @@ class CashesTable extends Table
                 $data['cash_id'] = $id;
                 $data['organization_id'] = $cash->organization_id;
                 $data['user_id'] = $cash->user_id;
-                $data['nota'] = $cash->nota;
+                $data['nota'] = $cash_nota;
                 $data['importo'] = $cash_importo; // importo precedente al salvataggio
                 if($debug) debug($data);
                 
