@@ -98,12 +98,12 @@ class OrganizationsPaysController extends ApiAppController
 
         switch (strtolower($organizations_pay->beneficiario_pay)) {
             case 'marco':
-                $cc = Configure::read('OrganizationPayBeneficiarioMarcoLabel').'<br />IBAN '.Configure::read('OrganizationPayBeneficiarioMarcoIban');
+                $cc = 'Beneficiario '.Configure::read('OrganizationPayBeneficiarioMarcoIbanLabel').'<br />IBAN '.Configure::read('OrganizationPayBeneficiarioMarcoIban');
                 $satispay = Configure::read('OrganizationPayBeneficiarioMarcoCell');
                 $mail = Configure::read('OrganizationPayBeneficiarioMarcoMail');
             break;
             case 'francesco':
-                $cc = Configure::read('OrganizationPayBeneficiarioFrancescoLabel').'<br />IBAN '.Configure::read('OrganizationPayBeneficiarioFrancescoIban');
+                $cc = 'Beneficiario '.Configure::read('OrganizationPayBeneficiarioFrancescoIbanLabel').'<br />IBAN '.Configure::read('OrganizationPayBeneficiarioFrancescoIban');
                 $satispay = Configure::read('OrganizationPayBeneficiarioFrancescoCell');
                 $mail = Configure::read('OrganizationPayBeneficiarioFrancescoMail');
                 break;
