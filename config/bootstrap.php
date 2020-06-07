@@ -328,7 +328,7 @@ Configure::write('OrganizationPayBeneficiarioMarcoLabel', 'Marco Siviero');
 Configure::write('OrganizationPayBeneficiarioMarcoIbanLabel', 'Siviero Marco e Sivera Laura');
 Configure::write('OrganizationPayBeneficiarioMarcoIban', 'IT79N0301503200000000234427');
 Configure::write('OrganizationPayBeneficiarioMarcoCell', '339 402 8600');
-Configure::write('OrganizationPayBeneficiarioMarcoMail', 'marco@portalgas.it'); 
+Configure::write('OrganizationPayBeneficiarioMarcoMail', 'marco.siviero@portalgas.it'); 
 
 Configure::write('OrganizationPayBeneficiarioFrancescoLabel', 'Francesco Actis Grosso');
 Configure::write('OrganizationPayBeneficiarioFrancescoIbanLabel', 'Francesco Actis Grosso e Sara Besacchi');
