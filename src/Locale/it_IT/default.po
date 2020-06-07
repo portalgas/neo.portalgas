@@ -743,6 +743,21 @@ msgid "Deliveries"
 msgstr "Consegne"
 
 #
+# totali
+#
+msgid "Tot Users"
+msgstr "Tot utenti"
+
+msgid "Tot Orders"
+msgstr "Tot ordini"
+
+msgid "Tot Suppliers Organizations"
+msgstr "Tot produttori"
+
+msgid "Tot Articles"
+msgstr "Tot articoli"
+
+#
 # ordini
 #
 msgid "Order"

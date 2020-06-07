@@ -108,11 +108,12 @@ class OrganizationsPaysController extends AppController
             $data['importo'] = $this->OrganizationsPays->getImporto($this->user, $organization->id, $year, $tot_users, $debug);
             $data['import_additional_cost'] = 0;
             
-            $data['data_pay'] = Configure::read('DB.field.date.empty');
+            $data['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
             $data['beneficiario_pay'] = strtoupper($this->OrganizationsPays::BENEFICIARIO_PAY_MARCO);
             $data['type_pay'] = strtoupper($this->OrganizationsPays::TYPE_PAY_RICEVUTA);
             if($debug) debug($data);
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $data);
+            if($debug) debug($organizationsPay);
             if (!$this->OrganizationsPays->save($organizationsPay)) {
                 debug($organizationsPay->getErrors());
                 $continue=false;
@@ -215,7 +216,7 @@ class OrganizationsPaysController extends AppController
             $requestData = $this->request->getData();
 
             if(empty($requestData['data_pay']))
-                $requestData['data_pay'] = Configure::read('DB.field.date.empty');
+                $requestData['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
             // debug($requestData);
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);
             if ($this->OrganizationsPays->save($organizationsPay)) {
@@ -252,7 +253,7 @@ class OrganizationsPaysController extends AppController
             $requestData = $this->request->getData();
             
             if(empty($requestData['data_pay']))
-                $requestData['data_pay'] = Configure::read('DB.field.date.empty');
+                $requestData['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
             // debug($requestData);            
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);          
             if ($this->OrganizationsPays->save($organizationsPay)) {
