@@ -160,7 +160,8 @@ class CashesTable extends Table
          * valori della cash corrente da persistere in k_cashes_histories
          */             
         $cash_importo = 0;            
-        $cash_nota = '';            
+        $cash_nota = '';             
+        $cash_modified = '';            
         if(isset($data['importo_da_pagare'])) {
             
             /*
@@ -177,8 +178,11 @@ class CashesTable extends Table
             if(isset($cashResults['nota']))
                 $cash_nota = $cashResults['nota'];
             else
-                $cash_nota = '';    
+                $cash_nota = ''; 
 
+            if(isset($cashResults['modified']))
+                $cash_modified = $cashResults['modified'];
+            
             $importo_new = $this->getNewImport($user, $data['importo_da_pagare'], $cash_importo, $debug);   
             $data['importo'] = $importo_new;
         }
@@ -220,6 +224,9 @@ class CashesTable extends Table
                 $data['user_id'] = $cash->user_id;
                 $data['nota'] = $cash_nota;
                 $data['importo'] = $cash_importo; // importo precedente al salvataggio
+                if(!empty($cash_modified))
+                    $data['modified'] = $cash_modified;
+                
                 if($debug) debug($data);
                 
                 /*
