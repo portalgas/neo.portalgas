@@ -310,8 +310,8 @@ Configure::write('Supplier.img.path.full', 'http://www.portalgas.it/images/organ
 Configure::write('Supplier.img.path.fulljs', 'http://www.portalgas.it/images/organizations/contents/');
 Configure::write('Supplier.img.preview.width', '50px');
 
-Configure::write('Gdxp.suppliers.index.url', 'http://www.economiasolidale.net/api/v1/list.php');
-// Configure::write('Gdxp.suppliers.index.url', '/json/gdxp-suppliers.json');
+Configure::write('Gdxp.suppliers.index.url.remote', 'http://www.economiasolidale.net/api/v1/list.php');
+Configure::write('Gdxp.suppliers.index.url.local', '/json/gdxp-suppliers.json');
 Configure::write('Gdxp.articles.index.url', 'http://www.economiasolidale.net/api/v1/get.php');
 Configure::write('Gdxp.queue.code', 'GDXP-PORTALGAS');
 Configure::write('Gdxp.schema_path', WWW_ROOT.'/json/json-schema.json');

@@ -5,7 +5,7 @@ echo $this->Html->script('vue/gdxpSuppliersIndex', ['block' => 'scriptPageInclud
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Gdxp-Suppliers-index'), 'subtitle' => 'economiasolidale.net']);
 
-echo $this->element('msg', ['msg' => 'Dati ottenuti interrogando il servizio <a target="_blank" href="'.$gdxp_suppliers_index_url.'">'.$gdxp_suppliers_index_url.'</a>']);
+echo $this->element('msg', ['msg' => 'Dati ottenuti interrogando il servizio <a target="_blank" href="'.$gdxp_suppliers_index_url_remote.'">'.$gdxp_suppliers_index_url_remote.'</a>']);
 
 echo '<div id="vue-suppliers">';
 
@@ -43,8 +43,8 @@ echo '</div>'; // is_found_suppliers
 
 echo '</div>';
 
-$js = "var ajaxUrlGdxpSupplierIndex = '".$gdxp_suppliers_index_url."';
-
+$js = "var ajaxUrlRemoteGdxpSupplierIndex = '".$gdxp_suppliers_index_url_remote."';
+       var ajaxUrlLocalGdxpSupplierIndex = '".$gdxp_suppliers_index_url_local."';
 ";
 
 $this->Html->scriptBlock($js, ['block' => true]);

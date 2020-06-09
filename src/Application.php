@@ -192,9 +192,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 	 */
     public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $config = Configure::read('Config');
+        $portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
+                
         $service = new AuthenticationService();
         $service->setConfig([
-            'unauthenticatedRedirect' => '/users/login',
+            'unauthenticatedRedirect' => $portalgas_bo_url_login,
             'queryParam' => 'redirect',
         ]);
 
@@ -207,7 +210,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => '/admin/auths/login'
+            'loginUrl' => $portalgas_bo_url_login
         ]);
 
         // Load identifiers

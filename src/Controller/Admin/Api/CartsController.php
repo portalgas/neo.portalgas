@@ -28,7 +28,7 @@ class CartsController extends ApiAppController
 
         $debug = false;
         $results = [];
-
+    
         $delivery_id = $this->request->getData('delivery_id');
         if(!empty($delivery_id)) {
 

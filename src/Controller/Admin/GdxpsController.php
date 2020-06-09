@@ -31,14 +31,18 @@ class GdxpsController extends AppController
     }
 
     /*
-     * list suppliers gdxp
+     * list suppliers gdxp da http://www.economiasolidale.net/api/v1/list.php
+     * se no lo trovo 
+     * has been blocked by CORS policy: Request header field x-csrf-token is not allowed by Access-Control-Allow-Headers in preflight response.
+     *  prendo quello locale
      */
     public function index()
     {
-        $gdxp_suppliers_index_url = Configure::read('Gdxp.suppliers.index.url');
+        $gdxp_suppliers_index_url_remote = Configure::read('Gdxp.suppliers.index.url.remote');
+        $gdxp_suppliers_index_url_local = Configure::read('Gdxp.suppliers.index.url.local');
         $gdxp_articles_index_url = Configure::read('Gdxp.articles.index.url');
 
-        $this->set(compact('gdxp_suppliers_index_url', 'gdxp_articles_index_url'));
+        $this->set(compact('gdxp_suppliers_index_url_remote', 'gdxp_suppliers_index_url_local', 'gdxp_articles_index_url'));
     }
 
     public function export()

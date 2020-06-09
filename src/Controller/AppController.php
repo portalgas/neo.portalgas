@@ -68,8 +68,8 @@ class AppController extends Controller
         $this->loadComponent('Authorization.Authorization', [
                         'skipAuthorization' => ['login']
                     ]); // definito come middleware in src/Application.php
-        // utilizza Auth $this->loadComponent('CakeImpersonate.Impersonate'); 
-        $this->loadComponent('Auth');
+        
+        $this->loadComponent('Auth'); // custom component
 
         /*
          * gestione float nella serializzazione json

@@ -3,7 +3,9 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
+use App\Form\OrderForm;
 
 /**
  * Orders Controller
@@ -30,6 +32,38 @@ class OrdersController extends AppController
         }
     }
 	
+    public function form() {
+        $order = new OrderForm($this->user);
+        if ($this->request->is('post')) {
+
+            $isValid = $order->validate($this->request->getData());
+            if(!$isValid) {
+                $errors = $order->getErrors();
+                debug($errors);
+            }
+            if ($order->execute($this->request->getData())) {
+                $this->Flash->success('We will get back to you soon.');
+            } else {
+                $this->Flash->error('There was a problem submitting your form.');
+            }
+        }
+
+        if ($this->request->is('get')) {
+            $order->setData([
+                'name' => 'John Doe',
+                'email' => 'john.doe@example.com'
+            ]);
+
+            $suppliersOrganizationTable = TableRegistry::get('SuppliersOrganizations');
+
+            $supplier_organizations = $suppliersOrganizationTable->gets($this->user);
+            $supplier_organizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);        
+            $this->set('supplier_organizations', $supplier_organizations);
+        }
+
+        $this->set('order', $order);
+    }
+
     /**
      * Index method
      *
@@ -38,7 +72,7 @@ class OrdersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Organizations', 'SupplierOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
+            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSuppliersOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
         ];
         $orders = $this->paginate($this->Orders);
 
@@ -55,7 +89,7 @@ class OrdersController extends AppController
     public function view($id = null)
     {
         $order = $this->Orders->get($id, [
-            'contain' => ['Organizations', 'SupplierOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
+            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSuppliersOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
         ]);
 
         $this->set('order', $order);
@@ -80,13 +114,13 @@ class OrdersController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Order'));
         }
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
-        $supplierOrganizations = $this->Orders->SupplierOrganizations->find('list', ['limit' => 200]);
+        $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
         $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownerSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
+        $ownerSuppliersOrganizations = $this->Orders->OwnerSuppliersOrganizations->find('list', ['limit' => 200]);
         $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
         $prodGasPromotions = $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order', 'organizations', 'supplierOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSuppliersOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 
 
@@ -112,13 +146,13 @@ class OrdersController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Order'));
         }
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
-        $supplierOrganizations = $this->Orders->SupplierOrganizations->find('list', ['limit' => 200]);
+        $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
         $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownerSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
+        $ownersSupplierOrganizations = $this->Orders->OwnerSuppliersOrganizations->find('list', ['limit' => 200]);
         $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
         $prodGasPromotions = $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order', 'organizations', 'supplierOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSuppliersOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 
 

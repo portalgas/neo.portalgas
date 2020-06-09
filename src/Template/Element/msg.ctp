@@ -14,8 +14,8 @@ if(empty($msg))
 <?php
 if($tmpl==1 || $tmpl=='ALL') {
 	echo '<div class="callout callout-'.$class.'" style="clear: both;">';
-	echo '<h4>'.$msg_header.'</h4>';
-	echo '<p>'.$msg.'</p>';
+	echo '<h4 class="msg-header">'.$msg_header.'</h4>';
+	echo '<p class="msg-body">'.$msg.'</p>';
 	echo '</div>';
 }
 ?>
