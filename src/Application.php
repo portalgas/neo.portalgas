@@ -150,7 +150,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                  *  Notice: Deprecated (16384): The `unauthenticatedRedirect` configuration key on AuthenticationMiddleware is deprecated.
                  'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
                  */ 
-                 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
+                 'unauthenticatedRedirect' => $portalgas_bo_url_login
             ]);
             $middlewareQueue->add($authentication);
 
@@ -168,7 +168,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                                     OtherException::class,
                                 ]
                             ],
-                            'unauthorizedRedirect' => Router::url($portalgas_bo_url_login),
+                            //'unauthorizedRedirect' => Router::url($portalgas_bo_url_login),
+                            'unauthorizedRedirect' => $portalgas_bo_url_login,
                             // https://book.cakephp.org/authorization/1/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
                                     /*
