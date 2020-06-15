@@ -199,7 +199,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $service = new AuthenticationService();
         $service->setConfig([
             'unauthenticatedRedirect' => $portalgas_bo_url_login,
-            'queryParam' => 'redirect',
+            'queryParam' => null
         ]);
 
         $fields = [
