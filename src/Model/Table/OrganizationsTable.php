@@ -56,7 +56,13 @@ class OrganizationsTable extends Table
 
         $this->hasMany('OrganizationsPays', [
             'foreignKey' => 'organization_id',
-        ]);          
+        ]); 
+
+        /*
+         * se l'organization type = PACT / PRODGAS
+         *  e il legame con il produttore associato
+         */
+        $this->hasOne('SuppliersOrganizations');                 
     }
 
     /**

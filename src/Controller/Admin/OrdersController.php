@@ -5,7 +5,12 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-use App\Form\OrderForm;
+
+use App\Model\Entity\OrderGas;
+use App\Model\Entity\OrderDes;
+use App\Model\Entity\OrderPact;
+use App\Model\Entity\OrderPromotion;
+
 
 /**
  * Orders Controller
@@ -20,6 +25,7 @@ class OrdersController extends AppController
     {
         parent::initialize();
         $this->loadComponent('Auth');
+        $this->loadComponent('SuppliersOrganization');
     }
 
     public function beforeFilter(Event $event) {
@@ -32,6 +38,44 @@ class OrdersController extends AppController
         }
     }
 	
+    public function test()
+    { 
+        $scope = 'PACT-PRE';
+       // $scope = 'PACT';
+        debug($scope);
+        $ordersTable = $this->Orders->factory($scope);
+        // debug($ordersTable);
+
+        $order = $ordersTable->newEntity();
+        
+        if ($this->request->is('post')) {            
+            $order = $ordersTable->patchEntity($order, $this->request->getData());
+            
+            $ordersTable->addBehavior('Orders');
+
+            if ($ordersTable->save($order)) {
+                $this->Flash->success(__('The {0} has been saved.', 'K Order'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Order'));
+        }
+
+        
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->user);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->user, $suppliersOrganizations);
+        // debug($suppliersOrganizations);
+        if(empty($suppliersOrganizations)) {
+            $this->Flash->error(__('no suppliersOrganizations'));
+        }
+        else {
+
+        }
+        $deliveries = $ordersTable->getDeliveries($this->user);
+
+        $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries'));
+    }
+
     public function form() {
         $order = new OrderForm($this->user);
         if ($this->request->is('post')) {
@@ -72,7 +116,7 @@ class OrdersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSuppliersOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
+            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
         ];
         $orders = $this->paginate($this->Orders);
 
@@ -89,7 +133,7 @@ class OrdersController extends AppController
     public function view($id = null)
     {
         $order = $this->Orders->get($id, [
-            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSuppliersOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
+            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
         ]);
 
         $this->set('order', $order);
@@ -102,8 +146,9 @@ class OrdersController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add()
-    {
+    { 
         $order = $this->Orders->newEntity();
+        
         if ($this->request->is('post')) {
             $order = $this->Orders->patchEntity($order, $this->request->getData());
             if ($this->Orders->save($order)) {
@@ -116,13 +161,12 @@ class OrdersController extends AppController
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
         $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
         $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownerSuppliersOrganizations = $this->Orders->OwnerSuppliersOrganizations->find('list', ['limit' => 200]);
+        $ownerSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
         $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
         $prodGasPromotions = $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSuppliersOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
-
 
     /**
      * Edit method
@@ -148,11 +192,11 @@ class OrdersController extends AppController
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
         $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
         $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownersSupplierOrganizations = $this->Orders->OwnerSuppliersOrganizations->find('list', ['limit' => 200]);
+        $ownersSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
         $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
         $prodGasPromotions = $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSuppliersOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 
 

@@ -160,7 +160,9 @@ class DeliveriesTable extends Table
         $results = [];
 
         $where = array_merge(['Deliveries.organization_id' => $user->organization->id,
-                              'Deliveries.isVisibleBackOffice' => 'Y'], $where);
+                              'Deliveries.isVisibleBackOffice' => 'Y',
+                              'Deliveries.sys' => 'N'], 
+                              $where);
 
         $where_order = array_merge(['Orders.organization_id' => $user->organization->id], $where_order);
                            
@@ -187,4 +189,32 @@ class DeliveriesTable extends Table
         
         return $results;
     }
+
+    public function getDeliverySys($user, $debug=false) {
+
+        $where = ['Deliveries.organization_id' => $user->organization->id,
+                  'Deliveries.sys' => 'Y'];
+
+        $results = $this->find()
+                        ->where($where)
+                        ->first();
+
+        return $results;    
+    }   
+
+    public function getDeliverySysList($user, $debug=false) {
+
+        $results = [];
+
+        $where = ['Deliveries.organization_id' => $user->organization->id,
+                  'Deliveries.sys' => 'Y'];
+
+        $deliveryResults = $this->find()
+                        ->where($where)
+                        ->first();
+
+        $results[$deliveryResults->id] = $deliveryResults->nota; 
+
+        return $results;    
+    }       
 }

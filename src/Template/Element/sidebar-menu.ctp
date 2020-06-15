@@ -67,11 +67,11 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   } // if($isRoot)
 
   // if($isSuperReferente || $isReferentGeneric) {
-  if($isRoot) {
+  if($isSuperReferente && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y') {
   ?>
   <li class="treeview"> 
     <a href="#">
-      <i class="fa fa-share-alt"></i> <span>Interoperabilità tra gestionali</span>
+      <i class="fa fa-share-alt"></i> <span>Interoperabilità</span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>

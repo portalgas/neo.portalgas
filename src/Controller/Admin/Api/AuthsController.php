@@ -44,7 +44,9 @@ class AuthsController extends ApiAppController
     }
     
     public function login()
-    {   Log::write('notice', 'login');
+    {   
+        Log::write('notice', 'login');
+        
         if ($this->request->is('post')) {
 
             $cookieSessions = $this->getRequest()->getSession()->id();  // $this->getRequest()->getCookie('CAKEPHP'); in app.php

@@ -217,4 +217,30 @@ class SuppliersOrganizationsTable extends Table
         // debug($results);
         return $results;
     } 
+
+    /*
+     * estraggo il produttore del GAS che abbiama concesso la gestione del listino al produttore
+     *  $owner_articles = 'SUPPLIER'
+     *  owner_organization_id del produttore
+     *  owner_supplier_organization_id del produttore
+     */
+    public function getOwnSupplierBySupplierId($user, $supplier_id, $owner_organization_id, $owner_supplier_organization_id, $owner_articles = 'SUPPLIER', $debug=false) {
+
+        $where = ['SuppliersOrganizations.supplier_id' => $supplier_id,
+                  'SuppliersOrganizations.owner_articles' => $owner_articles,
+                  'SuppliersOrganizations.owner_organization_id' => $owner_organization_id,
+                  'SuppliersOrganizations.owner_supplier_organization_id' => $owner_supplier_organization_id];
+        
+        $where = array_merge(['SuppliersOrganizations.organization_id' => $user->organization->id], $where);
+        if($debug) debug($where);
+        
+        $results = $this->find()
+                            ->where($where)
+                            ->contain(['Suppliers', 'CategoriesSuppliers'])
+                            ->order(['SuppliersOrganizations.name'])
+                            ->first();
+        if($debug) debug($results);
+        
+        return $results;  
+    }  
 }

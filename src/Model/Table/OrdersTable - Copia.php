@@ -67,6 +67,14 @@ class OrdersTable extends Table
             'foreignKey' => ['organization_id', 'delivery_id'],
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('ProdGasPromotions', [
+            'foreignKey' => 'prod_gas_promotion_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('DesOrders', [
+            'foreignKey' => 'des_order_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**
@@ -261,39 +269,11 @@ class OrdersTable extends Table
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
         $rules->add($rules->existsIn(['owner_supplier_organization_id'], 'OwnerSupplierOrganizations'));
         $rules->add($rules->existsIn(['delivery_id'], 'Deliveries'));
-       
+        $rules->add($rules->existsIn(['prod_gas_promotion_id'], 'ProdGasPromotions'));
+        $rules->add($rules->existsIn(['des_order_id'], 'DesOrders'));
+
         return $rules;
     }
-
-    public function factory($scope) {
-
-        $table_registry = '';
-
-        switch (strtoupper($scope)) {
-            case 'DES-TITOLARE':
-            case 'DES':
-                $table_registry = 'OrdersDes';
-                break;
-            case 'GAS':
-                $table_registry = 'OrdersGas';
-                break;
-            case 'PROMOTION':
-                $table_registry = 'OrdersPromotion';
-                break;
-            case 'PACT-PRE':
-                $table_registry = 'OrdersPactPre';
-                break;
-            case 'PACT':
-                $table_registry = 'OrdersPact';
-                break;
-            
-            default:
-                die('OrdersTable scope ['.$scope.'] non previsto');
-                break;
-        }
-
-        return TableRegistry::get($table_registry);
-    } 
 
     public function getById($user, $organization_id, $order_id, $debug=false) {
 
@@ -373,5 +353,5 @@ class OrdersTable extends Table
         if($debug) debug("Order::getTotImporto ".$importo_totale);
 
         return $importo_totale;
-    }      
+    }
 }

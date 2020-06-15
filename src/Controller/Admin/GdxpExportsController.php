@@ -31,7 +31,7 @@ class GdxpExportsController extends AppController
 
         $gdxp = $this->_getHeader(); 
 
-        $subject = $this->_getOrganization($this->user->organization);
+        $subject = ['subject' => $this->_getOrganization($this->user->organization)];
 
         $blocks =[]; 
         $supplier = $this->_getSupplier($this->user, $this->user->organization->id, $supplier_organization_id); 
@@ -47,6 +47,7 @@ class GdxpExportsController extends AppController
 
         // $this->set('_rootNode', 'gdxp'); node xml
         $this->set($gdxp);
+        $this->set($subject);
         $this->set(compact('blocks', 'supplier'));
         $this->set('_serialize', ['protocolVersion', 'creationDate', 'applicationSignature', 'subject', 'blocks']);
 
