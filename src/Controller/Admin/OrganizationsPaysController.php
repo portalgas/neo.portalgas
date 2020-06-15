@@ -27,7 +27,7 @@ class OrganizationsPaysController extends AppController
         parent::beforeFilter($event);
 
         if(!$this->Auth->isRoot($this->user)) {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => true]);
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
@@ -48,7 +48,7 @@ class OrganizationsPaysController extends AppController
                     ->where(['OrganizationsPays.year' => date('Y')])
                     ->first();
         if(!empty($organizationsPays)) {
-            $this->Flash->error("OrganizationsPays già creato per l'anno ".$year, ['escape' => true]);
+            $this->Flash->error("OrganizationsPays già creato per l'anno ".$year, ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
 

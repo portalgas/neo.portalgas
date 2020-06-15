@@ -71,12 +71,12 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
              * cerco SuppliersOrganizations del GAS, che abbia dato la gestione del listino al produttte
              */
             $supplier_id = $organizationResults->suppliers_organization->supplier_id;
-            $owner_organization_id = $organizationResults->id;
+            $owner_organization_i            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $results = $suppliersOrganizationsTable->getOwnSupplierBySupplierId($user, $supplier_id, $owner_organization_id, $owner_supplier_organization_id, $owner_articles, $debug);d = $organizationResults->id;
             $owner_supplier_organization_id = $organizationResults->suppliers_organization->id;
             $owner_articles = 'SUPPLIER';
             
-            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            $results = $suppliersOrganizationsTable->getOwnSupplierBySupplierId($user, $supplier_id, $owner_organization_id, $owner_supplier_organization_id, $owner_articles, $debug);
+
         }
         return $results;     
     } 
