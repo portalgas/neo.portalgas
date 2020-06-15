@@ -67,7 +67,8 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   } // if($isRoot)
 
   // if($isSuperReferente || $isReferentGeneric) {
-  if($isSuperReferente && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y') {
+  if($isRoot || 
+    ($isSuperReferente && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
   ?>
   <li class="treeview"> 
     <a href="#">
