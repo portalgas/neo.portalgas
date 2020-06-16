@@ -17,6 +17,16 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
 
 <!-- Main content -->
 <section class="content">
+
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <?php
+      echo $this->element('organization_pay_search', ['totResults' => $organizationsPays->count(), 'beneficiario_pay' => $beneficiario_pays, 'hasMsgs' => $hasMsgs, 'type_pays' => $type_pays]);
+        ?>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-xs-12">
       <div class="box">

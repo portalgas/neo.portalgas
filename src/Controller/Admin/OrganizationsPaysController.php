@@ -139,19 +139,37 @@ class OrganizationsPaysController extends AppController
         /*
          * da ricerca
          */
-        $searchConditions = [];
-        $filter_year = $this->request->getQuery('filter_year');
-        if(empty($filter_year))
-            $filter_year = date('Y'); 
-        if(!empty($filter_year)) {
-            $searchConditions = ['OrganizationsPays.year' => $filter_year];
+        $where = [];
+        $request = $this->request->getData();
+        // debug($request);        
+        $search_year = $this->request->getQuery('search_year');
+        $search_beneficiario_pay = $this->request->getQuery('search_beneficiario_pay');
+        $search_hasMsg = $this->request->getQuery('search_hasMsg');
+        $search_type_pay = $this->request->getQuery('search_type_pay');       
+        if(empty($search_year))
+            $search_year = date('Y');
+        if(!empty($search_year)) {
+            array_push($where, ['OrganizationsPays.year' => $search_year]);
+        } 
+
+        if(!empty($request['search_beneficiario_pay'])) {
+            $search_beneficiario_pay = $request['search_beneficiario_pay'];
+            array_push($where, ['OrganizationsPays.beneficiario_pay' => $search_beneficiario_pay]);
         }
-        // debug($searchConditions);
+        if(!empty($request['search_hasMsg'])) {
+            $search_hasMsg = $request['search_hasMsg'];
+            array_push($where, ['Organizations.hasMsg' => $search_hasMsg]);
+        }
+        if(!empty($request['search_type_pay'])) {
+            $search_type_pay = $request['search_type_pay'];
+            array_push($where, ['OrganizationsPays.type_pay' => $search_type_pay]);
+        }
+        // debug($where);
 
         $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
         $this->paginate = [
-            'conditions' => [$searchConditions],
+            'conditions' => [$where],
             'contain' => ['Organizations'],
             'order' => ['OrganizationsPays.year' => 'desc'],
             'limit' => 100
