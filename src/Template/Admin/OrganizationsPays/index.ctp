@@ -63,8 +63,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <td>
                     <?php
                      $label = $organizationsPay->organization->name.' ('.$organizationsPay->organization->id.')';
-
-                     echo $this->Html->link($label, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]); 
+                     echo  $label;
+                     // echo $this->Html->link($label, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]); 
                     ?>
                   </td>
                   <td><?= h($organizationsPay->year) ?></td>
