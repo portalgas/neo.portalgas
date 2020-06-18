@@ -28,9 +28,13 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($order, ['role' => 'form']); ?>
-            <div class="box-body">
-              <?php
+          <?php 
+            echo $this->Form->create($order, ['role' => 'form']); 
+            echo '<div class="box-body">';
+                /*
+                 * passato per OrderValidation
+                 */
+                echo $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->Identity->get()->organization->id, 'required' => 'required']);
                 // echo $this->HtmlCustomSite->boxSupplierOrganization($suppliersOrganizations);
                 echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
                 
@@ -43,31 +47,68 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
                 echo '<div class="col-md-6">'; 
                 echo $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
                 echo '</div>'; 
+                echo '</div>'; 
 
+                echo '<div class="row">';
+                echo '<div class="col-md-12">'; 
                 echo $this->Form->control('nota');
+                echo '</div>'; 
+                echo '</div>'; 
+
+                echo '<div class="row">';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('hasTrasport');
+                echo '</div>'; 
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('trasport_type');
+                echo '</div>';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('trasport');
+                echo '</div>'; 
+                echo '</div>'; 
+
+                echo '<div class="row">';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('hasCostMore');
+                echo '</div>'; 
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('cost_more_type');
+                echo '</div>';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('cost_more');
+                echo '</div>'; 
+                echo '</div>'; 
+
+                echo '<div class="row">';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('hasCostLess');
+                echo '</div>'; 
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('cost_less_type');
+                echo '</div>';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('cost_less');
+                echo '</div>'; 
+                echo '</div>'; 
 
+                echo '<div class="row">';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('qta_massima');
+                echo '</div>'; 
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('qta_massima_um');
+                echo '</div>';
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('importo_massimo');
-              ?>
-            </div>
-            <!-- /.box-body -->
+                echo '</div>'; 
+                echo '</div>'; 
+      
+           echo '</div>'; // <!-- /.box-body -->
 
-          <?php echo $this->Form->submit(__('Submit')); ?>
+           echo $this->Form->submit(__('Submit')); 
 
-          <?php echo $this->Form->end(); ?>
-        </div>
-        <!-- /.box -->
-      </div>
-  </div>
-  <!-- /.row -->
-</section>
+          echo $this->Form->end(); 
+        echo '</div>';  // <!-- /.box -->
+      echo '</div>';
+  echo '</div>'; //  <!-- /.row -->
+echo '</section>';

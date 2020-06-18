@@ -56,6 +56,8 @@ class GdxpsController extends AppController
 
     public function export()
     {
+        $debug = false;
+
         $articles = [];
         $supplier_organization_id = 0;
         $acl_supplier_organizations = $this->Auth->getAclSupplierOrganizationsList($this->user);
@@ -68,11 +70,18 @@ class GdxpsController extends AppController
             $supplier_organization = $suppliersOrganizationsTable->get($supplier_organization_id, ['contain' => ['Suppliers']]);
             $this->set(compact('supplier_organization'));
 
-            // debug('supplier_organization_id '.$supplier_organization_id);
+            /*
+             * ricerco chi gestisce il listino articoli del produttore del GAS
+             */
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $ownArticles = $suppliersOrganizationsTable->getOwnArticles($this->user, $this->user->organization->id, $supplier_organization_id, $debug);
+
             $articlesTable = TableRegistry::get('Articles');
 
-            $where = ['Articles.supplier_organization_id' => $supplier_organization_id,
+            $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
+                      'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
                       'Articles.stato' => 'Y'];
+
             $articles = $articlesTable->gets($this->user, $where);
             // debug($articles);
         } // end if ($this->request->is('post')) {

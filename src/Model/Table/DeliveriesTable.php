@@ -6,23 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * Deliveries Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\GcalendarEventsTable&\Cake\ORM\Association\BelongsTo $GcalendarEvents
- *
- * @method \App\Model\Entity\Delivery get($primaryKey, $options = [])
- * @method \App\Model\Entity\Delivery newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Delivery[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Delivery|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Delivery saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Delivery patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Delivery[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Delivery findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class DeliveriesTable extends Table
 {
     /**

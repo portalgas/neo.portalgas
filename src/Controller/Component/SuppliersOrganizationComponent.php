@@ -43,5 +43,5 @@ class SuppliersOrganizationComponent extends Component {
         }
 
         return $results;
-    }  
+    }
 }

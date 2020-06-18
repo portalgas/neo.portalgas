@@ -75,4 +75,21 @@ trait UtilTrait
         // $this->Flash->error(__('MsgDataSavedKO'));
         $this->Flash->error($msg, ['escape' => false]);
     }
+
+    public function createObjUser($args = []) {
+        
+        $user = new \stdClass();
+        $user->organization = new \stdClass();
+
+        if(!empty($args))
+        foreach ($args as $key => $value) {
+            switch ($key) {
+                case 'organization_id':
+                    $user->organization->id = $value;
+                break;
+            }
+        }
+
+        return $user;
+    }
 }

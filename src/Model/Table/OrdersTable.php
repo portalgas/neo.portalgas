@@ -6,29 +6,8 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use App\Validation\OrderValidator;
 
-/**
- * Orders Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\SupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $SupplierOrganizations
- * @property \App\Model\Table\OwnerOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerOrganizations
- * @property \App\Model\Table\OwnerSupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerSupplierOrganizations
- * @property \App\Model\Table\DeliveriesTable&\Cake\ORM\Association\BelongsTo $Deliveries
- * @property \App\Model\Table\ProdGasPromotionsTable&\Cake\ORM\Association\BelongsTo $ProdGasPromotions
- * @property \App\Model\Table\DesOrdersTable&\Cake\ORM\Association\BelongsTo $DesOrders
- *
- * @method \App\Model\Entity\Order get($primaryKey, $options = [])
- * @method \App\Model\Entity\Order newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Order[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Order|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Order saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Order patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Order[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Order findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class OrdersTable extends Table
 {
     /**
@@ -77,9 +56,27 @@ class OrdersTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+        $validator->setProvider('order', \App\Model\Validation\OrderValidation::class);
+
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
+
+        $validator
+            ->notEmpty('supplier_organization_id')
+            ->add('supplier_organization_id', [
+                'totArticles' => [
+                   'rule' => ['totArticles'],
+                   'provider' => 'order',
+                   'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
+                ],
+                'orderDuplicate' => [
+                    'on' => ['create'], // , 'create', 'update',
+                    'rule' => ['orderDuplicate'],
+                    'provider' => 'order',
+                    'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
+                ]
+            ]);  
 
         $validator
             ->scalar('owner_articles')
@@ -88,12 +85,38 @@ class OrdersTable extends Table
         $validator
             ->date('data_inizio')
             ->requirePresence('data_inizio', 'create')
-            ->notEmptyDate('data_inizio');
+            ->notEmptyDate('data_inizio')
+            ->add('data_inizio', [
+                'dateMinore' => [
+                   // 'on' => ['create', 'update', 'empty']
+                   'rule' => ['dateComparison', '<=', 'data_fine'],
+                   'provider' => 'order',
+                   'message' => 'La data di apertura non può essere posteriore della data di chiusura'
+                ],
+                'dateComparisonToDelivery' => [
+                    'rule' => ['dateComparisonToDelivery', '>'],
+                    'provider' => 'order',
+                    'message' => 'La data di apertura non può essere posteriore della data della consegna'
+                ]
+            ]);            
 
         $validator
             ->date('data_fine')
             ->requirePresence('data_fine', 'create')
-            ->notEmptyDate('data_fine');
+            ->notEmptyDate('data_fine')
+            ->add('data_fine', [
+                'dateMaggiore' => [
+                   // 'on' => ['create', 'update', 'empty']
+                   'rule' => ['dateComparison', '>=', 'data_inizio'],
+                   'provider' => 'order',
+                   'message' => 'La data di chiusura non può essere antecedente della data di apertura'
+                ],
+                'dateComparisonToDelivery' => [
+                    'rule' => ['dateComparisonToDelivery', '>'],
+                    'provider' => 'order',
+                    'message' => 'La data di chiusura non può essere posteriore o uguale della data della consegna'
+                ]
+            ]);
 
         $validator
             ->date('data_fine_validation')
@@ -113,11 +136,15 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('hasTrasport')
-            ->notEmptyString('hasTrasport');
+            ->notEmptyString('hasTrasport')
+            ->add('hasTrasport', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia di trasporto non prevista']);            
 
         $validator
             ->scalar('trasport_type')
-            ->allowEmptyString('trasport_type');
+            ->allowEmptyString('trasport_type')
+            ->add('trasport_type', 'inList', ['rule' => ['inList', ['QTA', 'WEIGHT', 'USERS', '']],
+                                    'message' => 'Tipologia di trasporto non prevista']);
 
         $validator
             ->numeric('trasport')
@@ -125,11 +152,15 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('hasCostMore')
-            ->notEmptyString('hasCostMore');
+            ->notEmptyString('hasCostMore')
+            ->add('hasCostMore', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia di costo aggiuntivo non prevista']); 
 
         $validator
             ->scalar('cost_more_type')
-            ->allowEmptyString('cost_more_type');
+            ->allowEmptyString('cost_more_type')
+            ->add('cost_more_type', 'inList', ['rule' => ['inList', ['QTA', 'WEIGHT', 'USERS', '']],
+                                    'message' => 'Tipologia di costo aggiuntivo non prevista']);            
 
         $validator
             ->numeric('cost_more')
@@ -137,11 +168,15 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('hasCostLess')
-            ->notEmptyString('hasCostLess');
+            ->notEmptyString('hasCostLess')
+            ->add('hasCostMore', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia di sconto non prevista']); 
 
         $validator
             ->scalar('cost_less_type')
-            ->allowEmptyString('cost_less_type');
+            ->allowEmptyString('cost_less_type')
+            ->add('cost_less_type', 'inList', ['rule' => ['inList', ['QTA', 'WEIGHT', 'USERS', '']],
+                                    'message' => 'Tipologia di sconto non prevista']);  
 
         $validator
             ->numeric('cost_less')
@@ -149,7 +184,9 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('typeGest')
-            ->allowEmptyString('typeGest');
+            ->allowEmptyString('typeGest')
+            ->add('typeGest', 'inList', ['rule' => ['inList', ['AGGREGATE', 'SPLIT', '']],
+                                    'message' => 'Tipologia di gestione non prevista']);  
 
         $validator
             ->scalar('state_code')
@@ -159,7 +196,9 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('mail_open_send')
-            ->notEmptyString('mail_open_send');
+            ->notEmptyString('mail_open_send')
+            ->add('mail_open_send', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia invio mail per apertura ordine non prevista']); 
 
         $validator
             ->dateTime('mail_open_data')
@@ -176,7 +215,9 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('type_draw')
-            ->notEmptyString('type_draw');
+            ->notEmptyString('type_draw')
+            ->add('type_draw', 'inList', ['rule' => ['inList', ['SIMPLE', 'COMPLETE', 'PROMOTION', '']],
+                                    'message' => 'Tipologia di visualizzazione non prevista']); 
 
         $validator
             ->numeric('tot_importo')
@@ -194,7 +235,9 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('send_mail_qta_massima')
-            ->notEmptyString('send_mail_qta_massima');
+            ->notEmptyString('send_mail_qta_massima')
+            ->add('send_mail_qta_massima', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia invio mail per quantità massima non prevista']); 
 
         $validator
             ->numeric('importo_massimo')
@@ -203,7 +246,9 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('send_mail_importo_massimo')
-            ->notEmptyString('send_mail_importo_massimo');
+            ->notEmptyString('send_mail_importo_massimo')
+            ->add('send_mail_importo_massimo', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia invio mail per importo massimo non prevista']); 
 
         $validator
             ->scalar('tesoriere_nota')
@@ -230,19 +275,27 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('tesoriere_stato_pay')
-            ->notEmptyString('tesoriere_stato_pay');
+            ->notEmptyString('tesoriere_stato_pay')
+            ->add('tesoriere_stato_pay', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia stato pagamento del tesoriere non prevista']);
 
         $validator
             ->scalar('inviato_al_tesoriere_da')
-            ->notEmptyString('inviato_al_tesoriere_da');
+            ->notEmptyString('inviato_al_tesoriere_da')
+            ->add('inviato_al_tesoriere_da', 'inList', ['rule' => ['inList', ['REFERENTE', 'CASSIERE', '']],
+                                    'message' => 'Tipologia invio al tesoriere da non prevista']);
 
         $validator
             ->scalar('isVisibleFrontEnd')
-            ->notEmptyString('isVisibleFrontEnd');
+            ->notEmptyString('isVisibleFrontEnd')
+            ->add('isVisibleFrontEnd', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia visibilità front-end non prevista']);
 
         $validator
             ->scalar('isVisibleBackOffice')
-            ->notEmptyString('isVisibleBackOffice');
+            ->notEmptyString('isVisibleBackOffice')
+            ->add('isVisibleBackOffice', 'inList', ['rule' => ['inList', ['Y', 'N']],
+                                    'message' => 'Tipologia visibilità backoffice non prevista']);
 
         return $validator;
     }

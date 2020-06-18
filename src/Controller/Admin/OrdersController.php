@@ -41,26 +41,27 @@ class OrdersController extends AppController
     public function test()
     { 
         $scope = 'PACT-PRE';
-       // $scope = 'PACT';
+        $scope = 'PACT';
         debug($scope);
         $ordersTable = $this->Orders->factory($scope);
-        // debug($ordersTable);
+        debug($ordersTable);
 
         $order = $ordersTable->newEntity();
         
-        if ($this->request->is('post')) {            
+        if ($this->request->is('post')) {   
+            debug($this->request->getData());         
             $order = $ordersTable->patchEntity($order, $this->request->getData());
             
             $ordersTable->addBehavior('Orders');
 
-            if ($ordersTable->save($order)) {
+            if (!$ordersTable->save($order)) {
+                $this->Flash->error($order->getErrors());
+            }
+            else {
                 $this->Flash->success(__('The {0} has been saved.', 'K Order'));
-
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Order'));
         }
-
         
         $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->user);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->user, $suppliersOrganizations);

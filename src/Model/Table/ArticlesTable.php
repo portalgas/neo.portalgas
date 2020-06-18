@@ -5,25 +5,9 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
-/**
- * KArticles Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\SupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $SupplierOrganizations
- * @property \App\Model\Table\CategoriesArticlesTable&\Cake\ORM\Association\BelongsTo $CategoriesArticles
- *
- * @method \App\Model\Entity\KArticle get($primaryKey, $options = [])
- * @method \App\Model\Entity\KArticle newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KArticle[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KArticle|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KArticle saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KArticle patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KArticle[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KArticle findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class ArticlesTable extends Table
 {
     /**
@@ -180,7 +164,6 @@ class ArticlesTable extends Table
 
     public function gets($user, $where, $order=[]) {
         
-        $where += ['Articles.organization_id' => $user->organization->id];
         if(empty($order))
             $order = ['Articles.name asc'];
 
@@ -192,4 +175,23 @@ class ArticlesTable extends Table
         // debug($articles);
         return $articles;
     }
+
+    public function getTotArticlesPresentiInArticlesOrder($user, $organization_id, $supplier_organization_id, $debug = false) {
+
+        /*
+         * ricerco chi gestisce il listino articoli del produttore del GAS
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $organization_id, $supplier_organization_id, $debug);
+
+        $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
+                  'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
+                  'Articles.stato' => 'Y',
+                  'Articles.flag_presente_articlesorders' => 'Y'];
+        if($debug) debug($where);
+
+        $results = $this->gets($user, $where);
+
+        return $results;
+    }    
 }

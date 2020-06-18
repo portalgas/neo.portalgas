@@ -39,7 +39,7 @@ class OrdersBehavior extends TreeBehavior
             $where = ['SuppliersOrganizations.organization_id' => $entity->organization_id,
                       'SuppliersOrganizations.id' => $entity->supplier_organization_id];
             // debug($where);
-            $results = $this->find()
+            $results = $suppliersOrganizationsTable->find()
                             ->select(['SuppliersOrganizations.owner_articles', 'SuppliersOrganizations.owner_organization_id', 'SuppliersOrganizations.owner_supplier_organization_id'])
                             ->where($where)
                             ->first();

@@ -8,26 +8,6 @@ use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
-/**
- * SuppliersOrganizations Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\SuppliersTable&\Cake\ORM\Association\BelongsTo $Suppliers
- * @property \App\Model\Table\CategorySuppliersTable&\Cake\ORM\Association\BelongsTo $CategorySuppliers
- * @property \App\Model\Table\OwnerOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerOrganizations
- * @property \App\Model\Table\OwnerSupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerSupplierOrganizations
- *
- * @method \App\Model\Entity\KSuppliersOrganization get($primaryKey, $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KSuppliersOrganization findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class SuppliersOrganizationsTable extends Table
 {
     /**
@@ -219,7 +199,32 @@ class SuppliersOrganizationsTable extends Table
     } 
 
     /*
-     * estraggo il produttore del GAS che abbiama concesso la gestione del listino al produttore
+     *  estraggo il proprietario del listino del produttre  del GAS 
+     *  $owner_articles = 'REFERENT', 'SUPPLIER', 'DES'
+     *  owner_organization_id del produttore
+     *  owner_supplier_organization_id del produttore
+     */
+    public function getOwnArticles($user, $organization_id, $supplier_organization_id, $debug=false) {
+
+        $where = ['SuppliersOrganizations.organization_id' => $organization_id,
+                  'SuppliersOrganizations.id' => $supplier_organization_id
+                 ];
+        
+        if($debug) debug($where);
+        
+        $results = $this->find()
+                            ->select(['SuppliersOrganizations.owner_articles', 
+                                      'SuppliersOrganizations.owner_organization_id', 
+                                      'SuppliersOrganizations.owner_supplier_organization_id'])
+                            ->where($where)
+                            ->first();
+        if($debug) debug($results);
+        
+        return $results;  
+    }  
+
+    /*
+     *  estraggo il produttore del GAS che abbiama concesso la gestione del listino al produttore
      *  $owner_articles = 'SUPPLIER'
      *  owner_organization_id del produttore
      *  owner_supplier_organization_id del produttore
