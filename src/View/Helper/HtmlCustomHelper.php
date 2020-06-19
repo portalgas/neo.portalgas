@@ -5,6 +5,7 @@ use Cake\View\Helper;
 use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
+use Cake\I18n\FrozenDate;
 
 class HtmlCustomHelper extends FormHelper
 {
@@ -150,13 +151,22 @@ class HtmlCustomHelper extends FormHelper
 
     public function datepicker($fieldName, $options=[]) {
 
+        /*
+         * ResponseMiddleware trasforma y/m/d in array ['year' => '2020', 'month' => '06','day' => '19']
+         *  devo riconvertirlo in \Cake\I18n\FrozenDate
+         */
+        $value = $this->request->getData($fieldName);
+        if(!empty($value) && is_array($value)) {
+            $options['value'] = $value['day'].'/'.$value['month'].'/'.$value['year'];
+        }
+
 		$optionDefault = ['type' => 'text', 'label' => false, 'class' => 'form-control datepicker pull-right'];
     	if(!empty($options)) {
     		$optionDefault = array_merge($optionDefault, $options);
     		if(isset($options['class']))
     			$optionDefault['class'] = 'form-control datepicker pull-right '.$options['class'];
     	}
-    
+
     	$html = '';
     	$html .= "
               <div class=\"form-group\">";

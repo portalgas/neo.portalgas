@@ -2,8 +2,8 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-use Authentication\IdentityInterface as AuthenticationIdentity;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\IdentityInterface as AuthenticationIdentity;
 use Authorization\AuthorizationService;
 use Authorization\IdentityInterface as AuthorizationIdentity;
 use Cake\ORM\TableRegistry;

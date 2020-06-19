@@ -37,7 +37,7 @@ class OrdersController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
-	
+
     public function test()
     { 
         $scope = 'PACT-PRE';
@@ -73,7 +73,7 @@ class OrdersController extends AppController
 
         }
         $deliveries = $ordersTable->getDeliveries($this->user);
-
+    
         $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries'));
     }
 
