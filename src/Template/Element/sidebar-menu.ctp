@@ -16,7 +16,19 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   </li>
   <?php
   if($isRoot) {
-  ?>  
+  ?> 
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-handshake-o"></i> <span><?php echo __('Pact');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/price-types/index'); ?>"><?php echo $icon;?><?php echo __('Price types');?></a></li>
+    </ul>
+    </a>
+  </li>
+
   <li class="treeview"> 
     <a href="#">
       <i class="fa fa-credit-card"></i> <span><?php echo __('OrganizationPay');?></span>
@@ -25,7 +37,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
       </span>
     <ul class="treeview-menu">
       <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=index" target="">Prospetto</a></li>
-      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?><?php echo __('Generate').' '.date('Y');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?><?php echo __('Genera pagamenti').' '.date('Y');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('Gestisci pagamenti').' '.date('Y');?></a></li>
       <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=invoice_create_form" target="">Genera fattura</a></li>
       <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Pages&amp;action=export_docs_root" target="">Stampa documenti</a></li>

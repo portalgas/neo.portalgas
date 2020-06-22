@@ -34,6 +34,21 @@ class TotalComponent extends Component {
 		return $results;
 	}
 
+	public function getLastVisitDateByGroups($user, $where_groups, $where, $debug=false) {
+
+		$model = TableRegistry::get('Users');
+        $results = $model->find()
+                    ->contain(['UserUsergroupMap' => function($query) use ($where_groups) {
+				        return $query->where($where_groups);
+				    }])
+					->where($where)
+                    ->order(['lastvisitDate' => 'desc'])
+					->first();
+
+		// debug($results);
+		
+		return $results;
+	}
 
 	public function totOrdersByYear($user, $organization_id, $year, $where=[], $debug=false) {
 

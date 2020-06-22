@@ -178,6 +178,15 @@ class OrganizationsPaysController extends AppController
 
         foreach($organizationsPays as $organizationsPay) {
             
+            /*
+             * ctrl l'ultima lastVisitDate del manager / tesoriere
+             */
+
+            $where_groups = ['UserUsergroupMap.group_id IN ' => 
+                            [Configure::read('group_id_manager'), Configure::read('group_id_referent_tesoriere')]];
+            $where = ['Users.organization_id' => $organizationsPay->organization_id];
+            $organizationsPay->lastVisitDate = $this->Total->getLastVisitDateByGroups($this->user, $where_groups, $where, $debug);
+
             $organizationsPay->isSaldato = $this->OrganizationsPays->isSaldato($this->user, $organizationsPay);
 
             /*

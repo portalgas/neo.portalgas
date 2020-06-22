@@ -11,7 +11,6 @@ use App\Model\Entity\OrderDes;
 use App\Model\Entity\OrderPact;
 use App\Model\Entity\OrderPromotion;
 
-
 /**
  * Orders Controller
  *
