@@ -1,9 +1,19 @@
 <?php
+use Cake\Core\Configure;
+
+echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
+
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'test']);
+
+echo $this->element('msg', ['msg' => 'testing pact']);
+
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
 // debug($htmlCustomSiteOrders);
+
+echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
 ?>
 <!-- Content Header (Page header) -->
   <section class="content-header">

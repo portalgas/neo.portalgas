@@ -27,6 +27,7 @@ class PriceTypesTable extends Table
 {
     const TYPE_PERC = 'Percentuale';
     const TYPE_FIX = 'Fisso';
+    const TYPE_FIX_USER = 'Fisso per gasista';
 
     /**
      * Initialize method

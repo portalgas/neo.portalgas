@@ -72,7 +72,10 @@ class OrdersController extends AppController
 
         }
         $deliveries = $ordersTable->getDeliveries($this->user);
-    
+
+        $priceTypesTable = TableRegistry::get('PriceTypes');
+        $this->set('price_type_enums', $priceTypesTable->enum('type'));
+
         $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries'));
     }
 
