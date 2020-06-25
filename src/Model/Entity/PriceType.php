@@ -11,10 +11,12 @@ use Cake\ORM\Entity;
  * @property int $order_id
  * @property string $code
  * @property string $name
+ * @property string|null $descri
  * @property string $type
  * @property float $value
  * @property bool|null $is_system
  * @property bool|null $is_active
+ * @property int $sort
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
@@ -37,10 +39,12 @@ class PriceType extends Entity
         'order_id' => true,
         'code' => true,
         'name' => true,
+        'descri' => true,
         'type' => true,
         'value' => true,
         'is_system' => true,
         'is_active' => true,
+        'sort' => true,
         'created' => true,
         'modified' => true,
         'organization' => true,

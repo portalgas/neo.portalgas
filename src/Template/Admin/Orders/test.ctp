@@ -12,8 +12,6 @@ echo $this->element('msg', ['msg' => 'testing pact']);
  */
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
 // debug($htmlCustomSiteOrders);
-
-echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
 ?>
 <!-- Content Header (Page header) -->
   <section class="content-header">
@@ -40,6 +38,7 @@ echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
           <?php 
             echo $this->Form->create($order, ['role' => 'form']); 
             echo '<div class="box-body">';
+
                 /*
                  * passato per OrderValidation
                  */
@@ -63,6 +62,8 @@ echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
                 echo $this->Form->control('nota');
                 echo '</div>'; 
                 echo '</div>'; 
+
+                echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
 
                 echo '<div class="row">';
                 echo '<div class="col-md-4">'; 
@@ -121,3 +122,6 @@ echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
       echo '</div>';
   echo '</div>'; //  <!-- /.row -->
 echo '</section>';
+
+$js = "var json_price_types = ".$json_price_types;
+$this->Html->scriptBlock($js, ['block' => true]);

@@ -29,12 +29,16 @@
           <?php echo $this->Form->create($priceType, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
+                echo $this->Form->control('organization_id', ['options' => $organizations]);
+                echo $this->Form->control('order_id', ['options' => $orders]);
                 echo $this->Form->control('code');
                 echo $this->Form->control('name');
-                echo $this->Form->radio('type', $types);
+                echo $this->Form->control('descri');
+                echo $this->Form->control('type');
                 echo $this->Form->control('value');
                 echo $this->Form->control('is_system');
                 echo $this->Form->control('is_active');
+                echo $this->Form->control('sort');
               ?>
             </div>
             <!-- /.box-body -->

@@ -33,12 +33,15 @@
             <thead>
               <tr>
                   <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('order_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('code') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('type') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('value') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('is_system') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('sort') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
@@ -48,12 +51,15 @@
               <?php foreach ($priceTypes as $priceType): ?>
                 <tr>
                   <td><?= $this->Number->format($priceType->id) ?></td>
+                  <td><?= $priceType->has('organization') ? $this->Html->link($priceType->organization->name, ['controller' => 'Organizations', 'action' => 'view', $priceType->organization->id]) : '' ?></td>
+                  <td><?= $priceType->has('order') ? $this->Html->link($priceType->order->id, ['controller' => 'Orders', 'action' => 'view', $priceType->order->id]) : '' ?></td>
                   <td><?= h($priceType->code) ?></td>
                   <td><?= h($priceType->name) ?></td>
                   <td><?= h($priceType->type) ?></td>
                   <td><?= $this->Number->format($priceType->value) ?></td>
                   <td><?= h($priceType->is_system) ?></td>
                   <td><?= h($priceType->is_active) ?></td>
+                  <td><?= $this->Number->format($priceType->sort) ?></td>
                   <td><?= h($priceType->created) ?></td>
                   <td><?= h($priceType->modified) ?></td>
                   <td class="actions text-right">

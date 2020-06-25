@@ -30,7 +30,7 @@ class PriceTypesController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
-	
+
     /**
      * Index method
      *
@@ -38,6 +38,10 @@ class PriceTypesController extends AppController
      */
     public function index()
     {
+        $this->PriceTypes->Organizations->removeBehavior('OrganizationsParams');
+        $this->paginate = [
+            'contain' => ['Organizations', 'Orders'],
+        ];
         $priceTypes = $this->paginate($this->PriceTypes);
 
         $this->set(compact('priceTypes'));
@@ -53,7 +57,7 @@ class PriceTypesController extends AppController
     public function view($id = null)
     {
         $priceType = $this->PriceTypes->get($id, [
-            'contain' => [],
+            'contain' => ['Organizations', 'Orders'],
         ]);
 
         $this->set('priceType', $priceType);
@@ -69,10 +73,9 @@ class PriceTypesController extends AppController
     {
         $priceType = $this->PriceTypes->newEntity();
         if ($this->request->is('post')) {
-            
+
             $data = $this->request->getData();
             $data['organization_id'] = $this->user->organization->id;
-            $data['order_id'] = 0; 
             $priceType = $this->PriceTypes->patchEntity($priceType, $data);
             if ($this->PriceTypes->save($priceType)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Price Type'));
@@ -83,8 +86,9 @@ class PriceTypesController extends AppController
                 $this->Flash->error($priceType->getErrors());
             }
         }
-        $this->set('types', $this->PriceTypes->enum('type'));
-        $this->set(compact('priceType'));
+        $organizations = $this->PriceTypes->Organizations->find('list', ['limit' => 200]);
+        $orders = $this->PriceTypes->Orders->find('list', ['limit' => 200]);
+        $this->set(compact('priceType', 'organizations', 'orders'));
     }
 
 
@@ -101,10 +105,8 @@ class PriceTypesController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            
             $data = $this->request->getData();
-            $data['organization_id'] = $this->user->organization->id;
-            $data['order_id'] = 0; 
+            $data['organization_id'] = $this->user->organization->id; 
             $priceType = $this->PriceTypes->patchEntity($priceType, $data);
             if ($this->PriceTypes->save($priceType)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Price Type'));
@@ -115,8 +117,9 @@ class PriceTypesController extends AppController
                 $this->Flash->error($priceType->getErrors());
             }
         }
-        $this->set('types', $this->PriceTypes->enum('type'));
-        $this->set(compact('priceType'));
+        $organizations = $this->PriceTypes->Organizations->find('list', ['limit' => 200]);
+        $orders = $this->PriceTypes->Orders->find('list', ['limit' => 200]);
+        $this->set(compact('priceType', 'organizations', 'orders'));
     }
 
 

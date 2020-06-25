@@ -20,6 +20,10 @@
         <!-- /.box-header -->
         <div class="box-body">
           <dl class="dl-horizontal">
+            <dt scope="row"><?= __('Organization') ?></dt>
+            <dd><?= $priceType->has('organization') ? $this->Html->link($priceType->organization->name, ['controller' => 'Organizations', 'action' => 'view', $priceType->organization->id]) : '' ?></dd>
+            <dt scope="row"><?= __('Order') ?></dt>
+            <dd><?= $priceType->has('order') ? $this->Html->link($priceType->order->id, ['controller' => 'Orders', 'action' => 'view', $priceType->order->id]) : '' ?></dd>
             <dt scope="row"><?= __('Code') ?></dt>
             <dd><?= h($priceType->code) ?></dd>
             <dt scope="row"><?= __('Name') ?></dt>
@@ -30,6 +34,8 @@
             <dd><?= $this->Number->format($priceType->id) ?></dd>
             <dt scope="row"><?= __('Value') ?></dt>
             <dd><?= $this->Number->format($priceType->value) ?></dd>
+            <dt scope="row"><?= __('Sort') ?></dt>
+            <dd><?= $this->Number->format($priceType->sort) ?></dd>
             <dt scope="row"><?= __('Created') ?></dt>
             <dd><?= h($priceType->created) ?></dd>
             <dt scope="row"><?= __('Modified') ?></dt>
@@ -44,4 +50,18 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-solid">
+        <div class="box-header with-border">
+          <i class="fa fa-text-width"></i>
+          <h3 class="box-title"><?= __('Descri') ?></h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <?= $this->Text->autoParagraph($priceType->descri); ?>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

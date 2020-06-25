@@ -169,6 +169,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/getList', ['action' => 'getList', '_method' => 'POST']);
         }); 
 
+        $routes->scope('/PriceTypes', ['controller' => 'PriceTypes'], function (RouteBuilder $routes) {
+            $routes->connect('/getsByOrderId', ['action' => 'getsByOrderId', '_method' => 'POST']);
+        });        
+
         $routes->fallbacks(DashedRoute::class);        
     }); 
 });

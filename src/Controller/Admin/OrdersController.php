@@ -25,6 +25,7 @@ class OrdersController extends AppController
         parent::initialize();
         $this->loadComponent('Auth');
         $this->loadComponent('SuppliersOrganization');
+        $this->loadComponent('PriceType');
     }
 
     public function beforeFilter(Event $event) {
@@ -47,13 +48,27 @@ class OrdersController extends AppController
 
         $order = $ordersTable->newEntity();
         
+        /*
+         * se il form ha degli errori di validazione, recupero i dati della priceTypes e creo una variabile js che vue con il metodo getRows() recupera
+         */ 
+        $json_price_types = '{}';
+        
         if ($this->request->is('post')) {   
-            debug($this->request->getData());         
+            
+            //debug($this->request->getData());  
+
             $order = $ordersTable->patchEntity($order, $this->request->getData());
             
             $ordersTable->addBehavior('Orders');
 
             if (!$ordersTable->save($order)) {
+
+                /*
+                 * se in errore recupero i valori dei priceType inseriti dall'utente
+                 */ 
+                $json_price_types = $this->PriceType->jsonToRequest($this->user, $this->request->getData());     
+                // debug($json_price_types);  
+
                 $this->Flash->error($order->getErrors());
             }
             else {
@@ -76,7 +91,7 @@ class OrdersController extends AppController
         $priceTypesTable = TableRegistry::get('PriceTypes');
         $this->set('price_type_enums', $priceTypesTable->enum('type'));
 
-        $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries'));
+        $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
     }
 
     public function form() {

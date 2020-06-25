@@ -21,6 +21,8 @@ class PriceTypesControllerTest extends TestCase
      */
     public $fixtures = [
         'app.PriceTypes',
+        'app.Organizations',
+        'app.Orders',
     ];
 
     /**

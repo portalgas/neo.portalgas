@@ -71,7 +71,6 @@ class PriceTypesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->integer('id')
             ->allowEmptyString('id', null, 'create');
 
         $validator
@@ -85,6 +84,10 @@ class PriceTypesTable extends Table
             ->maxLength('name', 100)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator
+            ->scalar('descri')
+            ->allowEmptyString('descri');
 
         $validator
             ->scalar('type')
@@ -102,6 +105,10 @@ class PriceTypesTable extends Table
             ->boolean('is_active')
             ->allowEmptyString('is_active');
 
+        $validator
+            ->integer('sort')
+            ->notEmptyString('sort');
+
         return $validator;
     }
 
@@ -115,10 +122,8 @@ class PriceTypesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        /*
-         * di default puo' essere 0
-         * $rules->add($rules->existsIn(['order_id'], 'Orders'));
-         */
+        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+
         return $rules;
     }
 }
