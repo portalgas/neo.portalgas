@@ -24,7 +24,7 @@ class PriceTypesController extends ApiAppController
      * POST /admin/api/priceTypes/getsByOrderId
      * Content-Type: application/json
      * X-Requested-With: XMLHttpRequest
-     * Authorization: Bearer 5056b8cf17f6dea5a65018f4e6e05e34b94c124977b48663d8b7ff838b13726a
+     * Authorization: Bearer 5056b8cf17f6dea5a65018f4....
      */  
     public function getsByOrderId() {
 

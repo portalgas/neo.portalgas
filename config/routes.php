@@ -173,6 +173,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/getsByOrderId', ['action' => 'getsByOrderId', '_method' => 'POST']);
         });        
 
+        $routes->scope('/SuppliersOrganizations', ['controller' => 'SuppliersOrganizations'], function (RouteBuilder $routes) {
+            $routes->connect('/getsById', ['action' => 'getsById', '_method' => 'POST']);
+        });        
+
         $routes->fallbacks(DashedRoute::class);        
     }); 
 });

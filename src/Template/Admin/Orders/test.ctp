@@ -1,7 +1,8 @@
 <?php
 use Cake\Core\Configure;
 
-echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
+//echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'test']);
 
@@ -43,9 +44,22 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
                  * passato per OrderValidation
                  */
                 echo $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->Identity->get()->organization->id, 'required' => 'required']);
+
+                /*
+                 * produttore
+                 */
+                echo '<div class="row">';
+                echo '<div class="col-md-8">';
                 // echo $this->HtmlCustomSite->boxSupplierOrganization($suppliersOrganizations);
                 echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
-                
+                echo '</div>';
+                echo '<div class="col-md-4" id="vue-supplier-organization" style="display: none;">';
+                echo '<div class="box-img" v-if="supplier_organization.img1!=\'\'"><img width="'.Configure::read('Supplier.img.preview.width').'" class="img-responsive-disabled userAvatar" v-bind:src="supplier_organization.img1" /></div>';
+                echo '<div class="box-name">{{supplier_organization.name}}</div>';
+                echo '<div class="box-owner">'.__('organization_owner_articles').': {{supplier_organization.owner_articles | ownerArticlesLabel}}</div>';
+                echo '</div>';
+                echo '</div>';
+
                 echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries);
 
                 echo '<div class="row">';

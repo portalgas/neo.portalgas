@@ -44,7 +44,7 @@ class OrdersController extends AppController
         $scope = 'PACT';
         debug($scope);
         $ordersTable = $this->Orders->factory($scope);
-        debug($ordersTable);
+        // debug($ordersTable);
 
         $order = $ordersTable->newEntity();
         

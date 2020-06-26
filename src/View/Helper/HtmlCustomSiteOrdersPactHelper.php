@@ -17,7 +17,7 @@ class HtmlCustomSiteOrdersPactHelper extends FormHelper
     }
 
     public function supplierOrganizations($suppliersOrganizations) {
-        return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations]);
+        return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
     }
 
     public function deliveries($deliveries) {

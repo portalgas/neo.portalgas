@@ -184,10 +184,10 @@ msgstr "Cancella"
 msgid "List"
 msgstr "Elenco"
 
-msgid "Data Ini"
+msgid "Data Inizio"
 msgstr "Data inizio"
 
-msgid "data_ini"
+msgid "data_inizio"
 msgstr "Data inizio"
 
 msgid "Data Fine"
@@ -732,6 +732,12 @@ msgstr "Partita iva"
 
 msgid "Supplier-VatNumber-short"
 msgstr "P.iva"
+
+msgid "organization_owner_articles"
+msgstr "Gestore del listino degli articoli"
+ 	
+msgid "organization_owner_articles_short"
+msgstr "Gestore articoli"
 
 #
 # consegne

@@ -13,7 +13,9 @@ window.onload = function () {
 				mode: 'history',
 	    		routes: []
     		});
-	
+
+	var ico_spinner = 'fa-lg fa fa-spinner fa-spin';
+
 	vueOrderPriceTypes = new Vue({
 	  routerOrderPriceTypes,
 	  el: '#vue-order-price-types',
@@ -31,7 +33,8 @@ window.onload = function () {
                 name: null,
                 type: null,
                 value: null
-            },    		
+            },
+            spinner_run_type_prices: false,
     		isFormValid: true
 	  },  
 	  methods: {   	  	
@@ -78,27 +81,38 @@ window.onload = function () {
 		   		}
 
 		   		return this.isFormValid;	            
-	        },	        
+	        },
 		    getRows: function() {
 
-			    console.log(json_price_types); 
-		    	if(json_price_types!='')
-		    		this.getRowsFromRequest();
-		    	else
+		    	this.spinnerRun = true;
+	            $('.run-type-prices').show();
+	            $('.run-type-prices .spinner').addClass(ico_spinner);
+
+		    	if(typeof json_price_types.length === 'undefined')
 		    		this.getRowsFromDatabase();
+		    	else
+		    		this.getRowsFromRequest();
 		    },	
 		    getRowsFromRequest: function() {
 		    	/*
 		    	 * variabile json_price_types creata con i valori passati nelle request:
 		    	 *	se ho validationErrors ritorno sulla pagina e recupero i valori inseriti
 		    	 */
+		    	console.log('getRowsFromRequest');  
 	    		this.addToRows(json_price_types);
+
+		    	this.spinner_run_type_prices = false;
+	            $('.run-type-prices .spinner').removeClass(ico_spinner);
 		    },	
 		    getRowsFromDatabase: function() {	
 
+		    	console.log('getRowsFromDatabase');
 		        var order_id = $('#id').val();
-		        if(order_id=='0' || order_id=='' || typeof order_id === 'undefined')
-		           return;
+		        if(order_id=='0' || order_id=='' || typeof order_id === 'undefined') {
+			    	this.spinner_run_type_prices = false;
+		            $('.run-type-prices .spinner').removeClass(ico_spinner);
+		            return;
+		        }
 			        
 		        var data = {
 		            order_id: order_id
@@ -125,6 +139,8 @@ window.onload = function () {
 	                    console.log(e.responseText.message);
 	                },
 	                complete: function (e) {
+				    	this.spinner_run_type_prices = false;
+			            $('.run-type-prices .spinner').removeClass(ico_spinner);
 	                }
 	            });     
 		    },

@@ -98,6 +98,9 @@ class HtmlCustomSiteHelper extends FormHelper
         
         $html .= '<div class="panel-body box_order_price_types" id="vue-order-price-types" style="display:none;">'; 
 
+        $html .= '<div v-if="spinner_run_type_prices === true" class="run run-type-prices"><div class="spinner"></div></div>'; 
+        $html .= '<div v-if="spinner_run_type_prices === false">'; 
+
         /*
          * fields new row
          */ 
@@ -173,6 +176,7 @@ class HtmlCustomSiteHelper extends FormHelper
         $html .= '</tbody>';
         $html .= '</table></div>';
 
+        $html .= '</div>'; // results
         $html .= '</div>'; // box_order_price_types
         $html .= '</div>'; // panel panel-primary
 

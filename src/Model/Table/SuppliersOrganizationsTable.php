@@ -184,6 +184,23 @@ class SuppliersOrganizationsTable extends Table
         return $results; 
     }   
 
+    public function get($user, $where = []) {
+
+        $where = array_merge(['SuppliersOrganizations.organization_id' => $user->organization->id], $where);
+        // debug($where);
+        $results = $this->find()
+                                ->where($where)
+                                ->contain(['Suppliers', 'CategoriesSuppliers'])
+                                ->order(['SuppliersOrganizations.name'])
+                                ->first();
+        if(!empty($results)) {
+            $results['img1'] = sprintf(Configure::read('Supplier.img.path.full'), $results['supplier']['img1']); 
+        }
+
+        // debug($results);
+        return $results;
+    }
+
     public function gets($user, $where = []) {
 
         $where = array_merge(['SuppliersOrganizations.organization_id' => $user->organization->id], $where);
@@ -203,6 +220,8 @@ class SuppliersOrganizationsTable extends Table
      *  $owner_articles = 'REFERENT', 'SUPPLIER', 'DES'
      *  owner_organization_id del produttore
      *  owner_supplier_organization_id del produttore
+     *
+     * quando creo un ordine li copio in Order.owner_...
      */
     public function getOwnArticles($user, $organization_id, $supplier_organization_id, $debug=false) {
 
