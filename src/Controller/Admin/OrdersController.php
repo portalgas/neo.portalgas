@@ -134,7 +134,9 @@ class OrdersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
+            'contain' => ['SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'
+            /* , 'ProdGasPromotions', 'DesOrders' */
+            ],
         ];
         $orders = $this->paginate($this->Orders);
 
@@ -212,8 +214,8 @@ class OrdersController extends AppController
         $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
         $ownersSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
         $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
-        $prodGasPromotions = $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
-        $desOrders = $this->Orders->DesOrders->find('list', ['limit' => 200]);
+        $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
+        $desOrders = []; // $this->Orders->DesOrders->find('list', ['limit' => 200]);
         $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 

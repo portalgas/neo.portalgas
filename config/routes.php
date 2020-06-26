@@ -175,6 +175,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
 
         $routes->scope('/SuppliersOrganizations', ['controller' => 'SuppliersOrganizations'], function (RouteBuilder $routes) {
             $routes->connect('/getsById', ['action' => 'getsById', '_method' => 'POST']);
+            $routes->connect('/getByOrderId', ['action' => 'getByOrderId', '_method' => 'POST']);
         });        
 
         $routes->fallbacks(DashedRoute::class);        

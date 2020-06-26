@@ -359,7 +359,7 @@ class OrdersTable extends Table
                             'Orders.organization_id' => $organization_id,
                             'Orders.id' => $order_id
                         ])
-                        ->contain(['Deliveries', 'SuppliersOrganizations'])
+                        ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
                         ->first();        
 
         return $results;      
