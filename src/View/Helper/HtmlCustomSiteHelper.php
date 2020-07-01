@@ -55,6 +55,45 @@ class HtmlCustomSiteHelper extends FormHelper
         return $results;
     }       
 
+    public function boxOrder($results) {
+
+        $html = '';
+        $html .= '<div class="box-order">';
+
+        if($results->delivery->sys=='N')
+            $delivery_label = $results->delivery->luogo.' '.$results->delivery->luogo;
+        else 
+            $delivery_label = $results->delivery->luogo;
+
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-6">';  
+        $html .= '<select name="delivery_id" id="delivery_id" class="form-control">';
+        $html .= '<option value="'.$results->delivery_id.'">'.$delivery_label.'</option>';
+        $html .= '</select>';
+        $html .= '</div>';
+        $html .= '<div class="col-md-6">';
+        $html .= '<select name="order_id" id="order_id" class="form-control">';
+        $html .= '<option value="'.$results->id.'">Dal '.$results->data_inizio.' al '.$results->data_fine;
+        $html .= '</option>';
+        $html .= '</select>';
+        $html .= '</div>';
+
+        $html .= '<div class="col-md-6">';
+        $html .= __('StateOrder');
+        // echo $this->App->utilsCommons->getOrderTime($results['Order']);
+        $html .= '</div>';
+        $html .= '<div class="col-md-6">';
+        $html .= __('StatoElaborazione');
+        $html .= __($results->state_code.'-label');
+        // $html .= $this->App->drawOrdersStateDiv($results);
+        $html .= '</div>';
+        $html .= '</div>'; // row 
+
+        $html .= "</div>"; // box-order
+
+        return $html;
+    }
+
     public function boxSupplierOrganization($results) {
 
         $html = '';

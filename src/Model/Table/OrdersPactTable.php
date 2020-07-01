@@ -24,7 +24,7 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
 
     public function validationDefault(Validator $validator)
     {
-        parent::validationDefault($validator);
+        $validator = parent::validationDefault($validator);
 
         $validator->setProvider('orderPact', \App\Model\Validation\OrderPactValidation::class);
 
@@ -39,8 +39,15 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
                 ]
             ]);  
 
-
         return $validator;
+    }
+
+    public function buildRules(RulesChecker $rules)
+    {
+        // debug('OrdersPactTable buildRules');
+        $rules = parent::buildRules($rules);
+
+        return $rules;
     }
 
     /*
@@ -63,7 +70,7 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
                                     ])
                                     ->contain(['SuppliersOrganizations'])
                                     ->first(); 
-        // debug($organizationResults);
+        // debug($organizationResults); 
         if(!empty($organizationResults) && $organizationResults->has('suppliers_organization') && !empty($organizationResults->suppliers_organization)) {
 
             /*
@@ -72,8 +79,13 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
             $supplier_id = $organizationResults->suppliers_organization->supplier_id;
             $owner_organization_id = $organizationResults->id;
             $owner_supplier_organization_id = $organizationResults->suppliers_organization->id;
-            $owner_articles = 'SUPPLIER';
-
+            $owner_articles = 'PACT'; 
+            /*
+            debug('supplier_id '.$supplier_id);
+            debug('owner_organization_id '.$owner_organization_id);
+            debug('owner_supplier_organization_id '.$owner_supplier_organization_id);
+            debug('owner_articles '.$owner_articles);
+            */
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $results = $suppliersOrganizationsTable->getOwnSupplierBySupplierId($user, $supplier_id, $owner_organization_id, $owner_supplier_organization_id, $owner_articles, $debug);
         }

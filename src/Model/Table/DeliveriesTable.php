@@ -196,7 +196,7 @@ class DeliveriesTable extends Table
                         ->where($where)
                         ->first();
 
-        $results[$deliveryResults->id] = $deliveryResults->nota; 
+        $results[$deliveryResults->id] = $deliveryResults->luogo; 
 
         return $results;    
     }       

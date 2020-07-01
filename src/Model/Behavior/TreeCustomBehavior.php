@@ -70,7 +70,7 @@ class TreeCustomBehavior extends TreeBehavior
         if($debug) echo "<pre>TreeCustomBehavior::getLevelLast() id ".$id."</pre>";
                 
         $children = $this->_table
-            ->find('children', ['for' => $id])
+            ->find('children', ['for' => $id, 'order' => ['OfferTypes.name' => 'ASC']])
             ->find('threaded')
             ->contain($this->_table->associations()->keys()[1]) // 'ParentOfferTypes' 'ParentOfferVersions'
             ->toArray()

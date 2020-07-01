@@ -38,62 +38,6 @@ class OrdersController extends AppController
         }
     }
 
-    public function test()
-    { 
-        $scope = 'PACT-PRE';
-        $scope = 'PACT';
-        debug($scope);
-        $ordersTable = $this->Orders->factory($scope);
-        // debug($ordersTable);
-
-        $order = $ordersTable->newEntity();
-        
-        /*
-         * se il form ha degli errori di validazione, recupero i dati della priceTypes e creo una variabile js che vue con il metodo getRows() recupera
-         */ 
-        $json_price_types = '{}';
-        
-        if ($this->request->is('post')) {   
-            
-            //debug($this->request->getData());  
-
-            $order = $ordersTable->patchEntity($order, $this->request->getData());
-            
-            $ordersTable->addBehavior('Orders');
-
-            if (!$ordersTable->save($order)) {
-
-                /*
-                 * se in errore recupero i valori dei priceType inseriti dall'utente
-                 */ 
-                $json_price_types = $this->PriceType->jsonToRequest($this->user, $this->request->getData());     
-                // debug($json_price_types);  
-
-                $this->Flash->error($order->getErrors());
-            }
-            else {
-                $this->Flash->success(__('The {0} has been saved.', 'K Order'));
-                return $this->redirect(['action' => 'index']);
-            }
-        }
-        
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->user);
-        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->user, $suppliersOrganizations);
-        // debug($suppliersOrganizations);
-        if(empty($suppliersOrganizations)) {
-            $this->Flash->error(__('no suppliersOrganizations'));
-        }
-        else {
-
-        }
-        $deliveries = $ordersTable->getDeliveries($this->user);
-
-        $priceTypesTable = TableRegistry::get('PriceTypes');
-        $this->set('price_type_enums', $priceTypesTable->enum('type'));
-
-        $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
-    }
-
     public function form() {
         $order = new OrderForm($this->user);
         if ($this->request->is('post')) {
@@ -143,13 +87,6 @@ class OrdersController extends AppController
         $this->set(compact('orders'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id K Order id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function view($id = null)
     {
         $order = $this->Orders->get($id, [
@@ -159,32 +96,98 @@ class OrdersController extends AppController
         $this->set('order', $order);
     }
 
+    public function test()
+    { 
+        $scope = 'PACT-PRE';
+        $scope = 'PACT';
+        // $scope = 'GAS';
+        debug($scope);
+        $ordersTable = $this->Orders->factory($scope);
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
+        $ordersTable->addBehavior('Orders');
+        // debug($ordersTable);
+        $order = $ordersTable->newEntity();
+                
+        /*
+         * se il form ha degli errori di validazione, recupero i dati della priceTypes e creo una variabile js che vue con il metodo getRows() recupera
+         */ 
+        $json_price_types = '{}';
+        
+        if ($this->request->is('post')) {   
+            
+            //debug($this->request->getData());  
+            $order = $ordersTable->patchEntity($order, $this->request->getData());
+            if (!$ordersTable->save($order)) {
+
+                /*
+                 * se in errore recupero i valori dei priceType inseriti dall'utente
+                 */ 
+                $json_price_types = $this->PriceType->jsonToRequest($this->user, $this->request->getData());     
+                // debug($json_price_types);  
+                // debug($order); 
+                $this->Flash->error($order->getErrors());
+            }
+            else {
+                $order_id = $order->id;
+                $this->Flash->success(__('The {0} has been saved.', 'Order'));
+                return $this->redirect(['controller' => 'ArticlesOrders', 'action' => 'add', $order_id]);
+            }
+        }
+        
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->user);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->user, $suppliersOrganizations);
+        // debug($suppliersOrganizations);
+        if(empty($suppliersOrganizations)) {
+            $this->Flash->error(__('no suppliersOrganizations'));
+        }
+        else {
+
+        }
+        $deliveries = $ordersTable->getDeliveries($this->user);
+
+        $priceTypesTable = TableRegistry::get('PriceTypes');
+        $this->set('price_type_enums', $priceTypesTable->enum('type'));
+
+        $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
+    }
+
     public function add()
     { 
-        $order = $this->Orders->newEntity();
+        $scope = 'GAS';
+        debug($scope);
+        $ordersTable = $this->Orders->factory($scope);
+
+        $ordersTable->addBehavior('Orders');
+        debug($ordersTable);
+
+        $this->Orders->addBehavior('Orders');
+        debug($this->Orders);
+
+        $order = $ordersTable->newEntity();
         
         if ($this->request->is('post')) {
-            $order = $this->Orders->patchEntity($order, $this->request->getData());
-            if ($this->Orders->save($order)) {
-                $this->Flash->success(__('The {0} has been saved.', 'K Order'));
+            $order = $ordersTable->patchEntity($order, $this->request->getData());
+            if ($ordersTable->save($order)) {
+                $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Order'));
+            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Order'));
         }
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
         $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
         $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
         $ownerSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
-        $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
-        $prodGasPromotions = $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
-        $desOrders = $this->Orders->DesOrders->find('list', ['limit' => 200]);
+        
+        /* 
+         * id => id_organization;id_delivery 
+         * $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
+         * perche' doppia key
+         */ 
+        $deliveries = $ordersTable->getDeliveries($this->user);
+
+        $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
+        $desOrders = []; //  $this->Orders->DesOrders->find('list', ['limit' => 200]);
         $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 
@@ -203,11 +206,11 @@ class OrdersController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $order = $this->Orders->patchEntity($order, $this->request->getData());
             if ($this->Orders->save($order)) {
-                $this->Flash->success(__('The {0} has been saved.', 'K Order'));
+                $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Order'));
+            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Order'));
         }
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
         $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
@@ -232,9 +235,9 @@ class OrdersController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $order = $this->Orders->get($id);
         if ($this->Orders->delete($order)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'K Order'));
+            $this->Flash->success(__('The {0} has been deleted.', 'Order'));
         } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'K Order'));
+            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Order'));
         }
 
         return $this->redirect(['action' => 'index']);

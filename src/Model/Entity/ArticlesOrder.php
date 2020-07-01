@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * KArticlesOrder Entity
+ * ArticlesOrder Entity
  *
  * @property int $organization_id
  * @property int $order_id
@@ -28,7 +28,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Organization $organization
  * @property \App\Model\Entity\Order $order
- * @property \App\Model\Entity\ArticleOrganization $article_organization
+ * @property \App\Model\Entity\Organization $article_organization
  * @property \App\Model\Entity\Article $article
  */
 class ArticlesOrder extends Entity
@@ -61,6 +61,6 @@ class ArticlesOrder extends Entity
         'organization' => true,
         'order' => true,
         'article_organization' => true,
-        'article' => true
+        'article' => true,
     ];
 }

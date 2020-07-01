@@ -58,6 +58,9 @@ class OrderValidation extends Validation
 		return true; 	
     }
 
+    /*
+     * ctrl che il produttore abbia articoli validi da associare all'ordine
+     */
     public static function totArticles($value, $context)
     {
        // debug($context); 	
@@ -105,7 +108,6 @@ class OrderValidation extends Validation
          */
 
         // debug($where);
-
         $results = $ordersTable->find()
                             ->where($where)
                             ->first();
@@ -116,6 +118,4 @@ class OrderValidation extends Validation
         else
     		return true; 	
     }
-
-    
 }

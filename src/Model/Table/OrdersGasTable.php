@@ -44,6 +44,21 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
         $this->entityClass('App\Model\Entity\Order');
     }
 
+    public function validationDefault(Validator $validator)
+    {
+        $validator = parent::validationDefault($validator);
+        
+        return $validator;
+    }
+
+    public function buildRules(RulesChecker $rules)
+    {   
+        // debug('OrdersGasTable buildRules');
+        $rules = parent::buildRules($rules);
+
+        return $rules;
+    }
+
     /*
      * ovveride
      */ 
@@ -56,5 +71,16 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getDeliveries($user, $order_id=0, $debug=false) {
 
+        $deliveriesTable = TableRegistry::get('Deliveries');
+    
+        $deliveries = $deliveriesTable->getsList($user);
+
+        $sysDeliveries = $deliveriesTable->getDeliverySysList($user);
+
+        $results = [];
+        $results += $deliveries;
+        $results += $sysDeliveries;
+
+        return $results;
     }    
 }

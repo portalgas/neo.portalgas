@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
- * @property \App\Model\Table\ArticleOrganizationsTable&\Cake\ORM\Association\BelongsTo $ArticleOrganizations
+ * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $ArticleOrganizations
  * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\BelongsTo $Articles
  *
  * @method \App\Model\Entity\ArticlesOrder get($primaryKey, $options = [])
@@ -45,20 +45,19 @@ class ArticlesOrdersTable extends Table
 
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
             'foreignKey' => 'order_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('ArticleOrganizations', [
-            'className' => 'Organizations',
             'foreignKey' => 'article_organization_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Articles', [
             'foreignKey' => 'article_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
     }
 

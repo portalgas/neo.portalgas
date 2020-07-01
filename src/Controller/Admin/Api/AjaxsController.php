@@ -55,15 +55,15 @@ class AjaxsController extends ApiAppController
             list($data_range_ini, $data_range_fine) = explode(' - ', $value);
 
             $data_range_ini = $this->convertDate($data_range_ini);
-            $results = $this->fieldUpdateExecute($entityTable, $entity, 'data_range_ini', $data_range_ini, $debug);
+            $results = $this->_fieldUpdateExecute($entityTable, $entity, 'data_range_ini', $data_range_ini, $debug);
      
             if($results['code']==200) {
                 $data_range_fine = $this->convertDate($data_range_fine);
-                $results = $this->fieldUpdateExecute($entityTable, $entity, 'data_range_fine', $data_range_fine, $debug);
+                $results = $this->_fieldUpdateExecute($entityTable, $entity, 'data_range_fine', $data_range_fine, $debug);
             }
         }
         else {
-            $results = $this->fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
+            $results = $this->_fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
         }
 
         if($results['code']!=200) {
@@ -80,11 +80,10 @@ class AjaxsController extends ApiAppController
         $this->response->body($results);
 																				 
 		
-        return $this->response; 
-              
+        return $this->response;          
     }
 
-    private function fieldUpdateExecute($entityTable, $entity, $field, $value, $debug=false) {
+    private function _fieldUpdateExecute($entityTable, $entity, $field, $value, $debug=false) {
 
         $results = [];
 

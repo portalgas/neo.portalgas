@@ -29,8 +29,13 @@
           <?php echo $this->Form->create($order, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
-                echo $this->Form->control('organization_id', ['options' => $organizations]);
-                echo $this->Form->control('supplier_organization_id');
+
+                /*
+                 * passato per OrderValidation
+                 */
+                echo $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->Identity->get()->organization->id, 'required' => 'required']);
+
+                echo $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations]);
                 echo $this->Form->control('owner_articles');
                 echo $this->Form->control('owner_organization_id', ['options' => $ownerOrganizations]);
                 echo $this->Form->control('owner_supplier_organization_id', ['options' => $ownerSupplierOrganizations]);
@@ -53,27 +58,27 @@
                 echo $this->Form->control('cost_less_type');
                 echo $this->Form->control('cost_less');
                 echo $this->Form->control('typeGest');
-                echo $this->Form->control('state_code');
+                echo $this->Form->control('state_code', ['value' => 'CREATE-INCOMPLETE']);
                 echo $this->Form->control('mail_open_send');
                 echo $this->Form->control('mail_open_data');
                 echo $this->Form->control('mail_close_data');
                 echo $this->Form->control('mail_open_testo');
                 echo $this->Form->control('type_draw');
-                echo $this->Form->control('tot_importo');
-                echo $this->Form->control('qta_massima');
+                echo $this->Form->control('tot_importo', ['value' => 0]);
+                echo $this->Form->control('qta_massima', ['value' => 0]);
                 echo $this->Form->control('qta_massima_um');
                 echo $this->Form->control('send_mail_qta_massima');
-                echo $this->Form->control('importo_massimo');
+                echo $this->Form->control('importo_massimo', ['value' => 0]);
                 echo $this->Form->control('send_mail_importo_massimo');
                 echo $this->Form->control('tesoriere_nota');
-                echo $this->Form->control('tesoriere_fattura_importo');
+                echo $this->Form->control('tesoriere_fattura_importo', ['value' => 0]);
                 echo $this->Form->control('tesoriere_doc1');
                 echo $this->Form->control('tesoriere_data_pay');
-                echo $this->Form->control('tesoriere_importo_pay');
+                echo $this->Form->control('tesoriere_importo_pay', ['value' => 0]);
                 echo $this->Form->control('tesoriere_stato_pay');
                 echo $this->Form->control('inviato_al_tesoriere_da');
                 echo $this->Form->control('isVisibleFrontEnd');
-                echo $this->Form->control('isVisibleBacoffice');
+                echo $this->Form->control('isVisibleBacoffice', ['value' => 'Y']);
               ?>
             </div>
             <!-- /.box-body -->

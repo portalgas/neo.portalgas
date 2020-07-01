@@ -72,6 +72,10 @@ Script.prototype = {
 
             var value = $(this).val();
 
+            /*
+             * response, append div
+             */
+            // $(this).after('<div class="response-ajax" id="'+entity+'-'+id+'"></div>');
             var responseHtml = $('#'+entity+'-'+id);
             if (typeof responseHtml === 'undefined') 
                 console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
@@ -109,7 +113,10 @@ Script.prototype = {
                         responseHtml.addClass(_this.ico_ko);
                     },
                     complete: function (e) {
-                        setTimeout( function() {responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);} , 5000);
+                        setTimeout( function() {
+                            /* responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);  */
+                            responseHtml.remove();
+                        } , 5000);
                     }
                 });                     
         }); 
@@ -164,17 +171,6 @@ Script.prototype = {
           //endDate: moment().subtract(1, 'month'),  
         });        
     },
-																		  
-									  
-								 
-
-																				
-														 
-																					   
-																									
-
-																																																		  
-	  
     tooglePriceCollaborator: function (obj) {
         var _this = this;
         var value = $(obj).val();
@@ -318,8 +314,6 @@ Script.prototype = {
         return anchor;
     },
     init: function () {
-	   
-
         console.log("Script.init");
         var _this = this;
 

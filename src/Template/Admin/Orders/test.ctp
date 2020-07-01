@@ -83,7 +83,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
                 echo '</div>'; 
 
                 echo $this->HtmlCustomSite->orderPriceTypes($price_type_enums);
-
+/*
                 echo '<div class="row">';
                 echo '<div class="col-md-4">'; 
                 echo $this->Form->control('hasTrasport');
@@ -122,16 +122,22 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
 
                 echo '<div class="row">';
                 echo '<div class="col-md-4">'; 
-                echo $this->Form->control('qta_massima');
+                echo $this->Form->control('qta_massima', ['value' => 0]);
                 echo '</div>'; 
                 echo '<div class="col-md-4">'; 
                 echo $this->Form->control('qta_massima_um');
                 echo '</div>';
                 echo '<div class="col-md-4">'; 
-                echo $this->Form->control('importo_massimo');
+                echo $this->Form->control('importo_massimo', ['value' => 0]);
                 echo '</div>'; 
                 echo '</div>'; 
       
+               // echo $this->Form->control('state_code', ['value' => 'CREATE-INCOMPLETE']);
+                echo $this->Form->control('tot_importo', ['value' => 0]);
+                echo $this->Form->control('tesoriere_fattura_importo', ['value' => 0]);
+                echo $this->Form->control('tesoriere_importo_pay', ['value' => 0]);
+                echo $this->Form->control('isVisibleBacoffice', ['value' => 'Y']);
+*/
            echo '</div>'; // <!-- /.box-body -->
 
            echo $this->Form->submit(__('Submit')); 

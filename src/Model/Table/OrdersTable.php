@@ -48,12 +48,6 @@ class OrdersTable extends Table
         ]);
     }
 
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
     public function validationDefault(Validator $validator)
     {
         $validator->setProvider('order', \App\Model\Validation\OrderValidation::class);
@@ -209,11 +203,6 @@ class OrdersTable extends Table
             ->notEmptyDateTime('mail_close_data');
 
         $validator
-            ->scalar('mail_open_testo')
-            ->requirePresence('mail_open_testo', 'create')
-            ->notEmptyString('mail_open_testo');
-
-        $validator
             ->scalar('type_draw')
             ->notEmptyString('type_draw')
             ->add('type_draw', 'inList', ['rule' => ['inList', ['SIMPLE', 'COMPLETE', 'PROMOTION', '']],
@@ -231,7 +220,9 @@ class OrdersTable extends Table
 
         $validator
             ->scalar('qta_massima_um')
-            ->allowEmptyString('qta_massima_um');
+            ->allowEmptyString('qta_massima_um')
+            ->add('qta_massima_um', 'inList', ['rule' => ['inList', ['PZ', 'KG', 'LT', '']],
+                                    'message' => 'Tipologia unità di misura per quantità massima non prevista']); 
 
         $validator
             ->scalar('send_mail_qta_massima')
@@ -309,12 +300,19 @@ class OrdersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        // debug('OrdersTable buildRules');
+
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
         $rules->add($rules->existsIn(['owner_supplier_organization_id'], 'OwnerSupplierOrganizations'));
-        $rules->add($rules->existsIn(['delivery_id'], 'Deliveries'));
-       
+        $rules->add($rules->existsIn(['organization_id', 'delivery_id'], 'Deliveries'));
+        /*
+        $rules->addCreate(function ($entity, $options) {
+            debug('buildRules');
+            // debug($entity);
+        }, 'ruleName');        
+        */     
         return $rules;
     }
 
@@ -359,7 +357,12 @@ class OrdersTable extends Table
                             'Orders.organization_id' => $organization_id,
                             'Orders.id' => $order_id
                         ])
-                        ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
+                        ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers'],
+                                  /*
+                                   * con Orders.owner_articles => chi gestisce il listino
+                                   */
+                                  'OwnerOrganizations', 'OwnerSupplierOrganizations'
+                                  ])
                         ->first();        
 
         return $results;      

@@ -24,6 +24,8 @@ class OrdersPactPreTable extends OrdersPactTable implements OrderTableInterface
 
     public function validationDefault(Validator $validator)
     {
+        $validator = parent::validationDefault($validator);
+        
         $validator->setProvider('order', \App\Model\Validation\OrderPactValidation::class);
 
         $validator
