@@ -98,7 +98,15 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
     public function getDeliveries($user, $pact_id=0, $debug=false) {
         
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->getsList($user);
+    
+        $where = ['DATE(Deliveries.data) >= CURDATE()'];
+        $deliveries = $deliveriesTable->getsList($user, $where);
+
+        $sysDeliveries = $deliveriesTable->getDeliverySysList($user);
+
+        $results = [];
+        $results += $deliveries;
+        $results += $sysDeliveries;
 
         return $results;   
     } 

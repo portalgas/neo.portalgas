@@ -19,6 +19,17 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   ?> 
   <li class="treeview"> 
     <a href="#">
+      <i class="fa fa-handshake-o"></i> <span><?php echo __('OrderTypes');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/prder-types/index'); ?>"><?php echo $icon;?><?php echo __('Order types');?></a></li>
+    </ul>
+    </a>
+  </li>
+  <li class="treeview"> 
+    <a href="#">
       <i class="fa fa-handshake-o"></i> <span><?php echo __('Pact');?></span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>

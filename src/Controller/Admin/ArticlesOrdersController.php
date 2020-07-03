@@ -76,6 +76,72 @@ class ArticlesOrdersController extends AppController
         $articlesTable = TableRegistry::get('Articles');
         $articles = $articlesTable->getTotArticlesPresentiInArticlesOrder($this->user, $this->user->organization->id, $supplier_organization_id);
         // debug($articleResults);
+        if ($this->request->is('post')) {
+
+            foreach($articles as $article) {
+
+                $data = [];
+                
+                /* 
+                 * key 
+                 *
+                 * article_organization_id / article_id 
+                 *      dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES / PACT
+                 */
+                $data['organization_id'] = $this->user->organization->id;
+                $data['order_id'] = $order_id;
+                $data['article_organization_id'] = $article->organization_id;
+                $data['article_id'] = $article->id;
+
+                $data['name'] = $article->name;
+                $data['prezzo'] = $article->prezzo;
+                $data['pezzi_confezione'] = $article->pezzi_confezione;
+                $data['qta_minima'] = $article->qta_minima;
+                $data['qta_massima'] = $article->qta_massima;
+                $data['qta_minima_order'] = $article->qta_minima_order;
+                $data['qta_massima_order'] = $article->qta_massima_order;
+                $data['qta_multipli'] = $article->qta_multipli;
+                $data['alert_to_qta'] = $article->alert_to_qta;
+                $data['prezzo'] = $article->prezzo;
+                $data['prezzo'] = $article->prezzo;
+                    
+                $data['send_mail'] = 'N';
+                $data['qta_cart'] = '0';
+                $data['flag_bookmarks'] = 'N';
+                $data['stato'] = 'Y';
+
+                $articlesOrder = $this->ArticlesOrders->newEntity();
+                $articlesOrder = $this->ArticlesOrders->patchEntity($articlesOrder, $data);
+                debug($data);
+                /*
+                 * workaround
+                 */
+                $articlesOrder->organization_id = $this->user->organization->id;
+                $articlesOrder->order_id = $order_id;
+                $articlesOrder->article_organization_id = $article->organization_id;
+                $articlesOrder->article_id = $article->id;
+
+                if (!$this->ArticlesOrders->save($articlesOrder)) {
+                    $this->Flash->error($articlesOrder->getErrors());
+                }  
+
+                /*
+                 * aggiorno stato ordine
+                 */   
+                $orderState = $ordersTable->get($order_id, ['contain' => []]);
+                $data = [];
+                $data['state_code'] = 'OPEN'; // OPEN-NEXT                
+                $orderState = $ordersTable->patchEntity($orderState, $data);
+                if (!$ordersTable->save($orderState)) {
+                    $this->Flash->error($orderState->getErrors());
+                }
+            } // foreach($articles as $article)
+
+            $this->Flash->success(__('The {0} has been saved.', 'Articles Order'));
+            // return $this->redirect(['action' => 'index']);
+
+        } // end if ($this->request->is('post')) 
+          
         $this->set(compact('scope', 'order', 'articles'));
     }
 

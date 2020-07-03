@@ -52,6 +52,7 @@ class ArticlesOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('ArticleOrganizations', [
+            'className' => 'Organizations',
             'foreignKey' => 'article_organization_id',
             'joinType' => 'INNER',
         ]);

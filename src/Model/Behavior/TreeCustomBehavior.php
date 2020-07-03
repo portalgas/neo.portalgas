@@ -58,7 +58,7 @@ class TreeCustomBehavior extends TreeBehavior
         return $results;
     }
     
-    public function getLevelLast($results, $id, $debug=false) {
+    public function getLevelLast($results, $id, $order=[], $debug=false) {
         
         /*
         debug($this->_table);
@@ -70,7 +70,8 @@ class TreeCustomBehavior extends TreeBehavior
         if($debug) echo "<pre>TreeCustomBehavior::getLevelLast() id ".$id."</pre>";
                 
         $children = $this->_table
-            ->find('children', ['for' => $id, 'order' => ['OfferTypes.name' => 'ASC']])
+            ->find('children', ['for' => $id, 'order' => $order])
+            ->order($order)
             ->find('threaded')
             ->contain($this->_table->associations()->keys()[1]) // 'ParentOfferTypes' 'ParentOfferVersions'
             ->toArray()
@@ -91,7 +92,7 @@ class TreeCustomBehavior extends TreeBehavior
                     array_push($results, $child);
                 }
                 else {
-                    $results = $this->getLevelLast($results, $child->id);
+                    $results = $this->getLevelLast($results, $child->id, $order);
                     if($debug) echo "<pre>{$child->name} has <b>" . count($child->children) . "</b> direct children</pre>";
                 }
             }           

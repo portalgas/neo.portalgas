@@ -59,6 +59,8 @@ echo $this->HtmlCustomSite->boxOrder($order);
           </div>
         </div>
         <!-- /.box-header -->
+
+        <?php echo $this->Form->create(null, ['role' => 'form']); ?>
         <div class="box-body table-responsive no-padding">
           <table class="table table-hover">
             <thead>
@@ -125,6 +127,10 @@ echo $this->HtmlCustomSite->boxOrder($order);
             </tbody>
           </table>
         </div>
+        <?php echo $this->Form->submit(__('Submit')); ?>
+
+        <?php echo $this->Form->end(); ?>
+
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
