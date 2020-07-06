@@ -7,20 +7,20 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * OrdersTypes Model
+ * OrderTypes Model
  *
- * @method \App\Model\Entity\OrdersType get($primaryKey, $options = [])
- * @method \App\Model\Entity\OrdersType newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\OrdersType[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\OrdersType|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\OrdersType saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\OrdersType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\OrdersType[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\OrdersType findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\OrderType get($primaryKey, $options = [])
+ * @method \App\Model\Entity\OrderType newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\OrderType[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\OrderType|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\OrderType saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\OrderType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\OrderType[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\OrderType findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class OrdersTypesTable extends Table
+class OrderTypesTable extends Table
 {
     /**
      * Initialize method
@@ -32,7 +32,7 @@ class OrdersTypesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('orders_types');
+        $this->setTable('order_types');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 

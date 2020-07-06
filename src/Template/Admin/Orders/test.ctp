@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 
-//echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'test']);

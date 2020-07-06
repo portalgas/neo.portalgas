@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\OrdersType $ordersType
+ * @var \App\Model\Entity\OrderType $orderType
  */
 ?>
 <!-- Content Header (Page header) -->
@@ -26,7 +26,7 @@
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($ordersType, ['role' => 'form']); ?>
+          <?php echo $this->Form->create($orderType, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
                 echo $this->Form->control('code');

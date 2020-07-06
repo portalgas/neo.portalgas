@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -30,6 +31,10 @@ class OrdersTable extends Table
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('OrderTypes', [
+            'foreignKey' => 'order_type_id',
+            'joinType' => 'INNER',
+        ]);        
         $this->belongsTo('SuppliersOrganizations', [
             'foreignKey' => 'supplier_organization_id',
             'joinType' => 'INNER',
@@ -316,30 +321,30 @@ class OrdersTable extends Table
         return $rules;
     }
 
-    public function factory($scope) {
+    public function factory($order_type_id) {
 
         $table_registry = '';
 
-        switch (strtoupper($scope)) {
-            case 'DES-TITOLARE':
-            case 'DES':
+        switch (strtoupper($order_type_id)) {
+            case Configure::read('Order.type.des-titolare'):
+            case Configure::read('Order.type.des'):
                 $table_registry = 'OrdersDes';
                 break;
-            case 'GAS':
+            case Configure::read('Order.type.gas'):
                 $table_registry = 'OrdersGas';
                 break;
-            case 'PROMOTION':
+            case Configure::read('Order.type.promotion'):
                 $table_registry = 'OrdersPromotion';
                 break;
-            case 'PACT-PRE':
+            case Configure::read('Order.type.pact-pre'):
                 $table_registry = 'OrdersPactPre';
                 break;
-            case 'PACT':
+            case Configure::read('Order.type.pact'):
                 $table_registry = 'OrdersPact';
                 break;
             
             default:
-                die('OrdersTable scope ['.$scope.'] non previsto');
+                die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
                 break;
         }
 

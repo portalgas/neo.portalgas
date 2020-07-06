@@ -2,12 +2,7 @@
 
 var vueSuppliersOrganization = null;
 
-window.onload = function () {
-	
-	var router = new VueRouter({
-				mode: 'history',
-	    		routes: []
-    		});
+$(function () {
 
 	var routerSuppliersOrganization = new VueRouter({
 				mode: 'history',
@@ -137,4 +132,4 @@ window.onload = function () {
 	});
 
 	vueSuppliersOrganization.show();	
-}
+});

@@ -98,11 +98,11 @@ class OrdersController extends AppController
 
     public function test()
     { 
-        $scope = 'PACT-PRE';
-        $scope = 'PACT';
-        // $scope = 'GAS';
-        debug($scope);
-        $ordersTable = $this->Orders->factory($scope);
+        $order_type_id = Configure::read('Order.type.pact-pre'); ;
+        $order_type_id = Configure::read('Order.type.pact'); ;
+        $order_type_id = Configure::read('Order.type.gas');
+        debug($order_type_id);
+        $ordersTable = $this->Orders->factory($order_type_id);
 
         $ordersTable->addBehavior('Orders');
         // debug($ordersTable);
@@ -148,14 +148,14 @@ class OrdersController extends AppController
         $priceTypesTable = TableRegistry::get('PriceTypes');
         $this->set('price_type_enums', $priceTypesTable->enum('type'));
 
-        $this->set(compact('scope', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
+        $this->set(compact('order_type_id', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
     }
 
     public function add()
     { 
-        $scope = 'GAS';
-        debug($scope);
-        $ordersTable = $this->Orders->factory($scope);
+        $order_type_id = Configure::read('Order.type.gas');
+        debug($order_type_id);
+        $ordersTable = $this->Orders->factory($order_type_id);
 
         $ordersTable->addBehavior('Orders');
         debug($ordersTable);
@@ -172,7 +172,7 @@ class OrdersController extends AppController
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Order'));
+            $this->Flash->error($order->getErrors());
         }
         $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
         $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);

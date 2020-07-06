@@ -46,22 +46,22 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($ordersTypes as $ordersType): ?>
+              <?php foreach ($orderTypes as $orderType): ?>
                 <tr>
-                  <td><?= $this->Number->format($ordersType->id) ?></td>
-                  <td><?= h($ordersType->code) ?></td>
-                  <td><?= h($ordersType->name) ?></td>
-                  <td><?= h($ordersType->is_system) ?></td>
-                  <td><?= h($ordersType->is_active) ?></td>
-                  <td><?= h($ordersType->is_default_ini) ?></td>
-                  <td><?= h($ordersType->is_default_end) ?></td>
-                  <td><?= $this->Number->format($ordersType->sort) ?></td>
-                  <td><?= h($ordersType->created) ?></td>
-                  <td><?= h($ordersType->modified) ?></td>
+                  <td><?= $this->Number->format($orderType->id) ?></td>
+                  <td><?= h($orderType->code) ?></td>
+                  <td><?= h($orderType->name) ?></td>
+                  <td><?= h($orderType->is_system) ?></td>
+                  <td><?= h($orderType->is_active) ?></td>
+                  <td><?= h($orderType->is_default_ini) ?></td>
+                  <td><?= h($orderType->is_default_end) ?></td>
+                  <td><?= $this->Number->format($orderType->sort) ?></td>
+                  <td><?= h($orderType->created) ?></td>
+                  <td><?= h($orderType->modified) ?></td>
                   <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $ordersType->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $ordersType->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $ordersType->id], ['confirm' => __('Are you sure you want to delete # {0}?', $ordersType->id), 'class'=>'btn btn-danger btn-xs']) ?>
+                      <?= $this->Html->link(__('View'), ['action' => 'view', $orderType->id], ['class'=>'btn btn-info btn-xs']) ?>
+                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $orderType->id], ['class'=>'btn btn-warning btn-xs']) ?>
+                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $orderType->id], ['confirm' => __('Are you sure you want to delete # {0}?', $orderType->id), 'class'=>'btn btn-danger btn-xs']) ?>
                   </td>
                 </tr>
               <?php endforeach; ?>

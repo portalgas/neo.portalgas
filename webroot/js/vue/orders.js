@@ -2,12 +2,7 @@
 
 var vueOrderPriceTypes = null;
 
-window.onload = function () {
-	
-	var router = new VueRouter({
-				mode: 'history',
-	    		routes: []
-    		});
+$(function () {	
 
 	var routerOrderPriceTypes = new VueRouter({
 				mode: 'history',
@@ -185,4 +180,4 @@ window.onload = function () {
 	});
 
 	vueOrderPriceTypes.show();	
-}
+});

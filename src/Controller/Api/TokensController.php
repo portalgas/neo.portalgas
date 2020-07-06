@@ -77,6 +77,22 @@ class TokensController extends AppController
         else
             $redirects = ['controller' => 'admin/Dashboards', 'action' => 'index', 'prefix' => false];
 
+        /*
+         * parametri aggiuntivi
+         */
+        $q = [];
+        unset($this->request->query['u']);
+        unset($this->request->query['c_to']);
+        unset($this->request->query['a_to']);
+        if(!empty($this->request->query)) {
+            foreach ($this->request->query as $key => $value) {
+                array_push($q, $value);
+            }
+            if(!empty($q)) {
+                $redirects += $q;
+            }
+        }
+
         if($debug) debug($redirects); 
         
         if($debug) exit;

@@ -6,7 +6,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
-class OrdersTypesController extends AppController
+class OrderTypesController extends AppController
 {
     public function initialize()
     {
@@ -26,9 +26,9 @@ class OrdersTypesController extends AppController
 	
     public function index()
     {
-        $ordersTypes = $this->paginate($this->OrdersTypes);
+        $orderTypes = $this->paginate($this->OrderTypes);
 
-        $this->set(compact('ordersTypes'));
+        $this->set(compact('orderTypes'));
     }
 
     /**
@@ -40,11 +40,11 @@ class OrdersTypesController extends AppController
      */
     public function view($id = null)
     {
-        $ordersType = $this->OrdersTypes->get($id, [
+        $orderType = $this->OrderTypes->get($id, [
             'contain' => [],
         ]);
 
-        $this->set('ordersType', $ordersType);
+        $this->set('orderType', $orderType);
     }
 
 
@@ -55,17 +55,17 @@ class OrdersTypesController extends AppController
      */
     public function add()
     {
-        $ordersType = $this->OrdersTypes->newEntity();
+        $orderType = $this->OrderTypes->newEntity();
         if ($this->request->is('post')) {
-            $ordersType = $this->OrdersTypes->patchEntity($ordersType, $this->request->getData());
-            if ($this->OrdersTypes->save($ordersType)) {
+            $orderType = $this->OrderTypes->patchEntity($orderType, $this->request->getData());
+            if ($this->OrderTypes->save($orderType)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Orders Type'));
 
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Orders Type'));
         }
-        $this->set(compact('ordersType'));
+        $this->set(compact('orderType'));
     }
 
 
@@ -78,19 +78,19 @@ class OrdersTypesController extends AppController
      */
     public function edit($id = null)
     {
-        $ordersType = $this->OrdersTypes->get($id, [
+        $orderType = $this->OrderTypes->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $ordersType = $this->OrdersTypes->patchEntity($ordersType, $this->request->getData());
-            if ($this->OrdersTypes->save($ordersType)) {
+            $orderType = $this->OrderTypes->patchEntity($orderType, $this->request->getData());
+            if ($this->OrderTypes->save($orderType)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Orders Type'));
 
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Orders Type'));
         }
-        $this->set(compact('ordersType'));
+        $this->set(compact('orderType'));
     }
 
 
@@ -104,8 +104,8 @@ class OrdersTypesController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $ordersType = $this->OrdersTypes->get($id);
-        if ($this->OrdersTypes->delete($ordersType)) {
+        $orderType = $this->OrderTypes->get($id);
+        if ($this->OrderTypes->delete($orderType)) {
             $this->Flash->success(__('The {0} has been deleted.', 'Orders Type'));
         } else {
             $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Orders Type'));

@@ -2,7 +2,7 @@
 
 var vueGdxpSuppliers = null;
 
-window.onload = function () {
+$(function () {
     
     var router = new VueRouter({
                 mode: 'history',
@@ -88,4 +88,4 @@ window.onload = function () {
         }
       }      
     });
-}
+});

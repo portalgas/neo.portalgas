@@ -24,7 +24,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/prder-types/index'); ?>"><?php echo $icon;?><?php echo __('Order types');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('Order types');?></a></li>
     </ul>
     </a>
   </li>

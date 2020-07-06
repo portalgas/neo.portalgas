@@ -21,25 +21,25 @@
         <div class="box-body">
           <dl class="dl-horizontal">
             <dt scope="row"><?= __('Code') ?></dt>
-            <dd><?= h($ordersType->code) ?></dd>
+            <dd><?= h($orderType->code) ?></dd>
             <dt scope="row"><?= __('Name') ?></dt>
-            <dd><?= h($ordersType->name) ?></dd>
+            <dd><?= h($orderType->name) ?></dd>
             <dt scope="row"><?= __('Id') ?></dt>
-            <dd><?= $this->Number->format($ordersType->id) ?></dd>
+            <dd><?= $this->Number->format($orderType->id) ?></dd>
             <dt scope="row"><?= __('Sort') ?></dt>
-            <dd><?= $this->Number->format($ordersType->sort) ?></dd>
+            <dd><?= $this->Number->format($orderType->sort) ?></dd>
             <dt scope="row"><?= __('Created') ?></dt>
-            <dd><?= h($ordersType->created) ?></dd>
+            <dd><?= h($orderType->created) ?></dd>
             <dt scope="row"><?= __('Modified') ?></dt>
-            <dd><?= h($ordersType->modified) ?></dd>
+            <dd><?= h($orderType->modified) ?></dd>
             <dt scope="row"><?= __('Is System') ?></dt>
-            <dd><?= $ordersType->is_system ? __('Yes') : __('No'); ?></dd>
+            <dd><?= $orderType->is_system ? __('Yes') : __('No'); ?></dd>
             <dt scope="row"><?= __('Is Active') ?></dt>
-            <dd><?= $ordersType->is_active ? __('Yes') : __('No'); ?></dd>
+            <dd><?= $orderType->is_active ? __('Yes') : __('No'); ?></dd>
             <dt scope="row"><?= __('Is Default Ini') ?></dt>
-            <dd><?= $ordersType->is_default_ini ? __('Yes') : __('No'); ?></dd>
+            <dd><?= $orderType->is_default_ini ? __('Yes') : __('No'); ?></dd>
             <dt scope="row"><?= __('Is Default End') ?></dt>
-            <dd><?= $ordersType->is_default_end ? __('Yes') : __('No'); ?></dd>
+            <dd><?= $orderType->is_default_end ? __('Yes') : __('No'); ?></dd>
           </dl>
         </div>
       </div>
@@ -55,7 +55,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <?= $this->Text->autoParagraph($ordersType->descri); ?>
+            <?= $this->Text->autoParagraph($orderType->descri); ?>
         </div>
       </div>
     </div>
