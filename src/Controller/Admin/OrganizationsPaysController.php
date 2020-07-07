@@ -179,9 +179,13 @@ class OrganizationsPaysController extends AppController
         foreach($organizationsPays as $organizationsPay) {
             
             /*
+             * mail per i pagamento
+             */
+            $organizationsPay->paramsPay = json_decode($organizationsPay->organization->paramsPay, true);
+
+            /*
              * ctrl l'ultima lastVisitDate del manager / tesoriere
              */
-
             $where_groups = ['UserUsergroupMap.group_id IN ' => 
                             [Configure::read('group_id_manager'), Configure::read('group_id_referent_tesoriere')]];
             $where = ['Users.organization_id' => $organizationsPay->organization_id];

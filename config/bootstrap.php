@@ -273,7 +273,8 @@ Configure::write('Order.type.des', 2);
 Configure::write('Order.type.des-titolare', 3);
 Configure::write('Order.type.promotion', 4);
 Configure::write('Order.type.pact-pre', 5); 
-Configure::write('Order.type.pact', 6); 
+Configure::write('Order.type.pact', 6);  
+Configure::write('Order.type.supplier', 7); 
 
 /*
  * altre tipologie di organization GAS PRODGAS PACT

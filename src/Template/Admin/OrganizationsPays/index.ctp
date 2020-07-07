@@ -52,6 +52,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
               <tr>
                   <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('year') ?></th>
+                  <th scope="col"><?= __('mail') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('lastVisitDate') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_users') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_orders') ?></th>
@@ -79,6 +80,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     ?>
                   </td>
                   <td><?= h($organizationsPay->year) ?></td>
+                  <td><?= $this->HtmlCustom->mail($organizationsPay->paramsPay['payMail']) ?></td>
                   <td>
                     <?= h($organizationsPay->lastVisitDate->lastvisitDate) ?><br />
                     <?= h($organizationsPay->lastVisitDate->username) ?>
