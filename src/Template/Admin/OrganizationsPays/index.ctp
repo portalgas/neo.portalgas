@@ -30,10 +30,16 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
-        <div class="box-header">
-          <h3 class="box-title"><?php echo __('List'); ?></h3>
+        <div class="box-header"> 
+          <?php 
+          echo '<h3 class="box-title">';
+          echo __('List');
+          if(!empty($search_year))
+            echo ' anno '.$search_year;
+          echo '</h3>';
+          echo '<div class="box-tools">';
 
-          <div class="box-tools">
+            /*
             <form action="<?php echo $this->Url->build(); ?>" method="POST">
               <div class="input-group input-group-sm" style="width: 150px;">
                 <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
@@ -43,6 +49,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                 </div -->
               </div>
             </form>
+            */
+            ?>
           </div>
         </div>
         <!-- /.box-header -->
@@ -51,7 +59,10 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
             <thead>
               <tr>
                   <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('year') ?></th>
+                  <?php
+                  if(empty($search_year))
+                      echo '<th scope="col">'.$this->Paginator->sort('year').'</th>';
+                  ?>
                   <th scope="col"><?= __('mail') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('lastVisitDate') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_users') ?></th>
@@ -70,26 +81,37 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($organizationsPays as $organizationsPay): ?>
-                <tr>
-                  <td>
-                    <?php
-                     $label = $organizationsPay->organization->name.' ('.$organizationsPay->organization->id.')';
+              <?php 
+              foreach ($organizationsPays as $organizationsPay): 
+
+                  echo '<tr>';
+                  echo '<td>';
+                  $label = $organizationsPay->organization->name.' ('.$organizationsPay->organization->id.')';
                      echo  $label;
                      // echo $this->Html->link($label, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]); 
-                    ?>
-                  </td>
-                  <td><?= h($organizationsPay->year) ?></td>
-                  <td><?= $this->HtmlCustom->mail($organizationsPay->paramsPay['payMail']) ?></td>
-                  <td>
-                    <?= h($organizationsPay->lastVisitDate->lastvisitDate) ?><br />
-                    <?= h($organizationsPay->lastVisitDate->username) ?>
-                  </td>
-                  <td><?= $this->Number->format($organizationsPay->tot_users) ?></td>
-                  <td><?= $this->Number->format($organizationsPay->tot_orders) ?></td>
-                  <td><?= $this->Number->format($organizationsPay->tot_suppliers_organizations) ?></td>
-                  <td><?= $this->Number->format($organizationsPay->tot_articles) ?></td>
-                  <?php
+                    
+                  echo '</td>';
+                  if(empty($search_year))
+                      echo '<td>'.h($organizationsPay->year).'</td>';
+                  echo '<td>';
+                  echo $this->HtmlCustom->mail($organizationsPay->paramsPay['payMail']);
+                  echo '</td>';
+                  echo '<td>';
+                  echo h($organizationsPay->lastVisitDate->lastvisitDate).'<br />';
+                  echo h($organizationsPay->lastVisitDate->username);
+                  echo '</td>';
+                  echo '<td>';
+                  echo $this->Number->format($organizationsPay->tot_users);
+                  echo '</td>';
+                  echo '<td>';
+                  echo $this->Number->format($organizationsPay->tot_orders);
+                  echo '</td>';
+                  echo '<td>';
+                  echo $this->Number->format($organizationsPay->tot_suppliers_organizations);
+                  echo '</td>';
+                  echo '<td>';
+                  echo $this->Number->format($organizationsPay->tot_articles);
+                  echo '</td>';
                   echo '<td>';
                   echo $this->Form->control('beneficiario_pay', ['label' => false, 
                       'options' => $beneficiario_pays,

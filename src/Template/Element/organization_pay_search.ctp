@@ -17,13 +17,16 @@
     <legend><?= __('Search {0}', ['OrganizationPay']) ?></legend>
     <?php
     echo '<div class="row-">';
-    echo '<div class="col-md-4">';    
+    echo '<div class="col-md-3">';    
     echo $this->Form->control('search_beneficiario_pay', ['options' => $beneficiario_pays, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
-    echo '<div class="col-md-4">';    
+    echo '<div class="col-md-3">';    
     echo $this->Form->control('search_hasMsg', ['options' => $hasMsgs, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Msg attivato')]);
     echo '</div>';
-    echo '<div class="col-md-4">';    
+    echo '<div class="col-md-3">';    
+    echo $this->Form->control('search_organization_id', ['options' => $organizations, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo '</div>';
+    echo '<div class="col-md-3">';    
     echo $this->Form->control('search_type_pay', ['options' => $type_pays, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '</div>';

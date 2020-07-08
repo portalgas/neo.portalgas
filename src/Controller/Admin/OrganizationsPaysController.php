@@ -145,7 +145,8 @@ class OrganizationsPaysController extends AppController
         $search_year = $this->request->getQuery('search_year');
         $search_beneficiario_pay = $this->request->getQuery('search_beneficiario_pay');
         $search_hasMsg = $this->request->getQuery('search_hasMsg');
-        $search_type_pay = $this->request->getQuery('search_type_pay');       
+        $search_type_pay = $this->request->getQuery('search_type_pay'); 
+        $search_name = $this->request->getQuery('search_name');       
         if(empty($search_year))
             $search_year = date('Y');
         if(!empty($search_year)) {
@@ -164,8 +165,13 @@ class OrganizationsPaysController extends AppController
             $search_type_pay = $request['search_type_pay'];
             array_push($where, ['OrganizationsPays.type_pay' => $search_type_pay]);
         }
+        if(!empty($request['search_organization_id'])) {
+            $search_organization_id = $request['search_organization_id'];
+            array_push($where, ['OrganizationsPays.organization_id' => $search_organization_id]);
+        }
         // debug($where);
-
+        $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_type_pay', 'search_organization_id'));
+        
         $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
         $this->paginate = [
@@ -210,8 +216,9 @@ class OrganizationsPaysController extends AppController
         $hasMsgs = ['Y' => __('Si'), 'N' => __('No')];
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
+        $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
 
-        $this->set(compact('organizationsPays', 'hasMsgs', 'beneficiario_pays', 'type_pays'));
+        $this->set(compact('organizationsPays', 'hasMsgs', 'beneficiario_pays', 'type_pays', 'organizations'));
     }
 
     /**
