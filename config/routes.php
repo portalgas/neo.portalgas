@@ -118,6 +118,13 @@ Router::prefix('api', function (RouteBuilder $routes) {
     $routes->scope('/token', ['controller' => 'Tokens'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'GET']);
     }); 
+
+    /*
+     * tmp per ecommerce vue
+     */
+    $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets']);
+    });     
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) { 

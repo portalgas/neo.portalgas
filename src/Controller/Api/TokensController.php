@@ -34,7 +34,7 @@ class TokensController extends AppController
 
     /*
      * method: get
-     * url: /admin/api/tokens/login?u=user_salt
+     * url: /api/tokens/login?u=user_salt
      *
      * user_salt = 
      *  $user_id = $this->user->id;

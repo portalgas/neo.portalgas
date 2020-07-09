@@ -133,11 +133,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
              * se no forzo con HtmlCustom->csrfTokenHidden()
              * per disabiliartlo (ex Api\TokensController.php) $csrf->whitelistCallback / $this->getEventManager()->off($this->Csrf);
             */ 
-            
+           
             $csrf = new CsrfProtectionMiddleware();
             // Token check will be skipped when callback returns `true`.
-            $csrf->whitelistCallback(function ($request) {
-                if ($request->getParam('prefix') === 'admin/api') {
+            $csrf->whitelistCallback(function (ServerRequestInterface $request) {            
+                $prefix = $request->getParam('prefix'); 
+                if (strtolower($prefix) === 'api') {
                     return true;
                 }
             });            
