@@ -325,6 +325,30 @@ Configure::write('Gdxp.queue.code', 'GDXP-PORTALGAS');
 Configure::write('Gdxp.schema_path', WWW_ROOT.'/json/json-schema.json');
 
 /*
+ * time
+ */
+Configure::write('GGOrganizationsPayment', 60);   // dopo quanto far vedere i dati del pagamento
+Configure::write('GGinMenoPerEstrarreDeliveriesInTabs', 5);
+Configure::write('GGinMenoPerEstrarreDeliveriesCartInTabs', 35);
+Configure::write('GGMailToAlertOrderOpen', 0);   // perche' eseguito dopo mezzanotte: oggi si aprono
+Configure::write('GGMailToAlertOrderClose', 2);  // perche' eseguito dopo mezzanotte: tra n+1 si chiuderanno
+Configure::write('GGMailToAlertDeliveryOn', 1);  // perche' eseguito dopo mezzanotte: tra n+1 c'e' la consegna
+Configure::write('GGEventGCalendarToAlertDeliveryOn', 2);  // perche' eseguito dopo mezzanotte: tra n+1 c'e' la consegna
+Configure::write('GGOrderCloseNext', -3);        // giorni che mancano alla chiusura dell'ordine
+Configure::write('GGDeliveryCloseNext', -3);     // giorni che mancano alla chiusura della consegna (non utilizzato)
+Configure::write('GGDesOrdersOld', 90);       // gg dopo la DesOrsers.data_fine_max per considerare un DesOrders vecchio
+Configure::write('GGArchiveStatics', 35);     // dopo quanti giorni il Cron::archiveStatistics() cancella le consegne / richieste di pagamento
+
+Configure::write('GGDeleteLogs', 6);          // dopo quanti giorni il Cron::filesystemLogDelete() cancella i log dei cron => ne aggiunge uno
+Configure::write('GGDeleteBackup', 1);        // dopo quanti giorni il Cron::filesystemLogDelete() cancella i backup del codice => ne aggiunge uno
+Configure::write('GGDeleteDump', 5);         // dopo quanti giorni il Cron::filesystemLogDelete() cancella i dump del DATABASE => ne aggiunge uno
+Configure::write('CartLimitPreview', 5);  // numero di ultimi articoli acquistati 
+Configure::write('ArticlesOrderToTypeDrawComplete', 100);  // numero articoli in un ordine per la modalita' COMPLETE
+Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE 
+Configure::write('DeliveryToDefinedDate', '2025-01-01');
+Configure::write('DeliveryToDefinedLabel', 'Da definire');
+
+/*
  * pagamenti
  */
 Configure::write('OrganizationPayImportMax', 80); // massimo importo per il canone annuo

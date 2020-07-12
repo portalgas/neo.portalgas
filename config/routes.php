@@ -124,7 +124,10 @@ Router::prefix('api', function (RouteBuilder $routes) {
      */
     $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets']);
-    });     
+    });
+    $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
+        $routes->connect('/getsArticles', ['action' => 'getsArticles']);
+    });
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) { 

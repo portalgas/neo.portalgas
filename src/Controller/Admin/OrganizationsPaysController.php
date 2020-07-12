@@ -146,7 +146,7 @@ class OrganizationsPaysController extends AppController
         $search_beneficiario_pay = $this->request->getQuery('search_beneficiario_pay');
         $search_hasMsg = $this->request->getQuery('search_hasMsg');
         $search_type_pay = $this->request->getQuery('search_type_pay'); 
-        $search_name = $this->request->getQuery('search_name');       
+        $search_organization_id = $this->request->getQuery('search_organization_id');       
         if(empty($search_year))
             $search_year = date('Y');
         if(!empty($search_year)) {

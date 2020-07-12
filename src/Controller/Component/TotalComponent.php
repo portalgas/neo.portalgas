@@ -19,11 +19,6 @@ class TotalComponent extends Component {
         //$controller->request
     }
 
-	/*
-	 * se autenticato creo l'oggetto user ma persistere in Session
-	 *
-	 * $organization_id = gas scelto o gas dello user
-	 */
 	public function totUsers($user, $where, $debug=false) {
 
 		$model = TableRegistry::get('Users');

@@ -24,7 +24,7 @@ class CartsController extends AppController
         // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
         $this->viewBuilder()->setClassName('Json'); 
 
-        $this->Authentication->allowUnauthenticated(['gets']); 
+        $this->Authentication->allowUnauthenticated(['gets', 'getsArticles']); 
     }
 
     /*
@@ -48,6 +48,52 @@ class CartsController extends AppController
                         'www' => 'www.it'
                       ]
                 ];
+        $results = json_encode($results);
+        $this->response->type('json');
+        $this->response->body($results);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    }
+
+    /*
+     * method: *
+     * url: /api/carts/getsArticles
+     */
+    public function getsArticles()
+    {
+        $debug = false;
+        $esito = true;
+
+        $results = [];
+        $results[] = [
+                    'id' => 1,
+                    'name' => 'libro',
+                    'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
+                    'price' => 150.00,
+                    'descri' => 'lorem ipsum lorem ipsum',
+                    'store' => 50,
+                    'supplier' => [
+                        'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
+                        'address' => 'via Roma 12',
+                        'locality' => 'Torino',
+                        'www' => 'www.it'
+                      ]
+                ];
+        $results[] = [
+                    'id' => 2,
+                    'name' => 'quaderno',
+                    'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
+                    'price' => 28.00,
+                    'descri' => 'lorem ipsum lorem ipsum',
+                    'store' => 50,
+                    'supplier' => [
+                        'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
+                        'address' => 'via Roma 12',
+                        'locality' => 'Torino',
+                        'www' => 'www.it'
+                      ]
+                ];                
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
