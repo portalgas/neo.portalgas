@@ -91,7 +91,10 @@ class MailSendsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
+        /*
+         * se non trovo user al quale inviare mail organization_id = 0
+         * $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
+        */
 
         return $rules;
     }

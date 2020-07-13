@@ -136,10 +136,17 @@ class MyCommand extends Command
 
         if(!empty($results)) {
             foreach ($results as $result) {
+
+                /*
+                 * sostituisco i placeholder al template
+                 */
                 $template = $this->_getContentShTemplate();
-                $template = sprintf($template, $result['ids']);
+                $template = sprintf($template, $result['ids'], $this->cron);
                 // debug($template);
             
+                /*
+                 * nome del file .sh 
+                 */
                 $file_name_sh_complete = sprintf($this->file_name_sh, $tot_files_created);
                 $file = new File(Configure::read('Sh.template.dir.path.full') . DS . $file_name_sh_complete);
                 $file->write($template);
@@ -151,11 +158,22 @@ class MyCommand extends Command
                     $this->_insertDb($rs, $file_name_sh_complete, $debug);
                 }
             }
+        }
+        else {
+            /*
+             * nessun record trovato
+             */
+            $results = [];
+            $results['id'] = 0;
+            $results['tot_users'] = 0;
+            $file_name_sh_complete = sprintf($this->file_name_sh, 'x');
+            $this->_insertDb($results, $file_name_sh_complete, $debug);
         }  // end if(!empty($results))
 
         /*
          * creo eventuali file sh vuoti perche' richiamati dal cron
          */
+        // debug('tot_files_created '.$tot_files_created.' tot_files_sh '.$this->tot_files_sh);        
         if($tot_files_created < $this->tot_files_sh) {
             $tot_files_created++;
             for($i=$tot_files_created; $i<=$this->tot_files_sh; $i++) {
