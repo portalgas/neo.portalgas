@@ -324,6 +324,9 @@ Configure::write('Gdxp.articles.index.url', 'http://www.economiasolidale.net/api
 Configure::write('Gdxp.queue.code', 'GDXP-PORTALGAS');
 Configure::write('Gdxp.schema_path', WWW_ROOT.'/json/json-schema.json');
 
+Configure::write('Sh.template.dir.path.full', APP.'Command/Sh/');
+Configure::write('Sh.template.path.full', APP.'Command/Sh/template.php');
+
 /*
  * time
  */

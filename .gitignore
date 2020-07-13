@@ -3,6 +3,7 @@
 /_sql/*
 /log/*
 /logs/*
+/src/Command/Sh/*.sh
 neo-portalgas.txt
 
 # CakePHP specific files #

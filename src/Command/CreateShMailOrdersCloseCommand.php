@@ -10,14 +10,14 @@ use Cake\Log\Log;
 use Cake\Core\Configure;
 
 /*
- * 
- * bin/cake CreateShMailOrderOpen
+ *          
+ * bin/cake CreateShMailOrdersClose
  * https://book.cakephp.org/4/en/console-commands/commands.html
  */ 
-class CreateShMailOrderOpenCommand extends MyCommand
+class CreateShMailOrdersCloseCommand extends MyCommand
 {
-    private $cron =  'mailUsersOrdersOpen';
-    private $file_name_sh =  'mailUsersOrdersOpen-%s.sh';
+    private $cron =  'mailUsersOrdersClose';
+    private $file_name_sh =  'mailUsersOrdersClose-%s.sh';
 
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -30,8 +30,10 @@ class CreateShMailOrderOpenCommand extends MyCommand
         $this->_setFileNameSh($this->file_name_sh); 
 
         $this->io = $io;
-        $this->io->out('CreateShMailOrderOpen start');
+        $this->io->out('CreateShMailUsersOrdersClose start');
         $this->io->out('creo gruppi ogni '.$this->mail_send_max);
+
+        $GGMailToAlertOrderClose = (Configure::read('GGMailToAlertOrderClose')+1);
 
         /*
          * cancello file di log
@@ -42,20 +44,19 @@ class CreateShMailOrderOpenCommand extends MyCommand
         $organizations = $this->_getOrganizationsGas();
 
         /*
-         * per ogni GAS ctrl se ha ordini aperti da notificare per mail
+         * per ogni GAS ctrl se ha ordini che si chiudranno da notificare per mail
          */            
         $modelOrders = $this->loadModel('Orders');
-        Log::info("Organizations prima del controllo ordine aperti ".$organizations->count(), ['scope' => ['shell']]);
+        Log::info("Organizations prima del controllo ordine che si chiuderanno tra ".$GGMailToAlertOrderClose."gg ".$organizations->count(), ['scope' => ['shell']]);
         $organizationResults = [];
         foreach ($organizations as $numResult => $organization) {
 
             $where = ['Orders.organization_id' => $organization->id,
                       'Orders.isVisibleFrontEnd' => 'Y',
                       'Orders.state_code NOT IN' => ['CREATE-INCOMPLETE', 'CLOSE'],
-                      'or' => ['Orders.data_inizio = CURDATE() - INTERVAL '.Configure::read('GGMailToAlertOrderOpen').' DAY',
-                               'Orders.mail_open_send' => 'Y'],
+                      'Orders.data_fine = CURDATE() + INTERVAL '.$GGMailToAlertOrderClose.' DAY',
                         'SuppliersOrganizations.stato' => 'Y',
-                        'SuppliersOrganizations.mail_order_open' => 'Y'       
+                        'SuppliersOrganizations.mail_order_close' => 'Y'
                       ];                                
             $orderResults = $modelOrders->find()
                                         ->contain(['SuppliersOrganizations'])
@@ -63,7 +64,7 @@ class CreateShMailOrderOpenCommand extends MyCommand
                                         ->all();                                        
             if($orderResults->count()>0) { 
                 $organizationResults[] = $organization;
-                Log::info('Organization '.$organization->name.' ha ordini aperti', ['scope' => ['shell']]);
+                Log::info('Organization '.$organization->name.' ha ordini che si chiuderanno', ['scope' => ['shell']]);
             }
         } 
         Log::info("Organizations dopo del controllo ordine aperti ".count($organizationResults), ['scope' => ['shell']]);         
@@ -78,7 +79,7 @@ class CreateShMailOrderOpenCommand extends MyCommand
          */
         $results = $this->_getArrayMailSendMax($totResults, $debug);
         Log::info($results, ['scope' => ['shell']]);
-        Log::info('CreateShMailOrderOpen end', ['scope' => ['shell']]);
+        Log::info('CreateShMailUsersOrdersClose end', ['scope' => ['shell']]);
         Log::info($results, ['scope' => ['shell']]);
 
         /*

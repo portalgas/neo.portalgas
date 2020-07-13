@@ -19,12 +19,23 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   ?> 
   <li class="treeview"> 
     <a href="#">
+      <i class="fa fa-handshake-o"></i> <span><?php echo __('MailsSends');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-mail pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/mails-sends/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?></a></li>
+    </ul>
+    </a>
+  </li>
+  <li class="treeview"> 
+    <a href="#">
       <i class="fa fa-handshake-o"></i> <span><?php echo __('OrderTypes');?></span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('Order types');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?></a></li>
     </ul>
     </a>
   </li>
