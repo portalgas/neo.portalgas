@@ -60,6 +60,16 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->applyMiddleware('csrf');
     */
 
+    /*
+     * generics pages SLUG => pageWidgets
+    $builder->connect('/:slug', ['controller' => 'Pages', 'action' => 'display'],
+        [
+            'pass' => ['slug'],
+            'slug' => '[^\/]+'  // '([\w\/.])*'
+        ]
+    );
+     */
+
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
      * its action called 'display', and we pass a param to select the view file

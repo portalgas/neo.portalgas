@@ -12,7 +12,7 @@ class CashiersController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Csrf');
-        $this->loadComponent('Auth');
+        $this->loadComponent('Auths');
         $this->loadComponent('Cart');
         $this->loadComponent('SummaryOrder');
     }

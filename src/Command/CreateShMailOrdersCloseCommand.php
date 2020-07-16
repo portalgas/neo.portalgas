@@ -29,9 +29,11 @@ class CreateShMailOrdersCloseCommand extends MyCommand
         $this->_setCron($this->cron);
         $this->_setFileNameSh($this->file_name_sh); 
 
-        $this->io = $io;
-        $this->io->out('CreateShMailUsersOrdersClose start');
-        $this->io->out('creo gruppi ogni '.$this->mail_send_max);
+        if($debug) {
+            $this->io = $io;
+            $this->io->out('CreateShMailUsersOrdersClose start');
+            $this->io->out('creo gruppi ogni '.$this->mail_send_max);            
+        }
 
         $GGMailToAlertOrderClose = (Configure::read('GGMailToAlertOrderClose')+1);
 
@@ -91,7 +93,9 @@ class CreateShMailOrdersCloseCommand extends MyCommand
         /*
          * valore di ritorno $results = exec(...)
          */
-        $esito = 'end';
-        $this->io->out($esito);
+        if($debug) {
+            $esito = true;
+            $this->io->out($esito);            
+        }
     }
 }

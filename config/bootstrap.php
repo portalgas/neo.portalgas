@@ -245,6 +245,8 @@ Configure::write('ckeditor5.toolbar', "['heading', '|', 'bold', 'italic', 'link'
 
 Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']);
 
+Configure::write('document.path', '/files/Documents/file_name/%d/');
+
 Configure::write('group_id_root',8);
 Configure::write('group_id_root_supplier',24);
 Configure::write('group_id_manager',10);  
@@ -373,3 +375,12 @@ Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco@portalga
 
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');
+
+/*
+ * cron per creare sh dinamici
+ * tot users 2100
+ * totale file sh creati 
+ * (7 * 20 min = 140 min - 2,33 h)
+ */
+Configure::write('mailSendMax', 240);  // limite aruba, 250 mail ogni 20 min
+Configure::write('totFilesSh', 7);  // numero file sh creati => il cron deve averli gia' configurati per richiamarli ogni 20 min 

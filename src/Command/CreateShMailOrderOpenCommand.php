@@ -29,9 +29,11 @@ class CreateShMailOrderOpenCommand extends MyCommand
         $this->_setCron($this->cron);
         $this->_setFileNameSh($this->file_name_sh); 
 
-        $this->io = $io;
-        $this->io->out('CreateShMailOrderOpen start');
-        $this->io->out('creo gruppi ogni '.$this->mail_send_max);
+        if($debug) {
+            $this->io = $io;
+            $this->io->out('CreateShMailOrderOpen start');
+            $this->io->out('creo gruppi ogni '.$this->mail_send_max);            
+        }
 
         /*
          * cancello file di log
@@ -90,7 +92,7 @@ class CreateShMailOrderOpenCommand extends MyCommand
         /*
          * valore di ritorno $results = exec(...)
          */
-        $esito = 'end';
-        $this->io->out($esito);
+        $esito = true;
+        if($debug) $this->io->out($esito);
     }
 }

@@ -19,23 +19,39 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   ?> 
   <li class="treeview"> 
     <a href="#">
-      <i class="fa fa-handshake-o"></i> <span><?php echo __('MailsSends');?></span>
+      <i class="fa fa-book"></i> <span><?php echo __('Documents');?></span>
       <span class="pull-right-container">
         <i class="fa fa-mail pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/mails-sends/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/documents/organization-index'); ?>"><?php echo $icon;?><?php echo __('List Documents');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/documents'); ?>"><?php echo $icon;?><?php echo __('List Documents');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/document-types'); ?>"><?php echo $icon;?><?php echo __('List Document Types');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/document-states'); ?>"><?php echo $icon;?><?php echo __('List Document States');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/document-reference-models'); ?>"><?php echo $icon;?><?php echo __('List Document Reference Models');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/document-owner-models'); ?>"><?php echo $icon;?><?php echo __('List Document Owner Models');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+    </ul>
+    </a>
+  </li>  
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-envelope"></i> <span><?php echo __('MailsSends');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-mail pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/mails-sends/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>
   <li class="treeview"> 
     <a href="#">
-      <i class="fa fa-handshake-o"></i> <span><?php echo __('OrderTypes');?></span>
+      <i class="fa fa-tags"></i> <span><?php echo __('OrderTypes');?></span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>
@@ -46,7 +62,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/price-types/index'); ?>"><?php echo $icon;?><?php echo __('Price types');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/price-types/index'); ?>"><?php echo $icon;?><?php echo __('Price types');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>
@@ -58,11 +74,11 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=index" target="">Prospetto</a></li>
-      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?><?php echo __('Genera pagamenti').' '.date('Y');?></a></li>
-      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('Gestisci pagamenti').' '.date('Y');?></a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=invoice_create_form" target="">Genera fattura</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Pages&amp;action=export_docs_root" target="">Stampa documenti</a></li>
+      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=index" target="">Prospetto <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?><?php echo __('Genera pagamenti').' '.date('Y');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('Gestisci pagamenti').' '.date('Y');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=invoice_create_form" target="">Genera fattura <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Pages&amp;action=export_docs_root" target="">Stampa documenti <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>  
@@ -75,9 +91,9 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
     </a>
     <ul class="treeview-menu">
 
-        <li><a href="<?php echo $this->Url->build('/admin/scopes'); ?>"><?php echo $icon;?>Scope</a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/queue-mapping-types'); ?>"><?php echo $icon;?>Type queues</a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/queues'); ?>"><?php echo $icon;?>Lists queues</a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/scopes'); ?>"><?php echo $icon;?>Scope <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/queue-mapping-types'); ?>"><?php echo $icon;?>Type queues <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/queues'); ?>"><?php echo $icon;?>Lists queues <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
         <li><a href="<?php echo $this->Url->build('/admin/queue-logs'); ?>"><?php echo $icon;?>Logs queues</a></li>
 
         <li class="treeview">
@@ -88,11 +104,11 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
           </a>
           <ul class="treeview-menu">
             
-            <li><a href="<?php echo $this->Url->build('/admin/tables'); ?>"><?php echo $icon;?>Lists tables</a></li>            
-            <li><a href="<?php echo $this->Url->build('/admin/queue-tables'); ?>"><?php echo $icon;?>Lists queue tables</a></li>
-            <li><a href="<?php echo $this->Url->build('/admin/mapping-value-types'); ?>"><?php echo $icon;?>Lists mapping value types</a></li>
+            <li><a href="<?php echo $this->Url->build('/admin/tables'); ?>"><?php echo $icon;?>Lists tables <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>            
+            <li><a href="<?php echo $this->Url->build('/admin/queue-tables'); ?>"><?php echo $icon;?>Lists queue tables <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+            <li><a href="<?php echo $this->Url->build('/admin/mapping-value-types'); ?>"><?php echo $icon;?>Lists mapping value types <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
             <li><a href="<?php echo $this->Url->build('/admin/mapping-types'); ?>"><?php echo $icon;?>Lists mapping types</a></li>
-            <li><a href="<?php echo $this->Url->build('/admin/mappings'); ?>"><?php echo $icon;?>Lists mappings</a></li>
+            <li><a href="<?php echo $this->Url->build('/admin/mappings'); ?>"><?php echo $icon;?>Lists mappings <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
           </ul>
         </li>
     </ul>

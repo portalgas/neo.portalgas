@@ -29,10 +29,12 @@ class CreateShMailUsersDeliveryCommand extends MyCommand
         $this->_setCron($this->cron);
         $this->_setFileNameSh($this->file_name_sh); 
 
-        $this->io = $io;
-        $this->io->out('CreateShMailUsersDelivery start');
-        $this->io->out('creo gruppi ogni '.$this->mail_send_max);
-
+        if($debug) {
+            $this->io = $io;
+            $this->io->out('CreateShMailUsersDelivery start');
+            $this->io->out('creo gruppi ogni '.$this->mail_send_max);
+        }
+        
         $GGMailToAlertDeliveryOn = Configure::read('GGMailToAlertDeliveryOn');
 
         /*
@@ -87,7 +89,9 @@ class CreateShMailUsersDeliveryCommand extends MyCommand
         /*
          * valore di ritorno $results = exec(...)
          */
-        $esito = 'end';
-        $this->io->out($esito);
+        if($debug) {
+            $esito = true;
+            $this->io->out($esito);            
+        }
     }
 }

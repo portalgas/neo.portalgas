@@ -17,14 +17,14 @@ class BackupOrdersDesOrdersOrganizationsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Auth');
+        $this->loadComponent('Auths');
     }
 
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
 
-        if(!$this->Auth->isRoot($this->user)) {
+        if(!$this->Auths->isRoot($this->user)) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }

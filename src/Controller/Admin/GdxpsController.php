@@ -12,19 +12,19 @@ class GdxpsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Auth');
+        $this->loadComponent('Auths');
     }
 
     public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event);
 
-        // if(!$this->Auth->isSuperReferente($this->user) || !$this->Auth->isReferentGeneric($this->user)) {
+        // if(!$this->Auths->isSuperReferente($this->user) || !$this->Auths->isReferentGeneric($this->user)) {
         $continua = false;
 
-        if($this->Auth->isRoot($this->user))
+        if($this->Auths->isRoot($this->user))
             $continua = true;
-        elseif($this->Auth->isSuperReferente($this->user) && $this->user->organization->paramsConfig['hasArticlesGdxp']=='Y')
+        elseif($this->Auths->isSuperReferente($this->user) && $this->user->organization->paramsConfig['hasArticlesGdxp']=='Y')
             $continua = true;
 
         if(!$continua )
@@ -60,7 +60,7 @@ class GdxpsController extends AppController
 
         $articles = [];
         $supplier_organization_id = 0;
-        $acl_supplier_organizations = $this->Auth->getAclSupplierOrganizationsList($this->user);
+        $acl_supplier_organizations = $this->Auths->getAclSupplierOrganizationsList($this->user);
 
         if ($this->request->is('post')) {
 

@@ -12,7 +12,7 @@ class OrdersController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Csrf');
-        $this->loadComponent('Auth');
+        $this->loadComponent('Auths');
     }
 
     public function beforeFilter(Event $event) {

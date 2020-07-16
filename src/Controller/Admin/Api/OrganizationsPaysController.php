@@ -12,7 +12,7 @@ class OrganizationsPaysController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Csrf');
-        $this->loadComponent('Auth');
+        $this->loadComponent('Auths');
         $this->loadComponent('OrganizationsPay');
     }
 

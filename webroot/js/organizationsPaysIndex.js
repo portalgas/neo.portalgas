@@ -36,7 +36,20 @@ OrganizationsPaysIndex.prototype = {
                 return;
             }
                  
-            var value = $(this).val();
+            var value = '';
+            var type = $(this).attr('type');
+            // console.log('type '+type);
+            switch(type) {
+              case 'checkbox':
+                // console.log('checked '+$(this).is(':checked'));
+                if($(this).is(':checked'))
+                    value = 1;
+                else
+                    value = 0;
+              break;
+              default:
+                value = $(this).val();
+            } 
 
             var entity = 'OrganizationsPays';
             var responseHtml = $('#'+entity+'-'+organization_pay_id);

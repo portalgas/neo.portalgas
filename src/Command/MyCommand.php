@@ -17,15 +17,14 @@ class MyCommand extends Command
 {
     private $cron =  null;
     private $file_name_sh =  null ;    
-    protected $mail_send_max = 250;
-    /*
-     * totale file sh creati 
-     * (9 * 20 min = 180 min - 3 h)
-     */
-    protected $tot_files_sh = 9;
+    protected $mail_send_max;
+    protected $tot_files_sh; 
 
     public function initialize() {
         $this->Total = new TotalComponent(new ComponentRegistry());
+
+        $this->mail_send_max = Configure::read('mailSendMax');
+        $this->tot_files_sh = Configure::read('totFilesSh');
     }
 
     protected function _setCron($cron) {

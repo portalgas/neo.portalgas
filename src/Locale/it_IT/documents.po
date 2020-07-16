@@ -1,0 +1,2 @@
+msgid "List Documents"
+msgstr "Elenco documenti"

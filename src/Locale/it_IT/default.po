@@ -589,6 +589,9 @@ msgstr "Sei sicuro di cancellare definitivamente il record {0}"
 msgid "MsgResultsNotFound"
 msgstr "Non sono stati trovati risultati"
 
+msgid "MsgDocumentResultsNotFound"
+msgstr "Non ci sono documenti associati"
+
 msgid "MsgSearchParameters"
 msgstr "Imposta i parametri di ricerca"
 

@@ -69,7 +69,7 @@ class AppController extends Controller
                         'skipAuthorization' => ['login']
                     ]); // definito come middleware in src/Application.php
         
-        $this->loadComponent('Auth'); // custom component
+        $this->loadComponent('Auths'); // custom component
 
         /*
          * gestione float nella serializzazione json
@@ -97,11 +97,11 @@ class AppController extends Controller
                 /* 
                  * roles
                  */
-                $isRoot = $this->Auth->isRoot($this->user);
-                $isManager = $this->Auth->isManager($this->user);
-                $isCassiere = $this->Auth->isCassiere($this->user);
-                $isSuperReferente = $this->Auth->isSuperReferente($this->user);
-                $isReferentGeneric = $this->Auth->isReferentGeneric($this->user);
+                $isRoot = $this->Auths->isRoot($this->user);
+                $isManager = $this->Auths->isManager($this->user);
+                $isCassiere = $this->Auths->isCassiere($this->user);
+                $isSuperReferente = $this->Auths->isSuperReferente($this->user);
+                $isReferentGeneric = $this->Auths->isReferentGeneric($this->user);
                 
                 $this->set(compact('isRoot', 'isManager', 'isCassiere', 'isSuperReferente', 'isReferentGeneric'));
             }

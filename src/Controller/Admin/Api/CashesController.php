@@ -12,7 +12,7 @@ class CashesController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Csrf');
-        $this->loadComponent('Auth');
+        $this->loadComponent('Auths');
     }
 
     public function beforeFilter(Event $event) {
@@ -25,7 +25,7 @@ class CashesController extends ApiAppController
      */
     public function cashExcludedUpdate() {
 
-        if(!$this->Auth->isManager($this->user) || $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
+        if(!$this->Auths->isManager($this->user) || $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }

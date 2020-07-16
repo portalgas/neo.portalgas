@@ -15,14 +15,14 @@ class ImportFilesController extends AppController
         parent::initialize();
 
         $this->loadComponent('Upload');
-        $this->loadComponent('Auth');        
+        $this->loadComponent('Auths');        
     }
 
     public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event);
 
-        if(!$this->Auth->isSuperReferente($this->user) || !$this->Auth->isReferentGeneric($this->user)) {
+        if(!$this->Auths->isSuperReferente($this->user) || !$this->Auths->isReferentGeneric($this->user)) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }        

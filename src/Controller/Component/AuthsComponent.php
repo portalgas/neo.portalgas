@@ -14,7 +14,7 @@ $user->group_ids =
 		(int) 18 => 'gasReferente',
 	]
 */
-class AuthComponent extends Component {
+class AuthsComponent extends Component {
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
