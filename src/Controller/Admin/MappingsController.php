@@ -39,7 +39,7 @@ class MappingsController extends AppController
     public function index()
     {
         $where = [];
-        $request = $this->request->getData();
+        $request = $this->request->getQuery();
         // debug($request);
         $search_queue_id = '';
         $search_master_scope_id = '';
@@ -134,7 +134,29 @@ class MappingsController extends AppController
      */
     public function add($queue_id)
     {   
-         $reAdd = $this->request->getQuery('reAdd');
+        $request = $this->request->getQuery();
+        // debug($request);
+        $search_queue_id = '';
+        $search_master_scope_id = '';
+        $search_master_table_id = '';
+        $search_mapping_type_id = '';
+        $search_slave_scope_id = '';
+        $search_slave_table_id = '';
+        if(!empty($request['search_queue_id'])) 
+            $search_queue_id = $request['search_queue_id'];
+        if(!empty($request['search_master_scope_id'])) 
+            $search_master_scope_id = $request['search_master_scope_id'];
+        if(!empty($request['search_master_table_id'])) 
+            $search_master_table_id = $request['search_master_table_id'];
+        if(!empty($request['search_mapping_type_id'])) 
+            $search_mapping_type_id = $request['search_mapping_type_id'];
+        if(!empty($request['search_slave_scope_id'])) 
+            $search_slave_scope_id = $request['search_slave_scope_id'];
+        if(!empty($request['search_slave_table_id'])) 
+            $search_slave_table_id = $request['search_slave_table_id'];
+        $this->set(compact('search_queue_id', 'search_master_scope_id', 'search_master_table_id', 'search_mapping_type_id', 'search_slave_scope_id', 'search_slave_table_id'));
+
+        $reAdd = $this->request->getQuery('reAdd');
         if(empty($reAdd)) 
             $reAdd = $this->request->getData('reAdd');
         if(empty($reAdd)) 
@@ -147,7 +169,15 @@ class MappingsController extends AppController
                 $this->Flash->success(__('The {0} has been saved.', 'Mapping'));
 
                 if($reAdd=='Y') 
-                    $url = ['action' => 'add', $mapping->queue_id, '?' => ['reAdd' => $reAdd]];
+                    $url = ['action' => 'add', $mapping->queue_id, '?' => 
+                        ['reAdd' => $reAdd,
+                          'search_queue_id' => $search_queue_id,
+                          'search_master_scope_id' => $search_master_scope_id,
+                          'search_master_table_id' => $search_master_table_id,
+                          'search_mapping_type_id' => $search_mapping_type_id,
+                          'search_slave_scope_id' => $search_slave_scope_id,
+                          'search_slave_table_id' => $search_slave_table_id
+                        ]];
                 else
                     $url = ['action' => 'index'];
                 
@@ -195,6 +225,28 @@ class MappingsController extends AppController
      */
     public function edit($id = null)
     {
+        $request = $this->request->getQuery();
+        // debug($request);
+        $search_queue_id = '';
+        $search_master_scope_id = '';
+        $search_master_table_id = '';
+        $search_mapping_type_id = '';
+        $search_slave_scope_id = '';
+        $search_slave_table_id = '';
+        if(!empty($request['search_queue_id'])) 
+            $search_queue_id = $request['search_queue_id'];
+        if(!empty($request['search_master_scope_id'])) 
+            $search_master_scope_id = $request['search_master_scope_id'];
+        if(!empty($request['search_master_table_id'])) 
+            $search_master_table_id = $request['search_master_table_id'];
+        if(!empty($request['search_mapping_type_id'])) 
+            $search_mapping_type_id = $request['search_mapping_type_id'];
+        if(!empty($request['search_slave_scope_id'])) 
+            $search_slave_scope_id = $request['search_slave_scope_id'];
+        if(!empty($request['search_slave_table_id'])) 
+            $search_slave_table_id = $request['search_slave_table_id'];
+        $this->set(compact('search_queue_id', 'search_master_scope_id', 'search_master_table_id', 'search_mapping_type_id', 'search_slave_scope_id', 'search_slave_table_id'));
+
         $mapping = $this->Mappings->get($id, [
             'contain' => []
         ]);
@@ -204,7 +256,14 @@ class MappingsController extends AppController
             if ($this->Mappings->save($mapping)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Mapping'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', '?' => [
+                                          'search_queue_id' => $search_queue_id,
+                                          'search_master_scope_id' => $search_master_scope_id,
+                                          'search_master_table_id' => $search_master_table_id,
+                                          'search_mapping_type_id' => $search_mapping_type_id,
+                                          'search_slave_scope_id' => $search_slave_scope_id,
+                                          'search_slave_table_id' => $search_slave_table_id
+                                        ]]);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Mapping'));
         }

@@ -12,32 +12,32 @@
     <!-- /.box-header -->
     <div class="box-body">
 
-<?= $this->Form->create(null, ['id' => 'frmSearch']); ?>
+<?= $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
 <fieldset>
     <legend><?= __('Search {0}', ['Mapping']) ?></legend>
     <?php
     echo '<div class="row-">';
     echo '<div class="col-md-4">';    
-    echo $this->Form->control('search_queue_id', ['options' => $queues, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_queue_id', ['options' => $queues, 'class' => 'form-control select2', 'value' => $search_queue_id, 'empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-4">';    
-    echo $this->Form->control('search_master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2', 'empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2', 'value' => $search_master_scope_id, 'empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-4">';    
-    echo $this->Form->control('search_master_table_id', ['options' => $master_tables, 'class' => 'form-control select2', 'empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_master_table_id', ['options' => $master_tables, 'class' => 'form-control select2', 'value' => $search_master_table_id, 'empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '</div>';
 
 
     echo '<div class="row-">';
     echo '<div class="col-md-4">';    
-    echo $this->Form->control('search_mapping_type_id', ['options' => $mapping_types, 'class' => 'form-control select2', 'empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_mapping_type_id', ['options' => $mapping_types, 'class' => 'form-control select2', 'value' => $search_mapping_type_id, 'empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-4">';    
-    echo $this->Form->control('search_slave_scope_id', ['options' => $slave_scopes, 'class' => 'form-control select2', 'empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_slave_scope_id', ['options' => $slave_scopes, 'class' => 'form-control select2', 'value' => $search_slave_scope_id, 'empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-4">';    
-    echo $this->Form->control('search_slave_table_id', ['options' => $slave_tables, 'class' => 'form-control select2', 'empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_slave_table_id', ['options' => $slave_tables, 'class' => 'form-control select2', 'value' => $search_slave_table_id, 'empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '</div>';
     ?>

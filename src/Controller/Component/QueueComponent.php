@@ -59,8 +59,8 @@ class QueueComponent extends Component {
             $queuesTable = TableRegistry::get('Queues');
             $queue = $queuesTable->findByCode($queuesCode);    
             $this->_registry->QueueLog->logging($uuid, $queue->id, 'Request', $request);
-            if(!$queue->has('queue_tables')) {
-                $esito = false;
+            if(!$queue->has('queue_tables') || empty($queue->queue_tables)) {{
+                esito = false;
                 $code = 500;
                 $uuid = $uuid;
                 $msg = 'La coda '.$queuesCode.' non ha configurato le tabelle (queue_tables)';
@@ -68,17 +68,18 @@ class QueueComponent extends Component {
             }
 
             /* 
-             * se XML o Json contentuo file, se non empty
+             * se XML, Json, remote file contentuo file, se non empty
              */
-            $source = $this->_getSources($id, $queue);
-            if($source===false) {
-                $esito = false;
-                $code = 500;
-                $uuid = $uuid;
-                $msg = 'File ['.$id.'] non aperto';
-                $results = []; 
+            if($esito) {
+                $source = $this->_getSources($id, $queue);
+                if($source===false) {
+                    $esito = false;
+                    $code = 500;
+                    $uuid = $uuid;
+                    $msg = 'File ['.$id.'] non aperto';
+                    $results = []; 
+                }
             }
-
             if($esito) {
 
                 $tables = $this->_getTables($queue);
@@ -344,7 +345,7 @@ class QueueComponent extends Component {
                 // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
                 $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
                  
-                $this->_registry->QueueLog->logging($uuid, $queue->id, 'slaveEntity', $slaveEntity);
+                $this->_registry->QueueLog->logging($uuid, $queue->id, 'slaveEntity '.$slave_entity, $slaveEntity);
 
                 // if ($this->{$slave_entity}->save($slaveEntity)) {
                 if($debug) debug($slaveEntity); 
@@ -400,7 +401,7 @@ class QueueComponent extends Component {
 
                             $conn->rollback();
 
-                            $this->_registry->QueueLog->logging($uuid, $queue->id, 'save', $slaveEntity->getErrors(), 'ERROR');
+                            $this->_registry->QueueLog->logging($uuid, $queue->id, 'Save', $slaveEntity->getErrors(), 'ERROR');
 
                             $this->_registry->QueueLog->logging($uuid, $queue->id, 'Error', 'rollback', 'ERROR');
                             

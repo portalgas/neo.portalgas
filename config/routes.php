@@ -161,7 +161,12 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/queue', ['controller' => 'Queues'], function (RouteBuilder $routes) {
                 $routes->connect('/queue', ['action' => 'queue', '_method' => 'POST']);
         });
-
+        /* 
+         * richiama queue in loops (ex remote-file)
+         */        
+        $routes->scope('/queues', ['controller' => 'Queues'], function (RouteBuilder $routes) {
+            $routes->connect('/queues', ['action' => 'queues', '_method' => 'POST']);
+        }); 
 
         $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
             $routes->connect('/getByDelivery', ['action' => 'getByDelivery', '_method' => 'POST']);

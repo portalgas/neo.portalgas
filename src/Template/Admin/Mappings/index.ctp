@@ -1,17 +1,26 @@
-<!-- Content Header (Page header) -->
-<section class="content-header">
-  <h1>
-    Mappings
+<?php
 
-    <?php
-    foreach($btns_queues as $btns_queue) {
-      $label = __('New').' '.$btns_queue->name;
-      echo '<div class="pull-right">'.$this->Html->link($label, ['action' => 'add', $btns_queue->id], ['class'=>'btn btn-success btn-xs']).'</div>';    
-    }
-    ?>
-  </h1>
-</section>
+echo '<section class="content-header">';
+echo '<h1>'.__('Mappings');
 
+echo '<div class="btn-group pull-right" role="group" aria-label="news">';
+foreach($btns_queues as $btns_queue) {
+    $label = __('New').' '.$btns_queue->name;
+    echo $this->Html->link($label, ['action' => 'add', $btns_queue->id, 
+                                  '?' => [
+                                          'search_queue_id' => $search_queue_id,
+                                          'search_master_scope_id' => $search_master_scope_id,
+                                          'search_master_table_id' => $search_master_table_id,
+                                          'search_mapping_type_id' => $search_mapping_type_id,
+                                          'search_slave_scope_id' => $search_slave_scope_id,
+                                          'search_slave_table_id' => $search_slave_table_id 
+                                          ]], 
+                                          ['class'=>'btn btn-success']);    
+}
+echo '</div>';
+echo '</h1>';
+echo '</section>';
+?>
 
 
 <!-- Main content -->
@@ -21,7 +30,8 @@
     <div class="col-xs-12">
       <div class="box">
         <?php
-        echo $this->element('mappings_search', ['totResults' => $mappings->count(), 'queues' => $queues, 'master_scopes' => $master_scopes, 'slave_scopes' => $slave_scopes, 'master_tables' => $master_tables, 'slave_tables' => $slave_tables, 'mapping_types' => $mapping_types]);
+        echo $this->element('mappings_search', ['totResults' => $mappings->count(), 'queues' => $queues, 'master_scopes' => $master_scopes, 'slave_scopes' => $slave_scopes, 'master_tables' => $master_tables, 'slave_tables' => $slave_tables, 'mapping_types' => $mapping_types
+        ]);
         ?>
     </div>
   </div>
@@ -116,8 +126,17 @@
                   <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($mapping, $mapping->is_required); ?></td>
                   <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($mapping, $mapping->is_active); ?></td>
                   <td class="actions text-right">
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $mapping->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $mapping->id], ['confirm' => __('Are you sure you want to delete # {0}?', $mapping->id), 'class'=>'btn btn-danger btn-xs']) ?>
+                      <?php
+                      echo $this->Html->link(__('Edit'), ['action' => 'edit', $mapping->id, '?' => [
+                        'search_queue_id' => $search_queue_id,
+                        'search_master_scope_id' => $search_master_scope_id,
+                        'search_master_table_id' => $search_master_table_id,
+                        'search_mapping_type_id' => $search_mapping_type_id,
+                        'search_slave_scope_id' => $search_slave_scope_id,
+                        'search_slave_table_id' => $search_slave_table_id 
+                        ]], ['class'=>'btn btn-warning btn-xs']);
+                    
+                      echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $mapping->id], ['confirm' => __('Are you sure you want to delete # {0}?', $mapping->id), 'class'=>'btn btn-danger btn-xs']) ?>
                   </td>
                 </tr>
               <?php endforeach; ?>

@@ -55,14 +55,11 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
                     echo '<div class="col-md-4">'; 
                     echo $this->Form->control('master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2']);
                     echo '</div>';
-                    echo '<div class="col-md-4">';  
+                    echo '<div class="col-md-8">';  
                     echo $this->Form->control('master_json_path');
                     echo '</div>';
-                    echo '<div class="col-md-4">';  
-                    echo $this->Form->control('master_json_path_extra');
                     echo '</div>';
-                    echo '</div>';
-                  break;
+                  break;                  
                   case 'XML':
                     echo '<div class="row">';
                     echo '<div class="col-md-4">'; 
@@ -74,6 +71,7 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
                     echo '</div>';
                   break;
                   case 'CSV':
+                  case 'REMOTE-XLSX':
                     echo '<div class="row">';
                     echo '<div class="col-md-4">'; 
                     echo $this->Form->control('master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2']);
@@ -121,7 +119,7 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
                 echo '</div>';
                 echo '<div class="col-md-6">'; 
                 echo $this->Form->control('mapping_value_type_id', ['options' => $mapping_value_types, 'class' => 'form-control select2', 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
-                echo $this->HtmlCustom->note(__('note_mapping_value_type'));
+                echo $this->HtmlCustom->note(__('note_function_not_implement'));
                 echo '</div>';
                 echo '</div>';
 

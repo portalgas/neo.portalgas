@@ -54,6 +54,7 @@
           <table class="table table-hover">
             <thead>
               <tr>
+                  <th scope="col">N°</th>
                   <th scope="col"><?= $this->Paginator->sort('queue_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('master_scope_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('slave_scope_id') ?></th>
@@ -65,8 +66,9 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($queueLogs as $queueLog): ?>
+              <?php foreach ($queueLogs as $numResult => $queueLog): ?>
                 <tr>
+                  <td><?php echo ($numResult+1);?></td>
                   <td><?= $queueLog->has('queue') ? $this->Html->link($queueLog->queue->name, ['controller' => 'Queues', 'action' => 'view', $queueLog->queue->id]) : '' ?></td>
                   <td><?= $queueLog->queue->has('master_scope') ? $this->Html->link($queueLog->queue->master_scope->name, ['controller' => 'Scopes', 'action' => 'view', $queueLog->queue->master_scope->id]) : '' ?></td>
                   <td><?= $queueLog->queue->has('slave_scope') ? $this->Html->link($queueLog->queue->slave_scope->name, ['controller' => 'Scopes', 'action' => 'view', $queueLog->queue->slave_scope->id]) : '' ?></td>                  
