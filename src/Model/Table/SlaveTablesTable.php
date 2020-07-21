@@ -88,4 +88,16 @@ class SlaveTablesTable extends Table
 
         return $rules;
     }
+    
+    public function getList() {
+
+        return $this->find('list', 
+            ['conditions' => ['SlaveTables.is_active' => true], 
+            'limit' => 200, 
+            'keyField' => 'id', 
+            'valueField' => function ($slaveTables) {
+                return $slaveTables->name.' ('.$slaveTables->scope->name.')';
+            }])
+            ->contain(['Scopes' => ['conditions' => ['Scopes.is_active' => true]]]);
+    }  
 }

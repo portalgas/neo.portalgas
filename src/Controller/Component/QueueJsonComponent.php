@@ -120,7 +120,7 @@ class QueueJsonComponent extends QueueComponent {
                         $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
                         $results = []; 
 
-                        $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+                        $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
 
                         break;
                     }
@@ -145,7 +145,7 @@ class QueueJsonComponent extends QueueComponent {
 
                     } // end if($mapping->has('mapping_value_type')
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+                    $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
                     // debug('mapping->master_json_path '.$mapping->master_json_path.' - value_json '.$value_json);
                     $numResults++;
@@ -168,7 +168,7 @@ class QueueJsonComponent extends QueueComponent {
                     $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
                     $results = []; 
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
                 }
 
                 if($mapping->has('mapping_value_type')) {
@@ -192,7 +192,7 @@ class QueueJsonComponent extends QueueComponent {
 
                 } // end if($mapping->has('mapping_value_type')
 
-                $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+                $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
                 $numResults++;
             } // end if(!empty($mapping->master_json_path))

@@ -99,8 +99,9 @@ class MappingsController extends AppController
         $master_scopes = $this->Mappings->MasterScopes->find('list', ['conditions' => ['is_active' => 1], 'limit' => 200]);
         $slave_scopes = $this->Mappings->SlaveScopes->find('list', ['conditions' => ['is_active' => 1], 'limit' => 200]);
 
-        $master_tables = $this->Mappings->MasterTables->find('list', ['conditions' => ['is_active' => 1], 'limit' => 200]);
-        $slave_tables = $this->Mappings->SlaveTables->find('list', ['conditions' => ['is_active' => 1], 'limit' => 200]);
+        $master_tables = $this->Mappings->MasterTables->getList();
+        $slave_tables = $this->Mappings->SlaveTables->getList();
+
         $mapping_types = $this->Mappings->MappingTypes->find('list', ['conditions' => ['is_active' => 1], 'limit' => 200]);
 
         $this->set(compact('queues', 'master_scopes', 'slave_scopes', 'master_tables', 'slave_tables', 'mapping_types'));
@@ -189,9 +190,11 @@ class MappingsController extends AppController
         $queue = $this->Mappings->Queues->get($queue_id, ['contain' => 'QueueMappingTypes']);
 
         $master_scopes = $this->Mappings->MasterScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $master_tables = $this->Mappings->MasterTables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $slaveScopes = $this->Mappings->SlaveScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $slaveTables = $this->Mappings->SlaveTables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $slave_scopes = $this->Mappings->SlaveScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+
+        $master_tables = $this->Mappings->MasterTables->getList();
+        $slave_tables = $this->Mappings->SlaveTables->getList();
+
         $mapping_types = $this->Mappings->MappingTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         $mapping_value_types = $this->Mappings->MappingValueTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         
@@ -212,7 +215,7 @@ class MappingsController extends AppController
         $reAdds = ['Y' => __('ReAddY'), 'N' => __('ReAddN')];
         $this->set(compact('reAdds', 'reAdd'));        
     
-        $this->set(compact('mapping', 'queue', 'master_scopes', 'master_tables', 'slaveScopes', 'slaveTables', 'mapping_types', 'mapping_value_types', 'queue_tables', 'sort'));
+        $this->set(compact('mapping', 'queue', 'master_scopes', 'master_tables', 'slave_scopes', 'slave_tables', 'mapping_types', 'mapping_value_types', 'queue_tables', 'sort'));
     }
 
 
@@ -271,9 +274,9 @@ class MappingsController extends AppController
         $queue = $this->Mappings->Queues->get($queue_id, ['contain' => 'QueueMappingTypes']);
 
         $master_scopes = $this->Mappings->MasterScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $master_tables = $this->Mappings->MasterTables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $slaveScopes = $this->Mappings->SlaveScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $slaveTables = $this->Mappings->SlaveTables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $slave_scopes = $this->Mappings->SlaveScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $master_tables = $this->Mappings->MasterTables->getList();
+        $slave_tables = $this->Mappings->SlaveTables->getList();
         $mapping_types = $this->Mappings->MappingTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         $mapping_value_types = $this->Mappings->MappingValueTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         
@@ -289,7 +292,7 @@ class MappingsController extends AppController
             $queue_tables[$queue_table->id] = $queue_table->table->name;
         }
 
-        $this->set(compact('mapping', 'queue', 'master_scopes', 'master_tables', 'slaveScopes', 'slaveTables', 'mapping_types', 'mapping_value_types', 'queue_tables'));
+        $this->set(compact('mapping', 'queue', 'master_scopes', 'master_tables', 'slave_scopes', 'slave_tables', 'mapping_types', 'mapping_value_types', 'queue_tables'));
     }
 
 

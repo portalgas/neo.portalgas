@@ -20,20 +20,22 @@ class QueueLogComponent extends Component {
 		$this->action = strtolower($controller->request->getParam('action'));
 	}
 
-	public function logging($uuid, $queue_id, $message='', $log='', $level='INFO') {
+	public function logging($uuid, $queue, $message='', $log='', $level='INFO') {
 
-		if(Configure::read('QueueLogs')===false)
+		if(strtoupper($queue->log_type)=='NO')
 			return true;
 
-		$this->_logFile($uuid, $queue_id, $message, $log, $level);
-		$this->_logDatabase($uuid, $queue_id, $message, $log, $level);
-		$this->_logShell($uuid, $queue_id, $message, $log, $level);
+		$this->_logFile($uuid, $queue, $message, $log, $level);
+		$this->_logDatabase($uuid, $queue, $message, $log, $level);
+		$this->_logShell($uuid, $queue, $message, $log, $level);
 	}
 
-	private function _logDatabase($uuid, $queue_id, $message, $log, $level) {
+	private function _logDatabase($uuid, $queue, $message, $log, $level) {
 
-		if(Configure::read('QueueLogs.database')===false)
+		if(strtoupper($queue->log_type)!='DATABASE')
 			return true;
+
+		$queue_id = $queue->id;
 
 		$data = [];
 		$data['uuid'] = $uuid;
@@ -63,10 +65,12 @@ class QueueLogComponent extends Component {
 		return false;
 	}
 
-	private function _logFile($uuid, $queue_id, $message, $log, $level) {
+	private function _logFile($uuid, $queue, $message, $log, $level) {
 
-		if(Configure::read('QueueLogs.file')===false)
+		if(strtoupper($queue->log_type)!='FILE')
 			return true;
+
+		$queue_id = $queue->id;
 
 		if(is_array($log))
 			Log::write('notice', $log);
@@ -74,11 +78,13 @@ class QueueLogComponent extends Component {
 			Log::write('notice', $uuid.' [QueueId '.$queue_id.'] '.$message.' '.$log);
 	}
 
-	private function _logShell($uuid, $queue_id, $message, $log, $level) {
+	private function _logShell($uuid, $queue, $message, $log, $level) {
 
-		if(Configure::read('QueueLogs.shell')===false)
+		if(strtoupper($queue->log_type)!='SHELL')
 			return true;
 
+		$queue_id = $queue->id;
+		
 		debug($log);
 	}
 }

@@ -60,12 +60,15 @@
                 
                 
                 echo '<div class="row">';
-                echo '<div class="col-md-6">'; 
+                echo '<div class="col-md-4">'; 
                 echo $this->Form->control('master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2']);
                 echo '</div>';
-                echo '<div class="col-md-6">';     
+                echo '<div class="col-md-4">';     
                 echo $this->Form->control('slave_scope_id', ['options' => $slave_scopes, 'class' => 'form-control select2']);
                 echo '</div>';
+                echo '<div class="col-md-4">'; 
+                echo $this->Form->control('log_type', ['options' => $log_types]);  
+                echo '</div>';                 
                 echo '</div>';
 
 

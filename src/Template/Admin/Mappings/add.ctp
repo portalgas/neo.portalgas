@@ -72,6 +72,7 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
                   break;
                   case 'CSV':
                   case 'REMOTE-XLSX':
+                  case 'REMOTE-XLS':
                     echo '<div class="row">';
                     echo '<div class="col-md-4">'; 
                     echo $this->Form->control('master_scope_id', ['options' => $master_scopes, 'class' => 'form-control select2']);
@@ -85,10 +86,10 @@ echo $this->Html->script('mapping', ['block' => 'scriptPageInclude']);
 
                 echo '<div class="row">';
                 echo '<div class="col-md-4">'; 
-                echo $this->Form->control('slave_scope_id', ['options' => $slaveScopes, 'class' => 'form-control select2']);
+                echo $this->Form->control('slave_scope_id', ['options' => $slave_scopes, 'class' => 'form-control select2']);
                 echo '</div>';
                 echo '<div class="col-md-4">';     
-                echo $this->Form->control('slave_table_id', ['options' => $slaveTables, 'class' => 'form-control select2']);
+                echo $this->Form->control('slave_table_id', ['options' => $slave_tables, 'class' => 'form-control select2']);
                 echo '</div>';
                 echo '<div class="col-md-4">';     
                 echo $this->Form->control('slave_column');

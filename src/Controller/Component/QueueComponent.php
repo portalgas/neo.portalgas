@@ -7,6 +7,12 @@ use Cake\Controller\ComponentRegistry;
 use Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
 use Cake\Log\Log;
+
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
+
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use Box\Spout\Common\Type;                         
 use Cake\Filesystem\File;
 
 class QueueComponent extends Component {
@@ -17,17 +23,18 @@ class QueueComponent extends Component {
     protected $_registry;
     protected $component;
 
-	public function __construct(ComponentRegistry $registry, array $config = [])
-	{
+    public function __construct(ComponentRegistry $registry, array $config = [])
+    {
         $this->_registry = $registry;
 
         $this->_registry->load('QueueLog');
+                                                  
 
         // debug($this->_registry->loaded());
 
         $controller = $registry->getController(); // strtolower($controller->getName())
-		$action = strtolower($controller->request->action);
-	}
+        $action = strtolower($controller->request->action);
+    }
 
     /*
      * POST /api/queue
@@ -46,6 +53,7 @@ class QueueComponent extends Component {
             /*
              * queues.queue_mapping_type.code = XML / JSON / CSV => nome file
              * queues.queue_mapping_type.code = DB => id tabella
+             * queues.queue_mapping_type.code = REMOTE-XLSX => file remoto
              */
             $id = $request['id'];
             
@@ -58,8 +66,8 @@ class QueueComponent extends Component {
              */
             $queuesTable = TableRegistry::get('Queues');
             $queue = $queuesTable->findByCode($queuesCode);    
-            $this->_registry->QueueLog->logging($uuid, $queue->id, 'Request', $request);
-            if(!$queue->has('queue_tables') || empty($queue->queue_tables)) {{
+            $this->_registry->QueueLog->logging($uuid, $queue, 'Request', $request);
+            if(!$queue->has('queue_tables') || empty($queue->queue_tables)) {
                 esito = false;
                 $code = 500;
                 $uuid = $uuid;
@@ -80,6 +88,7 @@ class QueueComponent extends Component {
                     $results = []; 
                 }
             }
+
             if($esito) {
 
                 $tables = $this->_getTables($queue);
@@ -96,7 +105,7 @@ class QueueComponent extends Component {
                     if($esito===false)
                         break;
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, 'Elaboro tabella '.$table->name.' (id '.$table_id.')');
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'Elaboro tabella '.$table->name.' (id '.$table_id.')');
                     
                     /*
                      * mappings per ogni tabella slave
@@ -111,7 +120,7 @@ class QueueComponent extends Component {
                         $results = [];             
                     }
                    
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, 'Per la tabella '.$table->name.' trovati '.$mappings->count().' mapping da elaborare');
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'Per la tabella '.$table->name.' trovati '.$mappings->count().' mapping da elaborare');
 
                     $datas = [];
                     if($esito) {
@@ -130,6 +139,10 @@ class QueueComponent extends Component {
                                 $datas = $this->getDatas($uuid, $queue, $mappings, $table, $table_id, $source, $request);
                             break;
                             case 'CSV':
+                            break;
+                            case 'REMOTE-XLSX':
+                            case 'REMOTE-XLS':
+                                $datas = $this->getDatas($uuid, $queue, $mappings, $table, $table_id, $source, $request);                            
                             break;
                             default:
                                 debug('getDatas non previsto '.$queue->queue_mapping_type->code);
@@ -169,13 +182,13 @@ class QueueComponent extends Component {
         return ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];
     }
 
-	private function _getSources($id, $queue) {
+    private function _getSources($id, $queue) {
 
-		$results = null;
-	    switch (strtoupper($queue->queue_mapping_type->code)) {
-	        case 'DB':
-	            
-	        break;
+        $results = null;
+        switch (strtoupper($queue->queue_mapping_type->code)) {
+            case 'DB':
+                
+            break;
             case 'JSON':
                 $results = $id;
             break;
@@ -183,21 +196,59 @@ class QueueComponent extends Component {
                 $results = @simplexml_load_file($id);
                 // debug($xmldata);
             break;
-	        case 'CSV':
-	        break;
-	        default:
-	            debug('_getSources non previsto '.$queue->queue_mapping_type->code);
-	            die();    
-	        break;
-	    } 
+            case 'CSV':
+            break;
+            case 'REMOTE-XLSX':
+                /*
+                 * $id = path locale del file
+                 * ex /var/www/connect/backup_files/krca/test.xlsx 
+                 */
+                $reader = ReaderEntityFactory::createXLSXReader();
+                $reader->open($id);
+                foreach ($reader->getSheetIterator() as $sheet) {
+                    foreach ($sheet->getRowIterator() as $row) {
+                        $results[] = $row->getCells();
+                        // debug($$results);
+                    }
+                }
+                $reader->close();
+            break;
+            case 'REMOTE-XLS':
+                /*
+                 * $id = path locale del file
+                 * ex /var/www/connect/backup_files/krca/%s/test.xls 
+                 */ 
+                /**  Identify the type of $inputFileName  **/
+                $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($id);
+                /**  Create a new Reader of the type that has been identified  **/
+                $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+                /**  Load $inputFileName to a Spreadsheet Object  **/
+                $spreadsheet = $reader->load($id);
+                /**  Convert Spreadsheet Object to an Array for ease of use  **/
+                $results = $spreadsheet->getActiveSheet()->toArray();
+                unset($results[0]); // delete header
+                // debug($results);
+                /*
+                foreach( $results as $result) { 
+                    foreach( $result as $cell) {
+                        debug($cell);
+                    }
+                }
+                */
+            break;             
+            default:
+                debug('_getSources non previsto '.$queue->queue_mapping_type->code);
+                die();    
+            break;
+        } 
 
-	    return $results;
-	}
+        return $results;
+    }
 
-	/*
-	 * il ciclo per il mapping parte da queue_tables (sort)
-	 */
-	protected function _getTables($queue) {
+    /*
+     * il ciclo per il mapping parte da queue_tables (sort)
+     */
+    protected function _getTables($queue) {
 
         $tables = [];
         foreach($queue->queue_tables as $queue_table) {
@@ -209,9 +260,9 @@ class QueueComponent extends Component {
         }
 
         return $tables;
-	}
+    }
 
-	protected function _getMappings($queue, $table_id) {
+    protected function _getMappings($queue, $table_id) {
 
         $where = [];
 
@@ -230,8 +281,8 @@ class QueueComponent extends Component {
                                 'MasterTables', // solo per $queue->queue_mapping_type->code = DB
                                 'SlaveTables'])
                             ->all();
-        return $mappings; 		
-	}
+        return $mappings;       
+    }
 
     /*
      * componente che si occupa del mapping per FUNC_
@@ -267,7 +318,7 @@ class QueueComponent extends Component {
         if(!empty($table->before_save)) {
             $results = $this->_registry->{$this->component}->{$table->before_save}($datas, $organization_id);
             // debug($results);
-            $this->_registry->QueueLog->logging($uuid, $queue->id, $results['msg'], $results['results'], 'INFO');
+            $this->_registry->QueueLog->logging($uuid, $queue, $results['msg'], $results['results'], 'INFO');
 
             $esito = $results['esito'];
             $action = $results['action'];
@@ -280,10 +331,10 @@ class QueueComponent extends Component {
                 $this->last_insert_ids[$table->id] = $results['results']->id;
 
             if(!$action) {
-                $this->_registry->QueueLog->logging($uuid, $queue->id, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
+                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
             }
             else
-                $this->_registry->QueueLog->logging($uuid, $queue->id, 'function before_save '.$table->before_save.' return true => insert ', $results);			
+                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return true => insert ', $results);            
         }
 
         if($esito && $action) {
@@ -293,12 +344,13 @@ class QueueComponent extends Component {
              */
             //$this->loadModel(sprintf('App\Model\Table\%s\%sTable', $slave_namespace, $slave_entity));
             // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'INSERT table slave ['.$slave_entity.'] in '.$slave_namespace);
-    		$queueTable = TableRegistry::get('Queues');            
+            $queueTable = TableRegistry::get('Queues');            
             $datasource_slave = $queueTable->getDataSourceSlave($queue);
 
             $tableRegistry = TableRegistry::get($slave_entity);
             $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
             $conn = $tableRegistry->getConnection($datasource_slave);
+            $conn->begin();            
             
             foreach($datas as $data) {
                 
@@ -312,7 +364,7 @@ class QueueComponent extends Component {
                 $insert = true;
                 if(!empty($table->update_key)) {
                     if(!isset($data[$table->update_key])) {
-                        $this->_registry->QueueLog->logging($uuid, $queue->id, 'Campo ['.$table->update_key.'] per valutare se INSERT / UPDATE non esiste', 'ERROR');
+                        $this->_registry->QueueLog->logging($uuid, $queue, 'Campo ['.$table->update_key.'] per valutare se INSERT / UPDATE non esiste', 'ERROR');
 
                         $insert = true;
                     }
@@ -345,7 +397,11 @@ class QueueComponent extends Component {
                 // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
                 $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
                  
-                $this->_registry->QueueLog->logging($uuid, $queue->id, 'slaveEntity '.$slave_entity, $slaveEntity);
+                                                                                                       
+
+                                                                    
+                                       
+                $this->_registry->QueueLog->logging($uuid, $queue, 'slaveEntity '.$slave_entity, $slaveEntity);
 
                 // if ($this->{$slave_entity}->save($slaveEntity)) {
                 if($debug) debug($slaveEntity); 
@@ -401,9 +457,9 @@ class QueueComponent extends Component {
 
                             $conn->rollback();
 
-                            $this->_registry->QueueLog->logging($uuid, $queue->id, 'Save', $slaveEntity->getErrors(), 'ERROR');
+                            $this->_registry->QueueLog->logging($uuid, $queue, 'Save', $slaveEntity->getErrors(), 'ERROR');
 
-                            $this->_registry->QueueLog->logging($uuid, $queue->id, 'Error', 'rollback', 'ERROR');
+                            $this->_registry->QueueLog->logging($uuid, $queue, 'Error', 'rollback', 'ERROR');
                             
                             $esito = false;
                             $code = 500;
@@ -454,7 +510,7 @@ class QueueComponent extends Component {
         }
 
         return $data;
-    }	
+    }   
 
     private function _getUuid() {
         return date('YmdHi').'-'.uniqid();

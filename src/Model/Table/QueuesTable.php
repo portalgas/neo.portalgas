@@ -29,6 +29,11 @@ use Cake\Validation\Validator;
  */
 class QueuesTable extends Table
 {
+    const LOG_TYPE_NO = 'Disabilitato';
+    const LOG_TYPE_DATABASE = 'DataBase';
+    const LOG_TYPE_FILE = 'File di log';
+    const LOG_TYPE_SHELL = 'Shell';
+
     /**
      * Initialize method
      *
@@ -44,6 +49,13 @@ class QueuesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->addBehavior('CakeDC/Enum.Enum', ['lists' => [
+            'log_type' => [
+                'strategy' => 'const',
+                'prefix' => 'LOG_TYPE'
+            ]
+        ]]);
 
         $this->belongsTo('QueueMappingTypes', [
             'foreignKey' => 'queue_mapping_type_id',

@@ -47,6 +47,7 @@ class Queue extends Entity
         'slave_scope_id' => true,
         'slave_db_datasource' => true,
         'descri' => true,
+        'log_type' => true,
         'is_system' => true,
         'is_active' => true,
         'created' => true,

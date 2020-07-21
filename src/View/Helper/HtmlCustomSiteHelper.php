@@ -36,6 +36,9 @@ class HtmlCustomSiteHelper extends FormHelper
                 if(!empty($mapping->master_xml_xpath))
                     $results = $mapping->master_xml_xpath;
                 else
+                if(!empty($mapping->master_csv_num_col))
+                    $results = 'col '.$mapping->master_csv_num_col;
+                else                    
                     $results = $mapping->value;
             break;
             case 'PARAMETER-EXT':

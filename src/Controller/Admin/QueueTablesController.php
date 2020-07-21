@@ -80,7 +80,8 @@ class QueueTablesController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Queue Table'));
         }
         $queues = $this->QueueTables->Queues->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $tables = $this->QueueTables->Tables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $tables = $this->QueueTables->Tables->getList();
+
         $this->set(compact('queueTable', 'queues', 'tables'));
     }
 
@@ -107,7 +108,8 @@ class QueueTablesController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Queue Table'));
         }
         $queues = $this->QueueTables->Queues->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
-        $tables = $this->QueueTables->Tables->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $tables = $this->QueueTables->Tables->getList();
+        
         $this->set(compact('queueTable', 'queues', 'tables'));
     }
 

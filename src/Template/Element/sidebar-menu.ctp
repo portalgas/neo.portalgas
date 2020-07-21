@@ -35,6 +35,17 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   </li>  
   <li class="treeview"> 
     <a href="#">
+      <i class="fa fa-comment"></i> <span><?php echo __('Logs');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-mail pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+    </ul>
+    </a>
+  </li>
+  <li class="treeview"> 
+    <a href="#">
       <i class="fa fa-envelope"></i> <span><?php echo __('MailsSends');?></span>
       <span class="pull-right-container">
         <i class="fa fa-mail pull-right"></i>

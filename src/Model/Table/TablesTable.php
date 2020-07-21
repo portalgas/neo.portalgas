@@ -114,4 +114,16 @@ class TablesTable extends Table
 
         return $rules;
     }
+
+    public function getList() {
+
+        return $this->find('list', 
+            ['conditions' => ['Tables.is_active' => true], 
+            'limit' => 200, 
+            'keyField' => 'id', 
+            'valueField' => function ($masterTables) {
+                return $masterTables->name.' ('.$masterTables->scope->name.')';
+            }])
+            ->contain(['Scopes' => ['conditions' => ['Scopes.is_active' => true]]]);
+    }    
 }

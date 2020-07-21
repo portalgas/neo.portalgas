@@ -107,12 +107,12 @@ class QueueXmlComponent extends QueueComponent {
 	                    $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
 	                    $results = []; 
 
-	                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+	                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
 
 	                    break;
 	                }
 
-	                $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+	                $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
 					// debug('mapping->master_xml_xpath '.$mapping->master_xml_xpath.' - value_xmls '.$value_xmls);
 					$numResults++;
@@ -135,12 +135,12 @@ class QueueXmlComponent extends QueueComponent {
 		                    $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
 		                    $results = []; 
 
-		                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+		                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
 
 		                    break;
 		                }    
 
-                        $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+                        $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
                         // debug('mapping->master_xml_xpath '.$mapping->master_xml_xpath.' - value_xmls '.$value_xmls);
 
@@ -164,10 +164,10 @@ class QueueXmlComponent extends QueueComponent {
                     $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
                     $results = []; 
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
                 }
 
-                $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+                $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
                 $numResults++;
             } // end if(!empty($mapping->master_xml_xpath))

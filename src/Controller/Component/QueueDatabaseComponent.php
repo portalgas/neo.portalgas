@@ -105,7 +105,7 @@ class QueueDatabaseComponent extends QueueComponent {
                     $msg = $master_entity.' con '.$mapping->master_table->where_key.'='.$id.' non trovato!';
                     $results = $where; 
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, $where, 'ERROR');
+                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, $where, 'ERROR');
 
                     break;
                 }
@@ -124,12 +124,12 @@ class QueueDatabaseComponent extends QueueComponent {
                     $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
                     $results = []; 
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
 
                     break;                        
                 }
 
-                $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+                $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - elaboro da SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
                 $numResults++;
             }
@@ -147,12 +147,12 @@ class QueueDatabaseComponent extends QueueComponent {
                     $msg = 'Slave table '.$slave_table.' column ['.$slave_column.'] required';
                     $results = []; 
 
-                    $this->_registry->QueueLog->logging($uuid, $queue->id, $msg, '', 'ERROR');
+                    $this->_registry->QueueLog->logging($uuid, $queue, $msg, '', 'ERROR');
 
                     break;                        
                 }
 
-                $this->_registry->QueueLog->logging($uuid, $queue->id, ($numMapping+1).') Elaboro mapping - da MASTER ['.$master_table.'::'.$master_column.'] SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
+                $this->_registry->QueueLog->logging($uuid, $queue, ($numMapping+1).') Elaboro mapping - da MASTER ['.$master_table.'::'.$master_column.'] SLAVE ['.$slave_table.'::'.$slave_column.']', 'Valore convertito ['.$datas[$numResults][$slave_column].']');
 
                 $numResults++;
                     

@@ -41,6 +41,7 @@
                   <th scope="col"><?= $this->Paginator->sort('master_db_datasource') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('slave_scope_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('slave_db_datasource') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('log_type') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('is_system') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('created') ?></th>
@@ -69,7 +70,8 @@
                       echo $queue->slave_scope->db_datasource;
                   else
                       $queue->slave_db_datasource;
-                   ?></td>                    
+                   ?></td>
+                  <td><?= h($queue->log_type) ?></td>                
                   <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queue, $queue->is_system) ?></td>
                   <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queue, $queue->is_active) ?></td>
 

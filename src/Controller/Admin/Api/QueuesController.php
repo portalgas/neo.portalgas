@@ -68,7 +68,7 @@ class QueuesController extends ApiAppController
 
     /*
      * POST /admin/api/queues/queues
-     * /admin/api/queues/queues
+     * https://connect.atlanticmoon.it/admin/api/queues/queues
      * Content-Type: application/json
      * X-Requested-With: XMLHttpRequest
      * Authorization: Bearer 5056b8cf17f6dea5a65018f4e6e05e34b94c124977b48663d8b7ff838b13726a
@@ -97,17 +97,28 @@ class QueuesController extends ApiAppController
         $queue = $queuesTable->findByCode($queuesCode);  
 
         // $this->loadComponent($queue->component);  // custom QueueDweeMago
-        $this->loadComponent($queue->queue_mapping_type->component); // QueueRemoteXml
+        $this->loadComponent($queue->queue_mapping_type->component); // QueueRemoteXml 
 
         $sources = $this->{$queue->queue_mapping_type->component}->getSources($queue, $request);
-        foreach($sources as $source) {
-            // debug($source);
-            /* 
-             * per remote-ftp, id = path locale del file
-             * ex /var/www/.../backup_files/krca/test.xlsx
-            */            
-            $request['id'] = $source; 
-            $results = $this->{$queue->queue_mapping_type->component}->queue($request);
+        if($sources) {
+            foreach($sources as $source) {
+                /* 
+                 * per remote-ftp, id = path locale del file
+                 * ex /var/www/.../backup_files/krca/test.xlsx
+                */            
+               $request['id'] = $source; 
+               $results = $this->{$queue->queue_mapping_type->component}->queue($request);
+
+               if($results['esito'])
+                    $this->{$queue->queue_mapping_type->component}->setSources($queue->code, $source);
+            }
+        }
+        else {
+            $results['esito'] = false;
+            $results['code'] = 404;
+            $results['uuid'] = '';
+            $results['msg'] = 'Nessuna sorgente dati trovata';
+            $results['results'] = '';
         }
 
         $this->set([

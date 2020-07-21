@@ -292,12 +292,11 @@ Configure::write('DB.field.datetime.empty', '1970-01-01 00:00:00');
 Configure::write('routes_msg_stop', ['controller' => 'Pages', 'action' => 'msg_stop', 'prefix' => 'admin']);
 Configure::write('routes_msg_not_order_state', ['controller' => 'Pages', 'action' => 'msg_not_order_state', 'prefix' => 'admin']);
 
-Configure::write('QueueLogs', false);          // disattivare in production
-Configure::write('QueueLogs.database', false); // attivare QueueLogs
-Configure::write('QueueLogs.file', false);     // attivare QueueLogs
-Configure::write('QueueLogs.shell', false);    // attivare QueueLogs
-
 Configure::write('site.name', 'PortAlGas');
+
+Configure::write('Logs.database', true);
+Configure::write('Logs.file', false);
+Configure::write('Logs.shell', false);
 
 Configure::write('SupplierOrganizationStatoIni', 'Y');
 Configure::write('SupplierOrganizationMailOrderOpenIni', 'Y');

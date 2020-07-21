@@ -59,14 +59,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function bootstrap()
     {
+        $this->addPlugin('AssetMix', ['bootstrap' => true]);
+
         $this->addPlugin('CakeDC/Enum');
 
-        /*
-         * https://book.cakephp.org/debugkit/3/en/index.html
-         */
-        Configure::write('DebugKit.forceEnable', true);
-        Configure::write('DebugKit.panels', ['DebugKit.Packages' => false]);
-        $this->addPlugin('DebugKit');
         $this->addPlugin('Josegonzalez/Upload');
         $this->addPlugin('DataTables');
 
@@ -79,8 +75,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         /*
          * Only try to load DebugKit in development mode
          * Debug Kit should not be installed on a production system
+         *
+         * https://book.cakephp.org/debugkit/3/en/index.html
          */
-        if (Configure::read('debug')) {
+        if (Configure::read('debug')) {            
             Configure::write('DebugKit.panels', ['DebugKit.Packages' => false]);
             Configure::write('DebugKit.safeTld', ['dev', 'local', 'example']);
             Configure::write('DebugKit.forceEnable', true);
@@ -123,7 +121,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // you might want to disable this cache in case your routing is extremely simple
             ->add(new RoutingMiddleware($this, '_cake_routes_'));
 
-
             /*
              * Csrf middleware
              *
@@ -150,6 +147,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             $authentication = new AuthenticationMiddleware($this, [
                 /* 
                  *  Notice: Deprecated (16384): The `unauthenticatedRedirect` configuration key on AuthenticationMiddleware is deprecated.
+                 
+                 se DebugKit e' attivo non compare il msg
+
                  'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
                  */ 
                  'unauthenticatedRedirect' => $portalgas_bo_url_login
@@ -199,18 +199,33 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
                 
         $service = new AuthenticationService();
+
+        /*
+         * front-end jwt
+         */    
+        $service->loadIdentifier('Authentication.JwtSubject');
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'loginUrl' => '/api/tokenJwt/login',
+            'returnPayload' => true
+        ]);
+
         $service->setConfig([
             'unauthenticatedRedirect' => $portalgas_bo_url_login,
             'queryParam' => null
         ]);
 
         $fields = [
-            'username' => 'email',
+            'username' => 'username',
             'password' => 'password'
         ];
 
-        // Load the authenticators, you want session first
+        /*
+         * back-office, chiamo /api/token e converto il salt dello user
+         */
         $service->loadAuthenticator('Authentication.Session');
+        /*
+         * front-end
+         */
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
             'loginUrl' => $portalgas_bo_url_login

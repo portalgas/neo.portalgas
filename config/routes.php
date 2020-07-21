@@ -21,6 +21,7 @@ use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\Routing\Route\DashedRoute;
+use Cake\Core\Configure;
 
 /**
  * The default class to use for all routes
@@ -75,7 +76,16 @@ Router::scope('/', function (RouteBuilder $routes) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
-    $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home-backoffice']);
+    $config = Configure::read('Config');
+    $vue_is_active = $config['Vue.isActive']; 
+    if(!$vue_is_active) {
+        $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home-backoffice']);        
+    }
+    else {
+        $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
+        $routes->connect('/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
+        $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);        
+    }
     
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
@@ -101,6 +111,8 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
+    $routes->connect('/vue/index', ['controller' => 'Vue', 'action' => 'index']);
+
     $routes->fallbacks(DashedRoute::class);
 });
 
@@ -130,6 +142,14 @@ Router::prefix('api', function (RouteBuilder $routes) {
     }); 
 
     /*
+    * token jwt, login da front-end
+    */ 
+    $routes->scope('/tokenJwt', ['controller' => 'TokenJwts'], function (RouteBuilder $routes) {
+        $routes->connect('/login', ['action' => 'login', '_method' => 'POST']);
+        $routes->connect('/getUser', ['action' => 'getUser', '_method' => 'POST']);
+    });
+
+    /*
      * tmp per ecommerce vue
      */
     $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
@@ -146,14 +166,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
 
     $routes->prefix('api', function(RouteBuilder $routes) {
         
-        $routes->setExtensions(['json', 'xml']);      
-
-        /*
-         * token da portalgas cakephp 2.x
-         */ 
-        $routes->scope('/token', ['controller' => 'Tokens'], function (RouteBuilder $routes) {
-            $routes->connect('/login', ['action' => 'login', '_method' => 'GET']);
-        }); 
+        $routes->setExtensions(['json', 'xml']);
 		
         /* 
          * queue

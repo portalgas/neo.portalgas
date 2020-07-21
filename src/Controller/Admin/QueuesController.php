@@ -82,8 +82,9 @@ class QueuesController extends AppController
         $queueMappingTypes = $this->Queues->QueueMappingTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         $master_scopes = $this->Queues->MasterScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
         $slave_scopes = $this->Queues->SlaveScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $log_types = $this->Queues->enum('log_type');
 
-        $this->set(compact('queue', 'queueMappingTypes', 'master_scopes', 'slave_scopes'));
+        $this->set(compact('queue', 'queueMappingTypes', 'master_scopes', 'slave_scopes', 'log_types'));
     }
 
 
@@ -111,8 +112,9 @@ class QueuesController extends AppController
         $queueMappingTypes = $this->Queues->QueueMappingTypes->find('list', ['conditions' => ['is_active' => true], 'order' => ['sort' => 'asc'], 'limit' => 200]);
         $master_scopes = $this->Queues->MasterScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
         $slave_scopes = $this->Queues->SlaveScopes->find('list', ['conditions' => ['is_active' => true], 'limit' => 200]);
+        $log_types = $this->Queues->enum('log_type');
 
-        $this->set(compact('queue', 'queueMappingTypes', 'master_scopes', 'slave_scopes'));
+        $this->set(compact('queue', 'queueMappingTypes', 'master_scopes', 'slave_scopes', 'log_types'));
     }
 
 
