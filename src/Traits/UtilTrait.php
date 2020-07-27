@@ -5,6 +5,55 @@ use Cake\Core\Configure;
 
 trait UtilTrait
 {
+    private $encrypt_method = "AES-256-CBC";
+    private $key = '';
+    private $iv = '';
+
+    private function _getSecretKey($salt) {
+        $secret_key = $salt.date('Ymd');
+        return hash('sha256', $secret_key);
+    }
+        
+    private function _getSecretIv($salt) {
+        $secret_iv = $salt;
+        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+        $iv = substr(hash('sha256', $secret_iv), 0, 16); 
+        return $iv;
+    }
+                
+    public function encrypt($string) {
+
+        $config = Configure::read('Config');
+        if(isset($config['Salt']))
+            $salt = $config['Salt'];
+        else
+            $salt = '';
+        
+        $key = $this->_getSecretKey($salt);
+        $iv = $this->_getSecretIv($salt);
+
+        $results = openssl_encrypt($string, $this->encrypt_method, $key, 0, $iv);
+        $results = base64_encode($results);
+
+        return $results;
+    }
+    
+    public function decrypt($string) {
+
+        $config = Configure::read('Config');
+        if(isset($config['Salt']))
+            $salt = $config['Salt'];
+        else
+            $salt = '';
+
+        $key = $this->_getSecretKey($salt);
+        $iv = $this->_getSecretIv($salt);
+
+        $results = openssl_decrypt(base64_decode($string), $this->encrypt_method, $key, 0, $iv);
+
+        return $results;
+    } 
+
     public function stringStartsWith($string, $search) {
         return (strncmp($string, $search, strlen($search)) == 0);
     }

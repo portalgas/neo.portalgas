@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 /*
  * https://book.cakephp.org/4.next/en/controllers/components/authentication.html#creating-custom-authentication-objects
@@ -24,26 +25,14 @@ use Cake\ORM\TableRegistry;
  */
 class Joomla25Authenticate extends AbstractAuthenticator
 {
+	use Traits\UtilTrait;
+
 	private $debug = false;
-	private $encrypt_method = "AES-256-CBC";
-	private $key = '';
-	private $iv = '';
+
 
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
-        parent::__construct($identifiers, $config);
-
-		$config = Configure::read('Config');
-		$salt = $config['SaltPortalgas'];
-		
-		$secret_key = $salt.date('Ymd');
-		$secret_iv = $salt;
-		
-		// hash
-		$this->key = hash('sha256', $secret_key);
-		
-		// iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-		$this->iv = substr(hash('sha256', $secret_iv), 0, 16);	        
+        parent::__construct($identifiers, $config); 
     }
 
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
@@ -71,7 +60,7 @@ class Joomla25Authenticate extends AbstractAuthenticator
         $user_salt = $request->getQuery('u');
         if($this->debug) debug($user_salt);
 
-		$user = $this->_decrypt($user_salt);
+		$user = $this->decrypt($user_salt);
 		$user = unserialize($user);
 		if($this->debug) debug($user);
 
@@ -79,16 +68,5 @@ class Joomla25Authenticate extends AbstractAuthenticator
 		$user = $usersTable->findLogin($user['user_organization_id'], $user['user_id'], $user['organization_id'], $this->debug); 
 
 		return $user;
-    }
-
-	private function _encrypt($string) {
-		$results = openssl_encrypt($string, $this->encrypt_method, $this->key, 0, $this->iv);
-		$results = base64_encode($results);
-		return $results;
-	}
-	
-	private function _decrypt($string) {
-		$results = openssl_decrypt(base64_decode($string), $this->encrypt_method, $this->key, 0, $this->iv);
-		return $results;
-	}       
+    }      
 }
