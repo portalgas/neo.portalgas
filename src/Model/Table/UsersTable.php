@@ -126,31 +126,49 @@ class UsersTable extends Table
     }
 	
     /*
-     * $organization_id = gas scelto o gas dello user
+     * loadIdentifier(resolver
      */    
-    public function findById($user_organization_id, $user_id, $organization_id, $debug=false)
+    public function findLoginActive(Query $query, array $options)
     {
-        // $user_organization_id puo' essere 0
-        if (empty($user_id) || empty($organization_id)) {
+        $query->where(['Users.block' => 0]);
+        return $query;
+    }         
+
+    /*
+     * utilizzato dopo login 
+     * Joomla25Authenticate
+     * UserController::login
+     *
+     * user_organization_id = organization_id dell'utente
+     * user_id = id dell'utente 
+     * organization_id = organization_id scelta (per root)
+     */
+    public function findLogin($user_organization_id, $user_id, $organization_id, $debug=false)
+    {
+        debug('user_organization_id '.$user_organization_id);
+        debug('user_id '.$user_id);
+        debug('organization_id '.$organization_id);
+        // $user_organization_id / organization_id puo' essere 0 (per root)
+        if (empty($user_id)) {
             return null;
         }
-		
-		$where = ['organization_id' => $user_organization_id,
-				  'id' => $user_id,
-				  'block' => 0];
-		if($debug) debug($where);
-		
+        
+        $where = ['organization_id' => $user_organization_id,
+                  'id' => $user_id,
+                  'block' => 0];
+        if($debug) debug($where);
+        
         $user = $this->find()
             ->select([
                 'Users.id',
                 'Users.organization_id',
                 'Users.username',
                 'Users.email',
-				'Users.registerDate',
-				'Users.lastvisitDate',
+                'Users.registerDate',
+                'Users.lastvisitDate',
             ])
             ->where($where)
-			->contain(['UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
+            ->contain(['UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
             ->first();
         // if($debug) debug($user);
         
@@ -212,75 +230,55 @@ class UsersTable extends Table
         $user->organization = $organization;
          if($debug) debug($user);  
 
-        return $user;
-    }
-
-    public function findByUsername($organization_id, $username)
-    {
-        if (empty($organization_id) || empty($username)) {
-            return null;
+        /*
+         * creo array con i group_id dell'utente, per UserComponent
+         */
+        $group_ids = [];
+        if($user->has('user_usergroup_map')) {
+            foreach($user->user_usergroup_map as $user_usergroup_map) {
+                $group_ids[$user_usergroup_map->group_id] = $user_usergroup_map->user_group->title;
+            }
+            unset($user->user_usergroup_map);
         }
-
-        $this->Organizations->removeBehavior('OrganizationsParams');
+        // debug($group_ids);
+        $user->group_ids = $group_ids;
         
-        $where = ['organization_id' => $organization_id,
-                  'username' => $username,
-                  'block' => 0,
-                  'Organizations.stato' => 'Y'];
-        // debug($where);
-        
-        $user = $this->find()
-            ->select([
-                'Users.id',
-                'Users.organization_id',
-                'Users.username',
-                'Users.email',
-                'Users.registerDate',
-                'Users.lastvisitDate',
+        /*
+         * rimappo array user.profiles
+         * user->user_profiles['profile.address'] = value
+         */
+        $user_profiles = [];
+        if($user->has('user_profiles')) {
+            foreach($user->user_profiles as $user_profile) {
+                $profile_key = str_replace('profile.', '', $user_profile->profile_key);
                 /*
-                 * organizzazione al quale appartiene lo user
-                 * root: organizzazione scelta
+                 * elimino primo e ultimo carattere se sono "
                  */
-                'Organizations.id',  
-                'Organizations.name',
-                'Organizations.cf',
-                'Organizations.piva',
-                'Organizations.mail',
-                'Organizations.www',
-                'Organizations.www2',
-                'Organizations.telefono',
-                'Organizations.indirizzo',
-                'Organizations.localita',
-                'Organizations.cap',
-                'Organizations.provincia',
-                'Organizations.lat',
-                'Organizations.lng',
-                'Organizations.img1',
-                'Organizations.template_id',
-                'Organizations.type',
-                'Organizations.paramsConfig',
-                'Organizations.paramsFields',
-                'Organizations.hasMsg',
-                'Organizations.msgText'
-            ])
-            ->where($where)
-            ->contain(['Organizations', 'UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
-            ->first();
+                if(!empty($user_profile->profile_value) && strpos(substr($user_profile->profile_value, 0, 1), '"')!==false) {
+                    $user_profile->profile_value = substr($user_profile->profile_value, 1, strlen($user_profile->profile_value)-2);
+                }
 
-        if (!$user) {
-            return null;
+                $user_profiles[$profile_key] = $user_profile->profile_value;
+            }
+            
+            unset($user->user_profiles);
         }
-
-        if(!empty($user->organization->paramsConfig))
-            $user->organization->paramsConfig = json_decode($user->organization->paramsConfig, true);
-        if(!empty($user->organization->paramsFields))
-            $user->organization->paramsFields = json_decode($user->organization->paramsFields, true);
-        if(!empty($user->organization->paramsPay))
-            $user->organization->paramsPay = json_decode($user->organization->paramsPay, true);
+        // debug($user_profiles);
+        $user->user_profiles = $user_profiles;           
         
+        /*
+         *
+         * acl
+         */
+        $usergroupsTable = TableRegistry::get('UserGroups');        
         
-        $user->unsetProperty('password');
+        $user->acl = [];
+        $user->acl['isRoot'] = $usergroupsTable->isRoot($user);
+        $user->acl['isManager'] = $usergroupsTable->isManager($user);
+        $user->acl['isCassiere'] = $usergroupsTable->isCassiere($user);
+        $user->acl['isSuperReferente'] = $usergroupsTable->isSuperReferente($user);
+        $user->acl['isReferentGeneric'] = $usergroupsTable->isReferentGeneric($user);
 
         return $user;
-    }           
+    }    
 }

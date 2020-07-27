@@ -60,14 +60,14 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
     }
 
     /*
-     * ovveride
+     * implement
      */ 
     public function getSuppliersOrganizations($user, $order_id=0, $debug=false) {
         
     } 
 
     /*
-     * ovveride
+     * implement
      */ 
     public function getDeliveries($user, $order_id=0, $debug=false) {
 

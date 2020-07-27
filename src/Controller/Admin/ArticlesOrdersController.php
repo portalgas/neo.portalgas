@@ -25,7 +25,7 @@ class ArticlesOrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -68,13 +68,13 @@ class ArticlesOrdersController extends AppController
         $debug = false;
 
         $ordersTable = TableRegistry::get('Orders');    
-        $order = $ordersTable->getById($this->user, $this->user->organization->id, $order_id, $debug);
+        $order = $ordersTable->getById($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $debug);
 
         $scope = $order->owner_articles;
         $supplier_organization_id = $order->supplier_organization_id; 
 
         $articlesTable = TableRegistry::get('Articles');
-        $articles = $articlesTable->getTotArticlesPresentiInArticlesOrder($this->user, $this->user->organization->id, $supplier_organization_id);
+        $articles = $articlesTable->getTotArticlesPresentiInArticlesOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id);
         // debug($articleResults);
         if ($this->request->is('post')) {
 
@@ -88,7 +88,7 @@ class ArticlesOrdersController extends AppController
                  * article_organization_id / article_id 
                  *      dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES / PACT
                  */
-                $data['organization_id'] = $this->user->organization->id;
+                $data['organization_id'] = $this->Authentication->getIdentity()->organization->id;
                 $data['order_id'] = $order_id;
                 $data['article_organization_id'] = $article->organization_id;
                 $data['article_id'] = $article->id;
@@ -116,7 +116,7 @@ class ArticlesOrdersController extends AppController
                 /*
                  * workaround
                  */
-                $articlesOrder->organization_id = $this->user->organization->id;
+                $articlesOrder->organization_id = $this->Authentication->getIdentity()->organization->id;
                 $articlesOrder->order_id = $order_id;
                 $articlesOrder->article_organization_id = $article->organization_id;
                 $articlesOrder->article_id = $article->id;

@@ -34,7 +34,6 @@ class AppController extends Controller
     use Traits\SqlTrait;
     use Traits\UtilTrait;
 
-    protected $user = null;
     protected $application_env; // development
     
     public $helpers = [
@@ -69,8 +68,6 @@ class AppController extends Controller
                         'skipAuthorization' => ['login']
                     ]); // definito come middleware in src/Application.php
         
-        $this->loadComponent('Auths'); // custom component
-
         /*
          * gestione float nella serializzazione json
          * se no gli importi divengono 10.00000000000000
@@ -86,31 +83,7 @@ class AppController extends Controller
         parent::beforeFilter($event); 
 
         $prefix = $this->request->getParam('prefix');
-        if(!empty($prefix) &&
-            $prefix!='api') // non autentico per token
-        {
-            $result = $this->Authentication->getResult();
-            // debug($result); 
-            if ($result->isValid()) {
-                $this->user = $this->Authentication->getIdentity();
-                // debug($identity);
-                /* 
-                 * roles
-                 */
-                $isRoot = $this->Auths->isRoot($this->user);
-                $isManager = $this->Auths->isManager($this->user);
-                $isCassiere = $this->Auths->isCassiere($this->user);
-                $isSuperReferente = $this->Auths->isSuperReferente($this->user);
-                $isReferentGeneric = $this->Auths->isReferentGeneric($this->user);
-                
-                $this->set(compact('isRoot', 'isManager', 'isCassiere', 'isSuperReferente', 'isReferentGeneric'));
-            }
-            else {
-                debug($result->getStatus());
-                debug($result->getErrors());
-                // exit;
-            } 
-        } // end if($prefix!='admin/api') 
+        // debug($this->prefix);
     }
     
     public function beforeRender(Event $event)

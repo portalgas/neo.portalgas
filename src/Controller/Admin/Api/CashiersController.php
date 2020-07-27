@@ -37,7 +37,7 @@ class CashiersController extends ApiAppController
             
             $options =  [];
             $options['where'] = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
-            $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
+            $userResults = $this->Cart->getUsersByDelivery($this->Authentication->getIdentity(), $delivery_id, $options, $debug);
 
             if(!empty($userResults)) {
             
@@ -48,9 +48,9 @@ class CashiersController extends ApiAppController
                      * associo dettaglio acquisto per user (SummaryOrders)
                      */
                     $options =  [];
-                    $options['where'] = $this->SummaryOrder->getConditionIsNotSaldato($this->user);
+                    $options['where'] = $this->SummaryOrder->getConditionIsNotSaldato($this->Authentication->getIdentity());
                     $options['where'] += ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
-                    $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);
+                    $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->Authentication->getIdentity(), $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);
                     if(empty($summaryOrderResults) || $summaryOrderResults->count()==0) {
                         /*
                          * gasista ha gia' saldato
@@ -63,14 +63,14 @@ class CashiersController extends ApiAppController
                         /*
                          * somma degli importi di SummaryOrder.importo (SummaryDelivery)
                          */
-                        $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
+                        $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->Authentication->getIdentity(), $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
 
                         $results[$i]['summary_delivery'] = $summaryDeliveryResults;
 
                         /*
                          * associo la cassa
                          */
-                        $cashResults = $cashesTable->getByUser($this->user, $userResult->organization_id, $userResult->id, $options, $debug);
+                        $cashResults = $cashesTable->getByUser($this->Authentication->getIdentity(), $userResult->organization_id, $userResult->id, $options, $debug);
                         $results[$i]['cash'] = $cashResults;
 
                         /*
@@ -90,7 +90,7 @@ class CashiersController extends ApiAppController
                             $cash_importo = 0;
                         $importo_da_pagare = ($tot_importo - $tot_importo_pagato);
                         // debug('tot_importo '.$tot_importo.' tot_importo_pagato '.$tot_importo_pagato.' importo_da_pagare '.$importo_da_pagare.' cash_importo '.$cash_importo);
-                        $importo_new = $cashesTable->getNewImport($this->user, $importo_da_pagare, $cash_importo, $debug);
+                        $importo_new = $cashesTable->getNewImport($this->Authentication->getIdentity(), $importo_da_pagare, $cash_importo, $debug);
                         // debug('importo_new '.$importo_new);
                                   
                         $results[$i]['cash_importo_new'] = $importo_new;

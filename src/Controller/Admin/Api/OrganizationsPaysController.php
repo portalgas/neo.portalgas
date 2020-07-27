@@ -43,7 +43,7 @@ class OrganizationsPaysController extends ApiAppController
         /* 
          * ctrl se esiste il doc da scaricare
          */ 
-        $doc_path = $this->OrganizationsPay->getDocPath($this->user, $organizations_pay, $debug);
+        $doc_path = $this->OrganizationsPay->getDocPath($this->Authentication->getIdentity(), $organizations_pay, $debug);
         if($debug) debug($doc_path);
         if(empty($doc_path)) {
             $results['code'] = 200;
@@ -54,7 +54,7 @@ class OrganizationsPaysController extends ApiAppController
 
             $data = [];
             $data['hasMsg'] = $value; 
-            $data['msgText'] = $this->_createMsgText($this->user, $organizations_pay, $debug);
+            $data['msgText'] = $this->_createMsgText($this->Authentication->getIdentity(), $organizations_pay, $debug);
             if($debug) debug($data);
            
             $organizationsTable = TableRegistry::get('Organizations');

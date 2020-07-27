@@ -31,13 +31,13 @@ class CashesController extends AppController
      */
     public function supplierOrganizationFilter()
     {     
-        if(!$this->Auths->isManager($this->user) || $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
+        if(!$this->Authentication->getIdentity()->acl['isManager'] || $this->Authentication->getIdentity()->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }   
 
         $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
-        $results = $supplierOrganizationCashExcludedsTable->gets($this->user);
+        $results = $supplierOrganizationCashExcludedsTable->gets($this->Authentication->getIdentity());
 
         $this->set(compact('results'));
     }
@@ -49,7 +49,7 @@ class CashesController extends AppController
      */
     public function index()
     {
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -71,7 +71,7 @@ class CashesController extends AppController
      */
     public function view($id = null)
     {
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -91,7 +91,7 @@ class CashesController extends AppController
      */
     public function add()
     {
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -121,7 +121,7 @@ class CashesController extends AppController
      */
     public function edit($id = null)
     {
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -153,7 +153,7 @@ class CashesController extends AppController
      */
     public function delete($id = null)
     {
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }

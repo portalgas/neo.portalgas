@@ -40,7 +40,7 @@ class PriceTypesController extends ApiAppController
 
             $priceTypesTable = TableRegistry::get('PriceTypes'); 
 
-            $where = ['PriceTypes.organization_id' => $this->user->organization->id,
+            $where = ['PriceTypes.organization_id' => $this->Authentication->getIdentity()->organization->id,
                       'PriceTypes.order_id' => $order_id];    
             if($debug) debug($where);
 

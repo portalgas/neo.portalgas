@@ -265,7 +265,8 @@ class QueueJsonComponent extends QueueComponent {
                 }
             break;
             case 'PARAMETER-EXT':
-                $data = $request[$value];
+                if(isset($request[$value]))
+                    $data = $request[$value];
             break;
             case 'DEFAULT':
                 $data = $value_json;

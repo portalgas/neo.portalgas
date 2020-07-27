@@ -39,7 +39,7 @@ class SuppliersOrganizationsController extends ApiAppController
         
         $ordersTable = TableRegistry::get('Orders');
 
-        $where = ['Orders.organization_id' => $this->user->organization->id,
+        $where = ['Orders.organization_id' => $this->Authentication->getIdentity()->organization->id,
                   'Orders.id' => $order_id];
         $ordersResults = $ordersTable->find()->where($where)->first();  
 
@@ -49,10 +49,10 @@ class SuppliersOrganizationsController extends ApiAppController
              */ 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
-            $where = ['SuppliersOrganizations.organization_id' => $this->user->organization->id,
+            $where = ['SuppliersOrganizations.organization_id' => $this->Authentication->getIdentity()->organization->id,
                       'SuppliersOrganizations.id' => $ordersResults->supplier_organization_id];
 
-            $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->user, $where);
+            $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->Authentication->getIdentity(), $where);
             if(!empty($suppliersOrganizationResults)) {
                 $suppliersOrganizationResults->order = $ordersResults;
                 $results['results'] = $suppliersOrganizationResults;
@@ -80,10 +80,10 @@ class SuppliersOrganizationsController extends ApiAppController
         
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
-        $where = ['SuppliersOrganizations.organization_id' => $this->user->organization->id,
+        $where = ['SuppliersOrganizations.organization_id' => $this->Authentication->getIdentity()->organization->id,
                   'SuppliersOrganizations.id' => $supplier_organization_id];
 
-        $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->user, $where);
+        $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->Authentication->getIdentity(), $where);
         if(!empty($suppliersOrganizationResults)) {
             $results['results'] = $suppliersOrganizationResults;
         }

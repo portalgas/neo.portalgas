@@ -43,7 +43,7 @@ class OrdersPactPreTable extends OrdersPactTable implements OrderTableInterface
     }
 
     /*
-     * ovveride
+     * implement
      */ 
     public function getDeliveries($user, $pact_id=0, $debug=false) {
         

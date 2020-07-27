@@ -32,14 +32,14 @@ class OrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
 
     public function form() {
-        $order = new OrderForm($this->user);
+        $order = new OrderForm($this->Authentication->getIdentity());
         if ($this->request->is('post')) {
 
             $isValid = $order->validate($this->request->getData());
@@ -62,7 +62,7 @@ class OrdersController extends AppController
 
             $suppliersOrganizationTable = TableRegistry::get('SuppliersOrganizations');
 
-            $supplier_organizations = $suppliersOrganizationTable->gets($this->user);
+            $supplier_organizations = $suppliersOrganizationTable->gets($this->Authentication->getIdentity());
             $supplier_organizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);        
             $this->set('supplier_organizations', $supplier_organizations);
         }
@@ -102,7 +102,7 @@ class OrdersController extends AppController
         $order_type_id = Configure::read('Order.type.pact'); ;
         $order_type_id = Configure::read('Order.type.gas');
         debug($order_type_id);
-        $ordersTable = $this->Orders->factory($order_type_id);
+        $ordersTable = $this->Orders->factory($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_type_id);
 
         $ordersTable->addBehavior('Orders');
         // debug($ordersTable);
@@ -122,7 +122,7 @@ class OrdersController extends AppController
                 /*
                  * se in errore recupero i valori dei priceType inseriti dall'utente
                  */ 
-                $json_price_types = $this->PriceType->jsonToRequest($this->user, $this->request->getData());     
+                $json_price_types = $this->PriceType->jsonToRequest($this->Authentication->getIdentity(), $this->request->getData());     
                 // debug($json_price_types);  
                 // debug($order); 
                 $this->Flash->error($order->getErrors());
@@ -134,8 +134,8 @@ class OrdersController extends AppController
             }
         }
         
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->user);
-        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->user, $suppliersOrganizations);
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->Authentication->getIdentity());
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->Authentication->getIdentity(), $suppliersOrganizations);
         // debug($suppliersOrganizations);
         if(empty($suppliersOrganizations)) {
             $this->Flash->error(__('no suppliersOrganizations'));
@@ -143,7 +143,7 @@ class OrdersController extends AppController
         else {
 
         }
-        $deliveries = $ordersTable->getDeliveries($this->user);
+        $deliveries = $ordersTable->getDeliveries($this->Authentication->getIdentity());
 
         $priceTypesTable = TableRegistry::get('PriceTypes');
         $this->set('price_type_enums', $priceTypesTable->enum('type'));
@@ -184,7 +184,7 @@ class OrdersController extends AppController
          * $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
          * perche' doppia key
          */ 
-        $deliveries = $ordersTable->getDeliveries($this->user);
+        $deliveries = $ordersTable->getDeliveries($this->Authentication->getIdentity());
 
         $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = []; //  $this->Orders->DesOrders->find('list', ['limit' => 200]);

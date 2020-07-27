@@ -4,27 +4,10 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
-/**
- * ArticlesOrders Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $ArticleOrganizations
- * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\BelongsTo $Articles
- *
- * @method \App\Model\Entity\ArticlesOrder get($primaryKey, $options = [])
- * @method \App\Model\Entity\ArticlesOrder newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\ArticlesOrder[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\ArticlesOrder|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ArticlesOrder saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ArticlesOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\ArticlesOrder[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\ArticlesOrder findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class ArticlesOrdersTable extends Table
 {
     /**
@@ -148,4 +131,47 @@ class ArticlesOrdersTable extends Table
 
         return $rules;
     }
+
+    public function factory($user, $organization_id, $order_id) {
+
+        $table_registry = '';
+
+        $ordersTable = TableRegistry::get('Orders');
+
+        $where = ['Orders.organization_id' => $organization_id,
+                  'Orders.id' => $order_id];
+
+        $results = $ordersTable->find()
+                                ->where($where)
+                                ->first();
+        $order_type_id = $results->order_type_id;
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        
+
+        switch (strtoupper($order_type_id)) {
+            case Configure::read('Order.type.des-titolare'):
+            case Configure::read('Order.type.des'):
+                $table_registry = 'ArticlesOrdersDes';
+                break;
+            case Configure::read('Order.type.gas'):
+                $table_registry = 'ArticlesOrdersGas';
+                break;
+            case Configure::read('Order.type.promotion'):
+                $table_registry = 'ArticlesOrdersPromotion';
+                break;
+            case Configure::read('Order.type.pact-pre'):
+                $table_registry = 'ArticlesOrdersPactPre';
+                break;
+            case Configure::read('Order.type.pact'):
+                $table_registry = 'ArticlesOrdersPact';
+                break;
+            
+            default:
+                die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
+                break;
+        }
+
+        return TableRegistry::get($table_registry);
+    }     
 }

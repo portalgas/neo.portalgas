@@ -70,7 +70,7 @@ var http = axios.create({
     headers: headers
 });
 
-$(document).ready(function(){
+$(document).ready(function() {
 
     var a = $('a[href="<?php echo $this->Url->build() ?>"]');
     if (!a.parent().hasClass('treeview') && !a.parent().parent().hasClass('pagination')) {

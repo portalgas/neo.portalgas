@@ -9,6 +9,39 @@ use ArrayObject;
 
 trait SqlTrait
 {
+    public function getSqlInsert(EntityInterface $entity, $schema, $options = []) {
+        
+        $sql_fields = '';
+        $sql_values = '';
+        $sep ='';
+        // debug($schema->columns());
+
+        foreach($schema->columns() as $field) {
+            if(isset($entity->{$field})) {
+
+                $meta_data = $schema->column($field);
+
+                $sql_fields .= $sep.'['.$field.']';
+            
+                switch (strtolower($meta_data['type'])) {
+                     case 'string':
+                         $value = "'".$entity->{$field}."'";
+                         break;
+                     
+                     default:
+                         $value = $entity->{$field};
+                         break;
+                } 
+                $sql_values .= $sep.$value;
+                $sep = ',';
+            } // if(isset($entity->{$field}))
+        } // foreach($schema->columns() as $field)
+
+        $sql = 'insert into [Articoli] ('.$sql_fields.') values ('.$sql_values.')';
+        // debug($sql); 
+        return $sql;
+    }
+        
     public function getSort($model, $where=[]) {
 
         if(is_string($model))

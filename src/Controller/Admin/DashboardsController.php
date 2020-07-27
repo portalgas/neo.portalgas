@@ -18,7 +18,6 @@ class DashboardsController extends AppController
         parent::beforeFilter($event);
     }    
 
-    public function index()
-    {                  
+    public function index() { 
     }
 }

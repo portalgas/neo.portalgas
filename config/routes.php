@@ -84,7 +84,13 @@ Router::scope('/', function (RouteBuilder $routes) {
     else {
         $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
         $routes->connect('/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
-        $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);        
+        $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']); 
+
+        /*
+         * mapping route gestiti da cakephp e non da vue
+         */ 
+        $routes->connect('/users/login', ['controller' => 'Users', 'action' => 'login']);  
+        $routes->connect('/users/logout', ['controller' => 'Users', 'action' => 'logout']);
     }
     
     /**
@@ -127,7 +133,8 @@ Router::scope('/', function (RouteBuilder $routes) {
  * });
  * ```
  */
- 
+
+
 /*
  * in App\Controller\AppController::isAuthorized gestisco i prefix / Application.php CsrfProtectionMiddleware
  */ 
@@ -137,7 +144,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
     /*
      * token da portalgas cakephp 2.x
      */ 
-    $routes->scope('/token', ['controller' => 'Tokens'], function (RouteBuilder $routes) {
+    $routes->scope('/joomla25Salt', ['controller' => 'joomla25Salts'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'GET']);
     }); 
 
@@ -152,6 +159,9 @@ Router::prefix('api', function (RouteBuilder $routes) {
     /*
      * tmp per ecommerce vue
      */
+    $routes->scope('/articles-orders', ['controller' => 'ArticlesOrders'], function (RouteBuilder $routes) {
+        $routes->connect('/getsByOrder', ['action' => 'getsByOrder', '_method' => 'POST']);
+    });     
     $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets']);
     });
@@ -183,7 +193,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
 
         $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
             $routes->connect('/getByDelivery', ['action' => 'getByDelivery', '_method' => 'POST']);
-        });
+        });       
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/getUsersByDelivery', ['action' => 'getUsersByDelivery', '_method' => 'POST']);
             $routes->connect('/getUsersCashByDelivery', ['action' => 'getUsersCashByDelivery', '_method' => 'POST']);

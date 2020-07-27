@@ -6,21 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * JUserUsergroupMap Model
- *
- * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\GroupsTable&\Cake\ORM\Association\BelongsTo $Groups
- *
- * @method \App\Model\Entity\JUserUsergroupMap get($primaryKey, $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\JUserUsergroupMap findOrCreate($search, callable $callback = null, $options = [])
- */
 class UserUsergroupMapTable extends Table
 {
     /**

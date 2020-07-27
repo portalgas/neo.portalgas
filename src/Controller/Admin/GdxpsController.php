@@ -19,12 +19,13 @@ class GdxpsController extends AppController
      
         parent::beforeFilter($event);
 
-        // if(!$this->Auths->isSuperReferente($this->user) || !$this->Auths->isReferentGeneric($this->user)) {
+        // if(!$this->Authentication->getIdentity()->acl['isSuperReferente'] || !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
         $continua = false;
 
-        if($this->Auths->isRoot($this->user))
+        if($this->Authentication->getIdentity()->acl['isRoot'])
             $continua = true;
-        elseif($this->Auths->isSuperReferente($this->user) && $this->user->organization->paramsConfig['hasArticlesGdxp']=='Y')
+        else
+        if($this->Authentication->getIdentity()->acl['isSuperReferente'] && $this->Authentication->getIdentity()->organization->paramsConfig['hasArticlesGdxp']=='Y')
             $continua = true;
 
         if(!$continua )
@@ -60,21 +61,21 @@ class GdxpsController extends AppController
 
         $articles = [];
         $supplier_organization_id = 0;
-        $acl_supplier_organizations = $this->Auths->getAclSupplierOrganizationsList($this->user);
+        $acl_supplier_organizations = $this->Auths->getAclSupplierOrganizationsList($this->Authentication->getIdentity());
 
         if ($this->request->is('post')) {
 
             $supplier_organization_id = $this->request->getData('supplier_organization_id');
 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            $supplier_organization = $suppliersOrganizationsTable->get($supplier_organization_id, ['contain' => ['Suppliers']]);
+            $supplier_organization = $suppliersOrganizationsTable->get($this->Authentication->getIdentity(), ['SuppliersOrganizations.id' => $supplier_organization_id]);
             $this->set(compact('supplier_organization'));
 
             /*
              * ricerco chi gestisce il listino articoli del produttore del GAS
              */
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            $ownArticles = $suppliersOrganizationsTable->getOwnArticles($this->user, $this->user->organization->id, $supplier_organization_id, $debug);
+            $ownArticles = $suppliersOrganizationsTable->getOwnArticles($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id, $debug);
 
             $articlesTable = TableRegistry::get('Articles');
 
@@ -82,7 +83,7 @@ class GdxpsController extends AppController
                       'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
                       'Articles.stato' => 'Y'];
 
-            $articles = $articlesTable->gets($this->user, $where);
+            $articles = $articlesTable->gets($this->Authentication->getIdentity(), $where);
             // debug($articles);
         } // end if ($this->request->is('post')) {
 

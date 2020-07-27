@@ -21,7 +21,7 @@ class CashiersController extends AppController
      
         parent::beforeFilter($event);
 
-        if(!$this->Auths->isCassiere($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isCassiere']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }        
@@ -54,7 +54,7 @@ class CashiersController extends AppController
 
                 $options =  [];
                 $options['where'] = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
-                $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
+                $userResults = $this->Cart->getUsersByDelivery($this->Authentication->getIdentity(), $delivery_id, $options, $debug);
 
                 if(!empty($userResults)) {
 
@@ -65,7 +65,7 @@ class CashiersController extends AppController
                         /*
                          * dettaglio acquisto per user (SummaryOrders)
                          */
-                        $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);     
+                        $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->Authentication->getIdentity(), $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);     
 
                         /*
                          * per ogni ordine/user saldo il pagamento
@@ -75,7 +75,7 @@ class CashiersController extends AppController
                              * somma degli importi di SummaryOrder.importo (SummaryDelivery)
                              * lo faccio prina di salvare summaryOrders se no importo_pagato = importo
                              */
-                            $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
+                            $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->Authentication->getIdentity(), $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
                             // debug($summaryDeliveryResults);                            
 
                             foreach($summaryOrderResults as $summaryOrderResult) {
@@ -124,7 +124,7 @@ class CashiersController extends AppController
                             $data['user_id'] = $userResult->id;
                             $data['importo_da_pagare'] = $importo_da_pagare;
                             $data['nota'] = $nota;
-                            $cashesTable->insert($this->user, $data, $debug);
+                            $cashesTable->insert($this->Authentication->getIdentity(), $data, $debug);
                                           
                        } // end if($is_cash==1)             
                     } // end foreach($userResults as $numResult => $userResult)
@@ -136,9 +136,9 @@ class CashiersController extends AppController
                 // debug($order_ids);
                 if(!empty($order_ids))
                 foreach($order_ids as $order_id) {
-                    $state_code_next = $this->OrderLifeCycle->stateCodeAfter($this->user, $order_id, 'PROCESSED-ON-DELIVERY', $debug);
+                    $state_code_next = $this->OrderLifeCycle->stateCodeAfter($this->Authentication->getIdentity(), $order_id, 'PROCESSED-ON-DELIVERY', $debug);
                     
-                    $this->OrderLifeCycle->stateCodeUpdate($this->user, $order_id, $state_code_next, [], $debug);
+                    $this->OrderLifeCycle->stateCodeUpdate($this->Authentication->getIdentity(), $order_id, $state_code_next, [], $debug);
                 } // foreach($order_ids as $order_id)
 
             } // end if(!empty($delivery_id))
@@ -146,7 +146,7 @@ class CashiersController extends AppController
             $delivery_id = '';
         } // if ($this->request->is('post'))
 
-        $deliveries = $this->Cashier->getListDeliveries($this->user);
+        $deliveries = $this->Cashier->getListDeliveries($this->Authentication->getIdentity());
         
         $is_cashs = [1 => __('Si'), 0 => __('No')];
         $is_cash_default = 1;

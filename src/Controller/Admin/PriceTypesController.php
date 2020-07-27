@@ -25,7 +25,7 @@ class PriceTypesController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -75,7 +75,7 @@ class PriceTypesController extends AppController
         if ($this->request->is('post')) {
 
             $data = $this->request->getData();
-            $data['organization_id'] = $this->user->organization->id;
+            $data['organization_id'] = $this->Authentication->getIdentity()->organization->id;
             $priceType = $this->PriceTypes->patchEntity($priceType, $data);
             if ($this->PriceTypes->save($priceType)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Price Type'));
@@ -106,7 +106,7 @@ class PriceTypesController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
-            $data['organization_id'] = $this->user->organization->id; 
+            $data['organization_id'] = $this->Authentication->getIdentity()->organization->id; 
             $priceType = $this->PriceTypes->patchEntity($priceType, $data);
             if ($this->PriceTypes->save($priceType)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Price Type'));

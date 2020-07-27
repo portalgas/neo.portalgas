@@ -61,14 +61,14 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
     }
 
     /*
-     * ovveride
+     * implement
      */ 
     public function getSuppliersOrganizations($user, $prod_gas_promotion_id=0, $debug=false) {
         
     } 
 
     /*
-     * ovveride
+     * implement
      */ 
     public function getDeliveries($user, $prod_gas_promotion_id=0, $debug=false) {
 

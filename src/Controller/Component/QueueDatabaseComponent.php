@@ -113,7 +113,7 @@ class QueueDatabaseComponent extends QueueComponent {
 
             if(empty($masterEntitys)) {
 
-                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $master_column);
+                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $master_column, [], $request);
                 
                 $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default);
 
@@ -136,7 +136,7 @@ class QueueDatabaseComponent extends QueueComponent {
             else 
             foreach($masterEntitys as $masterEntity) {
 
-                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $master_column, $masterEntity);
+                $datas[$numResults][$slave_column] = $this->_convertingValue($mapping, $value, $master_column, $masterEntity, $request);
 
                 $datas[$numResults][$slave_column] = $this->_defaultValue($datas[$numResults][$slave_column], $mapping->is_required, $mapping->value_default);
 
@@ -181,7 +181,7 @@ class QueueDatabaseComponent extends QueueComponent {
     /*
      * conversione al nuovo valore
      */
-    private function _convertingValue($mapping, $value, $master_column, $masterEntity=[]) {
+    private function _convertingValue($mapping, $value, $master_column, $masterEntity=[], $request) {
 
         $mapping_type_code = $mapping->mapping_type->code;
 
@@ -212,7 +212,8 @@ class QueueDatabaseComponent extends QueueComponent {
                 }
             break;
             case 'PARAMETER-EXT':
-                $data = $this->controller->request->getData($value);
+                if(isset($request[$value]))
+                    $data = $request[$value];
             break;
             case 'DEFAULT':
                 if(!empty($masterEntity)) {

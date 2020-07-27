@@ -15,7 +15,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
     </a>
   </li>
   <?php
-  if($isRoot) {
+  if($this->Identity->get()->acl['isRoot']) {
   ?> 
   <li class="treeview"> 
     <a href="#">
@@ -125,11 +125,11 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
     </ul>
   </li>
   <?php
-  } // if($isRoot)
+  } // if($this->Identity->get()->acl['isRoot'])
 
-  // if($isSuperReferente || $isReferentGeneric) {
-  if($isRoot || 
-    ($isSuperReferente && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
+  // if($this->Identity->get()->acl['isSuperReferente']) || $this->Identity->get()->acl['isReferentGeneric'])) {
+  if($this->Identity->get()->acl['isRoot'] || 
+    ($this->Identity->get()->acl['isSuperReferente'] && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
   ?>
   <li class="treeview"> 
     <a href="#">
@@ -163,7 +163,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   <?php
   }
 
-  if($isManager) {
+  if($this->Identity->get()->acl['isManager']) {
   ?>
   <li class="treeview"> 
     <a href="#">
@@ -185,7 +185,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   <?php
   }
 
-  if($isCassiere) {
+  if($this->Identity->get()->acl['isCassiere']) {
   ?>
   <li class="treeview"> 
     <a href="#">

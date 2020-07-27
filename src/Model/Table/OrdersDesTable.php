@@ -64,14 +64,14 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
     }
 
     /*
-     * ovveride
+     * implement
      */ 
     public function getSuppliersOrganizations($user, $des_order_id=0, $debug=false) {
 
     }
     
     /*
-     * ovveride
+     * implement
      */ 
     public function getDeliveries($user, $des_order_id=0, $debug=false) {
 

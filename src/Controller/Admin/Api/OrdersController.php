@@ -32,7 +32,7 @@ class OrdersController extends ApiAppController
 
         $ordersTable = TableRegistry::get('Orders');
 
-        $where = ['Orders.organization_id' => $this->user->organization->id,
+        $where = ['Orders.organization_id' => $this->Authentication->getIdentity()->organization->id,
                   'Orders.delivery_id' => $delivery_id];
         if(!empty($orders_state_code))
             $where += ['Orders.state_code' => $orders_state_code];

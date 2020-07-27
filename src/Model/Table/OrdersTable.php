@@ -321,7 +321,7 @@ class OrdersTable extends Table
         return $rules;
     }
 
-    public function factory($order_type_id) {
+    public function factory($user, $organization_id, $order_type_id) {
 
         $table_registry = '';
 

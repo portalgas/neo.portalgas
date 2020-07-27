@@ -25,7 +25,7 @@ class CashesController extends ApiAppController
      */
     public function cashExcludedUpdate() {
 
-        if(!$this->Auths->isManager($this->user) || $this->user->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
+        if(!$this->Authentication->getIdentity()->acl['isManager'] || $this->Authentication->getIdentity()->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -38,7 +38,7 @@ class CashesController extends ApiAppController
         $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
 
         $where = ['SupplierOrganizationCashExcludeds.supplier_organization_id' => $supplier_organization_id,
-                  'SupplierOrganizationCashExcludeds.organization_id' => $this->user->organization->id];
+                  'SupplierOrganizationCashExcludeds.organization_id' => $this->Authentication->getIdentity()->organization->id];
         $supplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->find()
                                                 ->where($where)
                                                 ->first();
@@ -47,7 +47,7 @@ class CashesController extends ApiAppController
 			 * insert
 			 */
         	$data = [];
-        	$data['organization_id'] = $this->user->organization->id;
+        	$data['organization_id'] = $this->Authentication->getIdentity()->organization->id;
         	$data['supplier_organization_id'] = $supplier_organization_id;
 
 	        $supplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->newEntity();

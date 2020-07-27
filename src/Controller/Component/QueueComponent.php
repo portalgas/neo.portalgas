@@ -256,6 +256,7 @@ class QueueComponent extends Component {
                 // rif table slave
                 $tables[$queue_table->table->id] = $queue_table->table;
                 $tables[$queue_table->table->id]['before_save'] = $queue_table->before_save;
+                $tables[$queue_table->table->id]['after_save'] = $queue_table->after_save;
             }
         }
 
@@ -311,50 +312,52 @@ class QueueComponent extends Component {
         $slave_namespace = $queue->slave_scope->namespace;
         $slave_entity = ucfirst($table->entity);
 
-
         /*
-         * beforeSave
+         * slave
          */
-        if(!empty($table->before_save)) {
-            $results = $this->_registry->{$this->component}->{$table->before_save}($datas, $organization_id);
-            // debug($results);
-            $this->_registry->QueueLog->logging($uuid, $queue, $results['msg'], $results['results'], 'INFO');
+        //$this->loadModel(sprintf('App\Model\Table\%s\%sTable', $slave_namespace, $slave_entity));
+        // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'INSERT table slave ['.$slave_entity.'] in '.$slave_namespace);
+        $queueTable = TableRegistry::get('Queues');            
+        $datasource_slave = $queueTable->getDataSourceSlave($queue);
+        $namespace_table_slave = $queueTable->getNamespaceTableSlave($queue, $slave_entity);
 
-            $esito = $results['esito'];
-            $action = $results['action'];
+        $tableRegistry = TableRegistry::get($namespace_table_slave);
+        $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
+        $conn = $tableRegistry->getConnection($datasource_slave);
 
-            /*
-             * salvo l'id del record dovresse servire per la tabella successiva 
-             * per la gestione INNER_TABLE_PARENT (Eredita da tabella)               
-             */
-            if(isset($results['results']) && isset($results['results']->id))
-                $this->last_insert_ids[$table->id] = $results['results']->id;
-
-            if(!$action) {
-                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
-            }
-            else
-                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return true => insert ', $results);            
-        }
-
-        if($esito && $action) {
+        foreach($datas as $data) {
+           
+            if($debug) debug($data);
 
             /*
-             * slave
+             * beforeSave ini
              */
-            //$this->loadModel(sprintf('App\Model\Table\%s\%sTable', $slave_namespace, $slave_entity));
-            // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'INSERT table slave ['.$slave_entity.'] in '.$slave_namespace);
-            $queueTable = TableRegistry::get('Queues');            
-            $datasource_slave = $queueTable->getDataSourceSlave($queue);
+            if(!empty($table->before_save)) {
+                $results = $this->_registry->{$this->component}->{$table->before_save}($data, $organization_id);
+                // debug($results);
+                $this->_registry->QueueLog->logging($uuid, $queue, $results['msg'], $results['results'], 'INFO');
 
-            $tableRegistry = TableRegistry::get($slave_entity);
-            $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
-            $conn = $tableRegistry->getConnection($datasource_slave);
-            $conn->begin();            
-            
-            foreach($datas as $data) {
+                $esito = $results['esito'];
+                $action = $results['action'];
                 
-                 if($debug) debug($data);
+                /*
+                 * salvo l'id del record dovresse servire per la tabella successiva 
+                 * per la gestione INNER_TABLE_PARENT (Eredita da tabella)               
+                 */
+                if(isset($results['results']) && isset($results['results']->id))
+                    $this->last_insert_ids[$table->id] = $results['results']->id;
+
+                if(!$action) {
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
+                }
+                else
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return true => insert ', $results);
+            }
+            /*
+             * beforeSave end
+             */
+
+            if($esito && $action) {
 
                 // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
 
@@ -385,7 +388,6 @@ class QueueComponent extends Component {
                     } 
                 } // if(!empty($table->update_key))
 
-                // $slaveEntity = $this->{$slave_entity}->newEntity();
                 if($insert)
                     $slaveEntity = $tableRegistry->newEntity();
                
@@ -397,10 +399,6 @@ class QueueComponent extends Component {
                 // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
                 $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
                  
-                                                                                                       
-
-                                                                    
-                                       
                 $this->_registry->QueueLog->logging($uuid, $queue, 'slaveEntity '.$slave_entity, $slaveEntity);
 
                 // if ($this->{$slave_entity}->save($slaveEntity)) {
@@ -408,7 +406,7 @@ class QueueComponent extends Component {
                 if(!$this->debug) {
 
                         $conn->begin();
-                        
+
                         $resultSave = $tableRegistry->save($slaveEntity);
                         if ($resultSave) {
 
@@ -417,7 +415,7 @@ class QueueComponent extends Component {
                             $esito = true;
 
                             /*
-                             * salvo l'id del record dovresse servire per la tabella successiva 
+                             * salvo l'id del record dovresse servire per la tabella successiva                             
                              * per la gestione INNER_TABLE_PARENT (Eredita da tabella)
                              */
                             $primary_key = $tableRegistry->getPrimaryKey();
@@ -444,6 +442,9 @@ class QueueComponent extends Component {
                                 }
 
                             } // end if(!empty($table->after_save))
+                            /*
+                             * afterSave
+                             */
 
                             if($esito) {
                                 $esito = true;
@@ -451,10 +452,10 @@ class QueueComponent extends Component {
                                 $uuid = $uuid;
                                 $msg = '';
                                 $results = [];                                
-                            } 
+                            }                             
                         }
                         else {
-
+                            
                             $conn->rollback();
 
                             $this->_registry->QueueLog->logging($uuid, $queue, 'Save', $slaveEntity->getErrors(), 'ERROR');
@@ -469,24 +470,19 @@ class QueueComponent extends Component {
                             $results['error'] = $slaveEntity->getErrors();
                             break;
                         }
-                } // if(!$this->debug)   
+                } // if(!$this->debug) 
                 else {
                     $esito = true;
                     $code = 200;
                     $uuid = $uuid;
                     $msg = 'Modalita DEBUG';
                     $results = $slaveEntity;                    
-                }                              
-            } // end foreach($datas as $data)  
+                }
+           
+           } // end if($esito && $action)
 
-        } // end if($esito)
-        else {
-            $esito = $results['esito'];
-            $code = $results['code'];
-            $uuid = $uuid;
-            $msg = $results['msg'];
-            $results = [];
-        }
+        } // end foreach($datas as $data)  
+
 
         $results = ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];
 

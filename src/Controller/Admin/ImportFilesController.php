@@ -22,7 +22,7 @@ class ImportFilesController extends AppController
      
         parent::beforeFilter($event);
 
-        if(!$this->Auths->isSuperReferente($this->user) || !$this->Auths->isReferentGeneric($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isSuperReferente'] || !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }        

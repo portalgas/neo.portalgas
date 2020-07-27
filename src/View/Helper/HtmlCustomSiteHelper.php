@@ -27,17 +27,26 @@ class HtmlCustomSiteHelper extends FormHelper
               $results = date('Y-m-d H:i:s');
             break;
             case 'FUNCTION':
-                $results = '<b>Function</b> '.$mapping->value;
+                if(!empty($mapping->master_json_xpath))
+                    $results .= 'Da <b>json</b> '.$mapping->master_json_xpath.' => ';
+                else            
+                if(!empty($mapping->master_xml_xpath))
+                    $results .= 'Da <b>xml</b> '.$mapping->master_xml_xpath.' => ';
+                else         
+                if(!empty($mapping->master_csv_num_col))
+                    $results .= 'Da <b>col</b> '.$mapping->master_csv_num_col.' => ';
+
+                $results .= '<b>Function</b> '.$mapping->value;
             break;
             case 'DEFAULT':
                 if(!empty($mapping->master_json_xpath))
-                    $results = $mapping->master_json_xpath;
+                    $results = '<b>json</b> '.$mapping->master_json_xpath;
                 else
                 if(!empty($mapping->master_xml_xpath))
-                    $results = $mapping->master_xml_xpath;
+                    $results = '<b>xml</b> '.$mapping->master_xml_xpath;
                 else
                 if(!empty($mapping->master_csv_num_col))
-                    $results = 'col '.$mapping->master_csv_num_col;
+                    $results = '<b>col</b> '.$mapping->master_csv_num_col;
                 else                    
                     $results = $mapping->value;
             break;

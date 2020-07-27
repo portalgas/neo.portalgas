@@ -31,13 +31,13 @@ class GdxpExportsController extends AppController
 
         $gdxp = $this->_getHeader(); 
 
-        $subject = ['subject' => $this->_getOrganization($this->user->organization)];
+        $subject = ['subject' => $this->_getOrganization($this->Authentication->getIdentity()->organization)];
 
         $blocks =[]; 
-        $supplier = $this->_getSupplier($this->user, $this->user->organization->id, $supplier_organization_id); 
+        $supplier = $this->_getSupplier($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id); 
         if(!empty($supplier)) {
             $blocks[0]['supplier'] = $supplier;
-            $blocks[0]['supplier']['products'] = $this->_getArticles($this->user, $this->user->organization->id, $supplier_organization_id); 
+            $blocks[0]['supplier']['products'] = $this->_getArticles($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id); 
 
             $suplier_name = $blocks[0]['supplier']['name'];
         } 

@@ -26,7 +26,7 @@ class OrganizationsPaysController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!$this->Auths->isRoot($this->user)) {
+        if(!$this->Authentication->getIdentity()->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -65,7 +65,7 @@ class OrganizationsPaysController extends AppController
 
             $where = ['organization_id' => $organization->id,
                       'block' => 0];
-            $tot_users = $this->Total->totUsers($this->user, $where, $debug);
+            $tot_users = $this->Total->totUsers($this->Authentication->getIdentity(), $where, $debug);
 
             // fractis
             if($organization->id==37)
@@ -85,13 +85,13 @@ class OrganizationsPaysController extends AppController
             /*
              * totale ordini
              */         
-            $tot_orders = $this->Total->totOrdersByYear($this->user, $organization->id, $year, [], $debug);
+            $tot_orders = $this->Total->totOrdersByYear($this->Authentication->getIdentity(), $organization->id, $year, [], $debug);
             if($debug) debug($organization->name.' tot_orders '.$tot_users);
 
-            $tot_suppliers_organizations = $this->Total->totSuppliersOrganizations($this->user, $organization->id, [], $debug);
+            $tot_suppliers_organizations = $this->Total->totSuppliersOrganizations($this->Authentication->getIdentity(), $organization->id, [], $debug);
             if($debug) debug($organization->name.' tot_suppliers_organizations '.$tot_suppliers_organizations);
 
-            $tot_articles = $this->Total->totArticlesOrganizations($this->user, $organization->id, [], $debug); 
+            $tot_articles = $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $organization->id, [], $debug); 
             if($debug) debug($organization->name.' tot_articles '.$tot_articles);           
 
             /*
@@ -105,7 +105,7 @@ class OrganizationsPaysController extends AppController
             $data['tot_orders'] = $tot_orders;
             $data['tot_suppliers_organizations'] = $tot_suppliers_organizations;
             $data['tot_articles'] = $tot_articles;
-            $data['importo'] = $this->OrganizationsPays->getImporto($this->user, $organization->id, $year, $tot_users, $debug);
+            $data['importo'] = $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $organization->id, $year, $tot_users, $debug);
             $data['import_additional_cost'] = 0;
             
             $data['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
@@ -195,16 +195,16 @@ class OrganizationsPaysController extends AppController
             $where_groups = ['UserUsergroupMap.group_id IN ' => 
                             [Configure::read('group_id_manager'), Configure::read('group_id_referent_tesoriere')]];
             $where = ['Users.organization_id' => $organizationsPay->organization_id];
-            $organizationsPay->lastVisitDate = $this->Total->getLastVisitDateByGroups($this->user, $where_groups, $where, $debug);
+            $organizationsPay->lastVisitDate = $this->Total->getLastVisitDateByGroups($this->Authentication->getIdentity(), $where_groups, $where, $debug);
 
-            $organizationsPay->isSaldato = $this->OrganizationsPays->isSaldato($this->user, $organizationsPay);
+            $organizationsPay->isSaldato = $this->OrganizationsPays->isSaldato($this->Authentication->getIdentity(), $organizationsPay);
 
             /*
              * creazione path documento di pagamento 
              */
-            // debug($this->OrganizationsPay->getDocPath($this->user, $organizationsPay, $debug));
-            if(!empty($this->OrganizationsPay->getDocPath($this->user, $organizationsPay, $debug))) {
-                $organizationsPay->doc_url = $this->OrganizationsPay->getDocUrl($this->user, $organizationsPay, $debug);
+            // debug($this->OrganizationsPay->getDocPath($this->Authentication->getIdentity(), $organizationsPay, $debug));
+            if(!empty($this->OrganizationsPay->getDocPath($this->Authentication->getIdentity(), $organizationsPay, $debug))) {
+                $organizationsPay->doc_url = $this->OrganizationsPay->getDocUrl($this->Authentication->getIdentity(), $organizationsPay, $debug);
             }
             else 
                 $organizationsPay->doc_url = '';

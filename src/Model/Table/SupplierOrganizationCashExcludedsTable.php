@@ -8,23 +8,6 @@ use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
-/**
- * SupplierOrganizationCashExcludeds Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\SupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $SupplierOrganizations
- *
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded get($primaryKey, $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\SupplierOrganizationCashExcluded findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class SupplierOrganizationCashExcludedsTable extends Table
 {
     /**

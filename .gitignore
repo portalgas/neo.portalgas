@@ -1,10 +1,10 @@
 # Custom #
 ##########################
+neo-portalgas.txt
 /_sql/*
 /log/*
 /logs/*
 /src/Command/Sh/*.sh
-neo-portalgas.txt
 
 # CakePHP specific files #
 ##########################
@@ -15,8 +15,13 @@ neo-portalgas.txt
 /tmp/*
 /vendor/*
 /webroot/files/Documents/file_name/*
+
+# vue #
+##########################
 /webroot/vue/*
 /node_modules/* 
+/resources/* 
+npm-debug.log*
 
 # OS generated files #
 ######################

@@ -33,7 +33,7 @@ class CartsController extends ApiAppController
         if(!empty($delivery_id)) {
 
             $options = [];
-            $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
+            $userResults = $this->Cart->getUsersByDelivery($this->Authentication->getIdentity(), $delivery_id, $options, $debug);
 
             if(!empty($userResults)) {
                 /*
@@ -71,7 +71,7 @@ class CartsController extends ApiAppController
             $cashesTable = TableRegistry::get('Cashes');
             
             $options = [];
-            $userResults = $this->Cart->getUsersByDelivery($this->user, $delivery_id, $options, $debug);
+            $userResults = $this->Cart->getUsersByDelivery($this->Authentication->getIdentity(), $delivery_id, $options, $debug);
 
             if(!empty($userResults)) {
                 /*
@@ -84,7 +84,7 @@ class CartsController extends ApiAppController
                     /*
                      * associo la cassa
                      */
-                    $cashResults = $cashesTable->getByUser($this->user, $userResult->user->organization->id, $userResult->user->id, $options, $debug);                    
+                    $cashResults = $cashesTable->getByUser($this->Authentication->getIdentity(), $userResult->user->organization->id, $userResult->user->id, $options, $debug);                    
                     $results[$numResult]['cash'] = $cashResults;
                 }
             } // if(!empty($userResults))

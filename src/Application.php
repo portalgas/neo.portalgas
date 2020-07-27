@@ -35,7 +35,7 @@ use Authorization\Policy\OrmResolver;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-// https://book.cakephp.org/authorization/1.1/en/request-authorization-middleware.html
+// https://book.cakephp.org/authorization/2/en/request-authorization-middleware.html
 use Authorization\Middleware\RequestAuthorizationMiddleware;
 use App\Policy\RequestPolicy;
 use Authorization\Policy\ResolverCollection;
@@ -135,6 +135,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // Token check will be skipped when callback returns `true`.
             $csrf->whitelistCallback(function (ServerRequestInterface $request) {            
                 $prefix = $request->getParam('prefix'); 
+                /* debug($prefix); */
                 if (strtolower($prefix) === 'api') {
                     return true;
                 }
@@ -172,7 +173,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                             ],
                             //'unauthorizedRedirect' => Router::url($portalgas_bo_url_login),
                             'unauthorizedRedirect' => $portalgas_bo_url_login,
-                            // https://book.cakephp.org/authorization/1/en/middleware.html#identity-decorator
+                            // https://book.cakephp.org/authorization/2/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
                                     /*
                                      * $identity dev'essere di tipo object(App\Model\Entity\User)
@@ -190,9 +191,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         return $middlewareQueue;
     }
 
-	/*
-	 * da portalgas::Connects passo user con salt /admin/api/tokens/login?u=user_salt e lo metto in sessione
-	 */
     public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
     {
         $config = Configure::read('Config');
@@ -200,39 +198,48 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 
         $service = new AuthenticationService();
 
-        /*
-         * front-end jwt
-         */    
-        $service->loadIdentifier('Authentication.JwtSubject');
-        $service->loadAuthenticator('Authentication.Jwt', [
-            'loginUrl' => '/api/tokenJwt/login',
-            'returnPayload' => true
-        ]);
-
         $service->setConfig([
-            'unauthenticatedRedirect' => $portalgas_bo_url_login,
+          //  'unauthenticatedRedirect' => $portalgas_bo_url_login,
             'queryParam' => null
         ]);
-
-        $fields = [
-            'username' => 'username',
-            'password' => 'password'
-        ];
-
-        /*
-         * back-office, chiamo /api/token e converto il salt dello user
-         */
+        
         $service->loadAuthenticator('Authentication.Session');
+
+        $service->loadAuthenticator('App\Auth\Joomla25Authenticate');
+
         /*
-         * front-end
+         * https://book.cakephp.org/authentication/2/en/url-checkers.html
+         * loginUrl viene confrontato con Authentication\UrlChecker\UrlCheckerTrait con l'url corrente 
          */
         $service->loadAuthenticator('Authentication.Form', [
-            'fields' => $fields,
-            'loginUrl' => $portalgas_bo_url_login
+            'fields' => [
+                'username' => 'username',
+                'password' => 'password'
+            ]
+            // 'loginUrl' => $portalgas_bo_url_login,
         ]);
 
-        // Load identifiers
-        $service->loadIdentifier('Authentication.Password', compact('fields'));
+        /* 
+         * https://book.cakephp.org/authentication/2/en/password-hashers.html
+         * compatibilita' con joomla 2.5
+         */
+        $service->loadIdentifier(
+            'Authentication.Password', [
+                'passwordHasher' => [
+                    'className' => 'Authentication.Fallback',
+                    'hashers' => [
+                        'Authentication.Default',
+                        [
+                            'className' => 'Joomla25'
+                        ],
+                    ]
+                ],              
+                'resolver' => [
+                    'className' => 'Authentication.Orm',
+                    'finder' => 'loginActive' 
+                ],       
+            ]
+        );
 
         return $service;
     }

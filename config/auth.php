@@ -23,6 +23,6 @@ return [
             'authError' => __('Area riservata, inserire le proprie credenziali'),
             'storage' => 'Session',
             'unauthorizedRedirect' => false,
-               // 'checkAuthIn' => 'Controller.initialize'                      
+               // 'checkAuthIn' => 'Controller.initialize'          
         ]
 ];

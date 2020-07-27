@@ -8,16 +8,14 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Security;
 use Authentication\AuthenticationService;
 
-class CartsController extends AppController
+class CartsController extends ApiAppController
 {		
-    public function initialize()
+    public function initialize(): void 
     {
-        parent::initialize();
-		
-		$this->loadComponent('User');
+        parent::initialize();		
     }
 
-    public function beforeFilter(Event $event)
+    public function beforeFilter(Event $event): void 
     {
         // parent::beforeFilter($event);
 
