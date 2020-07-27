@@ -49,23 +49,22 @@ class joomla25SaltsController extends AppController
          * land page, controller / action
          */
         
-        if(isset($this->request->pass['c_to']))
-            $c_to = $this->request->pass['c_to'];
-        else
+        $c_to = $this->request->getQuery('c_to');
+        if(empty($c_to))
             $c_to = 'Pages'; 
-        if(isset($this->request->pass['a_to']))
-            $a_to = $this->request->pass['a_to'];
-        else
+        $a_to = $this->request->getQuery('a_to');
+        if(empty($a_to))
             $a_to = 'home'; 
 
         /*
          * parametri aggiuntivi
          */
         $q = '';
-        unset($this->request->pass['c_to']);
-        unset($this->request->pass['a_to']);
-        if(!empty($this->request->pass)) {
-            foreach ($this->request->pass as $key => $value) {
+        $queries = $this->request->getQuery();
+        unset($queries['c_to']);
+        unset($queries['a_to']);
+        if(!empty($queries)) {
+            foreach ($queries as $key => $value) {
                 $q = $key.'='.$value;
             }
         }

@@ -151,9 +151,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                  
                  se DebugKit e' attivo non compare il msg
 
-                 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
-                 */ 
+                 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login) 
                  'unauthenticatedRedirect' => $portalgas_bo_url_login
+                */ 
             ]);
             $middlewareQueue->add($authentication);
 
