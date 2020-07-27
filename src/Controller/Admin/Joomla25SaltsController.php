@@ -78,14 +78,10 @@ class joomla25SaltsController extends AppController
         if(!empty($q))
             $url .= '&'.$q;
 
-        debug($url);     
-        exit;
-
-        // $this->redirect($url);
+        if($debug) debug($url);
+        // return $this->redirect($url);
                 
         header("Location: $url");
-        exit;
-
-		return $this->redirect($redirects); 
+        exit; 
     }
  }

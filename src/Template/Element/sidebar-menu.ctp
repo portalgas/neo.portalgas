@@ -9,12 +9,21 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
 ?>	
   <?php echo $this->fetch('tb_sidebar') ?>
 
-  <li class=""> 
-    <a href="<?php echo $portalgas_bo_url.$portalgas_bo_home;?>">
-      <i class="fa fa-home"></i> <span><?php echo __('PortAlGas');?></span>
-    </a>
-  </li>
   <?php
+  if($this->Identity->get()->acl['isRoot']) {
+    echo '<li class="">';
+    echo '<a href="'.$this->Url->build('/admin/joomla25Salts').'">';
+    echo '  <i class="fa fa-home"></i> <span>'.__('PortAlGas').'</span>';
+    echo '</a>';
+    echo '</li>';
+  }
+  else {
+    echo '<li class="">';
+    echo '<a href="'.$portalgas_bo_url.$portalgas_bo_home.'">';
+    echo '  <i class="fa fa-home"></i> <span>'.__('PortAlGas').'</span>';
+    echo '</a>';
+    echo '</li>';
+  }
   if($this->Identity->get()->acl['isRoot']) {
   ?> 
   <li class="treeview"> 
