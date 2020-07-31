@@ -6,26 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * Carts Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
- * @property \App\Model\Table\ArticleOrganizationsTable&\Cake\ORM\Association\BelongsTo $ArticleOrganizations
- * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\BelongsTo $Articles
- *
- * @method \App\Model\Entity\Cart get($primaryKey, $options = [])
- * @method \App\Model\Entity\Cart newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Cart[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Cart|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Cart saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Cart patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Cart[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Cart findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class CartsTable extends Table
 {
     /**
@@ -66,7 +46,7 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Articles', [
-            'foreignKey' => 'article_id',
+            'foreignKey' => ['article_id', 'article_organization_id'],
             'joinType' => 'INNER'
         ]);
     }
@@ -180,4 +160,31 @@ class CartsTable extends Table
 
         return $importo_totale;
     }
+
+    /*
+     * front-end - estrae gli articoli associati ad un ordine filtrati per user  
+     *  ArticlesOrders.article_id              = Articles.id
+     *  ArticlesOrders.article_organization_id = Articles.organization_id
+     */
+    public function getByOrder($user, $organization_id, $order_id, $user_id, $where=[], $order=[], $debug=false) {
+                            
+        $where = array_merge(['Carts.organization_id' => $organization_id,
+                              'Carts.order_id' => $order_id,
+                              'Carts.user_id' => $user_id,
+                              'Carts.deleteToReferent' => 'N'], 
+                              $where);
+        // debug($where);
+        $order = ['ArticlesOrders.name'];
+
+        $results = $this->find()
+                        ->contain([
+                            'Articles' => ['conditions' => ['Articles.stato' => 'Y']], 
+                            'ArticlesOrders' => ['conditions' => ['ArticlesOrders.stato != ' => 'N']]
+                        ])
+                        ->where($where)
+                        ->order($order)
+                        ->all();
+                        exit;
+        return $results;
+    }    
 }

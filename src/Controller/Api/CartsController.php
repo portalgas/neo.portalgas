@@ -22,81 +22,39 @@ class CartsController extends ApiAppController
         // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
         $this->viewBuilder()->setClassName('Json'); 
 
-        $this->Authentication->allowUnauthenticated(['gets', 'getsArticles']); 
+        // $this->Authentication->allowUnauthenticated(['getsByOrder']);
     }
 
-    /*
-     * method: *
-     * url: /api/carts/gets     
+    /* 
+     * url: /api/carts/getByOrder
+     * front-end - estrae gli articoli associati ad un ordine filtrati per user  
      */
-    public function gets()
-    {
-        $debug = false;
-        $esito = true;
+    public function getByOrder() {
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
 
         $results = [];
-        $results[] = ['id' => 1,
-                    'name' => 'libro',
-                    'note' => 'lorem ipsum lorem ipsum',
-                    'totArticleDetails' => 50,
-                    'supplier' => [
-                        'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
-                        'address' => 'via Roma 12',
-                        'locality' => 'Torino',
-                        'www' => 'www.it'
-                      ]
-                ];
+        $where = [];
+        $order = [];
+   
+        $order_id = $this->request->getData('order_id');
+        
+        $cartsTable = TableRegistry::get('Carts');
+        $results = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);            
+        /*
+        if(!empty($results)) {
+            // $results = new ApiArticleDecorator($results);
+            $results = new ArticleDecorator($results);
+            $results = $results->results;
+        }
+        */
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
         // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
         
         return $this->response; 
-    }
-
-    /*
-     * method: *
-     * url: /api/carts/getsArticles
-     */
-    public function getsArticles()
-    {
-        $debug = false;
-        $esito = true;
-
-        $results = [];
-        $results[] = [
-                    'id' => 1,
-                    'name' => 'libro',
-                    'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
-                    'price' => 150.00,
-                    'descri' => 'lorem ipsum lorem ipsum',
-                    'store' => 50,
-                    'supplier' => [
-                        'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
-                        'address' => 'via Roma 12',
-                        'locality' => 'Torino',
-                        'www' => 'www.it'
-                      ]
-                ];
-        $results[] = [
-                    'id' => 2,
-                    'name' => 'quaderno',
-                    'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
-                    'price' => 28.00,
-                    'descri' => 'lorem ipsum lorem ipsum',
-                    'store' => 50,
-                    'supplier' => [
-                        'img1' => 'http://www.portalgas.it/images/organizations/contents/393.png',
-                        'address' => 'via Roma 12',
-                        'locality' => 'Torino',
-                        'www' => 'www.it'
-                      ]
-                ];                
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
-    }
+    } 
  }

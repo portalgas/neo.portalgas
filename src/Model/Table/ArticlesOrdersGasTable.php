@@ -5,6 +5,8 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrdersTableInterface 
 {
@@ -23,124 +25,32 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
     }
 
     /*
-     * implement
+     * implement 
+     * estrae gli articoli associati / da associare  ad un ordine
+     * ArticlesOrders.owner_articles                 = 
+     * ArticlesOrders.owner_organization_id          = Articles.organization_id
+     * ArticlesOrders.owner_supplier_organization_id = Articles.supplier_organization_id
      */
-    public function gets($user, $organization_id, $order_id) {
+    public function gets($user, $organization_id, $order_id, $where, $order, $debug=false) {
     
-/*
-        $owner_articles = $order['Order']['owner_articles'];
-        $owner_organization_id = $order['Order']['owner_organization_id'];
-        $owner_supplier_organization_id = $order['Order']['owner_supplier_organization_id'];
-        $article_organization_id = $order['Order']['owner_organization_id'];
-        
+        $ordersTable = TableRegistry::get('Orders');
+        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
 
+        $owner_articles = $orderResults->owner_articles;
+        $owner_organization_id = $orderResults->owner_organization_id;
+        $owner_supplier_organization_id = $orderResults->owner_supplier_organization_id;
 
-            $options = [];
-            $options['conditions'] = ['Cart.user_id' => $this->Authentication->getIdentity()->id,
-                                      'Cart.deleteToReferent' => 'N'];
-            if (!empty($filterArticleName))
-                $options['conditions'] += ['Article.name' => $filterArticleName];
-            if (!empty($filterArticleArticleTypeIds))
-                $options['conditions'] += ['ArticleArticleTypeId.article_type_id' => $filterArticleArticleTypeIds];
+        $articlesTable = TableRegistry::get('Articles');
 
-            $options['order'] = 'Article.name';
+        $where = ['Articles.organization_id' => $owner_organization_id,
+                  'Articles.supplier_organization_id' => $owner_supplier_organization_id];
+        // debug($where);
+        $order = ['Articles.name'];
 
-
-     public function getArticoliEventualiAcquistiInOrdine($user, $orderResult, $options=[], $debug = false) {
-
-        if(!is_array($orderResult))
-            $orderResult = $this->_getOrderById($user, $orderResult, $debug);
-        
-        $results = [];
-
-        try {
-            if (!isset($options['order']))
-                $options['order'] = 'Article.name ASC';
-
-            $sql = "SELECT 
-                        ArticlesOrder.*,Article.*";
-            if (isset($options['conditions']['Cart.user_id']))
-                $sql .= ",Cart.* ";
-            if (isset($options['conditions']['ArticleArticleTypeId.article_type_id']))
-                $sql .= ",ArticlesArticlesType.article_type_id ";
-            $sql .= "FROM " .
-                    Configure::read('DB.prefix') . "articles AS Article, ";
-            if (isset($options['conditions']['ArticleArticleTypeId.article_type_id']))
-                $sql .= Configure::read('DB.prefix') . "articles_articles_types ArticlesArticlesType, ";
-            $sql .= Configure::read('DB.prefix') . "articles_orders AS ArticlesOrder ";
-            if (isset($options['conditions']['Cart.user_id'])) {
-                $sql .= " LEFT JOIN " . Configure::read('DB.prefix') . "carts AS Cart ON " .
-                        "(Cart.organization_id = ArticlesOrder.organization_id AND Cart.order_id = ArticlesOrder.order_id AND Cart.article_organization_id = ArticlesOrder.article_organization_id AND Cart.article_id = ArticlesOrder.article_id " .
-                        "AND Cart.user_id = " . $options['conditions']['Cart.user_id'] . "
-                        AND Cart.deleteToReferent = 'N')";
-            }
-            $sql .= "WHERE 
-                        ArticlesOrder.organization_id = ".$user->organization['Organization']['id']." 
-                        AND ArticlesOrder.article_organization_id = Article.organization_id
-                        AND ArticlesOrder.article_id = Article.id                       
-                        AND ArticlesOrder.order_id = ".$orderResult['Order']['id']." 
-                        AND ArticlesOrder.stato != 'N' 
-                        AND Article.stato = 'Y' 
-                        AND Article.organization_id = ".$orderResult['Order']['owner_organization_id']." 
-                        AND Article.supplier_organization_id = ".$orderResult['Order']['owner_supplier_organization_id']."";
-
-            if (isset($conditions['ArticlesOrder.pezzi_confezione']))
-                $options['conditions'] += ['ArticlesOrder.pezzi_confezione > ' => $conditions['ArticlesOrder.pezzi_confezione']];
-
-            if (isset($options['conditions']['ArticleArticleTypeId.article_type_id']))
-                $sql .= " AND ArticlesArticlesType.organization_id = ".$orderResult['Order']['owner_organization_id']." 
-                          AND ArticlesArticlesType.article_type_id IN (" . $options['conditions']['ArticleArticleTypeId.article_type_id'] . ")
-                          AND Article.id = ArticlesArticlesType.article_id ";
-
-            if (isset($options['conditions']['Article.name']))
-                $sql .= " AND lower(Article.name) LIKE '%" . strtolower(addslashes($options['conditions']['Article.name'])) . "%'";
-
-            // filtro un solo ordine AjaxGasCartComtroller::__managementCart()
-             
-            if (isset($options['conditions']['Article.id']))
-                $sql .= " AND Article.id = " . $options['conditions']['Article.id'];
-
-            // Organization.hasFieldArticleCategoryId
-            if (isset($options['conditions']['Article.category_id']))
-                $sql .= " AND Article.category_id = " . $options['conditions']['Article.category_id'];
-
-            $sql .= " ORDER BY " . $options['order'];
-            self::d('getArticoliEventualiAcquistiInOrdine '.$sql, $debug);
-            $results = $this->query($sql);
-
-            // applico metodi afterFind()
-             
-            foreach ($results as $numResult => $result) {
-
-                // Article
-               
-                $results[$numResult]['Article']['prezzo_'] = number_format($result['Article']['prezzo'], 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
-                $results[$numResult]['Article']['prezzo_e'] = $results[$numResult]['Article']['prezzo_'] . ' &euro;';
-
-                $qta = str_replace(".", ",", $result['Article']['qta']);
-                $arrCtrlTwoZero = explode(",", $qta);
-                if ($arrCtrlTwoZero[1] == '00')
-                    $qta = $arrCtrlTwoZero[0];
-                $results[$numResult]['Article']['qta_'] = $qta;
-
-                // ArticlesOrder
-                 
-                $results[$numResult]['ArticlesOrder']['prezzo_'] = number_format($result['ArticlesOrder']['prezzo'], 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
-                $results[$numResult]['ArticlesOrder']['prezzo_e'] = $results[$numResult]['ArticlesOrder']['prezzo_'] . ' &euro;';
-
-                // Cart
-                 
-            } // foreach ($results as $numResult => $result) 
-
-            self::d($results, $debug);
-            
-        } catch (Exception $e) {
-            CakeLog::write('error', $sql);
-            CakeLog::write('error', $e);
-        }
-
+        $results = $this->find()
+                        ->where($where)
+                        ->order($order)
+                        ->all();
         return $results;
-    }           
-*/        
     }    
 }

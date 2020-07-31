@@ -1,7 +1,11 @@
 <?php
 echo $this->Html->script('organizationsPaysIndex', ['block' => 'scriptPageInclude']);
 ?>
-
+<style>
+.width-75 {
+  width: 75;
+}
+</style>
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
@@ -175,7 +179,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     $options += ['disabled' => 'disabled'];
 
                   echo '<td>';
-                  echo $this->Form->control('hasMsg', $options);
+                  echo $this->Form->control('hasMsg', $options, ['class' => 'width-75']);
                   echo '</td>';
                   echo '<td id="OrganizationsPays-'.$organizationsPay->id.'"></td>';
 

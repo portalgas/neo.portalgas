@@ -1,6 +1,7 @@
 # Custom #
 ##########################
 neo-portalgas.txt
+schema.xlsx
 /_sql/*
 /log/*
 /logs/*
@@ -18,9 +19,8 @@ neo-portalgas.txt
 
 # vue #
 ##########################
-/webroot/vue/*
 /node_modules/* 
-/resources/* 
+# /resources/* 
 npm-debug.log*
 
 # OS generated files #

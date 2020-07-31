@@ -160,14 +160,11 @@ Router::prefix('api', function (RouteBuilder $routes) {
      * tmp per ecommerce vue
      */
     $routes->scope('/articles-orders', ['controller' => 'ArticlesOrders'], function (RouteBuilder $routes) {
-        $routes->connect('/getsByOrder', ['action' => 'getsByOrder', '_method' => 'POST']);
+        $routes->connect('/getCartsByOrder', ['action' => 'getCartsByOrder', '_method' => 'POST']);
     });     
     $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
-        $routes->connect('/gets', ['action' => 'gets']);
-    });
-    $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
-        $routes->connect('/getsArticles', ['action' => 'getsArticles']);
-    });
+        $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
+    }); 
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) { 

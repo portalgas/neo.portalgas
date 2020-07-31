@@ -20,8 +20,10 @@ class QueuesController extends ApiAppController
 
     public function beforeFilter(Event $event) {
      
-        parent::beforeFilter($event);   
-   
+        parent::beforeFilter($event);  
+
+        if(Configure::read('Config')['IpFilter']['isActive']) 
+            $this->IpFilter->checkOrFail($this->request->clientIp());
     }
     
     /*
@@ -49,20 +51,28 @@ class QueuesController extends ApiAppController
         $queuesCode = $request['code'];
         $queuesTable = TableRegistry::get('Queues');
         $queue = $queuesTable->findByCode($queuesCode);  
+        if(empty($queue)) {
+            $results['esito'] = false;
+            $results['code'] = 500;
+            $results['uuid'] = '';
+            $results['msg'] = 'Nessuna coda configurata con il codice ['.$queuesCode.']';
+            $results['results'] = '';
+        }
+        else {
+            // $this->loadComponent($queue->component);  // custom QueueDweeMago
+            $this->loadComponent($queue->queue_mapping_type->component); // QueueDatabase QueueXml QueueCsv
 
-        // $this->loadComponent($queue->component);  // custom QueueDweeMago
-        $this->loadComponent($queue->queue_mapping_type->component); // QueueDatabase QueueXml QueueCsv
+            $results = $this->{$queue->queue_mapping_type->component}->queue($request);
 
-        $results = $this->{$queue->queue_mapping_type->component}->queue($request);
-
-        $this->set([
-            'esito' => $results['esito'],
-            'code' => $results['code'],
-            'uuid' => $results['uuid'],
-            'msg' => $results['msg'],
-            'results' => $results['results']
-        ]); 
-
+            $this->set([
+                'esito' => $results['esito'],
+                'code' => $results['code'],
+                'uuid' => $results['uuid'],
+                'msg' => $results['msg'],
+                'results' => $results['results']
+            ]); 
+        }
+            
         $this->set('_serialize', ['esito', 'code', 'uuid', 'msg', 'results']);         
     }
 

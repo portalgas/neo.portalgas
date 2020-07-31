@@ -23,6 +23,13 @@ class ApiAppController extends AppController
     {
         parent::initialize();
 
+        if(Configure::read('Config')['IpFilter']['isActive']) {
+            $this->loadComponent('Tyrellsys/CakePHP3IpFilter.IpFilter', [
+                'trustProxy' => true,
+                'whitelist' => Configure::read('Config')['IpFilter']['whitelist']
+            ]);            
+        }
+
         $this->loadComponent('RequestHandler');
         $this->RequestHandler->renderAs($this, 'json');
         $this->response = $this->response->withType('application/json');     

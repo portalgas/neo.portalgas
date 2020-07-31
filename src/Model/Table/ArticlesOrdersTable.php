@@ -40,7 +40,7 @@ class ArticlesOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Articles', [
-            'foreignKey' => 'article_id',
+            'foreignKey' => ['article_id', 'article_organization_id'],
             'joinType' => 'INNER',
         ]);
     }
@@ -140,14 +140,17 @@ class ArticlesOrdersTable extends Table
 
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.id' => $order_id];
-
+        // debug($where);
         $results = $ordersTable->find()
                                 ->where($where)
                                 ->first();
+        // debug($results);
+        if(empty($results))
+            return false;
+        
         $order_type_id = $results->order_type_id;
 
-        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');  
 
         switch (strtoupper($order_type_id)) {
             case Configure::read('Order.type.des-titolare'):
@@ -173,5 +176,53 @@ class ArticlesOrdersTable extends Table
         }
 
         return TableRegistry::get($table_registry);
-    }     
+    }   
+
+    /*
+     * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
+     *  ArticlesOrders.article_id              = Articles.id
+     *  ArticlesOrders.article_organization_id = Articles.organization_id
+     */
+    public function getCartsByOrder($user, $organization_id, $order_id, $user_id, $where=[], $order=[], $debug=false) {
+                            
+        $where = array_merge(['ArticlesOrders.organization_id' => $organization_id,
+                              'ArticlesOrders.order_id' => $order_id,
+                              'ArticlesOrders.stato != ' => 'N'], 
+                              $where);                  
+        if($debug) debug($where);
+        
+        $order = ['ArticlesOrders.name'];
+
+        $results = $this->find()
+                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']] 
+                        ])
+                        ->where($where)
+                        ->order($order)
+                        ->all()
+                        ->toArray();
+
+        /*
+         * estraggo eventuali acquisti 
+         */ 
+        if($results) {
+            $cartsTable = TableRegistry::get('Carts');
+            $newResults = [];
+            foreach($results as $numResult => $result) {
+                $newResults[$numResult] = $result;
+                
+                $where = ['Carts.user_id' => $user_id, 'Carts.deleteToReferent' => 'N'];
+                $cartResults = $cartsTable->find()
+                            ->where($where)
+                            ->first();
+
+                if(!empty($cartResults)) {
+                    $results[$numResult]['cart'] = $cartResults;
+                } 
+            }
+        } // if($results)
+        
+        if($debug) debug($results);
+
+        return $results;
+    }         
 }

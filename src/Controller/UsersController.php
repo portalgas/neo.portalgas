@@ -47,10 +47,9 @@ class UsersController extends AppController
                 // debug($user);
                 $this->Authentication->setIdentity($user);           
                 // $target = $this->Authentication->getLoginRedirect() ?? '/home';
-                $redirect = $this->request->getQuery('redirect', [
-                    'controller' => 'admin/Dashboards',
-                    'action' => 'index'
-                ]);
+                $url = ['controller' => 'admin/Dashboards', 'action' => 'index']; 
+                $url = ['controller' => 'Pages', 'action' => 'index'];                
+                $redirect = $this->request->getQuery('redirect', $url);
                 // debug($redirect);exit;
                 return $this->redirect($redirect);
             }
