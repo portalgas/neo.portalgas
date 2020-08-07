@@ -21,7 +21,7 @@ class CreateShMailOrdersCloseCommand extends MyCommand
 
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $debug=false;
+        $debug = false;
 
         /*
          * lo passo alla classe super
