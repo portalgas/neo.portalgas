@@ -42,9 +42,9 @@ class joomla25SaltsController extends AppController
             return;
         }     
 
-        $queries = $this->request->getQuery('c_to');
-        debug($queries);
-exit;
+        $queries = $this->request->getQuery();
+        if($debug) debug($queries);
+
         /*
          * land page, controller / action
          * 'prefix' => false se no prende api
