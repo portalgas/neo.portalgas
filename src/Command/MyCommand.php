@@ -147,11 +147,12 @@ class MyCommand extends Command
                  * nome del file .sh 
                  */
                 $file_name_sh_complete = sprintf($this->file_name_sh, $tot_files_created);
-                $file = new File(Configure::read('Sh.template.dir.path.full') . DS . $file_name_sh_complete);
+                $file_full_path = Configure::read('Sh.template.dir.path.full') . DS . $file_name_sh_complete;
+                $file = new File($file_full_path);
                 $file->write($template);
 
                 $tot_files_created ++;
-                Log::info('Creato file '.$tot_files_created.' '.$file_name_sh_complete, ['scope' => ['shell']]);
+                Log::info('Creato file '.$tot_files_created.' '.$file_full_path, ['scope' => ['shell']]);
 
                 foreach ($result['organizations'] as $rs) {
                     $this->_insertDb($rs, $file_name_sh_complete, $debug);
@@ -178,10 +179,11 @@ class MyCommand extends Command
             for($i=$tot_files_created; $i<=$this->tot_files_sh; $i++) {
 
                 $file_name_sh_complete = sprintf($this->file_name_sh, $i);
-                $file = new File(Configure::read('Sh.template.dir.path.full') . DS . $file_name_sh_complete);
+                $file_full_path = Configure::read('Sh.template.dir.path.full') . DS . $file_name_sh_complete;
+                $file = new File($file_full_path);
                 $file->write("");    
 
-                Log::info('Creato file vuoto '.$i.' '.$file_name_sh_complete, ['scope' => ['shell']]);
+                Log::info('Creato file vuoto '.$i.' '.$file_full_path, ['scope' => ['shell']]);
             }
 
             return true;
