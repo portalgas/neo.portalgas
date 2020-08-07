@@ -145,9 +145,9 @@ class UsersTable extends Table
      */
     public function findLogin($user_organization_id, $user_id, $organization_id, $debug=false)
     {
-        debug('user_organization_id '.$user_organization_id);
-        debug('user_id '.$user_id);
-        debug('organization_id '.$organization_id);
+        if($debug) debug('user_organization_id '.$user_organization_id);
+        if($debug) debug('user_id '.$user_id);
+        if($debug) debug('organization_id '.$organization_id);
         // $user_organization_id / organization_id puo' essere 0 (per root)
         if (empty($user_id)) {
             return null;

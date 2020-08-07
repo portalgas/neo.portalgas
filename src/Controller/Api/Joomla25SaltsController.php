@@ -44,7 +44,7 @@ class joomla25SaltsController extends AppController
 
         $queries = $this->request->getQuery('c_to');
         debug($queries);
-
+exit;
         /*
          * land page, controller / action
          * 'prefix' => false se no prende api
@@ -66,9 +66,12 @@ class joomla25SaltsController extends AppController
          * parametri aggiuntivi
          */
         $q = [];
-        unset($queries['u']);
-        unset($queries['c_to']);
-        unset($queries['a_to']);
+        if(isset($queries['u']))
+            unset($queries['u']);
+        if(isset($queries['c_to']))
+            unset($queries['c_to']);
+        if(isset($queries['a_to']))
+            unset($queries['a_to']);
         if(!empty($queries)) {
             foreach ($queries as $key => $value) {
                 array_push($q, $value);
