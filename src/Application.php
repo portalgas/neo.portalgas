@@ -78,11 +78,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
          *
          * https://book.cakephp.org/debugkit/3/en/index.html
          */
-        if (Configure::read('debug')) {            
+        if (Configure::read('debug')) {          
             Configure::write('DebugKit.panels', ['DebugKit.Packages' => false]);
             Configure::write('DebugKit.safeTld', ['dev', 'local', 'example']);
             Configure::write('DebugKit.forceEnable', true);
-            $this->addPlugin(\DebugKit\Plugin::class);
+            $this->addPlugin('DebugKit');
         }
 
         $this->addPlugin('ADmad/JwtAuth');
