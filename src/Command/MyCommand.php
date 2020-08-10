@@ -19,12 +19,17 @@ class MyCommand extends Command
     private $file_name_sh =  null ;    
     protected $mail_send_max;
     protected $tot_files_sh; 
+    protected $file_name_shs = [];
 
     public function initialize() {
         $this->Total = new TotalComponent(new ComponentRegistry());
 
         $this->mail_send_max = Configure::read('mailSendMax');
         $this->tot_files_sh = Configure::read('totFilesSh');
+
+        $this->file_name_shs['mailUsersDelivery'] = 'mailUsersDelivery-%s.sh';
+        $this->file_name_shs['mailUsersOrdersClose'] = 'mailUsersOrdersClose-%s.sh';
+        $this->file_name_shs['mailUsersOrdersOpen'] = 'mailUsersOrdersOpen-%s.sh';
     }
 
     protected function _setCron($cron) {
@@ -193,6 +198,35 @@ class MyCommand extends Command
             Log::error('Creati '.$tot_files_created.' file ma il cron ne richiama '.$this->tot_files_sh, ['scope' => ['shell']]);
             return false;            
         }
+    }
+
+    /*
+     * cancello file sh creati precedentemente
+     */
+    protected function _deleteOldFileSh($file_name_sh='') {
+
+        $file_name_shs = [];
+
+        if(empty($file_name_sh)) 
+            $file_name_shs = $this->file_name_shs;
+        else
+            $file_name_shs[] = $file_name_sh;
+            
+        foreach ($this->file_name_shs as $file_name_sh) {
+            for($i=1; $i <= $this->tot_files_sh; $i++) {
+
+                $file_name_sh_complete = sprintf($file_name_sh, $i);
+                $file_full_path = Configure::read('Sh.template.dir.path.full') . $file_name_sh_complete;
+
+                if(file_exists($file_full_path)) {
+                    $file = new File($file_full_path);
+                    if($file->delete())   
+                        Log::info('Delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
+                    else
+                        Log::error('Not delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
+                }
+            }
+        } // end foreach ($this->file_name_shs => $file_name_sh)
     }
 
     private function _insertDb($result, $file_name_sh_complete, $debug) {

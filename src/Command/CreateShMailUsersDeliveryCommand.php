@@ -17,7 +17,6 @@ use Cake\Core\Configure;
 class CreateShMailUsersDeliveryCommand extends MyCommand
 {
     private $cron =  'mailUsersDelivery';
-    private $file_name_sh =  'mailUsersDelivery-%s.sh';
 
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -27,7 +26,7 @@ class CreateShMailUsersDeliveryCommand extends MyCommand
          * lo passo alla classe super
          */
         $this->_setCron($this->cron);
-        $this->_setFileNameSh($this->file_name_sh); 
+        $this->_setFileNameSh($this->file_name_shs[$this->cron]); 
 
         if($debug) {
             $this->io = $io;
@@ -80,6 +79,8 @@ class CreateShMailUsersDeliveryCommand extends MyCommand
         Log::info('CreateShMailUsersDelivery end', ['scope' => ['shell']]);
         Log::info($results, ['scope' => ['shell']]);
 
+        $this->_deleteOldFileSh($this->cron);
+        
         /*
          * per ogni gruppo da massimo users
          * creo file .sh che sara' richiamato dal cron

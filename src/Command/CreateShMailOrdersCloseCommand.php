@@ -17,7 +17,6 @@ use Cake\Core\Configure;
 class CreateShMailOrdersCloseCommand extends MyCommand
 {
     private $cron =  'mailUsersOrdersClose';
-    private $file_name_sh =  'mailUsersOrdersClose-%s.sh';
 
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -27,7 +26,7 @@ class CreateShMailOrdersCloseCommand extends MyCommand
          * lo passo alla classe super
          */
         $this->_setCron($this->cron);
-        $this->_setFileNameSh($this->file_name_sh); 
+        $this->_setFileNameSh($this->file_name_shs[$this->cron]); 
 
         if($debug) {
             $this->io = $io;
@@ -84,6 +83,8 @@ class CreateShMailOrdersCloseCommand extends MyCommand
         Log::info('CreateShMailUsersOrdersClose end', ['scope' => ['shell']]);
         Log::info($results, ['scope' => ['shell']]);
 
+        $this->_deleteOldFileSh($this->cron);
+        
         /*
          * per ogni gruppo da massimo users
          * creo file .sh che sara' richiamato dal cron

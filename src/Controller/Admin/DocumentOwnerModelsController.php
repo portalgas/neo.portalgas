@@ -5,7 +5,6 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-use App\Controller\AppController;
 
 /**
  * DocumentOwnerModels Controller
