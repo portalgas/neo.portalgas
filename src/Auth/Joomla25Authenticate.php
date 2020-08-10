@@ -44,11 +44,7 @@ class Joomla25Authenticate extends AbstractAuthenticator
 
 		$user = $this->_getUser($request);
         if($this->debug) debug($user);
-        if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
-        }
-		   
-        if (empty($user)) {
+        if (empty($user) || $user===false) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
@@ -59,10 +55,14 @@ class Joomla25Authenticate extends AbstractAuthenticator
     {    
         $user_salt = $request->getQuery('u');
         if($this->debug) debug($user_salt);
+        if(empty($user_salt))
+            return false;
 
 		$user = $this->decrypt($user_salt);
 		$user = unserialize($user);
 		if($this->debug) debug($user);
+        if(empty($user) || !isset($user['user_organization_id']) || !isset($user['user_id']) || !isset($user['organization_id']))
+            return false;
 
 		$usersTable = TableRegistry::get('Users');
 		$user = $usersTable->findLogin($user['user_organization_id'], $user['user_id'], $user['organization_id'], $this->debug); 

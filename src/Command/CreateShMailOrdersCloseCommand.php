@@ -12,7 +12,9 @@ use Cake\Core\Configure;
 /*
  *          
  * bin/cake CreateShMailOrdersClose
- * https://book.cakephp.org/4/en/console-commands/commands.html
+ * https://book.cakephp.org/4/en/console-commands/commands.html 
+ *
+ * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersClose-0.sh ... 7.sh
  */ 
 class CreateShMailOrdersCloseCommand extends MyCommand
 {
@@ -84,7 +86,7 @@ class CreateShMailOrdersCloseCommand extends MyCommand
         Log::info($results, ['scope' => ['shell']]);
 
         $this->_deleteOldFileSh($this->cron);
-        
+
         /*
          * per ogni gruppo da massimo users
          * creo file .sh che sara' richiamato dal cron

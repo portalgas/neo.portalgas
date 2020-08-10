@@ -13,6 +13,12 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\TotalComponent;
 
+/*
+ * creo file
+ * /var/www/neo.portalgas/src/Command/Sh/mailUsersDelivery-1.sh ... 7.sh
+ * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersClose-0.sh ... 7.sh
+ * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersOpen-1.sh ... 7.sh
+ */ 
 class MyCommand extends Command
 {
     private $cron =  null;
