@@ -218,7 +218,7 @@ class MyCommand extends Command
         else
             $file_name_shs[] = $file_name_sh;
             
-        foreach ($this->file_name_shs as $file_name_sh) {
+        foreach ($file_name_shs as $file_name_sh) {
             for($i=1; $i <= $this->tot_files_sh; $i++) {
 
                 $file_name_sh_complete = sprintf($file_name_sh, $i);
