@@ -82,6 +82,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             Configure::write('DebugKit.panels', ['DebugKit.Packages' => false]);
             Configure::write('DebugKit.safeTld', ['dev', 'local', 'example']);
             Configure::write('DebugKit.forceEnable', true);
+            Configure::write('DebugKit.ignoreAuthorization', true); // Cake Authorization plugin is enabled. If you would like to force DebugKit to ignore it
             $this->addPlugin('DebugKit');
         }
 
