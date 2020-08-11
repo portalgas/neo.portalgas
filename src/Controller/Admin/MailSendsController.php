@@ -33,6 +33,7 @@ class MailSendsController extends AppController
 
     public function index()
     {
+        $this->Organizations->removeBehavior('OrganizationsParams');
         $this->paginate = [
             'contain' => ['Organizations'],
         ];
