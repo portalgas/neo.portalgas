@@ -50,7 +50,7 @@
                   <td><?= $mailSend->has('organization') ? $this->Html->link($mailSend->organization->name, ['controller' => 'Organizations', 'action' => 'view', $mailSend->organization->id]) : '' ?></td>
                   <td><?= $this->Number->format($mailSend->tot_users) ?></td>
                   <td><?= h($mailSend->file_sh) ?></td>
-                  <td><?= h($mailSend->data) ?></td>
+                  <td><?= $mailSend->data ?></td>
                   <td><?= h($mailSend->cron) ?></td>
                   <td><?= h($mailSend->created) ?></td>
                   <td><?= h($mailSend->modified) ?></td>

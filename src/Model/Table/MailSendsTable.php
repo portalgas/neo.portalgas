@@ -42,7 +42,7 @@ class MailSendsTable extends Table
 
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
-            'joinType' => 'INNER',
+            'joinType' => 'LEFT',
         ]);
     }
 

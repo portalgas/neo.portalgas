@@ -60,7 +60,7 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
         <i class="fa fa-mail pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>

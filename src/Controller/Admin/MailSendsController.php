@@ -36,6 +36,7 @@ class MailSendsController extends AppController
         $this->MailSends->Organizations->removeBehavior('OrganizationsParams');
         $this->paginate = [
             'contain' => ['Organizations'],
+            'order' => ['data' => 'desc']
         ];
         $mailSends = $this->paginate($this->MailSends);
 
