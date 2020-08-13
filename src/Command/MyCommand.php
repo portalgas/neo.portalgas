@@ -245,7 +245,11 @@ class MyCommand extends Command
         $data['file_sh'] = $file_name_sh_complete;
         $data['cron'] = $this->cron;
         $data['data'] = date('Y-m-d');
-
+        /*
+         * il ResponseMiddleware fa il match con data_
+         */
+        $data['data'] = $this->convertDate($data['data']);
+        
         $mailSend = $modelMailSends->newEntity();
         $mailSend = $modelMailSends->patchEntity($mailSend, $data);
         if (!$modelMailSends->save($mailSend)) {
