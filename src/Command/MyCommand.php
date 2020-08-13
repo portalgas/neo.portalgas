@@ -12,6 +12,7 @@ use Cake\Filesystem\File;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\TotalComponent;
+use App\Traits;
 
 /*
  * creo file
@@ -21,6 +22,8 @@ use App\Controller\Component\TotalComponent;
  */ 
 class MyCommand extends Command
 {
+    use Traits\SqlTrait;
+
     private $cron =  null;
     private $file_name_sh =  null ;    
     protected $mail_send_max;
@@ -249,7 +252,7 @@ class MyCommand extends Command
          * il ResponseMiddleware fa il match con data_
          */
         $data['data'] = $this->convertDate($data['data']);
-        
+
         $mailSend = $modelMailSends->newEntity();
         $mailSend = $modelMailSends->patchEntity($mailSend, $data);
         if (!$modelMailSends->save($mailSend)) {
