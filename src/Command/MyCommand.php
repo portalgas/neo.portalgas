@@ -222,7 +222,7 @@ class MyCommand extends Command
             $file_name_shs[] = $file_name_sh;
             
         foreach ($file_name_shs as $file_name_sh) {
-            for($i=1; $i <= $this->tot_files_sh; $i++) {
+            for($i=0; $i <= $this->tot_files_sh; $i++) {
 
                 $file_name_sh_complete = sprintf($file_name_sh, $i);
                 $file_full_path = Configure::read('Sh.template.dir.path.full') . $file_name_sh_complete;
@@ -233,6 +233,9 @@ class MyCommand extends Command
                         Log::info('Delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
                     else
                         Log::error('Not delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
+                }
+                else {
+                    Log::info('on exist to delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
                 }
             }
         } // end foreach ($this->file_name_shs => $file_name_sh)

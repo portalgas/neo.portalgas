@@ -382,4 +382,4 @@ Configure::write('separatoreMigliaia', '.');
  * (7 * 20 min = 140 min - 2,33 h)
  */
 Configure::write('mailSendMax', 240);  // limite aruba, 250 mail ogni 20 min
-Configure::write('totFilesSh', 7);  // numero file sh creati => il cron deve averli gia' configurati per richiamarli ogni 20 min 
+Configure::write('totFilesSh', 6);  // numero file sh creati, parte da 0 => il cron deve averli gia' configurati per richiamarli ogni 20 min 
