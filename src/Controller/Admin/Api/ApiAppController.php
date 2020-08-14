@@ -3,6 +3,7 @@ namespace App\Controller\Admin\Api;
 
 use App\Controller\AppController;
 use App\Controller\Component\GuardianComponent;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
 
