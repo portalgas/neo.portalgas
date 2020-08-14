@@ -19,7 +19,7 @@ class GdxpsController extends AppController
      
         parent::beforeFilter($event);
 
-        // if(!$this->Authentication->getIdentity()->acl['isSuperReferente'] || !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
+        // if(!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isSuperReferente'] || !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
         $continua = false;
 
         if($this->Authentication->getIdentity()->acl['isRoot'])

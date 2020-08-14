@@ -25,7 +25,7 @@ class CashesController extends ApiAppController
      */
     public function cashExcludedUpdate() {
 
-        if(!$this->Authentication->getIdentity()->acl['isManager'] || $this->Authentication->getIdentity()->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
+        if(!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isManager'] || $this->Authentication->getIdentity()->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
