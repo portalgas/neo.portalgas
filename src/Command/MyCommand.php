@@ -165,6 +165,8 @@ class MyCommand extends Command
                 $file = new File($file_full_path);
                 $file->write($template);
 
+                chmod($file_full_path,0755);
+               
                 $tot_files_created ++;
                 Log::info('Creato file '.$tot_files_created.' '.$file_full_path, ['scope' => ['shell']]);
 
