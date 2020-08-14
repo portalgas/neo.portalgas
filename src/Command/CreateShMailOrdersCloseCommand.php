@@ -35,7 +35,9 @@ class CreateShMailOrdersCloseCommand extends MyCommand
             $this->io->out('CreateShMailUsersOrdersClose start');
             $this->io->out('creo gruppi ogni '.$this->mail_send_max);            
         }
-
+        Log::info("CreateShMailUsersOrdersClose start", ['scope' => ['shell']]);
+        Log::info('creo gruppi ogni '.$this->mail_send_max, ['scope' => ['shell']]);
+        
         $GGMailToAlertOrderClose = (Configure::read('GGMailToAlertOrderClose')+1);
 
         /*

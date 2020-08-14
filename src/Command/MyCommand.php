@@ -219,7 +219,7 @@ class MyCommand extends Command
         if(empty($file_name_sh)) 
             $file_name_shs = $this->file_name_shs;
         else
-            $file_name_shs[] = $file_name_sh;
+            $file_name_shs[] = $file_name_sh.'-%s.sh';
             
         foreach ($file_name_shs as $file_name_sh) {
             for($i=0; $i <= $this->tot_files_sh; $i++) {
@@ -235,7 +235,7 @@ class MyCommand extends Command
                         Log::error('Not delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
                 }
                 else {
-                    Log::info('on exist to delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
+                    Log::info('not exist to delete old file '.$i.' '.$file_full_path, ['scope' => ['shell']]);
                 }
             }
         } // end foreach ($this->file_name_shs => $file_name_sh)

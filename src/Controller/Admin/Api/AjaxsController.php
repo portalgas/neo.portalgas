@@ -76,10 +76,11 @@ class AjaxsController extends ApiAppController
         // $this->set('_serialize', ['code', 'message', 'errors']);
         
         $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-																				 
-		
+        $this->response->withType('application/json');
+        $body = $this->response->getBody();
+        $body->write($results);        
+        $this->response->withBody($body);
+																				 		
         return $this->response;          
     }
 
@@ -118,9 +119,7 @@ class AjaxsController extends ApiAppController
         $id = $this->request->getData('id');
         $entity = $this->request->getData('entity');
         
-						  
-								 
-												  
+										  
 				  
 		 
         $exclude_ids = $this->request->getData('exclude_ids');
@@ -132,10 +131,10 @@ class AjaxsController extends ApiAppController
         $results = $entityTable->find('list', ['conditions' => $conditions, 'limit' => Configure::read('paginate.limit')]); 
 
         $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-																				 
-		
+        $this->response->withType('application/json');
+        $body = $this->response->getBody();
+        $body->write($results);        
+        $this->response->withBody($body);																
         return $this->response; 
     }   
 }

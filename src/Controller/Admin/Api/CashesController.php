@@ -80,10 +80,11 @@ class CashesController extends ApiAppController
         }
 
         $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
+        $this->response->withType('application/json');
+        $body = $this->response->getBody();
+        $body->write($results);        
+        $this->response->withBody($body);
         // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
         return $this->response; 
     } 
 }

@@ -35,6 +35,8 @@ class CreateShMailOrderOpenCommand extends MyCommand
             $this->io->out('CreateShMailOrderOpen start');
             $this->io->out('creo gruppi ogni '.$this->mail_send_max);            
         }
+        Log::info("CreateShMailOrderOpen start", ['scope' => ['shell']]);
+        Log::info('creo gruppi ogni '.$this->mail_send_max, ['scope' => ['shell']]);
 
         /*
          * cancello file di log
