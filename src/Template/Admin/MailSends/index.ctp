@@ -47,7 +47,7 @@
               <?php foreach ($mailSends as $mailSend): ?>
                 <tr>
                   <td><?= $this->Number->format($mailSend->id) ?></td>
-                  <td><?= $mailSend->has('organization') ? $this->Html->link($mailSend->organization->name, ['controller' => 'Organizations', 'action' => 'view', $mailSend->organization->id]) : '' ?></td>
+                  <td><?= $mailSend->has('organization') ? $this->Html->link($mailSend->organization->name.' ('.$mailSend->organization->id.')', ['controller' => 'Organizations', 'action' => 'view', $mailSend->organization->id]) : '' ?></td>
                   <td><?= $this->Number->format($mailSend->tot_users) ?></td>
                   <td><?= h($mailSend->file_sh) ?></td>
                   <td><?= $mailSend->data ?></td>

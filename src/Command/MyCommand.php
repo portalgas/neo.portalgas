@@ -214,14 +214,14 @@ class MyCommand extends Command
     /*
      * cancello file sh creati precedentemente
      */
-    protected function _deleteOldFileSh($file_name_sh='') {
+    protected function _deleteOldFileSh($cron='') {
 
         $file_name_shs = [];
 
-        if(empty($file_name_sh)) 
+        if(empty($cron)) 
             $file_name_shs = $this->file_name_shs;
         else
-            $file_name_shs[] = $file_name_sh.'-%s.sh';
+            $file_name_shs[] = $cron.'-%s.sh';
             
         foreach ($file_name_shs as $file_name_sh) {
             for($i=0; $i <= $this->tot_files_sh; $i++) {

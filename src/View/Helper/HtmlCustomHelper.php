@@ -155,7 +155,7 @@ class HtmlCustomHelper extends FormHelper
          * ResponseMiddleware trasforma y/m/d in array ['year' => '2020', 'month' => '06','day' => '19']
          *  devo riconvertirlo in \Cake\I18n\FrozenDate
          */
-        $value = $this->request->getData($fieldName);
+        $value = $this->getView()->getRequest()->getData($fieldName);
         if(!empty($value) && is_array($value)) {
             $options['value'] = $value['day'].'/'.$value['month'].'/'.$value['year'];
         }

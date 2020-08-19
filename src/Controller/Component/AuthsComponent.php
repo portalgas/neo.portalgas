@@ -19,8 +19,8 @@ class AuthsComponent extends Component {
     /*
      * verifica se un utente ha la gestione degli articoli sugli ordini
      * dipende da 
-     * 		- Organization.hasArticlesOrder
-     * 		- User.hasArticlesOrder
+     *      - Organization.hasArticlesOrder
+     *      - User.hasArticlesOrder
      * 
      * anche in AppHelper, AppModel
      */ 
@@ -33,28 +33,61 @@ class AuthsComponent extends Component {
 
     public function getAclSupplierOrganizations($user) {
 
-        $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
+        $results = [];
+                  
+        if($user->acl['isSuperReferente']) {
+            /* 
+             * SUPER-REFERENTE
+             */         
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
-        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id];
-        if(!$user->acl['isSuperReferente'])
-            $where += ['user_id' => $user->id];
-        // debug($where);
-        $suppliersOrganizationsReferents = $suppliersOrganizationsReferentsTable->find()
-                                ->where($where)
-                                ->contain(['SuppliersOrganizations' => ['Suppliers']])
-                                ->all();
-        // debug($suppliersOrganizationsReferents);
-        return $suppliersOrganizationsReferents;
+            $where = ['SuppliersOrganizations.organization_id' => $user->organization->id,
+                      'SuppliersOrganizations.stato' => 'Y'];
+             $results = $suppliersOrganizationsTable->find()
+                            ->where($where)
+                            ->contain(['Suppliers'])
+                            ->all();            
+        }
+        else {
+            /* 
+             * REFERENTE
+             */
+            $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
+
+            $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id,
+                      'SuppliersOrganizationsReferents.user_id' => $user->id];
+
+            $results = $suppliersOrganizationsReferentsTable->find()
+                                    ->where($where)
+                                    ->contain(['SuppliersOrganizations' => ['conditions' => ['SuppliersOrganizations.stato' => 'Y'], 
+                                              'Suppliers' => ['conditions' => ['Suppliers.stato != ' => 'N']]]]) 
+                                    ->all();
+        }
+        
+        return $results;
     }
     
     public function getAclSupplierOrganizationsList($user) {
-        
+       
         $results = [];
-        $suppliersOrganizationsReferents = $this->getAclSupplierOrganizations($user);
+        $suppliersOrganizations = $this->getAclSupplierOrganizations($user);
         
-        if($suppliersOrganizationsReferents->count()>0) {
-            foreach ($suppliersOrganizationsReferents as $suppliersOrganizationsReferent) {
-                    $results[$suppliersOrganizationsReferent->suppliers_organization->id] = $suppliersOrganizationsReferent->suppliers_organization->name;
+        if($suppliersOrganizations->count()>0) {
+            if($user->acl['isSuperReferente']) {
+                /* 
+                 * SUPER-REFERENTE
+                 */             
+                foreach ($suppliersOrganizations as $suppliersOrganization) {
+                        $results[$suppliersOrganization->id] = $suppliersOrganization->name;
+                }
+            }
+            else {
+                /* 
+                 * REFERENTE
+                 */             
+                foreach ($suppliersOrganizations as $suppliersOrganization) {
+                        $results[$suppliersOrganization->suppliers_organization->id] = $suppliersOrganization->suppliers_organization->name;
+                }
             }
         }
         return $results;

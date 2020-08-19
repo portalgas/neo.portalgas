@@ -165,7 +165,11 @@ class MappingsController extends AppController
 
         $mapping = $this->Mappings->newEntity();
         if ($this->request->is('post')) {
-            $mapping = $this->Mappings->patchEntity($mapping, $this->request->getData());
+            $data = $this->request->getData();
+            $data['name'] = trim($data['name']); 
+            $data['master_column'] = trim($data['master_column']); 
+            $data['slave_column'] = trim($data['slave_column']);              
+            $mapping = $this->Mappings->patchEntity($mapping, $data);
             if ($this->Mappings->save($mapping)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Mapping'));
 
@@ -254,8 +258,11 @@ class MappingsController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $request = $this->request->getData();
-            $mapping = $this->Mappings->patchEntity($mapping, $request);
+            $data = $this->request->getData();
+            $data['name'] = trim($data['name']); 
+            $data['master_column'] = trim($data['master_column']); 
+            $data['slave_column'] = trim($data['slave_column']); 
+            $mapping = $this->Mappings->patchEntity($mapping, $data);
             if ($this->Mappings->save($mapping)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Mapping'));
 
