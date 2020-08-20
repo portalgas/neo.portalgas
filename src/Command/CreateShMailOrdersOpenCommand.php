@@ -11,12 +11,12 @@ use Cake\Core\Configure;
 
 /*
  * 
- * bin/cake CreateShMailOrderOpen
+ * bin/cake CreateShMailOrdersOpen
  * https://book.cakephp.org/4/en/console-commands/commands.html
  * 
  * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersOpen-1.sh ... 7.sh
  */ 
-class CreateShMailOrderOpenCommand extends MyCommand
+class CreateShMailOrdersOpenCommand extends MyCommand
 {
     private $cron =  'mailUsersOrdersOpen';
 

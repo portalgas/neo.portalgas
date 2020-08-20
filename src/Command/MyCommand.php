@@ -148,6 +148,9 @@ class MyCommand extends Command
         $tot_files_created = 0;
 
         if(!empty($results)) {
+
+            Log::info("Creero' ".count($results)." files", ['scope' => ['shell']]);
+
             foreach ($results as $result) {
 
                 /*
@@ -167,9 +170,9 @@ class MyCommand extends Command
 
                 chmod($file_full_path,0755);
                
-                $tot_files_created ++;
                 Log::info('Creato file '.$tot_files_created.' '.$file_full_path, ['scope' => ['shell']]);
-
+                $tot_files_created ++;
+                
                 foreach ($result['organizations'] as $rs) {
                     $this->_insertDb($rs, $file_name_sh_complete, $debug);
                 }
@@ -191,7 +194,7 @@ class MyCommand extends Command
          */
         // debug('tot_files_created '.$tot_files_created.' tot_files_sh '.$this->tot_files_sh);        
         if($tot_files_created < $this->tot_files_sh) {
-            $tot_files_created++;
+
             for($i=$tot_files_created; $i<=$this->tot_files_sh; $i++) {
 
                 $file_name_sh_complete = sprintf($this->file_name_sh, $i);
