@@ -252,7 +252,11 @@ class DocumentsController extends AppController
             $this->Flash->error(__('The {0} could not be deleted. Please, try again.', __('Document')));
         }
 
-        return $this->redirect('organization-index');
+        $url = $this->Document->getRedirectUrl($document_reference_model, $document_reference_id);
+        
+        if($debug) debug($url);
+        
+        if(!$debug) return $this->redirect($url);
     }
 
     public function index()
