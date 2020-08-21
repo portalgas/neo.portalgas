@@ -439,6 +439,21 @@ msgstr "Elenco alberatura menu"
 msgid "List MenuTreeUsers"
 msgstr "Elenco permessi menu"
 
+msgid "List Documents"
+msgstr "Elenco documenti"
+
+msgid "List Document Types"
+msgstr "Tipologie documenti"
+
+msgid "List Document States"
+msgstr "Stati documenti"
+
+msgid "List Document Reference Models"
+msgstr "Riferimenti"
+
+msgid "List Document Owner Models"
+msgstr "Proprietari"
+
 #
 # Edit
 #
@@ -495,6 +510,9 @@ msgstr "Aggiungi stato pagamento"
 
 msgid "Add Price Type"
 msgstr "Aggiungi tipologia di prezzo"
+
+msgid "Add Document"
+msgstr "Aggiungi documento"
 
 msgid "Add {0}"
 msgstr "Aggiungi {0}"
@@ -564,6 +582,9 @@ msgstr "Il {0} non è stata salvata"
 #
 msgid "Related Users"
 msgstr "Relazione utenti"
+
+msgid "Related Documents"
+msgstr "Documenti allegati"
 
 #
 # form
@@ -654,6 +675,9 @@ msgstr "Riferimento"
 
 msgid "document_owner_model"
 msgstr "Proprietario"
+
+msgid "File Name"
+msgstr "Nome file"
 
 msgid "Upload File"
 msgstr "Allega documento"
@@ -918,3 +942,15 @@ msgstr "Accettazione del testo sul trattamento dei dati sulla privacy salvata co
 
 msgid "msg_user_registration_expire"
 msgstr "Devi rinnovare l'iscrizione al tuo G.A.S."
+
+/* 
+ * note
+ */
+msgid "Note-is-system"
+msgstr "Se di sistema non si può eliminare"
+
+msgid "Note-is-active"
+msgstr "Se attivo sarà visibile a front-end"
+
+msgid "Note-sort"
+msgstr "Gli elementi saranno ordinati in ordine crescente rispetto al numero indicato"

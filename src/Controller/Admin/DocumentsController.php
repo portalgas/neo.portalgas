@@ -183,11 +183,12 @@ class DocumentsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             
-            $request = $this->request->getData();
+            $request = $this->request->getData(); 
             $request = $this->_prepareRequest($request, $debug);
+
             $request['path'] = sprintf(Configure::read('document.path'), $id);
             $document = $this->Documents->patchEntity($document, $request);
-            // if($debug) debug($document);exit;
+            if($debug) debug($document);
             if ($this->Documents->save($document)) {
                 $this->Flash->success(__('The {0} has been saved.', __('Document')));
 
@@ -495,7 +496,10 @@ class DocumentsController extends AppController
             $request['document_owner_model_id'] = $this->getIdDefaultIni('DocumentOwnerModels');
         if(empty($request['document_owner_id']))
             $request['document_owner_id'] = $this->Authentication->getIdentity()->getIdentifier();
-        if(isset($request['file_name']) && !empty($request['file_name'])) {
+        /*
+         * non uploadato file => edit
+         */
+        if(isset($request['file_name']) && !empty($request['file_name']['tmp_name'])) {
             $request['file_size'] = $request['file_name']['size'];
             $request['file_type'] = $request['file_name']['type'];
             $request['file_ext'] = $this->getFileExtension($request['file_name']['name']);

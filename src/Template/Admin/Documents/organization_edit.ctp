@@ -32,23 +32,6 @@
 
           echo '<div class="row">';
           echo '<div class="col-md-6">';
-          echo $this->Form->control('document_state_id', ['options' => $documentStates]);
-          echo '</div>';
-          echo '<div class="col-md-6">';
-          echo $this->Form->control('document_type_id', ['options' => $documentTypes]);
-          echo '</div>';
-          echo '</div>';
-
-          /*
-          if(!empty($reference_model_id))
-              echo $this->Form->control('document_reference_model_id', ['options' => $documentReferenceModels]);
-          
-          if(!empty($owner_model_id))
-              echo $this->Form->control('document_owner_model_id', ['options' => $documentOwnerModels]);
-          */
-
-          echo '<div class="row">';
-          echo '<div class="col-md-6">';
           echo $this->Form->control('name');
           echo '</div>';
           echo '<div class="col-md-6">';
@@ -57,26 +40,21 @@
               echo $this->HtmlCustom->fileUpload($document, 'file_name');          
           echo '</div>';
           echo '</div>';
-
-          // echo $this->Form->control('path');
-          // echo $this->Form->control('file_preview_path');
-          // echo $this->Form->control('file_size');
-          // echo $this->Form->control('file_ext');
-          // echo $this->Form->control('file_type');
           
           echo '<div class="row">';
-          echo '<div class="col-md-6">';  
-          echo $this->HtmlCustom->datepicker('data_created', ['empty' => true, 'autocomplete' => 'off']);
-          echo '</div>';
-          echo '<div class="col-md-6">'; 
-          echo $this->HtmlCustom->datepicker('data_send', ['empty' => true, 'autocomplete' => 'off']);
-          echo '</div>';
-          echo '</div>'; // row
-
-          echo $this->Form->control('descri');
-          echo $this->Form->control('is_system');
+          echo '<div class="col-md-2">';
           echo $this->Form->control('is_active');
+          echo '</div>';
+          echo '<div class="col-md-4">';          
+          echo $this->element('msg', ['msg' => __('Note-is-active'), 'class' => 'info']);
+          echo '</div>';
+          echo '<div class="col-md-2">';
           echo $this->Form->control('sort');
+          echo '</div>';
+          echo '<div class="col-md-4">';          
+          echo $this->element('msg', ['msg' => __('Note-sort'), 'class' => 'info']);
+          echo '</div>';
+          echo '</div>';
         
           echo '</div>'; // <!-- /.box-body -->
 

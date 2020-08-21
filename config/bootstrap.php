@@ -245,6 +245,9 @@ Configure::write('ckeditor5.toolbar', "['heading', '|', 'bold', 'italic', 'link'
 
 Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']);
 
+/*
+ * fornt-end richiamti dal modulo di joomla mod_gas_documents
+ */
 Configure::write('document.path', '/files/Documents/file_name/%d/');
 
 Configure::write('group_id_root',8);
