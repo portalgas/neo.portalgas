@@ -56,7 +56,7 @@ class GdxpExportsController extends AppController
         $suplier_name = str_replace(' ', '-', $suplier_name);
         $file_name = Configure::read('Gdxp.file.prefix').$suplier_name.'-'.date('YmdHis').'.json';
 
-        return $this->response->download($file_name);        
+        return $this->response->withDownload($file_name);        
     } 
 
     private function _getHeader() {

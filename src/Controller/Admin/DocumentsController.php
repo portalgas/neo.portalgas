@@ -231,6 +231,8 @@ class DocumentsController extends AppController
 
     public function organizationDelete($id = null)
     {
+        $debug = true;
+        
         $this->request->allowMethod(['post', 'delete']);
 
         $document_reference_model_id = $this->request->getData('document_reference_model_id');

@@ -19,7 +19,7 @@ if(!isset($action_add) || (empty($action_add) && $action_add!==false))
 	$action_add = true;
 
 if(empty($url_add))
-	$url_add = $this->Url->build(['controller' => $this->request->params['controller'], 'action' => 'add']);	
+	$url_add = $this->Url->build(['controller' => $this->request->getParam('controller'), 'action' => 'add']);	
 ?>
 
 <?php
