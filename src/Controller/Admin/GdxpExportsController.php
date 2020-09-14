@@ -25,6 +25,7 @@ class GdxpExportsController extends AppController
         
         // $this->viewBuilder()->setClassName('Xml'); 
         $this->viewBuilder()->setClassName('Json'); 
+        // $this->viewBuilder()->setOption('serialize', true);
     }
 
     public function index($supplier_organization_id) {
@@ -34,7 +35,7 @@ class GdxpExportsController extends AppController
         $subject = ['subject' => $this->_getOrganization($this->Authentication->getIdentity()->organization)];
 
         $blocks =[]; 
-        $supplier = $this->_getSupplier($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id); 
+        $supplier = $this->_getSupplier($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id);
         if(!empty($supplier)) {
             $blocks[0]['supplier'] = $supplier;
             $blocks[0]['supplier']['products'] = $this->_getArticles($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id); 
@@ -50,13 +51,18 @@ class GdxpExportsController extends AppController
         $this->set($subject);
         $this->set(compact('blocks', 'supplier'));
         $this->set('_serialize', ['protocolVersion', 'creationDate', 'applicationSignature', 'subject', 'blocks']);
-
-        // Set Force Download
-
+        
+        /*
+         * commentare per visualizzarlo a video
+         * Set Force Download https://book.cakephp.org/3/en/views/json-and-xml-views.html#example-usage
+         */
         $suplier_name = str_replace(' ', '-', $suplier_name);
         $file_name = Configure::read('Gdxp.file.prefix').$suplier_name.'-'.date('YmdHis').'.json';
 
-        return $this->response->withDownload($file_name);        
+        // Prior to 3.4.0
+        return $this->response->download($file_name);
+        
+        // return $this->response->withDownload($file_name);       
     } 
 
     private function _getHeader() {
