@@ -56,6 +56,7 @@ class ImportFilesController extends AppController
         switch ($service) {
             case 'ECONOMIASOLIDALE':
                 $url = Configure::read('Gdxp.articles.index.url').'?'.$q.'='.$w;
+                $url = Configure::read('Gdxp.articles.index.url').'/'.$w;
                 break; 
             default:
                 $continua = false;

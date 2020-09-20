@@ -83,8 +83,12 @@ class GdxpExportsController extends AppController
         $results['address']['street'] = $organization->indirizzo;
         $results['address']['locality'] = $organization->localita;
         $results['address']['zipCode'] = $organization->cap;
-        $results['contacts']['type'] = 'emailAddress';
-        $results['contacts']['value'] = $organization->mail;
+        $results['contacts'] = [];
+
+        $contacts = [];
+        $contacts['type'] = 'emailAddress';
+        $contacts['contacts']['value'] = $organization->mail;
+        $results['contacts'][0] = $contacts;
 
         return $results;
     }   

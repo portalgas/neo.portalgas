@@ -12,8 +12,7 @@ use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
 
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Common\Type;                         
-use Cake\Filesystem\File;
+use Box\Spout\Common\Type;
 
 class QueueComponent extends Component {
 
@@ -68,7 +67,7 @@ class QueueComponent extends Component {
             $queue = $queuesTable->findByCode($queuesCode);    
             $this->_registry->QueueLog->logging($uuid, $queue, 'Request', $request);
             if(!$queue->has('queue_tables') || empty($queue->queue_tables)) {
-                esito = false;
+                $esito = false;
                 $code = 500;
                 $uuid = $uuid;
                 $msg = 'La coda '.$queuesCode.' non ha configurato le tabelle (queue_tables)';
