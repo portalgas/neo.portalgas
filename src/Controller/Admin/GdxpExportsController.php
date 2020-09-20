@@ -87,7 +87,7 @@ class GdxpExportsController extends AppController
 
         $contacts = [];
         $contacts['type'] = 'emailAddress';
-        $contacts['contacts']['value'] = $organization->mail;
+        $contacts['value'] = $organization->mail;
         $results['contacts'][0] = $contacts;
 
         return $results;
