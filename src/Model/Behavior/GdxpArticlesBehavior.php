@@ -49,7 +49,7 @@ class GdxpArticlesBehavior extends Behavior
 				'minQty' => $result->qta_minima,
 				'mulQty' => $result->qta_multipli,
 				'umPrice' => $result->prezzo,
-				'shippingCost' => '0.0'
+				'shippingCost' => 0.0
 				//'vatRate' => '',
 				//'availableQty' => ''
 			];

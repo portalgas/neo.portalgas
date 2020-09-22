@@ -32,7 +32,7 @@ echo '<div v-show="is_found_suppliers === true" style="display:none;">';
           <td>{{ supplier.vat }}</td>
           <td>{{ supplier.lastchange | formatDate }}</td>
           <td><a class="btn btn-info" target="_blank" 
-            v-bind:href="'<?php echo Configure::read('Gdxp.articles.index.url');?>?vat='+ supplier.vat">Visualizza listino in formato GDXP</a></td>
+            v-bind:href="'<?php echo Configure::read('Gdxp.articles.index.url');?>/'+ supplier.vat">Visualizza listino in formato GDXP</a></td>
           <td><a class="btn btn-info" 
             v-bind:href="'/admin/import-files/jsonToService?q=vat&w='+ supplier.vat">Importa listino in formato GDXP</a></td>
         </tr>

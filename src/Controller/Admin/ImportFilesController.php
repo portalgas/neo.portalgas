@@ -30,6 +30,7 @@ class ImportFilesController extends AppController
 
     /*
      * https://github.com/madbob/GDXP/blob/master/DOC.md
+     * https://github.com/swaggest/php-json-schema
      *
      * q = per cosa ricercare (id / vat)
      * w = parola da ricercare
