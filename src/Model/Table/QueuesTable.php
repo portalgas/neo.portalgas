@@ -196,11 +196,14 @@ class QueuesTable extends Table
 
     /*
      * ottengo il namespace della tabella slave (TableRegistry) 
-     * ex Dwwe/Articoli
+     * ex PortAlGas/Articoli
      */
     public function getNamespaceTableSlave($queue, $slave_entity) {
         $namespace_table_slave = '';
-        $namespace_table_slave = ucfirst($queue->slave_scope->namespace).'/'.$slave_entity;
+        if(!empty($queue->slave_scope->namespace))
+            $namespace_table_slave = ucfirst($queue->slave_scope->namespace).'/'.$slave_entity;
+        else
+            $namespace_table_slave = $slave_entity;
 
         return $namespace_table_slave;
     }

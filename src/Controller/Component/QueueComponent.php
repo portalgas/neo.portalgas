@@ -321,6 +321,7 @@ class QueueComponent extends Component {
         $namespace_table_slave = $queueTable->getNamespaceTableSlave($queue, $slave_entity);
 
         $tableRegistry = TableRegistry::get($namespace_table_slave);
+
         $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
         $conn = $tableRegistry->getConnection($datasource_slave);
 

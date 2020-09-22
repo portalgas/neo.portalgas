@@ -5,26 +5,9 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
-/**
- * KSuppliers Model
- *
- * @property \App\Model\Table\CategorySuppliersTable&\Cake\ORM\Association\BelongsTo $CategorySuppliers
- * @property \App\Model\Table\JContentsTable&\Cake\ORM\Association\BelongsTo $JContents
- * @property \App\Model\Table\DeliveryTypesTable&\Cake\ORM\Association\BelongsTo $DeliveryTypes
- * @property \App\Model\Table\OwnerOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerOrganizations
- *
- * @method \App\Model\Entity\KSupplier get($primaryKey, $options = [])
- * @method \App\Model\Entity\KSupplier newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KSupplier[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KSupplier|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KSupplier saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KSupplier patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KSupplier[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KSupplier findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class SuppliersTable extends Table
 {
     /**
