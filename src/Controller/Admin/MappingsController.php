@@ -166,8 +166,11 @@ class MappingsController extends AppController
         $mapping = $this->Mappings->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $data['name'] = trim($data['name']); 
-            $data['master_column'] = trim($data['master_column']); 
+            $data['name'] = trim($data['name']);
+            if(isset($data['master_column']))
+                $data['master_column'] = trim($data['master_column']); 
+            else
+                $data['master_column'] = '';
             $data['slave_column'] = trim($data['slave_column']);              
             $mapping = $this->Mappings->patchEntity($mapping, $data);
             if ($this->Mappings->save($mapping)) {
@@ -260,7 +263,10 @@ class MappingsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
             $data['name'] = trim($data['name']); 
-            $data['master_column'] = trim($data['master_column']); 
+            if(isset($data['master_column']))
+                $data['master_column'] = trim($data['master_column']); 
+            else
+                $data['master_column'] = '';
             $data['slave_column'] = trim($data['slave_column']); 
             $mapping = $this->Mappings->patchEntity($mapping, $data);
             if ($this->Mappings->save($mapping)) {

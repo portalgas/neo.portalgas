@@ -157,7 +157,7 @@ class ImportFilesController extends AppController
         $this->loadComponent('QueueJson');
 
         $queuesCode = Configure::read('Gdxp.queue.code');
-        $organization_id = $this->Authentication->getIdentity()->organization_id;
+        $organization_id = $this->Authentication->getIdentity()->organization->id;
 
         if ($this->request->is('post')) {
 
@@ -231,7 +231,8 @@ class ImportFilesController extends AppController
             } // end if($continua)
 
             if($continua) {
-                $this->Flash->success(__('UploadValidateOk'));
+                $this->Flash->success(__('Gdxp-ServiceJsonValidateOk'));
+                // $this->Flash->success(__('UploadValidateOk'));
             }
 
         } // end post              
@@ -242,7 +243,7 @@ class ImportFilesController extends AppController
         $this->loadComponent('QueueXml');
 
         $queuesCode = Configure::read('Gdxp.queue.code');
-        $organization_id = $this->Authentication->getIdentity()->organization_id;
+        $organization_id = $this->Authentication->getIdentity()->organization->id;
 
         $debug = false;
         $continua = true;
@@ -313,7 +314,8 @@ class ImportFilesController extends AppController
             } // end if($continua)
 
             if($continua) {
-                $this->Flash->success(__('UploadValidateOk'));
+                $this->Flash->success(__('Gdxp-ServiceJsonValidateOk'));
+                // $this->Flash->success(__('UploadValidateOk'));
             }
 
         } // end post              
