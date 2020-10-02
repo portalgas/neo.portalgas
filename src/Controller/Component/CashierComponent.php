@@ -23,7 +23,7 @@ class CashierComponent extends Component {
 	public function getListDeliveries($user, $debug=false) {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->getsList($user, $this->_where_delivery, $this->_where_order);
+        $results = $deliveriesTable->getsList($user, $user->organization->id, $this->_where_delivery, $this->_where_order);
 
 		if($debug) debug($results);
 		
@@ -33,7 +33,7 @@ class CashierComponent extends Component {
 	public function getDeliveries($user, $debug=false) {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->gets($user, $this->_where_delivery, $this->_where_order);
+        $results = $deliveriesTable->gets($user, $user->organization->id, $this->_where_delivery, $this->_where_order);
 		
 		if($debug) debug($results);
 		

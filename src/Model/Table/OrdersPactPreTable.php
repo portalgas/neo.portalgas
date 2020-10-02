@@ -48,7 +48,7 @@ class OrdersPactPreTable extends OrdersPactTable implements OrderTableInterface
     public function getDeliveries($user, $pact_id=0, $debug=false) {
         
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->getDeliverySysList($user);
+        $results = $deliveriesTable->getDeliverySysList($user, $user->organization->id);
 
         return $results;   
     } 

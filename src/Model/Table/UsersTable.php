@@ -152,7 +152,13 @@ class UsersTable extends Table
         if (empty($user_id)) {
             return null;
         }
-        
+     
+        /*
+         * sono root user_organization_id = 0
+         */
+        if(empty($organization_id))
+            $user_organization_id = $organization_id;
+
         $where = ['organization_id' => $user_organization_id,
                   'id' => $user_id,
                   'block' => 0];

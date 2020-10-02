@@ -373,6 +373,47 @@ class OrdersTable extends Table
         return $results;      
     }
 
+    public function getsList($user, $organization_id, $where = [], $where_delivery = [], $debug=false) {
+
+        $listResults = [];
+
+        $results = $this->gets($user, $organization_id, $where, $where_delivery);
+        if(!empty($results)) {
+            foreach($results as $result) {
+                // debug($result);exit;
+                $listResults[$result->id] = $result->suppliers_organization->name.' '.$result->delivery->luogo;
+            }
+        }
+
+        // debug($listResults);
+        return $listResults;
+    }
+
+    public function gets($user, $organization_id, $where = [], $where_delivery = [], $debug=false) {
+
+        $results = [];
+
+        $where = array_merge(['Orders.organization_id' => $organization_id,
+                              'Orders.isVisibleBackOffice' => 'Y'],
+                              $where);
+
+        $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id], $where_delivery);
+                          
+        if($debug) debug($where);
+        $results = $this->find()
+                                ->where($where)
+                                ->contain(['SuppliersOrganizations' => ['Suppliers'], 
+                                  'Deliveries' => ['conditions' => $where_delivery]  
+                                ])
+                                ->order(['Orders.data_inizio'])
+                                ->all();
+
+        // debug($results);
+        
+        return $results;
+    }
+
+
     public function riapriOrdine($user, $organization_id, $order_id, $debug=false) {
         
     }

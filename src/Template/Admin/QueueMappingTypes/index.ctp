@@ -51,8 +51,8 @@
                   <td><?= h($queueMappingType->code) ?></td>
                   <td><?= h($queueMappingType->name) ?></td>
                   <td><?= h($queueMappingType->component) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queueMappingType, $queueMappingType->is_system) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queueMappingType, $queueMappingType->is_active) ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queueMappingType, 'is_system') ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queueMappingType, 'is_active') ?></td>
                   <td><?= $this->Number->format($queueMappingType->sort) ?></td>
                   <td><?= h($queueMappingType->created) ?></td>
                   <td><?= h($queueMappingType->modified) ?></td>

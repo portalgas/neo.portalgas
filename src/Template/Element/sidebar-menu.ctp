@@ -28,6 +28,20 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
   ?> 
   <li class="treeview"> 
     <a href="#">
+      <i class="fa fa-cog"></i> <span><?php echo __('Administrator');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-mail pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>      
+      <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Logs Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('OrderTypes Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+    </ul>
+    </a>
+  </li>  
+  <li class="treeview"> 
+    <a href="#">
       <i class="fa fa-book"></i> <span><?php echo __('Documents');?></span>
       <span class="pull-right-container">
         <i class="fa fa-mail pull-right"></i>
@@ -42,39 +56,6 @@ $portalgas_bo_home = $config['Portalgas.bo.home'];
     </ul>
     </a>
   </li>  
-  <li class="treeview"> 
-    <a href="#">
-      <i class="fa fa-comment"></i> <span><?php echo __('Logs');?></span>
-      <span class="pull-right-container">
-        <i class="fa fa-mail pull-right"></i>
-      </span>
-    <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-    </ul>
-    </a>
-  </li>
-  <li class="treeview"> 
-    <a href="#">
-      <i class="fa fa-envelope"></i> <span><?php echo __('MailSends');?></span>
-      <span class="pull-right-container">
-        <i class="fa fa-mail pull-right"></i>
-      </span>
-    <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-    </ul>
-    </a>
-  </li>
-  <li class="treeview"> 
-    <a href="#">
-      <i class="fa fa-tags"></i> <span><?php echo __('OrderTypes');?></span>
-      <span class="pull-right-container">
-        <i class="fa fa-angle-left pull-right"></i>
-      </span>
-    <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-    </ul>
-    </a>
-  </li>
   <li class="treeview"> 
     <a href="#">
       <i class="fa fa-handshake-o"></i> <span><?php echo __('Pact');?></span>

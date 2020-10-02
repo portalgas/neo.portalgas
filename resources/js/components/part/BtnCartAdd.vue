@@ -71,6 +71,8 @@ export default {
   methods: {
     ...mapActions(["addArticle", "updateCart", "addMessage"]),
     getCart() {
+      console.log(articles_order);
+
       console.log("getCart con articles_order.organization_id "+this.articles_order.organization_id+" articles_order.articles_order_organization_id " + this.articles_order.articles_order_organization_id+" articles_order.articles_order_id "+this.articles_order.articles_order_id+" articles_order.order_id "+this.articles_order.order_id);
 
       (this.cart = {

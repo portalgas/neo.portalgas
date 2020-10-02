@@ -183,8 +183,7 @@ class ArticlesOrdersTable extends Table
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCartsByOrder($user, $organization_id, $order_id, $user_id, $where=[], $order=[], $debug=false) {
-                            
+    public function getCartsByOrder($user, $organization_id, $order_id, $user_id, $where=[], $order=[], $debug=false) {      
         $where = array_merge(['ArticlesOrders.organization_id' => $organization_id,
                               'ArticlesOrders.order_id' => $order_id,
                               'ArticlesOrders.stato != ' => 'N'], 
@@ -205,11 +204,19 @@ class ArticlesOrdersTable extends Table
          * estraggo eventuali acquisti 
          */ 
         if($results) {
+
             $cartsTable = TableRegistry::get('Carts');
-            $newResults = [];
             foreach($results as $numResult => $result) {
-                $newResults[$numResult] = $result;
-                
+             
+                /*
+                 * setto tag con gli id
+                 */
+                $ids['organization_id'] = $result['organization_id'];
+                $ids['order_id'] = $result['order_id'];
+                $ids['article_organization_id'] = $result['article_organization_id'];
+                $ids['article_id'] = $result['article_id'];
+                $results[$numResult]['ids'] = $ids;
+
                 $where = ['Carts.user_id' => $user_id, 'Carts.deleteToReferent' => 'N'];
                 $cartResults = $cartsTable->find()
                             ->where($where)

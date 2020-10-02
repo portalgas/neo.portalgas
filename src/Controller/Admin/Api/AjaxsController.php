@@ -7,7 +7,6 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 
 class AjaxsController extends ApiAppController
-// class AjaxsController extends AppController
 {
     public function initialize()
     {
@@ -62,6 +61,10 @@ class AjaxsController extends ApiAppController
                 $results = $this->_fieldUpdateExecute($entityTable, $entity, 'data_range_fine', $data_range_fine, $debug);
             }
         }
+        elseif ($this->stringStartsWith($field, 'data')) {
+            $value = $this->convertDate($value);
+            $results = $this->_fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
+        }        
         else {
             $results = $this->_fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
         }

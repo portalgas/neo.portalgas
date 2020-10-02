@@ -123,11 +123,11 @@ class DeliveriesTable extends Table
         return $rules;
     }
 
-    public function getsList($user, $where = [], $where_order = [], $debug=false) {
+    public function getsList($user, $organization_id, $where = [], $where_order = [], $debug=false) {
 
         $listResults = [];
 
-        $results = $this->gets($user, $where, $where_order);
+        $results = $this->gets($user, $organization_id, $where, $where_order);
         if(!empty($results)) {
             foreach($results as $result) {
                 $listResults[$result->id] = $result->luogo.' '.$result->data;
@@ -138,16 +138,16 @@ class DeliveriesTable extends Table
         return $listResults;
     }
 
-    public function gets($user, $where = [], $where_order = [], $debug=false) {
+    public function gets($user, $organization_id, $where = [], $where_order = [], $debug=false) {
 
         $results = [];
 
-        $where = array_merge(['Deliveries.organization_id' => $user->organization->id,
+        $where = array_merge(['Deliveries.organization_id' => $organization_id,
                               'Deliveries.isVisibleBackOffice' => 'Y',
                               'Deliveries.sys' => 'N'], 
                               $where);
 
-        $where_order = array_merge(['Orders.organization_id' => $user->organization->id], $where_order);
+        $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
                            
         if($debug) debug($where);
         $deliveryResults = $this->find()
@@ -173,9 +173,9 @@ class DeliveriesTable extends Table
         return $results;
     }
 
-    public function getDeliverySys($user, $debug=false) {
+    public function getDeliverySys($user, $organization_id, $debug=false) {
 
-        $where = ['Deliveries.organization_id' => $user->organization->id,
+        $where = ['Deliveries.organization_id' => $organization_id,
                   'Deliveries.sys' => 'Y'];
 
         $results = $this->find()
@@ -185,11 +185,11 @@ class DeliveriesTable extends Table
         return $results;    
     }   
 
-    public function getDeliverySysList($user, $debug=false) {
+    public function getDeliverySysList($user, $organization_id, $debug=false) {
 
         $results = [];
 
-        $where = ['Deliveries.organization_id' => $user->organization->id,
+        $where = ['Deliveries.organization_id' => $organization_id,
                   'Deliveries.sys' => 'Y'];
 
         $deliveryResults = $this->find()

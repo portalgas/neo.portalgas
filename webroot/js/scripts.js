@@ -45,93 +45,20 @@ Script.prototype = {
         }); 
 
         /*
+         * aggiorna il DB con l'ico true/flase
+         */
+        $('.fieldUpdateAjax').click(function (e) {
+            console.log('fieldUpdateAjax click()');
+            _this.fieldUpdateAjax(this);
+        }); 
+
+        /*
          * aggiorna il DB con il valore del campo
          */
         $('.fieldUpdateAjax').change(function (e) {
-
+            console.log('fieldUpdateAjax change()');
             e.preventDefault();
-
-            var id = $(this).attr('data-attr-id');
-            var entity = $(this).attr('data-attr-entity');
-            var field = $(this).attr('data-attr-field');
-
-            if (typeof id === 'undefined') {
-                console.log('fieldUpdateAjax data-attr-id undefined!');
-                return;
-            }
-                 
-            if (typeof entity === 'undefined') {
-                console.log('fieldUpdateAjax data-attr-entity undefined!');
-                return;
-            }
-                 
-            if (typeof field === 'undefined') {
-                console.log('fieldUpdateAjax data-attr-field undefined!');
-                return;                
-            }
-
-            var value = '';
-            var type = $(this).attr('type');
-            // console.log('type '+type);
-            switch(type) {
-              case 'checkbox':
-                // console.log('checked '+$(this).is(':checked'));
-                if($(this).is(':checked'))
-                    value = 1;
-                else
-                    value = 0;
-              break;
-              default:
-                value = $(this).val();
-            } 
-
-            /*
-             * response, append div
-             */
-            // $(this).after('<div class="response-ajax" id="'+entity+'-'+id+'"></div>');
-            var responseHtml = $('#'+entity+'-'+id);
-            if (typeof responseHtml === 'undefined') 
-                console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
-            else
-                console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
-            responseHtml.addClass(_this.ico_spinner);
-
-            var data = {
-                id: id,
-                entity: entity,
-                field: field,
-                value: value,
-            };
-            console.log(data);
-
-            $.ajax({url: _this.fieldUpdateAjaxUrl, 
-                    data: data, 
-                    method: 'POST',
-                    dataType: 'json',
-                    cache: false,
-                    headers: {
-                      'X-CSRF-Token': csrfToken
-                    },                
-                    success: function (response) {
-                        console.log(response);
-                        if (response.code) {
-                        }
-                        
-                        responseHtml.removeClass(_this.ico_spinner);
-                        responseHtml.addClass(_this.ico_ok);
-                    },
-                    error: function (e) {
-                        console.log(e.responseText.message);
-                        responseHtml.removeClass(_this.ico_spinner);
-                        responseHtml.addClass(_this.ico_ko);
-                    },
-                    complete: function (e) {
-                        setTimeout( function() {
-                            /* responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);  */
-                            responseHtml.remove();
-                        } , 5000);
-                    }
-                });                     
+            _this.fieldUpdateAjax(this);               
         }); 
 
         $(".navbar .menu").slimscroll({
@@ -184,6 +111,123 @@ Script.prototype = {
           //endDate: moment().subtract(1, 'month'),  
         });        
     },
+    /*
+     * aggiorna il DB con il valore gestiti da data-attr
+     */
+    fieldUpdateAjax: function (obj) {
+
+        var _this = this;
+        var _obj = obj;
+
+        var id = $(obj).attr('data-attr-id');
+        var entity = $(obj).attr('data-attr-entity');
+        var field = $(obj).attr('data-attr-field');
+
+        if (typeof id === 'undefined') {
+            console.log('fieldUpdateAjax data-attr-id undefined!');
+            return;
+        }
+             
+        if (typeof entity === 'undefined') {
+            console.log('fieldUpdateAjax data-attr-entity undefined!');
+            return;
+        }
+             
+        if (typeof field === 'undefined') {
+            console.log('fieldUpdateAjax data-attr-field undefined!');
+            return;                
+        }
+
+        var value = '';
+        var type = $(obj).attr('type');
+        // console.log('type '+type);
+        if (typeof type === 'undefined') 
+            type = 'icon-true-false';
+
+        switch(type) {
+          case 'checkbox':
+            // console.log('checked '+$(this).is(':checked'));
+            if($(obj).is(':checked'))
+                value = 1;
+            else
+                value = 0;
+          break;
+          case 'icon-true-false':
+                value = $(obj).attr('data-attr-value');
+                value=='1' ? value='0' : value='1';
+          break;
+          default:
+            value = $(obj).val();
+        } 
+
+        $(obj).after('<div class="response-ajax" id="'+entity+'-'+id+'"></div>'); 
+        var responseHtml = $('#'+entity+'-'+id);
+        if (typeof responseHtml === 'undefined') 
+            console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
+        else
+            console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
+        responseHtml.addClass(_this.ico_spinner);
+
+        var data = {
+            id: id,
+            entity: entity,
+            field: field,
+            value: value,
+        };
+        console.log(data);
+
+        $.ajax({url: _this.fieldUpdateAjaxUrl, 
+                data: data, 
+                method: 'POST',
+                dataType: 'json',
+                cache: false,
+                headers: {
+                  'X-CSRF-Token': csrfToken
+                },                
+                success: function (response) {
+                    console.log(response);
+                    if (response.code) {
+                    }
+                    
+                    responseHtml.removeClass(_this.ico_spinner);
+                    responseHtml.addClass(_this.ico_ok);
+
+                    if(type=='icon-true-false') {
+
+                        var value = $(_obj).data('attr-value');
+                        if(value==0) {
+                            $(_obj).data('attr-value', '1');
+                            $(_obj).attr('data-attr-value', '1'); 
+                        }
+                        else
+                        if(value==1) { 
+                            $(_obj).data('attr-value', '0'); 
+                            $(_obj).attr('data-attr-value', '0'); 
+                        }
+                                                
+                        if($(_obj).hasClass('glyphicon-ok'))
+                            $(_obj).removeClass('glyphicon-ok').removeClass('icon-true').addClass('glyphicon-remove').addClass('icon-false');
+                        else 
+                        if($(_obj).hasClass('glyphicon-remove'))
+                            $(_obj).removeClass('glyphicon-remove').removeClass('icon-false').addClass('glyphicon-ok').addClass('icon-true');
+                        else 
+                        if($(_obj).hasClass('fa-lock'))
+                            $(_obj).removeClass('fa-lock').removeClass('icon-true').addClass('fa-unlock-alt').addClass('icon-false');                        
+                        else 
+                        if($(_obj).hasClass('fa-unlock-alt'))
+                            $(_obj).removeClass('fa-unlock-alt').removeClass('icon-false').addClass('fa-lock').addClass('icon-true');
+                    }
+                },
+                error: function (e) {
+                    console.log(e.responseText.message);
+                    responseHtml.removeClass(_this.ico_spinner);
+                    responseHtml.addClass(_this.ico_ko);
+                },
+                complete: function (e) {
+                    setTimeout( function() {responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);} , 2500);
+                }
+            });
+    },      
     tooglePriceCollaborator: function (obj) {
         var _this = this;
         var value = $(obj).val();

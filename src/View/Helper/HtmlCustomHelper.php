@@ -77,18 +77,31 @@ class HtmlCustomHelper extends FormHelper
     	return $str;
     }
 
-    public function drawState($state) {
-
-        $class = get_class($state); // App\Model\Entity\PayType
-        $class = explode('\\', $class);
-        $controller = ($class[count($class)-1]).'s';
+    public function drawState($state, $options=[]) {
 
         $html = '';
+
+        // debug(get_class($state));
+        $classname = get_class($state); // App\Model\Entity\PayType
+        $controller = '';
+        if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
+            $controller = $matches[1].'s';
+        }
+        
         if(!empty($state->css_color))
            $html .=  '<span class="badge" style="background-color:'.$state->css_color.'">&nbsp;</span> ';
-        $html .= $this->Html->link($state->name, ['controller' => $controller, 'action' => 'view', $state->id]);
+        if(isset($options['no-label']) && $options['no-label']) {
+
+        }
+        else {
+            if(isset($options['no-link']))
+                $html .= $state->name;
+            else
+                $html .= $this->Html->link($state->name, ['controller' => $controller, 'action' => 'view', $state->id]);
+        }
+
         return $html;
-    }            
+    }             
 
     public function drawDocumentPreview($document, $options=[]) {
 
@@ -118,15 +131,45 @@ class HtmlCustomHelper extends FormHelper
     /*
      * Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']); 
      */
-    public function drawTruFalse($model, $value, $icons=[]) {
+    public function drawTruFalse($model, $field, $icons=[]) {
 
         $html = '';
+
+        /*
+         * estraggo da App\Model\Entity\... la classe
+         */
+        // debug(get_class($model));
+        $classname = get_class($model);
+        $entity = '';
+        if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
+            $entity = $matches[1].'s';
+        }
+        if(empty($entity))
+            return $html;
+
+        $value = $model->{$field};
+
+        if($value===true) 
+            $data_attr_value = '1';
+        else
+            $data_attr_value = '0';
+        $data_attrs = '';
+        $data_attrs .= 'data-attr-id='.$model->id.' data-attr-entity="'.$entity.'" data-attr-field="'.$field.'" data-attr-value="'.$data_attr_value.'"';
+        
+        /*
+         * per is_default_ini e is_default_end disabilito fieldUpdateAjax perche' devo aggiornarli tutti
+         */
+        if($field=='is_default_ini' || $field=='is_default_end')
+            $class = 'fieldUpdateAjax-disabled';
+        else 
+            $class = 'fieldUpdateAjax';
+
         if($value===true) {
             if(isset($icons['OK']))
                 $icon = $icons['OK'];
             else
                 $icon = 'glyphicon glyphicon-ok';
-            $html .= '<span style="color:#2E8B57" class="'.$icon.'" title="'.__('Yes').'"></span>';
+            $html .= '<span '.$data_attrs.' class="'.$class.' trueFalse '.$icon.' icon-true" title="'.__('Yes').'"></span>';
         }
         else
         if($value===false) {
@@ -134,13 +177,13 @@ class HtmlCustomHelper extends FormHelper
                 $icon = $icons['KO'];
             else
                 $icon = 'glyphicon glyphicon-remove';
-            $html .= '<span style="color:#dd4b39" class="'.$icon.'" title="'.__('No').'"></span>';
+            $html .= '<span '.$data_attrs.' class="'.$class.' trueFalse '.$icon.' icon-false" title="'.__('No').'"></span>';
         }
         else 
             $html .= '';
 
         return $html;
-    } 
+    }   
 
     public function importo($value) {
     	$str = '';

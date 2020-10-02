@@ -21,7 +21,29 @@ class TestsController extends AppController
     }
 
     /*
-     * simula chiamata ajax 
+     * testing chiamata ajax
+     */
+    public function ajax()
+    {
+        $results = [];
+        
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        $service_urls = [];
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $deliveries = $deliveriesTable->getsList($user, $user->organization->id);  
+        
+        $orderTable = TableRegistry::get('Orders');
+        $orders = $orderTable->getsList($user, $user->organization->id);  
+    
+        $this->set(compact('service_urls', 'deliveries', 'orders'));
+    }
+
+    /*
+     * simula chiamata ajax delle queue
      */
     public function queue() {
         

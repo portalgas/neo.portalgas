@@ -56,8 +56,8 @@
                   <td><?= h($table->entity) ?></td>
                   <td><?= h($table->where_key) ?></td>
                   <td><?= h($table->update_key) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($table, $table->is_system); ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($table, $table->is_active); ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($table, 'is_system'); ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($table, 'is_active'); ?></td>
                   <td><?= h($table->created) ?></td>
                   <td><?= h($table->modified) ?></td>
                   <td class="actions text-right">

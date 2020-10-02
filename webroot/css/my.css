@@ -1,0 +1,9 @@
+.fieldUpdateAjax.trueFalse {
+	cursor: pointer;
+}
+.fieldUpdateAjax.icon-true, .fieldUpdateAjax-disabled.icon-true {
+	color: #2E8B57;
+}
+.fieldUpdateAjax.icon-false, .fieldUpdateAjax-disabled.icon-false {
+	color: #dd4b39;
+}

@@ -7,13 +7,13 @@ use Cake\Core\Configure;
 
 class ApiArticleDecorator  extends AppDecorator {
 	
-	public $serializableAttributes = array('id', 'name');
+	public $serializableAttributes = null; // ['id', 'name'];
 	public $results; 
 
     public function __construct($articles)
     {
     	$results = [];
-	    // debug($articles);
+	    debug($articles);
 
 	    if($articles instanceof \Cake\ORM\ResultSet) {
 			foreach($articles as $numResult => $article) {

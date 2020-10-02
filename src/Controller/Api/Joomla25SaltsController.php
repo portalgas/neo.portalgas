@@ -29,6 +29,8 @@ class joomla25SaltsController extends AppController
      * method: get
      * url: /api/joomla25Salts/login?u=user_salt
      *
+     * Autenticazione \src\Auth\Joomla25Authenticate.php
+     *
      * user_salt = 
      *  $user_id = $this->Authentication->getIdentity()->id;
      *  $user_organization_id = $this->Authentication->getIdentity()->organization_id;
@@ -83,6 +85,8 @@ class joomla25SaltsController extends AppController
 
         if($debug) debug($redirects); 
         
+        if($debug) debug($this->Authentication->getIdentity());
+
         if($debug) exit;
 
 		return $this->redirect($redirects); 

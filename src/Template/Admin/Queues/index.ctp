@@ -72,8 +72,8 @@
                       $queue->slave_db_datasource;
                    ?></td>
                   <td><?= h($queue->log_type) ?></td>                
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queue, $queue->is_system) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queue, $queue->is_active) ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queue, 'is_system') ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($queue, 'is_active') ?></td>
 
                   <td><?= h($queue->created) ?></td>
                   <td><?= h($queue->modified) ?></td>

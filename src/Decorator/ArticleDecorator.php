@@ -7,7 +7,7 @@ use Cake\Core\Configure;
 
 class ArticleDecorator  extends AppDecorator {
 	
-	public $serializableAttributes = array('id', 'name');
+	public $serializableAttributes = null; // ['id', 'name'];
 	public $results; 
 
     public function __construct($articles)

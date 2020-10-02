@@ -43,10 +43,11 @@ class ArticlesOrdersController extends ApiAppController
 
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $results = $articlesOrdersTable->getCartsByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);
-        /*
+
+        /*        
         if(!empty($results)) {
-            // $results = new ApiArticleDecorator($results);
-            $results = new ArticleDecorator($results);
+            $results = new ApiArticleDecorator($results);
+            //$results = new ArticleDecorator($results);
             $results = $results->results;
         }
         */

@@ -100,9 +100,9 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
         $deliveriesTable = TableRegistry::get('Deliveries');
     
         $where = ['DATE(Deliveries.data) >= CURDATE()'];
-        $deliveries = $deliveriesTable->getsList($user, $where);
+        $deliveries = $deliveriesTable->getsList($user, $user->organization->id, $where);
 
-        $sysDeliveries = $deliveriesTable->getDeliverySysList($user);
+        $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $user->organization->id);
 
         $results = [];
         $results += $deliveries;
