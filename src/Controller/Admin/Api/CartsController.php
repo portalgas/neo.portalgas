@@ -101,5 +101,40 @@ class CartsController extends ApiAppController
         // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
         
         return $this->response; 
-    }     
+    }  
+
+    /* 
+     * url: /admin/api/carts/getByOrder
+     * front-end - estrae gli articoli associati ad un ordine filtrati per user  
+     */
+    public function getByOrder() {
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $results = [];
+        $where = [];
+        $order = [];
+   
+        $order_id = $this->request->getData('order_id');
+        
+        $cartsTable = TableRegistry::get('Carts');
+        $results = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);            
+        /*
+        if(!empty($results)) {
+            // $results = new ApiArticleDecorator($results);
+            $results = new ArticleDecorator($results);
+            $results = $results->results;
+        }
+        */
+        $results = json_encode($results);
+        $this->response->withType('application/json');
+        $body = $this->response->getBody();
+        $body->write($results);        
+        $this->response->withBody($body);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response;
+    }        
 }

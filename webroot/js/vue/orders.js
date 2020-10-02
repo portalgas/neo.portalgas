@@ -101,6 +101,8 @@ $(function () {
 		    },	
 		    getRowsFromDatabase: function() {	
 
+		    	var _thit = this;
+
 		    	console.log('getRowsFromDatabase');
 		        var order_id = $('#id').val();
 		        if(order_id=='0' || order_id=='' || typeof order_id === 'undefined') {
@@ -126,7 +128,7 @@ $(function () {
 	                	response = JSON.parse(response);
 	                    console.log(response);
 	                    if (response.code==200) {
-		                    this.addToRows(response.results);
+		                    _this.addToRows(response.results);
 		                }
 	                },
 	                error: function (e) {
@@ -134,7 +136,7 @@ $(function () {
 	                    console.log(e.responseText.message);
 	                },
 	                complete: function (e) {
-				    	this.spinner_run_type_prices = false;
+				    	_this.spinner_run_type_prices = false;
 			            $('.run-type-prices .spinner').removeClass(ico_spinner);
 	                }
 	            });     
@@ -143,7 +145,7 @@ $(function () {
 		    	if(results.length==0)
 		    		return;
 
-		    	var that = this;
+		    	var _thit = this;
            		$.each(results, function(key, value) {
 					let row = {}
 					row.name = value.name;
@@ -151,7 +153,7 @@ $(function () {
 	    			row.type = value.type;
 	    			row.value = value.value;
 	    			row.sort = value.sort;
-					that.rows.push(row);						
+					_thit.rows.push(row);						
 				});
 		    }		    
 	  },

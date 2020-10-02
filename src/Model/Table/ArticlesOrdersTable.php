@@ -197,6 +197,7 @@ class ArticlesOrdersTable extends Table
                         ])
                         ->where($where)
                         ->order($order)
+                        ->limit(1)
                         ->all()
                         ->toArray();
 
@@ -207,15 +208,6 @@ class ArticlesOrdersTable extends Table
 
             $cartsTable = TableRegistry::get('Carts');
             foreach($results as $numResult => $result) {
-             
-                /*
-                 * setto tag con gli id
-                 */
-                $ids['organization_id'] = $result['organization_id'];
-                $ids['order_id'] = $result['order_id'];
-                $ids['article_organization_id'] = $result['article_organization_id'];
-                $ids['article_id'] = $result['article_id'];
-                $results[$numResult]['ids'] = $ids;
 
                 $where = ['Carts.user_id' => $user_id, 'Carts.deleteToReferent' => 'N'];
                 $cartResults = $cartsTable->find()
@@ -225,6 +217,10 @@ class ArticlesOrdersTable extends Table
                 if(!empty($cartResults)) {
                     $results[$numResult]['cart'] = $cartResults;
                 } 
+                else {
+                    $results[$numResult]['cart'] = [];
+                    $results[$numResult]['cart']['qty'] = 0;
+                }
             }
         } // if($results)
         

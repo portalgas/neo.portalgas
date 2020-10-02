@@ -32,12 +32,13 @@ class TestsController extends AppController
         // debug($user);
 
         $service_urls = [];
+        $service_urls['/admin/api/articles-orders/getCartsByOrder'] = '/admin/api/articles-orders/getCartsByOrder';
 
         $deliveriesTable = TableRegistry::get('Deliveries');
         $deliveries = $deliveriesTable->getsList($user, $user->organization->id);  
         
         $orderTable = TableRegistry::get('Orders');
-        $orders = $orderTable->getsList($user, $user->organization->id);  
+        $orders = $orderTable->getsList($user, $user->organization->id, ['Orders.state_code IN ' => ['OPEN', 'PROCESSED-BEFORE-DELIVERY']]);  
     
         $this->set(compact('service_urls', 'deliveries', 'orders'));
     }

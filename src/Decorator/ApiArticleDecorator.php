@@ -13,25 +13,30 @@ class ApiArticleDecorator  extends AppDecorator {
     public function __construct($articles)
     {
     	$results = [];
-	    debug($articles);
+	    // debug($articles);
 
 	    if($articles instanceof \Cake\ORM\ResultSet) {
-			foreach($articles as $numResult => $article) {
-                $article_detail = $articles->article_details[0];
-				$results[$numResult] = $this->_decorate($article, $article_detail);
+			foreach($articles as $numResult => $row) {
+				$results[$numResult] = $this->_decorate($row);
 			}
 	    }
 	    else 
-	    if($articles instanceof \App\Model\Entity\Article) {
-            $article_detail = $articles->article_details[0];
-			$results = $this->_decorate($articles, $article_detail);  	
+	    if($articles instanceof \App\Model\Entity\ArticlesOrder) {
+			$results = $this->_decorate($articles);  	
 	    }
+        else {
+            foreach($articles as $numResult => $row) {
+                $results[$numResult] = $this->_decorate($row);
+            }
+        }
 
 		$this->results = $results;
     }
 
-	private function _decorate($article, $article_detail) {
+	private function _decorate($row) {
 
+        // debug($row);
+        
         $sold_out = false;	           
         $qty_max = 0;
         $store = '';
@@ -39,53 +44,96 @@ class ApiArticleDecorator  extends AppDecorator {
         $price = 0;
 
         $results = [];
-        $results['id'] = $article_detail->id;
-        $results['article_id'] = $article->id;
+             
+        /*
+         * setto tag con gli id
+         */
+        $ids = [];
+        $ids['organization_id'] = $row->organization_id;
+        $ids['order_id'] = $row->order_id;
+        $ids['article_organization_id'] = $row->article_organization_id;
+        $ids['article_id'] = $row->article_id;
+        $results['ids'] = $ids;
+
         $results['has_variants'] = false; // e' sempre articolo e la sua variante
-        $results['name'] = $this->_getArticleName($article, $article_detail);
+        $results['name'] = $row->name;
             
-        if(empty($article_detail->sku))
-            $results['sku'] = $article->sku;
+        if(empty($row->codice))
+            $results['sku'] = '';
         else
-            $results['sku'] = $article_detail->sku;
+            $results['sku'] = $row->article->codice;
 
-        if(empty($article_detail->descri))
-            $results['descri'] = $article->descri;
+        if(empty($row->article->nota))
+            $results['descri'] = '';
         else
-            $results['descri'] = $article_detail->descri;
+            $results['descri'] = $row->article->nota;
 
-        $results['img1'] = $this->_getArticleImg1($article, $article_detail);        
+        if(empty($row->article->ingredienti))
+            $results['ingredients'] = '';
+        else
+            $results['ingredients'] = $row->article->ingredienti;
+
+        $results['img1'] = $this->_getArticleImg1($row);        
         $results['img1_width'] = Configure::read('Article.img.preview.width');
 
-        if(empty($article_detail->slug))
-            $results['slug'] = $article->slug;
+        if(empty($row->article->slug))
+            $results['slug'] = '';
         else
-            $results['slug'] = $article->slug.'-'.$article_detail->sku;
+            $results['slug'] = $row->article->slug.'-'.$results['sku'];
 
-        $results['price_min'] = $article->price_min;
-        $results['price_max'] = $article->price_max;
-        $results['package'] = $article->package;
-        $results['qty_min'] = $article->qty_min;
-        $results['qty_multiple'] = $article->qty_multiple;    
-        $results['ingredients'] = $article->ingredients;    
-        $results['is_bio'] = $article->is_bio;    
-   
-        $results['qty'] = $article_detail->qty;    
+        if(empty($row->prezzo))
+            $results['price'] = '';
+        else
+            $results['price'] = $row->prezzo;
 
-        $results['um_code'] = $article_detail->um->code; 
-        $results['um_name'] = $article_detail->um->name;  
+        if(empty($row->pezzi_confezione))
+            $results['package'] = '';
+        else
+            $results['package'] = $row->pezzi_confezione;
 
-        $results['um_rif_code'] = $article_detail->um_rif->code; 
-        $results['um_rif_name'] = $article_detail->um_rif->name;   
+        if(empty($row->qta_minima))
+            $results['qty_min'] = '';
+        else
+            $results['qty_min'] = $row->qta_minima;
 
-        $results['um_rif_label'] = $this->_getArticlePrezzoUM($price, $article_detail->qty, $article_detail->um, $article_detail->um_rif);          
-        $results['conf'] = $article_detail->qty.' '.$article_detail->um->name;
+        if(empty($row->qta_multipli))
+            $results['qty_multiple'] = '';
+        else
+            $results['qty_multiple'] = $row->qta_multipli;
+
+        if(empty($row->article->bio))
+            $results['is_bio'] = '';
+        else {
+            if($row->article->bio=='Y')
+                $results['is_bio'] = true;
+            else
+                $results['is_bio'] = false;
+        }
+
+        $results['qty_cart'] = $row->qta_cart; 
+        $results['qty_minima_order'] = $row->qta_minima_order;
+        $results['qty_massima_order'] = $row->qta_massima_order;
+        $results['qty_multipli'] = $row->qta_multipli;
+        $results['qty'] = $row->article->qta;  
+        $results['price_min'] = 0;
+        $results['price_max'] = 0;  
+
+        $results['um'] = $row->article->um;   
+        $results['um_rif'] = $row->article->um_riferimento;   
+
+        $results['um_rif_label'] = $this->_getArticlePrezzoUM($results['price'], $results['qty'], $results['um'], $results['um_rif']);          
+        $results['conf'] = $results['qty'].' '.$results['um'];
 
         /*
          * qty max
          */
-        if($article->qty_max>0)
-            $qty_max = $article->qty_max;
+        if(empty($row->qta_massima))
+            $results['qty_max'] = '';
+        else
+            $results['qty_max'] = $row->qta_massima;
+        /*
+        if($results['qty_max']>0)
+            $qty_max = $results['qty_max'];
         else {
             if($article_detail->has('stores') && !empty($article_detail->stores)) {
                 $store = $article_detail->stores[0]->qty;
@@ -95,7 +143,7 @@ class ApiArticleDecorator  extends AppDecorator {
             } 
         }
         $results['qty_max'] = $qty_max;
-
+        
         $store = '';
         if($article_detail->has('stores') && !empty($article_detail->stores)) {
             $store = $article_detail->stores[0]->qty;
@@ -112,7 +160,10 @@ class ApiArticleDecorator  extends AppDecorator {
         $results['sold_out'] = $sold_out;
         $results['price_pre_discount'] = $price_pre_discount;
         $results['price'] = $price;     
-        
+        */
+
+        $results['cart'] = $row->cart; 
+
         return $results;
     }
 

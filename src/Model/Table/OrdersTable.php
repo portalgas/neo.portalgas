@@ -381,7 +381,7 @@ class OrdersTable extends Table
         if(!empty($results)) {
             foreach($results as $result) {
                 // debug($result);exit;
-                $listResults[$result->id] = $result->suppliers_organization->name.' '.$result->delivery->luogo;
+                $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->luogo.' '.$result->delivery->data;
             }
         }
 
@@ -396,7 +396,7 @@ class OrdersTable extends Table
         $where = array_merge(['Orders.organization_id' => $organization_id,
                               'Orders.isVisibleBackOffice' => 'Y'],
                               $where);
-
+        if($debug) debug($where); 
         $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id], $where_delivery);
                           
         if($debug) debug($where);
@@ -407,7 +407,6 @@ class OrdersTable extends Table
                                 ])
                                 ->order(['Orders.data_inizio'])
                                 ->all();
-
         // debug($results);
         
         return $results;

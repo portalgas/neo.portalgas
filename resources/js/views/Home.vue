@@ -2,13 +2,13 @@
 
     <div class="card-columns card-deck-disabled">
       <div class="card"   
-          v-for="articles_order in articles_orders"
-          :article="articles_order"
-          :key="articles_order.article_id"
+          v-for="article in articles"
+          :article="article"
+          :key="article.article_id"
         >
 
-          <app-articles-orders
-            v-bind:articles_order="articles_order"></app-articles-orders>
+          <app-articles
+            v-bind:article="article"></app-articles>
       </div>
     </div>
 
@@ -17,14 +17,14 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
-import articlesOrders from "../components/part/ArticlesOrders.vue";
+import articles from "../components/part/Articles.vue";
 
 export default {
   name: "Home",
   data() {
     return {
       order_id: 20022,
-      articles_orders: Object,
+      articles: Object,
       article_variant_item_selected: 2,
       selected: "A",
       counter: 0,
@@ -33,10 +33,10 @@ export default {
     };
   },
   components: {
-    appArticlesOrders: articlesOrders,
+    appArticles: articles,
   },  
   mounted() {
-    this.getsArticlesOrders();
+    this.getsArticles();
   },
   methods: {
     onIncrementEmit() {
@@ -47,16 +47,16 @@ export default {
     onChildClick(value) {
       this.fromChild = value;
     },
-    getsArticlesOrders() {
+    getsArticles() {
       let params = {
         order_id: this.order_id
       };
       axios
-        .post("http://neo.portalgas.local.it:81/api/articles-orders/getCartsByOrder", params)
+        .post("http://neo.portalgas.local.it:81/admin/api/articles-orders/getCartsByOrder", params)
         .then(response => {
           // console.log(response.data);
-          this.articles_orders = response.data;
-          console.log(this.articles_orders);
+          this.articles = response.data;
+          console.log(this.articles);
         })
         .catch(error => {
           console.log("Error: " + error);

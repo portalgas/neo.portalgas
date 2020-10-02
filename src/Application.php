@@ -59,13 +59,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function bootstrap()
     {
-        $this->addPlugin('AssetMix', ['bootstrap' => true]);
-
-        $this->addPlugin('CakeDC/Enum');
-
-        $this->addPlugin('Josegonzalez/Upload');
-        $this->addPlugin('DataTables');
-
         parent::bootstrap();
 
         if (PHP_SAPI === 'cli') {
@@ -86,6 +79,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             $this->addPlugin('DebugKit');
         }
 
+        $this->addPlugin('AssetMix', ['bootstrap' => true]);
+
+        $this->addPlugin('CakeDC/Enum');
+
+        $this->addPlugin('Josegonzalez/Upload');
+        $this->addPlugin('DataTables');
+        
         $this->addPlugin('ADmad/JwtAuth');
         $this->addPlugin('Authentication');
         $this->addPlugin('Authorization');
@@ -154,7 +154,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
              'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login) 
              'unauthenticatedRedirect' => $portalgas_bo_url_login
-            */ 
+            */ 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
             ]);
             $middlewareQueue->add($authentication);
 
@@ -266,7 +266,5 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         }
 
         $this->addPlugin('Migrations');
-
-        // Load more plugins here
     }    
 }

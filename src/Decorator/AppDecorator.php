@@ -349,25 +349,6 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         return true;
     }
 
-    protected function _getArticleName($article, $article_detail) {
-
-        $results = '';
-
-        if(!empty($article_detail->name)) 
-            $results = $article_detail->name;
-        else 
-        if($article_detail->has('article_variant_items') && !empty($article_detail->article_variant_items)) {
-            
-            foreach($article_detail->article_variant_items as $article_variant_item) {
-                $results .= $article->name.'-'.$article_variant_item->variant_item->name.' ';
-            }                
-        }
-        else 
-            $results = $article->name;
-    
-        return $results;
-    }
-
     protected function _getArticlePrezzoUM($price, $qty, $um, $um_rif, $debug = false) {
 
         $results = '';
@@ -375,8 +356,8 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         if ($debug) {
             echo '<br />prezzo ' . $price;
             echo '<br />qta ' . $qty;
-            echo '<br />um ' . $um->code;
-            echo '<br />um_rif ' . $um_rif->code;
+            echo '<br />um ' . $um;
+            echo '<br />um_rif ' . $um_rif;
         }
 
         if (empty($price) || empty($qty) || $qty == 0)
@@ -386,40 +367,40 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
             if ($debug)
                 echo '<br />prezzo_um_rif (prezzo/qta) ' . $price_um_rif;
 
-            if ($um->code == 'GR' && $um_rif->code == 'HG')
+            if ($um == 'GR' && $um_rif == 'HG')
                 $price_um_rif = ($price_um_rif * 100);
             else
-            if ($um->code == 'GR' && $um_rif->code == 'KG')
+            if ($um == 'GR' && $um_rif == 'KG')
                 $price_um_rif = ($price_um_rif * 1000);
             else
-            if ($um->code == 'HG' && $um_rif->code == 'GR')
+            if ($um == 'HG' && $um_rif == 'GR')
                 $price_um_rif = ($price_um_rif / 100);
             else
-            if ($um->code == 'HG' && $um_rif->code == 'KG')
+            if ($um == 'HG' && $um_rif == 'KG')
                 $price_um_rif = ($price_um_rif * 10);
             else
-            if ($um->code == 'KG' && $um_rif->code == 'GR')
+            if ($um == 'KG' && $um_rif == 'GR')
                 $price_um_rif = ($price_um_rif / 1000);
             else
-            if ($um->code == 'KG' && $um_rif->code == 'HG')
+            if ($um == 'KG' && $um_rif == 'HG')
                 $price_um_rif = ($price_um_rif / 100);
             else
-            if ($um->code == 'ML' && $um_rif->code == 'DL')
+            if ($um == 'ML' && $um_rif == 'DL')
                 $price_um_rif = ($price_um_rif * 10);
             else
-            if ($um->code == 'ML' && $um_rif->code == 'LT')
+            if ($um == 'ML' && $um_rif == 'LT')
                 $price_um_rif = ($price_um_rif * 1000);
             else
-            if ($um->code == 'DL' && $um_rif->code == 'ML')
+            if ($um == 'DL' && $um_rif == 'ML')
                 $price_um_rif = ($price_um_rif / 100);
             else
-            if ($um->code == 'DL' && $um_rif->code == 'LT')
+            if ($um == 'DL' && $um_rif == 'LT')
                 $price_um_rif = ($price_um_rif * 10);
             else
-            if ($um->code == 'LT' && $um_rif->code == 'ML')
+            if ($um == 'LT' && $um_rif == 'ML')
                 $price_um_rif = ($price_um_rif / 1000);
             else
-            if ($um->code == 'LT' && $um_rif->code == 'DL')
+            if ($um == 'LT' && $um_rif == 'DL')
                 $price_um_rif = ($price_um_rif / 100);
 
             if ($debug)
@@ -429,7 +410,7 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         if (!empty($um_rif)) {
             $results .= $price_um_rif;
             $results .= ' &euro;';
-            $results .= ' al ' . $um_rif->name;
+            $results .= ' al ' . $um_rif;
         } else {
             $results .= $price_um_rif;
         }
@@ -437,16 +418,15 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         return $results;
     }    
 
-    protected function _getArticleImg1($article, $article_detail) {
+    protected function _getArticleImg1($row) {
 
-        if(empty($article_detail->img1))
-            $results = $article->img1;
-        else
-            $results = $article_detail->img1;
-
-        if(!empty($results)) {
-            $results= sprintf(Configure::read('Article.img.path.full'), $results);
+        $results = '';
+        if(!empty($row->article->img1)) {
+            $results = sprintf(Configure::read('Article.img.path.full'), $row->article->img1);
         } 
+        else
+            $results = Configure::read('Article.img.no');
+
         
         return $results; 
     }       

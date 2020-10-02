@@ -155,16 +155,6 @@ Router::prefix('api', function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'POST']);
         $routes->connect('/getUser', ['action' => 'getUser', '_method' => 'POST']);
     });
-
-    /*
-     * tmp per ecommerce vue
-     */
-    $routes->scope('/articles-orders', ['controller' => 'ArticlesOrders'], function (RouteBuilder $routes) {
-        $routes->connect('/getCartsByOrder', ['action' => 'getCartsByOrder', '_method' => 'POST']);
-    });     
-    $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
-        $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
-    }); 
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) { 
@@ -222,6 +212,16 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/getsById', ['action' => 'getsById', '_method' => 'POST']);
             $routes->connect('/getByOrderId', ['action' => 'getByOrderId', '_method' => 'POST']);
         });        
+
+        /*
+         * ecommerce vue
+         */
+        $routes->scope('/articles-orders', ['controller' => 'ArticlesOrders'], function (RouteBuilder $routes) {
+            $routes->connect('/getCartsByOrder', ['action' => 'getCartsByOrder', '_method' => 'POST']);
+        });     
+        $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
+            $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
+        }); 
 
         $routes->fallbacks(DashedRoute::class);        
     }); 

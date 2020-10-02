@@ -6,8 +6,7 @@ import { messageToast } from "./messageToast";
 import { messageAlert } from "./messageAlert";
 import { authentication } from "./authentication";
 import { users } from "./users";
-// import { carts } from "./carts";
-// import { articles } from "./articles";
+import { carts } from "./carts";
 
 Vue.use(Vuex);
 
@@ -17,8 +16,7 @@ export default new Vuex.Store({
     messageToast,
     messageAlert,
     authentication,
-    users /*,
-    carts,
-    articles*/
+    users,
+    carts
   }
 });

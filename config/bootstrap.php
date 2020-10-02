@@ -315,7 +315,8 @@ Configure::write('Gdxp.applicationSignature', 'PortAlGas');
 Configure::write('Gdxp.file.prefix', 'gdxp-');
 
 // {organizaton_id} / {img1}
-Configure::write('Article.img.path.full', 'http://www.portalgas.it/images/articles/%s/%s');
+Configure::write('Article.img.path.full', 'https://www.portalgas.it/images/articles/%s/%s');
+Configure::write('Article.img.no', '/img/article-no-img.png');
 Configure::write('Article.img.preview.width', '50px');
 
 Configure::write('Supplier.img.path.full', 'http://www.portalgas.it/images/organizations/contents/%s');

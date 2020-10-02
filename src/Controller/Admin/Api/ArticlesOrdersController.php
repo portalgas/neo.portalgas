@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Api;
+namespace App\Controller\Admin\Api;
 
 use App\Controller\AppController;
 use Cake\Core\Configure;
@@ -43,14 +43,13 @@ class ArticlesOrdersController extends ApiAppController
 
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $results = $articlesOrdersTable->getCartsByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);
-
-        /*        
+        
         if(!empty($results)) {
             $results = new ApiArticleDecorator($results);
             //$results = new ArticleDecorator($results);
             $results = $results->results;
         }
-        */
+
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);

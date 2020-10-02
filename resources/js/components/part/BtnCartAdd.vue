@@ -1,6 +1,8 @@
 <template>
   <div>
-    qty-db {{ articles_order.cart.qta }}
+    getArticleInCart {{ getArticleInCart }}
+    <hr />
+    qty-db {{ article.cart.qty }}
     qty-store {{ cart.qty }}
     <div class="quantity buttons_added">
       <input type="button" value="-" class="minus" @click="minusCart" :disabled="cart.qty == 0" />
@@ -9,7 +11,7 @@
         type="number"
         class="form-control text-center"
         :value="cart.qty"
-        :disabled="articles_order.store === 0"
+        :disabled="article.store === 0"
         @input="numberCart"
         min="0"
         size="4"
@@ -40,17 +42,13 @@ export default {
   data() {
     return {
       cart: {
-        organization_id: 0,
-        articles_order_organization_id: 0,
-        articles_order_id: 0,
-        order_id: 0,
-        articles_order: Object,
+        article: Object,
         qty: 0
       },
-      articles_orderInCart: Object
+      articleInCart: Object
     };
   },
-  props: ["articles_order"],
+  props: ["article"],
   computed: {
     ...mapGetters(["getArticleInCart"])
   },
@@ -58,10 +56,10 @@ export default {
     this.getCart();
   },
   watch: {
-    articles_orderInCart: function() {
-      console.log("watch articles_orderInCart");
-      //  console.log(newVal);
-      //  console.log(oldVal);
+    articleInCart: function() {
+      console.log("watch articleInCart");
+      // console.log(newVal);
+      // console.log(oldVal);
       // this.getCart();
     }
   },
@@ -69,46 +67,48 @@ export default {
     console.log("created");
   },
   methods: {
-    ...mapActions(["addArticle", "updateCart", "addMessage"]),
+    ...mapActions(["addArticle", "addMessage"]),
     getCart() {
-      console.log(articles_order);
 
-      console.log("getCart con articles_order.organization_id "+this.articles_order.organization_id+" articles_order.articles_order_organization_id " + this.articles_order.articles_order_organization_id+" articles_order.articles_order_id "+this.articles_order.articles_order_id+" articles_order.order_id "+this.articles_order.order_id);
+      console.log("getCart");
+      console.log(this.article);
+      console.log("this.article.ids.article_id "+this.article.ids.article_id);
 
       (this.cart = {
-        organization_id: this.articles_order.organization_id,
-        articles_order_organization_id: this.articles_order.articles_order_organization_id,
-        articles_order_id: this.articles_order.articles_order_id,
-        order_id: this.articles_order.order_id,
-        articles_order: this.articles_order,
+        article: this.article,
         qty: 0
       }),
-        /*
-         * cerco se tra quelli gia' acquistati c'e' l'articolo corrente
-         */
-        (this.articles_orderInCart = this.getArticleInCart);
-      if (this.articles_orderInCart.length == 0) {
+        
+      /*
+       * cerco se tra quelli gia' acquistati c'e' l'articolo corrente
+       */
+      (this.articleInCart = this.getArticleInCart);
+      if (this.articleInCart.length == 0) {
         console.log("nessun articolo acquistato");
       } else {
-        console.log("acquistati " + this.articles_orderInCart.length + " articoli");
+        console.log("acquistati " + this.articleInCart.length + " articoli");
         console.log(
           "cerco se articolo con ids " +
-            this.articles_order.articles_order_id +
+            this.article.ids.article_id +
             "... è stato acquistato per recuperare la qty"
         );
 
-        var articles_orderInCart = this.articles_orderInCart.find(
-          element => (element.organization_id == this.articles_order.organization_id && 
-                      element.articles_order_organization_id == this.articles_order.articles_order_organization_id && 
-                      element.articles_order_id == this.articles_order.articles_order_id && 
-                      element.order_id == this.articles_order.order_id)
-        );
-
-        if (typeof articles_orderInCart != "undefined") {
-          console.log(
-            "l'articolo è stato già acquistato con qty " + articles_orderInCart.qty
+        var articleInCart = null;
+        if(this.articleInCart.length>0) {
+          articleInCart = this.articleInCart.find(
+            element => (element.article.ids.article_id == article.ids.article_id && 
+                       element.article.ids.article_organization_id == article.ids.article_organization_id && 
+                       element.article.ids.order_id == article.ids.order_id && 
+                       element.article.ids.organization_id == article.ids.organization_id)
+            // element => (element.article.ids.equals(article.ids))   
           );
-          this.cart.qty = articles_orderInCart.qty;
+        }
+
+        if (articleInCart !== null) {
+          console.log(
+            "l'articolo è stato già acquistato con qty " + articleInCart.qty
+          );
+          this.cart.qty = articleInCart.qty;
         } else {
           console.log("l'articolo NON è stato ancora acquistato => qty 0");
         }
@@ -139,7 +139,6 @@ export default {
     numberCart(event) {
       console.log("numberCart " + event.target.value);
       this.cart.qty = parseInt(event.target.value);
-      // non + usato this.updateCart(this.cart);
       this.addArticleToCart();
     }
   }
