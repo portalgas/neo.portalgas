@@ -54,7 +54,7 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
      * ovveride
      *  estrare il produttor del GAS che ha la gestione el listino al produttore associato ad un organization PACT
      */ 
-    public function getSuppliersOrganizations($user, $pact_id=0, $debug=false) {
+    public function getSuppliersOrganizations($user, $organization_id, $pact_id=0, $where=[], $debug=false) {
         
         $results = [];
 
@@ -95,14 +95,14 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      */ 
-    public function getDeliveries($user, $pact_id=0, $debug=false) {
+    public function getDeliveries($user, $organization_id, $pact_id=0, $where=[], $debug=false) {
         
         $deliveriesTable = TableRegistry::get('Deliveries');
     
         $where = ['DATE(Deliveries.data) >= CURDATE()'];
-        $deliveries = $deliveriesTable->getsList($user, $user->organization->id, $where);
+        $deliveries = $deliveriesTable->getsList($user, $organization_id, $where);
 
-        $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $user->organization->id);
+        $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $organization_id);
 
         $results = [];
         $results += $deliveries;
@@ -110,4 +110,19 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
 
         return $results;   
     } 
+
+
+    /*
+     * implement
+     */      
+    public function gets($user, $organization_id, $where=[], $debug=false) {
+        
+    }
+    
+    /*
+     * implement
+     */     
+    public function getsList($user, $organization_id, $where=[], $debug=false) {
+        
+    }    
 }

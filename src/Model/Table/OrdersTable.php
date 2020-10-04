@@ -359,8 +359,8 @@ class OrdersTable extends Table
 
         $results = $this->find()  
                         ->where([
-                            'Orders.organization_id' => $organization_id,
-                            'Orders.id' => $order_id
+                            $this->alias().'.organization_id' => $organization_id,
+                            $this->alias().'.id' => $order_id
                         ])
                         ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers'],
                                   /*
@@ -373,11 +373,11 @@ class OrdersTable extends Table
         return $results;      
     }
 
-    public function getsList($user, $organization_id, $where = [], $where_delivery = [], $debug=false) {
+    public function getsList($user, $organization_id, $where=[], $debug=false) {
 
         $listResults = [];
 
-        $results = $this->gets($user, $organization_id, $where, $where_delivery);
+        $results = $this->gets($user, $organization_id, $where, $debug);
         if(!empty($results)) {
             foreach($results as $result) {
                 // debug($result);exit;
@@ -389,23 +389,32 @@ class OrdersTable extends Table
         return $listResults;
     }
 
-    public function gets($user, $organization_id, $where = [], $where_delivery = [], $debug=false) {
+    public function gets($user, $organization_id, $where=[], $debug=false) {
 
         $results = [];
+        $where_order = [];
+        $where_delivery = [];
 
-        $where = array_merge(['Orders.organization_id' => $organization_id,
-                              'Orders.isVisibleBackOffice' => 'Y'],
-                              $where);
-        if($debug) debug($where); 
+        if(isset($where['Orders']))
+            $where_order = $where['Orders'];
+        $where_order = array_merge([$this->alias().'.organization_id' => $organization_id,
+                              $this->alias().'.isVisibleBackOffice' => 'Y'],
+                              $where_order);
+        if($debug) debug($where_order); 
+
+        if(isset($where['Deliveries']))
+            $where_delivery = $where['Deliveries'];
         $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id], $where_delivery);
                           
-        if($debug) debug($where);
+        if($debug) debug($where_delivery);
         $results = $this->find()
                                 ->where($where)
-                                ->contain(['SuppliersOrganizations' => ['Suppliers'], 
+                                ->contain([
+                                  // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],    
+                                  'SuppliersOrganizations' => ['Suppliers'], 
                                   'Deliveries' => ['conditions' => $where_delivery]  
                                 ])
-                                ->order(['Orders.data_inizio'])
+                                ->order([$this->alias().'.data_inizio'])
                                 ->all();
         // debug($results);
         

@@ -197,7 +197,7 @@ class ArticlesOrdersTable extends Table
                         ])
                         ->where($where)
                         ->order($order)
-                        ->limit(1)
+                        ->limit(2)
                         ->all()
                         ->toArray();
 

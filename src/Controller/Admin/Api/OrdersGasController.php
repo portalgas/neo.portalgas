@@ -9,7 +9,7 @@ use App\Traits;
 use App\Decorator\ArticleDecorator;
 use App\Decorator\ApiArticleDecorator;
 
-class ArticlesOrdersController extends ApiAppController
+class OrdersGasController extends ApiAppController
 {
     use Traits\UtilTrait;
 

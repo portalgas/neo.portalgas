@@ -23,7 +23,7 @@ class SuppliersOrganizationComponent extends Component {
         $results = [];
 
         if(!empty($suppliersOrganizations)) {
-            if(!is_array($suppliersOrganizations)) {
+            if(!is_array($suppliersOrganizations) && !$suppliersOrganizations instanceof \Cake\ORM\ResultSet) {
                 $label = $suppliersOrganizations->name;
                 if(!empty($suppliersOrganizations->supplier->descri))
                     $label .= '('.$suppliersOrganizations->supplier->descri.')';

@@ -3,11 +3,11 @@ namespace App\Model\Table;
 
 interface OrderTableInterface {
 
-	/*
-	 * id des_order_id / prod_gas_promotion_id / pact_id 
-	 */
+	public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false);
 
-	public function getSuppliersOrganizations($user, $id=0, $debug=false);
+	public function getDeliveries($user, $organization_id, $where=[], $debug=false);
 
-	public function getDeliveries($user, $id=0, $debug=false);	
+	public function gets($user, $organization_id, $where=[], $debug=false);
+	
+	public function getsList($user, $organization_id, $where=[], $debug=false);
 }

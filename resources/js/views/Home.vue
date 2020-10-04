@@ -52,7 +52,7 @@ export default {
         order_id: this.order_id
       };
       axios
-        .post("http://neo.portalgas.local.it:81/admin/api/articles-orders/getCartsByOrder", params)
+        .post("http://neo.portalgas.local.it:81/admin/api/orders-gas/getCartsByOrder", params)
         .then(response => {
           // console.log(response.data);
           this.articles = response.data;

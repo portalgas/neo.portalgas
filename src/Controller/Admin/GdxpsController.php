@@ -18,6 +18,11 @@ class GdxpsController extends AppController
     public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event);
+    }    
+
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);    
 
         // if(!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isSuperReferente'] || !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
         $continua = false;
@@ -33,11 +38,6 @@ class GdxpsController extends AppController
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
           //  return $this->redirect(Configure::read('routes_msg_stop'));
         }
-    }    
-
-    public function beforeRender(Event $event)
-    {
-        parent::beforeRender($event);        
     }
 
     /*

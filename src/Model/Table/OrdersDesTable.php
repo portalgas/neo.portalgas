@@ -7,28 +7,6 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
-/**
- * Orders Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\SupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $SupplierOrganizations
- * @property \App\Model\Table\OwnerOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerOrganizations
- * @property \App\Model\Table\OwnerSupplierOrganizationsTable&\Cake\ORM\Association\BelongsTo $OwnerSupplierOrganizations
- * @property \App\Model\Table\DeliveriesTable&\Cake\ORM\Association\BelongsTo $Deliveries
- * @property \App\Model\Table\ProdGasPromotionsTable&\Cake\ORM\Association\BelongsTo $ProdGasPromotions
- * @property \App\Model\Table\DesOrdersTable&\Cake\ORM\Association\BelongsTo $DesOrders
- *
- * @method \App\Model\Entity\Order get($primaryKey, $options = [])
- * @method \App\Model\Entity\Order newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Order[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Order|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Order saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Order patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Order[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Order findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class OrdersDesTable extends OrdersTable implements OrderTableInterface
 {
     /**
@@ -66,14 +44,29 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      */ 
-    public function getSuppliersOrganizations($user, $des_order_id=0, $debug=false) {
+    public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false) {
 
     }
     
     /*
      * implement
      */ 
-    public function getDeliveries($user, $des_order_id=0, $debug=false) {
+    public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
     }
+
+
+    /*
+     * implement
+     */      
+    public function gets($user, $organization_id, $where=[], $debug=false) {
+        
+    }
+    
+    /*
+     * implement
+     */     
+    public function getsList($user, $organization_id, $where=[], $debug=false) {
+        
+    }     
 }

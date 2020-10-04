@@ -2617,7 +2617,7 @@ __webpack_require__.r(__webpack_exports__);
       var params = {
         order_id: this.order_id
       };
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("http://neo.portalgas.local.it:81/admin/api/articles-orders/getCartsByOrder", params).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("http://neo.portalgas.local.it:81/admin/api/orders-gas/getCartsByOrder", params).then(function (response) {
         // console.log(response.data);
         _this.articles = response.data;
         console.log(_this.articles);
@@ -71009,7 +71009,7 @@ var carts = {
       };
       console.info("ADD_ARTICLE article.ids.article_id " + article.ids.article_id);
       console.info("ADD_ARTICLE articoli in STORE " + state.cartArticles.length);
-      var articleInCart = null; // if(typeof state.cartArticles.article !== 'undefined' && typeof state.cartArticles.article.ids !== 'undefined') {
+      var articleInCart = undefined; // if(typeof state.cartArticles.article !== 'undefined' && typeof state.cartArticles.article.ids !== 'undefined') {
 
       if (state.cartArticles.length > 0) {
         articleInCart = state.cartArticles.find(function (element) {
@@ -71018,7 +71018,9 @@ var carts = {
         );
       }
 
-      if (articleInCart !== null) {
+      if (typeof articleInCart !== "undefined") {
+        console.log("l'articolo FOUND ");
+        console.log(articleInCart);
         console.log("l'articolo è stato già acquistato con qty " + articleInCart.qty); // qty = qty - articleInCart.qty;
 
         articleInCart.qty = qty;

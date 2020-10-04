@@ -38,7 +38,7 @@ export const carts = {
       console.info("ADD_ARTICLE article.ids.article_id "+article.ids.article_id);
       console.info("ADD_ARTICLE articoli in STORE "+state.cartArticles.length);
       
-      var articleInCart = null;
+      var articleInCart = undefined;
       // if(typeof state.cartArticles.article !== 'undefined' && typeof state.cartArticles.article.ids !== 'undefined') {
       if(state.cartArticles.length>0) {
           articleInCart = state.cartArticles.find(
@@ -50,7 +50,9 @@ export const carts = {
           );
       }
 
-      if (articleInCart !== null) {
+      if (typeof articleInCart !== "undefined") {
+        console.log("l'articolo FOUND ");
+        console.log(articleInCart);
         console.log(
           "l'articolo è stato già acquistato con qty " + articleInCart.qty
         );

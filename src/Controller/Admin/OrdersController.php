@@ -98,11 +98,16 @@ class OrdersController extends AppController
 
     public function test()
     { 
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        $order_type_id = Configure::read('Order.type.promotion');
         $order_type_id = Configure::read('Order.type.pact-pre'); ;
         $order_type_id = Configure::read('Order.type.pact'); ;
         $order_type_id = Configure::read('Order.type.gas');
         debug($order_type_id);
-        $ordersTable = $this->Orders->factory($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_type_id);
+        $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
         $ordersTable->addBehavior('Orders');
         // debug($ordersTable);
@@ -122,7 +127,7 @@ class OrdersController extends AppController
                 /*
                  * se in errore recupero i valori dei priceType inseriti dall'utente
                  */ 
-                $json_price_types = $this->PriceType->jsonToRequest($this->Authentication->getIdentity(), $this->request->getData());     
+                $json_price_types = $this->PriceType->jsonToRequest($user, $this->request->getData());     
                 // debug($json_price_types);  
                 // debug($order); 
                 $this->Flash->error($order->getErrors());
@@ -134,8 +139,8 @@ class OrdersController extends AppController
             }
         }
         
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->Authentication->getIdentity());
-        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->Authentication->getIdentity(), $suppliersOrganizations);
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
         // debug($suppliersOrganizations);
         if(empty($suppliersOrganizations)) {
             $this->Flash->error(__('no suppliersOrganizations'));
@@ -143,7 +148,7 @@ class OrdersController extends AppController
         else {
 
         }
-        $deliveries = $ordersTable->getDeliveries($this->Authentication->getIdentity());
+        $deliveries = $ordersTable->getDeliveries($user, $organization_id);
 
         $priceTypesTable = TableRegistry::get('PriceTypes');
         $this->set('price_type_enums', $priceTypesTable->enum('type'));
@@ -184,7 +189,7 @@ class OrdersController extends AppController
          * $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
          * perche' doppia key
          */ 
-        $deliveries = $ordersTable->getDeliveries($this->Authentication->getIdentity());
+        $deliveries = $ordersTable->getDeliveries($user, $organization_id);
 
         $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = []; //  $this->Orders->DesOrders->find('list', ['limit' => 200]);
@@ -222,14 +227,6 @@ class OrdersController extends AppController
         $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id K Order id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

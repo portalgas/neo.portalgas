@@ -422,7 +422,7 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
 
         $results = '';
         if(!empty($row->article->img1)) {
-            $results = sprintf(Configure::read('Article.img.path.full'), $row->article->img1);
+            $results = sprintf(Configure::read('Article.img.path.full'), $row->article->organization_id, $row->article->img1);
         } 
         else
             $results = Configure::read('Article.img.no');
