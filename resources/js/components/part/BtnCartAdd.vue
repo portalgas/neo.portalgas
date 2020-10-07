@@ -1,7 +1,5 @@
 <template>
   <div>
-    getArticleInCart {{ getArticleInCart }}
-    <hr />
     qty-db {{ article.cart.qty }}
     qty-store {{ cart.qty }}
     <div class="quantity buttons_added">
@@ -67,7 +65,7 @@ export default {
     console.log("created");
   },
   methods: {
-    ...mapActions(["addArticle", "addMessage"]),
+    ...mapActions(["addArticle", "addMessage", "showOrHiddenModal"]),
     getCart() {
 
       console.log("getCart");
@@ -122,6 +120,7 @@ export default {
         messageClass: "success",
         message: message
       });
+      
       console.log("addArticleToCart this.cart.qty " + this.cart.qty);
       console.log(this.cart);
       this.addArticle(this.cart);

@@ -433,6 +433,7 @@ class QueueComponent extends Component {
                         if(!is_array($primary_key)) {
                             // debug($resultSave->{$primary_key});
                             $this->last_insert_ids[$table->id] =  $resultSave->{$primary_key};
+                            $data['id'] =  $resultSave->{$primary_key};
                         }
                         // debug($this->last_insert_ids);
 
@@ -440,7 +441,7 @@ class QueueComponent extends Component {
                          * afterSave
                          */
                         if(!empty($table->after_save)) {
-                            $results = $this->_registry->{$this->component}->{$table->after_save}($data, $organization_id);
+                            $results = $this->_registry->{$this->component}->{$table->after_save}($slaveEntity, $organization_id);
 
                             $esito = $results['esito'];
                             if(!$esito) {

@@ -1,16 +1,16 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\KOrganizationsController;
+use App\Controller\KProdGasPromotionsOrganizationsController;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Controller\KOrganizationsController Test Case
+ * App\Controller\KProdGasPromotionsOrganizationsController Test Case
  *
- * @uses \App\Controller\KOrganizationsController
+ * @uses \App\Controller\KProdGasPromotionsOrganizationsController
  */
-class KOrganizationsControllerTest extends TestCase
+class KProdGasPromotionsOrganizationsControllerTest extends TestCase
 {
     use IntegrationTestTrait;
 
@@ -20,10 +20,11 @@ class KOrganizationsControllerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.KOrganizations',
-        'app.Templates',
-        'app.JPageCategories',
-        'app.Gcalendars',
+        'app.KProdGasPromotionsOrganizations',
+        'app.ProdGasPromotions',
+        'app.Organizations',
+        'app.Orders',
+        'app.Users',
     ];
 
     /**

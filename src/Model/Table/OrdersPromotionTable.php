@@ -65,6 +65,21 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false) {
         
+        $results = [];
+
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+    
+        $where = ['SuppliersOrganizations.organization_id' => $organization_id,
+                  'SuppliersOrganizations.stato' => 'Y',
+                  'SuppliersOrganizations.can_promotions' => 'Y',
+                  'SuppliersOrganizations.owner_articles' => 'REFERENT'];
+
+        $results = $suppliersOrganizationsTable->find()
+                                ->where($where)
+                                ->contain(['Suppliers', 'CategoriesSuppliers'])
+                                ->order(['SuppliersOrganizations.name'])
+                                ->all();
+        return $results;        
     } 
 
     /*
@@ -72,6 +87,12 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
+        $prodGasPromotionsOrganizationsDeliveriesTable = TableRegistry::get('ProdGasPromotionsOrganizationsDeliveries');
+    
+        $where['Deliveries'] = ['DATE(Deliveries.data) >= CURDATE()'];
+        $results = $prodGasPromotionsOrganizationsDeliveriesTable->getsList($user, $organization_id, $where);
+
+        return $results;        
     }
 
     /*

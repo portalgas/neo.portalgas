@@ -2,7 +2,7 @@
 
   <div>
         <div class="card-header bg-primary">{{ article.name }}</div>
-        <img class="card-img-top" :src="article.img1" :alt="article.name">
+        <img class="card-img-top" :src="article.img1" :alt="article.name" style="width:100px">
         <div class="card-body">
             <h4 class="card-title">{{ article.descri }}</h4>
             <a href="#" class="card-link">Card link</a>
@@ -17,9 +17,7 @@
         </div>
 
         <div class="card-body text-center">
-            <p class="card-text">conf {{ article.conf }}</p>
-            <p class="card-text">bio {{ article.is_bio }}</p>
-            <p class="card-text">um rif {{ article.um_rif_label }}</p>
+            <p class="card-text">conf {{ article.conf }} - bio {{ article.is_bio }} - um rif {{ article.um_rif_label }}</p>
         </div>
         <div class="card-footer">
            <app-btn-cart-add v-bind:article="article"></app-btn-cart-add>

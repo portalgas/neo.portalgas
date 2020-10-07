@@ -1,21 +1,21 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\KOrganizationsTable;
+use App\Model\Table\KProdGasPromotionsOrganizationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\KOrganizationsTable Test Case
+ * App\Model\Table\KProdGasPromotionsOrganizationsTable Test Case
  */
-class KOrganizationsTableTest extends TestCase
+class KProdGasPromotionsOrganizationsTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \App\Model\Table\KOrganizationsTable
+     * @var \App\Model\Table\KProdGasPromotionsOrganizationsTable
      */
-    public $KOrganizations;
+    public $KProdGasPromotionsOrganizations;
 
     /**
      * Fixtures
@@ -23,10 +23,11 @@ class KOrganizationsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.KOrganizations',
-        'app.Templates',
-        'app.JPageCategories',
-        'app.Gcalendars',
+        'app.KProdGasPromotionsOrganizations',
+        'app.ProdGasPromotions',
+        'app.Organizations',
+        'app.Orders',
+        'app.Users',
     ];
 
     /**
@@ -37,8 +38,8 @@ class KOrganizationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('KOrganizations') ? [] : ['className' => KOrganizationsTable::class];
-        $this->KOrganizations = TableRegistry::getTableLocator()->get('KOrganizations', $config);
+        $config = TableRegistry::getTableLocator()->exists('KProdGasPromotionsOrganizations') ? [] : ['className' => KProdGasPromotionsOrganizationsTable::class];
+        $this->KProdGasPromotionsOrganizations = TableRegistry::getTableLocator()->get('KProdGasPromotionsOrganizations', $config);
     }
 
     /**
@@ -48,7 +49,7 @@ class KOrganizationsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->KOrganizations);
+        unset($this->KProdGasPromotionsOrganizations);
 
         parent::tearDown();
     }

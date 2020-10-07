@@ -1,20 +1,26 @@
 <template>
-  <b-toast id="my-toast" :variant="messageToast.class" solid>
-    <template v-slot:toast-title v-if="messageToast.title">
-      <div class="d-flex flex-grow-1 align-items-baseline">
-        <b-img
-          blank
-          blank-color="#ff5555"
-          class="mr-2"
-          width="12"
-          height="12"
-        ></b-img>
-        <strong class="mr-auto">{{ messageToast.title }}</strong>
-        <small class="text-muted mr-2">{{ messageToast.subtitle }}</small>
-      </div>
-    </template>
-    {{ messageToast.body }}
-  </b-toast>
+
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+  <h1> TOAST {{ messageToast }}</h1>
+
 </template>
 
 <script>
@@ -23,17 +29,21 @@ import { mapGetters } from "vuex";
 export default {
   name: "app-message-toast",
   mounted: function() {
+    console.log("mounted app-message-toast ");
     this.$bvToast.width = "100%";
   },
   computed: {
-    ...mapGetters(["messageToast"]),
+    ...mapGetters(["getMessageToast"]),
     messageToast() {
-      // this.$store.state.messageToast.message
-      //console.log(this.messageToast);
-      return this.$store.state.messageToast.message;
+      console.log(this.getMessageToast);
+      return this.$store.state.getMessageToast;
     }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#my-toast {
+  margin-top: 70px;
+}
+</style>

@@ -123,11 +123,11 @@ class DeliveriesTable extends Table
         return $rules;
     }
 
-    public function getsList($user, $organization_id, $where = [], $where_order = [], $debug=false) {
+    public function getsList($user, $organization_id, $where=[], $debug=false) {
 
         $listResults = [];
 
-        $results = $this->gets($user, $organization_id, $where, $where_order);
+        $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
                 $listResults[$result->id] = $result->luogo.' '.$result->data;
@@ -138,20 +138,26 @@ class DeliveriesTable extends Table
         return $listResults;
     }
 
-    public function gets($user, $organization_id, $where = [], $where_order = [], $debug=false) {
+    public function gets($user, $organization_id, $where=[], $debug=false) {
 
         $results = [];
 
-        $where = array_merge(['Deliveries.organization_id' => $organization_id,
+        $where_delivery = [];
+        if(isset($where['Deliveries']))
+            $where_delivery = $where['Deliveries'];
+        $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id,
                               'Deliveries.isVisibleBackOffice' => 'Y',
                               'Deliveries.sys' => 'N'], 
-                              $where);
+                              $where_delivery);
 
+        $where_order = [];
+        if(isset($where['Orders']))
+            $where_order = $where['Orders'];
         $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
                            
         if($debug) debug($where);
         $deliveryResults = $this->find()
-                                ->where($where)
+                                ->where($where_delivery)
                                 ->contain(['Orders' => [
                                     'conditions' => $where_order,
                                     'SuppliersOrganizations' => ['Suppliers']]])

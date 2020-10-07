@@ -1,108 +1,37 @@
 <template>
-  <div :class="(showMessageBar ? '' : 'd-none') + '  message-bar'">
-    <div :class="messageClass">
-      <Button
-        bsStyle="link"
-        class="btn btn-link close-btn"
-        @click="closeMessageBar"
-      >
-        <i class="fa fa-times"></i>
-      </Button>
-      <div>{{ currentMessage }}</div>
-    </div>
 
-    <b-toast id="my-toast" variant="warning" solid>
-      <template v-slot:toast-title>
-        <div class="d-flex flex-grow-1 align-items-baseline">
-          <b-img
-            blank
-            blank-color="#ff5555"
-            class="mr-2"
-            width="12"
-            height="12"
-          ></b-img>
-          <strong class="mr-auto">Notice!</strong>
-          <small class="text-muted mr-2">42 seconds ago</small>
+    <section class="message">
+      <div class="col-sm-6 offset-sm-3">
+        <div
+          v-if="message"
+          :class="`alert alert-${messageClass}`"
+        >
+          {{ message }}
         </div>
-      </template>
-      {{ currentMessage }}
-    </b-toast>
-  </div>
+      </div>
+    </section>
+
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
+  name: "app-message",
   computed: {
-    ...mapGetters(["messages"]),
-    showMessageBar() {
-      return this.messages.message && this.messages.message.length > 0;
-    },
+    ...mapGetters(["getMessage"]),
     messageClass() {
-      let mgClass = this.messages.messageClass;
-      return (
-        "col-12 panel panel-" +
-        mgClass +
-        " " +
-        (this.showMessageBar ? "" : "hidden")
-      );
+      return this.getMessage.messageClass;
     },
-    currentMessage() {
-      return this.messages.message;
-    }
-  },
-  methods: {
-    ...mapActions(["clearMessage"]),
-    closeMessageBar() {
-      this.clearMessage();
+    message() {
+      return this.getMessage.message;
     }
   }
 };
 </script>
 
 <style scoped>
-.message-bar {
-  /*position: fixed;
-  top: 0;
-  left: 50%;
-  width: 50%;
-  */
-  min-height: 50px;
-  z-index: 9999;
-  margin-left: -25%;
-}
-
-.message-bar .close-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: #fff;
-}
-
-.message-bar .panel {
-  border-color: transparent;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  padding-right: 25px;
-}
-
-.panel {
-  padding: 10px 15px;
-}
-
-.panel-danger {
-  background-color: #d9534f;
-  color: #fff;
-}
-
-.panel-success {
-  background-color: #5cb85c;
-  color: #fff;
-}
-
-.panel-warning {
-  background-color: #f0ad4e;
-  color: #fff;
+.message {
+  margin-top: 50px;
 }
 </style>

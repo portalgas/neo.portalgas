@@ -273,6 +273,10 @@ Configure::write('group_id_user',2);
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
 
+Configure::write('Organization.type.gas', 'GAS');
+Configure::write('Organization.type.prodgas', 'PRODGAS');
+Configure::write('Organization.type.pact', 'PACT');
+
 Configure::write('Order.type.gas', 1);
 Configure::write('Order.type.des', 2);
 Configure::write('Order.type.des-titolare', 3);

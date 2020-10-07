@@ -65,7 +65,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
 
         $deliveriesTable = TableRegistry::get('Deliveries');
     
-        $where = ['DATE(Deliveries.data) >= CURDATE()'];
+        $where['Deliveries'] = ['DATE(Deliveries.data) >= CURDATE()'];
         $deliveries = $deliveriesTable->getsList($user, $organization_id, $where);
 
         $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $organization_id);

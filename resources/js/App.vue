@@ -13,21 +13,10 @@
     </head>
     <div class="container-fluid">
       <app-header></app-header>
+      
+      <message-component></message-component>
 
       <div class="content" :class="{ loadingItem: isProductLoading }">
-
-        <div class="jumbotron">
-            <div class="row">
-              <div class="col-sm-6 offset-sm-3">
-                <div
-                  v-if="messageAlert.message"
-                  :class="`alert ${messageAlert.type}`"
-                >
-                  {{ messageAlert.message }}
-                </div>
-              </div>
-            </div>
-        </div>
 
         <div class="" v-if="isProductLoading">
           <grid-loader
@@ -53,6 +42,7 @@ import { mapGetters, mapActions } from "vuex";
 import gridLoader from "vue-spinner/src/GridLoader.vue";
 import header from "./components/common/Header";
 import footer from "./components/common/Footer";
+import message from './components/common/Message.vue';
 
 export default {
   name: "app",
@@ -66,6 +56,7 @@ export default {
   components: {
     appHeader: header,
     appFooter: footer,
+    messageComponent: message, 
     gridLoader
   },
   methods: {
@@ -75,16 +66,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["isProductLoading"]),
-    messageAlert() {
-      return this.$store.state.messageAlert;
-    }
+    ...mapGetters(["isProductLoading"])
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // clear alert on location change
-      this.$store.dispatch("messageAlert/clear");
+      this.$store.dispatch("messages/clear");
     }
   },
   created() {

@@ -11,7 +11,7 @@ export const messageToast = {
     }
   },
   getters: {
-    messageToast: state => {
+    getMessageToast: state => {
       return state.message;
     }
   },

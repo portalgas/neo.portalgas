@@ -126,9 +126,11 @@ class SuppliersOrganizationsTable extends Table
         return $rules;
     }
 
-    public function create($organization_id, $supplier)
+    /*
+     * di default l'owner (proprietario del listino) e' il REFERENT, se no $data_override
+     */
+    public function create($organization_id, $supplier, $data_override=[], $debug = false)
     {
-        $debug = false;
         $esito = true;
         $code = '200';
         $msg = '';
@@ -145,7 +147,10 @@ class SuppliersOrganizationsTable extends Table
         $data['stato'] = Configure::read('SupplierOrganizationStatoIni');
         $data['mail_order_open'] = Configure::read('SupplierOrganizationMailOrderOpenIni');
         $data['mail_order_close'] = Configure::read('SupplierOrganizationMailOrderCloseIni');
-        $data['owner_articles'] = Configure::read('SupplierOrganizationOwnerArticlesIni'); 
+        if(!empty($data_override) && isset($data_override['owner_articles']))
+            $data['owner_articles'] = $data_override['owner_articles'];
+        else 
+            $data['owner_articles'] = Configure::read('SupplierOrganizationOwnerArticlesIni'); 
         $data['can_view_orders'] = Configure::read('SupplierOrganizationCanViewOrdersIni');
         $data['can_view_orders_users'] = Configure::read('SupplierOrganizationCanViewOrdersUserIni');
         $data['can_promotions'] = Configure::read('SupplierOrganizationCanPromotionsIni');
@@ -153,30 +158,49 @@ class SuppliersOrganizationsTable extends Table
         /*
          * dopo il salvataggio recupero SupplierOrganization.id e aggiorno
          */
-        $data['owner_supplier_organization_id'] = 0;
-        $data['owner_organization_id'] = 0;
+        if(!empty($data_override) && isset($data_override['owner_supplier_organization_id']))
+            $data['owner_supplier_organization_id'] = $data_override['owner_supplier_organization_id'];
+        else
+            $data['owner_supplier_organization_id'] = 0;
+        if(!empty($data_override) && isset($data_override['owner_organization_id']))
+            $data['owner_organization_id'] = $data_override['owner_organization_id'];
+        else
+            $data['owner_organization_id'] = 0;
         if($debug) debug($data);
-        
         $entity = $this->newEntity();
         $entity = $this->patchEntity($entity, $data);
+        // debug($entity);
         if (!$this->save($entity)) {
             $esito = false;
             $code = '500';
             $msg = '';
-            $results = $entity->getErrors();             
+            $results = $entity->getErrors();
+
+            debug($results); exit;             
         }
         else {
-            $data['owner_supplier_organization_id'] = $entity->id;
-            $data['owner_organization_id'] = $entity->organization_id;
-            if($debug) debug($data);
+            if(empty($data['owner_supplier_organization_id']) || empty($data['owner_organization_id'])) {
 
-            $entity = $this->patchEntity($entity, $data);
-            if (!$this->save($entity)) {
-                $esito = false;
-                $code = '500';
-                $msg = '';
-                $results = $entity->getErrors();             
-            }                 
+                if(empty($data['owner_supplier_organization_id']))
+                    $data['owner_supplier_organization_id'] = $entity->id;
+                if(empty($data['owner_organization_id']))
+                    $data['owner_organization_id'] = $entity->organization_id;
+                if($debug) debug($data);
+
+                $entity = $this->patchEntity($entity, $data);
+                if (!$this->save($entity)) {
+                    $esito = false;
+                    $code = '500';
+                    $msg = '';
+                    $results = $entity->getErrors();   
+
+                    debug($results); exit;         
+                } 
+                else 
+                    $results = $entity;
+            }  // end if(empty($data['owner_supplier_organization_id']) || empty($data['owner_organization_id']))              
+            else
+                $results = $entity;                
         }
 
         $results = ['esito' => $esito, 'code' => $code, 'msg' => $msg, 'results' => $results];

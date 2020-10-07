@@ -105,8 +105,8 @@ class KOrganizationsFixture extends TestFixture
                 'hasMsg' => 'Lorem ipsum dolor sit amet',
                 'msgText' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
                 'stato' => 'Lorem ipsum dolor sit amet',
-                'created' => '2019-11-16 21:29:00',
-                'modified' => '2019-11-16 21:29:00'
+                'created' => '2020-10-07 08:54:27',
+                'modified' => '2020-10-07 08:54:27',
             ],
         ];
         parent::init();

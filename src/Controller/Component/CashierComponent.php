@@ -9,21 +9,23 @@ use Cake\Controller\ComponentRegistry;
 
 class CashierComponent extends Component {
 
-	private $_where_delivery = ['Deliveries.stato_elaborazione' => 'OPEN',
-            					'Deliveries.sys' => 'N'];
-    private $_where_order = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
+	private $_where = [];
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_registry = $registry;
         $controller = $registry->getController();
         //$controller->request
+
+        $this->_where['Deliveries'] = ['Deliveries.stato_elaborazione' => 'OPEN',
+            							'Deliveries.sys' => 'N'];
+        $this->_where['Orders'] = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];        
     }
 
 	public function getListDeliveries($user, $debug=false) {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->getsList($user, $user->organization->id, $this->_where_delivery, $this->_where_order);
+        $results = $deliveriesTable->getsList($user, $user->organization->id, $this->_where);
 
 		if($debug) debug($results);
 		
@@ -33,7 +35,7 @@ class CashierComponent extends Component {
 	public function getDeliveries($user, $debug=false) {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->gets($user, $user->organization->id, $this->_where_delivery, $this->_where_order);
+        $results = $deliveriesTable->gets($user, $user->organization->id, $this->_where);
 		
 		if($debug) debug($results);
 		

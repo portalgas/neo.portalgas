@@ -6,22 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * ProdGasPromotions Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- *
- * @method \App\Model\Entity\ProdGasPromotion get($primaryKey, $options = [])
- * @method \App\Model\Entity\ProdGasPromotion newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\ProdGasPromotion[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\ProdGasPromotion|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ProdGasPromotion saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ProdGasPromotion patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\ProdGasPromotion[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\ProdGasPromotion findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class ProdGasPromotionsTable extends Table
 {
     /**

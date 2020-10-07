@@ -4,26 +4,10 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
 use Cake\Validation\Validator;
 
-/**
- * KOrganizations Model
- *
- * @property \App\Model\Table\TemplatesTable&\Cake\ORM\Association\BelongsTo $Templates
- * @property \App\Model\Table\JPageCategoriesTable&\Cake\ORM\Association\BelongsTo $JPageCategories
- * @property \App\Model\Table\GcalendarsTable&\Cake\ORM\Association\BelongsTo $Gcalendars
- *
- * @method \App\Model\Entity\KOrganization get($primaryKey, $options = [])
- * @method \App\Model\Entity\KOrganization newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KOrganization[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KOrganization|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KOrganization saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KOrganization patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KOrganization[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KOrganization findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class OrganizationsTable extends Table
 {
     /**
@@ -85,32 +69,28 @@ class OrganizationsTable extends Table
 
         $validator
             ->scalar('descrizione')
-            ->requirePresence('descrizione', 'create')
-            ->notEmptyString('descrizione');
+            ->allowEmptyString('descrizione');
 
         $validator
             ->scalar('indirizzo')
             ->maxLength('indirizzo', 50)
-            ->requirePresence('indirizzo', 'create')
-            ->notEmptyString('indirizzo');
+            ->allowEmptyString('indirizzo');
 
         $validator
             ->scalar('localita')
             ->maxLength('localita', 50)
-            ->requirePresence('localita', 'create')
-            ->notEmptyString('localita');
+            ->allowEmptyString('localita');
 
         $validator
             ->scalar('cap')
             ->maxLength('cap', 5)
             ->requirePresence('cap', 'create')
-            ->notEmptyString('cap');
+            ->allowEmptyString('cap');
 
         $validator
             ->scalar('provincia')
             ->maxLength('provincia', 2)
-            ->requirePresence('provincia', 'create')
-            ->notEmptyString('provincia');
+            ->allowEmptyString('provincia');
 
         $validator
             ->scalar('telefono')
@@ -135,32 +115,27 @@ class OrganizationsTable extends Table
         $validator
             ->scalar('www2')
             ->maxLength('www2', 100)
-            ->requirePresence('www2', 'create')
-            ->notEmptyString('www2');
+            ->allowEmptyString('www2');
 
         $validator
             ->scalar('sede_logistica_1')
             ->maxLength('sede_logistica_1', 256)
-            ->requirePresence('sede_logistica_1', 'create')
-            ->notEmptyString('sede_logistica_1');
+            ->allowEmptyString('sede_logistica_1');
 
         $validator
             ->scalar('sede_logistica_2')
             ->maxLength('sede_logistica_2', 256)
-            ->requirePresence('sede_logistica_2', 'create')
-            ->notEmptyString('sede_logistica_2');
+            ->allowEmptyString('sede_logistica_2');
 
         $validator
             ->scalar('sede_logistica_3')
             ->maxLength('sede_logistica_3', 256)
-            ->requirePresence('sede_logistica_3', 'create')
-            ->notEmptyString('sede_logistica_3');
+            ->allowEmptyString('sede_logistica_3');
 
         $validator
             ->scalar('sede_logistica_4')
             ->maxLength('sede_logistica_4', 256)
-            ->requirePresence('sede_logistica_4', 'create')
-            ->notEmptyString('sede_logistica_4');
+            ->allowEmptyString('sede_logistica_4');
 
         $validator
             ->scalar('cf')
@@ -180,26 +155,22 @@ class OrganizationsTable extends Table
         $validator
             ->scalar('banca_iban')
             ->maxLength('banca_iban', 27)
-            ->requirePresence('banca_iban', 'create')
-            ->notEmptyString('banca_iban');
+            ->allowEmptyString('banca_iban');
 
         $validator
             ->scalar('lat')
             ->maxLength('lat', 15)
-            ->requirePresence('lat', 'create')
-            ->notEmptyString('lat');
+            ->allowEmptyString('lat');
 
         $validator
             ->scalar('lng')
             ->maxLength('lng', 15)
-            ->requirePresence('lng', 'create')
-            ->notEmptyString('lng');
+            ->allowEmptyString('lng');
 
         $validator
             ->scalar('img1')
             ->maxLength('img1', 15)
-            ->requirePresence('img1', 'create')
-            ->notEmptyString('img1');
+            ->allowEmptyString('img1');
 
         $validator
             ->integer('j_group_registred')
@@ -209,8 +180,7 @@ class OrganizationsTable extends Table
         $validator
             ->scalar('j_seo')
             ->maxLength('j_seo', 50)
-            ->requirePresence('j_seo', 'create')
-            ->notEmptyString('j_seo');
+            ->allowEmptyString('j_seo');
 
         $validator
             ->scalar('type')
@@ -261,4 +231,26 @@ class OrganizationsTable extends Table
 
         return $rules;
     }
+
+    public function factory($organization_type_id) {
+
+        $table_registry = '';
+
+        switch (strtoupper($organization_type_id)) {
+            case Configure::read('Organization.type.gas'):
+                $table_registry = 'OrganizationsGas';
+                break;
+            case Configure::read('Organization.type.prodgas'):
+                $table_registry = 'OrganizationsProdGas';
+                break;
+            case Configure::read('Organization.type.pact'):
+                $table_registry = 'OrganizationsPact';
+                break;
+            default:
+                die('OrganizationsTable organization_type_id ['.$organization_type_id.'] non previsto');
+                break;
+        }
+
+        return TableRegistry::get($table_registry);
+    }    
 }

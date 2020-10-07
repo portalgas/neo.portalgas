@@ -1,6 +1,7 @@
 <template>
 
     <div class="card-columns card-deck-disabled">
+
       <div class="card"   
           v-for="article in articles"
           :article="article"

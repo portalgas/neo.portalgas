@@ -6,24 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * KOrganizations Model
- *
- * @property \App\Model\Table\TemplatesTable&\Cake\ORM\Association\BelongsTo $Templates
- * @property \App\Model\Table\JPageCategoriesTable&\Cake\ORM\Association\BelongsTo $JPageCategories
- * @property \App\Model\Table\GcalendarsTable&\Cake\ORM\Association\BelongsTo $Gcalendars
- *
- * @method \App\Model\Entity\KOrganization get($primaryKey, $options = [])
- * @method \App\Model\Entity\KOrganization newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KOrganization[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KOrganization|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KOrganization saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KOrganization patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KOrganization[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KOrganization findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class OwnerOrganizationsTable extends Table
 {
     /**
