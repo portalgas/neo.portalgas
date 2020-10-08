@@ -18,6 +18,7 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
+import { mapActions } from "vuex";
 import articles from "../components/part/Articles.vue";
 
 export default {
@@ -39,7 +40,29 @@ export default {
   mounted() {
     this.getsArticles();
   },
+  created () {
+    const cartArticles = JSON.parse(localStorage.getItem('cartArticles'));
+    /*
+      console.log("localStorage");
+      console.log(cartArticles);
+
+    if (cartArticles) {
+      cartArticles.forEach(this.addArticleFromLocalStorage);     
+    }
+    */
+  },  
   methods: {
+    ...mapActions(["addArticle"]),
+    addArticleFromLocalStorage(item, index) {
+      console.log(index+" addArticleFromLocalStorage");
+      let cart = {
+        article: item.article,
+        qty: item.article.cart.qty
+      }
+
+      console.log(cart);
+      this.addArticle(cart);
+    },
     onIncrementEmit() {
       this.counter++;
       console.log(this.counter);
@@ -49,18 +72,22 @@ export default {
       this.fromChild = value;
     },
     getsArticles() {
+      // let url = "http://neo.portalgas.local.it:81/admin/api/orders-gas/getCarts";
+      let url = "http://neo.portalgas.local.it:81/admin/api/orders-promotion/getCarts";
       let params = {
         order_id: this.order_id
       };
       axios
-        .post("http://neo.portalgas.local.it:81/admin/api/orders-gas/getCartsByOrder", params)
+        .post(url, params)
         .then(response => {
-          // console.log(response.data);
-          this.articles = response.data;
-          console.log(this.articles);
+          console.log(response.data);
+          if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
+            this.articles = response.data;
+            console.log(this.articles);
+          }
         })
         .catch(error => {
-          console.log("Error: " + error);
+          console.error("Error: " + error);
         });
     },
     cartArticleDetailsVariantItems(event) {

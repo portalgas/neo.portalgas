@@ -33,12 +33,12 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticleOrganizations', [
             'className' => 'Organizations',
-            'foreignKey' => 'article_organization_id',
+            'foreignKey' => ['article_organization_id', 'article_id'],
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticlesOrders', [
@@ -46,7 +46,7 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Articles', [
-            'foreignKey' => ['article_id', 'article_organization_id'],
+            'foreignKey' => ['article_organization_id', 'article_id'],
             'joinType' => 'INNER'
         ]);
     }
@@ -106,9 +106,9 @@ class CartsTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
-        $rules->add($rules->existsIn(['article_id'], 'Articles'));
-        $rules->add($rules->existsIn(['article_id'], 'ArticlesOrders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['article_organization_id', 'article_id'], 'Articles'));
+        $rules->add($rules->existsIn(['organization_id', 'article_organization_id', 'article_id', 'order_id'], 'ArticlesOrders'));
 
         return $rules;
     }
@@ -161,6 +161,26 @@ class CartsTable extends Table
         return $importo_totale;
     }
 
+    public function getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug=false) {
+                            
+        $where = ['Carts.organization_id' => $organization_id,
+                  'Carts.order_id' => $order_id,
+                  'Carts.user_id' => $user_id,
+                  'Carts.article_organization_id' => $article_organization_id,
+                  'Carts.article_id' => $article_id];
+        // debug($where);
+
+        $results = $this->find()
+                        ->contain([
+                            'Articles' => ['conditions' => ['Articles.stato' => 'Y']], 
+                            'ArticlesOrders' => ['conditions' => ['ArticlesOrders.stato != ' => 'N']]
+                        ])
+                        ->where($where)
+                        ->first();
+
+        return $results;
+    }
+
     /*
      * front-end - estrae gli articoli associati ad un ordine filtrati per user  
      *  ArticlesOrders.article_id              = Articles.id
@@ -184,7 +204,7 @@ class CartsTable extends Table
                         ->where($where)
                         ->order($order)
                         ->all();
-                        exit;
+   
         return $results;
     }    
 }

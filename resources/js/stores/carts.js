@@ -6,7 +6,7 @@ export const carts = {
     showPopupCart: false
   },
   getters: {
-    getArticleInCart: state => state.cartArticles,
+    getArticlesInCart: state => state.cartArticles,
     getCurrentArticle: state => state.currentArticle,
     getPopupCart: state => state.showPopupCart,
     cartTotal: state => {
@@ -64,14 +64,50 @@ export const carts = {
       }
 
       console.log(state.cartArticles);
+
+      localStorage.setItem('cartArticles', JSON.stringify(state.cartArticles))
     },
     REMOVE_ARTICLE: (state, index) => {
       state.cartArticles.splice(index, 1);
     },
-    REMOVE_CART_ITEM: (state, { item }) => {
-      const record = state.cartArticles.find(element => (element.article['ids'].equals(item.ids)));
+    REMOVE_CART_ITEM: (state, cart) => {
+      console.log("REMOVE_CART_ITEM");
+      console.log(cart);
+      var article = cart.article;
+      console.log(article);
+      const record = state.cartArticles.find(element => (element.article.ids.article_id == article.ids.article_id && 
+                       element.article.ids.article_organization_id == article.ids.article_organization_id && 
+                       element.article.ids.order_id == article.ids.order_id && 
+                       element.article.ids.organization_id == article.ids.organization_id)
+                      // (element.article['ids'].equals(article.ids))
+                      );
       state.cartArticles.splice(state.cartArticles.indexOf(record), 1);
     },
+    UPDATE_CART: (state, { cart, qtyNew, isAdd }) => {
+     
+ console.log(cart);      
+ console.log(cart.article); 
+ console.log(cart.article.ids);  
+  var article = cart.article;      
+      const record = state.cartArticles.find(element => (element.article.ids.article_id == article.ids.article_id && 
+                       element.article.ids.article_organization_id == article.ids.article_organization_id && 
+                       element.article.ids.order_id == article.ids.order_id && 
+                       element.article.ids.organization_id == article.ids.organization_id));
+      console.log("UPDATE_CART record.qty "+record.qty+" qtyNew "+qtyNew);
+      if (record) {
+        if (isAdd) {
+          record.qty += qtyNew;
+        } else {
+          record.qty = qtyNew;
+        }
+      } else {
+        const cartNew = {
+          cart: Object.assign({}, cart.article),
+          qty: 1
+        };
+        state.cartArticles.push(cartNew);
+      }
+    },    
     CURRENT_ARTICLE: (state, article) => {
       state.currentArticle = article;
     },
@@ -82,17 +118,34 @@ export const carts = {
   actions: {
     loadPage: context => {
       context.commit("LOAD_PAGE");
-    },
+    },   
     addArticle: (context, { article, qty }) => {
+      console.log("ADD_ARTICLE");
+      console.log(article);
+      console.log("qty "+qty);
       console.log("store addArticle " + article.ids.article_id);
       context.commit("ADD_ARTICLE", { article, qty });
     },
     removeArticle: (context, index) => {
       context.commit("REMOVE_ARTICLE", index);
     },
-    removeItemInCart: (context, { item }) => {
-      context.commit("REMOVE_CART_ITEM", { item });
+    removeItemInCart: (context, { article }) => {
+      context.commit("REMOVE_CART_ITEM", { article });
     },
+    updateArticle: (context, { cart, qtyNew, isAdd }) => {
+
+       console.log(cart); 
+
+      context.commit("UPDATE_CART", { cart, qtyNew, isAdd });
+      if (isAdd) {
+        let message_obj = {
+          message: `Add qty ${qtyNew} ${cart.article.name} to cart successfully`,
+          messageClass: "success",
+          autoClose: true
+        };
+        context.commit("ADD_MESSAGE", message_obj);
+      }
+    },    
     currentArticle: (context, article) => {
       context.commit("CURRENT_ARTICLE", article);
     },

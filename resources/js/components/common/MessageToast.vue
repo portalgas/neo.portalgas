@@ -1,25 +1,10 @@
 <template>
 
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
-  <h1> TOAST {{ messageToast }}</h1>
+  <b-toast id="my-toast">
+
+    {{ messageToast }}
+
+  </b-toast>
 
 </template>
 

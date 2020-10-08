@@ -38,7 +38,7 @@ export function configureFakeBackend() {
               console.log("token " + token);
             })
             .catch(error => {
-              console.log("Error: " + error);
+              console.error("Error: " + error);
             });
 
           // find if any user matches login credentials

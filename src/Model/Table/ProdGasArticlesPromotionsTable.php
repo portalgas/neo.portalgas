@@ -6,7 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-class ProdGasPromotionsOrganizationsTable extends Table
+class ProdGasArticlesPromotionsTable extends Table
 {
     /**
      * Initialize method
@@ -18,26 +18,22 @@ class ProdGasPromotionsOrganizationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('k_prod_gas_promotions_organizations');
+        $this->setTable('k_prod_gas_articles_promotions');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('ProdGasPromotions', [
-            'foreignKey' => 'prod_gas_promotion_id',
-            'joinType' => 'INNER',
-        ]);
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+        $this->belongsTo('ProdGasPromotions', [
+            'foreignKey' => 'prod_gas_promotion_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+        $this->belongsTo('Articles', [
+            'foreignKey' => ['organization_id', 'article_id'],
             'joinType' => 'INNER',
         ]);
     }
@@ -55,33 +51,16 @@ class ProdGasPromotionsOrganizationsTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('hasTrasport')
-            ->notEmptyString('hasTrasport');
+            ->integer('qta')
+            ->notEmptyString('qta');
 
         $validator
-            ->numeric('trasport')
-            ->notEmptyString('trasport');
+            ->numeric('prezzo_unita')
+            ->notEmptyString('prezzo_unita');
 
         $validator
-            ->scalar('hasCostMore')
-            ->notEmptyString('hasCostMore');
-
-        $validator
-            ->numeric('cost_more')
-            ->notEmptyString('cost_more');
-
-        $validator
-            ->scalar('nota_supplier')
-            ->allowEmptyString('nota_supplier');
-
-        $validator
-            ->scalar('nota_user')
-            ->requirePresence('nota_user', 'create')
-            ->notEmptyString('nota_user');
-
-        $validator
-            ->scalar('state_code')
-            ->notEmptyString('state_code');
+            ->numeric('importo')
+            ->notEmptyString('importo');
 
         return $validator;
     }
@@ -95,11 +74,24 @@ class ProdGasPromotionsOrganizationsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['prod_gas_promotion_id'], 'ProdGasPromotions'));
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->existsIn(['prod_gas_promotion_id'], 'ProdGasPromotions'));
+        $rules->add($rules->existsIn(['organization_id', 'article_id'], 'Articles'));
 
         return $rules;
     }
+
+    public function getByProdGasPromotionId($user, $prod_gas_promotion_id, $debug=false) {
+
+        if (empty($prod_gas_promotion_id)) {
+            return null;
+        }
+
+        $results = $this->find()  
+                        ->where([$this->alias().'.id' => $prod_gas_promotion_id])
+                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
+                        ->all();
+
+        return $results;      
+    }    
 }

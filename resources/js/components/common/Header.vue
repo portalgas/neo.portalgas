@@ -60,9 +60,9 @@ export default {
     appMessageToast: messageToast
   },
   computed: {
-    ...mapGetters(["getArticleInCart", "getPopupCart", "cartTotal"]),
+    ...mapGetters(["getArticlesInCart", "getPopupCart", "cartTotal"]),
     numItems() {
-      return this.getArticleInCart.reduce((total, item) => {
+      return this.getArticlesInCart.reduce((total, item) => {
         total += item.qty;
         return total;
       }, 0);
@@ -74,7 +74,7 @@ export default {
   methods: {
     ...mapActions(["showOrHiddenPopupCart"]),
     hasProduct() {
-      return this.getArticleInCart.length > 0;
+      return this.getArticlesInCart.length > 0;
     },
     showPopupCart() {
       this.showOrHiddenPopupCart();

@@ -2,7 +2,7 @@
   <div class="box">
     <span v-if="!hasProduct()">No products :/</span>
     <div
-      v-for="(cart, index) in getArticleInCart"
+      v-for="(cart, index) in getArticlesInCart"
       :key="index"
       class="box-item"
     >
@@ -35,15 +35,15 @@ export default {
     appBtnCart: btnCart
   },
   computed: {
-    ...mapGetters(["getArticleInCart"])
+    ...mapGetters(["getArticlesInCart"])
   },
   methods: {
     ...mapActions(["showOrHiddenPopupCart"]),
     hasProduct() {
-      return this.getArticleInCart.length > 0;
+      return this.getArticlesInCart.length > 0;
     },
     totalPrice() {
-      return this.getArticleInCart.reduce(
+      return this.getArticlesInCart.reduce(
         (current, next) => current + (next.qty * next.article.price),
         0
       );

@@ -22,7 +22,7 @@ class ArticlesTable extends Table
 
         $this->setTable('k_articles');
         $this->setDisplayField('name');
-        $this->setPrimaryKey(['id', 'organization_id']);
+        $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
 
@@ -38,6 +38,17 @@ class ArticlesTable extends Table
             'foreignKey' => 'category_article_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('ProdGasArticlesPromotions', [
+             'className' => 'ProdGasArticlesPromotions',
+             'foreignKey' => ['organization_id', 'article_id']
+         ]); 
+         /*       
+        $this->belongsTo('ProdGasArticlesPromotions', [
+            'foreignKey' => ['organization_id', 'article_id'],
+            'joinType' => 'INNER'
+        ]);*/
+
+        
     }
 
     /**

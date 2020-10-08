@@ -17,7 +17,7 @@ class OrdersGasController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Csrf');
-        $this->loadComponent('Auths');
+        $this->loadComponent('Cart');
     }
 
     public function beforeFilter(Event $event): void  {
@@ -26,30 +26,61 @@ class OrdersGasController extends ApiAppController
     }
   
     /* 
-     * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
+     * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
      */
-    public function getCartsByOrder() {
+    public function getCarts() {
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
 
+        $user = $this->Authentication->getIdentity();
+
         $results = [];
-        $where = [];
-        $order = [];
    
         $order_id = $this->request->getData('order_id');
         // debug($order_id);
 
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $results = $articlesOrdersTable->getCartsByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);
+        $articlesOrdersTable = $articlesOrdersTable->factory($user, $user->organization->id, $order_id);
+
+        if($articlesOrdersTable!==false) {
+            $where['order_id'] = $order_id;
+            $order = [];
+            $results = $articlesOrdersTable->getCarts($user, $user->organization->id, $user->id, $where, $order);
         
-        if(!empty($results)) {
-            $results = new ApiArticleDecorator($results);
-            //$results = new ArticleDecorator($results);
-            $results = $results->results;
+            if(!empty($results)) {
+                $results = new ApiArticleDecorator($results);
+                //$results = new ArticleDecorator($results);
+                $results = $results->results;
+            }
         }
 
+        $results = json_encode($results);
+        $this->response->type('json');
+        $this->response->body($results);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    } 
+
+    public function managementCart() {
+        
+        $debug = true;
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $user = $this->Authentication->getIdentity();
+
+        // debug($article);
+
+        $results = [];
+   
+        $article = $this->request->getData('article');
+        $results = $this->Cart->managementCart($user, $user->organization->id, $article, $debug);
+        
         $results = json_encode($results);
         $this->response->type('json');
         $this->response->body($results);
@@ -67,6 +98,8 @@ class OrdersGasController extends ApiAppController
             return $this->_respondWithUnauthorized();
         }
 
+        $user = $this->Authentication->getIdentity();
+
         $results = [];
         $where = [];
         $order = [];
@@ -74,10 +107,10 @@ class OrdersGasController extends ApiAppController
         $order_id = $this->request->getData('order_id');
         
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id);
+        $articlesOrdersTable = $articlesOrdersTable->factory($user, $user->organization->id, $order_id);
 
         if($articlesOrdersTable!==false) {
-            $results = $articlesOrdersTable->gets($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $where, $order);            
+            $results = $articlesOrdersTable->gets($user, $user->organization->id, $order_id, $where, $order);            
         }
         /*
         if(!empty($results)) {

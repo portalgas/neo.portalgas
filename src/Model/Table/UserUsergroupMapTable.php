@@ -23,7 +23,7 @@ class UserUsergroupMapTable extends Table
         $this->setPrimaryKey(['user_id', 'group_id']);
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+            'foreignKey' => 'id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('UserGroups', [

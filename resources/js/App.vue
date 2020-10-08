@@ -15,6 +15,7 @@
       <app-header></app-header>
       
       <message-component></message-component>
+      <message-toast-component></message-toast-component>
 
       <div class="content" :class="{ loadingItem: isProductLoading }">
 
@@ -43,6 +44,7 @@ import gridLoader from "vue-spinner/src/GridLoader.vue";
 import header from "./components/common/Header";
 import footer from "./components/common/Footer";
 import message from './components/common/Message.vue';
+import messageToast from './components/common/MessageToast.vue';
 
 export default {
   name: "app",
@@ -57,6 +59,7 @@ export default {
     appHeader: header,
     appFooter: footer,
     messageComponent: message, 
+    messageToastComponent: messageToast, 
     gridLoader
   },
   methods: {
@@ -72,7 +75,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // clear alert on location change
-      this.$store.dispatch("messages/clear");
+      // this.$store.dispatch("messages/clear");
     }
   },
   created() {

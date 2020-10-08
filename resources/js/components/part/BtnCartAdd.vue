@@ -1,14 +1,14 @@
 <template>
   <div>
-    qty-db {{ article.cart.qty }}
-    qty-store {{ cart.qty }}
+    GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }}  {{ article.cart.article_id }}
+    <hr>
     <div class="quantity buttons_added">
-      <input type="button" value="-" class="minus" @click="minusCart" :disabled="cart.qty == 0" />
+      <input type="button" value="-" class="minus" @click="minusCart" :disabled="article.cart.qty_new == 0" />
 
       <input
         type="number"
         class="form-control text-center"
-        :value="cart.qty"
+        :value="article.cart.qty_new"
         :disabled="article.store === 0"
         @input="numberCart"
         min="0"
@@ -24,10 +24,10 @@
       type="button"
       class="btn btn-success"
       style="float:right;"
-      :disabled="cart.qty === 0"
-      @click="addArticleToCart()"
+      :disabled="article.cart.qty === article.cart.qty_new"
+      @click="save()"
     >
-      Add to cart
+      Save
     </button>
   </div>
 </template>
@@ -43,12 +43,13 @@ export default {
         article: Object,
         qty: 0
       },
-      articleInCart: Object
+      articleInCart: Object,
+      isSave: false
     };
   },
   props: ["article"],
   computed: {
-    ...mapGetters(["getArticleInCart"])
+    ...mapGetters(["getArticlesInCart"])
   },
   mounted() {
     this.getCart();
@@ -65,7 +66,7 @@ export default {
     console.log("created");
   },
   methods: {
-    ...mapActions(["addArticle", "addMessage", "showOrHiddenModal"]),
+    ...mapActions(["addArticle", "addMessage", "addMessageToast", "showOrHiddenModal"]),
     getCart() {
 
       console.log("getCart");
@@ -80,7 +81,7 @@ export default {
       /*
        * cerco se tra quelli gia' acquistati c'e' l'articolo corrente
        */
-      (this.articleInCart = this.getArticleInCart);
+      (this.articleInCart = this.getArticlesInCart);
       if (this.articleInCart.length == 0) {
         console.log("nessun articolo acquistato");
       } else {
@@ -94,11 +95,11 @@ export default {
         var articleInCart = null;
         if(this.articleInCart.length>0) {
           articleInCart = this.articleInCart.find(
-            element => (element.article.ids.article_id == article.ids.article_id && 
-                       element.article.ids.article_organization_id == article.ids.article_organization_id && 
-                       element.article.ids.order_id == article.ids.order_id && 
-                       element.article.ids.organization_id == article.ids.organization_id)
-            // element => (element.article.ids.equals(article.ids))   
+            element => (element.article.ids.article_id == this.article.ids.article_id && 
+                       element.article.ids.article_organization_id == this.article.ids.article_organization_id && 
+                       element.article.ids.order_id == this.article.ids.order_id && 
+                       element.article.ids.organization_id == this.article.ids.organization_id)
+            // element => (element.article.ids.equals(this.article.ids))   
           );
         }
 
@@ -113,6 +114,42 @@ export default {
       }
       console.log(this.cart);
     },
+    save() {
+      let params = {
+        article: this.article
+      };
+      console.log(params);
+
+      axios
+        .post("http://neo.portalgas.local.it:81/admin/api/orders-gas/managementCart", params)
+        .then(response => {
+
+          var messageClass = "";
+          var message = "";
+          if(response.data.esito) {
+              messageClass = "success";
+              message = response.data.msg;
+
+              this.article.cart.qty = this.article.cart.qty_new;
+          }
+          else {
+              messageClass = "danger";
+              message = response.data.msg;
+          }
+          this.addMessage({
+            messageClass: messageClass,
+            message: message
+          });        
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error("Error: " + error);
+          this.addMessage({
+            messageClass: "danger",
+            message: error
+          });          
+        });
+    },
     addArticleToCart() {
       let message = "";
       message = "Add product";
@@ -121,22 +158,33 @@ export default {
         message: message
       });
       
-      console.log("addArticleToCart this.cart.qty " + this.cart.qty);
+      this.addMessageToast({
+        title: "title",
+        subtitle: "subtitle",
+        body: message
+      });
+      
+      console.log("addArticleToCart this.cart.qty_new " + this.cart.qty_new);
       console.log(this.cart);
       this.addArticle(this.cart);
     },
     minusCart() {
-      if(this.cart.qty>0) {
-        this.cart.qty--;
-        this.addArticleToCart();      
+      if(this.article.cart.qty_new>0) {
+        if(this.cart.qty)
+          this.cart.qty--;
+          
+        this.article.cart.qty_new--;
+        this.addArticleToCart();    
       }
     },
     plusCart() {
       this.cart.qty++;
-      this.addArticleToCart();
+      this.article.cart.qty_new++;
+      this.addArticleToCart(); 
     },
     numberCart(event) {
       console.log("numberCart " + event.target.value);
+      this.article.cart.qty_new = parseInt(event.target.value);
       this.cart.qty = parseInt(event.target.value);
       this.addArticleToCart();
     }

@@ -39,6 +39,11 @@ class Cart extends Entity
      * @var array
      */
     protected $_accessible = [
+        'organization_id' => true,
+        'order_id' => true,
+        'user_id' => true,
+        'article_organization_id' => true,
+        'article_id' => true,
         'qta' => true,
         'deleteToReferent' => true,
         'qta_forzato' => true,

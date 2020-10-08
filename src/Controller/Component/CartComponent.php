@@ -20,6 +20,111 @@ class CartComponent extends Component {
         //$controller->request
     }
 
+    public function managementCart($user, $organization_id, $article, $debug=false) {
+
+        $results = [];
+        $results['esito'] = true;
+        $results['code'] = '';
+        $results['msg'] = '';
+        $results['results'] = '';
+
+        $qty = $article['cart']['qty'];
+        $qty_new = $article['cart']['qty_new'];
+
+        $organization_id = $organization_id; // $article['cart']['organization_id'];
+        $user_id = $user->id; // $article['cart']['user_id'];
+        $order_id = $article['cart']['order_id'];
+        $article_organization_id = $article['cart']['article_organization_id'];
+        $article_id = $article['cart']['article_id'];
+
+        $cartsTable = TableRegistry::get('Carts');
+
+        if($qty_new==0) {
+            /*
+             * DELETE
+             */
+            $where = ['Carts.organization_id' => $organization_id,
+                      'Carts.order_id' => $order_id,
+                      'Carts.user_id' => $user_id,
+                      'Carts.article_organization_id' => $article_organization_id,
+                      'Carts.article_id' => $article_id];
+            // debug($where);
+
+            $cart = $cartsTable->find()
+                            ->where($where)
+                            ->first(); 
+            if (!$cartsTable->delete($cart)) {
+                $results['esito'] = false;
+                $results['code'] = 500;
+                $results['results'] = $cart->getErrors();
+            }
+            else {
+                $results['esito'] = true;
+                $results['code'] = 200;
+                $results['msg'] = 'Cancellazione avvenuta con successo';  
+                $results['results'] = '';                
+            }   
+        }
+        else
+        if($qty==0) {
+            /*
+             * INSERT
+             */ 
+            $data = [];
+            $data['organization_id'] = $organization_id;
+            $data['user_id'] = $user_id;
+            $data['order_id'] = $order_id;
+            $data['article_organization_id'] = $article_organization_id;
+            $data['article_id'] = $article_id;
+            $data['qta'] = $qty_new;
+            $data['deleteToReferent'] = 'N';
+            $data['qta_forzato'] = 0;
+            $data['importo_forzato'] = 0;
+            $data['nota'] = '';
+            $data['inStoreroom'] = 'N';
+            $data['stato'] = 'Y';
+
+            $cart = $cartsTable->newEntity();
+            $cart = $cartsTable->patchEntity($cart, $data);
+            // debug($cart);
+            if (!$cartsTable->save($cart)) {
+                $results['esito'] = false;
+                $results['code'] = 500;
+                $results['results'] = $cart->getErrors();
+            }
+            else {
+                $results['esito'] = true;
+                $results['code'] = 200;
+                $results['msg'] = 'Inserimento avvenuto con successo';  
+                $results['results'] = '';
+            }
+        }
+        else {
+            /*
+             * UPDATE
+             */   
+            $cart = $cartsTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
+
+            $data = [];
+            $data['qta'] = $qty_new;
+
+            $cart = $cartsTable->patchEntity($cart, $data);
+            if (!$cartsTable->save($cart)) {
+                $results['esito'] = false;
+                $results['code'] = 500;
+                $results['results'] = $cart->getErrors();
+            }
+            else {
+                $results['esito'] = true;
+                $results['code'] = 200;
+                $results['msg'] = 'Aggiornamento avvenuto con successo';  
+                $results['results'] = '';                
+            }                     
+        }
+
+        return $results;
+    }
+
     /* 
      * estrae solo gli users che hanno effettuato acquisti in base alla consegna
      */

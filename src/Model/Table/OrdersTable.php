@@ -23,7 +23,7 @@ class OrdersTable extends Table
 
         $this->setTable('k_orders');
         $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
 
@@ -36,7 +36,7 @@ class OrdersTable extends Table
             'joinType' => 'INNER',
         ]);        
         $this->belongsTo('SuppliersOrganizations', [
-            'foreignKey' => 'supplier_organization_id',
+            'foreignKey' => ['organization_id', 'supplier_organization_id'],
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('OwnerOrganizations', [
@@ -308,7 +308,7 @@ class OrdersTable extends Table
         // debug('OrdersTable buildRules');
 
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
+        $rules->add($rules->existsIn(['organization_id', 'supplier_organization_id'], 'SuppliersOrganizations'));
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
         $rules->add($rules->existsIn(['owner_supplier_organization_id'], 'OwnerSupplierOrganizations'));
         $rules->add($rules->existsIn(['organization_id', 'delivery_id'], 'Deliveries'));

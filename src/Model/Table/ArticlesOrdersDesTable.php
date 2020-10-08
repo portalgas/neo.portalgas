@@ -22,12 +22,9 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
         $validator = parent::validationDefault($validator);
         
         return $validator;
-    }
+    }    
 
-    /*
-     * implement
-     */
-    public function gets($user, $organization_id, $order_id) {
+    public function getCarts($user, $organization_id, $user_id, $where, $order, $debug) {
         
-    }      
+    }
 }

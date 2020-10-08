@@ -6,22 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * KArticlesArticlesTypes Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\BelongsTo $Articles
- * @property \App\Model\Table\ArticleTypesTable&\Cake\ORM\Association\BelongsTo $ArticleTypes
- *
- * @method \App\Model\Entity\KArticlesArticlesType get($primaryKey, $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\KArticlesArticlesType findOrCreate($search, callable $callback = null, $options = [])
- */
 class ArticlesArticlesTypesTable extends Table
 {
     /**

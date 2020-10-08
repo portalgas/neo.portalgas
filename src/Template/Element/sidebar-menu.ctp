@@ -6,11 +6,13 @@ $icon = ''; // '<i class="fa fa-circle"></i> ';
 $config = Configure::read('Config');
 $portalgas_bo_url = $config['Portalgas.bo.url'];
 $portalgas_bo_home = $config['Portalgas.bo.home'];
+$joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
+
 ?>	
   <?php echo $this->fetch('tb_sidebar') ?>
 
   <?php
-  if($this->Identity->get()->acl['isRoot']) {
+  if($joomla25Salts_isActive) {
     echo '<li class="">';
     echo '<a href="'.$this->Url->build('/admin/joomla25Salts').'">';
     echo '  <i class="fa fa-home"></i> <span>'.__('PortAlGas').'</span>';

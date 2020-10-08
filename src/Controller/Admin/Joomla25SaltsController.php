@@ -26,7 +26,9 @@ class joomla25SaltsController extends AppController
     * da cakephp a joomla25
     *  
     * chiamando /api/connect?u={salt}&format=notmpl .htaccess
-    * Rests::connect()    
+    * Rests::connect()  
+    *
+    * localhost nginx non gestisce .htaccess  
     */
     public function index()
     {
@@ -69,15 +71,28 @@ class joomla25SaltsController extends AppController
             }
         }
 
-        // http://www.portalgas.it/api/connect?u={salt}=&c_to=Pages&a_to=home
+        /*
+         * https://www.portalgas.it/api/connect?u={salt}=&c_to=Pages&a_to=home
+         *
+         * localhost
+         * http://portalgas.local.it:81/index.php/?option=com_cake&controller=Rests&action=connect&u={salt}=&c_to=Pages&a_to=home
+         */
         $config = Configure::read('Config');
 
-        $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
-
+        switch (strtolower($this->application_env)) {
+            case 'development':
+                $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'&u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+                break;
+            default:
+                $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+                break;
+        }
+        
         if(!empty($q))
             $url .= '&'.$q;
 
-        if($debug) debug($url);
+        if($debug) debug($url); 
+        // debug($url); exit;
         // return $this->redirect($url);
                 
         header("Location: $url");

@@ -22,7 +22,7 @@ class SuppliersOrganizationsTable extends Table
 
         $this->setTable('k_suppliers_organizations');
         $this->setDisplayField('name');
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
 
@@ -47,7 +47,7 @@ class SuppliersOrganizationsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->hasMany('Articles', [
-            'foreignKey' => 'supplier_organization_id'
+            'foreignKey' => ['organization_id', 'supplier_organization_id']
         ]);          
     }
 

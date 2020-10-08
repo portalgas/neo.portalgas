@@ -35,7 +35,7 @@ class UserProfilesTable extends Table
         $this->setTable('j_user_profiles');
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+            'foreignKey' => 'id',
             'joinType' => 'INNER'
         ]);
     }

@@ -39,7 +39,7 @@ class ApiArticleDecorator  extends AppDecorator {
         
         $sold_out = false;	           
         $qty_max = 0;
-        $store = '';
+        $store = null; // non gestito
         $price_pre_discount = 0;
         $price = 0;
 
@@ -155,14 +155,26 @@ class ApiArticleDecorator  extends AppDecorator {
         }
         else 
             $price = $article_detail->price;
-                        
-        $results['store'] = $store;
+        
         $results['sold_out'] = $sold_out;
         $results['price_pre_discount'] = $price_pre_discount;
         $results['price'] = $price;     
         */
 
+        $results['store'] = $store; // non gestito
         $results['cart'] = $row->cart; 
+
+        /*
+         * promotions
+         */
+        if(isset($row->promotion) && !empty($row->promotion)) {
+            $results['promotion'] = $row->promotion;
+            /*
+                $promotions[$numResults]['qty'] = $prodGasPromotionsOrganizationsResult->qta;
+                $promotions[$numResults]['price_unit'] = $prodGasPromotionsOrganizationsResult->prezzo_unita;
+                $promotions[$numResults]['import'] = $prodGasPromotionsOrganizationsResult->importo;
+                */            
+        }
 
         return $results;
     }
