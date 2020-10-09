@@ -31,7 +31,4 @@ export default {
 </script>
 
 <style scoped>
-.message {
-  margin-top: 50px;
-}
 </style>

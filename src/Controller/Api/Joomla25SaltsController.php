@@ -58,7 +58,7 @@ class joomla25SaltsController extends AppController
             $c_to = $queries['c_to']; 
         if(isset($queries['a_to']))
             $a_to = $queries['a_to']; 
-        if(!empty($queries) && !empty($a_to)) {
+        if(!empty($queries) && !empty($c_to)) {
             $redirects = ['controller' => $c_to, 'action' => $a_to, 'prefix' => false];
         }
         else

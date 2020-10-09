@@ -1,18 +1,6 @@
 <template>
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8" />
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no"
-      />
-      <meta name="description" content="" />
-      <meta name="author" content="" />
-      <title>---------------------------</title>
-    </head>
-    <div class="container-fluid">
-      <app-header></app-header>
+  
+  <div>
       
       <message-component></message-component>
       <message-toast-component></message-toast-component>
@@ -33,9 +21,8 @@
         </div>
       </div>
 
-      <app-footer></app-footer>
-    </div>
-  </html>
+  </div>
+
 </template>
 
 <script>
@@ -85,7 +72,4 @@ export default {
 </script>
 
 <style>
-.content {
-  padding-top: 80px;
-}
 </style>

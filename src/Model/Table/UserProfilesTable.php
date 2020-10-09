@@ -6,20 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * JUserProfiles Model
- *
- * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- *
- * @method \App\Model\Entity\JUserProfile get($primaryKey, $options = [])
- * @method \App\Model\Entity\JUserProfile newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\JUserProfile[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\JUserProfile|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\JUserProfile saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\JUserProfile patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\JUserProfile[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\JUserProfile findOrCreate($search, callable $callback = null, $options = [])
- */
 class UserProfilesTable extends Table
 {
     /**

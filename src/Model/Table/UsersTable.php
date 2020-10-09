@@ -216,6 +216,7 @@ class UsersTable extends Table
                 'Organizations.paramsFields',
                 'Organizations.hasMsg',
                 'Organizations.msgText',
+                'Organizations.j_seo',
                 'Templates.id',
                 'Templates.name',
                 'Templates.descri',
