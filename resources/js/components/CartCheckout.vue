@@ -114,7 +114,7 @@ export default {
         carts: this.getArticlesInCart
       };
       axios
-        .post("http://neo.portalgas.local.it:81/admin/api/orders-gas/managementCart", params)
+        .post("/admin/api/orders-gas/managementCart", params)
         .then(response => {
           this.addMessage({
             messageClass: "success",

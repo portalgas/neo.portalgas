@@ -123,14 +123,14 @@ class DeliveriesTable extends Table
         return $rules;
     }
 
-    public function getsList($user, $organization_id, $where=[], $debug=false) {
+    public function getsList($user, $organization_id, $where=[], $order=[], $debug=false) {
 
         $listResults = [];
 
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
-                $listResults[$result->id] = $result->luogo.' '.$result->data;
+                $listResults[$result->id] = $result->luogo.' '.$result->data->format('d F Y');;
             }
         }
 
@@ -138,7 +138,7 @@ class DeliveriesTable extends Table
         return $listResults;
     }
 
-    public function gets($user, $organization_id, $where=[], $debug=false) {
+    public function gets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
         $results = [];
 
@@ -154,14 +154,17 @@ class DeliveriesTable extends Table
         if(isset($where['Orders']))
             $where_order = $where['Orders'];
         $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
-                           
+            
+        if(empty($order))
+            $order = ['Deliveries.data'];
+
         if($debug) debug($where);
         $deliveryResults = $this->find()
                                 ->where($where_delivery)
                                 ->contain(['Orders' => [
                                     'conditions' => $where_order,
                                     'SuppliersOrganizations' => ['Suppliers']]])
-                                ->order(['Deliveries.data'])
+                                ->order($order)
                                 ->all();
 
         /*
@@ -179,12 +182,27 @@ class DeliveriesTable extends Table
         return $results;
     }
 
-    public function getDeliverySys($user, $organization_id, $debug=false) {
+    /* 
+    * se isset($where['Orders']) cerco gli eventuali ordini
+    */
+    public function getDeliverySys($user, $organization_id, $where=[], $debug=false) {
+
+        $contain = [];
+        $where_order = [];
+        if(isset($where['Orders'])) {
+            $where_order = $where['Orders'];
+            $contain = ['Orders' => [
+                            'conditions' => $where_order, 
+                            'sort' => ['Orders.data_inizio'],
+                            'SuppliersOrganizations' => ['Suppliers']]];
+        }
+        // debug($contain);
 
         $where = ['Deliveries.organization_id' => $organization_id,
                   'Deliveries.sys' => 'Y'];
 
         $results = $this->find()
+                        ->contain($contain)
                         ->where($where)
                         ->first();
 
@@ -194,13 +212,9 @@ class DeliveriesTable extends Table
     public function getDeliverySysList($user, $organization_id, $debug=false) {
 
         $results = [];
+        $where=[];
 
-        $where = ['Deliveries.organization_id' => $organization_id,
-                  'Deliveries.sys' => 'Y'];
-
-        $deliveryResults = $this->find()
-                        ->where($where)
-                        ->first();
+        $deliveryResults = $this->getDeliverySys($user, $organization_id, $where=[], $debug);
 
         $results[$deliveryResults->id] = $deliveryResults->luogo; 
 

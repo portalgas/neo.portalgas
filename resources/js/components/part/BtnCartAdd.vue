@@ -18,17 +18,17 @@
       />
 
       <input type="button" value="+" class="plus" @click="plusCart" />
+
+      <button
+        type="button"
+        class="btn-save btn btn-success"
+        :disabled="article.cart.qty === article.cart.qty_new"
+        @click="save()"
+      >
+        Save
+      </button>
     </div>
 
-    <button
-      type="button"
-      class="btn btn-success"
-      style="float:right;"
-      :disabled="article.cart.qty === article.cart.qty_new"
-      @click="save()"
-    >
-      Save
-    </button>
   </div>
 </template>
 
@@ -121,7 +121,7 @@ export default {
       console.log(params);
 
       axios
-        .post("http://neo.portalgas.local.it:81/admin/api/orders-gas/managementCart", params)
+        .post("/admin/api/orders-gas/managementCart", params)
         .then(response => {
 
           var messageClass = "";
@@ -192,4 +192,21 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.btn-save {
+    margin-left: 15px;
+}
+.buttons_added {
+    width: 100%;
+    display: inline-flex;
+}
+.minus, .plus {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid gray;
+    border-radius: 2px;
+}
+</style>

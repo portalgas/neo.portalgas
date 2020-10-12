@@ -420,9 +420,13 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
 
     protected function _getArticleImg1($row) {
 
+        $config = Configure::read('Config');
+        $portalgas_fe_url = $config['Portalgas.fe.url'];
+        $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
+
         $results = '';
         if(!empty($row->article->img1)) {
-            $results = sprintf(Configure::read('Article.img.path.full'), $row->article->organization_id, $row->article->img1);
+            $results = sprintf($url, $row->order->organization_id, $row->article->img1);
         } 
         else
             $results = Configure::read('Article.img.no');

@@ -1,6 +1,9 @@
 <?php
 use Cake\Core\Configure;
 
+$config = Configure::read('Config');
+$portalgas_fe_url = $config['Portalgas.fe.url'];
+
 echo $this->Html->script('vue/cashierDeliveries', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => "Gestisci pagamenti dell'intera consegna", 'subtitle' => '']);
@@ -49,9 +52,9 @@ if(!empty($deliveries)) {
           v-for="order in orders"
           :order="order.id"
           :key="order.id"
-        >
+        > 
           <td> 
-          	<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-supplier" width="<?php echo Configure::read('Supplier.img.preview.width');?>" :src="'<?php echo Configure::read('Supplier.img.path.fulljs');?>'+order.suppliers_organization.supplier.img1" alt="" /></td>
+          	<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-supplier" width="<?php echo Configure::read('Supplier.img.preview.width');?>" :src="'<?php echo $portalgas_fe_url.Configure::read('Supplier.img.path.fulljs');?>'+order.suppliers_organization.supplier.img1" alt="" /></td>
           <td>{{ order.suppliers_organization.name }}</td>
           <td>{{ order.state_code | orderStateCode }}</td>
           <td>{{ order.data_inizio | formatDate }}</td>

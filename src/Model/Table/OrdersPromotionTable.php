@@ -89,7 +89,10 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
 
         $prodGasPromotionsOrganizationsDeliveriesTable = TableRegistry::get('ProdGasPromotionsOrganizationsDeliveries');
     
-        $where['Deliveries'] = ['DATE(Deliveries.data) >= CURDATE()'];
+        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
+                                'Deliveries.stato_elaborazione' => 'OPEN',
+                                'Deliveries.sys' => 'N',
+                                'DATE(Deliveries.data) >= CURDATE()'];
         $results = $prodGasPromotionsOrganizationsDeliveriesTable->getsList($user, $organization_id, $where);
 
         return $results;        

@@ -1,6 +1,9 @@
 <?php
 use Cake\Core\Configure;
 
+$config = Configure::read('Config');
+$portalgas_fe_url = $config['Portalgas.fe.url'];
+
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Article Export'), 'subtitle' => '']);
 
 echo '<div class="rowas">';
@@ -33,7 +36,10 @@ else {
     echo '<div class="info-box-content">';
     echo '<span class="info-box-text">';
     if(!empty($supplier_organization->supplier->img1)) {
-        $img1_path = sprintf(Configure::read('Supplier.img.path.full'), $supplier_organization->supplier->img1);
+
+        $url = $portalgas_fe_url.Configure::read('Supplier.img.path.full');
+
+        $img1_path = sprintf($url, $supplier_organization->supplier->img1);
         echo '<img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" /> ';
     }
     echo $supplier_organization->name;
@@ -97,7 +103,9 @@ else {
                     <?php  
                     echo '<td>';
                     if(!empty($article->img1)) {
-                        $img1_path = sprintf(Configure::read('Article.img.path.full'), $article->organization_id, $article->img1);
+                        $url = Configure::read('Article.img.path.full').$portalgas_fe_url;
+
+                        $img1_path = sprintf($url, $article->organization_id, $article->img1);
                         echo '<img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" />';
                     }
                     echo '</td>';

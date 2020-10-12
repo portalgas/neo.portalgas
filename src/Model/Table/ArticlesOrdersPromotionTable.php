@@ -44,8 +44,17 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
         
         $order = [$this->alias().'.name'];
 
+        /*
+         * da Orders chi gestisce listino articoli
+         * order_type_id' => (int) 4,
+         * owner_articles' => 'REFERENT',
+         * owner_organization_id
+         * owner_supplier_organization_id
+         */
         $results = $this->find()
-                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
+                        ->contain([
+                            'Orders',
+                            'Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->where($where_article_order)
                         ->order($order)
                         // ->limit(2)

@@ -64,8 +64,11 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-    
-        $where['Deliveries'] = ['DATE(Deliveries.data) >= CURDATE()'];
+                    
+        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
+                                'Deliveries.stato_elaborazione' => 'OPEN',
+                                'Deliveries.sys' => 'N',
+                                'DATE(Deliveries.data) >= CURDATE()'];
         $deliveries = $deliveriesTable->getsList($user, $organization_id, $where);
 
         $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $organization_id);

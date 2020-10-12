@@ -319,12 +319,12 @@ Configure::write('Gdxp.applicationSignature', 'PortAlGas');
 Configure::write('Gdxp.file.prefix', 'gdxp-');
 
 // {organizaton_id} / {img1}
-Configure::write('Article.img.path.full', 'https://www.portalgas.it/images/articles/%s/%s');
+Configure::write('Article.img.path.full', '/images/articles/%s/%s');
 Configure::write('Article.img.no', '/img/article-no-img.png');
 Configure::write('Article.img.preview.width', '50px');
 
-Configure::write('Supplier.img.path.full', 'http://www.portalgas.it/images/organizations/contents/%s');
-Configure::write('Supplier.img.path.fulljs', 'http://www.portalgas.it/images/organizations/contents/');
+Configure::write('Supplier.img.path.full', '/images/organizations/contents/%s');
+Configure::write('Supplier.img.path.fulljs', '/images/organizations/contents/');
 Configure::write('Supplier.img.preview.width', '50px');
 
 // Configure::write('Gdxp.suppliers.index.url.remote', 'http://www.economiasolidale.net/api/v1/list.php');

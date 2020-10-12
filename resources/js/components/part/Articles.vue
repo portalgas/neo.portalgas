@@ -2,11 +2,12 @@
 
   <div>
         <div class="card-header bg-primary">{{ article.name }}</div>
-        <img class="card-img-top" :src="article.img1" :alt="article.name" style="width:100px">
+        <img class="card-img-top" :src="article.img1" :alt="article.name" style="max-width: 100%">
         <div class="card-body">
-            <h4 class="card-title">{{ article.descri }}</h4>
+            <!-- h4 class="card-title"></h4 -->
             <a href="#" class="card-link">Card link</a>
             <p class="card-text">
+                {{ article.descri | shortDescription }}
                 <del v-if="article.price_pre_discount != ''"
                     >{{ article.price_pre_discount }} &euro;</del
                   >

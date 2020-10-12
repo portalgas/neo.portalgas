@@ -156,7 +156,6 @@ $(function () {
           counter: function (index) {
             return index+1
         },
-
         orderStateCode(state_code) {
           if(state_code) {
             switch(state_code) {

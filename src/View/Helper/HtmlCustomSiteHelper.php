@@ -108,11 +108,15 @@ class HtmlCustomSiteHelper extends FormHelper
 
     public function boxSupplierOrganization($results) {
 
+        $config = Configure::read('Config');
+        $portalgas_fe_url = $config['Portalgas.fe.url'];
+        $url = $url.Configure::read('Supplier.img.path.full');
+
         $html = '';
         $html .= '<div class="box-supplier-organization">';
         // $html .= $results->id;
         if(!empty($results->supplier->img1)) {
-            $img1_path = sprintf(Configure::read('Supplier.img.path.full'), $results->supplier->img1);
+            $img1_path = sprintf($url, $results->supplier->img1);
             $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
         $html .= '<span class="box-name">'.$results->name.'</span>';

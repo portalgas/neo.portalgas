@@ -33,8 +33,8 @@ class PagesController extends AppController
     public function beforeFilter(Event $event) {
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['display', 'vue']);
-        $this->Authorization->skipAuthorization(['display', 'vue']);
+        $this->Authentication->allowUnauthenticated(['display']);
+        $this->Authorization->skipAuthorization(['display']);
     }
 
     public function vue() {

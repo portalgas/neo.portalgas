@@ -216,6 +216,12 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         /*
          * ecommerce vue
          */
+        $routes->scope('/deliveries', ['controller' => 'Deliveries'], function (RouteBuilder $routes) {
+            $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        }); 
+        $routes->scope('/orders', ['controller' => 'Orders'], function (RouteBuilder $routes) {
+            $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        });         
         $routes->scope('/orders-gas', ['controller' => 'OrdersGas'], function (RouteBuilder $routes) {
             $routes->connect('/getCarts', ['action' => 'getCarts', '_method' => 'POST']);
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);  

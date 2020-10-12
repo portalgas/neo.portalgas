@@ -218,7 +218,12 @@ class SuppliersOrganizationsTable extends Table
                                 ->order(['SuppliersOrganizations.name'])
                                 ->first();
         if(!empty($results)) {
-            $results['img1'] = sprintf(Configure::read('Supplier.img.path.full'), $results['supplier']['img1']); 
+
+            $config = Configure::read('Config');
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
+            $url = $portalgas_fe_url.Configure::read('Supplier.img.path.full');
+                        
+            $results['img1'] = sprintf($url, $results['supplier']['img1']); 
         }
 
         // debug($results);

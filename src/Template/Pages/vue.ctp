@@ -55,7 +55,7 @@ $this->layout = 'vue';
 	}	
     </style>	
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <main role="main" class="container-fluid">
   
   <a name="top" id="top"></a>
