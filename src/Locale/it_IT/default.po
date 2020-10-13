@@ -821,6 +821,33 @@ msgid "Cash-Nota"
 msgstr "Nota di cassa"
 
 #
+# M S G  cart
+#
+msgid "cart_msg_save_OK"
+msgstr "Articolo acquistato!"
+
+msgid "cart_msg_stato_N"
+msgstr "L'articolo non è acquistabile, lo stato è chiuso!"
+
+msgid "cart_msg_block_stop"
+msgstr "L'articolo è bloccato, non si possono effettuare successivi acquisti."
+
+msgid "cart_msg_qtamax_order_stop"
+msgstr "Si è raggiunta la quantità massima di %s pezzi!"
+
+msgid "cart_msg_qtamax_order"
+msgstr "Si è raggiunta la quantità massima di %s pezzi! Hai potuto ordinarne solo %s pezzi."
+
+msgid "cart_msg_qtamax"
+msgstr "La quantità massima per ogni gasista è %s! Hai indicato %s"
+
+msgid "cart_msg_qtamin"
+msgstr "La quantita' minima è %s! Hai indicato %s"
+
+msgid "cart_msg_limit_cash"
+msgstr "Hai superato il credito di cassa!"
+
+#
 # M S G  system
 #
 msgid "Flash-Message"

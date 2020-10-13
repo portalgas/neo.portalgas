@@ -128,7 +128,7 @@ class ApiArticleDecorator  extends AppDecorator {
          * qty max
          */
         if(empty($row->qta_massima))
-            $results['qty_max'] = '';
+            $results['qty_max'] = 0;
         else
             $results['qty_max'] = $row->qta_massima;
         /*

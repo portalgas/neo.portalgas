@@ -42,10 +42,12 @@ class DeliveriesController extends ApiAppController
          */
         $deliveriesTable = TableRegistry::get('Deliveries');
 
+        $where = [];
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
                                 'Deliveries.stato_elaborazione' => 'OPEN',
                                 'Deliveries.sys' => 'N',
                                 'DATE(Deliveries.data) >= CURDATE()'];
+        $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
         $deliveries = $deliveriesTable->gets($user, $organization_id, $where);
         if(!empty($deliveries)) {
             foreach($deliveries as $delivery) {
@@ -57,12 +59,13 @@ class DeliveriesController extends ApiAppController
          * ctrl se ci sono ordini con la consegna ancora da definire (Delivery.sys = Y)
          */
         $where = [];
-        $where['Orders'] = ['Orders.organization_id' => $organization_id];
+        $where['Orders'] = ['Orders.organization_id' => $organization_id,
+                            'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
         $sysDelivery = $deliveriesTable->getDeliverySys($user, $organization_id, $where);
         // debug($sysDelivery);
         
         
-        if($sysDelivery->has('orders') && !empty($sysDelivery)) {
+        if($sysDelivery->has('orders') && !empty($sysDelivery->orders)) {
             $results[$sysDelivery->id] = $sysDelivery->luogo;
         }
 

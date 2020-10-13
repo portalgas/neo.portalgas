@@ -1,9 +1,3 @@
-<?php
-use Cake\Core\Configure;
-
-$config = Configure::read('Config');
-$portalgas_fe_url = $config['Portalgas.fe.url'];
-?>
 <template>
 
 	<div id="accordion-deliveries">
@@ -14,7 +8,7 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
 	          :key="delivery_id"
 		  >
 	    <div class="card-header" data-toggle="collapse" :data-target="'#'+delivery_id" aria-expanded="true" :aria-controls="'collapse-'+delivery_id" v-on:click="selectDelivery(delivery_id)">
-	          {{ delivery }} {{ delivery_id }}
+	          {{ delivery }}
               <i :id="'fas-'+delivery_id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
 	    </div>
 
@@ -25,11 +19,17 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
 	          :order="order"
 	          :key="order.id">
 					<a v-bind:href="'/order/'+order.id">
-						<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-supplier" width="" :src="order.suppliers_organization.supplier.img1" alt="" />
+
+						<img v-if="order.suppliers_organization.supplier.img1 != ''" 
+							class="img-fluid img-thumbnail" 
+							:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+							:alt="order.suppliers_organization.name">
 
 						{{ order.suppliers_organization.name }}
 
 					    <span>{{ order.data_inizio | formatDate }} - {{ order.data_fine | formatDate }}</span>
+
+					    {{ order.state_code }}  
 					</a>
 	        </p> 
 	      </div>

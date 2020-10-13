@@ -20,7 +20,7 @@ class CartsTable extends Table
 
         $this->setTable('k_carts');
         $this->setDisplayField('organization_id');
-        $this->setPrimaryKey(['organization_id', 'user_id', 'order_id', 'article_organization_id', 'article_id']);
+        $this->setPrimaryKey(['organization_id', 'order_id', 'article_organization_id', 'article_id', 'user_id']);
 
         $this->addBehavior('Timestamp');
 
@@ -42,7 +42,7 @@ class CartsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('ArticlesOrders', [
-            'foreignKey' => ['organization_id', 'article_organization_id', 'article_id', 'order_id'],
+            'foreignKey' => ['organization_id', 'order_id', 'article_organization_id', 'article_id'],
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Articles', [
@@ -108,7 +108,7 @@ class CartsTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
         $rules->add($rules->existsIn(['article_organization_id', 'article_id'], 'Articles'));
-        $rules->add($rules->existsIn(['organization_id', 'article_organization_id', 'article_id', 'order_id'], 'ArticlesOrders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id', 'article_organization_id', 'article_id'], 'ArticlesOrders'));
 
         return $rules;
     }

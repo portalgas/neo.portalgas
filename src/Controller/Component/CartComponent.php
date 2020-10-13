@@ -20,6 +20,10 @@ class CartComponent extends Component {
         //$controller->request
     }
 
+    /*
+     * qty = qty originale
+     * qty_new = qty aggiornata
+     */
     public function managementCart($user, $organization_id, $article, $debug=false) {
 
         $results = [];
@@ -28,8 +32,8 @@ class CartComponent extends Component {
         $results['msg'] = '';
         $results['results'] = '';
 
-        $qty = $article['cart']['qty'];
-        $qty_new = $article['cart']['qty_new'];
+        $qty = (int)$article['cart']['qty'];
+        $qty_new = (int)$article['cart']['qty_new'];
 
         $organization_id = $organization_id; // $article['cart']['organization_id'];
         $user_id = $user->id; // $article['cart']['user_id'];
@@ -37,90 +41,205 @@ class CartComponent extends Component {
         $article_organization_id = $article['cart']['article_organization_id'];
         $article_id = $article['cart']['article_id'];
 
-        $cartsTable = TableRegistry::get('Carts');
+        /*
+         * action
+         */
+        $action = '';
+        if($qty_new==0) 
+           $action = 'DELETE';
+        else 
+        if($qty==0) 
+           $action = 'INSERT';
+        else 
+           $action = 'UPDATE';
+        
+        if($debug) debug('action '.$action);
 
-        if($qty_new==0) {
-            /*
-             * DELETE
-             */
-            $where = ['Carts.organization_id' => $organization_id,
-                      'Carts.order_id' => $order_id,
-                      'Carts.user_id' => $user_id,
-                      'Carts.article_organization_id' => $article_organization_id,
-                      'Carts.article_id' => $article_id];
-            // debug($where);
+        /*
+         * ctrl validita
+         *
+         */
+        $results = $this->_ctrlValidita($user, $organization_id, $order_id, $article_organization_id, $article_id, $qty_new, $qty, $action);
+        if($debug) debug($results);
 
-            $cart = $cartsTable->find()
-                            ->where($where)
-                            ->first(); 
-            if (!$cartsTable->delete($cart)) {
-                $results['esito'] = false;
-                $results['code'] = 500;
-                $results['results'] = $cart->getErrors();
+        if($results['esito']) {
+
+            $cartsTable = TableRegistry::get('Carts');
+
+            switch (strtoupper($action)) {
+                case 'DELETE':
+                    $where = ['Carts.organization_id' => $organization_id,
+                              'Carts.order_id' => $order_id,
+                              'Carts.user_id' => $user_id,
+                              'Carts.article_organization_id' => $article_organization_id,
+                              'Carts.article_id' => $article_id];
+                    if($debug) debug($where);
+
+                    $cart = $cartsTable->find()
+                                    ->where($where)
+                                    ->first(); 
+                    if (!$cartsTable->delete($cart)) {
+                        if($debug) debug($cart->getErrors());
+                        $results['esito'] = false;
+                        $results['code'] = 500;
+                        $results['results'] = $cart->getErrors();
+                    }
+                    else {
+                        $results['esito'] = true;
+                        $results['code'] = 200;
+                        $results['msg'] = 'Cancellazione avvenuta con successo';  
+                        $results['results'] = '';                
+                    } 
+                break;
+                case 'INSERT':
+                    $data = [];
+                    $data['organization_id'] = $organization_id;
+                    $data['user_id'] = $user_id;
+                    $data['order_id'] = $order_id;
+                    $data['article_organization_id'] = $article_organization_id;
+                    $data['article_id'] = $article_id;
+                    $data['qty'] = $qty_new;
+                    $data['deleteToReferent'] = 'N';
+                    $data['qty_forzato'] = 0;
+                    $data['importo_forzato'] = 0;
+                    $data['nota'] = '';
+                    $data['inStoreroom'] = 'N';
+                    $data['stato'] = 'Y';
+
+                    $cart = $cartsTable->newEntity();
+                    $cart = $cartsTable->patchEntity($cart, $data);
+                    if($debug) debug($cart);
+                    if (!$cartsTable->save($cart)) {
+                        if($debug) debug($cart->getErrors());
+                        $results['esito'] = false;
+                        $results['code'] = 500;
+                        $results['results'] = $cart->getErrors();
+                    }
+                    else {
+                        $results['esito'] = true;
+                        $results['code'] = 200;
+                        $results['msg'] = 'Inserimento avvenuto con successo';  
+                        $results['results'] = '';
+                    }
+                break;
+                case 'UPDATE':
+                    $cart = $cartsTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
+
+                    $data = [];
+                    $data['qty'] = $qty_new;
+
+                    $cart = $cartsTable->patchEntity($cart, $data);
+                    if($debug) debug($cart);
+                    if (!$cartsTable->save($cart)) {
+                        if($debug) debug($cart->getErrors());
+                        $results['esito'] = false;
+                        $results['code'] = 500;
+                        $results['results'] = $cart->getErrors();
+                    }
+                    else {
+                        $results['esito'] = true;
+                        $results['code'] = 200;
+                        $results['msg'] = __('cart_msg_save_OK');
+                        $results['results'] = '';                
+                    }
+                break;
+                default:
+                    
+                    break;
+            } // end switch (strtoupper($action))
+        } // end if($results['esito'])
+
+        return $results;
+    }
+
+    /*
+     * $action = INSERT
+     * $action = UPDATE-DELETE
+     */
+    private function _ctrlValidita($user, $organization_id, $order_id, $article_organization_id, $article_id, $qty_new, $qty, $action, $debug=false) {
+
+        $results = [];
+        $esito = true;
+        $msg = '';
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $where = ['ArticlesOrders.organization_id' => $organization_id,
+                  'ArticlesOrders.order_id' => $order_id,
+                  'ArticlesOrders.article_organization_id' => $article_organization_id,
+                  'ArticlesOrders.article_id' => $article_id];
+        // debug($where);
+
+        $articlesOrders = $articlesOrdersTable->find()
+                        ->contain('Carts')
+                        ->where($where)
+                        ->first(); 
+        //debug($articlesOrders);
+
+        if($articlesOrders->stato=='N') {
+            $msg = __('cart_msg_stato_N');
+            $esito = false;
+        }  
+            
+        if($esito && $articlesOrders->has('carts') && isset($articlesOrders->carts->stato) && $articlesOrders->carts->stato=='N') {
+            $msg = __('cart_msg_stato_N');
+            $esito = false;
+        }  
+
+        if($esito && $action!='INSERT') {
+            if($articlesOrders->stato=='qtyMAXORDER' && ($qty_new > $qty)) {
+                $msg = sprintf(__('cart_msg_qtamax_order_stop'), $articlesOrders->qty_massima_order);
+                $esito = false;
             }
-            else {
-                $results['esito'] = true;
-                $results['code'] = 200;
-                $results['msg'] = 'Cancellazione avvenuta con successo';  
-                $results['results'] = '';                
-            }   
+            else
+            if($articlesOrders->stato=='LOCK' && ($qty_new > $qty)) {
+                $msg = __('cart_msg_block_stop'); 
+                $esito = false; 
+            }
         }
-        else
-        if($qty==0) {
+
+        if($esito) {
+
+            if($qty_new>0 && ($qty_new < (int)$articlesOrders->qty_minima)) {
+                $msg = sprintf(__('cart_msg_qtamin'), $articlesOrders->qty_minima, $qty_new);
+                $esito = false;
+            }
+            else          
+            if((int)$articlesOrders->qty_massima > 0) {
+                /*
+                 * Q T A - M A X
+                 */                  
+                if($qty_new>0 && ($qty_new > $articlesOrders->qty_massima)) {  // ctrl qty massima riferita all'acquisto del singolo gasista
+                    $msg = sprintf(__('cart_msg_qtamax'), $articlesOrders->qty_massima, $qty_new);
+                    $esito = false;
+                }       
+            }
+            else    
             /*
-             * INSERT
-             */ 
-            $data = [];
-            $data['organization_id'] = $organization_id;
-            $data['user_id'] = $user_id;
-            $data['order_id'] = $order_id;
-            $data['article_organization_id'] = $article_organization_id;
-            $data['article_id'] = $article_id;
-            $data['qta'] = $qty_new;
-            $data['deleteToReferent'] = 'N';
-            $data['qta_forzato'] = 0;
-            $data['importo_forzato'] = 0;
-            $data['nota'] = '';
-            $data['inStoreroom'] = 'N';
-            $data['stato'] = 'Y';
+             * Q T A - M A X - O R D E R 
+             * */
+            if((int)$articlesOrders->qty_massima_order > 0) {
+                
+                if($qty_new > $qty) { // ctrl che l'utente non abbia diminuito la qty
 
-            $cart = $cartsTable->newEntity();
-            $cart = $cartsTable->patchEntity($cart, $data);
-            // debug($cart);
-            if (!$cartsTable->save($cart)) {
-                $results['esito'] = false;
-                $results['code'] = 500;
-                $results['results'] = $cart->getErrors();
-            }
-            else {
-                $results['esito'] = true;
-                $results['code'] = 200;
-                $results['msg'] = 'Inserimento avvenuto con successo';  
-                $results['results'] = '';
-            }
-        }
-        else {
-            /*
-             * UPDATE
-             */   
-            $cart = $cartsTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
+                    // qty_massima_order superata: ricalcolo la qty e articlesOrder.stato = qtyMAXORDER
+                    if(((int)$articlesOrders->qty_cart - $qty + $qty_new) > $articlesOrders->qty_massima_order) {
+                    
+                        $qty_label = ((int)$articlesOrders->qty_massima_order - (int)$articlesOrders->qty_cart + $qty); // la ricalcolo
+                    
+                        $msg = sprintf(__('cart_msg_qtamax_order'), $articlesOrders->qty_massima_order, $qty_label);
+                        $esito = false;
+                    }
+                    else  // qty massima raggiunta articlesOrder.stato = qtyMAXORDER
+                    if(((int)$articlesOrders->qty_cart - (int)$qty + $qty_new) == (int)$articlesOrders->qty_massima_order) {
+                        // qty massima raggiunta: articlesOrder.stato = qtyMAXORDER
+                    }
 
-            $data = [];
-            $data['qta'] = $qty_new;
-
-            $cart = $cartsTable->patchEntity($cart, $data);
-            if (!$cartsTable->save($cart)) {
-                $results['esito'] = false;
-                $results['code'] = 500;
-                $results['results'] = $cart->getErrors();
+                }
             }
-            else {
-                $results['esito'] = true;
-                $results['code'] = 200;
-                $results['msg'] = 'Aggiornamento avvenuto con successo';  
-                $results['results'] = '';                
-            }                     
-        }
+        } // end if($esito)
+   
+        $results['esito'] = $esito;
+        $results['msg'] = $msg;
 
         return $results;
     }

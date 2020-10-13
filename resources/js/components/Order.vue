@@ -1,19 +1,63 @@
 <template>
 
-  <div>
+	<div class="row">
+	    <div class="col-sm-12 col-xs-12 col-md-12"> 
 
-    <div class="card-deck-disabled card-columns">
-      <div class="card"
-          v-for="article in articles"
-          :article="article"
-          :key="article.article_id"
-        >
-          <app-articles
-            v-bind:article="article"></app-articles>
-      </div>
-    </div>
+        <div class="card mb-3">
+          <div class="row no-gutters">
+            <div class="col-md-2">
+                <img v-if="order.suppliers_organization.supplier.img1 != ''"
+                class="img-fluid img-thumbnail" :src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+                :alt="order.suppliers_organization.supplier.name">
+            </div>
+            <div class="col-md-10">
+               <div class="card-body">
+                  <h5 class="card-title">
+                      <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="Vai al sito del produttore">
+                        {{ order.suppliers_organization.name }} {{ order.order_type_id }}
+                      </a>
+                      <span v-if="order.suppliers_organization.supplier.www==''">
+                        {{ order.suppliers_organization.name }} {{ order.order_type_id }}
+                      </span>
+                  </h5>
+                  <p class="card-text">
+                    {{ order.suppliers_organization.supplier.descrizione }}
+                  </p>
+                  <p class="card-text">
+                    {{ order.state_code }} 
+                  {{ order.data_inizio | formatDate }} {{ order.data_fine | formatDate }}
+                  <hr >
+                    nota {{ order.nota }} 
+                    <span v-if="order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
+                    <span v-if="order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
 
-  </div>
+                    <span v-if="order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
+                    <span v-if="order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>              
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted">{{ order.suppliers_organization.frequenza }}</small>
+                  </p>
+               </div> <!-- card-body -->
+               <div class="card-footer text-muted bg-transparent-disabled">
+                  <strong>Consegna</strong> {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
+               </div> 
+            </div> <!-- col-md-10 -->
+          </div> <!-- row -->
+        </div> <!-- card -->
+
+	    </div> <!-- col... -->
+
+	    <div class="col-sm-12 col-xs-2 col-md-2" 
+		          v-for="article in articles"
+		          :article="article"
+		          :key="article.article_id"
+		        >
+		          <app-articles
+		            v-bind:article="article"></app-articles>
+
+	 	   </div> <!-- col... -->
+
+	</div> <!-- row -->
 
 </template>
 
@@ -28,11 +72,8 @@ export default {
   data() {
     return {
       order_id: 0,
+      order: null,
       articles: Object,
-      article_variant_item_selected: 2,
-      selected: "A",
-      counter: 0,
-      fromChild: "", // This value is set to the value emitted by the child
       displayList: false
     };
   },
@@ -40,7 +81,8 @@ export default {
     appArticles: articles,
   },  
   mounted() {
-  	this.order_id = this.$route.params.order_id
+  	this.order_id = this.$route.params.order_id;
+    this.getOrder();
     this.getsArticles();
   },
   created () {
@@ -74,9 +116,26 @@ export default {
     onChildClick(value) {
       this.fromChild = value;
     },
+    getOrder() {
+      let url = "/admin/api/orders/get";
+      let params = {
+        order_id: this.order_id
+      };
+      axios
+        .post(url, params)
+        .then(response => {
+          console.log(response.data);
+          if(typeof response.data !== "undefined") {
+            this.order = response.data;
+            console.log(this.order);
+          }
+        })
+        .catch(error => {
+          console.error("Error: " + error);
+        });    
+    },
     getsArticles() {
-      let url = "/admin/api/orders-gas/getCarts";
-      // let url = "/admin/api/orders-promotion/getCarts";
+      let url = "/admin/api/orders/getArticlesOrdersByOrderId";
       let params = {
         order_id: this.order_id
       };
@@ -110,7 +169,26 @@ export default {
     changeDisplay(isList) {
       this.displayList = isList;
     }    
-  }
+  },
+  filters: {
+    	currency(amount) {
+	      let locale = window.navigator.userLanguage || window.navigator.language;
+	      const amt = Number(amount);
+	      return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
+	    },
+        formatDate(value) {
+          if (value) {
+            let locale = window.navigator.userLanguage || window.navigator.language;
+            /* console.log(locale); */
+            moment.toLocaleString(locale)
+            moment.locale(locale);
+            return moment(String(value)).format('DD MMMM YYYY')
+          }
+        },
+          counter: function (index) {
+            return index+1
+        }
+     }
 };
 </script>
 

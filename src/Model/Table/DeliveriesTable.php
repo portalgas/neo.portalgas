@@ -154,7 +154,7 @@ class DeliveriesTable extends Table
         if(isset($where['Orders']))
             $where_order = $where['Orders'];
         $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
-            
+
         if(empty($order))
             $order = ['Deliveries.data'];
 
@@ -166,6 +166,7 @@ class DeliveriesTable extends Table
                                     'SuppliersOrganizations' => ['Suppliers']]])
                                 ->order($order)
                                 ->all();
+        // debug($deliveryResults);
 
         /*
          * estraggo le consegne che hanno ordini

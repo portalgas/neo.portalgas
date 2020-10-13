@@ -37,6 +37,7 @@ export const messages = {
   },
   actions: {
     addMessage: ({ commit }, obj) => {
+      console.log('addMessage addMessage addMessage ');
       commit("ADD_MESSAGE", obj);
     },
     clearMessage: commit => {

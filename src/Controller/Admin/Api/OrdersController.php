@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use App\Decorator\ApiArticleDecorator;
 
 class OrdersController extends ApiAppController
 {
@@ -13,6 +14,7 @@ class OrdersController extends ApiAppController
         parent::initialize();
         $this->loadComponent('Csrf');
         $this->loadComponent('Auths');
+        $this->loadComponent('Cart');
     }
 
     public function beforeFilter(Event $event) {
@@ -20,6 +22,43 @@ class OrdersController extends ApiAppController
         parent::beforeFilter($event);
     }
   
+    /*
+     * dettaglio ordine x fe
+     */
+    public function get() {
+
+        $results = [];
+    
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;
+
+        $order_id = $this->request->getData('order_id');
+        
+        $ordersTable = TableRegistry::get('Orders');
+
+        $where = ['Orders.organization_id' => $organization_id,
+                  'Orders.id' => $order_id];
+
+        $results = $ordersTable->find()
+                                ->contain([
+                                    'Deliveries',
+                                    'SuppliersOrganizations' => ['Suppliers']])
+                                ->where($where)
+                                ->first();
+
+        $results = json_encode($results);
+        $this->response->withType('application/json');
+        $body = $this->response->getBody();
+        $body->write($results);        
+        $this->response->withBody($body);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    } 
+
+    /*
+     * elenco ordini x fe
+     */
     public function gets() {
 
         $results = [];
@@ -32,7 +71,9 @@ class OrdersController extends ApiAppController
         $ordersTable = TableRegistry::get('Orders');
 
         $where = ['Orders.organization_id' => $organization_id,
-                  'Orders.delivery_id' => $delivery_id];
+                  'Orders.delivery_id' => $delivery_id,
+                  'Orders.isVisibleBackOffice' => 'Y',
+                  'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
 
         $results = $ordersTable->find()
                                 ->contain(['SuppliersOrganizations' => ['Suppliers']])
@@ -45,6 +86,45 @@ class OrdersController extends ApiAppController
         $body = $this->response->getBody();
         $body->write($results);        
         $this->response->withBody($body);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    } 
+
+    /* 
+     * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
+     */
+    public function getArticlesOrdersByOrderId() {
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $user = $this->Authentication->getIdentity();
+
+        $results = [];
+   
+        $order_id = $this->request->getData('order_id');
+        // debug($order_id);
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($user, $user->organization->id, $order_id);
+
+        if($articlesOrdersTable!==false) {
+            $where['order_id'] = $order_id;
+            $order = [];
+            $results = $articlesOrdersTable->getCarts($user, $user->organization->id, $user->id, $where, $order);
+        
+            if(!empty($results)) {
+                $results = new ApiArticleDecorator($results);
+                //$results = new ArticleDecorator($results);
+                $results = $results->results;
+            }
+        }
+
+        $results = json_encode($results);
+        $this->response->type('json');
+        $this->response->body($results);
         // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
         
         return $this->response; 
@@ -85,4 +165,29 @@ class OrdersController extends ApiAppController
         
         return $this->response; 
     } 
+
+    public function managementCart() {
+        
+        $debug = false;
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $user = $this->Authentication->getIdentity();
+
+        // debug($article);
+
+        $results = [];
+   
+        $article = $this->request->getData('article');
+        $results = $this->Cart->managementCart($user, $user->organization->id, $article, $debug);
+        
+        $results = json_encode($results);
+        $this->response->type('json');
+        $this->response->body($results);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    }     
 }

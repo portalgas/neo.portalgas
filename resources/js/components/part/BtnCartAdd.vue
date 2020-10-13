@@ -1,35 +1,53 @@
 <template>
-  <div>
-    GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }}  {{ article.cart.article_id }}
-    <hr>
-    <div class="quantity buttons_added">
-      <input type="button" value="-" class="minus" @click="minusCart" :disabled="article.cart.qty_new == 0" />
 
-      <input
-        type="number"
-        class="form-control text-center"
-        :value="article.cart.qty_new"
-        :disabled="article.store === 0"
-        @input="numberCart"
-        min="0"
-        size="4"
-        inputmode="numeric"
-        title="Qtà"
-      />
+    <div>
 
-      <input type="button" value="+" class="plus" @click="plusCart" />
-
-      <button
-        type="button"
-        class="btn-save btn btn-success"
-        :disabled="article.cart.qty === article.cart.qty_new"
-        @click="save()"
+      <!-- 
+        GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }}
+      -->
+      <div
+        v-if="message.msg"
+        :class="`alert alert-${message.class}`"
       >
-        Save
-      </button>
-    </div>
+        {{ message.msg }}
+      </div>
 
+
+      <div class="quantity buttons_added">
+
+        <input type="button" value="-" class="minus" @click="minusCart" :disabled="article.cart.qty_new == 0 || isRun" />
+
+        <input
+          type="number"
+          class="form-control text-center"
+          :value="article.cart.qty_new"
+          :disabled="article.store === 0 || isRun"
+          @input="numberCart"
+          min="0"
+          size="4"
+          inputmode="numeric"
+          title="Qtà"
+        />
+
+        <input type="button" value="+" class="plus" @click="plusCart" :disabled="isRun" />
+
+        <button v-if="!isRun"
+          type="button"
+          class="btn-save btn btn-success"
+          :disabled="article.cart.qty === article.cart.qty_new"
+          @click="save()"
+        >      
+          Save
+        </button>
+
+        <div v-if="isRun" class="spinner-border text-info" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+
+      </div>
+  
   </div>
+
 </template>
 
 <script>
@@ -43,11 +61,15 @@ export default {
         article: Object,
         qty: 0
       },
+      message: {
+        class: null,
+        msg: ''
+      },
       articleInCart: Object,
-      isSave: false
+      isRun: false
     };
   },
-  props: ["article"],
+  props: ["article"],  
   computed: {
     ...mapGetters(["getArticlesInCart"])
   },
@@ -66,7 +88,7 @@ export default {
     console.log("created");
   },
   methods: {
-    ...mapActions(["addArticle", "addMessage", "addMessageToast", "showOrHiddenModal"]),
+    ...mapActions(["addArticle", "showOrHiddenModal"]),
     getCart() {
 
       console.log("getCart");
@@ -115,55 +137,65 @@ export default {
       console.log(this.cart);
     },
     save() {
+
+      this.isRun = true;
+
       let params = {
         article: this.article
       };
       console.log(params);
 
       axios
-        .post("/admin/api/orders-gas/managementCart", params)
+        .post("/admin/api/orders/managementCart", params)
         .then(response => {
 
+          this.isRun = false;
+
           var messageClass = "";
-          var message = "";
+          var msg = "";
           if(response.data.esito) {
               messageClass = "success";
-              message = response.data.msg;
+              msg = response.data.msg;
 
               this.article.cart.qty = this.article.cart.qty_new;
           }
           else {
               messageClass = "danger";
-              message = response.data.msg;
+              if(response.data.msg!='')
+                  msg = response.data.msg;
+              else
+              if(response.data.results!='')
+                  msg = response.data.results;
+          } 
+
+          this.message = {
+            class: messageClass, 
+            msg: msg
           }
-          this.addMessage({
-            messageClass: messageClass,
-            message: message
-          });        
+
+          var _this = this;
+          setTimeout(function() {_this.message ={}}, 3000);
+
           console.log(response.data);
         })
         .catch(error => {
-          console.error("Error: " + error);
-          this.addMessage({
-            messageClass: "danger",
-            message: error
-          });          
+            console.error("Error: " + error);
+
+            this.isRun = false;
+
+            var messageClass = "danger";
+            var message = error;
+
+            this.message = {
+              class: messageClass, 
+              msg: message
+            }
+
+            var _this = this;
+            setTimeout(function() {_this.message ={}}, 5000);
         });
     },
-    addArticleToCart() {
-      let message = "";
-      message = "Add product";
-      this.addMessage({
-        messageClass: "success",
-        message: message
-      });
-      
-      this.addMessageToast({
-        title: "title",
-        subtitle: "subtitle",
-        body: message
-      });
-      
+    addArticleToCart() {      
       console.log("addArticleToCart this.cart.qty_new " + this.cart.qty_new);
       console.log(this.cart);
       this.addArticle(this.cart);
@@ -199,6 +231,10 @@ export default {
 .buttons_added {
     width: 100%;
     display: inline-flex;
+}
+.buttons_added .spinner-border {
+    display: inline-table;
+    margin: 0 5px;
 }
 .minus, .plus {
     display: flex;

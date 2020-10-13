@@ -42,7 +42,7 @@ import { mapGetters, mapActions } from "vuex";
 import menuItems from "../../components/common/MenuItems.vue";
 import btnCart from "../../components/common/BtnCart.vue";
 import popupCart from "../../components/PopupCart.vue";
-import mask from "../../components/Mask.vue";
+import mask from "../../components/part/Mask.vue";
 import messageToast from "../../components/common/MessageToast.vue";
 
 export default {

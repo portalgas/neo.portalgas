@@ -22,7 +22,7 @@ class ArticlesOrdersTable extends Table
 
         $this->setTable('k_articles_orders');
         $this->setDisplayField('name');
-        $this->setPrimaryKey(['organization_id', 'article_organization_id', 'article_id', 'order_id']);
+        $this->setPrimaryKey(['organization_id', 'order_id', 'article_organization_id', 'article_id']);
 
         $this->addBehavior('Timestamp');
 
@@ -43,6 +43,10 @@ class ArticlesOrdersTable extends Table
             'foreignKey' => ['article_organization_id', 'article_id'],
             'joinType' => 'INNER',
         ]);
+        $this->hasMany('Carts', [
+            'foreignKey' => ['organization_id', 'order_id', 'article_organization_id', 'article_id'],
+            'joinType' => 'LEFT'
+        ]);        
     }
 
     /**
@@ -125,9 +129,9 @@ class ArticlesOrdersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
-        $rules->add($rules->existsIn(['article_organization_id'], 'ArticleOrganizations'));
-        $rules->add($rules->existsIn(['article_id'], 'Articles'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
+        $rules->add($rules->existsIn('article_organization_id', 'ArticleOrganizations'));
+        $rules->add($rules->existsIn(['article_organization_id', 'article_id'], 'Articles'));
 
         return $rules;
     }
