@@ -2,8 +2,8 @@
 
   <div class="card">
         <div class="card-header bg-primary">{{ article.name }}</div>
-        
-        <img class="card-img-top responsive" :src="article.img1" :alt="article.name">
+      
+        <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
         <div v-if="article.is_bio" class="box-bio">
             <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica">
         </div>
@@ -11,24 +11,34 @@
         <div class="card-body">
             <p class="card-text">
                 
-                <div v-if="article.descri!=''">
-                    {{ article.descri | shortDescription }} <a class="card-link" @click="clickshowOrHiddenModal()">..maggior dettaglio</a>
-                </div>
+              <div v-if="article.descri!=''">
+                  {{ article.descri | shortDescription }} <a class="card-link" @click="clickshowOrHiddenModal()">..maggior dettaglio</a>
+              </div>
 
-                <del v-if="article.price_pre_discount != null"
-                    >{{ article.price_pre_discount | currency }} &euro;</del
-                  >
-                  <strong>Prezzo</strong> {{ article.price | currency }} &euro;
+              <del v-if="article.price_pre_discount != null"
+                  >{{ article.price_pre_discount | currency }} &euro;</del
+                >
+              <div>
+                <strong>Prezzo</strong> {{ article.price | currency }} &euro;
+              </div>
+              <div>
+                <strong>Conf.</strong> {{ article.conf }}
+                <small class="text-muted"><strong>Prezzo/UM</strong> {{ article.um_rif_label }}</small>
+              </div>
             </p>
             <p class="card-text">
-              <strong>Conf.</strong> {{ article.conf }}
-              <small class="text-muted"><strong>Prezzo/UM</strong> {{ article.um_rif_label }}</small>
-              <p v-if="article.qty_min>1">
+              <div v-if="article.package>1">
+                <small class="text-muted"><strong>Pezzi in confezione</strong> {{ article.package }}</small>
+              </div>
+              <div v-if="article.qty_multiple>1">
+                <small class="text-muted"><strong>Multipli</strong> {{ article.qty_multiple }}</small>
+              </div>
+              <div v-if="article.qty_min>1">
                 <small class="text-muted"><strong>Qta minima</strong> {{ article.qty_min }}</small>
-              </p>
-              <p v-if="article.qty_max>0">
+              </div>
+              <div v-if="article.qty_max>0">
                 <small class="text-muted"><strong>Qta massma</strong> {{ article.qty_max }}</small>
-              </p>
+              </div>
 
                <div v-if="article.descri==''">
                   <a class="card-link" @click="clickshowOrHiddenModal()">..maggior dettaglio</a>
@@ -80,7 +90,7 @@ export default {
   },
   computed: {
     justInCart: function() { 
-    console.log("article.cart.qty "+this.article.cart.qty)
+        /* console.log("Article::justInCart article.cart.qty "+this.article.cart.qty) */
         return this.article.cart.qty>0 ? 'bg-light' : 'bg-transparent';
     }    
   },

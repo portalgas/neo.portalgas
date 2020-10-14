@@ -409,7 +409,7 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
 
         if (!empty($um_rif)) {
             $results .= $price_um_rif;
-            $results .= ' &euro;';
+            $results .= ' €';
             $results .= ' al ' . $um_rif;
         } else {
             $results .= $price_um_rif;

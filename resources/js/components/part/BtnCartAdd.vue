@@ -2,9 +2,8 @@
 
     <div>
 
-      <!-- 
         GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }}
-      -->
+
       <div
         v-if="message.msg"
         :class="`alert alert-${message.class}`"
@@ -70,72 +69,7 @@ export default {
     };
   },
   props: ["article"],  
-  computed: {
-    ...mapGetters(["getArticlesInCart"])
-  },
-  mounted() {
-    this.getCart();
-  },
-  watch: {
-    articleInCart: function() {
-      console.log("watch articleInCart");
-      // console.log(newVal);
-      // console.log(oldVal);
-      // this.getCart();
-    }
-  },
-  created: function() {
-    console.log("created");
-  },
   methods: {
-    ...mapActions(["addArticle", "showOrHiddenModal"]),
-    getCart() {
-
-      console.log("getCart");
-      console.log(this.article);
-      console.log("this.article.ids.article_id "+this.article.ids.article_id);
-
-      (this.cart = {
-        article: this.article,
-        qty: 0
-      }),
-        
-      /*
-       * cerco se tra quelli gia' acquistati c'e' l'articolo corrente
-       */
-      (this.articleInCart = this.getArticlesInCart);
-      if (this.articleInCart.length == 0) {
-        console.log("nessun articolo acquistato");
-      } else {
-        console.log("acquistati " + this.articleInCart.length + " articoli");
-        console.log(
-          "cerco se articolo con ids " +
-            this.article.ids.article_id +
-            "... è stato acquistato per recuperare la qty"
-        );
-
-        var articleInCart = null;
-        if(this.articleInCart.length>0) {
-          articleInCart = this.articleInCart.find(
-            element => (element.article.ids.article_id == this.article.ids.article_id && 
-                       element.article.ids.article_organization_id == this.article.ids.article_organization_id && 
-                       element.article.ids.order_id == this.article.ids.order_id && 
-                       element.article.ids.organization_id == this.article.ids.organization_id)
-            // element => (element.article.ids.equals(this.article.ids))   
-          );
-        }
-
-        if (articleInCart !== null) {
-          console.log(
-            "l'articolo è stato già acquistato con qty " + articleInCart.qty
-          );
-          this.cart.qty = articleInCart.qty;
-        } else {
-          console.log("l'articolo NON è stato ancora acquistato => qty 0");
-        }
-      }
-      console.log(this.cart);
-    },
     save() {
 
       this.isRun = true;
@@ -190,35 +124,81 @@ export default {
               class: messageClass, 
               msg: message
             }
-
-            var _this = this;
-            setTimeout(function() {_this.message ={}}, 5000);
         });
     },
-    addArticleToCart() {      
-      console.log("addArticleToCart this.cart.qty_new " + this.cart.qty_new);
-      console.log(this.cart);
-      this.addArticle(this.cart);
-    },
     minusCart() {
+
+      this.message = {}
+
       if(this.article.cart.qty_new>0) {
-        if(this.cart.qty)
-          this.cart.qty--;
+
+        this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+        
+        if (this.article.cart.qty_new < this.article.qty_min) {
+            this.article.cart.qty_new = 0
+        }
           
-        this.article.cart.qty_new--;
-        this.addArticleToCart();    
+        if(this.validitationCart()) {
+          this.cart.qty=this.article.cart.qty_new;  // aggiorno la qty originale   
+        }
       }
     },
     plusCart() {
-      this.cart.qty++;
-      this.article.cart.qty_new++;
-      this.addArticleToCart(); 
+
+      this.message = {}
+
+      this.article.cart.qty_new = (this.article.cart.qty_new + (1 * this.article.qty_multiple));
+      
+      if(this.validitationCart()) {
+        this.cart.qty=this.article.cart.qty_new; // aggiorno la qty originale
+      }
     },
     numberCart(event) {
       console.log("numberCart " + event.target.value);
       this.article.cart.qty_new = parseInt(event.target.value);
       this.cart.qty = parseInt(event.target.value);
-      this.addArticleToCart();
+      
+      this.validitationCart();
+    },
+    validitationCart() {
+
+       var messageClass = "danger";
+       var message = "";
+
+       if(this.article.article_order.stato=="LOCK" && this.article.cart.qty_new>this.cart.qty) {
+          message = "L'articolo è bloccato, non si possono aggiungere articoli";
+          this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+       }
+       else
+       if(this.article.article_order.stato=="QTAMAXORDER" && this.article.cart.qty_new>this.cart.qty) {
+          message = "Raggiunta la quantità massima che si può ordinare";
+          this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+       }  
+       else
+       if(this.article.qty_massima_order>0) {
+          if((this.article.qty_cart - qty_new>this.cart.qty + qty_new>this.cart.qty_new) > this.article.qty_massima_order) {
+            message = "Raggiunta la quantità massima che si può ordinare";
+            this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+          }
+       }
+       else
+       if(this.article.qty_massima>0) {
+          if(qty_new>this.cart.qty_new  > this.article.qty_massima) {
+            message = "Raggiunta la quantità massima che si può ordinare";
+            this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+          }
+       }             
+
+       if(message!='') {
+          this.message = {
+            class: messageClass, 
+            msg: message
+          }  
+
+          return false;         
+       }
+
+       return true;
     }
   }
 };

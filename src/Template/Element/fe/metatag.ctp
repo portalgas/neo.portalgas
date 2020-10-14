@@ -1,2 +1,3 @@
-  <meta name="keywords" content="gruppi di acquisto, gruppi di acquisto solidale, gas, des, gestionale, software, programma, distretto economia solidale, consegne, ordini, referenti, km zero" />
-  <meta name="description" content="Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale) e D.E.S. (DES distretto economia solidale)" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="keywords" content="gruppi di acquisto, gruppi di acquisto solidale, gas, des, gestionale, software, programma, distretto economia solidale, consegne, ordini, referenti, km zero" />
+<meta name="description" content="Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale) e D.E.S. (DES distretto economia solidale)" />

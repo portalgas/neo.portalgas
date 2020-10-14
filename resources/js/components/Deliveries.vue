@@ -2,7 +2,15 @@
 
 	<div id="accordion-deliveries">
 
-	  <div class="card" 
+		<h2>Consegne</h2>
+
+		<div v-if="isRunDeliveries" class="box-spinner"> 
+			<div class="spinner-border text-info" role="status">
+			  <span class="sr-only">Loading...</span>
+			</div>	
+		</div>
+
+	  <div v-if="!isRunDeliveries" class="card" 
 	          v-for="(delivery, delivery_id)  in deliveries"
 	          :delivery="delivery"
 	          :key="delivery_id"
@@ -14,14 +22,21 @@
 
 	    <div :id="'collapse-'+delivery_id" class="collapse" :aria-labelledby="'heading-'+delivery_id" data-parent="#accordion-deliveries">
 	      <div class="card-body">
+
+	        <div v-if="isRunOrders" class="box-spinner"> 
+	        	<div class="spinner-border text-info" role="status">
+		          <span class="sr-only">Loading...</span>
+		        </div>	  
+		    </div>
+
 	        <p 
-	          v-for="(order, index)  in orders.data" v-if="orders.delivery_id===delivery_id"
+	          v-for="(order, index)  in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery_id"
 	          :order="order"
 	          :key="order.id">
-					<a v-bind:href="'/order/'+order.id">
+					<a v-on:click="selectOrder(order)" href="#">
 
 						<img v-if="order.suppliers_organization.supplier.img1 != ''" 
-							class="img-fluid img-thumbnail" 
+							class="img-supplier" 
 							:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
 							:alt="order.suppliers_organization.name">
 
@@ -41,6 +56,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "app-deliveries",
   data() {
@@ -50,12 +67,37 @@ export default {
       	id: null,
       	data: []
       },
+      isRunDeliveries: false,
+      isRunOrders: false,
     };
   },
   mounted() {
-    	this.gets();
+    	this.getsDeliveries();
   },
-  methods: {
+  methods: { 
+	  	...mapActions(["addOrder"]), 
+	    getsDeliveries() {
+
+	      this.isRunDeliveries=true;
+
+	      let url = "/admin/api/deliveries/gets";
+	      axios
+	        .post(url)
+	        .then(response => {
+
+				this.isRunDeliveries=false;
+
+				console.log(response.data);
+				if(typeof response.data !== "undefined") {
+					this.deliveries = response.data;
+					console.log(this.deliveries);
+				}
+	        })
+	        .catch(error => {
+	       	  this.isRunDeliveries=false;
+	          console.error("Error: " + error);
+	        });
+	    },
 	    selectDelivery(delivery_id) {
 	    	console.log('selectDelivery '+delivery_id);
 
@@ -69,7 +111,8 @@ export default {
 				$('#collapse-'+delivery_id).addClass('show');
 				$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
 			}
-		
+			
+			this.isRunOrders=true;
 				
 			let params = {
 				delivery_id: delivery_id
@@ -81,6 +124,9 @@ export default {
 			axios
 				.post(url, params)
 				.then(response => {
+
+					this.isRunOrders=false;
+
 					console.log(response.data);
 					if(typeof response.data !== "undefined") {
 						var data = {
@@ -92,24 +138,21 @@ export default {
 				}
 			})
 			.catch(error => {
+
+				this.isRunOrders=false;
+
 				console.error("Error: " + error);
 			});
-	    },  
-	    gets() {
-	      let url = "/admin/api/deliveries/gets";
-	      axios
-	        .post(url)
-	        .then(response => {
-	          console.log(response.data);
-	          if(typeof response.data !== "undefined") {
-	            this.deliveries = response.data;
-	            console.log(this.deliveries);
-	          }
-	        })
-	        .catch(error => {
-	          console.error("Error: " + error);
-	        });
 	    },
+	    selectOrder(order) {
+	    	console.log('selectOrder ');
+	    	console.log(order);
+	    	this.addOrder(order);
+	    	
+	    	localStorage.setItem('order', order);
+
+	    	this.$router.push({ name: 'Order', params: {order_id: order.id}})
+	    }    
   	},
 	filters: {
     	currency(amount) {

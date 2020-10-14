@@ -55,6 +55,9 @@ class ApiArticleDecorator  extends AppDecorator {
         $ids['article_id'] = $row->article_id;
         $results['ids'] = $ids;
 
+        $results['stato'] = $row->article->stato;
+        $results['article_order']['stato'] = $row->stato;
+
         $results['has_variants'] = false; // e' sempre articolo e la sua variante
         $results['name'] = $row->name;
             
