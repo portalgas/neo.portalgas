@@ -101,19 +101,27 @@ class OrdersController extends ApiAppController
         }
 
         $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;
 
         $results = [];
    
         $order_id = $this->request->getData('order_id');
         // debug($order_id);
 
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Orders.organization_id' => $organization_id,
+                  'Orders.id' => $order_id];
+        $orderResults = $ordersTable->find()
+                                ->where($where)
+                                ->first();
+
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($user, $user->organization->id, $order_id);
+        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
 
         if($articlesOrdersTable!==false) {
             $where['order_id'] = $order_id;
-            $order = [];
-            $results = $articlesOrdersTable->getCarts($user, $user->organization->id, $user->id, $where, $order);
+            $sort = [];
+            $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $sort);
         
             if(!empty($results)) {
                 $results = new ApiArticleDecorator($results);

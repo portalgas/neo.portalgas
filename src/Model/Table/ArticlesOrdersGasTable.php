@@ -29,7 +29,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCarts($user, $organization_id, $user_id, $where=[], $order=[], $debug=false) { 
+    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $order=[], $debug=false) { 
 
         $order_id = $where['order_id'];
 
@@ -52,23 +52,25 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
          * owner_supplier_organization_id
          */
         $results = $this->find()
-                        ->contain([
-                            'Orders', 
-                            'Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
+                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->where($where_article_order)
                         ->order($order)
                         // ->limit(2)
                         ->all()
                         ->toArray();
 
+
         /*
          * estraggo eventuali acquisti
          */ 
         if($results) {
 
+            $order_state_code = $orderResults->state_code;
+            
             $cartsTable = TableRegistry::get('Carts');
-            $prodGasArticlesPromotionsTable = TableRegistry::get('ProdGasArticlesPromotions');
             foreach($results as $numResult => $result) {
+
+                $results[$numResult]['order'] = $orderResults;
 
                 /*
                  * Carts
@@ -103,7 +105,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
                 }
             }
         } // if($results)
-        
+
         if($debug) debug($results);
 
         return $results;

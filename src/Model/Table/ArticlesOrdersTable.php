@@ -136,23 +136,26 @@ class ArticlesOrdersTable extends Table
         return $rules;
     }
 
-    public function factory($user, $organization_id, $order_id) {
+    public function factory($user, $organization_id, $orderResults) {
 
         $table_registry = '';
 
         $ordersTable = TableRegistry::get('Orders');
 
-        $where = ['Orders.organization_id' => $organization_id,
-                  'Orders.id' => $order_id];
-        $results = $ordersTable->find()
-                                ->where($where)
-                                ->first();
+        if(!is_object($orderResults)) {
+            $where = ['Orders.organization_id' => $organization_id,
+                      'Orders.id' => $orderResults];
+            $orderResults = $ordersTable->find()
+                                    ->where($where)
+                                    ->first();
+        }
+
         // debug($where);
-        // debug($results);
-        if(empty($results))
+        // debug($orderResults);
+        if(empty($orderResults))
             return false;
         
-        $order_type_id = $results->order_type_id;
+        $order_type_id = $orderResults->order_type_id;
 
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');  
 
@@ -180,5 +183,5 @@ class ArticlesOrdersTable extends Table
         }
 
         return TableRegistry::get($table_registry);
-    }      
+    }    
 }

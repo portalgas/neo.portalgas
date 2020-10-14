@@ -29,7 +29,7 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCarts($user, $organization_id, $user_id, $where=[], $order=[], $debug=false) { 
+    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $order=[], $debug=false) { 
 
         $order_id = $where['order_id'];
 

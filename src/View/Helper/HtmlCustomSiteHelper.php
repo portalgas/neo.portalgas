@@ -110,7 +110,7 @@ class HtmlCustomSiteHelper extends FormHelper
 
         $config = Configure::read('Config');
         $portalgas_fe_url = $config['Portalgas.fe.url'];
-        $url = $url.Configure::read('Supplier.img.path.full');
+        $url = $portalgas_fe_url.Configure::read('Supplier.img.path.full');
 
         $html = '';
         $html .= '<div class="box-supplier-organization">';

@@ -31,7 +31,7 @@ class ArticlesTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('SuppliersOrganizations', [
-            'foreignKey' => 'supplier_organization_id',
+            'foreignKey' => ['organization_id', 'supplier_organization_id'],
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('CategoriesArticles', [
@@ -164,7 +164,7 @@ class ArticlesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
+        $rules->add($rules->existsIn(['organization_id', 'supplier_organization_id'], 'SuppliersOrganizations'));
         /*
          * disabilita perche' all'insert e' 0        
         $rules->add($rules->existsIn(['category_article_id'], 'CategoriesArticles'));

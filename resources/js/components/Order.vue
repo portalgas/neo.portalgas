@@ -35,6 +35,7 @@
                       <span v-if="order.state_code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
                       <span v-if="order.state_code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
                       <span v-if="order.state_code=='OPEN-NEXT' && order.state_code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
+                      <span v-if="order.state_code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
 
                       <button class="btn btn-primary float-right">{{ order.state_code }}</button>
                   <hr >
