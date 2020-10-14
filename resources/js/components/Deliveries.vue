@@ -72,7 +72,7 @@ export default {
     };
   },
   mounted() {
-    	this.getsDeliveries();
+    this.getsDeliveries();
   },
   methods: { 
 	  	...mapActions(["addOrder"]), 

@@ -56,15 +56,10 @@ export default {
   name: "btn-cart-add",
   data() {
     return {
-      cart: {
-        article: Object,
-        qty: 0
-      },
       message: {
         class: null,
         msg: ''
       },
-      articleInCart: Object,
       isRun: false
     };
   },
@@ -91,7 +86,7 @@ export default {
               messageClass = "success";
               msg = response.data.msg;
 
-              this.article.cart.qty = this.article.cart.qty_new;
+              this.article.cart.qty = this.article.cart.qty_new;  // aggiorno la qty 
           }
           else {
               messageClass = "danger";
@@ -139,7 +134,7 @@ export default {
         }
           
         if(this.validitationCart()) {
-          this.cart.qty=this.article.cart.qty_new;  // aggiorno la qty originale   
+         // this.article.cart.qty=this.article.cart.qty_new;  // aggiorno la qty originale   
         }
       }
     },
@@ -150,13 +145,13 @@ export default {
       this.article.cart.qty_new = (this.article.cart.qty_new + (1 * this.article.qty_multiple));
       
       if(this.validitationCart()) {
-        this.cart.qty=this.article.cart.qty_new; // aggiorno la qty originale
+       // this.article.cart.qty=this.article.cart.qty_new; // aggiorno la qty originale
       }
     },
     numberCart(event) {
       console.log("numberCart " + event.target.value);
       this.article.cart.qty_new = parseInt(event.target.value);
-      this.cart.qty = parseInt(event.target.value);
+      this.article.cart.qty = parseInt(event.target.value);
       
       this.validitationCart();
     },
@@ -165,25 +160,25 @@ export default {
        var messageClass = "danger";
        var message = "";
 
-       if(this.article.article_order.stato=="LOCK" && this.article.cart.qty_new>this.cart.qty) {
+       if(this.article.article_order.stato=="LOCK" && this.article.cart.qty_new>this.article.cart.qty) {
           message = "L'articolo è bloccato, non si possono aggiungere articoli";
           this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
        }
        else
-       if(this.article.article_order.stato=="QTAMAXORDER" && this.article.cart.qty_new>this.cart.qty) {
+       if(this.article.article_order.stato=="QTAMAXORDER" && this.article.cart.qty_new>this.article.cart.qty) {
           message = "Raggiunta la quantità massima che si può ordinare";
           this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
        }  
        else
        if(this.article.qty_massima_order>0) {
-          if((this.article.qty_cart - qty_new>this.cart.qty + qty_new>this.cart.qty_new) > this.article.qty_massima_order) {
+          if((this.article.qty_cart - qty_new>this.article.cart.qty + qty_new>this.article.cart.qty_new) > this.article.qty_massima_order) {
             message = "Raggiunta la quantità massima che si può ordinare";
             this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
           }
        }
        else
        if(this.article.qty_massima>0) {
-          if(qty_new>this.cart.qty_new  > this.article.qty_massima) {
+          if(qty_new>this.article.cart.qty_new  > this.article.qty_massima) {
             message = "Raggiunta la quantità massima che si può ordinare";
             this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
           }

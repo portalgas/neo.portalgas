@@ -1,9 +1,16 @@
 <template>
 
+<div>
 	<div class="row">
 	    <div class="col-sm-12 col-xs-12 col-md-12"> 
-{{ order.suppliers_organization.supplier }}
-        <div class="card mb-3">
+
+        <div v-if="isRunOrder" class="box-spinner"> 
+          <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>  
+        </div>
+
+        <div v-if="!isRunOrder" class="card mb-3">
           <div class="row no-gutters">
             <div class="col-md-2">
                 <img v-if="order.suppliers_organization.supplier.img1 != ''"
@@ -50,20 +57,29 @@
         </div> <!-- card -->
 
 	    </div> <!-- col... -->
+    </div> <!-- row -->
 
-	    <div class="col-sm-12 col-xs-2 col-md-2" 
-		          v-for="article in articles"
-		          :article="article"
-		          :key="article.article_id"
-		        >
-		          <app-articles
-		            v-bind:article="article">
-                    <slot name="type">lllllllllllllllllllllll</slot>
-                </app-articles>
+    <div class="row">
 
-	 	   </div> <!-- col... -->
+          <div v-if="isRunArticles" class="box-spinner"> 
+            <div class="spinner-border text-info" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>  
+          </div>
 
-	</div> <!-- row -->
+    	    <div v-if="!isRunArticles" class="col-sm-12 col-xs-2 col-md-3" 
+    		          v-for="article in articles"
+    		          :article="article"
+    		          :key="article.article_id"
+    		        >
+    		          <app-articles
+    		            v-bind:article="article">
+                    </app-articles>
+          </div> 
+
+    </div> <!-- row -->
+
+	</div> 
 
 </template>
 
@@ -80,6 +96,8 @@ export default {
       order_id: 0,
       order: {},
       articles: Object,
+      isRunOrder: false,   
+      isRunArticles: false,   
       displayList: false
     };
   },
@@ -94,9 +112,9 @@ export default {
   },  
   mounted() {
   	this.order_id = this.$route.params.order_id;
+    console.log('getStoreOrder');
     console.log(this.getStoreOrder);
-    console.log(this.getStoreOrder.id);
-    if(this.order_id!=this.getStoreOrder.id) {
+    if(typeof this.getStoreOrder !=="undefined" && this.order_id!=this.getStoreOrder.id) {
       this.getAjaxOrder();
       this.getsAjaxArticles();    
     }
@@ -104,8 +122,10 @@ export default {
     // const cartArticles = JSON.parse(localStorage.getItem('cartArticles'));
   },
   methods: {
-    ...mapActions(["addArticle"]),
     getAjaxOrder() {
+
+      this.isRunOrder = true;
+
       let url = "/admin/api/orders/get";
       let params = {
         order_id: this.order_id
@@ -113,17 +133,23 @@ export default {
       axios
         .post(url, params)
         .then(response => {
+
+          this.isRunOrder = false;
+
           console.log(response.data);
           if(typeof response.data !== "undefined") {
             this.order = response.data;
-            console.log(this.order);
           }
         })
         .catch(error => {
+          this.isRunOrder = false;
           console.error("Error: " + error);
         });    
     },
     getsAjaxArticles() {
+
+      this.isRunArticles = true;
+
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
       let params = {
         order_id: this.order_id
@@ -131,13 +157,16 @@ export default {
       axios
         .post(url, params)
         .then(response => {
+
+          this.isRunArticles = false;
+
           console.log(response.data);
           if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
             this.articles = response.data;
-            console.log(this.articles);
           }
         })
         .catch(error => {
+          this.isRunArticles = false;
           console.error("Error: " + error);
         });
     }
