@@ -2473,6 +2473,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 // @ is an alias to /src
 
 
@@ -2499,8 +2500,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }),
   mounted: function mounted() {
     this.order_id = this.$route.params.order_id;
+    console.log('route.params.order_id  ' + this.order_id);
     console.log('getStoreOrder');
     console.log(this.getStoreOrder);
+    console.log(this.getStoreOrder.id);
 
     if (typeof this.getStoreOrder !== "undefined" && this.order_id != this.getStoreOrder.id) {
       this.getAjaxOrder();
@@ -2540,6 +2543,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(url, params).then(function (response) {
         _this2.isRunArticles = false;
         console.log(response.data);
+        console.log(response.data[0]);
+        console.log(response.data[0].ids);
 
         if (typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
           _this2.articles = response.data;
@@ -53129,6 +53134,20 @@ var render = function() {
                                 _vm._s(
                                   _vm._f("formatDate")(_vm.order.data_fine)
                                 )
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.state_code == "RI-OPEN-VALIDATE"
+                        ? _c("span", [
+                            _vm._v(
+                              "Riaperto fino al " +
+                                _vm._s(
+                                  _vm._f("formatDate")(
+                                    _vm.order.data_fine_validation
+                                  )
+                                ) +
+                                " per completare i colli"
                             )
                           ])
                         : _vm._e(),

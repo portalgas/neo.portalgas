@@ -4,7 +4,7 @@ use Cake\Core\Configure;
 // Bootstrap 3.3.7 
 echo $this->Html->css('AdminLTE./bower_components/bootstrap/dist/css/bootstrap.min', ['block' => 'css']); 
 
-// Font Awesome 
+// Font Awesome 4.7.0
 echo $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min', ['block' => 'css']); 
 
 // Ionicons 

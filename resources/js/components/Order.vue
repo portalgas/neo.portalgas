@@ -113,8 +113,10 @@ export default {
   },  
   mounted() {
   	this.order_id = this.$route.params.order_id;
+    console.log('route.params.order_id  '+this.order_id);
     console.log('getStoreOrder');
     console.log(this.getStoreOrder);
+    console.log(this.getStoreOrder.id);
     if(typeof this.getStoreOrder !=="undefined" && this.order_id!=this.getStoreOrder.id) {
       this.getAjaxOrder();
       this.getsAjaxArticles();    
@@ -162,6 +164,8 @@ export default {
           this.isRunArticles = false;
 
           console.log(response.data);
+          console.log(response.data[0]);
+          console.log(response.data[0].ids);
           if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
             this.articles = response.data;
           }

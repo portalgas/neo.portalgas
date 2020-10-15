@@ -114,6 +114,33 @@ class CartsTable extends Table
     }
 
     /*
+     * dato un articolo calcolo il totale acquisti, persistito in ArticlesOrders.qta_cart
+     */
+    public function getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug=false) {
+
+          $qta_cart = 0;  
+
+          $where = ['Carts.organization_id' => $organization_id,
+                    'Carts.order_id' => $order_id,
+                    'Carts.article_organization_id' => $article_organization_id,
+                    'Carts.article_id' => $article_id,
+                    'Carts.deleteToReferent' => 'N',
+                    'Carts.stato' => 'Y'];
+          $cartResults = $this->find()
+                        ->where($where)
+                        ->all();
+          if($cartResults->count()>0)
+            foreach($cartResults as $cartResult) {      
+                if(!empty($cartResult->qta_forzato))
+                    $qta_cart += $cartResult->qta_forzato;
+                else
+                    $qta_cart += $cartResult->qta;
+            }
+
+        return $qta_cart;
+    }
+
+    /*
      * $where = ['Carts.order_id' => $order_id];
      * $where = ['Carts.user_id' => $user_id];
      * $where = ['Orders.delivery_id' => $delivery_id];

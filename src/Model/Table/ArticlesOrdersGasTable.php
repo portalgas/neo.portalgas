@@ -29,43 +29,35 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $order=[], $debug=false) { 
-
+    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $sort=[], $debug=false) {
         $order_id = $where['order_id'];
 
-        $where_article_order = [];
-        if(isset($where['ArticlesOrders']))
-           $where_article_order = $where['ArticlesOrders'];
-        $where_article_order = array_merge([$this->alias().'.organization_id' => $organization_id,
+        $order_state_code = $orderResults->state_code;
+
+        if(!isset($where['ArticlesOrders']))
+           $where['ArticlesOrders'] = [];
+        $where['ArticlesOrders'] = array_merge([$this->alias().'.organization_id' => $organization_id,
                               $this->alias().'.order_id' => $order_id,
                               $this->alias().'.stato != ' => 'N'], 
-                              $where_article_order);                  
-        if($debug) debug($where_article_order);
-        
-        $order = [$this->alias().'.name'];
+                              $where['ArticlesOrders']);
 
-        /*
-         * da Orders chi gestisce listino articoli
-         * order_type_id' => (int) 4,
-         * owner_articles' => 'REFERENT',
-         * owner_organization_id
-         * owner_supplier_organization_id
-         */
-        $results = $this->find()
-                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
-                        ->where($where_article_order)
-                        ->order($order)
-                        // ->limit(2)
-                        ->all()
-                        ->toArray();
+        $sort = [$this->alias().'.name'];
 
+        switch ($order_state_code) {
+            case 'RI-OPEN-VALIDATE':
+                $where['ArticlesOrders'] += [$this->alias().'.pezzi_confezione > ' => 1];
+                $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $sort, $debug); 
+            break;
+            default:
+                $results = $this->gets($user, $organization_id, $orderResults, $where, $sort, $debug);
+            break;
+        }          
+        if($debug) debug($results);
 
         /*
          * estraggo eventuali acquisti
          */ 
         if($results) {
-
-            $order_state_code = $orderResults->state_code;
             
             $cartsTable = TableRegistry::get('Carts');
             foreach($results as $numResult => $result) {
@@ -112,33 +104,73 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
     }   
 
     /*
-     * non + utilizzato
-     *
-     * estrae gli articoli associati / da associare  ad un ordine
-     * ArticlesOrders.owner_articles                 = 
-     * ArticlesOrders.owner_organization_id          = Articles.organization_id
-     * ArticlesOrders.owner_supplier_organization_id = Articles.supplier_organization_id
+     * da Orders chi gestisce listino articoli
+     * order_type_id' => (int) 4,
+     * owner_articles' => 'REFERENT',
+     * owner_organization_id
+     * owner_supplier_organization_id
      */
-    public function gets($user, $organization_id, $order_id, $where, $order, $debug=false) {
-    
-        $ordersTable = TableRegistry::get('Orders');
-        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
-
-        $owner_articles = $orderResults->owner_articles;
-        $owner_organization_id = $orderResults->owner_organization_id;
-        $owner_supplier_organization_id = $orderResults->owner_supplier_organization_id;
-
-        $articlesTable = TableRegistry::get('Articles');
-
-        $where = ['Articles.organization_id' => $owner_organization_id,
-                  'Articles.supplier_organization_id' => $owner_supplier_organization_id];
-        // debug($where);
-        $order = ['Articles.name'];
-
+    public function gets($user, $organization_id, $orderResults, $where, $sort, $debug=false) {    
+          
         $results = $this->find()
-                        ->where($where)
-                        ->order($order)
-                        ->all();
+                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
+                        ->where($where['ArticlesOrders'])
+                        ->order($sort)
+                        // ->limit(2)
+                        ->all()
+                        ->toArray();
+
+        return $results;
+    }    
+
+    public function getRiOpenValidate($user, $organization_id, $orderResults, $where, $sort, $debug=false) {
+
+        $results = [];
+        $resultsArticlesOrders = $this->find()
+                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
+                        ->where($where['ArticlesOrders'])
+                        ->order($sort)
+                        // ->limit(2)
+                        ->all()
+                        ->toArray();
+
+        /*
+         * estraggo eventuali acquisti
+         */ 
+        if($resultsArticlesOrders) {
+            $i=0;
+            foreach($resultsArticlesOrders as $numResult => $resultsArticlesOrder) {
+
+                $qta_cart = $resultsArticlesOrder['qta_cart'];
+
+                // se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS ma lo ricalcolo
+                if($orderResults->order_type_id==Configure::read('Order.type.des') ||
+                   $orderResults->order_type_id==Configure::read('Order.type.des-titolare')) {
+                    
+                    $cartsTable = TableRegistry::get('Carts');
+                    $qta_cart = $cartsTable->getQtaCartByArticle($user, $organization_id, $orderResults->id, $resultsArticlesOrder['article_organization_id'], $resultsArticlesOrder['article_id'], $debug);
+                }
+                if($qta_cart!==false) {
+                    $resultsArticlesOrder['qta_cart'] = $qta_cart;
+                }
+
+                $differenza_da_ordinare = ($qta_cart % $resultsArticlesOrder['pezzi_confezione']);
+                
+                if($differenza_da_ordinare>0) {
+                    $differenza_da_ordinare = ($resultsArticlesOrder['pezzi_confezione'] - $differenza_da_ordinare);
+                    $differenza_importo = ($differenza_da_ordinare * $resultsArticlesOrder['prezzo']);
+                    
+                    $results[$i] = $resultsArticlesOrder;
+                    $results[$i]['riopen'] = [];
+                    $results[$i]['riopen']['differenza_da_ordinare'] = $differenza_da_ordinare;
+                    $results[$i]['riopen']['differenza_importo'] = $differenza_importo;
+                    $i++;
+                }
+                else 
+                    unset($resultsArticlesOrders[$numResult]);
+            }
+        }
+
         return $results;
     }    
 }

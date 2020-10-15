@@ -179,6 +179,16 @@ class ApiArticleDecorator  extends AppDecorator {
                 */            
         }
 
+        /*
+         * order.staste_code RI-OPEN-VALIDATE
+         */
+        if(isset($row['riopen'])) {
+            if(isset($row['riopen']['differenza_da_ordinare'])) 
+                $results['riopen']['differenza_da_ordinare'] = $row['riopen']['differenza_da_ordinare'];
+            if(isset($row['riopen']['differenza_importo'])) 
+                $results['riopen']['differenza_importo'] = $row['riopen']['differenza_importo'];
+        }
+           
         return $results;
     }
 
