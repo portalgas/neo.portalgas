@@ -21,7 +21,7 @@ class CartComponent extends Component {
     }
 
     /*
-     * qty = qty originale
+     * qty = qty originale, ma la ricalcolo nel caso fosse cambiata
      * qty_new = qty aggiornata
      */
     public function managementCart($user, $organization_id, $article, $debug=false) {
@@ -32,14 +32,20 @@ class CartComponent extends Component {
         $results['msg'] = '';
         $results['results'] = '';
 
-        $qty = (int)$article['cart']['qty'];
-        $qty_new = (int)$article['cart']['qty_new'];
-
         $organization_id = $organization_id; // $article['cart']['organization_id'];
         $user_id = $user->id; // $article['cart']['user_id'];
         $order_id = $article['cart']['order_id'];
         $article_organization_id = $article['cart']['article_organization_id'];
         $article_id = $article['cart']['article_id'];
+
+        /*
+         * qty = qty originale, ma la ricalcolo nel caso fosse cambiata
+         * qty_new = qty aggiornata
+         */
+        $cartsTable = TableRegistry::get('Carts');
+        // $qty = (int)$article['cart']['qty'];                     
+        $qty = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);               
+        $qty_new = (int)$article['cart']['qty_new'];
 
         /*
          * action
@@ -57,10 +63,20 @@ class CartComponent extends Component {
 
         /*
          * ctrl validita
-         *
+         * RI-OPEN-VALIDATE
          */
-        $results = $this->_ctrlValidita($user, $organization_id, $order_id, $article_organization_id, $article_id, $qty_new, $qty, $action);
-        if($debug) debug($results);
+        if(isset($article['riopen'])) {
+            $results = $this->_ctrlValiditaRiOpen($user, $article, $qty, $debug);
+            if($debug) debug($results);
+        }
+
+        /*
+         * ctrl validita
+         */
+        if($results['esito']) {
+            $results = $this->_ctrlValidita($user, $organization_id, $order_id, $article_organization_id, $article_id, $qty_new, $qty, $action);
+            if($debug) debug($results);
+        }
 
         if($results['esito']) {
 
@@ -151,6 +167,33 @@ class CartComponent extends Component {
 
         return $results;
     }
+
+    /*
+     * RI-OPEN-VALIDATE
+     * concorrenza tra users, ctrl che non sia gia' completato il collo
+     */
+    private function _ctrlValiditaRiOpen($user, $article, $qty, $debug=false) {
+
+        $results = [];
+        $esito = true;
+        $msg = '';
+
+        $pezzi_confezione = (int)$article['package'];
+        if($qty >= $pezzi_confezione) {
+            $delta = ($qty % $pezzi_confezione); 
+            
+            if($delta==0) {
+                $msg = __('cart_msg_riopen_package_close');
+                $esito = false;
+            }
+        }
+
+        $results['esito'] = $esito;
+        $results['msg'] = $msg;
+
+        return $results;
+    }
+
 
     /*
      * $action = INSERT

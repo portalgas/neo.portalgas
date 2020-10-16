@@ -11,10 +11,28 @@
         {{ message.msg }}
       </div>
 
+      <!-- RI-OPEN-VALIDATE -->      
+      <div v-if="article.riopen!=null" class="riopen">
+
+      {{ article.riopen.differenza_da_ordinare }}
+
+          <div v-if="article.riopen.differenza_da_ordinare>1" class="alert alert-warning">
+            Per completare il <strong>collo</strong> mancano {{ article.riopen.differenza_da_ordinare }} pezzi
+          </div>   
+          <div v-if="article.riopen.differenza_da_ordinare==1" class="alert alert-warning">
+            Per completare il <strong>collo</strong> manca {{ article.riopen.differenza_da_ordinare }} pezzo
+          </div>
+          <div v-if="article.riopen.differenza_da_ordinare==0" class="alert alert-success">
+            Collo completato
+          </div>
+      </div>
 
       <div class="quantity buttons_added">
 
-        <input type="button" value="-" class="minus" @click="minusCart" :disabled="article.cart.qty_new == 0 || isRun" />
+        <input type="button" value="-" 
+          class="minus" 
+          @click="minusCart" 
+          :disabled="btnMinusIsDisabled" />
 
         <input
           type="number"
@@ -28,12 +46,12 @@
           title="Qtà"
         />
 
-        <input type="button" value="+" class="plus" @click="plusCart" :disabled="isRun" />
+        <input type="button" value="+" class="plus" @click="plusCart" :disabled="btnPlusIsDisabled" />
 
         <button v-if="!isRun"
           type="button"
           class="btn-save btn btn-success"
-          :disabled="article.cart.qty === article.cart.qty_new"
+          :disabled="btnSaveIsDisabled"
           @click="save()"
         >      
           Save
@@ -63,7 +81,19 @@ export default {
       isRun: false
     };
   },
-  props: ["article"],  
+  props: ["article"], 
+  computed: {
+      btnMinusIsDisabled() {
+        return (this.isRun || this.article.cart.qty_new == 0);
+      },
+      btnPlusIsDisabled() {
+        return (this.isRun || 
+          (typeof this.article.riopen!="undefined" && this.article.riopen.differenza_da_ordinare==0));
+      },
+      btnSaveIsDisabled()  {
+        return (this.isRun || this.article.cart.qty === this.article.cart.qty_new);
+      },
+  },   
   methods: {
     save() {
 
@@ -127,23 +157,63 @@ export default {
 
       if(this.article.cart.qty_new>0) {
 
+        let qty_prima_di_modifica = this.article.cart.qty_new;
+        console.log("minusCart() qty_prima_di_modifica "+qty_prima_di_modifica);
+
         this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
         
         if (this.article.cart.qty_new < this.article.qty_min) {
             this.article.cart.qty_new = 0
         }
-          
+
+        /*
+         * di quanto e' aumentata rispetto a prima
+         */
+        let qty_incremento = (qty_prima_di_modifica - this.article.cart.qty_new);
+        console.log("minusCart() qty_incremento "+qty_incremento);
+
+        /* 
+         * RI-OPEN-VALIDATE
+         */
+        if(typeof this.article.riopen!="undefined") {
+          this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + qty_incremento);
+        }
+
         if(this.validitationCart()) {
          // this.article.cart.qty=this.article.cart.qty_new;  // aggiorno la qty originale   
         }
+      }
+      else {
+        /* 
+         * RI-OPEN-VALIDATE
+         */
+        if(typeof this.article.riopen!="undefined") {
+          this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + this.article.cart.qty);
+        }      
       }
     },
     plusCart() {
 
       this.message = {}
 
+      let qty_prima_di_modifica = this.article.cart.qty_new;
+      console.log("plusCart() qty_prima_di_modifica "+qty_prima_di_modifica);
+
       this.article.cart.qty_new = (this.article.cart.qty_new + (1 * this.article.qty_multiple));
+
+      /*
+       * di quanto e' aumentata rispetto a prima
+       */
+      let qty_incremento = (this.article.cart.qty_new - qty_prima_di_modifica);
+      console.log("plusCart() qty_incremento "+qty_incremento);
       
+      /* 
+       * RI-OPEN-VALIDATE
+       */
+      if(typeof this.article.riopen!="undefined") {
+        this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare - qty_incremento);
+      }
+
       if(this.validitationCart()) {
        // this.article.cart.qty=this.article.cart.qty_new; // aggiorno la qty originale
       }

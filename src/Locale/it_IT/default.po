@@ -847,6 +847,11 @@ msgstr "La quantita' minima è %s! Hai indicato %s"
 msgid "cart_msg_limit_cash"
 msgstr "Hai superato il credito di cassa!"
 
+msgid "cart_msg_riopen_package_close"
+msgstr "Il collo è stato completato da un'altro gasista!"
+
+cart_msg_stato_N
+
 #
 # M S G  system
 #

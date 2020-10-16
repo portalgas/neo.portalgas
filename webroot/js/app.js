@@ -2770,6 +2770,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "btn-cart-add",
@@ -2783,6 +2801,17 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   props: ["article"],
+  computed: {
+    btnMinusIsDisabled: function btnMinusIsDisabled() {
+      return this.isRun || this.article.cart.qty_new == 0;
+    },
+    btnPlusIsDisabled: function btnPlusIsDisabled() {
+      return this.isRun || typeof this.article.riopen != "undefined" && this.article.riopen.differenza_da_ordinare == 0;
+    },
+    btnSaveIsDisabled: function btnSaveIsDisabled() {
+      return this.isRun || this.article.cart.qty === this.article.cart.qty_new;
+    }
+  },
   methods: {
     save: function save() {
       var _this2 = this;
@@ -2830,19 +2859,57 @@ __webpack_require__.r(__webpack_exports__);
       this.message = {};
 
       if (this.article.cart.qty_new > 0) {
+        var qty_prima_di_modifica = this.article.cart.qty_new;
+        console.log("minusCart() qty_prima_di_modifica " + qty_prima_di_modifica);
         this.article.cart.qty_new = this.article.cart.qty_new - 1 * this.article.qty_multiple;
 
         if (this.article.cart.qty_new < this.article.qty_min) {
           this.article.cart.qty_new = 0;
         }
+        /*
+         * di quanto e' aumentata rispetto a prima
+         */
+
+
+        var qty_incremento = qty_prima_di_modifica - this.article.cart.qty_new;
+        console.log("minusCart() qty_incremento " + qty_incremento);
+        /* 
+         * RI-OPEN-VALIDATE
+         */
+
+        if (typeof this.article.riopen != "undefined") {
+          this.article.riopen.differenza_da_ordinare = this.article.riopen.differenza_da_ordinare + qty_incremento;
+        }
 
         if (this.validitationCart()) {// this.article.cart.qty=this.article.cart.qty_new;  // aggiorno la qty originale   
+        }
+      } else {
+        /* 
+         * RI-OPEN-VALIDATE
+         */
+        if (typeof this.article.riopen != "undefined") {
+          this.article.riopen.differenza_da_ordinare = this.article.riopen.differenza_da_ordinare + this.article.cart.qty;
         }
       }
     },
     plusCart: function plusCart() {
       this.message = {};
+      var qty_prima_di_modifica = this.article.cart.qty_new;
+      console.log("plusCart() qty_prima_di_modifica " + qty_prima_di_modifica);
       this.article.cart.qty_new = this.article.cart.qty_new + 1 * this.article.qty_multiple;
+      /*
+       * di quanto e' aumentata rispetto a prima
+       */
+
+      var qty_incremento = this.article.cart.qty_new - qty_prima_di_modifica;
+      console.log("plusCart() qty_incremento " + qty_incremento);
+      /* 
+       * RI-OPEN-VALIDATE
+       */
+
+      if (typeof this.article.riopen != "undefined") {
+        this.article.riopen.differenza_da_ordinare = this.article.riopen.differenza_da_ordinare - qty_incremento;
+      }
 
       if (this.validitationCart()) {// this.article.cart.qty=this.article.cart.qty_new; // aggiorno la qty originale
       }
@@ -53478,14 +53545,49 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
+    _vm.article.riopen != null
+      ? _c("div", { staticClass: "riopen" }, [
+          _vm._v(
+            "\n\n    " +
+              _vm._s(_vm.article.riopen.differenza_da_ordinare) +
+              "\n\n        "
+          ),
+          _vm.article.riopen.differenza_da_ordinare > 1
+            ? _c("div", { staticClass: "alert alert-warning" }, [
+                _vm._v("\n          Per completare il "),
+                _c("strong", [_vm._v("collo")]),
+                _vm._v(
+                  " mancano " +
+                    _vm._s(_vm.article.riopen.differenza_da_ordinare) +
+                    " pezzi\n        "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.riopen.differenza_da_ordinare == 1
+            ? _c("div", { staticClass: "alert alert-warning" }, [
+                _vm._v("\n          Per completare il "),
+                _c("strong", [_vm._v("collo")]),
+                _vm._v(
+                  " manca " +
+                    _vm._s(_vm.article.riopen.differenza_da_ordinare) +
+                    " pezzo\n        "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.riopen.differenza_da_ordinare == 0
+            ? _c("div", { staticClass: "alert alert-success" }, [
+                _vm._v("\n          Collo completato\n        ")
+              ])
+            : _vm._e()
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "quantity buttons_added" }, [
       _c("input", {
         staticClass: "minus",
-        attrs: {
-          type: "button",
-          value: "-",
-          disabled: _vm.article.cart.qty_new == 0 || _vm.isRun
-        },
+        attrs: { type: "button", value: "-", disabled: _vm.btnMinusIsDisabled },
         on: { click: _vm.minusCart }
       }),
       _vm._v(" "),
@@ -53505,7 +53607,7 @@ var render = function() {
       _vm._v(" "),
       _c("input", {
         staticClass: "plus",
-        attrs: { type: "button", value: "+", disabled: _vm.isRun },
+        attrs: { type: "button", value: "+", disabled: _vm.btnPlusIsDisabled },
         on: { click: _vm.plusCart }
       }),
       _vm._v(" "),
@@ -53514,10 +53616,7 @@ var render = function() {
             "button",
             {
               staticClass: "btn-save btn btn-success",
-              attrs: {
-                type: "button",
-                disabled: _vm.article.cart.qty === _vm.article.cart.qty_new
-              },
+              attrs: { type: "button", disabled: _vm.btnSaveIsDisabled },
               on: {
                 click: function($event) {
                   return _vm.save()
