@@ -10,6 +10,10 @@ use Cake\Core\Configure;
 
 class ArticlesOrdersTable extends Table
 {
+    protected $_sort = null;
+    protected $_limit = null;
+    protected $_page = null;
+
     /**
      * Initialize method
      *
@@ -183,5 +187,11 @@ class ArticlesOrdersTable extends Table
         }
 
         return TableRegistry::get($table_registry);
-    }    
+    } 
+
+    protected function _getOptions($options) {
+        isset($options['sort'])? $this->_sort = $options['sort']: $this->_sort = [$this->alias().'.name'];
+        isset($options['limit'])? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');
+        isset($options['page'])? $this->_page = $options['page']: $this->_page = 1; 
+    }
 }

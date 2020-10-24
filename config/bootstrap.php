@@ -313,10 +313,14 @@ Configure::write('SupplierOrganizationCanViewOrdersIni', 'Y');
 Configure::write('SupplierOrganizationCanViewOrdersUserIni', 'Y');
 Configure::write('SupplierOrganizationCanPromotionsIni', 'Y');
 
-
 Configure::write('Gdxp.protocolVersion', '1.0');
 Configure::write('Gdxp.applicationSignature', 'PortAlGas');
 Configure::write('Gdxp.file.prefix', 'gdxp-');
+
+/*
+ * fe front-end
+ */
+Configure::write('sql.limit', 10); // offset: num row 
 
 // {organizaton_id} / {img1}
 Configure::write('Article.img.path.full', '/images/articles/%s/%s');

@@ -44,7 +44,8 @@
 
 					    <span>{{ order.data_inizio | formatDate }} - {{ order.data_fine | formatDate }}</span>
 
-					    {{ order.state_code }}  
+					    <span class="badge badge-secondary">stato {{ order.state_code }}</span>
+					    <span class="badge badge-secondary">type {{ order.order_type_id }}</span>  
 					</a>
 	        </p> 
 	      </div>

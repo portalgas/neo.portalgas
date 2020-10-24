@@ -106,6 +106,8 @@ class OrdersController extends ApiAppController
         $results = [];
    
         $order_id = $this->request->getData('order_id');
+        $page = $this->request->getData('page');
+        if(empty($page)) $page = 1;
         // debug($order_id);
 
         $ordersTable = TableRegistry::get('Orders');
@@ -120,8 +122,12 @@ class OrdersController extends ApiAppController
 
         if($articlesOrdersTable!==false) {
             $where['order_id'] = $order_id;
-            $sort = [];
-            $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $sort);
+            
+            $options = [];
+            $options['sort'] = [];
+            $options['limit'] = Configure::read('sql.limit');
+            $options['page'] = $page;
+            $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $options);
         
             if(!empty($results)) {
                 $results = new ApiArticleDecorator($results);

@@ -2257,6 +2257,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "app-deliveries",
@@ -2474,6 +2475,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 // @ is an alias to /src
 
 
@@ -2484,7 +2488,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       order_id: 0,
       order: {},
-      articles: Object,
+      articles: [],
+      page: 1,
       isRunOrder: false,
       isRunArticles: false,
       displayList: false
@@ -2503,17 +2508,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     console.log('route.params.order_id  ' + this.order_id);
     console.log('getStoreOrder');
     console.log(this.getStoreOrder);
-    console.log(this.getStoreOrder.id);
 
     if (typeof this.getStoreOrder !== "undefined" && this.order_id != this.getStoreOrder.id) {
-      this.getAjaxOrder();
-      this.getsAjaxArticles();
+      console.log('RICARICO per order store != order route.params - getStoreOrder.id ' + this.getStoreOrder.id);
+      this.getAjaxOrder(); // this.getsAjaxArticles();    
+
+      this.scroll();
+    } else {
+      console.log('CARICO order store undefined ');
+      this.scroll();
     } // const cartArticles = JSON.parse(localStorage.getItem('cartArticles'));
 
   },
   methods: {
-    getAjaxOrder: function getAjaxOrder() {
+    scroll: function scroll() {
       var _this = this;
+
+      if (this.page == 1) {
+        this.getsAjaxArticles();
+      }
+
+      window.onscroll = function () {
+        var bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        console.log('scroll bottomOfWindow ' + bottomOfWindow);
+        /*
+        scrollTop    get the number of pixels the content of a <div> element is scrolled horizontally and vertically
+        innerHeight  get the current frame's height and width
+        offsetHeight get the height of document, including padding and border
+        console.log('document.documentElement.scrollTop '+document.documentElement.scrollTop);
+        console.log('window.innerHeight '+window.innerHeight);
+        console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
+        console.log('bottomOfWindow '+bottomOfWindow);
+        */
+
+        if (bottomOfWindow) {
+          _this.getsAjaxArticles();
+        }
+      };
+    },
+    getAjaxOrder: function getAjaxOrder() {
+      var _this2 = this;
 
       this.isRunOrder = true;
       var url = "/admin/api/orders/get";
@@ -2521,36 +2555,43 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         order_id: this.order_id
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(url, params).then(function (response) {
-        _this.isRunOrder = false;
+        _this2.isRunOrder = false;
         console.log(response.data);
 
         if (typeof response.data !== "undefined") {
-          _this.order = response.data;
+          _this2.order = response.data;
         }
       })["catch"](function (error) {
-        _this.isRunOrder = false;
+        _this2.isRunOrder = false;
         console.error("Error: " + error);
       });
     },
     getsAjaxArticles: function getsAjaxArticles() {
-      var _this2 = this;
+      var _this3 = this;
 
-      this.isRunArticles = true;
+      // this.isRunArticles = true;
       var url = "/admin/api/orders/getArticlesOrdersByOrderId";
       var params = {
-        order_id: this.order_id
+        order_id: this.order_id,
+        page: this.page
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(url, params).then(function (response) {
-        _this2.isRunArticles = false;
+        _this3.isRunArticles = false;
         console.log(response.data);
         console.log(response.data[0]);
         console.log(response.data[0].ids);
 
         if (typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
-          _this2.articles = response.data;
+          var data = response.data;
+
+          for (var i = 0; i < data.length; i++) {
+            _this3.articles.push(data[i]);
+          }
+
+          _this3.page++;
         }
       })["catch"](function (error) {
-        _this2.isRunArticles = false;
+        _this3.isRunArticles = false;
         console.error("Error: " + error);
       });
     }
@@ -2719,8 +2760,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-//
-//
 //
 //
 //
@@ -53026,10 +53065,30 @@ var render = function() {
                                             )
                                         )
                                       ]),
-                                      _vm._v(
-                                        "\n\n\t\t\t\t\t    " +
-                                          _vm._s(order.state_code) +
-                                          "  \n\t\t\t\t\t"
+                                      _vm._v(" "),
+                                      _c(
+                                        "span",
+                                        {
+                                          staticClass: "badge badge-secondary"
+                                        },
+                                        [
+                                          _vm._v(
+                                            "stato " + _vm._s(order.state_code)
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "span",
+                                        {
+                                          staticClass: "badge badge-secondary"
+                                        },
+                                        [
+                                          _vm._v(
+                                            "type " +
+                                              _vm._s(order.order_type_id)
+                                          )
+                                        ]
                                       )
                                     ]
                                   )
@@ -53094,13 +53153,20 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _vm._v(
+      "\r\n\r\n  page: " +
+        _vm._s(_vm.page) +
+        "\r\n  order: " +
+        _vm._s(_vm.order) +
+        "\r\n\t"
+    ),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12 col-xs-12 col-md-12" }, [
         _vm.isRunOrder
           ? _c("div", { staticClass: "box-spinner" }, [_vm._m(0)])
           : _vm._e(),
         _vm._v(" "),
-        !_vm.isRunOrder
+        !_vm.isRunOrder && _vm.order != null
           ? _c("div", { staticClass: "card mb-3" }, [
               _c("div", { staticClass: "row no-gutters" }, [
                 _c("div", { staticClass: "col-md-2" }, [
@@ -53547,11 +53613,6 @@ var render = function() {
     _vm._v(" "),
     _vm.article.riopen != null
       ? _c("div", { staticClass: "riopen" }, [
-          _vm._v(
-            "\n\n    " +
-              _vm._s(_vm.article.riopen.differenza_da_ordinare) +
-              "\n\n        "
-          ),
           _vm.article.riopen.differenza_da_ordinare > 1
             ? _c("div", { staticClass: "alert alert-warning" }, [
                 _vm._v("\n          Per completare il "),
@@ -71628,7 +71689,8 @@ var orders = {
     addOrder: function addOrder(_ref2, order) {
       var commit = _ref2.commit;
       console.log('addOrder ');
-      console.log(order);
+      /* console.log(order); */
+
       commit("CLEAR_ORDER");
       commit("ADD_ORDER", order);
     },

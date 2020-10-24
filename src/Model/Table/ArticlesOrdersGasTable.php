@@ -29,7 +29,8 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $sort=[], $debug=false) {
+    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
+
         $order_id = $where['order_id'];
 
         $order_state_code = $orderResults->state_code;
@@ -41,15 +42,13 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
                               $this->alias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
 
-        $sort = [$this->alias().'.name'];
-
         switch ($order_state_code) {
             case 'RI-OPEN-VALIDATE':
                 $where['ArticlesOrders'] += [$this->alias().'.pezzi_confezione > ' => 1];
-                $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $sort, $debug); 
+                $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug); 
             break;
             default:
-                $results = $this->gets($user, $organization_id, $orderResults, $where, $sort, $debug);
+                $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
             break;
         }          
         if($debug) debug($results);
@@ -110,27 +109,33 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
      * owner_organization_id
      * owner_supplier_organization_id
      */
-    public function gets($user, $organization_id, $orderResults, $where, $sort, $debug=false) {    
-          
+    public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {    
+       
+        $this->_getOptions($options); // setta sort / limit / page
+
         $results = $this->find()
                         ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->where($where['ArticlesOrders'])
-                        ->order($sort)
-                        // ->limit(2)
+                        ->order($this->_sort)
+                        ->limit($this->_limit)
+                        ->page($this->_page)
                         ->all()
                         ->toArray();
 
         return $results;
     }    
 
-    public function getRiOpenValidate($user, $organization_id, $orderResults, $where, $sort, $debug=false) {
+    public function getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug=false) {
+
+        $this->_getOptions($options); // setta sort / limit / page
 
         $results = [];
         $resultsArticlesOrders = $this->find()
                         ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->where($where['ArticlesOrders'])
-                        ->order($sort)
-                        // ->limit(2)
+                        ->order($this->_sort)
+                        ->limit($this->_limit)
+                        ->page($this->_page)
                         ->all()
                         ->toArray();
 

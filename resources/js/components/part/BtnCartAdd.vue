@@ -14,8 +14,6 @@
       <!-- RI-OPEN-VALIDATE -->      
       <div v-if="article.riopen!=null" class="riopen">
 
-      {{ article.riopen.differenza_da_ordinare }}
-
           <div v-if="article.riopen.differenza_da_ordinare>1" class="alert alert-warning">
             Per completare il <strong>collo</strong> mancano {{ article.riopen.differenza_da_ordinare }} pezzi
           </div>   
@@ -206,7 +204,7 @@ export default {
        */
       let qty_incremento = (this.article.cart.qty_new - qty_prima_di_modifica);
       console.log("plusCart() qty_incremento "+qty_incremento);
-      
+
       /* 
        * RI-OPEN-VALIDATE
        */

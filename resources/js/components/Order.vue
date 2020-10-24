@@ -1,6 +1,9 @@
 <template>
 
 <div>
+
+  page: {{ page }}
+  order: {{ order }}
 	<div class="row">
 	    <div class="col-sm-12 col-xs-12 col-md-12"> 
 
@@ -10,7 +13,7 @@
           </div>  
         </div>
 
-        <div v-if="!isRunOrder" class="card mb-3">
+        <div v-if="!isRunOrder && order!=null" class="card mb-3">
           <div class="row no-gutters">
             <div class="col-md-2">
                 <img v-if="order.suppliers_organization.supplier.img1 != ''"
@@ -96,7 +99,8 @@ export default {
     return {
       order_id: 0,
       order: {},
-      articles: Object,
+      articles: [],
+      page: 1,
       isRunOrder: false,   
       isRunArticles: false,   
       displayList: false
@@ -116,15 +120,45 @@ export default {
     console.log('route.params.order_id  '+this.order_id);
     console.log('getStoreOrder');
     console.log(this.getStoreOrder);
-    console.log(this.getStoreOrder.id);
+    
     if(typeof this.getStoreOrder !=="undefined" && this.order_id!=this.getStoreOrder.id) {
+      console.log('RICARICO per order store != order route.params - getStoreOrder.id '+this.getStoreOrder.id);
       this.getAjaxOrder();
-      this.getsAjaxArticles();    
+      // this.getsAjaxArticles();    
+      this.scroll();
     }
-
+    else {
+      console.log('CARICO order store undefined ');
+      this.scroll();    
+    }
     // const cartArticles = JSON.parse(localStorage.getItem('cartArticles'));
   },
   methods: {
+    scroll () {
+
+      if (this.page==1) {
+         this.getsAjaxArticles();
+      }
+
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+
+        console.log('scroll bottomOfWindow '+bottomOfWindow);
+        /*
+        scrollTop    get the number of pixels the content of a <div> element is scrolled horizontally and vertically
+        innerHeight  get the current frame's height and width
+        offsetHeight get the height of document, including padding and border
+        console.log('document.documentElement.scrollTop '+document.documentElement.scrollTop);
+        console.log('window.innerHeight '+window.innerHeight);
+        console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
+        console.log('bottomOfWindow '+bottomOfWindow);
+        */
+
+        if (bottomOfWindow) {
+              this.getsAjaxArticles();
+        }
+      };  
+    },
     getAjaxOrder() {
 
       this.isRunOrder = true;
@@ -151,11 +185,12 @@ export default {
     },
     getsAjaxArticles() {
 
-      this.isRunArticles = true;
+     // this.isRunArticles = true;
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
       let params = {
-        order_id: this.order_id
+        order_id: this.order_id,
+        page: this.page
       };
       axios
         .post(url, params)
@@ -167,7 +202,11 @@ export default {
           console.log(response.data[0]);
           console.log(response.data[0].ids);
           if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
-            this.articles = response.data;
+            var data = response.data;
+            for (var i = 0; i < data.length; i++) {
+                this.articles.push(data[i]);
+            }          
+            this.page++;
           }
         })
         .catch(error => {
