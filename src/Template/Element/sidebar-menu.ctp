@@ -39,6 +39,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Logs Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('OrderTypes Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/order-state-codes/index'); ?>"><?php echo $icon;?><?php echo __('OrderStateCodes Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>  

@@ -1,8 +1,8 @@
 <template>
 
   <div class="card">
-        <div class="card-header bg-primary">{{ article.name }}</div>
-      
+        <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)"></div>
+
         <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
         <div v-if="article.is_bio" class="box-bio">
             <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica">
@@ -11,9 +11,8 @@
         <div class="card-body">
             <p class="card-text">
                 
-              <div v-if="article.descri!=''">
-                  {{ article.descri | shortDescription }} <a class="card-link" @click="clickshowOrHiddenModal()">..maggior dettaglio</a>
-              </div>
+              <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
+              </div><span><a class="badge badge-primary" @click="clickshowOrHiddenModal()">..maggior dettaglio</a></span>
 
               <del v-if="article.price_pre_discount != null"
                   >{{ article.price_pre_discount | currency }} &euro;</del
@@ -92,7 +91,7 @@ export default {
     justInCart: function() { 
         /* console.log("Article::justInCart article.cart.qty "+this.article.cart.qty) */
         return this.article.cart.qty>0 ? 'bg-light' : 'bg-transparent';
-    }    
+    } 
   },
   filters: {
     currency(amount) {
@@ -106,7 +105,14 @@ export default {
       } else {
         return value;
       }
-    }
+    },
+    highlight(text) {
+      let q = $('#q-article').val();
+      if(q!='')
+        return text.replace(new RegExp(q, 'gi'), '<span class="highlighted" style="text-decoration: underline;color: #fa824f">$&</span>');
+      else
+        return text;
+    },
   }
 };
 </script>
@@ -132,5 +138,9 @@ export default {
     object-position: center;
     overflow: hidden;
     width: 225;
+}
+.highlighted { 
+  color: #fa824f;
+  text-decoration: underline;
 }
 </style>

@@ -31,6 +31,10 @@ class OrdersTable extends Table
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('OrderStateCodes', [
+            'foreignKey' => 'state_code',
+            'joinType' => 'INNER',
+        ]); 
         $this->belongsTo('OrderTypes', [
             'foreignKey' => 'order_type_id',
             'joinType' => 'INNER',
@@ -362,7 +366,8 @@ class OrdersTable extends Table
                             $this->alias().'.organization_id' => $organization_id,
                             $this->alias().'.id' => $order_id
                         ])
-                        ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers'],
+                        ->contain(['OrderStateCodes', 'Deliveries', 
+                                    'SuppliersOrganizations' => ['Suppliers'],
                                   /*
                                    * con Orders.owner_articles => chi gestisce il listino
                                    */
@@ -410,7 +415,8 @@ class OrdersTable extends Table
         $results = $this->find()
                                 ->where($where)
                                 ->contain([
-                                  // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],    
+                                  // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],  
+                                  'OrderStateCodes',  
                                   'SuppliersOrganizations' => ['Suppliers'], 
                                   'Deliveries' => ['conditions' => $where_delivery]  
                                 ])

@@ -3,7 +3,7 @@
 <div>
 
   page: {{ page }}
-  order: {{ order }}
+
 	<div class="row">
 	    <div class="col-sm-12 col-xs-12 col-md-12"> 
 
@@ -15,7 +15,7 @@
 
         <div v-if="!isRunOrder && order!=null" class="card mb-3">
           <div class="row no-gutters">
-            <div class="col-md-2">
+            <div class="col-md-2"> 
                 <img v-if="order.suppliers_organization.supplier.img1 != ''"
                 class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
                 :alt="order.suppliers_organization.supplier.name">
@@ -35,12 +35,12 @@
                   </h5>
 
                   <p class="card-text">
-                      <span v-if="order.state_code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
-                      <span v-if="order.state_code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
-                      <span v-if="order.state_code=='OPEN-NEXT' && order.state_code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
-                      <span v-if="order.state_code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
+                      <span v-if="order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
+                      <span v-if="order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
+                      <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
+                      <span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
 
-                      <button class="btn btn-primary float-right">{{ order.state_code }}</button>
+                      <button class="badge badge-primary float-right">{{ order.order_state_code.code }} {{ order.order_state_code.name }}</button>
                   <hr >
                     <div v-if="order.nota!=''"><strong>Nota:</strong> {{ order.nota }}</div>
                     <span v-if="order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
@@ -62,6 +62,12 @@
 
 	    </div> <!-- col... -->
     </div> <!-- row -->
+
+    <div class="row">
+        <div  class="col-12">
+            <app-search-articles @search="onSearch" />
+        </div>
+    </div>
 
     <div class="row">
 
@@ -92,22 +98,26 @@
 import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 import articles from "../components/part/Articles.vue";
+import searchArticles from "../components/part/SearchArticles.vue";
 
 export default {
   name: "app-order",
   data() {
     return {
       order_id: 0,
-      order: {},
+      order: null,
       articles: [],
       page: 1,
       isRunOrder: false,   
       isRunArticles: false,   
-      displayList: false
+      displayList: false,
+      q: null // parola ricerca
     };
   },
+  // props: ['q'],
   components: {
     appArticles: articles,
+    appSearchArticles: searchArticles
   },  
   computed: {
     ...mapGetters(["getOrder"]),
@@ -128,12 +138,18 @@ export default {
       this.scroll();
     }
     else {
-      console.log('CARICO order store undefined ');
+      console.log('CARICO perche order in store = undefined ');
       this.scroll();    
     }
     // const cartArticles = JSON.parse(localStorage.getItem('cartArticles'));
   },
   methods: {
+    onSearch: function(q) {
+      this.articles = [];
+      this.page=1;
+      this.q = q;
+      this.scroll();
+    },      
     scroll () {
 
       if (this.page==1) {
@@ -185,21 +201,24 @@ export default {
     },
     getsAjaxArticles() {
 
-     // this.isRunArticles = true;
+      // this.isRunArticles = true;
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
       let params = {
         order_id: this.order_id,
-        page: this.page
+        page: this.page,
+        q: this.q
       };
+
       axios
         .post(url, params)
         .then(response => {
 
           this.isRunArticles = false;
 
+          console.log('getsAjaxArticles');
           console.log(response.data);
-          console.log(response.data[0]);
+          // console.log(response.data[0]);
           console.log(response.data[0].ids);
           if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
             var data = response.data;
@@ -232,7 +251,7 @@ export default {
       },
       counter: function (index) {
           return index+1
-      }
+      },       
   }
 };
 </script>

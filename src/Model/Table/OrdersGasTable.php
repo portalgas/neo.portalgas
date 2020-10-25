@@ -105,6 +105,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
                                 ->where($where)
                                 ->contain([
                                   'OrderTypes' => ['conditions' => ['code' => 'GAS']],
+                                  'OrderStateCodes',
                                   'SuppliersOrganizations' => ['Suppliers'], 
                                   'Deliveries' => ['conditions' => $where_delivery]  
                                 ])

@@ -113,8 +113,12 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
        
         $this->_getOptions($options); // setta sort / limit / page
 
+        if(!isset($where['Articles']))
+           $where['Articles'] = [];
+        $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
+
         $results = $this->find()
-                        ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
+                        ->contain(['Articles' => ['conditions' => $where['Articles']]])
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
                         ->limit($this->_limit)

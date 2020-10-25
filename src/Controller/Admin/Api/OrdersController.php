@@ -40,8 +40,7 @@ class OrdersController extends ApiAppController
                   'Orders.id' => $order_id];
 
         $results = $ordersTable->find()
-                                ->contain([
-                                    'Deliveries',
+                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
                                     'SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->first();
@@ -76,7 +75,7 @@ class OrdersController extends ApiAppController
                   'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
 
         $results = $ordersTable->find()
-                                ->contain(['SuppliersOrganizations' => ['Suppliers']])
+                                ->contain(['OrderStateCodes', 'OrderTypes', 'SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->order(['Orders.data_inizio'])
                                 ->all();
@@ -107,6 +106,7 @@ class OrdersController extends ApiAppController
    
         $order_id = $this->request->getData('order_id');
         $page = $this->request->getData('page');
+        $q = $this->request->getData('q');
         if(empty($page)) $page = 1;
         // debug($order_id);
 
@@ -114,6 +114,7 @@ class OrdersController extends ApiAppController
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.id' => $order_id];
         $orderResults = $ordersTable->find()
+                                ->contain(['OrderStateCodes', 'OrderTypes'])
                                 ->where($where)
                                 ->first();
 
@@ -121,8 +122,16 @@ class OrdersController extends ApiAppController
         $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
 
         if($articlesOrdersTable!==false) {
+
             $where['order_id'] = $order_id;
-            
+            if(!empty($q)) {
+                $where['Articles'] = ['or' => [
+                                       // $articlesOrdersTable->alias().'.name LIKE' => '%'.$q.'%',
+                                        'Articles.name LIKE' => '%'.$q.'%',
+                                        'Articles.nota LIKE' => '%'.$q.'%']
+                                    ];
+            }
+
             $options = [];
             $options['sort'] = [];
             $options['limit'] = Configure::read('sql.limit');

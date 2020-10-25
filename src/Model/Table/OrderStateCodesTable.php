@@ -7,20 +7,20 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * OrderTypes Model
+ * OrderStateCodes Model
  *
- * @method \App\Model\Entity\OrderType get($primaryKey, $options = [])
- * @method \App\Model\Entity\OrderType newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\OrderType[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\OrderType|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\OrderType saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\OrderType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\OrderType[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\OrderType findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\OrderStateCode get($primaryKey, $options = [])
+ * @method \App\Model\Entity\OrderStateCode newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\OrderStateCode[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\OrderStateCode|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\OrderStateCode saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\OrderStateCode patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\OrderStateCode[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\OrderStateCode findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class OrderTypesTable extends Table
+class OrderStateCodesTable extends Table
 {
     /**
      * Initialize method
@@ -32,9 +32,9 @@ class OrderTypesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('order_types');
-        $this->setDisplayField('name');
-        $this->setPrimaryKey('id');
+        $this->setTable('order_state_codes');
+        $this->setDisplayField('code');
+        $this->setPrimaryKey('code');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('IsDefaultIni');
@@ -42,8 +42,8 @@ class OrderTypesTable extends Table
         $this->addBehavior('IsSystem');
 
         $this->hasMany('Orders', [
-            'foreignKey' => 'order_id',
-        ]);        
+            'foreignKey' => 'state_code',
+        ]);
     }
 
     /**
@@ -60,19 +60,25 @@ class OrderTypesTable extends Table
 
         $validator
             ->scalar('code')
-            ->maxLength('code', 50)
+            ->maxLength('code', 45)
             ->requirePresence('code', 'create')
-            ->notEmptyString('code');
+            ->notEmptyString('code')
+            ->add('code', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 50)
+            ->maxLength('name', 45)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
         $validator
             ->scalar('descri')
             ->allowEmptyString('descri');
+
+        $validator
+            ->scalar('css_color')
+            ->maxLength('css_color', 15)
+            ->allowEmptyString('css_color');
 
         $validator
             ->boolean('is_system')
@@ -95,5 +101,19 @@ class OrderTypesTable extends Table
             ->notEmptyString('sort');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['code']));
+
+        return $rules;
     }
 }

@@ -37,6 +37,10 @@ class TemplatesOrdersStatesTable extends Table
         $this->setDisplayField('template_id');
         $this->setPrimaryKey(['template_id', 'state_code', 'group_id']);
 
+        $this->belongsTo('OrderStateCodes', [
+            'foreignKey' => 'state_code',
+            'joinType' => 'INNER',
+        ]);
         $this->belongsTo('Templates', [
             'foreignKey' => 'template_id',
             'joinType' => 'INNER',
