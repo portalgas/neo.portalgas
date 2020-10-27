@@ -38,7 +38,7 @@ class PriceTypesController extends AppController
      */
     public function index()
     {
-        $this->PriceTypes->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->PriceTypes->Organizations->removeBehavior('OrganizationsParams');
         $this->paginate = [
             'contain' => ['Organizations', 'Orders'],
         ];

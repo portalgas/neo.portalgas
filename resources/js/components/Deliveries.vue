@@ -45,7 +45,7 @@
 					    <span>{{ order.data_inizio | formatDate }} - {{ order.data_fine | formatDate }}</span>
 
 					    <span class="badge badge-primary">stato {{ order.order_state_code.code }} {{ order.order_state_code.name }}</span>
-					    <span class="badge badge-primary">type {{ order.order_type_id }}</span>  
+					    <span class="badge badge-primary">type {{ order.order_type.name }}</span>  
 					</a>
 	        </p> 
 	      </div>
@@ -152,7 +152,7 @@ export default {
 	    	
 	    	localStorage.setItem('order', order);
 
-	    	this.$router.push({ name: 'Order', params: {order_id: order.id}})
+	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    
   	},
 	filters: {

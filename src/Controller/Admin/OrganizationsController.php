@@ -35,6 +35,7 @@ class OrganizationsController extends AppController
      */
     public function index()
     {
+        $this->Organizations->addBehavior('OrganizationsParams');
         $this->paginate = [
             'contain' => ['Templates', 'JPageCategories', 'Gcalendars'],
         ];
@@ -52,6 +53,7 @@ class OrganizationsController extends AppController
      */
     public function view($id = null)
     {
+        $this->Organizations->addBehavior('OrganizationsParams');
         $organization = $this->Organizations->get($id, [
             'contain' => ['Templates', 'JPageCategories', 'Gcalendars'],
         ]);
@@ -93,6 +95,7 @@ class OrganizationsController extends AppController
      */
     public function edit($id = null)
     {
+        $this->Organizations->addBehavior('OrganizationsParams');
         $organization = $this->Organizations->get($id, [
             'contain' => []
         ]);

@@ -23,11 +23,11 @@ class ArticlesOrdersPactTable extends ArticlesOrdersTable implements ArticlesOrd
         
         return $validator;
     }
-    
+
     /*
      * implement
      */
-    public function getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug) {
-        
-    }  
+    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
+        $results = parent::getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug);
+    }   
 }

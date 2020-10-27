@@ -2339,6 +2339,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$router.push({
         name: 'Order',
         params: {
+          order_type_id: order.order_type_id,
           order_id: order.id
         }
       });
@@ -2485,6 +2486,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // @ is an alias to /src
 
 
@@ -2494,6 +2523,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: "app-order",
   data: function data() {
     return {
+      order_type_id: 0,
       order_id: 0,
       order: null,
       articles: [],
@@ -2516,8 +2546,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   mounted: function mounted() {
+    this.order_type_id = this.$route.params.order_type_id;
     this.order_id = this.$route.params.order_id;
-    console.log('route.params.order_id  ' + this.order_id);
+    console.log('route.params.order_type_id  ' + this.order_type_id + ' route.params.order_id  ' + this.order_id);
     console.log('getStoreOrder');
     console.log(this.getStoreOrder);
 
@@ -2570,6 +2601,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.isRunOrder = true;
       var url = "/admin/api/orders/get";
       var params = {
+        order_type_id: this.order_type_id,
         order_id: this.order_id
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(url, params).then(function (response) {
@@ -2590,6 +2622,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       // this.isRunArticles = true;
       var url = "/admin/api/orders/getArticlesOrdersByOrderId";
       var params = {
+        order_type_id: this.order_type_id,
         order_id: this.order_id,
         page: this.page,
         q: this.q
@@ -53156,7 +53189,7 @@ var render = function() {
                                         [
                                           _vm._v(
                                             "type " +
-                                              _vm._s(order.order_type_id)
+                                              _vm._s(order.order_type.name)
                                           )
                                         ]
                                       )
@@ -53223,6 +53256,15 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c(
+      "p",
+      [
+        _c("router-link", { attrs: { to: "/" } }, [
+          _vm._v("Torna alla consegne")
+        ])
+      ],
+      1
+    ),
     _vm._v("\r\n\r\n  page: " + _vm._s(_vm.page) + "\r\n\r\n\t"),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12 col-xs-12 col-md-12" }, [
@@ -53298,6 +53340,73 @@ var render = function() {
                         )
                       ])
                     ]),
+                    _vm._v(" "),
+                    _vm.order.des_orders_organization != null
+                      ? _c("p", { staticClass: "card-text" }, [
+                          _vm._v(
+                            "\r\n                    DES " +
+                              _vm._s(
+                                _vm.order.des_orders_organization.de.name
+                              ) +
+                              "\r\n                    terminerà  " +
+                              _vm._s(
+                                _vm._f("formatDate")(
+                                  _vm.order.des_orders_organization
+                                    .data_fine_max
+                                )
+                              ) +
+                              "\r\n                      "
+                          ),
+                          _c(
+                            "ul",
+                            _vm._l(
+                              _vm.order.all_des_orders_organizations,
+                              function(all_des_orders_organization, index) {
+                                return _c("li", [
+                                  _c(
+                                    "a",
+                                    {
+                                      attrs: {
+                                        target: "_blank",
+                                        href:
+                                          all_des_orders_organization
+                                            .organization.img1.www,
+                                        title: "Vai al sito del GAS"
+                                      }
+                                    },
+                                    [
+                                      all_des_orders_organization.organization
+                                        .img1 != ""
+                                        ? _c("img", {
+                                            staticClass: "img-supplier",
+                                            attrs: {
+                                              src:
+                                                "https://www.portalgas.it/images/organizations/contents/" +
+                                                all_des_orders_organization
+                                                  .organization.img1,
+                                              alt:
+                                                all_des_orders_organization
+                                                  .organization.name
+                                            }
+                                          })
+                                        : _vm._e(),
+                                      _vm._v(
+                                        "\r\n\r\n                            " +
+                                          _vm._s(
+                                            all_des_orders_organization
+                                              .organization.name
+                                          ) +
+                                          "                     \r\n                          "
+                                      )
+                                    ]
+                                  )
+                                ])
+                              }
+                            ),
+                            0
+                          )
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("p", { staticClass: "card-text" }, [
                       _vm.order.order_state_code.code == "OPEN-NEXT"
@@ -70960,14 +71069,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!*******************************************!*\
   !*** ./resources/js/components/Order.vue ***!
   \*******************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Order_vue_vue_type_template_id_8a00ae1a_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Order.vue?vue&type=template&id=8a00ae1a&scoped=true& */ "./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a&scoped=true&");
 /* harmony import */ var _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Order.vue?vue&type=script&lang=js& */ "./resources/js/components/Order.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _Order_vue_vue_type_style_index_0_id_8a00ae1a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css& */ "./resources/js/components/Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css&");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _Order_vue_vue_type_style_index_0_id_8a00ae1a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css& */ "./resources/js/components/Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -70999,7 +71109,7 @@ component.options.__file = "resources/js/components/Order.vue"
 /*!********************************************************************!*\
   !*** ./resources/js/components/Order.vue?vue&type=script&lang=js& ***!
   \********************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -71606,7 +71716,7 @@ var routes = [{
   name: "Home",
   component: _views_Home_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
-  path: "/order/:order_id",
+  path: "/order/:order_type_id/:order_id",
   name: "Order",
   component: _components_Order__WEBPACK_IMPORTED_MODULE_4__["default"]
 }, {

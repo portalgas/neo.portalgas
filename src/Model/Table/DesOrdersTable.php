@@ -6,25 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * DesOrders Model
- *
- * @property \App\Model\Table\DesTable&\Cake\ORM\Association\BelongsTo $Des
- * @property \App\Model\Table\DesSuppliersTable&\Cake\ORM\Association\BelongsTo $DesSuppliers
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
- *
- * @method \App\Model\Entity\DesOrder get($primaryKey, $options = [])
- * @method \App\Model\Entity\DesOrder newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\DesOrder[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\DesOrder|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\DesOrder saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\DesOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\DesOrder[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\DesOrder findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class DesOrdersTable extends Table
 {
     /**
@@ -138,7 +119,7 @@ class DesOrdersTable extends Table
         $rules->add($rules->existsIn(['des_id'], 'Des'));
         $rules->add($rules->existsIn(['des_supplier_id'], 'DesSuppliers'));
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
 
         return $rules;
     }

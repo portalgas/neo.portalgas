@@ -25,6 +25,23 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
             'foreignKey' => 'des_order_id',
             'joinType' => 'INNER',
         ]);
+        /*
+         * ordine DES del proprio GAS
+         */
+        $this->belongsTo('DesOrdersOrganizations', [
+            'foreignKey' => ['id'],
+            'bindingKey' => ['order_id'],
+            'joinType' => 'INNER',
+        ]);
+        /*
+         * ordini DES di tutti i GAS
+         */        
+        $this->hasMany('AllDesOrdersOrganizations', [
+            'className' => 'DesOrdersOrganizations',
+            'foreignKey' => ['des_order_id'],
+            'bindingKey' => ['des_order_id'],
+            'joinType' => 'INNER',
+        ]);        
     }
 
     /**
@@ -55,7 +72,34 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
 
     }
 
+    /*
+     * implement
+     */   
+    public function getById($user, $organization_id, $order_id, $debug=false) {
 
+        if (empty($order_id)) {
+            return null;
+        }
+
+        $results = $this->find()  
+                        ->where([
+                            $this->alias().'.organization_id' => $organization_id,
+                            $this->alias().'.id' => $order_id
+                        ])
+                        ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
+                                    'SuppliersOrganizations' => ['Suppliers'],
+                                    'DesOrdersOrganizations' => ['Des', 'DesOrders'], 
+                                    'AllDesOrdersOrganizations' => ['Organizations'],
+                                  /*
+                                   * con Orders.owner_articles => chi gestisce il listino
+                                   */
+                                  'OwnerOrganizations', 'OwnerSupplierOrganizations'
+                                  ])
+                        ->first();        
+        // debug($results);
+        return $results; 
+    }
+    
     /*
      * implement
      */      

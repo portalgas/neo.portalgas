@@ -33,7 +33,7 @@ class MailSendsController extends AppController
 
     public function index()
     {
-        $this->MailSends->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->MailSends->Organizations->removeBehavior('OrganizationsParams');
         $this->paginate = [
             'contain' => ['Organizations'],
             'order' => ['data' => 'desc', 'cron' => 'asc']

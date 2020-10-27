@@ -27,25 +27,22 @@ class OrdersController extends ApiAppController
      */
     public function get() {
 
+        $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id;
 
         $order_id = $this->request->getData('order_id');
+        $order_type_id = $this->request->getData('order_type_id');
         
         $ordersTable = TableRegistry::get('Orders');
+        $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
-        $where = ['Orders.organization_id' => $organization_id,
-                  'Orders.id' => $order_id];
+        $ordersTable->addBehavior('Orders');
+        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
 
-        $results = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
-                                    'SuppliersOrganizations' => ['Suppliers']])
-                                ->where($where)
-                                ->first();
-
-        $results = json_encode($results);
+        $results = json_encode($orderResults);
         $this->response->withType('application/json');
         $body = $this->response->getBody();
         $body->write($results);        
@@ -60,6 +57,7 @@ class OrdersController extends ApiAppController
      */
     public function gets() {
 
+        $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
@@ -95,6 +93,7 @@ class OrdersController extends ApiAppController
      */
     public function getArticlesOrdersByOrderId() {
 
+        $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
@@ -105,18 +104,17 @@ class OrdersController extends ApiAppController
         $results = [];
    
         $order_id = $this->request->getData('order_id');
+        $order_type_id = $this->request->getData('order_type_id');
         $page = $this->request->getData('page');
-        $q = $this->request->getData('q');
+        $q = trim($this->request->getData('q'));
         if(empty($page)) $page = 1;
         // debug($order_id);
 
         $ordersTable = TableRegistry::get('Orders');
-        $where = ['Orders.organization_id' => $organization_id,
-                  'Orders.id' => $order_id];
-        $orderResults = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes'])
-                                ->where($where)
-                                ->first();
+        $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
+
+        $ordersTable->addBehavior('Orders');
+        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
 
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
@@ -125,11 +123,19 @@ class OrdersController extends ApiAppController
 
             $where['order_id'] = $order_id;
             if(!empty($q)) {
-                $where['Articles'] = ['or' => [
-                                       // $articlesOrdersTable->alias().'.name LIKE' => '%'.$q.'%',
-                                        'Articles.name LIKE' => '%'.$q.'%',
-                                        'Articles.nota LIKE' => '%'.$q.'%']
-                                    ];
+                $where_q = [];
+                if(strpos($q, ' ')!==false) {
+                    $qs = explode(' ', $q);
+                    foreach($qs as  $numResult => $q) {
+                        $where_q[$numResult] = ['or' => ['Articles.name LIKE' => '%'.$q.'%',
+                                                         'Articles.nota LIKE' => '%'.$q.'%']];
+                    }
+                }
+                else {
+                    $$where_q = ['or' => ['Articles.name LIKE' => '%'.$q.'%',
+                                          'Articles.nota LIKE' => '%'.$q.'%']];
+                }
+                $where['Articles'] = $where_q;
             }
 
             $options = [];
@@ -158,6 +164,7 @@ class OrdersController extends ApiAppController
      */
     public function getByDelivery() {
 
+        $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
@@ -192,7 +199,6 @@ class OrdersController extends ApiAppController
     public function managementCart() {
         
         $debug = false;
-
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }

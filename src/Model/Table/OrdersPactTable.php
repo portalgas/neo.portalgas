@@ -111,7 +111,13 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
         return $results;   
     } 
 
-
+    /*
+     * implement
+     */   
+    public function getById($user, $organization_id, $order_id, $debug=false) {
+       return parent::getById($user, $organization_id, $order_id, $debug);
+    }
+    
     /*
      * implement
      */      

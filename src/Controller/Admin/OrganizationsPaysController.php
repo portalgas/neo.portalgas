@@ -52,7 +52,7 @@ class OrganizationsPaysController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
-        // $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         $organizations = $this->OrganizationsPays->Organizations->find()
                     ->where(['Organizations.stato' => 'Y', 'Organizations.type' => 'GAS'])
                     ->order(['Organizations.name'])
@@ -172,7 +172,7 @@ class OrganizationsPaysController extends AppController
         // debug($where);
         $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_type_pay', 'search_organization_id'));
         
-        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
         $this->paginate = [
             'conditions' => [$where],
@@ -230,7 +230,7 @@ class OrganizationsPaysController extends AppController
      */
     public function view($id = null)
     {
-        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => ['Organizations'],
@@ -247,7 +247,7 @@ class OrganizationsPaysController extends AppController
      */
     public function add()
     {
-        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         
         $organizationsPay = $this->OrganizationsPays->newEntity();
         if ($this->request->is('post')) {
@@ -282,7 +282,7 @@ class OrganizationsPaysController extends AppController
      */
     public function edit($id = null)
     {
-        $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
         
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => []

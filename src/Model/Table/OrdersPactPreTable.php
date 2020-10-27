@@ -62,6 +62,13 @@ class OrdersPactPreTable extends OrdersPactTable implements OrderTableInterface
 
     /*
      * implement
+     */   
+    public function getById($user, $organization_id, $order_id, $debug=false) {
+       return parent::getById($user, $organization_id, $order_id, $debug);
+    }
+    
+    /*
+     * implement
      */      
     public function gets($user, $organization_id, $where=[], $debug=false) {
         

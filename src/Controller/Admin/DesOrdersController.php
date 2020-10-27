@@ -30,11 +30,6 @@ class DesOrdersController extends AppController
         }
     }
         
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null
-     */
     public function index()
     {
         $this->paginate = [

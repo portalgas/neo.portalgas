@@ -355,6 +355,10 @@ class OrdersTable extends Table
         return TableRegistry::get($table_registry);
     } 
 
+    /*
+     * implement
+     * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)
+     */   
     public function getById($user, $organization_id, $order_id, $debug=false) {
 
         if (empty($order_id)) {
@@ -366,7 +370,7 @@ class OrdersTable extends Table
                             $this->alias().'.organization_id' => $organization_id,
                             $this->alias().'.id' => $order_id
                         ])
-                        ->contain(['OrderStateCodes', 'Deliveries', 
+                        ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
                                     'SuppliersOrganizations' => ['Suppliers'],
                                   /*
                                    * con Orders.owner_articles => chi gestisce il listino

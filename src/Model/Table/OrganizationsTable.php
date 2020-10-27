@@ -25,7 +25,7 @@ class OrganizationsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-		$this->addBehavior('OrganizationsParams');
+		// lo associo quando serve $this->addBehavior('OrganizationsParams');
 		
         $this->belongsTo('Templates', [
             'foreignKey' => 'template_id',

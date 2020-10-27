@@ -2,6 +2,10 @@
 
 <div>
 
+  <p>
+    <router-link to="/">Torna alla consegne</router-link>
+  </p>
+
   page: {{ page }}
 
 	<div class="row">
@@ -34,6 +38,29 @@
                       </small>                        
                   </h5>
 
+                  <!--            -->
+                  <!--    D E S   -->
+                  <!--            -->
+                  <p v-if="order.des_orders_organization!=null" class="card-text">
+                    DES {{ order.des_orders_organization.de.name }}
+                    terminerà  {{ order.des_orders_organization.data_fine_max | formatDate }}
+                      <ul>
+                        <li v-for="(all_des_orders_organization, index) in order.all_des_orders_organizations">
+                          <a target="_blank" v-bind:href="all_des_orders_organization.organization.img1.www" title="Vai al sito del GAS">
+                            <img v-if="all_des_orders_organization.organization.img1 != ''"
+                              class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+all_des_orders_organization.organization.img1"
+                              :alt="all_des_orders_organization.organization.name">
+
+                            {{ all_des_orders_organization.organization.name }}                     
+                          </a>                          
+                        </li>
+                      </ul>
+                  </p>
+                  <!--            -->
+                  <!--    D E S   -->
+                  <!--            -->
+
+
                   <p class="card-text">
                       <span v-if="order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
                       <span v-if="order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
@@ -49,6 +76,7 @@
                     <span v-if="order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
                     <span v-if="order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>              
                   </p>
+
                   <p v-if="order.suppliers_organization.frequenza!=''" class="card-text">
                       <small class="text-muted"><strong>Frequenza</strong> {{ order.suppliers_organization.frequenza }}</small>
                   </p>
@@ -104,6 +132,7 @@ export default {
   name: "app-order",
   data() {
     return {
+      order_type_id: 0,
       order_id: 0,
       order: null,
       articles: [],
@@ -126,8 +155,9 @@ export default {
     }
   },  
   mounted() {
+    this.order_type_id = this.$route.params.order_type_id;
   	this.order_id = this.$route.params.order_id;
-    console.log('route.params.order_id  '+this.order_id);
+    console.log('route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
     console.log('getStoreOrder');
     console.log(this.getStoreOrder);
     
@@ -146,7 +176,7 @@ export default {
   methods: {
     onSearch: function(q) {
       this.articles = [];
-      this.page=1;
+      this.page = 1;
       this.q = q;
       this.scroll();
     },      
@@ -181,6 +211,7 @@ export default {
 
       let url = "/admin/api/orders/get";
       let params = {
+        order_type_id: this.order_type_id,
         order_id: this.order_id
       };
       axios
@@ -205,6 +236,7 @@ export default {
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
       let params = {
+        order_type_id: this.order_type_id,
         order_id: this.order_id,
         page: this.page,
         q: this.q

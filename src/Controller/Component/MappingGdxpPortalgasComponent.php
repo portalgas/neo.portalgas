@@ -103,7 +103,7 @@ class MappingGdxpPortalgasComponent extends Component {
 
 		// ctrl se gia' non esiste
 		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-		$suppliersOrganizationsTable->organizations->removeBehavior('OrganizationsParams');
+		// gia' non associato $suppliersOrganizationsTable->organizations->removeBehavior('OrganizationsParams');
 
 		$where = ['SuppliersOrganizations.supplier_id' => $supplier->id,
 				  'SuppliersOrganizations.owner_articles' => 'REFERENT'];

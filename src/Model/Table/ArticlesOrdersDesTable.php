@@ -24,7 +24,17 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
         return $validator;
     }    
 
-    public function getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug) {
-        
+    /*
+     * implement
+     */
+    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
+        return parent::getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug);
     }
+
+    /*
+     * implement
+     */
+    public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {    
+       return parent::gets($user, $organization_id, $orderResults, $where, $options, $debug);
+    }   
 }

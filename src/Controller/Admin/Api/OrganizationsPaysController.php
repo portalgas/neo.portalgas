@@ -36,7 +36,7 @@ class OrganizationsPaysController extends ApiAppController
 
         $organizationsPaysTable = TableRegistry::get('OrganizationsPays');
 
-        $organizationsPaysTable->Organizations->removeBehavior('OrganizationsParams');
+        // gia' non associato $organizationsPaysTable->Organizations->removeBehavior('OrganizationsParams');
         $organizations_pay = $organizationsPaysTable->get($organization_pay_id, ['contain' => ['Organizations']]);
         // debug($organizations_pay);
 
@@ -58,6 +58,7 @@ class OrganizationsPaysController extends ApiAppController
             if($debug) debug($data);
            
             $organizationsTable = TableRegistry::get('Organizations');
+            $organizationsTable->addBehavior('OrganizationsParams');
             $organization = $organizationsTable->get($organizations_pay->organization_id);
 
             $organization = $organizationsTable->patchEntity($organization, $data);

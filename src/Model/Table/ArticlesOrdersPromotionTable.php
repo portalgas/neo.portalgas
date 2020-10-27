@@ -25,6 +25,8 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
     }
    
     /*
+     * implement
+     *
      * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id

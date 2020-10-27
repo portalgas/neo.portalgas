@@ -354,10 +354,10 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         $results = '';
 
         if ($debug) {
-            echo '<br />prezzo ' . $price;
-            echo '<br />qta ' . $qty;
-            echo '<br />um ' . $um;
-            echo '<br />um_rif ' . $um_rif;
+            debug('prezzo ' . $price);
+            debug('qta ' . $qty);
+            debug('um ' . $um);
+            debug('um_rif ' . $um_rif);
         }
 
         if (empty($price) || empty($qty) || $qty == 0)
@@ -365,7 +365,7 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         else {
             $price_um_rif = ($price / $qty);
             if ($debug)
-                echo '<br />prezzo_um_rif (prezzo/qta) ' . $price_um_rif;
+                debug('prezzo_um_rif (prezzo/qta) ' . $price_um_rif);
 
             if ($um == 'GR' && $um_rif == 'HG')
                 $price_um_rif = ($price_um_rif * 100);
@@ -403,8 +403,10 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
             if ($um == 'LT' && $um_rif == 'DL')
                 $price_um_rif = ($price_um_rif / 100);
 
+            $price_um_rif = number_format($price_um_rif, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
+
             if ($debug)
-                echo '<br />prezzo_um_rif (prezzo/qta) ' . $price_um_rif.'<br />';            
+                debug('prezzo_um_rif (prezzo/qta) ' . $price_um_rif);            
         }
 
         if (!empty($um_rif)) {
