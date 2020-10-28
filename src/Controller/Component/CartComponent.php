@@ -229,7 +229,7 @@ class CartComponent extends Component {
         }  
 
         if($esito && $action!='INSERT') {
-            if($articlesOrders->stato=='qtyMAXORDER' && ($qty_new > $qty)) {
+            if($articlesOrders->stato=='QTAMAXORDER' && ($qty_new > $qty)) {
                 $msg = sprintf(__('cart_msg_qtamax_order_stop'), $articlesOrders->qty_massima_order);
                 $esito = false;
             }
@@ -264,7 +264,7 @@ class CartComponent extends Component {
                 
                 if($qty_new > $qty) { // ctrl che l'utente non abbia diminuito la qty
 
-                    // qty_massima_order superata: ricalcolo la qty e articlesOrder.stato = qtyMAXORDER
+                    // qty_massima_order superata: ricalcolo la qty e articlesOrder.stato = QTAMAXORDER
                     if(((int)$articlesOrders->qty_cart - $qty + $qty_new) > $articlesOrders->qty_massima_order) {
                     
                         $qty_label = ((int)$articlesOrders->qty_massima_order - (int)$articlesOrders->qty_cart + $qty); // la ricalcolo
@@ -272,9 +272,9 @@ class CartComponent extends Component {
                         $msg = sprintf(__('cart_msg_qtamax_order'), $articlesOrders->qty_massima_order, $qty_label);
                         $esito = false;
                     }
-                    else  // qty massima raggiunta articlesOrder.stato = qtyMAXORDER
+                    else  // qty massima raggiunta articlesOrder.stato = QTAMAXORDER
                     if(((int)$articlesOrders->qty_cart - (int)$qty + $qty_new) == (int)$articlesOrders->qty_massima_order) {
-                        // qty massima raggiunta: articlesOrder.stato = qtyMAXORDER
+                        // qty massima raggiunta: articlesOrder.stato = QTAMAXORDER
                     }
 
                 }

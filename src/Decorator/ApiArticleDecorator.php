@@ -134,35 +134,6 @@ class ApiArticleDecorator  extends AppDecorator {
             $results['qty_max'] = 0;
         else
             $results['qty_max'] = $row->qta_massima;
-        /*
-        if($results['qty_max']>0)
-            $qty_max = $results['qty_max'];
-        else {
-            if($article_detail->has('stores') && !empty($article_detail->stores)) {
-                $store = $article_detail->stores[0]->qty;
-                $qty_max = $article_detail->stores[0]->qty;
-                if($qty_max==0)
-                    $sold_out = true;
-            } 
-        }
-        $results['qty_max'] = $qty_max;
-        
-        $store = '';
-        if($article_detail->has('stores') && !empty($article_detail->stores)) {
-            $store = $article_detail->stores[0]->qty;
-        }
-
-        if($article_detail->has('discounts') && !empty($article_detail->discounts)) {
-            $price_pre_discount = $article_detail->price;
-            $price = $article_detail->discounts[0]->price;
-        }
-        else 
-            $price = $article_detail->price;
-        
-        $results['sold_out'] = $sold_out;
-        $results['price_pre_discount'] = $price_pre_discount;
-        $results['price'] = $price;     
-        */
 
         $results['store'] = $store; // non gestito
         $results['cart'] = $row->cart; 
@@ -170,13 +141,14 @@ class ApiArticleDecorator  extends AppDecorator {
         /*
          * promotions
          */
-        if(isset($row->promotion) && !empty($row->promotion)) {
-            $results['promotion'] = $row->promotion;
-            /*
-                $promotions[$numResults]['qty'] = $prodGasPromotionsOrganizationsResult->qta;
-                $promotions[$numResults]['price_unit'] = $prodGasPromotionsOrganizationsResult->prezzo_unita;
-                $promotions[$numResults]['import'] = $prodGasPromotionsOrganizationsResult->importo;
-                */            
+        if(isset($row->prod_gas_articles_promotion) && !empty($row->prod_gas_articles_promotion)) {
+            $results['promotion'] = $row->prod_gas_articles_promotion;
+
+            // sono gia' valorizzati quando si associano gli articoli all'ordine
+            $results['qty_minima_order'] = $row->prod_gas_articles_promotion->qta;
+            $results['qty_massima_order'] = $row->prod_gas_articles_promotion->qta;
+
+            $results['price_pre_discount'] = $row->article->prezzo;
         }
 
         /*

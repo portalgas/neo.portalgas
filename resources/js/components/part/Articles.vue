@@ -12,13 +12,13 @@
             <p class="card-text">
                 
               <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-              </div><span><a class="badge badge-primary" @click="clickshowOrHiddenModal()">..maggior dettaglio</a></span>
+              </div><span><a class="badge badge-primary" @click="clickShowOrHiddenModal()">..maggior dettaglio</a></span>
 
-              <del v-if="article.price_pre_discount != null"
-                  >{{ article.price_pre_discount | currency }} &euro;</del
-                >
               <div>
                 <strong>Prezzo</strong> {{ article.price | currency }} &euro;
+                  <del v-if="article.price_pre_discount != null"
+                      >{{ article.price_pre_discount | currency }} &euro;</del
+                    >                
               </div>
               <div>
                 <strong>Conf.</strong> {{ article.conf }}
@@ -40,7 +40,7 @@
               </div>
 
                <div v-if="article.descri==''">
-                  <a class="card-link" @click="clickshowOrHiddenModal()">..maggior dettaglio</a>
+                  <a class="card-link" @click="clickShowOrHiddenModal()">..maggior dettaglio</a>
                 </div>              
             </p>
         </div>
@@ -75,7 +75,7 @@ export default {
     clickShowModal () {
       this.showModal(true);
     }, 
-    clickshowOrHiddenModal () {
+    clickShowOrHiddenModal () {
 
       var modalContent = {
         title: this.article.name,

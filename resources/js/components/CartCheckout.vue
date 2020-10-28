@@ -114,7 +114,7 @@ export default {
         carts: this.getArticlesInCart
       };
       axios
-        .post("/admin/api/orders-gas/managementCart", params)
+        .post("/admin/api/carts/managementCart", params)
         .then(response => {
           this.addMessage({
             messageClass: "success",

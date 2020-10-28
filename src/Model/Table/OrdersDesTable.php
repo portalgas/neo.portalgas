@@ -29,8 +29,8 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
          * ordine DES del proprio GAS
          */
         $this->belongsTo('DesOrdersOrganizations', [
-            'foreignKey' => ['id'],
-            'bindingKey' => ['order_id'],
+            'foreignKey' => ['id'],        // fields Orders
+            'bindingKey' => ['order_id'],  // fields DesOrdersOrganizations
             'joinType' => 'INNER',
         ]);
         /*
@@ -38,8 +38,8 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
          */        
         $this->hasMany('AllDesOrdersOrganizations', [
             'className' => 'DesOrdersOrganizations',
-            'foreignKey' => ['des_order_id'],
-            'bindingKey' => ['des_order_id'],
+            'foreignKey' => ['des_order_id'],   // fields Orders
+            'bindingKey' => ['des_order_id'],   // fields DesOrdersOrganizations
             'joinType' => 'INNER',
         ]);        
     }

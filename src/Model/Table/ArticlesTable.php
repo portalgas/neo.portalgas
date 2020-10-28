@@ -37,18 +37,7 @@ class ArticlesTable extends Table
         $this->belongsTo('CategoriesArticles', [
             'foreignKey' => 'category_article_id',
             'joinType' => 'INNER'
-        ]);
-        $this->hasMany('ProdGasArticlesPromotions', [
-             'className' => 'ProdGasArticlesPromotions',
-             'foreignKey' => ['organization_id', 'article_id']
-         ]); 
-         /*       
-        $this->belongsTo('ProdGasArticlesPromotions', [
-            'foreignKey' => ['organization_id', 'article_id'],
-            'joinType' => 'INNER'
-        ]);*/
-
-        
+        ]);        
     }
 
     /**

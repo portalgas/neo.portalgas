@@ -102,7 +102,27 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
      * implement
      */   
     public function getById($user, $organization_id, $order_id, $debug=false) {
-       return parent::getById($user, $organization_id, $order_id, $debug);
+
+        if (empty($order_id)) {
+            return null;
+        }
+
+        $results = $this->find()  
+                        ->where([
+                            $this->alias().'.organization_id' => $organization_id,
+                            $this->alias().'.id' => $order_id
+                        ])
+                        ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
+                                    'SuppliersOrganizations' => ['Suppliers'],
+                                    'ProdGasPromotions',
+                                  /*
+                                   * con Orders.owner_articles => chi gestisce il listino
+                                   */
+                                  'OwnerOrganizations', 'OwnerSupplierOrganizations'
+                                  ])
+                        ->first();        
+        // debug($results);
+        return $results; 
     }
     
     /*

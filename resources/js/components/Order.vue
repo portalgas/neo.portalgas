@@ -28,10 +28,10 @@
                <div class="card-body">
                   <h5 class="card-title">
                       <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="Vai al sito del produttore">
-                        {{ order.suppliers_organization.name }} {{ order.order_type_id }}                      
+                        {{ order.suppliers_organization.name }} {{ order.order_type.name }}                      
                       </a>
                       <span v-if="order.suppliers_organization.supplier.www==''">
-                        {{ order.suppliers_organization.name }} {{ order.order_type_id }}                      
+                        {{ order.suppliers_organization.name }} {{ order.order_type.name }}                      
                       </span>
                       <small class="card-text">
                         {{ order.suppliers_organization.supplier.descrizione }}
@@ -59,6 +59,17 @@
                   <!--            -->
                   <!--    D E S   -->
                   <!--            -->
+
+                  <!--                        -->
+                  <!--    P R O M O T I O N   -->
+                  <!--                        -->
+                  <p v-if="order.prod_gas_promotion!=null" class="card-text">
+                    PROMOTION {{ order.prod_gas_promotion.name }}
+                    terminerà  {{ order.prod_gas_promotion.data_fine | formatDate }}
+                  </p>
+                  <!--                        -->
+                  <!--    P R O M O T I O N   -->
+                  <!--                        -->
 
 
                   <p class="card-text">

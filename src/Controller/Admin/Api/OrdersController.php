@@ -132,7 +132,7 @@ class OrdersController extends ApiAppController
                     }
                 }
                 else {
-                    $$where_q = ['or' => ['Articles.name LIKE' => '%'.$q.'%',
+                    $where_q = ['or' => ['Articles.name LIKE' => '%'.$q.'%',
                                           'Articles.nota LIKE' => '%'.$q.'%']];
                 }
                 $where['Articles'] = $where_q;
@@ -191,30 +191,6 @@ class OrdersController extends ApiAppController
         $body = $this->response->getBody();
         $body->write($results);        
         $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
-    } 
-
-    public function managementCart() {
-        
-        $debug = false;
-        if (!$this->Authentication->getResult()->isValid()) {
-            return $this->_respondWithUnauthorized();
-        }
-
-        $user = $this->Authentication->getIdentity();
-
-        // debug($article);
-
-        $results = [];
-   
-        $article = $this->request->getData('article');
-        $results = $this->Cart->managementCart($user, $user->organization->id, $article, $debug);
-        
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
         // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
         
         return $this->response; 

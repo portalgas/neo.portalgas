@@ -21,6 +21,29 @@ class CartsController extends ApiAppController
         parent::beforeFilter($event);
     }
   
+    public function managementCart() {
+        
+        $debug = false;
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $user = $this->Authentication->getIdentity();
+
+        $results = [];
+   
+        $article = $this->request->getData('article');
+        // debug($article);
+        $results = $this->Cart->managementCart($user, $user->organization->id, $article, $debug);
+        
+        $results = json_encode($results);
+        $this->response->type('json');
+        $this->response->body($results);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    } 
+
     /* 
      * estrae solo gli users che hanno effettuato acquisti in base alla consegna
      */
@@ -56,7 +79,6 @@ class CartsController extends ApiAppController
         
         return $this->response; 
     } 
-
 
     /* 
      * estrae solo gli users + cassa che hanno effettuato acquisti in base alla consegna

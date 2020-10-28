@@ -103,7 +103,7 @@ export default {
       console.log(params);
 
       axios
-        .post("/admin/api/orders/managementCart", params)
+        .post("/admin/api/carts/managementCart", params)
         .then(response => {
 
           this.isRun = false;

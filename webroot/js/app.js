@@ -2064,7 +2064,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var params = {
         carts: this.getArticlesInCart
       };
-      axios.post("/admin/api/orders-gas/managementCart", params).then(function (response) {
+      axios.post("/admin/api/carts/managementCart", params).then(function (response) {
         _this2.addMessage({
           messageClass: "success",
           message: "Your shopping cart is saved successfully"
@@ -2514,6 +2514,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // @ is an alias to /src
 
 
@@ -2766,7 +2777,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     clickShowModal: function clickShowModal() {
       this.showModal(true);
     },
-    clickshowOrHiddenModal: function clickshowOrHiddenModal() {
+    clickShowOrHiddenModal: function clickShowOrHiddenModal() {
       var modalContent = {
         title: this.article.name,
         body: this.article.descri + "\r\n" + this.article.ingredients,
@@ -2916,7 +2927,7 @@ __webpack_require__.r(__webpack_exports__);
         article: this.article
       };
       console.log(params);
-      axios.post("/admin/api/orders/managementCart", params).then(function (response) {
+      axios.post("/admin/api/carts/managementCart", params).then(function (response) {
         _this2.isRun = false;
         var messageClass = "";
         var msg = "";
@@ -53310,7 +53321,7 @@ var render = function() {
                                     _vm.order.suppliers_organization.name
                                   ) +
                                   " " +
-                                  _vm._s(_vm.order.order_type_id) +
+                                  _vm._s(_vm.order.order_type.name) +
                                   "                      \r\n                      "
                               )
                             ]
@@ -53323,7 +53334,7 @@ var render = function() {
                               "\r\n                        " +
                                 _vm._s(_vm.order.suppliers_organization.name) +
                                 " " +
-                                _vm._s(_vm.order.order_type_id) +
+                                _vm._s(_vm.order.order_type.name) +
                                 "                      \r\n                      "
                             )
                           ])
@@ -53404,6 +53415,22 @@ var render = function() {
                               }
                             ),
                             0
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.order.prod_gas_promotion != null
+                      ? _c("p", { staticClass: "card-text" }, [
+                          _vm._v(
+                            "\r\n                    PROMOTION " +
+                              _vm._s(_vm.order.prod_gas_promotion.name) +
+                              "\r\n                    terminerà  " +
+                              _vm._s(
+                                _vm._f("formatDate")(
+                                  _vm.order.prod_gas_promotion.data_fine
+                                )
+                              ) +
+                              "\r\n                  "
                           )
                         ])
                       : _vm._e(),
@@ -53669,7 +53696,7 @@ var render = function() {
             staticClass: "badge badge-primary",
             on: {
               click: function($event) {
-                return _vm.clickshowOrHiddenModal()
+                return _vm.clickShowOrHiddenModal()
               }
             }
           },
@@ -53677,21 +53704,21 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _vm.article.price_pre_discount != null
-        ? _c("del", [
-            _vm._v(
-              _vm._s(_vm._f("currency")(_vm.article.price_pre_discount)) + " €"
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
       _c("div", [
         _c("strong", [_vm._v("Prezzo")]),
         _vm._v(
           " " +
             _vm._s(_vm._f("currency")(_vm.article.price)) +
-            " €\n            "
-        )
+            " €\n                "
+        ),
+        _vm.article.price_pre_discount != null
+          ? _c("del", [
+              _vm._v(
+                _vm._s(_vm._f("currency")(_vm.article.price_pre_discount)) +
+                  " €"
+              )
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("div", [
@@ -53750,7 +53777,7 @@ var render = function() {
                 staticClass: "card-link",
                 on: {
                   click: function($event) {
-                    return _vm.clickshowOrHiddenModal()
+                    return _vm.clickShowOrHiddenModal()
                   }
                 }
               },
@@ -71069,15 +71096,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*******************************************!*\
   !*** ./resources/js/components/Order.vue ***!
   \*******************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Order_vue_vue_type_template_id_8a00ae1a_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Order.vue?vue&type=template&id=8a00ae1a&scoped=true& */ "./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a&scoped=true&");
 /* harmony import */ var _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Order.vue?vue&type=script&lang=js& */ "./resources/js/components/Order.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _Order_vue_vue_type_style_index_0_id_8a00ae1a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css& */ "./resources/js/components/Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _Order_vue_vue_type_style_index_0_id_8a00ae1a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css& */ "./resources/js/components/Order.vue?vue&type=style&index=0&id=8a00ae1a&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -71109,7 +71135,7 @@ component.options.__file = "resources/js/components/Order.vue"
 /*!********************************************************************!*\
   !*** ./resources/js/components/Order.vue?vue&type=script&lang=js& ***!
   \********************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

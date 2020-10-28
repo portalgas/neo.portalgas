@@ -15,6 +15,13 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
         parent::initialize($config);
 
         $this->entityClass('App\Model\Entity\ArticlesOrder');
+
+        $this->belongsTo('ProdGasArticlesPromotions', [
+            'className' => 'ProdGasArticlesPromotions',
+            'foreignKey' => ['article_organization_id', 'article_id'], // fields ArticlesOrders
+            'bindingKey' => ['organization_id', 'article_id'],         // fields ProdGasArticlesPromotions
+            'joinType' => 'INNER',
+        ]);      
     }
 
     public function validationDefault(Validator $validator)
@@ -35,16 +42,18 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
 
         $order_id = $where['order_id'];
 
+        if(!isset($where['ArticlesOrders']))
+           $where['ArticlesOrders'] = [];
+
         $where_article_order = [];
         if(isset($where['ArticlesOrders']))
            $where_article_order = $where['ArticlesOrders'];
-        $where_article_order = array_merge([$this->alias().'.organization_id' => $organization_id,
+        $where['ArticlesOrders'] = array_merge([$this->alias().'.organization_id' => $organization_id,
                               $this->alias().'.order_id' => $order_id,
                               $this->alias().'.stato != ' => 'N'], 
-                              $where_article_order);                  
-        if($debug) debug($where_article_order);
+                              $where['ArticlesOrders']);
         
-        $order = [$this->alias().'.name'];
+        $this->_getOptions($options); // setta sort / limit / page
 
         /*
          * da Orders chi gestisce listino articoli
@@ -53,16 +62,22 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
          * owner_organization_id
          * owner_supplier_organization_id
          */
+        if(!isset($where['Articles']))
+           $where['Articles'] = [];
+        $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
+        // debug($where);
+
         $results = $this->find()
-                        ->contain([
-                            'Orders',
-                            'Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
-                        ->where($where_article_order)
-                        ->order($order)
-                        // ->limit(2)
+                        ->contain(['Articles' => ['conditions' => $where['Articles']], 
+                                   'ProdGasArticlesPromotions'])
+                        ->where($where['ArticlesOrders'])
+                        ->order($this->_sort)
+                        ->limit($this->_limit)
+                        ->page($this->_page)
                         ->all()
                         ->toArray();
-
+        // debug($results);
+                        
         /*
          * estraggo eventuali acquisti / promotions
          */ 
@@ -71,6 +86,8 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
             $cartsTable = TableRegistry::get('Carts');
             $prodGasArticlesPromotionsTable = TableRegistry::get('ProdGasArticlesPromotions');
             foreach($results as $numResult => $result) {
+
+                $results[$numResult]['order'] = $orderResults;
 
                 /*
                  * Carts
