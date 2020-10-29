@@ -93,6 +93,7 @@ $(document).ready(function() {
     });
 
     objScript = new Script(); 
+    objScript.ping('<?php echo Configure::read('pingAjaxUrl');?>', <?php echo Configure::read('pingTime');?>);
 
     var anchor = objScript.getUrlAnchor();
     if(anchor!='') {

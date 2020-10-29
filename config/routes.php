@@ -164,7 +164,14 @@ Router::prefix('admin', function (RouteBuilder $routes) {
     $routes->prefix('api', function(RouteBuilder $routes) {
         
         $routes->setExtensions(['json', 'xml']);
-		
+        
+        /* 
+         * ping per mantenere la session
+         */
+        $routes->scope('/pings', ['controller' => 'Pings'], function (RouteBuilder $routes) {
+                $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);     
+        });
+
         /* 
          * queue
          */
@@ -227,6 +234,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
         }); 
+        $routes->scope('/html-article-orders', ['controller' => 'HtmlArticleOrders'], function (RouteBuilder $routes) {
+            $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+        });
 
         $routes->fallbacks(DashedRoute::class);        
     }); 

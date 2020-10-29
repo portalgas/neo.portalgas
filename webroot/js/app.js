@@ -2642,8 +2642,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this3.isRunArticles = false;
         console.log('getsAjaxArticles');
         console.log(response.data); // console.log(response.data[0]);
-
-        console.log(response.data[0].ids);
+        // console.log(response.data[0].ids);
 
         if (typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
           var data = response.data;
@@ -2763,7 +2762,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "app-article",
-  props: ["article"],
+  props: ['article'],
   data: function data() {
     return {
       qty: 1
@@ -2778,13 +2777,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showModal(true);
     },
     clickShowOrHiddenModal: function clickShowOrHiddenModal() {
-      var modalContent = {
-        title: this.article.name,
-        body: this.article.descri + "\r\n" + this.article.ingredients,
-        footer: null
+      var _this = this;
+
+      var params = {
+        order_id: this.article.ids.order_id,
+        article_organization_id: this.article.ids.article_organization_id,
+        article_id: this.article.ids.article_id
       };
-      this.addModalContent(modalContent);
-      this.showOrHiddenModal();
+      var url = "/admin/api/html-article-orders/get";
+      axios.post(url, params).then(function (response) {
+        console.log(response.data);
+
+        if (typeof response.data !== "undefined") {
+          var modalContent = {
+            title: _this.article.name,
+            body: response.data,
+            footer: _this.article.descri + "\r\n" + _this.article.ingredients
+          };
+
+          _this.addModalContent(modalContent);
+
+          _this.showOrHiddenModal();
+        }
+      })["catch"](function (error) {
+        _this.isRunDeliveries = false;
+        console.error("Error: " + error);
+      });
     }
   }),
   computed: {
@@ -3111,7 +3129,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
 //
 //
 //
@@ -54036,13 +54053,10 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "modal-body" }, [
-                    _vm._v(
-                      "\n              " +
-                        _vm._s(_vm.modalContent.body) +
-                        "\n            "
-                    )
-                  ]),
+                  _c("div", {
+                    staticClass: "modal-body",
+                    domProps: { innerHTML: _vm._s(_vm.modalContent.body) }
+                  }),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-footer" }, [
                     _vm._v(

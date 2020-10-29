@@ -42,14 +42,35 @@ $organization = $this->Identity->get('organization');
 	
 	<?php echo $this->fetch('content');?>
     
+    <?php echo $this->element('fe/footer', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);?>
+    <?php echo $this->element('fe/include_js');?>
+    
     <script type="text/javascript">
     "use strict";
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
-    </script> 
+    var headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRF-Token": csrfToken
+    };
+    
+    $(document).ready(function() {
+        window.setInterval(callPing, <?php echo Configure::read('pingTime');?>);
+    });
 
-<?php echo $this->element('fe/footer', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);?>
-<?php echo $this->element('fe/include_js');?>
-                          
+    function callPing() {
+        var url = '<?php echo Configure::read('pingAjaxUrl');?>';
+        /* console.log("Script.callPing "+url);  */
+
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', url);
+        httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        httpRequest.setRequestHeader("Content-type", "application/json");
+        httpRequest.setRequestHeader('X-CSRF-Token', csrfToken);
+        httpRequest.send(null);
+   }   
+    </script>                           
 </main>
    </body>
 </html>

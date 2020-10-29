@@ -389,6 +389,9 @@ Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco@portalga
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');
 
+Configure::write('pingAjaxUrl', '/admin/api/pings');
+Configure::write('pingTime', 500000); // 1000 = 1 sec (0,14 h)
+
 /*
  * cron per creare sh dinamici
  * tot users 2100

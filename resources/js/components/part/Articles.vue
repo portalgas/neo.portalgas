@@ -60,7 +60,7 @@ import btnCartAdd from "../../components/part/BtnCartAdd.vue";
 
 export default {
   name: "app-article",
-  props: ["article"],
+  props: ['article'],
   data() {
     return {
       qty: 1
@@ -69,7 +69,8 @@ export default {
   components: {
     appBtnCartAdd: btnCartAdd
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
     clickShowModal () {
@@ -77,14 +78,33 @@ export default {
     }, 
     clickShowOrHiddenModal () {
 
-      var modalContent = {
-        title: this.article.name,
-        body: this.article.descri+"\r\n"+this.article.ingredients,
-        footer: null
-      }
+      let params = {
+        order_id: this.article.ids.order_id,
+        article_organization_id: this.article.ids.article_organization_id,
+        article_id: this.article.ids.article_id
+      };
 
-      this.addModalContent(modalContent);
-      this.showOrHiddenModal();
+      let url = "/admin/api/html-article-orders/get";
+      axios
+        .post(url, params)
+        .then(response => {
+            console.log(response.data);
+            if(typeof response.data !== "undefined") {
+
+              var modalContent = {
+                title: this.article.name,
+                body: response.data,
+                footer: this.article.descri+"\r\n"+this.article.ingredients
+              }            
+
+              this.addModalContent(modalContent);
+              this.showOrHiddenModal();              
+            }
+        })
+        .catch(error => {
+          this.isRunDeliveries=false;
+          console.error("Error: " + error);
+        });
     },  
   },
   computed: {

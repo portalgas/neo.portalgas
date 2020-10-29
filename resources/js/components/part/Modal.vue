@@ -11,8 +11,7 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
-                {{modalContent.body}}
+              <div class="modal-body" v-html="modalContent.body">
               </div>
               <div class="modal-footer">
                 {{modalContent.footer}}

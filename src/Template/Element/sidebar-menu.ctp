@@ -122,7 +122,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
 
   // if($this->Identity->get()->acl['isSuperReferente']) || $this->Identity->get()->acl['isReferentGeneric'])) {
   if($this->Identity->get()->acl['isRoot'] || 
-    ($this->Identity->get()->acl['isSuperReferente'] && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
+    ($this->Identity->get()->acl['isSuperReferente'] && isset($this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']) && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
   ?>
   <li class="treeview"> 
     <a href="#">

@@ -262,7 +262,7 @@ export default {
           console.log('getsAjaxArticles');
           console.log(response.data);
           // console.log(response.data[0]);
-          console.log(response.data[0].ids);
+          // console.log(response.data[0].ids);
           if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
             var data = response.data;
             for (var i = 0; i < data.length; i++) {

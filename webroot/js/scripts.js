@@ -370,6 +370,25 @@ Script.prototype = {
         }
         return anchor;
     },
+    /*
+     * ping per mantenere la session
+     */
+    ping: function(pingAjaxUrl, pingTime) {
+        var _this = this;
+        var _pingAjaxUrl = pingAjaxUrl;
+        var _pingTime = pingTime;
+        /* console.log("Script.ping "+pingAjaxUrl+' time '+pingTime); */
+        window.setInterval(_this.callPing, pingTime, _pingAjaxUrl);
+    },
+    callPing: function(pingAjaxUrl) {
+        /* console.log("Script.callPing "+pingAjaxUrl); */
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', pingAjaxUrl);
+        httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        httpRequest.setRequestHeader("Content-type", "application/json");
+        httpRequest.setRequestHeader('X-CSRF-Token', csrfToken);
+        httpRequest.send(null);
+    },
     init: function () {
         console.log("Script.init");
         var _this = this;

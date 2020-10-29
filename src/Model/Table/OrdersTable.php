@@ -325,10 +325,25 @@ class OrdersTable extends Table
         return $rules;
     }
 
-    public function factory($user, $organization_id, $order_type_id) {
+    public function factory($user, $organization_id, $order_type_id, $order_id=0) {
 
         $table_registry = '';
 
+        if(empty($order_type_id)) {
+            /*
+             * recupero order_type_id
+             */
+            $where = ['Orders.organization_id' => $organization_id, 'Orders.id' => $order_id];
+            $orderResults = $this->find()
+                            ->where($where)
+                            ->first();
+
+            $order_type_id = $orderResults->order_type_id;
+        }
+
+        if(empty($order_type_id)) 
+            die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
+        
         switch (strtoupper($order_type_id)) {
             case Configure::read('Order.type.des-titolare'):
             case Configure::read('Order.type.des'):
