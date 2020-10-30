@@ -190,9 +190,11 @@ class ArticlesOrdersTable extends Table
     } 
 
     /*
+     * implement
+     *
      * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
-     *  ArticlesOrders.article_id              = Articles.id
-     *  ArticlesOrders.article_organization_id = Articles.organization_id
+     * ArticlesOrders.article_id              = Articles.id
+     * ArticlesOrders.article_organization_id = Articles.organization_id
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
 
@@ -268,6 +270,8 @@ class ArticlesOrdersTable extends Table
     }  
 
     /*
+     * implement
+     *
      * da Orders chi gestisce listino articoli
      * order_type_id' => (int) 4,
      * owner_articles' => 'REFERENT',
@@ -292,6 +296,30 @@ class ArticlesOrdersTable extends Table
                         ->all()
                         ->toArray();
 
+        return $results;
+    }   
+
+    /*
+     * implement
+     */
+    public function getByIds($user, $organization_id, $ids, $debug=false) {    
+       
+        $organization_id = $ids['organization_id'];
+        $order_id = $ids['order_id'];
+        $article_organization_id = $ids['article_organization_id'];
+        $article_id = $ids['article_id'];
+
+        $where = [$this->alias().'.organization_id' => $organization_id, 
+                  $this->alias().'.order_id' => $order_id, 
+                  $this->alias().'.article_organization_id' => $article_organization_id, 
+                  $this->alias().'.article_id' => $article_id];
+        // debug($where);
+
+        $results = $this->find()
+                        ->contain(['Articles'])
+                        ->where($where)
+                        ->first();
+        // debug($results);
         return $results;
     }   
 

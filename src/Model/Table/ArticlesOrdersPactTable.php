@@ -29,5 +29,19 @@ class ArticlesOrdersPactTable extends ArticlesOrdersTable implements ArticlesOrd
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
         $results = parent::getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug);
-    }   
+    } 
+
+    /*
+     * implement
+     */
+    public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {    
+       return parent::gets($user, $organization_id, $orderResults, $where, $options, $debug);
+    }
+
+    /*
+     * implement
+     */
+    public function getByIds($user, $organization_id, $ids, $debug=false) {    
+       return parent::getByIds($user, $organization_id, $ids, $debug);
+    }       
 }

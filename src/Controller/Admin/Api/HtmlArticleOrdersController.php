@@ -40,7 +40,9 @@ class HtmlArticleOrdersController extends AppController
         $organization_id = $user->organization->id;
 
         $results = [];
-   
+        $results['order'] = [];
+        $results['articlesOrder'] = [];
+
         $order_id = $this->request->getData('order_id');
         $article_organization_id = $this->request->getData('article_organization_id');
         $article_id = trim($this->request->getData('article_id'));
@@ -52,15 +54,18 @@ class HtmlArticleOrdersController extends AppController
         $ordersTable->addBehavior('Orders');
         $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
 
+        $ids = [];
+        $ids['organization_id'] = $organization_id;
+        $ids['order_id'] = $order_id;
+        $ids['article_organization_id'] = $article_organization_id;
+        $ids['article_id'] = $article_id;
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
-
-        if($articlesOrdersTable!==false) {
-
-        }
+        $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
         
-        $results['fractis'] = 'fractis';
-        
+        $results['order'] = $orderResults;
+        $results['articlesOrder'] = $articlesOrdersResults;
+        $this->set(compact('results'));
+
         $this->layout  = 'ajax';
     } 
 }

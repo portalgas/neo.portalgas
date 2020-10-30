@@ -36,5 +36,12 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
      */
     public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {    
        return parent::gets($user, $organization_id, $orderResults, $where, $options, $debug);
-    }   
+    }
+
+    /*
+     * implement
+     */    
+    public function getByIds($user, $organization_id, $ids, $debug=false) {    
+       return parent::getByIds($user, $organization_id, $ids, $debug);
+    } 
 }
