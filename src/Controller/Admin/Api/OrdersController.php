@@ -68,12 +68,18 @@ class OrdersController extends ApiAppController
         $ordersTable = TableRegistry::get('Orders');
 
         $where = ['Orders.organization_id' => $organization_id,
-                  'Orders.delivery_id' => $delivery_id,
                   'Orders.isVisibleBackOffice' => 'Y',
                   'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
 
+        if(!empty($delivery_id)) {
+            /*
+             * per gli ordini per produttore non ho la consegna
+             */
+            $where += ['Orders.delivery_id' => $delivery_id];
+        }
+
         $results = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes', 'SuppliersOrganizations' => ['Suppliers']])
+                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->order(['Orders.data_inizio'])
                                 ->all();

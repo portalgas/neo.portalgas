@@ -2,15 +2,13 @@
 
 	<div id="accordion-deliveries">
 
-		<h2>Consegne</h2>
-
 		<div v-if="isRunDeliveries" class="box-spinner"> 
 			<div class="spinner-border text-info" role="status">
 			  <span class="sr-only">Loading...</span>
 			</div>	
 		</div>
 
-	  <div v-if="!isRunDeliveries" class="card" 
+	    <div v-if="!isRunDeliveries" class="card" 
 	          v-for="(delivery, delivery_id)  in deliveries"
 	          :delivery="delivery"
 	          :key="delivery_id"
@@ -35,7 +33,7 @@
 	          :key="order.id">
 					<a v-on:click="selectOrder(order)" href="#">
 
-						<img v-if="order.suppliers_organization.supplier.img1 != ''" 
+						<img style="max-width:150px" v-if="order.suppliers_organization.supplier.img1 != ''" 
 							class="img-supplier" 
 							:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
 							:alt="order.suppliers_organization.name">
@@ -59,8 +57,9 @@
 <script>
 import { mapActions } from "vuex";
 
+    
 export default {
-  name: "app-deliveries",
+  name: "orders-deliveries",
   data() {
     return {
       deliveries: null,
@@ -72,8 +71,16 @@ export default {
       isRunOrders: false,
     };
   },
+    props: {
+        datas: {}
+    },
+  watch: {
+  	datas (newValue, oldValue) { 
+  		this.deliveries = newValue;
+  	}
+  }, 
   mounted() {
-    this.getsDeliveries();
+    //this.getsDeliveries();
   },
   methods: { 
 	  	...mapActions(["addOrder"]), 

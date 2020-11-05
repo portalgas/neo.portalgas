@@ -154,7 +154,7 @@ export default {
       q: null // parola ricerca
     };
   },
-  // props: ['q'],
+ // props: ['order'],
   components: {
     appArticles: articles,
     appSearchArticles: searchArticles

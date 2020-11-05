@@ -192,6 +192,7 @@ class ImportFilesController extends AppController
 
                 $file = new File($file_path_full);   
                 $file_content = $file->read(true, 'r');
+                $file->close();
                 $json = json_decode($file_content);
                 // debug($json);
 
@@ -361,6 +362,7 @@ class ImportFilesController extends AppController
 
         $file = new File($file_schema_path_full);   
         $file_content = $file->read(true, 'r');
+        $file->close();
         $schema_json = json_decode($file_content);
         // debug($schema_json);
 

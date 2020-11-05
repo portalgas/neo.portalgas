@@ -50,3 +50,71 @@ a:hover {
     border-radius: 6px;
     margin-right: 5px;   
 }
+
+/*
+ * MENU / SOTTO MENU
+ *
+ * navbar .nav-item menu' principale
+ * nav-pills .nav-item sotto-menu ex "ordini per consegna / ordini per produttore"
+ */
+.navbar {
+    /* background-color: #0a659e; */
+    background-color: #fff;
+    border-bottom: 1px solid #0a659e;
+    padding: 0;
+}
+.navbar h1 {
+    font-size: 12px;
+    color: #0a659e;
+    position: absolute;
+    top: 70px;  
+}
+.navbar .nav-item, .nav-pills .nav-item {
+    background-color: #0a659e;
+    margin: 0 1px;
+    border-radius: 5px 5px 0 0;  
+}
+.navbar .nav-item {
+    padding: 0 10px;  
+}
+
+@media (max-width: 576px) {
+  .navbar .nav-item, .nav-pills .nav-item {
+      border-radius: 0px; 
+  }
+}
+.navbar .nav-item:hover, .nav-pills .nav-item:hover {
+    background-color: #fa824f; /* orange */
+    color: #fff !important;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link,
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #fa824f !important; /* orange */
+    color: #fff !important;
+}
+
+.navbar a.nav-link, .nav-pills a.nav-link {
+    color: #fff;
+    text-decoration: none;
+}
+.navbar a.nav-link:hover, .nav-pills a.nav-link:hover {
+    color: #fff !important;
+    text-decoration: none;
+}
+.navbar .navbar-collapse {
+    position: absolute;
+    bottom: 0;
+    right: 0;  
+}
+@media (max-width: 576px) {
+  .navbar .navbar-collapse {
+      position: relative;
+  }
+}
+.navbar .navbar-toggler {
+    background-color: #0a659e;
+}
+.navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");  
+}
