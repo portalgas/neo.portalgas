@@ -1,7 +1,7 @@
 <template>
 
-  <div class="card">
-        <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)"></div>
+  <div class="row">
+        <div class="col-sm-2 col-xs-2 col-md-2 bg-primary" v-html="$options.filters.highlight(article.name)"></div>
 
         <div class="content-img-top">
           <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
@@ -10,7 +10,7 @@
           </div>
         </div>
 
-        <div class="card-body">
+        <div class="col-sm-8 col-xs-8 col-md-8">
             <p class="card-text">
                 
               <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
@@ -46,7 +46,7 @@
                 </div>              
             </p>
         </div>
-        <div v-bind:class="'card-footer '+justInCart">
+        <div class="col-sm-2 col-xs-2 col-md-2">
            <app-btn-cart-add v-bind:article="article"></app-btn-cart-add>
         </div>
   </div>
@@ -108,12 +108,6 @@ export default {
           console.error("Error: " + error);
         });
     },  
-  },
-  computed: {
-    justInCart: function() { 
-        /* console.log("Article::justInCart article.cart.qty "+this.article.cart.qty) */
-        return this.article.cart.qty>0 ? 'bg-light' : 'bg-transparent';
-    } 
   },
   filters: {
     currency(amount) {

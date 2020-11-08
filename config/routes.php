@@ -225,9 +225,11 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          */
         $routes->scope('/deliveries', ['controller' => 'Deliveries'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+            $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
         }); 
         $routes->scope('/orders', ['controller' => 'Orders'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+            $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
             $routes->connect('/getArticlesOrdersByOrderId', ['action' => 'getArticlesOrdersByOrderId', '_method' => 'POST']); 
         });    
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {

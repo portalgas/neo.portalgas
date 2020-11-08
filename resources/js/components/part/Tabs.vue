@@ -31,7 +31,7 @@ export default {
             this.tabs.forEach(tab => {
                 tab.isActive = (tab.name == selectedTab.name);
                 tab.isLoading = (tab.name == selectedTab.name);
-                console.log(tab.name+' '+tab.isActive+' isLoading '+tab.isLoading)
+                console.log('Tabs '+tab.name+' '+tab.isActive+' isLoading '+tab.isLoading)
             });
         }
     }

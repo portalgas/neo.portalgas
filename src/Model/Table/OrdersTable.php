@@ -55,6 +55,10 @@ class OrdersTable extends Table
             'foreignKey' => ['organization_id', 'delivery_id'],
             'joinType' => 'INNER',
         ]);
+        $this->hasMany('Carts', [
+            'foreignKey' => ['organization_id', 'order_id'],
+            'joinType' => 'INNER'
+        ]);        
     }
 
     public function validationDefault(Validator $validator)

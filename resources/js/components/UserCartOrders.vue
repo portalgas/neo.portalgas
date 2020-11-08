@@ -28,7 +28,7 @@
 					<a v-on:click="selectOrder(order)" href="#">
 
 						<div class="content-img-supplier">
-							<img style="max-width:150px" v-if="order.suppliers_organization.supplier.img1 != ''" 
+							<img v-if="order.suppliers_organization.supplier.img1 != ''" 
 								class="img-supplier" 
 								:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
 								:alt="order.suppliers_organization.name">
@@ -41,6 +41,15 @@
 					    <span class="badge badge-primary">stato {{ order.order_state_code.code }} {{ order.order_state_code.name }}</span>
 					    <span class="badge badge-primary">type {{ order.order_type.name }}</span>  
 					</a>
+
+				   <box>
+					   <div v-for="article in order.article_order" class="col-sm-12 col-xs-12 col-md-12">
+		    		          <user-cart-articles
+		    		            v-bind:article="article">
+		                      </user-cart-articles>
+					    </div>
+				    </box>
+				
 	        </p> 
 	      </div>
 	    </div>
@@ -52,9 +61,10 @@
 
 <script>
 import { mapActions } from "vuex";
+import UserCartArticles from "../components/part/UserCartArticles.vue";
 
 export default {
-  name: "orders-deliveries",
+  name: "user-cart-deliveries",
   data() {
     return {
       deliveries: null,
@@ -75,6 +85,9 @@ export default {
   	datas (newValue, oldValue) { 
   		this.deliveries = newValue;
   	}
+  },
+  components: {
+    UserCartArticles
   }, 
   methods: { 
 	    selectDelivery(delivery_id) {
@@ -99,7 +112,7 @@ export default {
 
 			this.orders = [];
 
-			let url = "/admin/api/orders/gets";
+			let url = "/admin/api/orders/user-cart-gets";
 			axios
 				.post(url, params)
 				.then(response => {

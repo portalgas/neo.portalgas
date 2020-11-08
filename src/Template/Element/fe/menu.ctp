@@ -5,31 +5,37 @@ $i=0;
 $menus = [];
 $menus[$i]['label'] = 'Home';
 $menus[$i]['url'] = $config['Portalgas.fe.url'];
-$menus[$i]['target'] = '_self';
+$menus[$i]['target'] = '';
 
 if(!empty($organization)) {
   $i++;
   $menus = [];
   $menus[$i]['label'] = 'Consegne';
   $menus[$i]['url'] = $config['Portalgas.fe.url'].'/consegne-'.$organization->j_seo;
-  $menus[$i]['target'] = '_self';
+  $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = 'Acquista';
-  $menus[$i]['url'] = $config['Portalgas.fe.url'].'home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
-  $menus[$i]['target'] = '_self';
+  // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
+  $menus[$i]['url'] = '/';
+  $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = 'Stampe';
-  $menus[$i]['url'] = $config['Portalgas.fe.url'].'home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
-  $menus[$i]['target'] = '_self';
+  $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
+  $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = 'Produttori';
-  $menus[$i]['url'] = $config['Portalgas.fe.url'].'home-'.$organization->j_seo.'/gmaps-produttori';
-  $menus[$i]['target'] = '_self';
+  $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/gmaps-produttori';
+  $menus[$i]['target'] = '';
+  $i++;
+  $menus[$i]['label'] = 'Carrello';
+  $menus[$i]['url'] = '/user-cart';
+  $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = $user->get('username');
   $menus[$i]['url'] = '';
-  $menus[$i]['target'] = '_self';
+  $menus[$i]['target'] = '';
 } // end if(!empty($organization))
+// debug($menus);
 ?> 
 <nav class="navbar navbar-expand-lg static-top">
 
@@ -50,7 +56,7 @@ if(!empty($organization)) {
         echo '<li class="nav-item ';
         if($numResults==0) echo ' active';
         echo '">';
-        echo '<a class="nav-link" href="'.$menu['target'].'" href="'.$menu['url'].'">'.$menu['label'].'</a>';
+        echo '<a class="nav-link" target="'.$menu['target'].'" href="'.$menu['url'].'">'.$menu['label'].'</a>';
         echo '</li>';
       }
       ?>

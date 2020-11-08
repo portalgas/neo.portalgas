@@ -94,6 +94,91 @@ class OrdersController extends ApiAppController
         return $this->response; 
     } 
 
+    /*
+     * elenco ordini con acquisti dell'utente x fe
+     */
+    public function userCartGets() {
+
+        $debug = false;
+        $results = [];
+    
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;
+
+        $delivery_id = $this->request->getData('delivery_id');
+        
+        $ordersTable = TableRegistry::get('Orders');
+
+        $where = ['Orders.organization_id' => $organization_id,
+                  'Orders.isVisibleBackOffice' => 'Y',
+                  'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
+
+        if(!empty($delivery_id)) {
+            /*
+             * per gli ordini per produttore non ho la consegna
+             */
+            $where += ['Orders.delivery_id' => $delivery_id];
+        }
+
+        $results = $ordersTable->find()
+                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => ['Suppliers'],
+                                         /* 'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
+                                                                       'Carts.organization_id' => $organization_id,
+                                                                        'Carts.deleteToReferent' => 'N']]*/
+                                          ])
+                                ->where($where)
+                                ->order(['Orders.data_inizio'])
+                                ->toArray();
+
+        
+
+        /*
+         * elimino ordini senza acquisti
+         */
+        foreach($results as $numResult => $result) {
+  
+            $results[$numResult]['article_order'] = [];
+
+            $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+            $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $result);
+
+            if($articlesOrdersTable!==false) {
+
+                $where['order_id'] = $result['id'];
+
+                $options = [];
+                $options['sort'] = [];
+                $options['limit'] = Configure::read('sql.limit');
+                $options['page'] = 1;
+                $articlesOrdersResults = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $result, $where, $options);
+                // debug($articlesOrdersResults);exit;
+
+                /*
+                 * estraggo solo quelli acquistati dallo user
+                 */
+                $i=0;
+                foreach($articlesOrdersResults as  $numResult2 => $articlesOrdersResult) { 
+                    if(!isset($articlesOrdersResult['cart']) || empty($articlesOrdersResult['cart']))  
+                        unset($articlesOrdersResult[$numResult2]);
+                    else {
+                        $articlesOrdersResult = new ApiArticleDecorator($articlesOrdersResult); 
+                        $results[$numResult]['article_order'][$i] = $articlesOrdersResult->results;
+                        $i++;
+                    }
+                }
+            } // end if($articlesOrdersTable!==false)    
+        }
+
+        $results = json_encode($results);
+        $this->response->withType('application/json');
+        $body = $this->response->getBody();
+        $body->write($results);        
+        $this->response->withBody($body);
+        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
+        
+        return $this->response; 
+    } 
+
     /* 
      * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
      */

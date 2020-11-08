@@ -2,12 +2,10 @@
 
     <tabs>
       <tab name="Ordini per consegna" url="/admin/api/deliveries/gets" :selected="true">
-        <h2>Consegne</h2>        
-        <!-- orders-deliveries></orders-deliveries--> 
+        <h2>Ordini per consegna</h2>
       </tab>
       <tab name="Ordini per produttore" url="/admin/api/orders/gets">
-        <h2>Produttori</h2>        
-        <!--orders-suppliers></orders-suppliers-->
+        <h2>Ordini per produttore</h2>
       </tab>
     </tabs>
 

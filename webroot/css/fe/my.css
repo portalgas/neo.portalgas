@@ -44,11 +44,16 @@ a:hover {
 	text-align: center;
 	margin: 25px 0;
 }
+.content-img-supplier {
+    width: 200px;
+    margin-right: 5px;
+    display: inline-block;
+}
 .img-supplier {
-    max-width: 225px;
+    max-width: 200px;
+    max-height: 100px;
     display: inline;
     border-radius: 6px;
-    margin-right: 5px;   
 }
 
 /*

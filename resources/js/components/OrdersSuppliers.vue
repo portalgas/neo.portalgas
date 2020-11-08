@@ -2,13 +2,8 @@
 
 	<div id="accordion-suppliers">
 	
-		<div v-if="isRunOrders" class="box-spinner"> 
-			<div class="spinner-border text-info" role="status">
-			  <span class="sr-only">Loading...</span>
-			</div>	
-		</div>
 
-	    <div v-if="!isRunOrders" class="card" 
+	    <div class="card" 
 	          v-for="(order, index)  in orders"
 	          :order="order"
 	          :key="index"
@@ -16,11 +11,13 @@
 
 			    <div class="card-header" data-toggle="collapse" :data-target="'#'+order.id" aria-expanded="true" :aria-controls="'collapse-'+order.id" v-on:click="selectOrder(order)">
 	
-					<img style="max-width:150px" v-if="order.suppliers_organization.supplier.img1 != ''" 
-						class="img-supplier" 
-						:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
-						:alt="order.suppliers_organization.name">
-
+					<div class="content-img-supplier">
+						<img v-if="order.suppliers_organization.supplier.img1 != ''" 
+							class="img-supplier" 
+							:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+							:alt="order.suppliers_organization.name">
+					</div>
+					
 					{{ order.suppliers_organization.name }}
 					{{ order.delivery.luogo }} 
 
@@ -35,15 +32,6 @@
 			    <div :id="'collapse-'+order.id" class="collapse" :aria-labelledby="'heading-'+order.id" data-parent="#accordion-suppliers">
 				    <div class="card-body">
 
-				        <div v-if="isRunOrders" class="box-spinner"> 
-				        	<div class="spinner-border text-info" role="status">
-					          <span class="sr-only">Loading...</span>
-					        </div>	  
-					    </div>
-
-				        <div v-if="!isRunOrders">
-							{{ order }}
-					    </div>
 				    </div>
 			    </div>
 
@@ -56,106 +44,35 @@
 
 <script>
 import { mapActions } from "vuex";
-import Order from '../components/Order.vue';
+import Order from '../views/Order.vue';
     
 export default {
   name: "orders-suppliers",
+  components: {
+    Order
+  },   
   data() {
     return {
       suppliers: null,
       orders: {},
       isRunOrders: false,
-      isRunOrders: false,
     };
   }, 
-    props: {
+  /*
+   * in Tabs al click isLoading=true e Tab popola datas con chiamata ajax
+   */  
+  props: {
         datas: {}
-    },  
+  },  
   watch: {
   	datas (newValue, oldValue) { 
   		this.orders = newValue;
   	}
   },     
-  components: {
-    Order
-  }, 
-  mounted() {
-    //this.getSupplierOrganizations();
-  },
   methods: { 
-	  	...mapActions(["addOrder"]), 
-	    getSupplierOrganizations() {
-
-	      this.isRunOrders=true;
-
-	      let url = "/admin/api/orders/gets";
-	      axios
-	        .post(url)
-	        .then(response => {
-
-				this.isRunOrders=false;
-
-				console.log(response.data);
-				if(typeof response.data !== "undefined") {
-					this.orders = response.data;
-					console.log(this.orders);
-				}
-	        })
-	        .catch(error => {
-	       	  this.isRunOrders=false;
-	          console.error("Error: " + error);
-	        });
-	    },
-	    selectSupplierOrganizations(delivery_id) {
-	    	console.log('selectSupplierOrganizations '+delivery_id);
-
-			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
-			
-			$('.collapse').removeClass('show');
-			$('#accordion-suppliers .fas').removeClass("fa-angle-up");
-			$('#accordion-suppliers .fas').addClass("fa-angle-down");
-
-			if(!isOpen) {
-				$('#collapse-'+delivery_id).addClass('show');
-				$('#accordion-suppliers #fas-'+delivery_id).addClass("fa-angle-up");
-			}
-			
-			this.isRunOrders=true;
-				
-			let params = {
-				delivery_id: delivery_id
-			};
-
-			this.orders = [];
-
-			let url = "/admin/api/orders/gets";
-			axios
-				.post(url, params)
-				.then(response => {
-
-					this.isRunOrders=false;
-
-					console.log(response.data);
-					if(typeof response.data !== "undefined") {
-						var data = {
-							delivery_id: delivery_id,
-							data: response.data
-						}
-						this.orders = data;
-						console.log(this.orders);
-				}
-			})
-			.catch(error => {
-
-				this.isRunOrders=false;
-
-				console.error("Error: " + error);
-			});
-	    },
 	    selectOrder(order) {
-	    	console.log('selectOrder ');
+	    	console.log('selectOrder');
 	    	console.log(order);
-
 
 			let isOpen = $('#collapse-'+order.id).hasClass('show');
 			
@@ -168,10 +85,7 @@ export default {
 				$('#accordion-suppliers #fas-'+order.id).addClass("fa-angle-up");
 			}
 			
-			this.isRunOrders=true;
-				
-			this.order;
-			this.isRunOrders=false;
+	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    
   	},
 	filters: {
