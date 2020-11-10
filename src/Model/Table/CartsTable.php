@@ -114,7 +114,7 @@ class CartsTable extends Table
     }
 
     /*
-     * dato un articolo calcolo il totale acquisti, persistito in ArticlesOrders.qta_cart
+     * dato un articolo calcolo il totale acquisti, persistito in ArticlesOrders.qta_cart (ex _getSumCartQta)
      */
     public function getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug=false) {
 

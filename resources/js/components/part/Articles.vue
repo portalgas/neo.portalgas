@@ -6,7 +6,7 @@
         <div class="content-img-top">
           <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
           <div v-if="article.is_bio" class="box-bio">
-              <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica">
+              <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
           </div>
         </div>
 
@@ -14,7 +14,7 @@
             <p class="card-text">
                 
               <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-              </div><span><a class="badge badge-primary" @click="clickShowOrHiddenModal()">..maggior dettaglio</a></span>
+              </div><span><a class="btn btn-primary btn-block" href="#" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
 
               <div>
                 <strong>Prezzo</strong> {{ article.price | currency }} &euro;
@@ -40,14 +40,11 @@
               <div v-if="article.qty_max>0">
                 <small class="text-muted"><strong>Qta massma</strong> {{ article.qty_max }}</small>
               </div>
-
-               <div v-if="article.descri==''">
-                  <a class="card-link" @click="clickShowOrHiddenModal()">..maggior dettaglio</a>
-                </div>              
+           
             </p>
         </div>
-        <div v-bind:class="'card-footer '+justInCart">
-           <app-btn-cart-add v-bind:article="article"></app-btn-cart-add>
+        <div v-bind:class="'card-footer '+justInCart"> 
+           <app-btn-cart-add v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
         </div>
   </div>
 
@@ -62,7 +59,7 @@ import btnCartAdd from "../../components/part/BtnCartAdd.vue";
 
 export default {
   name: "app-article",
-  props: ['article'],
+  props: ['order', 'article'],
   data() {
     return {
       qty: 1
@@ -145,6 +142,7 @@ export default {
     padding: 10px;
     position: absolute;
     top: 30px;
+    z-index: 1;    
 }
 .box-bio img {
     border-radius: 30px;

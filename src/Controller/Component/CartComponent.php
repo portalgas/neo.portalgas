@@ -24,7 +24,7 @@ class CartComponent extends Component {
      * qty = qty originale, ma la ricalcolo nel caso fosse cambiata
      * qty_new = qty aggiornata
      */
-    public function managementCart($user, $organization_id, $article, $debug=false) {
+    public function managementCart($user, $organization_id, $order, $article, $debug=false) {
 
         $results = [];
         $results['esito'] = true;
@@ -79,8 +79,6 @@ class CartComponent extends Component {
         }
 
         if($results['esito']) {
-
-            $cartsTable = TableRegistry::get('Carts');
 
             switch (strtoupper($action)) {
                 case 'DELETE':
@@ -161,9 +159,19 @@ class CartComponent extends Component {
                 break;
                 default:
                     
-                    break;
+                break;
             } // end switch (strtoupper($action))
+
         } // end if($results['esito'])
+
+        if($results['esito']) {
+            $ArticlesOrdersTable = TableRegistry::get('ArticlesOrders');
+            $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
+
+            if($articlesOrdersTable!==false) 
+                $results = $ArticlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug);
+        }
+        }
 
         return $results;
     }

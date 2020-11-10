@@ -28,7 +28,7 @@
         <transition name="appear">
           <app-popup-cart class="cart-popup" v-if="getPopupCart" />
         </transition>
-        <app-mask v-if="getPopupCart" @click.native="showPopupCart()" />
+        <app-mask v-if="getPopupCart" href="#" @click.native="showPopupCart()" />
       </div>
     
     <app-message-toast></app-message-toast>

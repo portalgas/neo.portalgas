@@ -191,6 +191,59 @@ class ArticlesOrdersTable extends Table
 
     /*
      * implement
+    */
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {
+
+        $cartsTable = TableRegistry::get('Carts');
+        $qta_cart_new = $cartsTable->getQtaCartByArticle($organization_id, $order_id, $article_organization_id, $article_id, $debug);
+
+        $results['ArticlesOrder']['qta_cart'] = $qta_cart_new;
+        $this->_updateArticlesOrderQtaCart_StatoQtaMax($results, $debug);
+    }
+
+    protected function _updateArticlesOrderQtaCart_StatoQtaMax($results, $debug=false) {            
+        
+        if($debug) debug("ArticlesOrder.qta_massima_order ".$results['ArticlesOrder']['qta_massima_order']." ArticlesOrder.qta_cart ".$results['ArticlesOrder']['qta_cart']);
+        
+        $qta_massima_order = intval($results['ArticlesOrder']['qta_massima_order']);
+        $qta_cart = intval($results['ArticlesOrder']['qta_cart']);
+
+        /*
+         * ctrl se ArticlesOrder.qta_massima_order > 0, se SI controllo lo ArticlesOrder.stato
+         */
+        if ($qta_massima_order > 0) {
+            if ($qta_cart >= $qta_massima_order) {
+                if ($results['ArticlesOrder']['stato'] != 'QTAMAXORDER') { // ho gia' settato a QTAMAXORDER e eventualmente inviato la mail
+                    $results['ArticlesOrder']['stato'] = 'QTAMAXORDER';
+                    $results['ArticlesOrder']['send_mail'] = 'N';  // invia mail da Cron::mailReferentiQtaMax
+                }
+            }
+            else
+            if ($qta_cart < $qta_massima_order && $results['ArticlesOrder']['stato'] == 'QTAMAXORDER') {
+                $results['ArticlesOrder']['stato'] = 'Y';
+                $results['ArticlesOrder']['send_mail'] = 'N'; // invia mail da Cron::mailReferentiQtaMax
+            }
+        } 
+        else
+        if ($qta_massima_order == 0) {
+            if ($results['ArticlesOrder']['stato'] == 'QTAMAXORDER')
+                $results['ArticlesOrder']['stato'] = 'Y';
+            $results['ArticlesOrder']['send_mail'] = 'N';
+        }
+
+        unset($results['Order']);
+        if($debug) debug($results);
+        
+        if ($this->save($results)) {
+            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $results['ArticlesOrder']['stato']);
+        }
+        else {
+            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $results['ArticlesOrder']['stato']);
+        }
+    }
+
+    /*
+     * implement
      *
      * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
      * ArticlesOrders.article_id              = Articles.id

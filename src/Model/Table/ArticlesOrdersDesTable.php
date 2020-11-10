@@ -26,6 +26,57 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
 
     /*
      * implement
+    */
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {
+        
+        App::import('Model', 'DesOrdersOrganization');
+        $DesOrdersOrganization = new DesOrdersOrganization();
+
+        $DesOrdersOrganization->unbindModel(['belongsTo' => ['Order', 'Organization', 'De']]);
+        
+        $options = [];
+        $options['conditions'] = ['DesOrdersOrganization.des_order_id' => $results['Order']['des_order_id']];
+        $options['fields'] = ['DesOrder.des_id','DesOrder.des_supplier_id','DesOrdersOrganization.organization_id','DesOrdersOrganization.order_id'];
+        $options['recursive'] = 1;
+        $desOrdersOrganizationsResults = $DesOrdersOrganization->find('all', $options);
+
+        if($debug) debug("Trovati ".count($desOrdersOrganizationsResults)." ordini associati all'ordine DES");
+        if($debug) debug($desOrdersOrganizationsResults);
+        
+        if(!empty($desOrdersOrganizationsResults)) {
+            
+            /*
+             * calcolo la Somma di Cart.qta per tutti i GAS dell'ordine DES
+             */
+            $qta_cart_new = 0; 
+            foreach ($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
+                $organization_id = $desOrdersOrganizationsResult['DesOrdersOrganization']['organization_id'];
+                $order_id = $desOrdersOrganizationsResult['DesOrdersOrganization']['order_id'];
+
+                $cartsTable = TableRegistry::get('Carts');
+                $qta_cart_new += $cartsTable->getQtaCartByArticle($organization_id, $order_id, $article_organization_id, $article_id, $debug);
+            }
+
+            if($debug) debug("Per tutti i GAS dell'ordine DES aggiornero' ArticlesOrder.qta_cart con la somma di tutti gli acquisti dei GAS ".$qta_cart_new);
+                            
+            /* 
+             * aggiorno tutti gli ordini del DES
+             */
+            foreach ($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
+                
+                $results['ArticlesOrder']['organization_id'] = $desOrdersOrganizationsResult['DesOrdersOrganization']['organization_id'];
+                $results['ArticlesOrder']['order_id'] = $desOrdersOrganizationsResult['DesOrdersOrganization']['order_id'];
+                
+                $results['ArticlesOrder']['qta_cart'] = $qta_cart_new;
+                $this->_updateArticlesOrderQtaCart_StatoQtaMax($results, $debug);
+            }
+            if($debug) debug($desSupplierResults);
+          
+        } // end if(!empty($desOrdersOrganizationsResults))
+    }
+
+    /*
+     * implement
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
         return parent::getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug);

@@ -27,7 +27,7 @@
         </tr>
         <tr>
           <td>
-            <button class="btn btn-warning" @click="saveShoppingCartLocal">
+            <button class="btn btn-warning" href="#" @click="saveShoppingCartLocal">
               <i class="fa fa-angle-left"></i> Save and Continue Shopping
             </button>
           </td>
@@ -36,7 +36,7 @@
             <strong>Totale {{ cartTotal }} &euro;</strong>
           </td>
           <td class="px-0">
-            <button class="btn btn-success" @click="checkout">
+            <button class="btn btn-success" href="#" @click="checkout">
               <span class="text-nowrap">
                 Checkout
                 <i class="fa fa-angle-right d-inline"></i>

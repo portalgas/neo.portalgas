@@ -1,5 +1,5 @@
 <template>
-  <div class="mask" @click="closeModal()"></div>
+  <div class="mask" href="#" @click="closeModal()"></div>
 </template>
 
 <script>

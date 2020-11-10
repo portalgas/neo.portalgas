@@ -33,6 +33,13 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
    
     /*
      * implement
+    */
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {
+        return parent::aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug);
+    }
+       
+    /*
+     * implement
      *
      * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
      *  ArticlesOrders.article_id              = Articles.id

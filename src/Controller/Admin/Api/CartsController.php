@@ -32,9 +32,10 @@ class CartsController extends ApiAppController
 
         $results = [];
    
+        $order = $this->request->getData('order');
         $article = $this->request->getData('article');
         // debug($article);
-        $results = $this->Cart->managementCart($user, $user->organization->id, $article, $debug);
+        $results = $this->Cart->managementCart($user, $user->organization->id, $order, $article, $debug);
         
         $results = json_encode($results);
         $this->response->type('json');

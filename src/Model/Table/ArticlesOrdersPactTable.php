@@ -26,6 +26,13 @@ class ArticlesOrdersPactTable extends ArticlesOrdersTable implements ArticlesOrd
 
     /*
      * implement
+    */
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {
+        return parent::aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug);
+    }
+    
+    /*
+     * implement
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
         $results = parent::getCarts($user, $organization_id, $user_id, $orderResults, $where, $options, $debug);

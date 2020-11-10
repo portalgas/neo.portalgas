@@ -127,10 +127,13 @@
     		          v-for="article in articles"
     		          :article="article"
     		          :key="article.article_id"
-    		        >
+    		        > 
     		          <app-articles
-    		            v-bind:article="article">
+                    v-bind:article="article"
+                    v-bind:order="order">
                     </app-articles>
+                }
+                }
           </div> 
 
     </div> <!-- row -->

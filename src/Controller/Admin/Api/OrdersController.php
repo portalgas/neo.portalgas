@@ -137,7 +137,7 @@ class OrdersController extends ApiAppController
          */
         foreach($results as $numResult => $result) {
   
-            $results[$numResult]['article_order'] = [];
+            $results[$numResult]['article_orders'] = [];
 
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $result);
@@ -162,7 +162,7 @@ class OrdersController extends ApiAppController
                         unset($articlesOrdersResult[$numResult2]);
                     else {
                         $articlesOrdersResult = new ApiArticleDecorator($articlesOrdersResult); 
-                        $results[$numResult]['article_order'][$i] = $articlesOrdersResult->results;
+                        $results[$numResult]['article_orders'][$i] = $articlesOrdersResult->results;
                         $i++;
                     }
                 }

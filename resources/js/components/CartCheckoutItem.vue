@@ -23,7 +23,7 @@
     </td>
     <td data-th="Subtotal" class="text-center">{{ subtotal }} &euro;</td>
     <td class="actions" data-th="">
-      <button class="btn btn-danger btn-sm" @click="removeItem">
+      <button class="btn btn-danger btn-sm" href="#" @click="removeItem">
         <i class="fa fa-trash-o">X</i>
       </button>
     </td>

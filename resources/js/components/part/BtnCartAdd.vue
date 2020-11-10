@@ -2,7 +2,7 @@
 
     <div>
 
-        GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }}
+        GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }} {{ order.order_state_code.code }}
 
       <div
         v-if="message.msg"
@@ -11,56 +11,69 @@
         {{ message.msg }}
       </div>
 
-      <!-- RI-OPEN-VALIDATE -->      
-      <div v-if="article.riopen!=null" class="riopen">
+      <div v-if="order.order_state_code.code=='RI-OPEN-VALIDATE' || order.order_state_code.code=='OPEN'">
+        <!-- RI-OPEN-VALIDATE -->      
+        <div v-if="article.riopen!=null" class="riopen">
 
-          <div v-if="article.riopen.differenza_da_ordinare>1" class="alert alert-warning">
-            Per completare il <strong>collo</strong> mancano {{ article.riopen.differenza_da_ordinare }} pezzi
-          </div>   
-          <div v-if="article.riopen.differenza_da_ordinare==1" class="alert alert-warning">
-            Per completare il <strong>collo</strong> manca {{ article.riopen.differenza_da_ordinare }} pezzo
-          </div>
-          <div v-if="article.riopen.differenza_da_ordinare==0" class="alert alert-success">
-            Collo completato
-          </div>
-      </div>
-
-      <div class="quantity buttons_added">
-
-        <input type="button" value="-" 
-          class="minus" 
-          @click="minusCart" 
-          :disabled="btnMinusIsDisabled" />
-
-        <input
-          type="number"
-          class="form-control text-center"
-          :value="article.cart.qty_new"
-          :disabled="article.store === 0 || isRun"
-          @input="numberCart"
-          min="0"
-          size="4"
-          inputmode="numeric"
-          title="Qtà"
-        />
-
-        <input type="button" value="+" class="plus" @click="plusCart" :disabled="btnPlusIsDisabled" />
-
-        <button v-if="!isRun"
-          type="button"
-          class="btn-save btn btn-success"
-          :disabled="btnSaveIsDisabled"
-          @click="save()"
-        >      
-          Save
-        </button>
-
-        <div v-if="isRun" class="spinner-border text-info" role="status">
-          <span class="sr-only">Loading...</span>
+            <div v-if="article.riopen.differenza_da_ordinare>1" class="alert alert-warning">
+              Per completare il <strong>collo</strong> mancano {{ article.riopen.differenza_da_ordinare }} pezzi
+            </div>   
+            <div v-if="article.riopen.differenza_da_ordinare==1" class="alert alert-warning">
+              Per completare il <strong>collo</strong> manca {{ article.riopen.differenza_da_ordinare }} pezzo
+            </div>
+            <div v-if="article.riopen.differenza_da_ordinare==0" class="alert alert-success">
+              Collo completato
+            </div>
         </div>
 
+        <div class="quantity buttons_added">
+
+          <input type="button" value="-" 
+            class="minus" 
+            @click="minusCart" 
+            :disabled="btnMinusIsDisabled" />
+
+          <input
+            type="number"
+            class="form-control text-center"
+            :value="article.cart.qty_new"
+            :disabled="article.store === 0 || isRun"
+            @input="numberCart"
+            min="0"
+            size="4"
+            inputmode="numeric"
+            title="Qtà"
+          />
+
+          <input type="button" value="+" class="plus" @click="plusCart" :disabled="btnPlusIsDisabled" />
+
+          <button v-if="!isRun"
+            type="button"
+            class="btn-save btn btn-success"
+            :disabled="btnSaveIsDisabled"
+            @click="save()"
+          >      
+            Save
+          </button>
+
+          <div v-if="isRun" class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+
+        </div>
       </div>
-  
+
+       <div v-if="order.order_state_code.code!='RI-OPEN-VALIDATE' && order.order_state_code.code!='OPEN'">
+          <input
+            type="number"
+            class="form-control text-center"
+            :value="article.cart.qty_new"
+            :disabled="true"
+            inputmode="numeric"
+            title="Qtà"
+          />        
+       </div>
+
   </div>
 
 </template>
@@ -79,7 +92,7 @@ export default {
       isRun: false
     };
   },
-  props: ["article"], 
+  props: ['order', 'article'], 
   computed: {
       btnMinusIsDisabled() {
         return (this.isRun || this.article.cart.qty_new == 0);
@@ -98,7 +111,8 @@ export default {
       this.isRun = true;
 
       let params = {
-        article: this.article
+        article: this.article,
+        order: this.order,
       };
       console.log(params);
 

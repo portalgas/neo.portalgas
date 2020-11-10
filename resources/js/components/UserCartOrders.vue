@@ -22,9 +22,10 @@
 		    </div>
 
 	        <p 
-	          v-for="(order, index)  in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery_id"
+	          v-for="(order, index) in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery_id"
 	          :order="order"
 	          :key="order.id">
+
 					<a v-on:click="selectOrder(order)" href="#">
 
 						<div class="content-img-supplier">
@@ -42,15 +43,10 @@
 					    <span class="badge badge-primary">type {{ order.order_type.name }}</span>  
 					</a>
 
-				   <box>
-					   <div v-for="article in order.article_order" class="col-sm-12 col-xs-12 col-md-12">
-		    		          <user-cart-articles
-		    		            v-bind:article="article">
-		                      </user-cart-articles>
-					    </div>
-				    </box>
+			        <user-cart-articles :order="order" :article_orders="order.article_orders"></user-cart-articles>			
 				
 	        </p> 
+
 	      </div>
 	    </div>
 
@@ -89,6 +85,11 @@ export default {
   components: {
     UserCartArticles
   }, 
+  computed: {
+	getArticleOrders: function(q) {
+      return this.order.article_order
+    },  
+  },
   methods: { 
 	    selectDelivery(delivery_id) {
 	    	console.log('selectDelivery '+delivery_id);
