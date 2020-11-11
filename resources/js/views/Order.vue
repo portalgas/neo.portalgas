@@ -132,8 +132,6 @@
                     v-bind:article="article"
                     v-bind:order="order">
                     </app-articles>
-                }
-                }
           </div> 
 
     </div> <!-- row -->

@@ -25,5 +25,5 @@ interface ArticlesOrdersTableInterface {
      *      ArticlesOrder.qta_massima_order indica la somma delle ArticlesOrder.qta_cart di tutti i GAS dell'ordine DES
      *          cosi' a FE c'e' per tutti il blocco se raggiunta la qta_massima_order
      */
-    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {    
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false);    
 }

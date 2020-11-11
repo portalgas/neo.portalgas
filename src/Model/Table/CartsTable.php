@@ -126,6 +126,7 @@ class CartsTable extends Table
                     'Carts.article_id' => $article_id,
                     'Carts.deleteToReferent' => 'N',
                     'Carts.stato' => 'Y'];
+          // debug($where); 
           $cartResults = $this->find()
                         ->where($where)
                         ->all();

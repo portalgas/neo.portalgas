@@ -55,6 +55,16 @@ a:hover {
     display: inline;
     border-radius: 6px;
 }
+.content-img-article {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+}
+.img-article {
+    max-width: 300px;
+    max-height: 150px;
+    display: inline;
+}
 
 /*
  * MENU / SOTTO MENU

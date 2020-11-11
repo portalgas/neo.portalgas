@@ -2924,7 +2924,8 @@ __webpack_require__.r(__webpack_exports__);
 
       this.isRun = true;
       var params = {
-        article: this.article
+        article: this.article,
+        order: this.order
       };
       console.log(params);
       axios.post("/admin/api/carts/managementCart", params).then(function (response) {
@@ -3594,8 +3595,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_part_Articles_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/part/Articles.vue */ "./resources/js/components/part/Articles.vue");
 /* harmony import */ var _components_part_SearchArticles_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/part/SearchArticles.vue */ "./resources/js/components/part/SearchArticles.vue");
-//
-//
 //
 //
 //
@@ -46212,7 +46211,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.box-bio[data-v-3bd4a784] {\r\n    right: 0;\r\n    padding: 10px;\r\n    position: absolute;\r\n    top: 30px;\r\n    z-index: 1;\n}\n.box-bio img[data-v-3bd4a784] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 40px;\r\n    margin-right: 5px;\r\n    width: 40px;\n}\n.content-img-top[data-v-3bd4a784] {\r\n    text-align: center;\n}\n.card-img-top[data-v-3bd4a784] {\r\n    /* display: block; */\r\n    display: initial;    \r\n    height: 225 px;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    -o-object-position: center;\r\n       object-position: center;\r\n    overflow: hidden;\r\n    width: 225 px;\n}\n.highlighted[data-v-3bd4a784] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
+exports.push([module.i, "\n.box-bio[data-v-3bd4a784] {\r\n    right: 0;\r\n    padding: 10px;\r\n    position: absolute;\r\n    top: 30px;\r\n    z-index: 1;\n}\n.box-bio img[data-v-3bd4a784] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 40px;\r\n    margin-right: 5px;\r\n    width: 40px;\n}\n.highlighted[data-v-3bd4a784] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
 
 // exports
 
@@ -54524,10 +54523,10 @@ var render = function() {
       }
     }),
     _vm._v(" "),
-    _c("div", { staticClass: "content-img-top" }, [
+    _c("div", { staticClass: "content-img-article" }, [
       _vm.article.img1 != ""
         ? _c("img", {
-            staticClass: "card-img-top responsive",
+            staticClass: "img-article responsive",
             attrs: { src: _vm.article.img1, alt: _vm.article.name }
           })
         : _vm._e(),
@@ -55737,10 +55736,7 @@ var render = function() {
                 [
                   _c("app-articles", {
                     attrs: { article: article, order: _vm.order }
-                  }),
-                  _vm._v(
-                    "\r\n                }\r\n                }\r\n          "
-                  )
+                  })
                 ],
                 1
               )

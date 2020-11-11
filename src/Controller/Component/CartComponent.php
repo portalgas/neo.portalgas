@@ -164,13 +164,15 @@ class CartComponent extends Component {
 
         } // end if($results['esito'])
 
+        // debug($results);
+
         if($results['esito']) {
-            $ArticlesOrdersTable = TableRegistry::get('ArticlesOrders');
+            $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
+            // debug($articlesOrdersTable);
 
             if($articlesOrdersTable!==false) 
-                $results = $ArticlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug);
-        }
+                $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug);
         }
 
         return $results;

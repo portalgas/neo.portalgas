@@ -3,8 +3,8 @@
   <div class="card">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)"></div>
 
-        <div class="content-img-top">
-          <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
+        <div class="content-img-article">
+          <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
           <div v-if="article.is_bio" class="box-bio">
               <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
           </div>
@@ -150,18 +150,6 @@ export default {
     height: 40px;
     margin-right: 5px;
     width: 40px;    
-}
-.content-img-top {
-    text-align: center;
-}
-.card-img-top {
-    /* display: block; */
-    display: initial;    
-    height: 225 px;
-    object-fit: cover;
-    object-position: center;
-    overflow: hidden;
-    width: 225 px;
 }
 .highlighted { 
   color: #fa824f;

@@ -175,7 +175,7 @@ export default {
         this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
         
         if (this.article.cart.qty_new < this.article.qty_min) {
-            this.article.cart.qty_new = 0
+            this.article.cart.qty_new = 0;
         }
 
         /*
