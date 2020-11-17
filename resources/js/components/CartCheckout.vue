@@ -85,8 +85,8 @@ export default {
       itemList.map(item => {
         for (let prodIdx = 0; prodIdx < prodList.length; prodIdx++) {
           if (prodList[prodIdx].id == item.id) {
-            if (prodList[prodIdx].qty < item.qty) {
-              message = `Only ${prodList[prodIdx].qty} ${item.name} available in stock`;
+            if (prodList[prodIdx].qta < item.qta) {
+              message = `Only ${prodList[prodIdx].qta} ${item.name} available in stock`;
               isValid = false;
               return;
             }

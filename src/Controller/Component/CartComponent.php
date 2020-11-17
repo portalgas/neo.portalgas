@@ -21,10 +21,10 @@ class CartComponent extends Component {
     }
 
     /*
-     * qty = qty originale, ma la ricalcolo nel caso fosse cambiata
-     * qty_new = qty aggiornata
+     * qta = qta originale, ma la ricalcolo nel caso fosse cambiata
+     * qta_new = qta aggiornata
      */
-    public function managementCart($user, $organization_id, $order, $article, $debug=false) {
+    public function managementCart($user, $organization_id, $order, $articles_order, $debug=false) {
 
         $results = [];
         $results['esito'] = true;
@@ -32,41 +32,47 @@ class CartComponent extends Component {
         $results['msg'] = '';
         $results['results'] = '';
 
-        $organization_id = $organization_id; // $article['cart']['organization_id'];
-        $user_id = $user->id; // $article['cart']['user_id'];
-        $order_id = $article['cart']['order_id'];
-        $article_organization_id = $article['cart']['article_organization_id'];
-        $article_id = $article['cart']['article_id'];
+        $organization_id = $organization_id; // $articles_order['cart']['organization_id'];
+        $user_id = $user->id; // $articles_order['cart']['user_id'];
+        $order_id = $articles_order['cart']['order_id'];
+        $article_organization_id = $articles_order['cart']['article_organization_id'];
+        $article_id = $articles_order['cart']['article_id'];
+
+        if(Configure::write('Logs.cart')) Log::write('debug', 'user '.$user->id);
+        if(Configure::write('Logs.cart')) Log::write('debug', $articles_order);
 
         /*
-         * qty = qty originale, ma la ricalcolo nel caso fosse cambiata
-         * qty_new = qty aggiornata
+         * qta = qta originale, ma la ricalcolo nel caso fosse cambiata
+         * qta_new = qta aggiornata
          */
         $cartsTable = TableRegistry::get('Carts');
-        // $qty = (int)$article['cart']['qty'];                     
-        $qty = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);               
-        $qty_new = (int)$article['cart']['qty_new'];
+        // $qta = (int)$articles_order['cart']['qta'];                     
+        $qta = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
+        if(Configure::write('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
+        $qta_new = (int)$articles_order['cart']['qta_new'];
+        if(Configure::write('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
 
         /*
          * action
          */
         $action = '';
-        if($qty_new==0) 
+        if($qta_new==0) 
            $action = 'DELETE';
         else 
-        if($qty==0) 
+        if($qta==0) 
            $action = 'INSERT';
         else 
            $action = 'UPDATE';
         
         if($debug) debug('action '.$action);
+        if(Configure::write('Logs.cart')) Log::write('debug', 'Action '.$action);
 
         /*
          * ctrl validita
          * RI-OPEN-VALIDATE
          */
         if(isset($article['riopen'])) {
-            $results = $this->_ctrlValiditaRiOpen($user, $article, $qty, $debug);
+            $results = $this->_ctrlValiditaRiOpen($user, $articles_order, $qta, $debug);
             if($debug) debug($results);
         }
 
@@ -74,7 +80,7 @@ class CartComponent extends Component {
          * ctrl validita
          */
         if($results['esito']) {
-            $results = $this->_ctrlValidita($user, $organization_id, $order_id, $article_organization_id, $article_id, $qty_new, $qty, $action);
+            $results = $this->_ctrlValidita($user, $articles_order, $qta_new, $qta, $action);
             if($debug) debug($results);
         }
 
@@ -87,11 +93,13 @@ class CartComponent extends Component {
                               'Carts.user_id' => $user_id,
                               'Carts.article_organization_id' => $article_organization_id,
                               'Carts.article_id' => $article_id];
-                    if($debug) debug($where);
-
                     $cart = $cartsTable->find()
                                     ->where($where)
                                     ->first(); 
+
+                    if(Configure::write('Logs.cart')) Log::write('debug', 'DELETE CART DATA:');
+                    if(Configure::write('Logs.cart')) Log::write('debug', $cart);
+
                     if (!$cartsTable->delete($cart)) {
                         if($debug) debug($cart->getErrors());
                         $results['esito'] = false;
@@ -112,9 +120,9 @@ class CartComponent extends Component {
                     $data['order_id'] = $order_id;
                     $data['article_organization_id'] = $article_organization_id;
                     $data['article_id'] = $article_id;
-                    $data['qty'] = $qty_new;
+                    $data['qta'] = $qta_new;
                     $data['deleteToReferent'] = 'N';
-                    $data['qty_forzato'] = 0;
+                    $data['qta_forzato'] = 0;
                     $data['importo_forzato'] = 0;
                     $data['nota'] = '';
                     $data['inStoreroom'] = 'N';
@@ -123,6 +131,9 @@ class CartComponent extends Component {
                     $cart = $cartsTable->newEntity();
                     $cart = $cartsTable->patchEntity($cart, $data);
                     if($debug) debug($cart);
+                    if(Configure::write('Logs.cart')) Log::write('debug', 'INSERT CART DATA:');
+                    if(Configure::write('Logs.cart')) Log::write('debug', $cart);
+
                     if (!$cartsTable->save($cart)) {
                         if($debug) debug($cart->getErrors());
                         $results['esito'] = false;
@@ -137,13 +148,23 @@ class CartComponent extends Component {
                     }
                 break;
                 case 'UPDATE':
-                    $cart = $cartsTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
+                    $where = ['Carts.organization_id' => $organization_id,
+                              'Carts.order_id' => $order_id,
+                              'Carts.user_id' => $user_id,
+                              'Carts.article_organization_id' => $article_organization_id,
+                              'Carts.article_id' => $article_id];
+                    $cart = $cartsTable->find()
+                                   ->where($where)
+                                   ->first();
 
                     $data = [];
-                    $data['qty'] = $qty_new;
+                    $data['qta'] = $qta_new;
 
                     $cart = $cartsTable->patchEntity($cart, $data);
                     if($debug) debug($cart);
+                    if(Configure::write('Logs.cart')) Log::write('debug', 'UPDATE CART DATA:');
+                    if(Configure::write('Logs.cart')) Log::write('debug', $cart);
+
                     if (!$cartsTable->save($cart)) {
                         if($debug) debug($cart->getErrors());
                         $results['esito'] = false;
@@ -165,14 +186,16 @@ class CartComponent extends Component {
         } // end if($results['esito'])
 
         // debug($results);
+        if(Configure::write('Logs.cart')) Log::write('debug', $results);
 
         if($results['esito']) {
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
             // debug($articlesOrdersTable);
+            if(Configure::write('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->alias());
 
             if($articlesOrdersTable!==false) 
-                $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug);
+                $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $articles_order, $debug);
         }
 
         return $results;
@@ -182,21 +205,22 @@ class CartComponent extends Component {
      * RI-OPEN-VALIDATE
      * concorrenza tra users, ctrl che non sia gia' completato il collo
      */
-    private function _ctrlValiditaRiOpen($user, $article, $qty, $debug=false) {
+    private function _ctrlValiditaRiOpen($user, $articles_order, $qta, $debug=false) {
 
         $results = [];
         $esito = true;
         $msg = '';
 
-        $pezzi_confezione = (int)$article['package'];
-        if($qty >= $pezzi_confezione) {
-            $delta = ($qty % $pezzi_confezione); 
+        $pezzi_confezione = (int)$articles_order['package']; // pezzi_confezione
+        if($qta >= $pezzi_confezione) {
+            $delta = ($qta % $pezzi_confezione); 
             
             if($delta==0) {
                 $msg = __('cart_msg_riopen_package_close');
                 $esito = false;
             }
         }
+        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValiditaRiOpen pezzi_confezione '.$pezzi_confezione);
 
         $results['esito'] = $esito;
         $results['msg'] = $msg;
@@ -209,12 +233,13 @@ class CartComponent extends Component {
      * $action = INSERT
      * $action = UPDATE-DELETE
      */
-    private function _ctrlValidita($user, $organization_id, $order_id, $article_organization_id, $article_id, $qty_new, $qty, $action, $debug=false) {
+    private function _ctrlValidita($user, $articles_order, $qta_new, $qta, $action, $debug=false) {
 
         $results = [];
         $esito = true;
         $msg = '';
 
+        /*
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $where = ['ArticlesOrders.organization_id' => $organization_id,
                   'ArticlesOrders.order_id' => $order_id,
@@ -227,24 +252,30 @@ class CartComponent extends Component {
                         ->where($where)
                         ->first(); 
         //debug($articlesOrders);
+        */
 
-        if($articlesOrders->stato=='N') {
+        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.stato '.$articles_order['stato']);
+        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_minima '.$articles_order['qta_minima']);
+        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_massima '.$articles_order['qta_massima']);
+        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_massima_order '.$articles_order['qta_massima_order']);
+
+        if($articles_order['stato']=='N') {
             $msg = __('cart_msg_stato_N');
             $esito = false;
         }  
             
-        if($esito && $articlesOrders->has('carts') && isset($articlesOrders->carts->stato) && $articlesOrders->carts->stato=='N') {
+        if($esito && isset($articles_order['carts']) && isset($articles_order['carts']['stato']) && $articles_order['carts']['stato']=='N') {
             $msg = __('cart_msg_stato_N');
             $esito = false;
         }  
 
         if($esito && $action!='INSERT') {
-            if($articlesOrders->stato=='QTAMAXORDER' && ($qty_new > $qty)) {
-                $msg = sprintf(__('cart_msg_qtamax_order_stop'), $articlesOrders->qty_massima_order);
+            if($articles_order['stato']=='QTAMAXORDER' && ($qta_new > $qta)) {
+                $msg = sprintf(__('cart_msg_qtamax_order_stop'), $articles_order['qta_massima_order']);
                 $esito = false;
             }
             else
-            if($articlesOrders->stato=='LOCK' && ($qty_new > $qty)) {
+            if($articles_order['stato']=='LOCK' && ($qta_new > $qta)) {
                 $msg = __('cart_msg_block_stop'); 
                 $esito = false; 
             }
@@ -252,17 +283,17 @@ class CartComponent extends Component {
 
         if($esito) {
 
-            if($qty_new>0 && ($qty_new < (int)$articlesOrders->qty_minima)) {
-                $msg = sprintf(__('cart_msg_qtamin'), $articlesOrders->qty_minima, $qty_new);
+            if($qta_new>0 && ($qta_new < (int)$articles_order['qta_minima'])) {
+                $msg = sprintf(__('cart_msg_qtamin'), $articles_order['qta_minima'], $qta_new);
                 $esito = false;
             }
             else          
-            if((int)$articlesOrders->qty_massima > 0) {
+            if((int)$articles_order['qta_massima'] > 0) {
                 /*
                  * Q T A - M A X
                  */                  
-                if($qty_new>0 && ($qty_new > $articlesOrders->qty_massima)) {  // ctrl qty massima riferita all'acquisto del singolo gasista
-                    $msg = sprintf(__('cart_msg_qtamax'), $articlesOrders->qty_massima, $qty_new);
+                if($qta_new>0 && ($qta_new > $articles_order['qta_massima'])) {  // ctrl qta massima riferita all'acquisto del singolo gasista
+                    $msg = sprintf(__('cart_msg_qtamax'), $articles_order['qta_massima'], $qta_new);
                     $esito = false;
                 }       
             }
@@ -270,21 +301,21 @@ class CartComponent extends Component {
             /*
              * Q T A - M A X - O R D E R 
              * */
-            if((int)$articlesOrders->qty_massima_order > 0) {
+            if((int)$articles_order['qta_massima_order'] > 0) {
                 
-                if($qty_new > $qty) { // ctrl che l'utente non abbia diminuito la qty
+                if($qta_new > $qta) { // ctrl che l'utente non abbia diminuito la qta
 
-                    // qty_massima_order superata: ricalcolo la qty e articlesOrder.stato = QTAMAXORDER
-                    if(((int)$articlesOrders->qty_cart - $qty + $qty_new) > $articlesOrders->qty_massima_order) {
+                    // qta_massima_order superata: ricalcolo la qta e articlesOrder.stato = QTAMAXORDER
+                    if(((int)$articles_order['qta_cart'] - $qta + $qta_new) > $articles_order['qta_massima_order']) {
                     
-                        $qty_label = ((int)$articlesOrders->qty_massima_order - (int)$articlesOrders->qty_cart + $qty); // la ricalcolo
+                        $qta_label = ((int)$articles_order['qta_massima_order'] - (int)$articles_order['qta_cart'] + $qta); // la ricalcolo
                     
-                        $msg = sprintf(__('cart_msg_qtamax_order'), $articlesOrders->qty_massima_order, $qty_label);
+                        $msg = sprintf(__('cart_msg_qtamax_order'), $articles_order['qta_massima_order'], $qta_label);
                         $esito = false;
                     }
-                    else  // qty massima raggiunta articlesOrder.stato = QTAMAXORDER
-                    if(((int)$articlesOrders->qty_cart - (int)$qty + $qty_new) == (int)$articlesOrders->qty_massima_order) {
-                        // qty massima raggiunta: articlesOrder.stato = QTAMAXORDER
+                    else  // qta massima raggiunta articlesOrder.stato = QTAMAXORDER
+                    if(((int)$articles_order['qta_cart'] - (int)$qta + $qta_new) == (int)$articles_order['qta_massima_order']) {
+                        // qta massima raggiunta: articlesOrder.stato = QTAMAXORDER
                     }
 
                 }

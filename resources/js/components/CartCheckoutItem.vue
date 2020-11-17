@@ -16,7 +16,7 @@
       <input
         type="number"
         class="form-control text-center"
-        :value="cartItem.qty"
+        :value="cartItem.qta"
         @input="updateQuantity"
         min="0"
       />
@@ -36,7 +36,7 @@ export default {
   props: ["cartItem"],
   computed: {
     subtotal() {
-      return this.cartItem.qty * this.cartItem.article.price;
+      return this.cartItem.qta * this.cartItem.article.price;
     }
   },
   methods: {
@@ -49,14 +49,14 @@ export default {
     },
     updateQuantity(event) {
 
-      console.log("updateQuantity qty "+event.target.value);
+      console.log("updateQuantity qta "+event.target.value);
       console.log(this.cartItem);
-	    // console.log("NEW QTY event.target.value "+event.target.value);
+	    // console.log("NEW QTA event.target.value "+event.target.value);
 
-      // this.cartItem.qty = parseInt(event.target.value);
+      // this.cartItem.qta = parseInt(event.target.value);
       var cart = {
         cart: this.cartItem,
-        qtyNew: parseInt(event.target.value),
+        qtaNew: parseInt(event.target.value),
         isAdd: false
       };
       this.updateArticle(cart);

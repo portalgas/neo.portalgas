@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use App\Decorator\ApiArticleDecorator;
+use App\Decorator\ApiArticleOrderDecorator;
 
 class OrdersController extends ApiAppController
 {
@@ -161,7 +161,7 @@ class OrdersController extends ApiAppController
                     if(!isset($articlesOrdersResult['cart']) || empty($articlesOrdersResult['cart']))  
                         unset($articlesOrdersResult[$numResult2]);
                     else {
-                        $articlesOrdersResult = new ApiArticleDecorator($articlesOrdersResult); 
+                        $articlesOrdersResult = new ApiArticleOrderDecorator($articlesOrdersResult); 
                         $results[$numResult]['article_orders'][$i] = $articlesOrdersResult->results;
                         $i++;
                     }
@@ -236,7 +236,7 @@ class OrdersController extends ApiAppController
             $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $options);
         
             if(!empty($results)) {
-                $results = new ApiArticleDecorator($results);
+                $results = new ApiArticleOrderDecorator($results);
                 //$results = new ArticleDecorator($results);
                 $results = $results->results;
             }

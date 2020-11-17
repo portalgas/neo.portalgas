@@ -49,7 +49,7 @@ export default {
   name: "app-header",
   data() {
     return {
-      tot_qty: 0
+      tot_qta: 0
     };
   },
   components: {
@@ -63,7 +63,7 @@ export default {
     ...mapGetters(["getArticlesInCart", "getPopupCart", "cartTotal"]),
     numItems() {
       return this.getArticlesInCart.reduce((total, item) => {
-        total += item.qty;
+        total += item.qta;
         return total;
       }, 0);
     },

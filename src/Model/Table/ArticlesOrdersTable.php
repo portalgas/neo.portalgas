@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Log\Log;
 use Cake\Core\Configure;
 
 class ArticlesOrdersTable extends Table
@@ -62,8 +63,8 @@ class ArticlesOrdersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->integer('qty_cart')
-            ->notEmptyString('qty_cart');
+            ->integer('qta_cart')
+            ->notEmptyString('qta_cart');
 
         $validator
             ->scalar('name')
@@ -94,9 +95,9 @@ class ArticlesOrdersTable extends Table
             ->notEmptyString('qta_minima_order');
 
         $validator
-            ->integer('qty_massima_order')
-            ->requirePresence('qty_massima_order', 'create')
-            ->notEmptyString('qty_massima_order');
+            ->integer('qta_massima_order')
+            ->requirePresence('qta_massima_order', 'create')
+            ->notEmptyString('qta_massima_order');
 
         $validator
             ->integer('qta_multipli')
@@ -197,68 +198,75 @@ class ArticlesOrdersTable extends Table
     /*
      * implement
     */
-    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article_order, $debug=false) {
 
-        $organization_id = $article['ids']['organization_id']; 
-        $order_id = $article['ids']['order_id']; 
-        $article_organization_id = $article['ids']['article_organization_id'];
-        $article_id = $article['ids']['article_id'];
+        $organization_id = $article_order['ids']['organization_id']; 
+        $order_id = $article_order['ids']['order_id']; 
+        $article_organization_id = $article_order['ids']['article_organization_id'];
+        $article_id = $article_order['ids']['article_id'];
         
         $cartsTable = TableRegistry::get('Carts');
-        $qty_cart_new = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
+        $qta_cart_new = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
+        if(Configure::write('Logs.cart')) Log::write('debug', 'aggiornaQtaCart_StatoQtaMax qta_cart_new '.$qta_cart_new);
 
-        $article['cart']['qty'] = $qty_cart_new;
-        $this->_updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article, $debug);
+        $article_order['qta_cart'] = $qta_cart_new;
+        $this->_updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article_order, $debug);
     }
 
-    protected function _updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article, $debug=false) {            
-        
-        if($debug) debug("ArticlesOrder.qty_massima_order ".$article['qty_massima_order']." ArticlesOrder.qty_cart ".$article['qty_cart']);
-        
-        $qty_massima_order = intval($article['qty_massima_order']);
-        $qty_cart = intval($article['qty_cart']);
+    protected function _updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article_order, $debug=false) {            
+
+        if($debug) debug("ArticlesOrder.qta_massima_order ".$article_order['qta_massima_order']." ArticlesOrder.qta_cart ".$article_order['qta_cart']);
+        if(Configure::write('Logs.cart')) Log::write('debug', '_updateArticlesOrderQtaCart_StatoQtaMax ArticlesOrder.qta_massima_order '.$article_order['qta_massima_order']." ArticlesOrder.qta_cart ".$article_order['qta_cart']);
+
+        $qta_massima_order = intval($article_order['qta_massima_order']);
+        $qta_cart = intval($article_order['qta_cart']);
 
         /*
-         * ctrl se ArticlesOrder.qty_massima_order > 0, se SI controllo lo ArticlesOrder.stato
+         * ctrl se ArticlesOrder.qta_massima_order > 0, se SI controllo lo ArticlesOrder.stato
          */
-        if ($qty_massima_order > 0) {
-            if ($qty_cart >= $qty_massima_order) {
-                if ($article['article_order']['stato'] != 'QTAMAXORDER') { // ho gia' settato a QTAMAXORDER e eventualmente inviato la mail
-                    $article['article_order']['stato'] = 'QTAMAXORDER';
-                    $article['article_order']['send_mail'] = 'N';  // invia mail da Cron::mailReferentiQtaMax
+        if ($qta_massima_order > 0) {
+            if ($qta_cart >= $qta_massima_order) {
+                if ($article_order['stato'] != 'QTAMAXORDER') { // ho gia' settato a QTAMAXORDER e eventualmente inviato la mail
+                    $article_order['stato'] = 'QTAMAXORDER';
+                    $article_order['send_mail'] = 'N';  // invia mail da Cron::mailReferentiQtaMax
                 }
             }
             else
-            if ($qty_cart < $qty_massima_order && $article['article_order']['stato'] == 'QTAMAXORDER') {
-                $article['article_order']['stato'] = 'Y';
-                $article['article_order']['send_mail'] = 'N'; // invia mail da Cron::mailReferentiQtaMax
+            if ($qta_cart < $qta_massima_order && $article_order['stato'] == 'QTAMAXORDER') {
+                $article_order['stato'] = 'Y';
+                $article_order['send_mail'] = 'N'; // invia mail da Cron::mailReferentiQtaMax
             }
         } 
         else
-        if ($qty_massima_order == 0) {
-            if ($article['article_order']['stato'] == 'QTAMAXORDER')
-                $article['article_order']['stato'] = 'Y';
-            $article['article_order']['send_mail'] = 'N';
+        if ($qta_massima_order == 0) {
+            if ($article_order['stato'] == 'QTAMAXORDER')
+                $article_order['stato'] = 'Y';
+            $article_order['send_mail'] = 'N';
         }
 
-        if($debug) debug($article);
+        if($debug) debug($article_order);
         
         $ids = [];
-        $ids['organization_id'] = $article['ids']['organization_id'];
-        $ids['order_id'] = $article['ids']['order_id'];
-        $ids['article_organization_id'] = $article['ids']['article_organization_id'];
-        $ids['article_id'] = $article['ids']['article_id'];
+        $ids['organization_id'] = $article_order['ids']['organization_id'];
+        $ids['order_id'] = $article_order['ids']['order_id'];
+        $ids['article_organization_id'] = $article_order['ids']['article_organization_id'];
+        $ids['article_id'] = $article_order['ids']['article_id'];
 
+        unset($article_order['article']);
+        
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
 
         $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
-        $articlesOrder = $this->patchEntity($articlesOrder, $article['article_order']);
+        $articlesOrder = $this->patchEntity($articlesOrder, $article_order);
+        if(Configure::write('Logs.cart')) Log::write('debug', $articlesOrder);
+
+
         if (!$articlesOrdersTable->save($articlesOrder)) {
             debug($articlesOrder->getErrors());
-            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $article['order_id'] . " article_organization_id " . $article['article_organization_id'] . " article_id " . $article['article_id'] . " a qty_cart = " . $qty_cart . " stato " . $article['stato']);
+            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $article_order['order_id'] . " article_organization_id " . $article_order['article_organization_id'] . " article_id " . $article_order['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
         }
         else  {
-            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $article['order_id'] . " article_organization_id " . $article['article_organization_id'] . " article_id " . $article['article_id'] . " a qty_cart = " . $qty_cart . " stato " . $article['stato']);
+            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $article_order['order_id'] . " article_organization_id " . $article_order['article_organization_id'] . " article_id " . $article_order['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
         }
     }
 
@@ -322,17 +330,18 @@ class ArticlesOrdersTable extends Table
                 $results[$numResult]['cart'] = [];
                 if(!empty($cartResults)) {
                     $results[$numResult]['cart'] = $cartResults;
-                    $results[$numResult]['cart']['qty'] = $cartResults->qta;
-                    $results[$numResult]['cart']['qty_new'] = $cartResults->qta;  // nuovo valore da FE
+                    $results[$numResult]['cart']['qta'] = $cartResults->qta;
+                    $results[$numResult]['cart']['qta_new'] = $cartResults->qta;  // nuovo valore da FE
                 } 
                 else {
                     $results[$numResult]['cart']['organization_id'] = $result['organization_id'];
                     $results[$numResult]['cart']['user_id'] = $result['user_id'];
                     $results[$numResult]['cart']['order_id'] = $result['order_id'];
                     $results[$numResult]['cart']['article_organization_id'] = $result['article_organization_id'];
-                    $results[$numResult]['cart']['article_id'] = $result['article_id'];                  
-                    $results[$numResult]['cart']['qty'] = 0;
-                    $results[$numResult]['cart']['qty_new'] = 0;  // nuovo valore da FE
+                    $results[$numResult]['cart']['article_id'] = $result['article_id'];
+                    $results[$numResult]['cart']['stato'] = 'Y';                  
+                    $results[$numResult]['cart']['qta'] = 0;
+                    $results[$numResult]['cart']['qta_new'] = 0;  // nuovo valore da FE
                 }
             }
         } // if($results)
@@ -417,20 +426,20 @@ class ArticlesOrdersTable extends Table
             $i=0;
             foreach($resultsArticlesOrders as $numResult => $resultsArticlesOrder) {
 
-                $qty_cart = $resultsArticlesOrder['qty_cart'];
+                $qta_cart = $resultsArticlesOrder['qta_cart'];
 
-                // se DES non prendo ArticlesOrder.qty_cart perche' e' la somma di tutti i GAS ma lo ricalcolo
+                // se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS ma lo ricalcolo
                 if($orderResults->order_type_id==Configure::read('Order.type.des') ||
                    $orderResults->order_type_id==Configure::read('Order.type.des-titolare')) {
                     
                     $cartsTable = TableRegistry::get('Carts');
-                    $qty_cart = $cartsTable->getQtaCartByArticle($user, $organization_id, $orderResults->id, $resultsArticlesOrder['article_organization_id'], $resultsArticlesOrder['article_id'], $debug);
+                    $qta_cart = $cartsTable->getQtaCartByArticle($user, $organization_id, $orderResults->id, $resultsArticlesOrder['article_organization_id'], $resultsArticlesOrder['article_id'], $debug);
                 }
-                if($qty_cart!==false) {
-                    $resultsArticlesOrder['qty_cart'] = $qty_cart;
+                if($qta_cart!==false) {
+                    $resultsArticlesOrder['qta_cart'] = $qta_cart;
                 }
 
-                $differenza_da_ordinare = ($qty_cart % $resultsArticlesOrder['pezzi_confezione']);
+                $differenza_da_ordinare = ($qta_cart % $resultsArticlesOrder['pezzi_confezione']);
                 
                 if($differenza_da_ordinare>0) {
                     $differenza_da_ordinare = ($resultsArticlesOrder['pezzi_confezione'] - $differenza_da_ordinare);

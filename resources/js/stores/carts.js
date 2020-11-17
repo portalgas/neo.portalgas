@@ -12,7 +12,7 @@ export const carts = {
     cartTotal: state => {
       let res = 0;
       state.cartArticles.map(item => {
-        res += item.article.price * item.qty;
+        res += item.article.price * item.qta;
       });
       return res;
     },
@@ -24,15 +24,15 @@ export const carts = {
     LOAD_PAGE: state => {
       state.isLoading = false;
     },
-    ADD_ARTICLE: (state, { article, qty }) => {
+    ADD_ARTICLE: (state, { article, qta }) => {
 
       var _this = this;
 
-      console.log("ADD_ARTICLE article " + article.ids.article_id + " qty " + qty);
+      console.log("ADD_ARTICLE article " + article.ids.article_id + " qta " + qta);
 
       const cartArticle = {
         article: Object.assign({}, article),
-        qty: qty
+        qta: qta
       };
       
       console.info("ADD_ARTICLE article.ids.article_id "+article.ids.article_id);
@@ -54,10 +54,10 @@ export const carts = {
         console.log("l'articolo FOUND ");
         console.log(articleInCart);
         console.log(
-          "l'articolo è stato già acquistato con qty " + articleInCart.qty
+          "l'articolo è stato già acquistato con qta " + articleInCart.qta
         );
-        // qty = qty - articleInCart.qty;
-        articleInCart.qty = qty;
+        // qta = qta - articleInCart.qta;
+        articleInCart.qta = qta;
       } else {
         console.log("l'articolo NON mai stato acquistato => push");        
         state.cartArticles.push(cartArticle);
@@ -83,7 +83,7 @@ export const carts = {
                       );
       state.cartArticles.splice(state.cartArticles.indexOf(record), 1);
     },
-    UPDATE_CART: (state, { cart, qtyNew, isAdd }) => {
+    UPDATE_CART: (state, { cart, qtaNew, isAdd }) => {
      
  console.log(cart);      
  console.log(cart.article); 
@@ -93,17 +93,17 @@ export const carts = {
                        element.article.ids.article_organization_id == article.ids.article_organization_id && 
                        element.article.ids.order_id == article.ids.order_id && 
                        element.article.ids.organization_id == article.ids.organization_id));
-      console.log("UPDATE_CART record.qty "+record.qty+" qtyNew "+qtyNew);
+      console.log("UPDATE_CART record.qta "+record.qta+" qtaNew "+qtaNew);
       if (record) {
         if (isAdd) {
-          record.qty += qtyNew;
+          record.qta += qtaNew;
         } else {
-          record.qty = qtyNew;
+          record.qta = qtaNew;
         }
       } else {
         const cartNew = {
           cart: Object.assign({}, cart.article),
-          qty: 1
+          qta: 1
         };
         state.cartArticles.push(cartNew);
       }
@@ -119,12 +119,12 @@ export const carts = {
     loadPage: context => {
       context.commit("LOAD_PAGE");
     },   
-    addArticle: (context, { article, qty }) => {
+    addArticle: (context, { article, qta }) => {
       console.log("ADD_ARTICLE");
       console.log(article);
-      console.log("qty "+qty);
+      console.log("qta "+qta);
       console.log("store addArticle " + article.ids.article_id);
-      context.commit("ADD_ARTICLE", { article, qty });
+      context.commit("ADD_ARTICLE", { article, qta });
     },
     removeArticle: (context, index) => {
       context.commit("REMOVE_ARTICLE", index);
@@ -132,14 +132,14 @@ export const carts = {
     removeItemInCart: (context, { article }) => {
       context.commit("REMOVE_CART_ITEM", { article });
     },
-    updateArticle: (context, { cart, qtyNew, isAdd }) => {
+    updateArticle: (context, { cart, qtaNew, isAdd }) => {
 
        console.log(cart); 
 
-      context.commit("UPDATE_CART", { cart, qtyNew, isAdd });
+      context.commit("UPDATE_CART", { cart, qtaNew, isAdd });
       if (isAdd) {
         let message_obj = {
-          message: `Add qty ${qtyNew} ${cart.article.name} to cart successfully`,
+          message: `Add qta ${qtaNew} ${cart.article.name} to cart successfully`,
           messageClass: "success",
           autoClose: true
         };

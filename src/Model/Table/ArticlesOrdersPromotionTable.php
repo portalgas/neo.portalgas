@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
+use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 
 class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements ArticlesOrdersTableInterface 
@@ -115,8 +116,8 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
                 $results[$numResult]['cart'] = [];
                 if(!empty($cartResults)) {
                     $results[$numResult]['cart'] = $cartResults;
-                    $results[$numResult]['cart']['qty'] = $cartResults->qta;
-                    $results[$numResult]['cart']['qty_new'] = $cartResults->qta;  // nuovo valore da FE
+                    $results[$numResult]['cart']['qta'] = $cartResults->qta;
+                    $results[$numResult]['cart']['qta_new'] = $cartResults->qta;  // nuovo valore da FE
                 } 
                 else {
                     $results[$numResult]['cart']['organization_id'] = $result['organization_id'];
@@ -124,8 +125,8 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
                     $results[$numResult]['cart']['order_id'] = $result['order_id'];
                     $results[$numResult]['cart']['article_organization_id'] = $result['article_organization_id'];
                     $results[$numResult]['cart']['article_id'] = $result['article_id'];                  
-                    $results[$numResult]['cart']['qty'] = 0;
-                    $results[$numResult]['cart']['qty_new'] = 0;  // nuovo valore da FE
+                    $results[$numResult]['cart']['qta'] = 0;
+                    $results[$numResult]['cart']['qta_new'] = 0;  // nuovo valore da FE
                 }
 
                 /*

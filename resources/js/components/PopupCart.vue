@@ -8,9 +8,9 @@
     >
       <img :src="cart.article.img1" alt="" class="item-thumb" />
       <h3 class="item-name">{{ cart.article.name }}</h3>
-      <span class="item-amount">Qty: {{ cart.qty }}</span>
+      <span class="item-amount">Qta: {{ cart.qta }}</span>
       <span class="item-price">{{ cart.article.price }} &euro;</span>
-      <span class="item-price">{{ cart.qty * cart.article.price }} &euro;</span>
+      <span class="item-price">{{ cart.qta * cart.article.price }} &euro;</span>
     </div>
     <div class="cart-info" v-if="hasProduct()">
       <span>Totale: {{ totalPrice() }} &euro;</span>
@@ -44,7 +44,7 @@ export default {
     },
     totalPrice() {
       return this.getArticlesInCart.reduce(
-        (current, next) => current + (next.qty * next.article.price),
+        (current, next) => current + (next.qta * next.article.price),
         0
       );
     },

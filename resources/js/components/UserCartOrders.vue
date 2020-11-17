@@ -26,7 +26,7 @@
 	          :order="order"
 	          :key="order.id">
 
-					<a v-on:click="selectOrder(order)" href="#">
+					<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
 						<div class="content-img-supplier">
 							<img v-if="order.suppliers_organization.supplier.img1 != ''" 
@@ -167,6 +167,11 @@ export default {
 </script>
 
 <style scoped>
+.row-gray {
+    background-color: #dee2e6;
+    display: block;
+    padding: 10px;
+}
 .card { 
   border: none;
 }

@@ -146,7 +146,7 @@ class CartsController extends ApiAppController
         $results = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);            
         /*
         if(!empty($results)) {
-            // $results = new ApiArticleDecorator($results);
+            // $results = new ApiArticleOrderDecorator($results);
             $results = new ArticleDecorator($results);
             $results = $results->results;
         }

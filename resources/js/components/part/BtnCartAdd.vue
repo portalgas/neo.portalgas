@@ -2,7 +2,7 @@
 
     <div>
 
-        GIA' ACQUISTATO: qty {{ article.cart.qty }} qty_new {{ article.cart.qty_new }} {{ order.order_state_code.code }}
+        <!-- GIA' ACQUISTATO: qta {{ article.cart.qta }} qta_new {{ article.cart.qta_new }} {{ order.order_state_code.code }} -->
 
       <div
         v-if="message.msg"
@@ -36,7 +36,7 @@
           <input
             type="number"
             class="form-control text-center"
-            :value="article.cart.qty_new"
+            :value="article.cart.qta_new"
             :disabled="article.store === 0 || isRun"
             @input="numberCart"
             min="0"
@@ -67,7 +67,7 @@
           <input
             type="number"
             class="form-control text-center"
-            :value="article.cart.qty_new"
+            :value="article.cart.qta_new"
             :disabled="true"
             inputmode="numeric"
             title="Qtà"
@@ -95,14 +95,14 @@ export default {
   props: ['order', 'article'], 
   computed: {
       btnMinusIsDisabled() {
-        return (this.isRun || this.article.cart.qty_new == 0);
+        return (this.isRun || this.article.cart.qta_new == 0);
       },
       btnPlusIsDisabled() {
         return (this.isRun || 
           (typeof this.article.riopen!="undefined" && this.article.riopen.differenza_da_ordinare==0));
       },
       btnSaveIsDisabled()  {
-        return (this.isRun || this.article.cart.qty === this.article.cart.qty_new);
+        return (this.isRun || this.article.cart.qta === this.article.cart.qta_new);
       },
   },   
   methods: {
@@ -128,7 +128,7 @@ export default {
               messageClass = "success";
               msg = response.data.msg;
 
-              this.article.cart.qty = this.article.cart.qty_new;  // aggiorno la qty 
+              this.article.cart.qta = this.article.cart.qta_new;  // aggiorno la qta 
           }
           else {
               messageClass = "danger";
@@ -167,32 +167,32 @@ export default {
 
       this.message = {}
 
-      if(this.article.cart.qty_new>0) {
+      if(this.article.cart.qta_new>0) {
 
-        let qty_prima_di_modifica = this.article.cart.qty_new;
-        console.log("minusCart() qty_prima_di_modifica "+qty_prima_di_modifica);
+        let qta_prima_di_modifica = this.article.cart.qta_new;
+        console.log("minusCart() qta_prima_di_modifica "+qta_prima_di_modifica);
 
-        this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+        this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
         
-        if (this.article.cart.qty_new < this.article.qty_min) {
-            this.article.cart.qty_new = 0;
+        if (this.article.cart.qta_new < this.article.qta_minima) {
+            this.article.cart.qta_new = 0;
         }
 
         /*
          * di quanto e' aumentata rispetto a prima
          */
-        let qty_incremento = (qty_prima_di_modifica - this.article.cart.qty_new);
-        console.log("minusCart() qty_incremento "+qty_incremento);
+        let qta_incremento = (qta_prima_di_modifica - this.article.cart.qta_new);
+        console.log("minusCart() qta_incremento "+qta_incremento);
 
         /* 
          * RI-OPEN-VALIDATE
          */
         if(typeof this.article.riopen!="undefined") {
-          this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + qty_incremento);
+          this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + qta_incremento);
         }
 
         if(this.validitationCart()) {
-         // this.article.cart.qty=this.article.cart.qty_new;  // aggiorno la qty originale   
+         // this.article.cart.qta=this.article.cart.qta_new;  // aggiorno la qta originale   
         }
       }
       else {
@@ -200,7 +200,7 @@ export default {
          * RI-OPEN-VALIDATE
          */
         if(typeof this.article.riopen!="undefined") {
-          this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + this.article.cart.qty);
+          this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + this.article.cart.qta);
         }      
       }
     },
@@ -208,32 +208,32 @@ export default {
 
       this.message = {}
 
-      let qty_prima_di_modifica = this.article.cart.qty_new;
-      console.log("plusCart() qty_prima_di_modifica "+qty_prima_di_modifica);
+      let qta_prima_di_modifica = this.article.cart.qta_new;
+      console.log("plusCart() qta_prima_di_modifica "+qta_prima_di_modifica);
 
-      this.article.cart.qty_new = (this.article.cart.qty_new + (1 * this.article.qty_multiple));
+      this.article.cart.qta_new = (this.article.cart.qta_new + (1 * this.article.qta_multipli));
 
       /*
        * di quanto e' aumentata rispetto a prima
        */
-      let qty_incremento = (this.article.cart.qty_new - qty_prima_di_modifica);
-      console.log("plusCart() qty_incremento "+qty_incremento);
+      let qta_incremento = (this.article.cart.qta_new - qta_prima_di_modifica);
+      console.log("plusCart() qta_incremento "+qta_incremento);
 
       /* 
        * RI-OPEN-VALIDATE
        */
       if(typeof this.article.riopen!="undefined") {
-        this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare - qty_incremento);
+        this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare - qta_incremento);
       }
 
       if(this.validitationCart()) {
-       // this.article.cart.qty=this.article.cart.qty_new; // aggiorno la qty originale
+       // this.article.cart.qta=this.article.cart.qta_new; // aggiorno la qta originale
       }
     },
     numberCart(event) {
       console.log("numberCart " + event.target.value);
-      this.article.cart.qty_new = parseInt(event.target.value);
-      this.article.cart.qty = parseInt(event.target.value);
+      this.article.cart.qta_new = parseInt(event.target.value);
+      this.article.cart.qta = parseInt(event.target.value);
       
       this.validitationCart();
     },
@@ -242,27 +242,30 @@ export default {
        var messageClass = "danger";
        var message = "";
 
-       if(this.article.article_order.stato=="LOCK" && this.article.cart.qty_new>this.article.cart.qty) {
+       if(this.article.stato=="LOCK" && this.article.cart.qta_new > this.article.cart.qta) {
           message = "L'articolo è bloccato, non si possono aggiungere articoli";
-          this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+          this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
        }
        else
-       if(this.article.article_order.stato=="QTAMAXORDER" && this.article.cart.qty_new>this.article.cart.qty) {
-          message = "Raggiunta la quantità massima che si può ordinare";
-          this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+       if(this.article.stato=="QTAMAXORDER" && this.article.cart.qta_new > this.article.cart.qta) {
+          console.log("A) "+this.article.stato+" cart.qta_new "+this.article.cart.qta_new+" cart.qta "+this.article.cart.qta);
+          message = "Raggiunta la quantità massima ("+this.article.qta_massima_order+") che si può ordinare";
+          this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
        }  
        else
-       if(this.article.qty_massima_order>0) {
-          if((this.article.qty_cart - qty_new>this.article.cart.qty + qty_new>this.article.cart.qty_new) > this.article.qty_massima_order) {
-            message = "Raggiunta la quantità massima che si può ordinare";
-            this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+       if(this.article.qta_massima_order>0) {
+          if((this.article.qta_cart - this.article.cart.qta + this.article.cart.qta_new) > this.article.qta_massima_order) {
+            console.log("B) qta_massima_order "+this.article.qta_massima_order+" cart.qta_new "+this.article.cart.qta_new+" cart.qta "+this.article.cart.qta+" article.qta_cart "+this.article.qta_cart);
+            message = "Raggiunta la quantità massima ("+this.article.qta_massima_order+") che si può ordinare";
+            this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
           }
        }
        else
-       if(this.article.qty_massima>0) {
-          if(qty_new>this.article.cart.qty_new  > this.article.qty_massima) {
-            message = "Raggiunta la quantità massima che si può ordinare";
-            this.article.cart.qty_new = (this.article.cart.qty_new - (1 * this.article.qty_multiple));
+       if(this.article.qta_massima>0) {
+          if(this.article.cart.qta_new  > this.article.qta_massima) {
+            console.log("C) qta_massima "+this.article.qta_massima+" cart.qta_new "+this.article.cart.qta_new);
+            message = "Raggiunta la quantità massima ("+this.article.qta_massima_order+") che si può ordinare";
+            this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
           }
        }             
 

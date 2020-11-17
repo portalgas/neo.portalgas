@@ -11,37 +11,42 @@
         </div>
 
         <div class="card-body">
-            <p class="card-text">
-                
-              <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-              </div><span><a class="btn btn-primary btn-block" href="#" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
+            <div class="card-text">
+                <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
+                </div><span><a class="btn btn-primary btn-block" href="#" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
 
-              <div>
-                <strong>Prezzo</strong> {{ article.price | currency }} &euro;
-                  <del v-if="article.price_pre_discount != null"
-                      >{{ article.price_pre_discount | currency }} &euro;</del
-                    >                
-              </div>
-              <div>
-                <strong>Conf.</strong> {{ article.conf }}
-                <small class="text-muted"><strong>Prezzo/UM</strong> {{ article.um_rif_label }}</small>
-              </div>
-            </p>
-            <p class="card-text">
-              <div v-if="article.package>1">
-                <small class="text-muted"><strong>Pezzi in confezione</strong> {{ article.package }}</small>
-              </div>
-              <div v-if="article.qty_multiple>1">
-                <small class="text-muted"><strong>Multipli</strong> {{ article.qty_multiple }}</small>
-              </div>
-              <div v-if="article.qty_min>1">
-                <small class="text-muted"><strong>Qta minima</strong> {{ article.qty_min }}</small>
-              </div>
-              <div v-if="article.qty_max>0">
-                <small class="text-muted"><strong>Qta massma</strong> {{ article.qty_max }}</small>
-              </div>
-           
-            </p>
+                <div>
+                  <strong>Prezzo</strong> {{ article.price | currency }} &euro;
+                    <del v-if="article.price_pre_discount != null"
+                        >{{ article.price_pre_discount | currency }} &euro;</del
+                      >                
+                </div>
+                <div>
+                  <strong>Conf.</strong> {{ article.conf }}
+                  <small class="text-muted"><strong>Prezzo/UM</strong> {{ article.um_rif_label }}</small>
+                </div>
+            </div>
+
+            <div class="card-text">
+                <div v-if="article.package>1">
+                  <small class="text-muted"><strong>Pezzi in confezione</strong> {{ article.package }}</small>
+                </div>
+                <div v-if="article.qta_multipli>1">
+                  <small class="text-muted"><strong>Multipli</strong> {{ article.qta_multipli }}</small>
+                </div>
+                <div v-if="article.qta_minima>1">
+                  <small class="text-muted"><strong>Q.tà minima</strong> {{ article.qta_minima }}</small>
+                </div>
+                <div v-if="article.qta_minima_order>0">
+                  <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
+                </div>
+                <div v-if="article.qta_massima>0">
+                  <small class="text-muted"><strong>Q.tà massima</strong> {{ article.qta_massima }}</small>
+                </div>
+                <div v-if="article.qta_massima_order>0">
+                  <small class="text-muted"><strong>Q.tà massima sull'ordine totale</strong> {{ article.qta_massima_order }} (acquistati ora {{ article.qta_cart }})</small>
+                </div>
+            </div>
         </div>
         <div v-bind:class="'card-footer '+justInCart"> 
            <app-btn-cart-add v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
@@ -62,7 +67,7 @@ export default {
   props: ['order', 'article'],
   data() {
     return {
-      qty: 1
+      qta: 1
     };
   },
   components: {
@@ -108,8 +113,8 @@ export default {
   },
   computed: {
     justInCart: function() { 
-        /* console.log("Article::justInCart article.cart.qty "+this.article.cart.qty) */
-        return this.article.cart.qty>0 ? 'bg-light' : 'bg-transparent';
+        /* console.log("Article::justInCart article.cart.qta "+this.article.cart.qta) */
+        return this.article.cart.qta>0 ? 'bg-light' : 'bg-transparent';
     } 
   },
   filters: {

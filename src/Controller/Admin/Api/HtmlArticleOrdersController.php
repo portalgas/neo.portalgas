@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use App\Decorator\ApiArticleDecorator;
+use App\Decorator\ApiArticleOrderDecorator;
 
 class HtmlArticleOrdersController extends AppController
 {

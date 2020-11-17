@@ -1,7 +1,7 @@
 <template>
 
   <div class="row">
-        <div class="col-sm-1 col-xs-1 col-md-1">
+        <div class="col-sm-2 col-xs-2 col-md-2 d-none d-sm-block">
           <div class="content-img-top">
             <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
             <div v-if="article.is_bio" class="box-bio">
@@ -24,7 +24,7 @@
         <div class="col-sm-2 col-xs-2 col-md-2">
               {{ article.um_rif_label }}
         </div>
-        <div class="col-sm-3 col-xs-3 col-md-3">
+        <div class="col-sm-3 col-xs-3 col-md-2">
            <app-btn-cart-add v-bind:article="article" v-bind:order="order" :key="article.id"></app-btn-cart-add>
         </div>
   </div>
@@ -43,7 +43,7 @@ export default {
   props: ['order', 'article'],
   data() {
     return {
-      qty: 1
+      qta: 1
     };
   },
   components: {

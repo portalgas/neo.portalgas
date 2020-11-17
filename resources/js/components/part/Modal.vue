@@ -73,6 +73,10 @@ export default {
   z-index: 2;
   min-height: calc(100% - (1.75rem * 2));
 }
+.modal-body {
+  overflow-y: auto;
+  height: 400px;
+}
 @media (min-width: 576px)
 .modal-dialog-centered {
     min-height: calc(100% - (1.75rem * 2));

@@ -111,7 +111,7 @@
 
     <div class="row">
         <div  class="col-12">
-            <app-search-articles @search="onSearch" />
+            <app-search-article-orders @search="onSearch" />
         </div>
     </div>
 
@@ -128,10 +128,10 @@
     		          :article="article"
     		          :key="article.article_id"
     		        > 
-    		          <app-articles
+    		          <app-article-order
                     v-bind:article="article"
                     v-bind:order="order">
-                    </app-articles>
+                    </app-article-order>
           </div> 
 
     </div> <!-- row -->
@@ -144,8 +144,8 @@
 // @ is an alias to /src
 import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
-import articles from "../components/part/Articles.vue";
-import searchArticles from "../components/part/SearchArticles.vue";
+import articleOrder from "../components/part/ArticleOrder.vue";
+import searchArticleOrders from "../components/part/SearchArticleOrders.vue";
 
 export default {
   name: "app-order",
@@ -163,8 +163,8 @@ export default {
     };
   },
   components: {
-    appArticles: articles,
-    appSearchArticles: searchArticles
+    appArticleOrder: articleOrder,
+    appSearchArticleOrders: searchArticleOrders
   },  
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
