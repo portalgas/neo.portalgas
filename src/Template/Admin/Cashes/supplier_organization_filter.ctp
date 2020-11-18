@@ -19,7 +19,8 @@ if(!empty($results)) {
 
 	foreach($results as $numResult => $result) {
 
-		// debug($result);
+		//if(!empty($result->supplierOrganizationCashExcludeds))
+		//	debug($result->supplierOrganizationCashExcludeds->supplier_organization_id);
 
 		echo '<tr>';
 		// echo '<td>'.($numResult + 1).'</td>';
@@ -29,27 +30,41 @@ if(!empty($results)) {
 		echo '<td>';
 
 		/* 
-		 * produttore gia' inserito in supplier_organization_cash_excludeds, sara' escluso dal prepagato
+		 * produttore NON inserito in supplier_organization_cash_excludeds => sara' considerato con il prepagato
 		 */
 		$options = [];
 		$options['data-attr-id'] = $result->id;
 		$options['data-attr-type'] = 'delete-'.$result->id; 
 		$options['class'] = 'cashExcludeds btn btn-success button';
-		if(!empty($result['supplierOrganizationCashExcludeds'])) 
+		$options['escape'] = false;
+		if(!empty($result->supplierOrganizationCashExcludeds)) {
 			$options['style'] = 'display:none;';
-		$label = __('Considera con il prepagato');
+			// debug($result->supplierOrganizationCashExcludeds->supplier_organization_id);
+		}
+		else {
+			$options['style'] = 'display:block;';
+		}		
+		// azione futura se clicco
+		$label = __('Ora è calcolato con il prepagato,<br />clicca per escluderlo');
 		echo $this->Html->link($label, '#', $options);
 
 		/* 
-		 * produttore NON inserito in supplier_organization_cash_excludeds, sara' considerato con il prepagato
-		 */
+		 * produttore inserito in supplier_organization_cash_excludeds => sara' escluso dal prepagato
+		 */		
 		$options = [];
 		$options['data-attr-id'] = $result->id;
 		$options['data-attr-type'] = 'insert-'.$result->id; 
 		$options['class'] = 'cashExcludeds btn btn-warning button';
-		if(empty($result['supplierOrganizationCashExcludeds'])) 
+		$options['escape'] = false;
+		if(empty($result->supplierOrganizationCashExcludeds)) {
 			$options['style'] = 'display:none;';
-		$label = __('Escludi dal prepagato');			
+			// debug($result->supplierOrganizationCashExcludeds);
+		}
+		else {
+			$options['style'] = 'display:block;';
+		}
+		// azione futura se clicco
+		$label = __('Ora è escluso dal prepagato,<br />clicca per includerlo');					
 		echo $this->Html->link($label, '#', $options);
 		
 		echo '</td>';
