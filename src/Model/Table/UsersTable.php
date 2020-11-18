@@ -193,6 +193,7 @@ class UsersTable extends Table
                   'Organizations.stato' => 'Y'];
         if($debug) debug($where);
         
+        $this->Organizations->addBehavior('OrganizationsParams');
         $organization = $this->Organizations->find()
             ->select([
                 'Organizations.id',  
