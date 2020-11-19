@@ -291,6 +291,9 @@ Configure::write('Order.type.supplier', 7);
 Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
 Configure::write('group_pact_supplier_manager',84);   // manager pact 
 
+Configure::write('DB.prefix', 'k_');        // in database.php (cron per il dump delle tabelle)
+Configure::write('DB.portalPrefix', 'j_');  // (cron per il dump delle tabelle)
+Configure::write('DB.tableJoomlaWithPassword', 'jos_users'); // nome della tabella per la migrazione degli utenti, contiente la password
 Configure::write('DB.field.date.error', '0000-00-00');
 Configure::write('DB.field.date.empty', '1970-01-01');
 Configure::write('DB.field.double.empty', '0.00');

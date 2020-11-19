@@ -1,25 +1,58 @@
 <?php
-namespace App\Controller\Component;
+namespace App\Model\Table;
 
-use Cake\Controller\Component;
-use Cake\Core\Configure;
+use Cake\ORM\Query;
+use Cake\ORM\RulesChecker;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Log\Log;
-use Cake\Controller\ComponentRegistry;
+use Cake\Core\Configure;
+use Cake\Validation\Validator;
+use App\Validation\OrderValidator;
 
-class OrderLifeCycleComponent extends Component {
-
-    // non funziona! public $components = ['SummaryOrderLifeCycle'];
-    protected $_registry;
-    protected $component;
-
-    public function __construct(ComponentRegistry $registry, array $config = [])
+class LifeCycleOrdersTable extends Table
+{
+    public function initialize(array $config)
     {
-        $this->_registry = $registry;
-        $controller = $registry->getController();
+        parent::initialize($config);
 
-        $this->_registry->load('SummaryOrderLifeCycle');
-        //$controller->request
+        $this->setTable('k_orders');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey(['organization_id', 'id']);
+
+        $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Organizations', [
+            'foreignKey' => 'organization_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('OrderStateCodes', [
+            'foreignKey' => 'state_code',
+            'joinType' => 'INNER',
+        ]); 
+        $this->belongsTo('OrderTypes', [
+            'foreignKey' => 'order_type_id',
+            'joinType' => 'INNER',
+        ]);        
+        $this->belongsTo('SuppliersOrganizations', [
+            'foreignKey' => ['organization_id', 'supplier_organization_id'],
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('OwnerOrganizations', [
+            'foreignKey' => 'owner_organization_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('OwnerSupplierOrganizations', [
+            'foreignKey' => 'owner_supplier_organization_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('Deliveries', [
+            'foreignKey' => ['organization_id', 'delivery_id'],
+            'joinType' => 'INNER',
+        ]);
+        $this->hasMany('Carts', [
+            'foreignKey' => ['organization_id', 'order_id'],
+            'joinType' => 'INNER'
+        ]);        
     }
     
     /*
@@ -42,7 +75,7 @@ class OrderLifeCycleComponent extends Component {
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
     
-        if($debug) debug("OrderLifeCycle::changeOrder order_id [".$orderResult->id."] operation ".$operation);
+        if($debug) debug("LifeCycleOrdersTable::changeOrder order_id [".$orderResult->id."] operation ".$operation);
         
         switch($operation) {
             case 'EDIT':
@@ -96,7 +129,7 @@ class OrderLifeCycleComponent extends Component {
                             
             break;
             default:
-                die("OrderLifeCycle::changeOrder operation non previsto [".$operation."]");
+                die("LifeCycleOrdersTable::changeOrder operation non previsto [".$operation."]");
             break;          
         }
             
@@ -121,7 +154,7 @@ class OrderLifeCycleComponent extends Component {
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
     
-        if($debug) debug("OrderLifeCycle::beforeRendering order_id [".$orderResult->id."] state_code ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::beforeRendering order_id [".$orderResult->id."] state_code ".$orderResult->state_code);
 
         switch($orderResult->state_code) {
             case 'CREATE-INCOMPLETE':
@@ -184,7 +217,7 @@ class OrderLifeCycleComponent extends Component {
                 $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);             
             break;
             default:
-                die("OrderLifeCycle::beforeRendering Order.state_code non previsto [".$orderResult->state_code."]");
+                die("LifeCycleOrdersTable::beforeRendering Order.state_code non previsto [".$orderResult->state_code."]");
             break;              
         }
 
@@ -210,10 +243,10 @@ class OrderLifeCycleComponent extends Component {
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
     
-        if($debug) debug("OrderLifeCycle::stateCodeUpdate order_id [".$orderResult->id."] state_code ".$orderResult->state_code." state_code_next ".$state_code_next);
+        if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] state_code ".$orderResult->state_code." state_code_next ".$state_code_next);
 
         if($state_code_next==$orderResult->state_code) {
-            if($debug) debug("OrderLifeCycle::stateCodeUpdate order_id [".$orderResult->id."] state_code ".$orderResult->state_code." == state_code_next ".$state_code_next." => NON aggiorno");
+            if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] state_code ".$orderResult->state_code." == state_code_next ".$state_code_next." => NON aggiorno");
             $esito['CODE'] = "200";
             return $esito;      
         }
@@ -379,7 +412,7 @@ class OrderLifeCycleComponent extends Component {
                 $orderResult->data_state_code_close = date("Y-m-d");
             break;
             default:
-                die("OrderLifeCycle::stateCodeUpdate Order.state_code_next non previsto [".$state_code_next."]");
+                die("LifeCycleOrdersTable::stateCodeUpdate Order.state_code_next non previsto [".$state_code_next."]");
             break;              
         }
   
@@ -390,11 +423,11 @@ class OrderLifeCycleComponent extends Component {
          */      
         $orderResult = $this->_orderAddValue($orderResult, $state_code_next, $opts, $debug);
         if(isset($orderResult->CODE)) {
-            if($debug) debug("OrderLifeCycle::stateCodeUpdate _orderAddValue() order_id [".$orderResult->id."] ERROR salvando l'ordine ".$orderResult->CODE);
+            if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate _orderAddValue() order_id [".$orderResult->id."] ERROR salvando l'ordine ".$orderResult->CODE);
             return $orderResult; 
         }
 
-        if($debug) debug("OrderLifeCycle::stateCodeUpdate order_id [".$orderResult->id."] salvo l'ordine");
+        if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] salvo l'ordine");
         if($debug) debug($orderResult);
 
         /*
@@ -404,7 +437,7 @@ class OrderLifeCycleComponent extends Component {
         unset($orderResult->delivery);
         //$order = $ordersTable->patchEntity($order, $orderResult);
         if (!$ordersTable->save($orderResult)) {
-            if($debug) debug("OrderLifeCycle::stateCodeUpdate order_id [".$orderResult->id."] ERROR salvando l'ordine");
+            if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] ERROR salvando l'ordine");
             if($debug) debug($orderResult>getErrors());
             $esito['CODE'] = "500";
             $esito['MSG'] = $orderResult>getErrors();
@@ -430,31 +463,29 @@ class OrderLifeCycleComponent extends Component {
             
             break;
             case 'INCOMING-ORDER':  // merce arrivata
-                $this->_registry->SummaryOrderLifeCycle->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders
             break;
             case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere
-                $this->_registry->SummaryOrderLifeCycle->callbackToOrder($user, $orderResult); // => popolo k_summary_orders 
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => popolo k_summary_orders 
             break;
             /*
              * tesoriere
              */             
             case 'WAIT-PROCESSED-TESORIERE':
                 // $Tesoriere->sendMailToUpload($user, $this->request->data, $results, 'REFERENTE', $debug);    
-                $this->_registry->SummaryOrderLifeCycle->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders            
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders            
             break;
             case 'PROCESSED-TESORIERE':  // in carico al Tesoriere
-                $this->_registry->SummaryOrderLifeCycle->callbackToOrder($user, $orderResult); // => popolo k_summary_orders                             
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => popolo k_summary_orders                             
             break;              
             case 'TO-REQUEST-PAYMENT':  // Possibilità di richiederne il pagamento
-                $this->_registry->SummaryOrderLifeCycle->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders                        
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders                        
             break;
             case 'TO-PAYMENT':
                  /*
                  * riporto le consegne da CLOSE e OPEN
                  */
-                $lifeCycleDeliveriesTable = TableRegistry::get('LifeCycleDeliveriesTable');
-
-                $DeliveryLifeCycle->deliveriesToOpen($user, $orderResult->delivery_id, $debug);           // TODO
+                $DeliveryLifeCycle->deliveriesToOpen($user, $orderResult->delivery_id, $debug);  // TODO  
             break;
             case 'USER-PAID':                   
             break;
@@ -465,7 +496,7 @@ class OrderLifeCycleComponent extends Component {
             case 'CLOSE':
             break;
             default:
-                die("OrderLifeCycle::stateCodeUpdate Order.state_code non previsto [".$orderResult->state_code."]");
+                die("LifeCycleOrdersTable::stateCodeUpdate Order.state_code non previsto [".$orderResult->state_code."]");
             break;          
         }
         
@@ -520,7 +551,7 @@ class OrderLifeCycleComponent extends Component {
             $results['summaryOrderNotPaid'] = $summaryOrderNotPaidResults;          
         }
         
-        if($debug) debug("OrderLifeCycle::getPaidUsers order_id [".$orderResult->id."] ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::getPaidUsers order_id [".$orderResult->id."] ".$orderResult->state_code);
         // if(!empty($results)) if($debug) debug($results);
                 
         return $results;     
@@ -534,17 +565,18 @@ class OrderLifeCycleComponent extends Component {
         $results = false;
 
         $ordersTable = TableRegistry::get('Orders');
+        $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrdersTable');
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
         
         // ctrl se e' stato saldato da tutti i gasisti
-        if($this->_registry->SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug))  
+        if($lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug))  
             $results = true;
         else
             $results = false;   
             
-        if($debug) debug("OrderLifeCycle::isPaidUsers order_id [".$orderResult->id."] ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::isPaidUsers order_id [".$orderResult->id."] ".$orderResult->state_code);
         if(!empty($results)) if($debug) debug($results);
     
         return $results;    
@@ -569,7 +601,7 @@ class OrderLifeCycleComponent extends Component {
                 $results['isPaid'] = $this->isPaidSupplier($user, $orderResult, $debug);
         }
     
-        if($debug) debug("OrderLifeCycle::getPaidSupplier order_id [".$orderResult->id."] ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::getPaidSupplier order_id [".$orderResult->id."] ".$orderResult->state_code);
         if(!empty($results) && isset($results['isPaid']) && !empty($results['isPaid'])) if($debug) debug($results);
     
         return $results;    
@@ -592,7 +624,7 @@ class OrderLifeCycleComponent extends Component {
         else 
             $results = false;
     
-        if($debug) debug("OrderLifeCycle::isPaidSupplier order_id [".$orderResult->id."] ".$orderResult->state_code." - order.tesoriere_stato_pay ".$orderResult->tesoriere_stato_pay." => esito ".$results);
+        if($debug) debug("LifeCycleOrdersTable::isPaidSupplier order_id [".$orderResult->id."] ".$orderResult->state_code." - order.tesoriere_stato_pay ".$orderResult->tesoriere_stato_pay." => esito ".$results);
 
         return $results;    
     }
@@ -633,7 +665,7 @@ class OrderLifeCycleComponent extends Component {
                 $results['class'] = 'label label-info';
             }
                 
-            if($debug) debug("OrderLifeCycle::msgGgArchiveStatics order_id [".$orderResult->id."] ".$orderResult->state_code." data_statistiche ".$data_statistiche);
+            if($debug) debug("LifeCycleOrdersTable::msgGgArchiveStatics order_id [".$orderResult->id."] ".$orderResult->state_code." data_statistiche ".$data_statistiche);
         }
 
         return $results;    
@@ -657,7 +689,7 @@ class OrderLifeCycleComponent extends Component {
                 $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
 
             $stateCodeAfter = $this->stateCodeAfter($user, $orderResult, $orderResult->state_code, $debug);
-            if($debug) debug("OrderLifeCycle::getOrderStateNext order_id [".$orderResult->id."] ".$orderResult->state_code." - stateCodeAfter ".$stateCodeAfter);
+            if($debug) debug("LifeCycleOrdersTable::getOrderStateNext order_id [".$orderResult->id."] ".$orderResult->state_code." - stateCodeAfter ".$stateCodeAfter);
 
             if($stateCodeAfter=='CLOSE') {
                 $canStateCodeToClose = $this->canStateCodeToClose($user, $orderResult);
@@ -724,7 +756,7 @@ class OrderLifeCycleComponent extends Component {
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
 
-        if($debug) debug("OrderLifeCycle::canStateCodeToClose order_id [".$orderResult->id."] ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::canStateCodeToClose order_id [".$orderResult->id."] ".$orderResult->state_code);
         
         if($user->organization->template->orderForceClose=='Y') {
             /*
@@ -766,7 +798,7 @@ class OrderLifeCycleComponent extends Component {
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
 
-        if($debug) debug("OrderLifeCycle::canOrdersClose order_id [".$orderResult->id."] ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::canOrdersClose order_id [".$orderResult->id."] ".$orderResult->state_code);
         
         if(!isset($user->organization->paramsConfig['canOrdersClose']))
             $user->organization->paramsConfig['canOrdersClose'] = 'ALL';
@@ -787,7 +819,7 @@ class OrderLifeCycleComponent extends Component {
             $orderResult->tot_importo = $importo_totale;         
             if(!$ordersTable->save($orderResult)) {
                 $errors = $this->validationErrors;
-                if($debug) debug("OrderLifeCycle::canOrdersClose order_id [".$orderResult->id."] ERROR salvando l'ordine");
+                if($debug) debug("LifeCycleOrdersTable::canOrdersClose order_id [".$orderResult->id."] ERROR salvando l'ordine");
                 if($debug) debug($errors);
                 
                 $esito['CODE'] = "500";
@@ -955,6 +987,7 @@ class OrderLifeCycleComponent extends Component {
     public function stateCodeAfter($user, $orderResult, $state_code, $debug=false) {
 
         $ordersTable = TableRegistry::get('Orders');
+        $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrdersTable');
 
         $state_code_next = '';
         $rule_sort_next = 1; 
@@ -964,17 +997,17 @@ class OrderLifeCycleComponent extends Component {
 
         $template_id = $user->organization->template_id;
 
-        if($debug) debug('OrderLifeCycle::stateCodeAfter template_id '.$template_id);
+        if($debug) debug('LifeCycleOrdersTable::stateCodeAfter template_id '.$template_id);
         if($debug) debug($user->organization->template);
-        if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' Order.state_code CURRENT '.$state_code);
+        if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' Order.state_code CURRENT '.$state_code);
 
         switch ($state_code) {
             
             case 'PROCESSED-ON-DELIVERY':  // In carico al cassiere durante la consegna
            
-                if(!$this->_registry->SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
+                if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
                     // rimane invariato
-                    if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
+                    if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
                     
                     $state_code_next = $orderResult->state_code;
                 }   
@@ -988,16 +1021,16 @@ class OrderLifeCycleComponent extends Component {
 
                         if($isPaidSupplier) {
                             $state_code_next = 'CLOSE';
-                            if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
+                            if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
                         }
                         else { 
                             $state_code_next = 'SUPPLIER-PAID'; 
-                            if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore NON PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
+                            if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore NON PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
                         }
                     }
                     else 
                         $state_code_next = 'CLOSE';
-                } // end if(!$this->_registry->SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) 
+                } // end if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) 
             break;
             /* 
              * Template.payToDelivery = POST / ON-POST 
@@ -1008,14 +1041,14 @@ class OrderLifeCycleComponent extends Component {
              */             
             case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere) 
             
-                if(!$this->_registry->SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
+                if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
                     // rimane invariato
-                    if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
+                    if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
                     
                     $state_code_next = 'USER-PAID';
                 }   
                 else {
-                    if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE");
+                    if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE");
                 
                     $state_code_next = 'WAIT-REQUEST-PAYMENT-CLOSE';
                 } 
@@ -1032,7 +1065,7 @@ class OrderLifeCycleComponent extends Component {
             case 'WAIT-REQUEST-PAYMENT-CLOSE':     //  (solo per gestione con Tesoriere)
             case 'WAIT-REQUEST-PAYMENT-CLOSE-ALL': //  (solo per gestione con Tesoriere)    
             
-                if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti");
+                if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti");
             
                 if($user->organization->template->orderSupplierPaid=='Y') {
                     
@@ -1046,7 +1079,7 @@ class OrderLifeCycleComponent extends Component {
                      else 
                         $state_code_next = 'SUPPLIER-PAID';
                 
-                     if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
+                     if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
                 }
                 else 
                     $state_code_next = 'CLOSE';
@@ -1061,17 +1094,17 @@ class OrderLifeCycleComponent extends Component {
                      if($debug) debug($paidUsersResults);
                      
                      if(!empty($paidUsersResults) && $paidUsersResults['totalSummaryOrderNotPaid']==0) {
-                        if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template");
+                        if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template");
                         $rule_sort_next = 1;
                      }
                      else {
-                        if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
+                        if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
                         $state_code_next = $orderResult->state_code;
                      }
                 }
             break;
             default:
-                if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." Order.state_code [".$state_code."] non previsto");
+                if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." Order.state_code [".$state_code."] non previsto");
             break;          
         }
 
@@ -1079,7 +1112,7 @@ class OrderLifeCycleComponent extends Component {
             /*
              * non ancora definito, lo calcolo con calcolo del sort precedente o successivo
              */
-            if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." ricerco Order.state_code posizionato con SORT $rule_sort_next a ".$state_code);
+            if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." ricerco Order.state_code posizionato con SORT $rule_sort_next a ".$state_code);
                 
             $templatesOrdersStatesTable = TableRegistry::get('TemplatesOrdersStates'); 
     
@@ -1112,7 +1145,7 @@ class OrderLifeCycleComponent extends Component {
                 break; // restituisco il primo
             }
 
-            if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." state_code_next ".$state_code_next." => ctrl se e' valido o lo ricalcolo");
+            if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." state_code_next ".$state_code_next." => ctrl se e' valido o lo ricalcolo");
                     
             /*
              * ctrl se state_code_next e' valido, ex SUPPLIER-PAID ma e' gia' saldato
@@ -1128,14 +1161,14 @@ class OrderLifeCycleComponent extends Component {
                  */             
                 case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere) 
                 
-                    if(!$this->_registry->SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
+                    if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
                         // rimane invariato
-                        if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
+                        if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
                         
                         $state_code_next = 'USER-PAID';
                     }   
                     else {
-                        if($debug) debug("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE");
+                        if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE");
                     
                         $state_code_next = 'WAIT-REQUEST-PAYMENT-CLOSE';
                     } 
@@ -1150,11 +1183,11 @@ class OrderLifeCycleComponent extends Component {
                          if($debug) debug($paidUsersResults);
                          
                          if(!empty($paidUsersResults) && $paidUsersResults['totalSummaryOrderNotPaid']==0) {
-                            if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template");
+                            if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template");
                             $state_code_next = 'CLOSE';
                          }
                          else {
-                            if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
+                            if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
                             $state_code_next = $orderResult->state_code;
                          }
                     }
@@ -1164,7 +1197,7 @@ class OrderLifeCycleComponent extends Component {
             }            
         }
                 
-        if($debug) debug('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." state_code_next ".$state_code_next);
+        if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." state_code_next ".$state_code_next);
     
         return $state_code_next;        
     }
@@ -1309,8 +1342,8 @@ class OrderLifeCycleComponent extends Component {
         $results = [];
         $results['alertModuleConflicts'] = '';
 
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts order_id [".$orderResult->id."] state_code ".$orderResult->state_code);
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts modulo ".$modulo);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts order_id [".$orderResult->id."] state_code ".$orderResult->state_code);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts modulo ".$modulo);
 
         switch ($modulo) {
             case 'managementCartsOne':
@@ -1362,11 +1395,11 @@ class OrderLifeCycleComponent extends Component {
         else
             $results['orderHasCostLess'] = 'N';
 
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts alertModuleConflicts ".$results['alertModuleConflicts']);
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts orderHasSummaryOrderAggregate ".$results['orderHasSummaryOrderAggregate']);
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts orderHasTrasport ".$results['orderHasTrasport']);
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts orderHasCostMore ".$results['orderHasCostMore']);
-        if($debug) debug("OrderLifeCycle::_ctrlModuleConflicts orderHasCostLess ".$results['orderHasCostLess']);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts alertModuleConflicts ".$results['alertModuleConflicts']);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts orderHasSummaryOrderAggregate ".$results['orderHasSummaryOrderAggregate']);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts orderHasTrasport ".$results['orderHasTrasport']);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts orderHasCostMore ".$results['orderHasCostMore']);
+        if($debug) debug("LifeCycleOrdersTable::_ctrlModuleConflicts orderHasCostLess ".$results['orderHasCostLess']);
 
         return $results;
     }
@@ -1449,7 +1482,7 @@ class OrderLifeCycleComponent extends Component {
 
         if($continua && $orderResult->typeGest=='AGGREGATE') {
                 
-            if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] typeGest ".$orderResult->typeGest);
+            if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] typeGest ".$orderResult->typeGest);
         
             /*
              *  dati aggregati
@@ -1472,16 +1505,16 @@ class OrderLifeCycleComponent extends Component {
                 }
                 $continua = false;
                 
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati aggregati NON completi => KO");
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati aggregati NON completi => KO");
             }
             else {
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati aggregati completi => OK");
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati aggregati completi => OK");
             }
         }
         
         if($continua && $orderResult->hasTrasport=='Y' && floatval($orderResult->trasport) > 0) {
                 
-            if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasTrasport ".$orderResult->hasTrasport." ".$orderResult->trasport);
+            if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasTrasport ".$orderResult->hasTrasport." ".$orderResult->trasport);
         
             /*
              *  trasporto
@@ -1504,7 +1537,7 @@ class OrderLifeCycleComponent extends Component {
                 }
                 $continua = false;
                 
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto NON completi => KO");
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto NON completi => KO");
             }
             
             if($continua) {
@@ -1530,12 +1563,12 @@ class OrderLifeCycleComponent extends Component {
                 }           
             }
             else  
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto completi => OK");          
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto completi => OK");          
         }
                 
         if($continua && $orderResult->hasCostMore=='Y' && floatval($orderResult->cost_more) > 0) {
             
-            if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasCostMore ".$orderResult->hasCostMore." ".$orderResult->cost_more);
+            if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasCostMore ".$orderResult->hasCostMore." ".$orderResult->cost_more);
 
             /*
              *  costo aggiuntivo
@@ -1558,7 +1591,7 @@ class OrderLifeCycleComponent extends Component {
                 }
                 $continua = false;
                 
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo NON completi => KO");
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo NON completi => KO");
             }
             
             if($continua) {
@@ -1584,12 +1617,12 @@ class OrderLifeCycleComponent extends Component {
                 }           
             }
             else 
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo completi => OK");                   
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo completi => OK");                   
         }
         
         if($continua && $orderResult->hasCostLess=='Y' && floatval($orderResult->cost_less) > 0) {
 
-            if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasCostLess ".$orderResult->hasCostLess." ".$orderResult->cost_less);
+            if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasCostLess ".$orderResult->hasCostLess." ".$orderResult->cost_less);
 
             /*
              *  sconto
@@ -1612,7 +1645,7 @@ class OrderLifeCycleComponent extends Component {
                 }
                 $continua = false;
                 
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto NON completi => KO");
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto NON completi => KO");
             }
 
             if($continua) {
@@ -1638,7 +1671,7 @@ class OrderLifeCycleComponent extends Component {
                 }           
             }
             else 
-                if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto completi => OK");     
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto completi => OK");     
         }
         
         if(!$continua) {
@@ -1652,9 +1685,9 @@ class OrderLifeCycleComponent extends Component {
             }
         }
                 
-        if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id ".$orderResult->id);
+        if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id ".$orderResult->id);
         if(!empty($esito))  
-            if($debug) debug("OrderLifeCycle::_isOrderValidateToTrasmit order_id [".$orderResult->id."] esito ".print_r($esito, true));
+            if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] esito ".print_r($esito, true));
                 
         return $esito;
     }

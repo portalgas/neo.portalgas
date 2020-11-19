@@ -14,7 +14,6 @@ class CashiersController extends AppController
         $this->loadComponent('Cashier');
         $this->loadComponent('Cart');
         $this->loadComponent('SummaryOrder');
-        $this->loadComponent('OrderLifeCycle');
     }
 
     public function beforeFilter(Event $event) {
@@ -34,7 +33,7 @@ class CashiersController extends AppController
         if ($this->request->is('post')) {
             
             /*
-             * OrderLifeCycle
+             * LifeCycleOrdersTable
              * registro tutti gli order_id trattati per poi verificare stato successivo
              */
             $order_ids = [];
@@ -134,12 +133,16 @@ class CashiersController extends AppController
                  * se tutti i gasisti hanno saldato aggiorno stato dell'ordine
                  */
                 // debug($order_ids);
-                if(!empty($order_ids))
-                foreach($order_ids as $order_id) {
-                    $state_code_next = $this->OrderLifeCycle->stateCodeAfter($this->Authentication->getIdentity(), $order_id, 'PROCESSED-ON-DELIVERY', $debug);
-                    
-                    $this->OrderLifeCycle->stateCodeUpdate($this->Authentication->getIdentity(), $order_id, $state_code_next, [], $debug);
-                } // foreach($order_ids as $order_id)
+                if(!empty($order_ids)) {
+
+                    $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+
+                    foreach($order_ids as $order_id) {
+                        $state_code_next = $lifeCycleOrdersTable->stateCodeAfter($this->Authentication->getIdentity(), $order_id, 'PROCESSED-ON-DELIVERY', $debug);
+                        
+                        $lifeCycleOrdersTable->stateCodeUpdate($this->Authentication->getIdentity(), $order_id, $state_code_next, [], $debug);
+                    } // foreach($order_ids as $order_id)      
+                }
 
             } // end if(!empty($delivery_id))
 

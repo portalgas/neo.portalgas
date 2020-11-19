@@ -6,9 +6,13 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use App\Traits;
 
 class UsersTable extends Table
 {
+    use Traits\SqlTrait;
+
     /**
      * Initialize method
      *
@@ -236,7 +240,48 @@ class UsersTable extends Table
         // if($debug) debug($organization);            
 
         $user->organization = $organization;
-         if($debug) debug($user);  
+        if($debug) debug($user);  
+
+        /*
+         * aggiungo i dati per il prepagati, x BO e FE
+         */
+        // debug($organization->paramsConfig);
+        $user->organization_cash_limit = $organization->paramsConfig['cashLimit'];
+        $user->organization_cash_limit_label = __('FE-'.$organization->paramsConfig['cashLimit']);
+        $user->organization_limit_cash_after = $this->convertImport($organization->paramsConfig['limitCashAfter']);
+        $user->organization_limit_cash_after_ = $organization->paramsConfig['limitCashAfter'];
+        $user->organization_limit_cash_after_e = $organization->paramsConfig['limitCashAfter'].'&nbsp;&euro;';
+
+        /*
+         * totale cassa
+         */
+        $cashesTable = TableRegistry::get('Cashes');
+        
+        $user_cash = $cashesTable->getTotaleCashToUser($user, $user->id);
+        $user->user_cash = $user_cash;
+        $user->user_cash_ = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+        $user->user_cash_e = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+                    
+        /*
+         * gestione prepagato
+         */
+         if($user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER') {
+
+                $cashesUsersTable = TableRegistry::get('CashesUsers');
+                
+                $where = ['CashesUsers.supplier_organization_id' => $user->organization->id,
+                          'CashesUsers.user_id' => $user->id];
+                $cashesUsersResults = $cashesUsersTable->find()
+                                                    ->where($where)
+                                                    ->first();
+                if(!empty($cashesUsersResults)) {
+                    $user->user_limit_type = $cashesUsersResults->limit_type;
+                    $user->user_limit_after = $cashesUsersResults->limit_after;
+                    $user->user_limit_after_ =  $cashesUsersResults->limit_after_;
+                    $user->user_limit_after_e = $cashesUsersResults->limit_after_e;
+                }                   
+                         
+        } // end if($user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER')
 
         /*
          * creo array con i group_id dell'utente, per UserComponent
@@ -287,6 +332,8 @@ class UsersTable extends Table
         $user->acl['isSuperReferente'] = $usergroupsTable->isSuperReferente($user);
         $user->acl['isReferentGeneric'] = $usergroupsTable->isReferentGeneric($user);
 
+        // debug($user);
+        
         return $user;
     }    
 }

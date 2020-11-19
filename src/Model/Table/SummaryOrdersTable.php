@@ -6,25 +6,6 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * SummaryOrders Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\DeliveriesTable&\Cake\ORM\Association\BelongsTo $Deliveries
- * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
- *
- * @method \App\Model\Entity\SummaryOrder get($primaryKey, $options = [])
- * @method \App\Model\Entity\SummaryOrder newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\SummaryOrder[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\SummaryOrder|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\SummaryOrder saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\SummaryOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\SummaryOrder[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\SummaryOrder findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class SummaryOrdersTable extends Table
 {
     /**

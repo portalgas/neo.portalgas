@@ -29,7 +29,7 @@ class CashesController extends AppController
     /* 
      * elenco produttori per gestione chi e' escluso dal prepagato
      * i produttori che sono inseriti in supplier_organization_cash_excludeds saranno esclusi dal calcolo del prepagato:
-     *  => gli acquisti effettuati con loro soon esclusi dal calcolo del prepagato CashesUser::ctrlLimitCart() => CashesUser::isSupplierOrganizationCashExcluded
+     *  => gli acquisti effettuati con loro sono esclusi dal calcolo del prepagato CashesUser::ctrlLimitCart() => CashesUser::isSupplierOrganizationCashExcluded
      */
     public function supplierOrganizationFilter()
     {     

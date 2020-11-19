@@ -7,23 +7,6 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
-/**
- * Cashes Model
- *
- * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- *
- * @method \App\Model\Entity\Cash get($primaryKey, $options = [])
- * @method \App\Model\Entity\Cash newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Cash[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Cash|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Cash saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Cash patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Cash[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Cash findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class CashesTable extends Table
 {
     /**
@@ -245,4 +228,58 @@ class CashesTable extends Table
 
         return true;
     }
+
+    /*
+     *  calcolare il totale in cassa
+    */
+    public function getTotaleCash($user, $debug=false) {
+
+        $organization_id = $user->organization->id;
+
+        $where = ['Cashes.organization_id' => $organization_id];
+        $results = $this->find()
+                        ->fields(['totale_importo' => 'SUM(Cashes.importo)'])
+                        ->select(['sum' => 'SUM(Cashes.importo)'])
+                        ->where($where)
+                        ->first();
+
+        if($debug) debug($results);
+
+        return $results;
+    }
+    
+    /*
+     *      calcolare il totale in cassa di un utente
+     *      le voci di cassa generiche (user_id=0) possono avere + occorrenze
+     *      le voci di cassa degli utenti hanno una sola occorrenza
+    */
+    public function getTotaleCashToUser($user, $user_id, $debug = false) {
+    
+        $organization_id = $user->organization->id;
+
+        $where = ['Cashes.organization_id' => $organization_id,
+                  'Cashes.user_id' => $user_id];
+
+        if($user_id!=0) {
+            $results = $this->find()
+                            ->select(['sum' => 'SUM(Cashes.importo)'])
+                            ->where($where)
+                            ->first();
+
+            $results = $results['sum'];
+        }
+        else {
+            $results = $this->find()
+                            ->select(['Cashes.importo'])
+                            ->where($where)
+                            ->first();
+
+            $results = $results['importo'];
+        }
+
+        if($debug) debug($results);
+
+        
+        return $results;
+    }    
 }
