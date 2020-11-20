@@ -355,5 +355,153 @@ class CashesUsersTable extends Table
         if($debug) debug('ctrlLimitCart OK');
 
         return true;        
-    }    
+    }
+
+    public function ctrlLimit($user, $organization_cashLimit, $organization_limitCashAfter=0, $cashesUser, $tot_importo_cash=0, $tot_importo_acquistato=0, $debug=false) {
+        
+        $organization_id = $user->organization->id;
+        $results = [];
+
+        if(isset($cashesUser['CashesUser']))
+            $cashesUser = $cashesUser['CashesUser'];
+        
+        if($debug) {
+            debug("organization_cashLimit ".$organization_cashLimit);
+            debug("organization_limitCashAfter ".$organization_limitCashAfter);
+            debug("tot_importo_cash ".$tot_importo_cash);
+            debug("tot_importo_acquistato ".$tot_importo_acquistato);
+            debug("cashesUser");
+            debug($cashesUser);
+        }
+
+         /*
+          * totale importo acquisti
+          */
+        $user_tot_importo_acquistato = $this->getTotImportoAcquistato($user, $organization_id, $user->id);
+        $user_tot_importo_acquistato_ = number_format($user_tot_importo_acquistato ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+        if($user_tot_importo_acquistato==0)
+            $results['fe_msg_tot_acquisti'] = 'Non hai ancora effettuato acquisti';
+        else
+            $results['fe_msg_tot_acquisti'] = 'Hai acquistato per '.$user_tot_importo_acquistato_.'&nbsp;&euro;';
+
+        // 
+        switch($organization_cashLimit) {
+            case "LIMIT-NO":
+                $results['importo'] = 0; // (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+                $results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                $results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
+                $results['stato'] = 'GREEN';
+                $results['fe_msg'] = 'Nessun limite per gli acquisti';
+                $results['fe_msg_tot_acquisti'] = '';
+            break;
+            case "LIMIT-CASH":
+                $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+                $results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                $results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
+                if($results['importo']<0) {
+                    $results['stato'] = 'RED';
+                    $results['fe_msg'] = 'Hai esaurito il credito di cassa! ('.$results['importo_e'].')';
+                }
+                else
+                if($results['importo']>0) {
+                    $results['stato'] = 'GREEN';
+                    $results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
+                }
+                else
+                if($results['importo']==0) {
+                    $results['stato'] = 'YELLOW';
+                    $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
+                }
+            break;
+            case "LIMIT-CASH-AFTER":
+                $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato) + floatval($organization_limitCashAfter));
+                $results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                $results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
+                if($results['importo']<0) {
+                    $results['stato'] = 'RED';
+                    $results['fe_msg'] = 'Hai esaurito il credito di cassa! ('.$results['importo_e'].')';
+                }
+                else
+                if($results['importo']>0) {
+                    $results['stato'] = 'GREEN';
+                    $results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
+                }
+                else
+                if($results['importo']==0) {
+                    $results['stato'] = 'YELLOW';
+                    $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
+                }   
+            break;
+            case "LIMIT-CASH-USER":
+            
+                /*
+                 * puo' essere se vuoto se si e' scelto "Limite per ogni gasista" ma poi non ho salvato
+                 */
+                if(empty($cashesUser))
+                    $cashesUser['limit_type'] = 'LIMIT-NO';
+                    
+                /*
+                 * singolo User
+                 */
+                switch($cashesUser['limit_type']) {
+                    case "LIMIT-NO":
+                        $results['importo'] = 0; // (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+                        $results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                        $results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
+                        $results['stato'] = 'GREEN';
+                        $results['fe_msg'] = 'Nessun limite per gli acquisti';
+                        $results['fe_msg_tot_acquisti'] = '';
+                    break;
+                    case "LIMIT-CASH":
+                        $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+                        $results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                        $results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
+                        if($results['importo']<0) {
+                            $results['stato'] = 'RED';
+                        $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
+                        }
+                        else
+                        if($results['importo']>0) {
+                            $results['stato'] = 'GREEN';
+                            $results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
+                        }
+                        else
+                        if($results['importo']==0) {
+                            $results['stato'] = 'YELLOW';
+                            $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
+                        }
+                    break;
+                    case "LIMIT-CASH-AFTER":
+                        $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato) + floatval($cashesUser['limit_after']));
+                        $results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                        $results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
+                        if($results['importo']<0) {
+                            $results['stato'] = 'RED';
+                            $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
+                        }
+                        else
+                        if($results['importo']>0) {
+                            $results['stato'] = 'GREEN';
+                            $results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
+                        }
+                        else
+                        if($results['importo']==0) {
+                            $results['stato'] = 'YELLOW'; 
+                            $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
+                        }       
+                    break;
+                }                
+            break;
+        }
+
+        if($debug) debug($results);
+                
+        return $results;
+    }         
 }

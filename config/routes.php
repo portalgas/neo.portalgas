@@ -236,6 +236,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
         }); 
+        $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
+            $routes->connect('/cash-ctrl-limit', ['action' => 'cashCtrlLimit', '_method' => 'POST']);
+        });
         $routes->scope('/html-article-orders', ['controller' => 'HtmlArticleOrders'], function (RouteBuilder $routes) {
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         });
