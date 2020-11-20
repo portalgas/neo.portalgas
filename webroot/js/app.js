@@ -54849,7 +54849,7 @@ var render = function() {
               staticClass: "form-control text-center",
               attrs: {
                 type: "number",
-                disabled: _vm.article.store === 0 || _vm.isRun,
+                disabled: true,
                 min: "0",
                 size: "4",
                 inputmode: "numeric",

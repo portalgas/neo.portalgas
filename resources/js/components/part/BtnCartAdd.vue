@@ -37,7 +37,7 @@
             type="number"
             class="form-control text-center"
             :value="article.cart.qta_new"
-            :disabled="article.store === 0 || isRun"
+            :disabled="true"
             @input="numberCart"
             min="0"
             size="4"
