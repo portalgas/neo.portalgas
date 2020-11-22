@@ -38,8 +38,8 @@
 
 					    <span>{{ order.data_inizio | formatDate }} - {{ order.data_fine | formatDate }}</span>
 
-					    <span class="badge badge-primary">stato {{ order.order_state_code.code }} {{ order.order_state_code.name }}</span>
-					    <span class="badge badge-primary">type {{ order.order_type.name }}</span>  
+					    <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
+					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
 					</a>
 	        </p> 
 	      </div>

@@ -117,14 +117,18 @@ class OrdersController extends ApiAppController
             /*
              * per gli ordini per produttore non ho la consegna
              */
-            $where += ['Orders.delivery_id' => $delivery_id];
+            $where += ['Orders.delivery_id' => $delivery_id, 
+                    // 'Orders.id' => 20240
+                      ];
         }
 
         $results = $ordersTable->find()
                                 ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => ['Suppliers'],
-                                         /* 'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
+                                          /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
+                                          'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
                                                                        'Carts.organization_id' => $organization_id,
-                                                                        'Carts.deleteToReferent' => 'N']]*/
+                                                                        'Carts.deleteToReferent' => 'N']]
+                                            */
                                           ])
                                 ->where($where)
                                 ->order(['Orders.data_inizio'])
@@ -135,9 +139,14 @@ class OrdersController extends ApiAppController
         /*
          * elimino ordini senza acquisti
          */
+        $i=0;
+        $newResults = [];
         foreach($results as $numResult => $result) {
-  
-            $results[$numResult]['article_orders'] = [];
+
+            $found_cart = false;
+
+            $newResults[$i] = $result;
+            $newResults[$i]['article_orders'] = [];
 
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $result);
@@ -151,25 +160,41 @@ class OrdersController extends ApiAppController
                 $options['limit'] = Configure::read('sql.limit');
                 $options['page'] = 1;
                 $articlesOrdersResults = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $result, $where, $options);
-                // debug($articlesOrdersResults);exit;
+                // debug($articlesOrdersResults);
 
                 /*
                  * estraggo solo quelli acquistati dallo user
                  */
-                $i=0;
+                $ii=0;
                 foreach($articlesOrdersResults as  $numResult2 => $articlesOrdersResult) { 
-                    if(!isset($articlesOrdersResult['cart']) || empty($articlesOrdersResult['cart']))  
-                        unset($articlesOrdersResult[$numResult2]);
+                    /*
+                     * se lo user non ha acquisti e' cmq valorizzato qta / qta_new
+                     */
+                    if(!isset($articlesOrdersResult['cart']) || !isset($articlesOrdersResult['cart']['user_id']) || 
+                        empty($articlesOrdersResult['cart']['user_id'])) { 
+                         unset($articlesOrdersResult[$numResult2]);
+                         unset($results[$numResult]);
+                    }
                     else {
+                        $found_cart = true;
                         $articlesOrdersResult = new ApiArticleOrderDecorator($articlesOrdersResult); 
-                        $results[$numResult]['article_orders'][$i] = $articlesOrdersResult->results;
-                        $i++;
+                        $newResults[$i]['article_orders'][$ii] = $articlesOrdersResult->results;
+                        $ii++;
                     }
                 }
-            } // end if($articlesOrdersTable!==false)    
-        }
+            } // end if($articlesOrdersTable!==false) 
 
-        $results = json_encode($results);
+            if($found_cart) {
+                $i++;
+                $found_cart = false;
+            }
+            else {
+                unset($newResults[$i]);
+            }
+
+        } // end foreach($results as $numResult => $result) 
+
+        $results = json_encode($newResults);
         $this->response->withType('application/json');
         $body = $this->response->getBody();
         $body->write($results);        

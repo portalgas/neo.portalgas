@@ -215,7 +215,6 @@ class ArticlesOrdersTable extends Table
 
     protected function _updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article_order, $debug=false) {            
 
-        if($debug) debug("ArticlesOrder.qta_massima_order ".$article_order['qta_massima_order']." ArticlesOrder.qta_cart ".$article_order['qta_cart']);
         if(Configure::write('Logs.cart')) Log::write('debug', '_updateArticlesOrderQtaCart_StatoQtaMax ArticlesOrder.qta_massima_order '.$article_order['qta_massima_order']." ArticlesOrder.qta_cart ".$article_order['qta_cart']);
 
         $qta_massima_order = intval($article_order['qta_massima_order']);
@@ -243,8 +242,6 @@ class ArticlesOrdersTable extends Table
                 $article_order['stato'] = 'Y';
             $article_order['send_mail'] = 'N';
         }
-
-        if($debug) debug($article_order);
         
         $ids = [];
         $ids['organization_id'] = $article_order['ids']['organization_id'];
@@ -258,15 +255,15 @@ class ArticlesOrdersTable extends Table
 
         $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
         $articlesOrder = $this->patchEntity($articlesOrder, $article_order);
+
         if(Configure::write('Logs.cart')) Log::write('debug', $articlesOrder);
 
-
         if (!$articlesOrdersTable->save($articlesOrder)) {
-            debug($articlesOrder->getErrors());
-            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $article_order['order_id'] . " article_organization_id " . $article_order['article_organization_id'] . " article_id " . $article_order['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
+            Log::write('debug', $articlesOrder->getErrors());
+            if(Configure::write('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
         }
         else  {
-            if($debug) debug("ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $article_order['order_id'] . " article_organization_id " . $article_order['article_organization_id'] . " article_id " . $article_order['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
+            if(Configure::write('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
         }
     }
 
@@ -279,6 +276,8 @@ class ArticlesOrdersTable extends Table
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
 
+        $options['limit'] = 1000000;
+
         $order_id = $where['order_id'];
 
         $order_state_code = $orderResults->state_code;
@@ -286,6 +285,7 @@ class ArticlesOrdersTable extends Table
         if(!isset($where['ArticlesOrders']))
            $where['ArticlesOrders'] = [];
         $where['ArticlesOrders'] = array_merge([$this->alias().'.organization_id' => $organization_id,
+                             // $this->alias().'.article_id' => 142,
                               $this->alias().'.order_id' => $order_id,
                               $this->alias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
@@ -335,7 +335,7 @@ class ArticlesOrdersTable extends Table
                 } 
                 else {
                     $results[$numResult]['cart']['organization_id'] = $result['organization_id'];
-                    $results[$numResult]['cart']['user_id'] = $result['user_id'];
+                    $results[$numResult]['cart']['user_id'] = 0;
                     $results[$numResult]['cart']['order_id'] = $result['order_id'];
                     $results[$numResult]['cart']['article_organization_id'] = $result['article_organization_id'];
                     $results[$numResult]['cart']['article_id'] = $result['article_id'];

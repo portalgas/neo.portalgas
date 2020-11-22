@@ -6,8 +6,6 @@
     <router-link to="/">Torna alla consegne</router-link>
   </p>
 
-  page: {{ page }}
-
 	<div class="row">
 	    <div class="col-sm-12 col-xs-12 col-md-12"> 
 
@@ -45,23 +43,28 @@
                   <!--            -->
                   <!--    D E S   -->
                   <!--            -->
+
                   <p v-if="order.des_orders_organization!=null" class="card-text">
-                    DES {{ order.des_orders_organization.de.name }}
-                    terminerà  {{ order.des_orders_organization.data_fine_max | formatDate }}
-                      <ul>
-                        <li v-for="(all_des_orders_organization, index) in order.all_des_orders_organizations">
-                          <a target="_blank" v-bind:href="all_des_orders_organization.organization.img1.www" title="Vai al sito del GAS">
-                            
-                            <div class="content-img-supplier">
-                                <img v-if="all_des_orders_organization.organization.img1 != ''"
-                                class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+all_des_orders_organization.organization.img1"
-                                :alt="all_des_orders_organization.organization.name">
-                            </div>
-                            
-                            {{ all_des_orders_organization.organization.name }}                     
-                          </a>                          
-                        </li>
-                      </ul>
+                      <div v-if="order.des_orders_organization!=null">
+                        DES {{ order.des_orders_organization.de.name }} terminerà {{ order.des_orders_organization.des_order.data_fine_max | formatDate }}
+                      </div>
+
+                      <div v-if="order.all_des_orders_organizations!=null">
+                        <ul class="list-des">
+                          <li v-for="(all_des_orders_organization, index) in order.all_des_orders_organizations">
+                            <a target="_blank" v-bind:href="all_des_orders_organization.organization.www" title="Vai al sito del GAS">
+                              
+                              <div class="content-img-organization">
+                                  <img v-if="all_des_orders_organization.organization.img1 != ''"
+                                  class="img-organization" :src="'https://www.portalgas.it/images/organizations/contents/'+all_des_orders_organization.organization.img1"
+                                  :alt="all_des_orders_organization.organization.name" />
+                              </div>
+                              
+                              {{ all_des_orders_organization.organization.name }}                     
+                            </a>                          
+                          </li>
+                        </ul>
+                      </div>
                   </p>
                   <!--            -->
                   <!--    D E S   -->
@@ -80,12 +83,16 @@
 
 
                   <p class="card-text">
+
+                      <div class="float-right">
+                        <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
+                        <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
+                      </div>
+
                       <span v-if="order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
                       <span v-if="order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
                       <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
                       <span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
-
-                      <button class="badge badge-primary float-right">{{ order.order_state_code.code }} {{ order.order_state_code.name }}</button>
                   <hr >
                     <div v-if="order.nota!=''"><strong>Nota:</strong> {{ order.nota }}</div>
                     <span v-if="order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
@@ -292,5 +299,12 @@ export default {
 <style scoped>
 .card { 
   border: none;
+}
+ul.list-des {
+  margin: 0;
+  padding: 0;
+}
+ul.list-des li {
+  list-style: none;
 }
 </style>

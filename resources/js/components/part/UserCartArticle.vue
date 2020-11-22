@@ -2,29 +2,29 @@
 
   <div class="row">
         <div class="col-sm-2 col-xs-2 col-md-2 d-none d-sm-block">
-          <div class="content-img-top">
-            <img v-if="article.img1!=''" class="card-img-top responsive" :src="article.img1" :alt="article.name">
+          <div class="content-img-article-small">
+            <img v-if="article.img1!=''" class="img-article-small responsive" :src="article.img1" :alt="article.name">
             <div v-if="article.is_bio" class="box-bio">
                 <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
             </div>
           </div>
         </div>
-        <div class="col-sm-4 col-xs-4 col-md-4">
+        <div class="col-text col-sm-4 col-xs-4 col-md-4">
           {{ article.name }} <span><a class="fas fa-search" href="#" @click="clickShowOrHiddenModal()"></a></span>
         </div>
-        <div class="col-sm-1 col-xs-1 col-md-1">
+        <div class="col-text col-sm-1 col-xs-1 col-md-1">
               {{ article.price | currency }} &euro;
                 <del v-if="article.price_pre_discount != null"
                     >{{ article.price_pre_discount | currency }} &euro;</del
                   > 
         </div>
-        <div class="col-sm-1 col-xs-1 col-md-1">
+        <div class="col-text col-sm-1 col-xs-1 col-md-1">
               {{ article.conf }}
         </div>
-        <div class="col-sm-2 col-xs-2 col-md-2">
+        <div class="col-text col-sm-2 col-xs-2 col-md-2">
               {{ article.um_rif_label }}
         </div>
-        <div class="col-sm-3 col-xs-3 col-md-2">
+        <div class="col-text col-sm-3 col-xs-3 col-md-2">
            <app-btn-cart-add v-bind:article="article" v-bind:order="order" :key="article.id"></app-btn-cart-add>
         </div>
   </div>
@@ -115,11 +115,12 @@ export default {
 .row {
   margin-bottom: 5px;
 }
-.content-img-top {
-  width: 75px;
+.col-text {
+  padding-top: 10px
 }
 .box-bio {
     left: 0;
+    top: 1px;
     position: absolute;
     z-index: 1;
 }
@@ -129,18 +130,6 @@ export default {
     height: 20px;
     margin-left: 5px;
     width: 20px;    
-}
-.content-img-top {
-    text-align: center;
-}
-.card-img-top {
-    /* display: block; */
-    display: initial;    
-    height: 225 px;
-    object-fit: cover;
-    object-position: center;
-    overflow: hidden;
-    width: 225 px;
 }
 .highlighted { 
   color: #fa824f;

@@ -59,7 +59,7 @@ class CartComponent extends Component {
         if($qta_new==0) 
            $action = 'DELETE';
         else 
-        if($qta==0) 
+        if(empty($articles_order['cart']['user_id']))
            $action = 'INSERT';
         else 
            $action = 'UPDATE';

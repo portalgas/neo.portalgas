@@ -28,9 +28,9 @@
 
 					<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
-						<div class="content-img-supplier">
+						<div class="content-img-supplier-small">
 							<img v-if="order.suppliers_organization.supplier.img1 != ''" 
-								class="img-supplier" 
+								class="img-supplier-small" 
 								:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
 								:alt="order.suppliers_organization.name">
 						</div>
@@ -39,8 +39,8 @@
 
 					    <span>{{ order.data_inizio | formatDate }} - {{ order.data_fine | formatDate }}</span>
 
-					    <span class="badge badge-primary">stato {{ order.order_state_code.code }} {{ order.order_state_code.name }}</span>
-					    <span class="badge badge-primary">type {{ order.order_type.name }}</span>  
+					    <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
+					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
 					</a>
 
 			        <user-cart-articles :order="order" :article_orders="order.article_orders"></user-cart-articles>			

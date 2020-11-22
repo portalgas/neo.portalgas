@@ -28,13 +28,13 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
     /*
      * implement
     */
-    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article, $debug=false) {
+    public function aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $article_order, $debug=false) {
         
         // debug($order);
-        $organization_id = $article['ids']['organization_id'];
-        $order_id = $article['ids']['order_id'];
-        $article_organization_id = $article['ids']['article_organization_id'];
-        $article_id = $article['ids']['article_id'];
+        $organization_id = $article_order['ids']['organization_id'];
+        $order_id = $article_order['ids']['order_id'];
+        $article_organization_id = $article_order['ids']['article_organization_id'];
+        $article_id = $article_order['ids']['article_id'];
 
         $desOrdersOrganizationsTable = TableRegistry::get('DesOrdersOrganizations');
         
@@ -70,12 +70,16 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
              * aggiorno tutti gli ordini del DES
              */
             foreach ($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
+     
+                /*
+                 * override con l'ordine del GAS del ciclo
+                 */      
+                $organization_id = $desOrdersOrganizationsResult->organization_id;
+                $article_order['ids']['organization_id'] = $desOrdersOrganizationsResult->organization_id;
+                $article_order['ids']['order_id'] = $desOrdersOrganizationsResult->order_id;
                 
-                $article['organization_id'] = $desOrdersOrganizationsResult->organization_id;
-                $article['order_id'] = $desOrdersOrganizationsResult->order_id;
-                
-                $article['qta_cart'] = $qta_cart_new;
-                $this->_updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article, $debug);
+                $article_order['qta_cart'] = $qta_cart_new;
+                $this->_updateArticlesOrderQtaCart_StatoQtaMax($user, $organization_id, $article_order, $debug);
             }
           
         } // end if(!empty($desOrdersOrganizationsResults))

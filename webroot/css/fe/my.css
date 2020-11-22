@@ -12,7 +12,17 @@ h2 {
   height: 100%;
   margin: 25px 0;
 }
-.bg-primary {
+
+.text-color-background-green,
+.text-color-background-grey {
+    color: #000;
+}
+.text-color-background-blue, 
+.text-color-background-green,
+.text-color-background-red  {
+    color: #fff;
+}
+.bg-primary, .badge-primary {
     background-color: #0a659e !important;
     color: #fff;
 }   
@@ -44,6 +54,17 @@ a:hover {
 	text-align: center;
 	margin: 25px 0;
 }
+.content-img-organization {
+    width: 100px;
+    margin-right: 5px;
+    display: inline-block;
+}
+.img-organization {
+    max-width: 100px;
+    max-height: 75px;
+    display: inline;
+    border-radius: 6px;
+}
 .content-img-supplier {
     width: 200px;
     margin-right: 5px;
@@ -52,6 +73,17 @@ a:hover {
 .img-supplier {
     max-width: 200px;
     max-height: 100px;
+    display: inline;
+    border-radius: 6px;
+}
+.content-img-supplier-small {
+    width: 100px;
+    margin-right: 5px;
+    display: inline-block;
+}
+.img-supplier-small {
+    max-width: 100px;
+    max-height: 75px;
     display: inline;
     border-radius: 6px;
 }
@@ -65,6 +97,20 @@ a:hover {
     max-height: 150px;
     display: inline;
 }
+.content-img-article-small {
+  width: 75px;
+  text-align: center;
+}
+.img-article-small {
+    /* display: block; */
+    display: initial;    
+    height: 75px;
+    object-fit: cover;
+    object-position: center;
+    overflow: hidden;
+    width: 100px;
+}
+
 
 /*
  * MENU / SOTTO MENU

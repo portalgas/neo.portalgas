@@ -23,18 +23,44 @@
 
 </template>
 
- <script>
+<script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "casches-user",
   data() {
     return {
-      datas: []
+      datas: {
+        user_cash_e: null,
+        ctrl_limit: {
+          fe_msg: null,
+          fe_msg_tot_acquisti: null
+        }
+      }
     };
   },
   mounted() {
     this.get();
   },
+  computed: {
+    ...mapGetters(["cashesUserReload"]),
+  }, 
+  watch: {
+    /*
+     * carica i dati in base all'url settato nel tabs e lo passa al componente
+     * se justLoading.includes(this.url) i dati del tab sono gia' stati caricati
+     */
+    cashesUserReload (newValue, oldValue) {
+      console.log('cashesUserReload '+newValue+' - '+oldValue);
+      
+      if(newValue)
+        this.get();
+
+      this.cashesUserReloadFinish();
+    }
+  },   
   methods: {
+    ...mapActions(["cashesUserReloadFinish"]),
     get () {
 
       let url = "/admin/api/users/cash-ctrl-limit";

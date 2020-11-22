@@ -57,7 +57,6 @@ class OrdersTable extends Table
         ]);
         $this->hasMany('Carts', [
             'foreignKey' => ['organization_id', 'order_id'],
-            'joinType' => 'INNER'
         ]);        
     }
 

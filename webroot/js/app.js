@@ -2407,6 +2407,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2824,6 +2827,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2928,7 +2937,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.isRun || this.article.cart.qta === this.article.cart.qta_new;
     }
   },
-  methods: {
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["cashesUserReload"])), {}, {
     save: function save() {
       var _this2 = this;
 
@@ -2947,6 +2956,9 @@ __webpack_require__.r(__webpack_exports__);
           messageClass = "success";
           msg = response.data.msg;
           _this2.article.cart.qta = _this2.article.cart.qta_new; // aggiorno la qta 
+
+          _this2.cashesUserReload(); // cambio lo state cosi' ricarico i msg della cassa
+
         } else {
           messageClass = "danger";
           if (response.data.msg != '') msg = response.data.msg;else if (response.data.results != '') msg = response.data.results;
@@ -3072,7 +3084,7 @@ __webpack_require__.r(__webpack_exports__);
 
       return true;
     }
-  }
+  })
 });
 
 /***/ }),
@@ -3086,6 +3098,13 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3111,17 +3130,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "casches-user",
   data: function data() {
     return {
-      datas: []
+      datas: {
+        user_cash_e: null,
+        ctrl_limit: {
+          fe_msg: null,
+          fe_msg_tot_acquisti: null
+        }
+      }
     };
   },
   mounted: function mounted() {
     this.get();
   },
-  methods: {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["cashesUserReload"])),
+  watch: {
+    /*
+     * carica i dati in base all'url settato nel tabs e lo passa al componente
+     * se justLoading.includes(this.url) i dati del tab sono gia' stati caricati
+     */
+    cashesUserReload: function cashesUserReload(newValue, oldValue) {
+      console.log('cashesUserReload ' + newValue + ' - ' + oldValue);
+      if (newValue) this.get();
+      this.cashesUserReloadFinish();
+    }
+  },
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["cashesUserReloadFinish"])), {}, {
     get: function get() {
       var _this = this;
 
@@ -3137,7 +3175,7 @@ __webpack_require__.r(__webpack_exports__);
         console.error("Error: " + error);
       });
     }
-  },
+  }),
   filters: {
     debito_cassa: function debito_cassa(text) {
       return "Debito verso la cassa " + text;
@@ -3684,6 +3722,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_part_ArticleOrder_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/part/ArticleOrder.vue */ "./resources/js/components/part/ArticleOrder.vue");
 /* harmony import */ var _components_part_SearchArticleOrders_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/part/SearchArticleOrders.vue */ "./resources/js/components/part/SearchArticleOrders.vue");
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -46395,7 +46440,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.row[data-v-910bd80c] {\r\n  margin-bottom: 5px;\n}\n.content-img-top[data-v-910bd80c] {\r\n  width: 75px;\n}\n.box-bio[data-v-910bd80c] {\r\n    left: 0;\r\n    position: absolute;\r\n    z-index: 1;\n}\n.box-bio img[data-v-910bd80c] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 20px;\r\n    margin-left: 5px;\r\n    width: 20px;\n}\n.content-img-top[data-v-910bd80c] {\r\n    text-align: center;\n}\n.card-img-top[data-v-910bd80c] {\r\n    /* display: block; */\r\n    display: initial;    \r\n    height: 225 px;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    -o-object-position: center;\r\n       object-position: center;\r\n    overflow: hidden;\r\n    width: 225 px;\n}\n.highlighted[data-v-910bd80c] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
+exports.push([module.i, "\n.row[data-v-910bd80c] {\r\n  margin-bottom: 5px;\n}\n.col-text[data-v-910bd80c] {\r\n  padding-top: 10px\n}\n.box-bio[data-v-910bd80c] {\r\n    left: 0;\r\n    top: 1px;\r\n    position: absolute;\r\n    z-index: 1;\n}\n.box-bio img[data-v-910bd80c] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 20px;\r\n    margin-left: 5px;\r\n    width: 20px;\n}\n.highlighted[data-v-910bd80c] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
 
 // exports
 
@@ -46433,7 +46478,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.card[data-v-621856bf] { \r\n  border: none;\n}\r\n", ""]);
+exports.push([module.i, "\n.card[data-v-621856bf] { \r\n  border: none;\n}\nul.list-des[data-v-621856bf] {\r\n  margin: 0;\r\n  padding: 0;\n}\nul.list-des li[data-v-621856bf] {\r\n  list-style: none;\n}\r\n", ""]);
 
 // exports
 
@@ -54211,26 +54256,28 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "span",
-                                { staticClass: "badge badge-primary" },
-                                [
-                                  _vm._v(
-                                    "stato " +
-                                      _vm._s(order.order_state_code.code) +
-                                      " " +
-                                      _vm._s(order.order_state_code.name)
-                                  )
-                                ]
+                                {
+                                  staticClass: "badge badge-pill",
+                                  class:
+                                    "text-color-background-" +
+                                    order.order_state_code.css_color,
+                                  style:
+                                    "background-color:" +
+                                    order.order_state_code.css_color
+                                },
+                                [_vm._v(_vm._s(order.order_state_code.name))]
                               ),
                               _vm._v(" "),
-                              _c(
-                                "span",
-                                { staticClass: "badge badge-primary" },
-                                [
-                                  _vm._v(
-                                    "type " + _vm._s(order.order_type.name)
+                              order.order_type.name != "GAS"
+                                ? _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "badge badge-pill badge-primary"
+                                    },
+                                    [_vm._v(_vm._s(order.order_type.descri))]
                                   )
-                                ]
-                              )
+                                : _vm._e()
                             ]
                           )
                         ])
@@ -54366,6 +54413,25 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "badge badge-pill",
+                  class:
+                    "text-color-background-" + order.order_state_code.css_color,
+                  style: "background-color:" + order.order_state_code.css_color
+                },
+                [_vm._v(_vm._s(order.order_state_code.name))]
+              ),
+              _vm._v(" "),
+              order.order_type.name != "GAS"
+                ? _c(
+                    "span",
+                    { staticClass: "badge badge-pill badge-primary" },
+                    [_vm._v(_vm._s(order.order_type.descri))]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _c("i", {
                 staticClass: "fas fa-angle-down float-right",
                 attrs: { id: "fas-" + order.id, "aria-hidden": "true" }
@@ -54492,12 +54558,12 @@ var render = function() {
                               [
                                 _c(
                                   "div",
-                                  { staticClass: "content-img-supplier" },
+                                  { staticClass: "content-img-supplier-small" },
                                   [
                                     order.suppliers_organization.supplier
                                       .img1 != ""
                                       ? _c("img", {
-                                          staticClass: "img-supplier",
+                                          staticClass: "img-supplier-small",
                                           attrs: {
                                             src:
                                               "https://www.portalgas.it/images/organizations/contents/" +
@@ -54529,26 +54595,28 @@ var render = function() {
                                 _vm._v(" "),
                                 _c(
                                   "span",
-                                  { staticClass: "badge badge-primary" },
-                                  [
-                                    _vm._v(
-                                      "stato " +
-                                        _vm._s(order.order_state_code.code) +
-                                        " " +
-                                        _vm._s(order.order_state_code.name)
-                                    )
-                                  ]
+                                  {
+                                    staticClass: "badge badge-pill",
+                                    class:
+                                      "text-color-background-" +
+                                      order.order_state_code.css_color,
+                                    style:
+                                      "background-color:" +
+                                      order.order_state_code.css_color
+                                  },
+                                  [_vm._v(_vm._s(order.order_state_code.name))]
                                 ),
                                 _vm._v(" "),
-                                _c(
-                                  "span",
-                                  { staticClass: "badge badge-primary" },
-                                  [
-                                    _vm._v(
-                                      "type " + _vm._s(order.order_type.name)
+                                order.order_type.name != "GAS"
+                                  ? _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "badge badge-pill badge-primary"
+                                      },
+                                      [_vm._v(_vm._s(order.order_type.descri))]
                                     )
-                                  ]
-                                )
+                                  : _vm._e()
                               ]
                             ),
                             _vm._v(" "),
@@ -55356,10 +55424,10 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row" }, [
     _c("div", { staticClass: "col-sm-2 col-xs-2 col-md-2 d-none d-sm-block" }, [
-      _c("div", { staticClass: "content-img-top" }, [
+      _c("div", { staticClass: "content-img-article-small" }, [
         _vm.article.img1 != ""
           ? _c("img", {
-              staticClass: "card-img-top responsive",
+              staticClass: "img-article-small responsive",
               attrs: { src: _vm.article.img1, alt: _vm.article.name }
             })
           : _vm._e(),
@@ -55379,7 +55447,7 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-sm-4 col-xs-4 col-md-4" }, [
+    _c("div", { staticClass: "col-text col-sm-4 col-xs-4 col-md-4" }, [
       _vm._v("\n        " + _vm._s(_vm.article.name) + " "),
       _c("span", [
         _c("a", {
@@ -55394,7 +55462,7 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-sm-1 col-xs-1 col-md-1" }, [
+    _c("div", { staticClass: "col-text col-sm-1 col-xs-1 col-md-1" }, [
       _vm._v(
         "\n            " +
           _vm._s(_vm._f("currency")(_vm.article.price)) +
@@ -55409,17 +55477,17 @@ var render = function() {
         : _vm._e()
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-sm-1 col-xs-1 col-md-1" }, [
+    _c("div", { staticClass: "col-text col-sm-1 col-xs-1 col-md-1" }, [
       _vm._v("\n            " + _vm._s(_vm.article.conf) + "\n      ")
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-sm-2 col-xs-2 col-md-2" }, [
+    _c("div", { staticClass: "col-text col-sm-2 col-xs-2 col-md-2" }, [
       _vm._v("\n            " + _vm._s(_vm.article.um_rif_label) + "\n      ")
     ]),
     _vm._v(" "),
     _c(
       "div",
-      { staticClass: "col-sm-3 col-xs-3 col-md-2" },
+      { staticClass: "col-text col-sm-3 col-xs-3 col-md-2" },
       [
         _c("app-btn-cart-add", {
           key: _vm.article.id,
@@ -55579,7 +55647,7 @@ var render = function() {
       ],
       1
     ),
-    _vm._v("\r\n\r\n  page: " + _vm._s(_vm.page) + "\r\n\r\n\t"),
+    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12 col-xs-12 col-md-12" }, [
         _vm.isRunOrder
@@ -55658,23 +55726,32 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _vm.order.des_orders_organization != null
-                      ? _c("p", { staticClass: "card-text" }, [
+                      ? _c("p", { staticClass: "card-text" })
+                      : _vm._e(),
+                    _vm.order.des_orders_organization != null
+                      ? _c("div", [
                           _vm._v(
-                            "\r\n                    DES " +
+                            "\r\n                        DES " +
                               _vm._s(
                                 _vm.order.des_orders_organization.de.name
                               ) +
-                              "\r\n                    terminerà  " +
+                              " terminerà " +
                               _vm._s(
                                 _vm._f("formatDate")(
-                                  _vm.order.des_orders_organization
+                                  _vm.order.des_orders_organization.des_order
                                     .data_fine_max
                                 )
                               ) +
                               "\r\n                      "
-                          ),
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.order.all_des_orders_organizations != null
+                      ? _c("div", [
                           _c(
                             "ul",
+                            { staticClass: "list-des" },
                             _vm._l(
                               _vm.order.all_des_orders_organizations,
                               function(all_des_orders_organization, index) {
@@ -55686,19 +55763,22 @@ var render = function() {
                                         target: "_blank",
                                         href:
                                           all_des_orders_organization
-                                            .organization.img1.www,
+                                            .organization.www,
                                         title: "Vai al sito del GAS"
                                       }
                                     },
                                     [
                                       _c(
                                         "div",
-                                        { staticClass: "content-img-supplier" },
+                                        {
+                                          staticClass:
+                                            "content-img-organization"
+                                        },
                                         [
                                           all_des_orders_organization
                                             .organization.img1 != ""
                                             ? _c("img", {
-                                                staticClass: "img-supplier",
+                                                staticClass: "img-organization",
                                                 attrs: {
                                                   src:
                                                     "https://www.portalgas.it/images/organizations/contents/" +
@@ -55713,12 +55793,12 @@ var render = function() {
                                         ]
                                       ),
                                       _vm._v(
-                                        "\r\n                            \r\n                            " +
+                                        "\r\n                              \r\n                              " +
                                           _vm._s(
                                             all_des_orders_organization
                                               .organization.name
                                           ) +
-                                          "                     \r\n                          "
+                                          "                     \r\n                            "
                                       )
                                     ]
                                   )
@@ -55729,6 +55809,8 @@ var render = function() {
                           )
                         ])
                       : _vm._e(),
+                    _vm._v(" "),
+                    _c("p"),
                     _vm._v(" "),
                     _vm.order.prod_gas_promotion != null
                       ? _c("p", { staticClass: "card-text" }, [
@@ -55746,68 +55828,76 @@ var render = function() {
                         ])
                       : _vm._e(),
                     _vm._v(" "),
-                    _c("p", { staticClass: "card-text" }, [
-                      _vm.order.order_state_code.code == "OPEN-NEXT"
-                        ? _c("span", [
-                            _vm._v(
-                              "Aprirà " +
-                                _vm._s(
-                                  _vm._f("formatDate")(_vm.order.data_inizio)
-                                ) +
-                                " "
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.order.order_state_code.code == "OPEN"
-                        ? _c("span", [
-                            _vm._v(
-                              "chiuderà " +
-                                _vm._s(
-                                  _vm._f("formatDate")(_vm.order.data_fine)
-                                )
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.order.order_state_code.code == "OPEN-NEXT" &&
-                      _vm.order.order_state_code.code != "OPEN"
-                        ? _c("span", [
-                            _vm._v(
-                              "Data chiusura " +
-                                _vm._s(
-                                  _vm._f("formatDate")(_vm.order.data_fine)
-                                )
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.order.order_state_code.code == "RI-OPEN-VALIDATE"
-                        ? _c("span", [
-                            _vm._v(
-                              "Riaperto fino al " +
-                                _vm._s(
-                                  _vm._f("formatDate")(
-                                    _vm.order.data_fine_validation
-                                  )
-                                ) +
-                                " per completare i colli"
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
+                    _c("p", { staticClass: "card-text" }),
+                    _c("div", { staticClass: "float-right" }, [
                       _c(
-                        "button",
-                        { staticClass: "badge badge-primary float-right" },
-                        [
-                          _vm._v(
-                            _vm._s(_vm.order.order_state_code.code) +
-                              " " +
-                              _vm._s(_vm.order.order_state_code.name)
+                        "span",
+                        {
+                          staticClass: "badge badge-pill",
+                          class:
+                            "text-color-background-" +
+                            _vm.order.order_state_code.css_color,
+                          style:
+                            "background-color:" +
+                            _vm.order.order_state_code.css_color
+                        },
+                        [_vm._v(_vm._s(_vm.order.order_state_code.name))]
+                      ),
+                      _vm._v(" "),
+                      _vm.order.order_type.name != "GAS"
+                        ? _c(
+                            "span",
+                            { staticClass: "badge badge-pill badge-primary" },
+                            [_vm._v(_vm._s(_vm.order.order_type.descri))]
                           )
-                        ]
-                      )
+                        : _vm._e()
                     ]),
+                    _vm._v(" "),
+                    _vm.order.order_state_code.code == "OPEN-NEXT"
+                      ? _c("span", [
+                          _vm._v(
+                            "Aprirà " +
+                              _vm._s(
+                                _vm._f("formatDate")(_vm.order.data_inizio)
+                              ) +
+                              " "
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.order.order_state_code.code == "OPEN"
+                      ? _c("span", [
+                          _vm._v(
+                            "chiuderà " +
+                              _vm._s(_vm._f("formatDate")(_vm.order.data_fine))
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.order.order_state_code.code == "OPEN-NEXT" &&
+                    _vm.order.order_state_code.code != "OPEN"
+                      ? _c("span", [
+                          _vm._v(
+                            "Data chiusura " +
+                              _vm._s(_vm._f("formatDate")(_vm.order.data_fine))
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.order.order_state_code.code == "RI-OPEN-VALIDATE"
+                      ? _c("span", [
+                          _vm._v(
+                            "Riaperto fino al " +
+                              _vm._s(
+                                _vm._f("formatDate")(
+                                  _vm.order.data_fine_validation
+                                )
+                              ) +
+                              " per completare i colli"
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c("hr"),
                     _vm._v(" "),
                     _vm.order.nota != ""
@@ -74251,6 +74341,46 @@ var authentication = {
 
 /***/ }),
 
+/***/ "./resources/js/stores/cashesUser.js":
+/*!*******************************************!*\
+  !*** ./resources/js/stores/cashesUser.js ***!
+  \*******************************************/
+/*! exports provided: cashesUser */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cashesUser", function() { return cashesUser; });
+var cashesUser = {
+  state: {
+    reload: false
+  },
+  getters: {
+    cashesUserReload: function cashesUserReload(state) {
+      return state.reload;
+    }
+  },
+  mutations: {
+    RELOAD: function RELOAD(state) {
+      state.reload = true;
+    },
+    RELOAD_FINISH: function RELOAD_FINISH(state) {
+      state.reload = false;
+    }
+  },
+  actions: {
+    cashesUserReload: function cashesUserReload(context) {
+      context.commit("RELOAD");
+    },
+    cashesUserReloadFinish: function cashesUserReloadFinish(context) {
+      context.commit("RELOAD_FINISH");
+    }
+  },
+  modules: {}
+};
+
+/***/ }),
+
 /***/ "./resources/js/stores/modal.js":
 /*!**************************************!*\
   !*** ./resources/js/stores/modal.js ***!
@@ -74318,52 +74448,6 @@ var modal = {
 
 /***/ }),
 
-/***/ "./resources/js/stores/orders.js":
-/*!***************************************!*\
-  !*** ./resources/js/stores/orders.js ***!
-  \***************************************/
-/*! exports provided: orders */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "orders", function() { return orders; });
-var orders = {
-  state: {
-    order: {}
-  },
-  getters: {
-    getOrder: function getOrder(state) {
-      return state.order;
-    }
-  },
-  mutations: {
-    ADD_ORDER: function ADD_ORDER(state, _ref) {
-      var order = _ref.order;
-      state.order = order;
-    },
-    CLEAR_ORDER: function CLEAR_ORDER(state) {
-      state.order = {};
-    }
-  },
-  actions: {
-    addOrder: function addOrder(_ref2, order) {
-      var commit = _ref2.commit;
-      console.log('addOrder ');
-      /* console.log(order); */
-
-      commit("CLEAR_ORDER");
-      commit("ADD_ORDER", order);
-    },
-    clearOrder: function clearOrder(commit) {
-      commit("CLEAR_ORDER");
-    }
-  },
-  modules: {}
-};
-
-/***/ }),
-
 /***/ "./resources/js/stores/store.js":
 /*!**************************************!*\
   !*** ./resources/js/stores/store.js ***!
@@ -74379,7 +74463,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _authentication__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./authentication */ "./resources/js/stores/authentication.js");
 /* harmony import */ var _users__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./users */ "./resources/js/stores/users.js");
 /* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modal */ "./resources/js/stores/modal.js");
-/* harmony import */ var _orders__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./orders */ "./resources/js/stores/orders.js");
+/* harmony import */ var _cashesUser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./cashesUser */ "./resources/js/stores/cashesUser.js");
 
 
 
@@ -74392,7 +74476,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     authentication: _authentication__WEBPACK_IMPORTED_MODULE_2__["authentication"],
     users: _users__WEBPACK_IMPORTED_MODULE_3__["users"],
     modal: _modal__WEBPACK_IMPORTED_MODULE_4__["modal"],
-    orders: _orders__WEBPACK_IMPORTED_MODULE_5__["orders"]
+    cashesUser: _cashesUser__WEBPACK_IMPORTED_MODULE_5__["cashesUser"]
   }
 }));
 
