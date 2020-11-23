@@ -5,57 +5,12 @@ import router from "./router";
 import store from "./stores/store";
 import axios from "axios";
 
-/* Vue Validation 
-const config = {
-  fieldsBagName: "fields",
-  errorBagName: "errors",
-  classes: true,
-  strict: false,
-  classNames: {
-    valid: "",
-    invalid: "is-invalid"
-  },
-  events: "change|blur",
-  validity: false,
-  locale: "it",
-  inject: true,
-  aria: true,
-  delay: 20
-};*/
-import { ValidationObserver, ValidationProvider, extend } from "vee-validate";
-import * as rules from "vee-validate/dist/rules";
-import { messages } from "vee-validate/dist/locale/it.json";
-
-Object.keys(rules).forEach(rule => {
-  extend(rule, { ...rules[rule], message: messages[rule] });
-});
-
-export default {
-  name: "Example",
-  components: {
-    ValidationProvider,
-    ValidationObserver
-  },
-  data: () => ({
-    password: "password",
-    password_confirm: "password_confirm"
-  }),
-  methods: {}
-};
-
-Vue.component("ValidationProvider", ValidationProvider);
-Vue.component("ValidationObserver", ValidationObserver);
-
 // Install BootstrapVue
 Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);
 
 Vue.config.productionTip = false;
-
-// setup fake backend
-import { configureFakeBackend } from "./helpers/fake-backend";
-configureFakeBackend();
 
 window.axios = axios;
 /*

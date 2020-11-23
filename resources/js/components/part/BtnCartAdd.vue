@@ -42,10 +42,18 @@
             min="0"
             size="4"
             inputmode="numeric"
-            title="Qtà"
+            title="Quantità"
           />
 
           <input type="button" value="+" class="plus" @click="plusCart" :disabled="btnPlusIsDisabled" />
+
+          <input
+            type="text"
+            class="form-control text-center text-totale"
+            :value="total"
+            :disabled="true"
+            title="Totale"
+          />
 
           <button v-if="!isRun"
             type="button"
@@ -63,15 +71,24 @@
         </div>
       </div>
 
-       <div v-if="order.order_state_code.code!='RI-OPEN-VALIDATE' && order.order_state_code.code!='OPEN'">
+       <div class="quantity buttons_added" v-if="order.order_state_code.code!='RI-OPEN-VALIDATE' && order.order_state_code.code!='OPEN'">
+
           <input
             type="number"
             class="form-control text-center"
             :value="article.cart.qta_new"
             :disabled="true"
             inputmode="numeric"
-            title="Qtà"
+            title="Quantità"
           />        
+
+          <input
+            type="text"
+            class="form-control text-center text-totale"
+            :value="total"
+            :disabled="true"
+            title="Totale"
+          />          
        </div>
 
   </div>
@@ -104,6 +121,9 @@ export default {
       btnSaveIsDisabled()  {
         return (this.isRun || this.article.cart.qta === this.article.cart.qta_new);
       },
+      total() {
+         return this.$options.filters.currency(this.article.cart.qta_new * this.article.price)+" €";
+      }      
   },   
   methods: {
     ...mapActions(["cashesUserReload"]),
@@ -282,12 +302,22 @@ export default {
        }
 
        return true;
+    }    
+  },
+  filters: {
+    currency(amount) {
+      let locale = window.navigator.userLanguage || window.navigator.language;
+      const amt = Number(amount);
+      return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
     }
-  }
+  }  
 };
 </script>
 
 <style scoped>
+.text-totale {
+    background-color: #fff3ba !important;
+}
 .btn-save {
     margin-left: 15px;
 }

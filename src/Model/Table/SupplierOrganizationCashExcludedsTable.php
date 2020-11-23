@@ -7,9 +7,12 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 class SupplierOrganizationCashExcludedsTable extends Table
 {
+    use Traits\SqlTrait;
+
     /**
      * Initialize method
      *
@@ -96,5 +99,20 @@ class SupplierOrganizationCashExcludedsTable extends Table
         
         // debug($results);
         return $results;
-    }     
+    }  
+
+    public function isSupplierOrganizationCashExcluded($user, $organization_id, $supplier_organization_id, $debug=false) {
+
+        $where = ['SupplierOrganizationCashExcludeds.supplier_organization_id' => $supplier_organization_id,
+                  'SupplierOrganizationCashExcludeds.organization_id' => $organization_id];
+         
+        $results = $this->getCount('SupplierOrganizationCashExcludeds', $where);
+        // debug($where);
+        // debug($results);
+
+        if($results==0)
+            return false;
+        else
+            return true;
+    }
 }

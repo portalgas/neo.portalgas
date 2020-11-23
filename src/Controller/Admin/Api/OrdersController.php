@@ -157,7 +157,7 @@ class OrdersController extends ApiAppController
 
                 $options = [];
                 $options['sort'] = [];
-                $options['limit'] = Configure::read('sql.limit');
+                $options['limit'] = Configure::read('sql.no.limit');
                 $options['page'] = 1;
                 $articlesOrdersResults = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $result, $where, $options);
                 // debug($articlesOrdersResults);

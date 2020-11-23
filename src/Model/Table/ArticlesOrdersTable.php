@@ -152,8 +152,10 @@ class ArticlesOrdersTable extends Table
                       'Orders.id' => $orderResults];
             $orderResults = $ordersTable->find()
                                     ->where($where)
-                                    ->first()
-                                    ->toArray();
+                                    ->first();
+
+            if(!empty($orderResults))
+                $orderResults = $orderResults->toArray();
         }
 
         // debug($where);
@@ -275,8 +277,6 @@ class ArticlesOrdersTable extends Table
      * ArticlesOrders.article_organization_id = Articles.organization_id
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
-
-        $options['limit'] = 1000000;
 
         $order_id = $where['order_id'];
 

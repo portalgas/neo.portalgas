@@ -95,6 +95,10 @@
                       <span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
                   <hr >
                     <div v-if="order.nota!=''"><strong>Nota:</strong> {{ order.nota }}</div>
+
+                    <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Escluso dal prepagato</span>
+                    <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && !order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Gestito con il prepagato</span>
+
                     <span v-if="order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
                     <span v-if="order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
 
@@ -124,13 +128,7 @@
 
     <div class="row">
 
-          <div v-if="isRunArticles" class="box-spinner"> 
-            <div class="spinner-border text-info" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>  
-          </div>
-
-    	    <div v-if="!isRunArticles" class="col-sm-12 col-xs-2 col-md-3" 
+    	    <div class="col-sm-12 col-xs-2 col-md-3" 
     		          v-for="article in articles"
     		          :article="article"
     		          :key="article.article_id"
@@ -140,6 +138,12 @@
                     v-bind:order="order">
                     </app-article-order>
           </div> 
+
+          <div v-if="isRunArticles" class="box-spinner"> 
+            <div class="spinner-border text-info" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>  
+          </div>
 
     </div> <!-- row -->
 
@@ -240,7 +244,7 @@ export default {
     },
     getsAjaxArticles() {
 
-      // this.isRunArticles = true;
+      this.isRunArticles = true;
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
       let params = {
