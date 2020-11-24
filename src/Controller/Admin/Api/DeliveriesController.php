@@ -16,7 +16,6 @@ class DeliveriesController extends ApiAppController
     public function initialize(): void 
     {
         parent::initialize();
-        $this->loadComponent('Csrf');
     }
 
     public function beforeFilter(Event $event): void  {

@@ -12,7 +12,6 @@ class UsersController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Csrf');
         $this->loadComponent('Auths');
     }
 

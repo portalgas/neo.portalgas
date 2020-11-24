@@ -11,7 +11,7 @@ class AjaxsController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Csrf');
+        // $this->loadComponent('Csrf'); load in Application CsrfProtectionMiddleware
     }
 
     public function beforeFilter(Event $event) {

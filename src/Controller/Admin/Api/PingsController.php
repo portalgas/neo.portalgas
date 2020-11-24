@@ -10,7 +10,6 @@ class PingsController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Csrf');
     }
 
     public function beforeFilter(Event $event) {

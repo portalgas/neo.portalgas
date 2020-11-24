@@ -11,7 +11,6 @@ class PriceTypesController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Csrf');
         $this->loadComponent('Auths');
     }
 

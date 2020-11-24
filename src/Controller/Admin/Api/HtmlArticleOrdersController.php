@@ -12,7 +12,6 @@ class HtmlArticleOrdersController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Csrf');
         $this->loadComponent('Auths');
         $this->loadComponent('Cart');
     }
