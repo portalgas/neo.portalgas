@@ -58,12 +58,7 @@ class SuppliersOrganizationsController extends ApiAppController
             }
         } // if(!empty($ordersResults))
 
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);
     }
 
     public function getById() {
@@ -87,11 +82,6 @@ class SuppliersOrganizationsController extends ApiAppController
             $results['results'] = $suppliersOrganizationResults;
         }
 
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);
     } 
 }

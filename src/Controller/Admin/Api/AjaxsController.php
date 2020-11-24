@@ -78,13 +78,7 @@ class AjaxsController extends ApiAppController
         $errors = $results['errors'];
         // $this->set('_serialize', ['code', 'message', 'errors']);
         
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-																				 		
-        return $this->response;          
+        return $this->_response($results);        
     }
 
     private function _fieldUpdateExecute($entityTable, $entity, $field, $value, $debug=false) {
@@ -133,11 +127,6 @@ class AjaxsController extends ApiAppController
 
         $results = $entityTable->find('list', ['conditions' => $conditions, 'limit' => Configure::read('paginate.limit')]); 
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);																
-        return $this->response; 
+        return $this->_response($results); 
     }   
 }

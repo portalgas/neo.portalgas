@@ -41,14 +41,7 @@ class OrdersController extends ApiAppController
         $ordersTable->addBehavior('Orders');
         $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
 
-        $results = json_encode($orderResults);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     } 
 
     /*
@@ -83,14 +76,7 @@ class OrdersController extends ApiAppController
                                 ->order(['Orders.data_inizio'])
                                 ->all();
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     } 
 
     /*
@@ -193,14 +179,7 @@ class OrdersController extends ApiAppController
 
         } // end foreach($results as $numResult => $result) 
 
-        $results = json_encode($newResults);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);  
     } 
 
     /* 
@@ -266,12 +245,7 @@ class OrdersController extends ApiAppController
             }
         }
 
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     } 
 
     /* 
@@ -301,13 +275,6 @@ class OrdersController extends ApiAppController
                                 ->order(['Orders.data_inizio'])
                                 ->all();
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);  
     }     
 }

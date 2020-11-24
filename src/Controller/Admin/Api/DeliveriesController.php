@@ -68,12 +68,7 @@ class DeliveriesController extends ApiAppController
             $results[$sysDelivery->id] = $sysDelivery->luogo;
         }
 
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);
     } 
 
   
@@ -121,11 +116,6 @@ class DeliveriesController extends ApiAppController
             }
         }
 
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     }    
 }

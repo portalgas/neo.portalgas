@@ -84,14 +84,7 @@ class OrganizationsPaysController extends ApiAppController
         $errors = $results['errors'];
         // $this->set('_serialize', ['code', 'message', 'errors']);
         
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);
     }
 
     private function _createMsgText($user, $organizations_pay, $debug=false) {
@@ -117,7 +110,6 @@ class OrganizationsPaysController extends ApiAppController
         $doc_link = $this->OrganizationsPay->getDocUrl($user, $organizations_pay, $debug);
 
         $results = sprintf(__('msg_organization_pay_to_pay'), $doc_link, $cc, $satispay, $mail, $mail); 
-
         return $results;        
     }
 }

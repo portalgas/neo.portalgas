@@ -36,12 +36,7 @@ class CartsController extends ApiAppController
         // debug($article);
         $results = $this->Cart->managementCart($user, $user->organization->id, $order, $article, $debug);
         
-        $results = json_encode($results);
-        $this->response->type('json');
-        $this->response->body($results);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     } 
 
     /* 
@@ -70,14 +65,7 @@ class CartsController extends ApiAppController
 
         } // end if(!empty($delivery_id))
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     } 
 
     /* 
@@ -115,14 +103,7 @@ class CartsController extends ApiAppController
 
         } // end if(!empty($delivery_id))
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);  
     }  
 
     /* 
@@ -150,13 +131,7 @@ class CartsController extends ApiAppController
             $results = $results->results;
         }
         */
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
         
-        return $this->response;
+        return $this->_response($results); 
     }        
 }

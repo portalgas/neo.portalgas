@@ -101,13 +101,6 @@ class CashiersController extends ApiAppController
 
         } // end if(!empty($delivery_id))
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results); 
     } 
 }

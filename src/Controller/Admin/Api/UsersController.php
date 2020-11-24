@@ -55,12 +55,6 @@ class UsersController extends ApiAppController
         
         $results['ctrl_limit'] = $cashesUsersTable->ctrlLimit($user, $results['organization_cash_limit'], $results['organization_limit_cash_after'], $cashesUserResults, $results['user_cash'], $results['user_tot_importo_acquistato'], $debug);
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        return $this->response; 
+        return $this->_response($results);
     } 
 }

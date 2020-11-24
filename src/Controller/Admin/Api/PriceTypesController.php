@@ -51,13 +51,6 @@ class PriceTypesController extends ApiAppController
             $results['results'] = $priceTypeResults;
         } // end if(!empty($order_id))
 
-        $results = json_encode($results);
-        $this->response->withType('application/json');
-        $body = $this->response->getBody();
-        $body->write($results);        
-        $this->response->withBody($body);
-        // da utilizzare $this->$response->getStringBody(); // getJson()/getXml()
-        
-        return $this->response; 
+        return $this->_response($results);
     } 
 }
