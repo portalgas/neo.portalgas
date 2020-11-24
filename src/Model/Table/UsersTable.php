@@ -269,7 +269,7 @@ class UsersTable extends Table
 
                 $cashesUsersTable = TableRegistry::get('CashesUsers');
                 
-                $where = ['CashesUsers.supplier_organization_id' => $user->organization->id,
+                $where = ['CashesUsers.organization_id' => $user->organization->id,
                           'CashesUsers.user_id' => $user->id];
                 $cashesUsersResults = $cashesUsersTable->find()
                                                     ->where($where)
