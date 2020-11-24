@@ -149,12 +149,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             $authentication = new AuthenticationMiddleware($this, [
             /* 
              *  Notice: Deprecated (16384): The `unauthenticatedRedirect` configuration key on AuthenticationMiddleware is deprecated.
+                Instead set the `{$key}` on your AuthenticationService instance
              
-             se DebugKit e' attivo non compare il msg
-
-             'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login) 
              'unauthenticatedRedirect' => $portalgas_bo_url_login
-            */ 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
+             'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login)
+             */
             ]);
             $middlewareQueue->add($authentication);
 
@@ -200,7 +199,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $service = new AuthenticationService();
 
         $service->setConfig([
-          //  'unauthenticatedRedirect' => $portalgas_bo_url_login,
+            'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login),
             'queryParam' => null
         ]);
         
