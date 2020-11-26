@@ -35,6 +35,7 @@
                   <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('queue_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('table_id') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('before_save_first') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('before_save') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('after_save') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('sort') ?></th>
@@ -49,6 +50,7 @@
                   <td><?= $this->Number->format($queueTable->id) ?></td>
                   <td><?= $queueTable->has('queue') ? $this->Html->link($queueTable->queue->name.' ('.$queueTable->queue->name.')', ['controller' => 'Queues', 'action' => 'view', $queueTable->queue->id]) : '' ?></td>
                   <td><?= $queueTable->has('table') ? $this->Html->link($queueTable->table->name, ['controller' => 'Tables', 'action' => 'view', $queueTable->table->id]) : '' ?></td>
+                  <td><?= $queueTable->before_save_first ?></td>
                   <td><?= $queueTable->before_save ?></td>
                   <td><?= $queueTable->after_save ?></td>
                   <td><?= $this->Number->format($queueTable->sort) ?></td>

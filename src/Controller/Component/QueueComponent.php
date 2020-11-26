@@ -254,6 +254,7 @@ class QueueComponent extends Component {
             if($queue_table->table->is_active) {
                 // rif table slave
                 $tables[$queue_table->table->id] = $queue_table->table;
+                $tables[$queue_table->table->id]['before_save_first'] = $queue_table->before_save_first;
                 $tables[$queue_table->table->id]['before_save'] = $queue_table->before_save;
                 $tables[$queue_table->table->id]['after_save'] = $queue_table->after_save;
             }
@@ -321,15 +322,18 @@ class QueueComponent extends Component {
         $namespace_table_slave = $queueTable->getNamespaceTableSlave($queue, $slave_entity);
 
         $tableRegistry = TableRegistry::get($namespace_table_slave);
-
+        // gia' definito nel model 
+        $tableRegistry->setTable($slave_entity);
+        $tableRegistry->setAlias($slave_entity);
+        
         $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
         $conn = $tableRegistry->getConnection($datasource_slave);
 
         /*
-         * beforeSave ini
+         * beforeSaveFirst ini, eseguito la prima volta
          */
-        if(!empty($table->before_save)) {
-            $results = $this->_registry->{$this->component}->{$table->before_save}($datas, $organization_id);
+        if(!empty($table->before_save_first)) {
+            $results = $this->_registry->{$this->component}->{$table->before_save_first}($datas, $organization_id);
             // debug($results);
             $this->_registry->QueueLog->logging($uuid, $queue, $results['msg'], $results['results'], 'INFO');
 
@@ -344,13 +348,13 @@ class QueueComponent extends Component {
                 $this->last_insert_ids[$table->id] = $results['results']->id;
 
             if(!$action) {
-                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
+                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save_first '.$table->before_save_first.' return false => NON insert ', $results);                
             }
             else
-                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return true => insert ', $results);
+                $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save_first '.$table->before_save_first.' return true => insert ', $results);
         }
         /*
-         * beforeSave end
+         * beforeSaveFirst end
          */
 
         if($esito && $action) 
@@ -358,138 +362,171 @@ class QueueComponent extends Component {
            
             if($debug) debug($data);
 
-            // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
 
             /*
-             * insert o update, se viene passato la chiave (ex sku) ctrl se esiste gia' 
+             * beforeSave ini, eseguito per ogni entity
              */
-            $insert = true;
-            if(!empty($table->update_key)) {
-                if(!isset($data[$table->update_key])) {
-                    $this->_registry->QueueLog->logging($uuid, $queue, 'Campo ['.$table->update_key.'] per valutare se INSERT / UPDATE non esiste', 'ERROR');
+            if(!empty($table->before_save)) {
+                $results = $this->_registry->{$this->component}->{$table->before_save}($data, $organization_id);
+                // debug($results);
+                $this->_registry->QueueLog->logging($uuid, $queue, $results['msg'], $results['results'], 'INFO');
 
-                    $insert = true;
-                }
-                else
-                if(empty($data[$table->update_key]))
-                    $insert = true;
-                else {
-                    // debug($data[$table->update_key]);
-                    $where = ['organization_id' => $organization_id,
-                              $table->update_key => $data[$table->update_key]];
-                    if($debug) debug($where);
-                    $slaveEntity = $tableRegistry->find()->where($where)->first();
-                    if($debug) debug($slaveEntity);
-
-                    if(empty($slaveEntity))
-                        $insert = true;
-                    else
-                        $insert = false;
-                        
-                    // debug($insert);
-                } 
-            } // if(!empty($table->update_key))
-
-            if($insert) {
-                $slaveEntity = $tableRegistry->newEntity();
+                $esito = $results['esito'];
+                $action = $results['action'];
                 
                 /*
-                 * l'id e' mappato per esempio da getMaxArticleId
+                 * salvo l'id del record dovresse servire per la tabella successiva 
+                 * per la gestione INNER_TABLE_PARENT (Eredita da tabella)               
                  */
-                if(isset($data['id']))
-                    $slaveEntity->id = $data['id'];
+                if(isset($results['results']) && isset($results['results']->id))
+                    $this->last_insert_ids[$table->id] = $results['results']->id;
+
+                if(!$action) {
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return false => NON insert ', $results);                
+                }
+                else
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'function before_save '.$table->before_save.' return true => insert ', $results);
             }
-           
-            if(isset($data['organization_id']))
-                $slaveEntity->organization_id = $data['organization_id'];
-            
-            // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
-            $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
-             
-            if($insert)
-                $this->_registry->QueueLog->logging($uuid, $queue, 'INSERT slaveEntity '.$slave_entity, $slaveEntity);
-            else
-                $this->_registry->QueueLog->logging($uuid, $queue, 'UPDATE slaveEntity '.$slave_entity, $slaveEntity);
+            /*
+             * beforeSave end
+             */
 
-            // if ($this->{$slave_entity}->save($slaveEntity)) {
-            if($debug) debug($slaveEntity); 
-            if(!$this->debug) {
+            // $this->_registry->QueueLog->logging($this->uuid, $queue->id, 'data', $data);
 
-                    $conn->begin();
+            if($esito && $action) {
+                    
+                /*
+                 * insert o update, se viene passato la chiave (ex sku) ctrl se esiste gia' 
+                 */
+                $insert = true;
+                if(!empty($table->update_key)) {
+                    if(!isset($data[$table->update_key])) {
+                        $this->_registry->QueueLog->logging($uuid, $queue, 'Campo ['.$table->update_key.'] per valutare se INSERT / UPDATE non esiste', 'ERROR');
 
-                    $resultSave = $tableRegistry->save($slaveEntity);
-                    if ($resultSave) {
+                        $insert = true;
+                    }
+                    else
+                    if(empty($data[$table->update_key]))
+                        $insert = true;
+                    else {
+                        // debug($data[$table->update_key]);
+                        $where = ['organization_id' => $organization_id,
+                                  $table->update_key => $data[$table->update_key]];
+                        if($debug) debug($where);
+                        $slaveEntity = $tableRegistry->find()->where($where)->first();
+                        if($debug) debug($slaveEntity);
 
-                        $conn->commit(); 
+                        if(empty($slaveEntity))
+                            $insert = true;
+                        else
+                            $insert = false;
+                            
+                        // debug($insert);
+                    } 
+                } // if(!empty($table->update_key))
 
-                        $esito = true;
+                if($insert) {
+                    $slaveEntity = $tableRegistry->newEntity();
+                    
+                    /*
+                     * l'id e' mappato per esempio da getMaxArticleId
+                     */
+                    if(isset($data['id']))
+                        $slaveEntity->id = $data['id'];
+                }
+               
+                if(isset($data['organization_id']))
+                    $slaveEntity->organization_id = $data['organization_id'];
+                
+                // $slaveEntity = $this->{$slave_entity}->patchEntity($slaveEntity, $data);
+                $slaveEntity = $tableRegistry->patchEntity($slaveEntity, $data);
+                 
+                if($insert)
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'INSERT slaveEntity '.$slave_entity, $slaveEntity);
+                else
+                    $this->_registry->QueueLog->logging($uuid, $queue, 'UPDATE slaveEntity '.$slave_entity, $slaveEntity);
 
-                        /*
-                         * salvo l'id del record dovresse servire per la tabella successiva                             
-                         * per la gestione INNER_TABLE_PARENT (Eredita da tabella)
-                         */
-                        $primary_key = $tableRegistry->getPrimaryKey();
-                        // debug($primary_key);
-                        if(!is_array($primary_key)) {
-                            // debug($resultSave->{$primary_key});
-                            $this->last_insert_ids[$table->id] =  $resultSave->{$primary_key};
-                            $data['id'] =  $resultSave->{$primary_key};
-                        }
-                        // debug($this->last_insert_ids);
+                // if ($this->{$slave_entity}->save($slaveEntity)) {
+                if($debug) debug($slaveEntity); 
+                if(!$this->debug) {
 
-                        /*
-                         * afterSave
-                         */
-                        if(!empty($table->after_save)) {
-                            $results = $this->_registry->{$this->component}->{$table->after_save}($slaveEntity, $organization_id);
+                        $conn->begin();
 
-                            $esito = $results['esito'];
-                            if(!$esito) {
-                                $code = $results['code'];
-                                $uuid = $results['uuid'];
-                                $msg = $results['msg'];
-                                $results = $results['results'];
+                        $resultSave = $tableRegistry->save($slaveEntity);
+                        if ($resultSave) {
 
-                            }
+                            $conn->commit(); 
 
-                        } // end if(!empty($table->after_save))
-                        /*
-                         * afterSave
-                         */
-
-                        if($esito) {
                             $esito = true;
-                            $code = 200;
+
+                            /*
+                             * salvo l'id del record dovresse servire per la tabella successiva                             
+                             * per la gestione INNER_TABLE_PARENT (Eredita da tabella)
+                             */
+                            $primary_key = $tableRegistry->getPrimaryKey();
+                            // debug($primary_key);
+                            if(!is_array($primary_key)) {
+                                // debug($resultSave->{$primary_key});
+                                $this->last_insert_ids[$table->id] =  $resultSave->{$primary_key};
+                                $data['id'] =  $resultSave->{$primary_key};
+                            }
+                            // debug($this->last_insert_ids);
+
+                            /*
+                             * afterSave
+                             */
+                            if(!empty($table->after_save)) {
+                                $results = $this->_registry->{$this->component}->{$table->after_save}($slaveEntity, $organization_id);
+
+                                $esito = $results['esito'];
+                                if(!$esito) {
+                                    $code = $results['code'];
+                                    $uuid = $results['uuid'];
+                                    $msg = $results['msg'];
+                                    $results = $results['results'];
+
+                                }
+
+                            } // end if(!empty($table->after_save))
+                            /*
+                             * afterSave
+                             */
+
+                            if($esito) {
+                                $esito = true;
+                                $code = 200;
+                                $uuid = $uuid;
+                                $msg = '';
+                                $results = [];                                
+                            }                             
+                        }
+                        else {
+                            
+                            $conn->rollback();
+
+                            $this->_registry->QueueLog->logging($uuid, $queue, 'Save', $slaveEntity->getErrors(), 'ERROR');
+
+                            $this->_registry->QueueLog->logging($uuid, $queue, 'Error', 'rollback', 'ERROR');
+                            
+                            $esito = false;
+                            $code = 500;
                             $uuid = $uuid;
                             $msg = '';
-                            $results = [];                                
-                        }                             
-                    }
-                    else {
-                        
-                        $conn->rollback();
+                            $results['entity'] = $data;
+                            $results['error'] = $slaveEntity->getErrors();
+                            break;
+                        }
+                } // if(!$this->debug) 
+                else {
+                    $esito = true;
+                    $code = 200;
+                    $uuid = $uuid;
+                    $msg = 'Modalita DEBUG';
+                    $results = $slaveEntity;                    
+                }
+            } // end if($esito && $action) 
 
-                        $this->_registry->QueueLog->logging($uuid, $queue, 'Save', $slaveEntity->getErrors(), 'ERROR');
-
-                        $this->_registry->QueueLog->logging($uuid, $queue, 'Error', 'rollback', 'ERROR');
-                        
-                        $esito = false;
-                        $code = 500;
-                        $uuid = $uuid;
-                        $msg = '';
-                        $results['entity'] = $data;
-                        $results['error'] = $slaveEntity->getErrors();
-                        break;
-                    }
-            } // if(!$this->debug) 
-            else {
-                $esito = true;
-                $code = 200;
-                $uuid = $uuid;
-                $msg = 'Modalita DEBUG';
-                $results = $slaveEntity;                    
-            }
-        } // end foreach($datas as $data)  
+        } // end foreach($datas as $data)    
 
 
         $results = ['esito' => $esito, 'code' => $code, 'uuid' => $uuid, 'msg' => $msg, 'results' => $results];

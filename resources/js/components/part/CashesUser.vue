@@ -1,20 +1,20 @@
 <template>
 
 <div class="btn-group">
-    
-    <div v-if="datas.user_cash < 0" 
+   
+    <div v-if="datas.user_cash_e!=null && datas.user_cash < 0" 
           class="alert alert-danger" 
           v-html="$options.filters.debito_cassa(datas.user_cash_e)">
     </div>
 
-    <div v-if="datas.user_cash >= 0" 
+    <div v-if="datas.user_cash_e!=null && datas.user_cash >= 0" 
           class="alert alert-primary" 
           v-html="$options.filters.credito_cassa(datas.user_cash_e)">
     </div>
 
-    <div class="alert alert-warning" v-html="$options.filters.html(datas.ctrl_limit.fe_msg)"></div>
+    <div v-if="datas.user_cash_e!=null && " class="alert alert-warning" v-html="$options.filters.html(datas.ctrl_limit.fe_msg)"></div>
 
-    <div v-if="datas.ctrl_limit.fe_msg_tot_acquisti != ''" 
+    <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.fe_msg_tot_acquisti != ''" 
           class="alert alert-warning" 
           v-html="$options.filters.html(datas.ctrl_limit.fe_msg_tot_acquisti)">
     </div>

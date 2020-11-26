@@ -65,6 +65,11 @@ class QueueTablesTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->scalar('before_save_first')
+            ->maxLength('before_save_first', 100)
+            ->allowEmptyString('before_save_first');
+
+        $validator
             ->scalar('before_save')
             ->maxLength('before_save', 100)
             ->allowEmptyString('before_save');

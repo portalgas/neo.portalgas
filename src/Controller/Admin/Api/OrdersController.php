@@ -39,7 +39,7 @@ class OrdersController extends ApiAppController
         $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
         $ordersTable->addBehavior('Orders');
-        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
+        $results = $ordersTable->getById($user, $organization_id, $order_id, $debug);
 
         return $this->_response($results); 
     } 
@@ -179,7 +179,7 @@ class OrdersController extends ApiAppController
 
         } // end foreach($results as $numResult => $result) 
 
-        return $this->_response($results);  
+        return $this->_response($newResults);  
     } 
 
     /* 

@@ -52330,58 +52330,8 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "btn-group" }, [
-    _vm.datas.user_cash < 0
-      ? _c("div", {
-          staticClass: "alert alert-danger",
-          domProps: {
-            innerHTML: _vm._s(
-              _vm.$options.filters.debito_cassa(_vm.datas.user_cash_e)
-            )
-          }
-        })
-      : _vm._e(),
-    _vm._v(" "),
-    _vm.datas.user_cash >= 0
-      ? _c("div", {
-          staticClass: "alert alert-primary",
-          domProps: {
-            innerHTML: _vm._s(
-              _vm.$options.filters.credito_cassa(_vm.datas.user_cash_e)
-            )
-          }
-        })
-      : _vm._e(),
-    _vm._v(" "),
-    _c("div", {
-      staticClass: "alert alert-warning",
-      domProps: {
-        innerHTML: _vm._s(
-          _vm.$options.filters.html(_vm.datas.ctrl_limit.fe_msg)
-        )
-      }
-    }),
-    _vm._v(" "),
-    _vm.datas.ctrl_limit.fe_msg_tot_acquisti != ""
-      ? _c("div", {
-          staticClass: "alert alert-warning",
-          domProps: {
-            innerHTML: _vm._s(
-              _vm.$options.filters.html(
-                _vm.datas.ctrl_limit.fe_msg_tot_acquisti
-              )
-            )
-          }
-        })
-      : _vm._e()
-  ])
-}
+var render = function () {}
 var staticRenderFns = []
-render._withStripped = true
 
 
 
