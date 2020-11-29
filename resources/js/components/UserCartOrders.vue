@@ -43,9 +43,13 @@
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
 					</a>
 
-			        <user-cart-articles :order="order" :article_orders="order.article_orders"></user-cart-articles>			
+			        <user-cart-articles :order="order" :article_orders="order.article_orders"></user-cart-articles>
 				
 	        </p> 
+
+		      <div class="row">
+		        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale carrello per la consegna : {{ totalPrice() }} &euro;</div>
+		      </div>
 
 	      </div>
 	    </div>
@@ -90,7 +94,22 @@ export default {
       return this.order.article_order
     },  
   },
-  methods: { 
+  methods: {
+	    totalPrice() {
+	    	/* console.log("Totale ordini "+this.orders.data.length); */
+	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
+	    		var totale = 0;
+	    		this.orders.data.forEach(function (order, index) { 
+	    			/ *console.log("Tratto ordine "+(index+1)); */
+	    			order.article_orders.forEach(function (article_order, index) { 
+	    				/* console.log(article_order);  */
+	    				totale += (article_order.cart.qta_new * article_order.price);
+	    			});
+	    		});
+	    	}
+
+	    	return this.$options.filters.currency(totale);
+	    },
 	    selectDelivery(delivery_id) {
 	    	console.log('selectDelivery '+delivery_id);
 
@@ -182,5 +201,11 @@ export default {
 }
 .card-header:hover {
 	color: #fa824f;
+}
+.footer {
+	background-color: #bababa;
+	font-weight: bold;
+	color: #0a659e;
+	text-align: right; 
 }
 </style> 

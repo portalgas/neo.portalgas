@@ -29,10 +29,22 @@ class joomla25SaltsController extends AppController
     * Rests::connect()  
     *
     * localhost nginx non gestisce .htaccess  
-    */
+
+
+    /*
+     * da neo.portalgas a portalgas cakephp 2.x
+     *  da (portalgas cakephp 2.x => neo.portalgas /api/joomla25SaltsController
+     *
+     *
+     * user_salt = 
+     *  $user_id = $this->Authentication->getIdentity()->id;
+     *  $user_organization_id = $this->Authentication->getIdentity()->organization_id;
+     *  $organization_id = $this->Authentication->getIdentity()->organization->id; // gas scelto
+     */
+
     public function index()
     {
-        $debug = false;
+        $debug = true;
 
         $user_id = $this->Authentication->getIdentity()->id;
         $user_organization_id =  $this->Authentication->getIdentity()->organization_id;
@@ -51,6 +63,9 @@ class joomla25SaltsController extends AppController
          * land page, controller / action
          */
         
+        $scope = $this->request->getQuery('scope');
+        if(empty($scope))
+            $scope = 'FE';
         $c_to = $this->request->getQuery('c_to');
         if(empty($c_to))
             $c_to = 'Pages'; 
@@ -63,6 +78,7 @@ class joomla25SaltsController extends AppController
          */
         $q = '';
         $queries = $this->request->getQuery();
+        unset($queries['scope']);
         unset($queries['c_to']);
         unset($queries['a_to']);
         if(!empty($queries)) {
@@ -81,10 +97,10 @@ class joomla25SaltsController extends AppController
 
         switch (strtolower($this->application_env)) {
             case 'development':
-                $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'&u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+                $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'&u='.$user_salt.'&scope='.$scope.'&c_to='.$c_to.'&a_to='.$a_to;
                 break;
             default:
-                $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+                $url = $config['Portalgas.bo.url'].$config['Portalgas.bo.connect'].'?u='.$user_salt.'&scope='.$scope.'&c_to='.$c_to.'&a_to='.$a_to;
                 break;
         }
         
@@ -92,7 +108,7 @@ class joomla25SaltsController extends AppController
             $url .= '&'.$q;
 
         if($debug) debug($url); 
-        // debug($url); exit;
+        if($debug) exit;
         // return $this->redirect($url);
                 
         header("Location: $url");

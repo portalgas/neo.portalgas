@@ -2,7 +2,12 @@
 
     <div>
 
-      <h2>Carrello</h2>
+      <h2>
+        Carrello
+        <span class="btn-pdf">
+          <a href="/admin/api/exports/pdf/index.pdf" target="_blank" title="Stampa carrello"><i class="fas fa-file-pdf"></i></a>
+        </span>
+      </h2>
       <div v-if="isLoading" class="box-spinner"> 
         <div class="spinner-border text-info" role="status">
           <span class="sr-only">Loading...</span>
@@ -61,4 +66,10 @@ export default {
 </script>
 
 <style scoped>
+.btn-pdf {
+  float: right;
+}
+.btn-pdf i {
+  color: #fff;
+}
 </style>

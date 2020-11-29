@@ -26,6 +26,9 @@ class joomla25SaltsController extends AppController
     }
 
     /*
+     * da portalgas cakephp 2.x => neo.portalgas
+     *  da (neo.portalgas a portalgas cakephp 2.x /admin/joomla25SaltsController
+     *
      * method: get
      * url: /api/joomla25Salts/login?u=user_salt
      *
@@ -52,8 +55,11 @@ class joomla25SaltsController extends AppController
          * 'prefix' => false se no prende api
          */ 
         $redirects = [];       
+        $scope = 'FE';      
         $c_to = ''; 
         $a_to = '';
+        if(isset($queries['scope']))
+            $scope = $queries['scope'];
         if(isset($queries['c_to']))
             $c_to = $queries['c_to']; 
         if(isset($queries['a_to']))
@@ -68,6 +74,8 @@ class joomla25SaltsController extends AppController
          * parametri aggiuntivi
          */
         $q = [];
+        if(isset($queries['scope']))
+            unset($queries['scope']);
         if(isset($queries['u']))
             unset($queries['u']);
         if(isset($queries['c_to']))

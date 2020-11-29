@@ -18,7 +18,7 @@
         <div v-if="!isRunOrder && order!=null" class="card mb-3">
           <div class="row no-gutters">
             <div class="col-md-2"> 
-                
+                <span>Totale: {{ totalPrice() }} &euro;</span>
                 <div class="content-img-supplier">
                   <img v-if="order.suppliers_organization.supplier.img1 != ''"
                     class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
@@ -186,6 +186,12 @@ export default {
     this.scroll();
   },
   methods: {
+    totalPrice() {
+      return this.$options.filters.currency(this.articles.reduce(
+        (current, next) => current + (next.cart.qta_new * next.price),
+        0
+      ));
+    },  
     onSearch: function(q) {
       this.articles = [];
       this.page = 1;

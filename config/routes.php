@@ -142,7 +142,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
     $routes->setExtensions(['json', 'xml']);      
 
     /*
-     * token da portalgas cakephp 2.x
+     * token da portalgas cakephp 2.x => neo.portalgas
      */ 
     $routes->scope('/joomla25Salt', ['controller' => 'joomla25Salts'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'GET']);
@@ -202,6 +202,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/setMsgText', ['action' => 'setMsgText', '_method' => 'POST']);
         });
         
+        /*
+         * export
+         */
+        $routes->scope('/exports', ['controller' => 'Exports'], function (RouteBuilder $routes) {
+            $routes->connect('/pdf', ['action' => 'pdf', '_method' => 'GET']);
+        });
+
         /*
          * servizi ajax
          */ 
