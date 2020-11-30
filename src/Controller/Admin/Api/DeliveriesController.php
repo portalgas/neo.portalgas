@@ -50,7 +50,8 @@ class DeliveriesController extends ApiAppController
         $deliveries = $deliveriesTable->gets($user, $organization_id, $where);
         if(!empty($deliveries)) {
             foreach($deliveries as $delivery) {
-                $results[$delivery->id] = $delivery->data->format('d F Y');
+                // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                $results[$delivery->id] = $delivery->data->i18nFormat('d MMMM Y');
             }
         }
 
@@ -111,8 +112,10 @@ class DeliveriesController extends ApiAppController
             foreach($carts as $cart) {
                 if($cart->order->delivery->sys=='Y')
                     $results[$cart->order->delivery->id] = $cart->order->delivery->luogo;
-                else
-                    $results[$cart->order->delivery->id] = $cart->order->delivery->data->format('d F Y');
+                else {
+                    // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                    $results[$cart->order->delivery->id] = $cart->order->delivery->data->i18nFormat('d MMMM Y');
+                }
             }
         }
 

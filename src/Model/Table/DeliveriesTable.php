@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\I18n\Date;
 
 class DeliveriesTable extends Table
 {
@@ -130,11 +131,13 @@ class DeliveriesTable extends Table
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
-                $listResults[$result->id] = $result->luogo.' '.$result->data->format('d F Y');;
+                // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                $listResults[$result->id] = $result->luogo.' '.$result->data->i18nFormat('d MMMM Y');
             }
         }
 
         // debug($listResults);
+        
         return $listResults;
     }
 

@@ -51,6 +51,8 @@ class OrderValidation extends Validation
         	return true;
 
         $value = $value['year'].$value['month'].$value['day'];
+        // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+        // $value2 = $results->data->i18nFormat('Ymd');        
         $value2 = $results->data->format('Ymd');
         if (!Validation::comparison($value, $operator, $value2))
             return false;

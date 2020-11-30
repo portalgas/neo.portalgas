@@ -3392,6 +3392,24 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_OrdersDeliveries_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/OrdersDeliveries.vue */ "./resources/js/components/OrdersDeliveries.vue");
 /* harmony import */ var _components_OrdersSuppliers_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/OrdersSuppliers.vue */ "./resources/js/components/OrdersSuppliers.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -3439,6 +3457,29 @@ __webpack_require__.r(__webpack_exports__);
       return '#' + this.name.toLowerCase().replace(/ /g, '-');
     }
   },
+  methods: {
+    sortObject: function sortObject(o) {
+      console.log(Object.keys(o));
+      console.log(Object.values(o)); // return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+      // return Object.values(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+
+      return Object.entries(o).sort(function (_ref, _ref2) {
+        var _ref3 = _slicedToArray(_ref, 2),
+            a = _ref3[1];
+
+        var _ref4 = _slicedToArray(_ref2, 2),
+            b = _ref4[1];
+
+        return a - b;
+      }).reduce(function (r, _ref5) {
+        var _ref6 = _slicedToArray(_ref5, 2),
+            v = _ref6[0],
+            k = _ref6[1];
+
+        return _objectSpread(_objectSpread({}, r), {}, _defineProperty({}, k, v));
+      }, {});
+    }
+  },
   watch: {
     /*
      * carica i dati in base all'url settato nel tabs e lo passa al componente
@@ -3458,7 +3499,9 @@ __webpack_require__.r(__webpack_exports__);
           console.log(response.data);
 
           if (typeof response.data !== "undefined") {
-            _this.datas = response.data; // console.log(this.datas);                    
+            _this.datas = response.data; // this.datas = this.sortObject(response.data);
+
+            console.log(_this.datas);
           }
         })["catch"](function (error) {
           _this.isLoading = false;
@@ -71093,14 +71136,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************!*\
   !*** ./resources/js/components/part/Tab.vue ***!
   \**********************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Tab_vue_vue_type_template_id_2d1f77b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Tab.vue?vue&type=template&id=2d1f77b8& */ "./resources/js/components/part/Tab.vue?vue&type=template&id=2d1f77b8&");
 /* harmony import */ var _Tab_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Tab.vue?vue&type=script&lang=js& */ "./resources/js/components/part/Tab.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Tab_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Tab_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -71130,7 +71174,7 @@ component.options.__file = "resources/js/components/part/Tab.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/components/part/Tab.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

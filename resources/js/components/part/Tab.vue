@@ -41,6 +41,17 @@ export default {
 			return '#' + this.name.toLowerCase().replace(/ /g, '-');
 		}
 	},
+	 methods:{
+	  	sortObject: function(o) {
+			console.log(Object.keys(o));
+			console.log(Object.values(o));
+			  // return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+			  
+			  // return Object.values(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+
+			  return  Object.entries(o).sort(([,a],[,b]) => a-b).reduce((r, [v, k]) => ({ ...r, [k]: v }), {});
+	    }
+	},
 	watch: {
 		/*
 		 * carica i dati in base all'url settato nel tabs e lo passa al componente
@@ -66,7 +77,8 @@ export default {
 					console.log(response.data);
 					if(typeof response.data !== "undefined") {
 						this.datas = response.data;
-						// console.log(this.datas);                    
+						// this.datas = this.sortObject(response.data);
+					 	console.log(this.datas);                    
 					}
 				})
 				.catch(error => {

@@ -44,7 +44,7 @@ class joomla25SaltsController extends AppController
 
     public function index()
     {
-        $debug = true;
+        $debug = false;
 
         $user_id = $this->Authentication->getIdentity()->id;
         $user_organization_id =  $this->Authentication->getIdentity()->organization_id;
@@ -67,10 +67,10 @@ class joomla25SaltsController extends AppController
         if(empty($scope))
             $scope = 'FE';
         $c_to = $this->request->getQuery('c_to');
-        if(empty($c_to))
+        if(empty($c_to) && $scope == 'BO')
             $c_to = 'Pages'; 
         $a_to = $this->request->getQuery('a_to');
-        if(empty($a_to))
+        if(empty($a_to) && $scope == 'BO')
             $a_to = 'home'; 
 
         /*
