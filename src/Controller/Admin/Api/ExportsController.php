@@ -11,6 +11,7 @@ class ExportsController extends AppController {
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Order');
     }
 
     public function beforeFilter(Event $event) {
@@ -26,7 +27,10 @@ class ExportsController extends AppController {
         $this->viewBuilder()->setClassName('CakePdf.Pdf');
     }
 
-    public function pdf($debug=false) { 
+    /*
+     * https://dompdf.net/examples.php
+     */
+    public function pdf($delivery_id, $debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -45,9 +49,17 @@ class ExportsController extends AppController {
             'filename' => 'Invoice.pdf'
         ]);
 
+        $debug = false;
         $results = [];
-        array_push($results, $this->request->getParam('pass'));
-        array_push($results, $parameters = $this->request->getAttribute('params'));
+    
+        $options = [];
+        $options['sql_limit'] = Configure::read('sql.no.limit');
+
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;
+
+        $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug); 
+        // debug($results); 
 
         $this->set('results', $results);
     }     

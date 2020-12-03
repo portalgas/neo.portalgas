@@ -394,6 +394,8 @@ class CashesUsersTable extends Table
                 $results['stato'] = 'GREEN';
                 $results['fe_msg'] = 'Nessun limite per gli acquisti';
                 $results['fe_msg_tot_acquisti'] = '';
+
+                $results['has_fido'] = false;
             break;
             case "LIMIT-CASH":
                 $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
@@ -414,6 +416,8 @@ class CashesUsersTable extends Table
                     $results['stato'] = 'YELLOW';
                     $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
                 }
+
+                $results['has_fido'] = false;
             break;
             case "LIMIT-CASH-AFTER":
                 $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato) + floatval($organization_limitCashAfter));
@@ -433,7 +437,12 @@ class CashesUsersTable extends Table
                 if($results['importo']==0) {
                     $results['stato'] = 'YELLOW';
                     $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
-                }   
+                } 
+
+                $results['has_fido'] = true;
+                $results['importo_fido'] = $results['importo'];
+                $results['importo_fido_'] = $results['importo_'];
+                $results['importo_fido_e'] = $results['importo_e'];                  
             break;
             case "LIMIT-CASH-USER":
             
@@ -455,6 +464,8 @@ class CashesUsersTable extends Table
                         $results['stato'] = 'GREEN';
                         $results['fe_msg'] = 'Nessun limite per gli acquisti';
                         $results['fe_msg_tot_acquisti'] = '';
+
+                        $results['has_fido'] = false;
                     break;
                     case "LIMIT-CASH":
                         $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
@@ -475,6 +486,8 @@ class CashesUsersTable extends Table
                             $results['stato'] = 'YELLOW';
                             $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
                         }
+
+                        $results['has_fido'] = false;
                     break;
                     case "LIMIT-CASH-AFTER":
                         $results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato) + floatval($cashesUser['limit_after']));
@@ -495,6 +508,11 @@ class CashesUsersTable extends Table
                             $results['stato'] = 'YELLOW'; 
                             $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
                         }       
+                        
+                        $results['has_fido'] = true;
+                        $results['importo_fido'] = $results['importo'];
+                        $results['importo_fido_'] = $results['importo_'];
+                        $results['importo_fido_e'] = $results['importo_e'];
                     break;
                 }                
             break;

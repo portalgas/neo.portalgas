@@ -4,9 +4,6 @@
 
       <h2>
         Carrello
-        <span class="btn-pdf">
-          <a href="/admin/api/exports/pdf/index.pdf" target="_blank" title="Stampa carrello"><i class="fas fa-file-pdf"></i></a>
-        </span>
       </h2>
       <div v-if="isLoading" class="box-spinner"> 
         <div class="spinner-border text-info" role="status">
@@ -14,6 +11,9 @@
         </div>  
       </div>
 
+      <div v-if="dataNotFound" class="alert alert-warning">
+        Carrello vuoto, non sono stati effettuai acquisti
+      </div>
       <user-cart-orders v-if="isLoading==false" :datas="datas"></user-cart-orders> 
 
     </div>
@@ -30,6 +30,7 @@ export default {
     return {
       datas:  {},
       isLoading: false, 
+      dataNotFound: false
     };
   },
   components: {
@@ -40,6 +41,8 @@ export default {
   },  
   methods: {
     getDeliveries() {
+
+        this.dataNotFound = false;
 
         // this.isLoading=true;
         let url = '/admin/api/deliveries/user-cart-gets';
@@ -53,7 +56,9 @@ export default {
           console.log(response.data);
           if(typeof response.data !== "undefined") {
             this.datas = response.data;
-            // console.log(this.datas);                    
+            // console.log(this.datas);
+            if(this.datas.length==0) 
+              this.dataNotFound = true;                  
           }
         })
         .catch(error => {
@@ -66,10 +71,4 @@ export default {
 </script>
 
 <style scoped>
-.btn-pdf {
-  float: right;
-}
-.btn-pdf i {
-  color: #fff;
-}
 </style>

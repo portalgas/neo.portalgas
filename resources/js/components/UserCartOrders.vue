@@ -21,10 +21,14 @@
 		        </div>	  
 		    </div>
 
+	        <div class="box-btn-pdf" v-if="!isRunOrders && orders.delivery_id===delivery_id">
+	           <a :href="'/admin/api/exports/pdf/'+delivery_id" target="_blank" title="Stampa carrello"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
+	        </div>
+
 	        <p 
 	          v-for="(order, index) in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery_id"
 	          :order="order"
-	          :key="order.id">
+	          :key="order.id" class="box-order">
 
 					<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
@@ -207,5 +211,16 @@ export default {
 	font-weight: bold;
 	color: #0a659e;
 	text-align: right; 
+}
+
+.box-btn-pdf {
+	text-align: right;
+	width: 100%;
+}
+.box-btn-pdf a {
+	font-size: 22px;
+}
+.box-order {
+	clear: both;
 }
 </style> 

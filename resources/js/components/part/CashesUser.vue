@@ -19,6 +19,11 @@
           v-html="$options.filters.html(datas.ctrl_limit.fe_msg_tot_acquisti)">
     </div>
 
+    <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.has_fido" 
+          class="alert alert-info" 
+          v-html="$options.filters.fido(datas.ctrl_limit.importo_fido_e)">
+    </div>
+
 </div>
 
 </template>
@@ -84,6 +89,9 @@ export default {
     },
     credito_cassa(text) {
         return "Credito verso la cassa "+text;
+    },
+    fido(text) {
+        return "Fido di "+text;
     },
     html(text) {
         return text;

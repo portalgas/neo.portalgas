@@ -307,7 +307,7 @@ Configure::write('site.name', 'PortAlGas');
 Configure::write('Logs.database', true);
 Configure::write('Logs.file', false);
 Configure::write('Logs.shell', false);
-Configure::write('Logs.cart', true);
+Configure::write('Logs.cart', false);
 
 Configure::write('SupplierOrganizationStatoIni', 'Y');
 Configure::write('SupplierOrganizationMailOrderOpenIni', 'Y');
