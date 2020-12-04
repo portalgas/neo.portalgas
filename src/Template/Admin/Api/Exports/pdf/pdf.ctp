@@ -1,11 +1,6 @@
 <?php
 // debug($results);
 $html = '';
-$html .= '<style>';
-$html .= 'th {background-color: #0a659e;color:#fff;}';
-$html .= 'td {border-bottom: 1px solid #ccc}';
-$html .= '.text-center {text-align:center}';
-$html .= '</style>';
 
 foreach($results as $result) {
 	$html .= '<h2>Produttore '.$result->suppliers_organization->name.'</h2>';
@@ -34,7 +29,7 @@ foreach($results as $result) {
 		$html .= '	<td class="text-center">'.$article_order['cart']['qta'].'</td>';
 		$html .= '	<td class="text-center">'.$article_order['conf'].'</td>';
 		$html .= '	<td class="text-center">'.$article_order['um_rif_label'].'</td>';
-		$html .= '	<td class="text-center"'.$article_order['price'].'</td>';
+		$html .= '	<td class="text-center">'.$article_order['price'].'</td>';
 		$html .= '</tr>';
 
 	}

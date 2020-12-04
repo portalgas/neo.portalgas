@@ -8,21 +8,24 @@ use Cake\Core\Configure;
     <title>
         <?= $this->fetch('title') ?>
     </title>
-	<?php
-	echo $this->Html->css('AdminLTE./bower_components/bootstrap/dist/css/bootstrap.min', ['media' => 'all', 'fullBase' => true]); 
-	echo $this->Html->css('AdminLTE./bower_components/font-awesome/css/font-awesome.min', ['media' => 'all', 'fullBase' => true]); 
-	echo $this->Html->css('AdminLTE./bower_components/Ionicons/css/ionicons.min', ['media' => 'all', 'fullBase' => true]); 
-	echo $this->Html->css('AdminLTE.AdminLTE.min', ['fullBase' => true]); 
-	echo $this->Html->css('AdminLTE.skins/skin-'. Configure::read('Theme.skin') .'.min', ['media' => 'all', 'fullBase' => true]); 
-	echo $this->Html->css('style', ['media' => 'all', 'fullBase' => true]); 
-	?>
-	
-<style>
-
-</style>	
+	<style type="text/css">
+		.hearder .title {float:right}
+		h1 {background-color:#c3d2e5;padding:2px;}
+		th {border-bottom:1px solid #555;background-color: #F5F5F5;}
+		td {border-bottom: 1px solid #ddd}
+		td.trGroup, th.trGroup {background-color: #E1E1E1;font-weight: bold;}
+		.text-center {text-align:center}
+	</style>	
 </head>
 <body>
-	<div class="container clearfix">
+	<div class="hearder">
+
+		<img src="<?php echo Configure::read('DOMPDF_PATH_IMG');?>/150h50.png" /> 
+
+      <div class="title">titolo titolo titolo titolo </div>
+    <div>
+
+    <div class="container clearfix">
 		<?php 
 		echo $this->fetch('content');
 		?>

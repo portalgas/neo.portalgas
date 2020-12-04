@@ -35,7 +35,6 @@ class ExportsController extends AppController {
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
-
         Configure::write('CakePdf', [
             'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
             'margin' => [
@@ -44,7 +43,7 @@ class ExportsController extends AppController {
                 'right' => 30,
                 'top' => 45
             ],
-            'orientation' => 'landscape',
+            'orientation' => 'landscape', // portrait
             'download' => true,
             'filename' => 'Invoice.pdf'
         ]);

@@ -405,3 +405,9 @@ Configure::write('pingTime', 500000); // 1000 = 1 sec (0,14 h)
  */
 Configure::write('mailSendMax', 240);  // limite aruba, 250 mail ogni 20 min
 Configure::write('totFilesSh', 6);  // numero file sh creati, parte da 0 => il cron deve averli gia' configurati per richiamarli ogni 20 min 
+
+/*
+ * \vendor\friendsofcake\cakepdf\src\Pdf\CakePdf.php
+ * img (ex logo) lo prende da /var/www/neo.portalgas/vendor/dompdf/dompdf $dompdf->getOptions()->getChroot()
+ */
+Configure::write('DOMPDF_PATH_IMG', ROOT.'/vendor/dompdf/dompdf');
