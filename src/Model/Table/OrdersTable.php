@@ -389,7 +389,9 @@ class OrdersTable extends Table
                             $this->alias().'.id' => $order_id
                         ])
                         ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
-                                    'SuppliersOrganizations' => ['Suppliers'],
+                                    'SuppliersOrganizations' => [
+                                        'Suppliers', 
+                                        'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]],
                                   /*
                                    * con Orders.owner_articles => chi gestisce il listino
                                    */

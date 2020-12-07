@@ -46,6 +46,9 @@ a:hover {
     text-decoration: none;
     background-color: transparent;
 }
+.a-mailto {
+    cursor: pointer;
+}
 .card-link {
     cursor: pointer;
 }

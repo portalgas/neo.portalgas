@@ -48,6 +48,9 @@ class SuppliersOrganizationsTable extends Table
         ]);
         $this->hasMany('Articles', [
             'foreignKey' => ['organization_id', 'supplier_organization_id']
+        ]); 
+        $this->hasMany('SuppliersOrganizationsReferents', [
+            'foreignKey' => ['organization_id', 'supplier_organization_id']
         ]);          
     }
 

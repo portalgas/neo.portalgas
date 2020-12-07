@@ -19,6 +19,7 @@ class UserProfilesTable extends Table
         parent::initialize($config);
 
         $this->setTable('j_user_profiles');
+        $this->addBehavior('UserProfiles');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'id',

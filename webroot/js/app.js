@@ -3997,6 +3997,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // @ is an alias to /src
 
 
@@ -53146,10 +53175,6 @@ var render = function() {
           ? _c("div", { staticClass: "card mb-3" }, [
               _c("div", { staticClass: "row no-gutters" }, [
                 _c("div", { staticClass: "col-md-2" }, [
-                  _c("span", [
-                    _vm._v("Totale: " + _vm._s(_vm.totalPrice()) + " €")
-                  ]),
-                  _vm._v(" "),
                   _c("div", { staticClass: "content-img-supplier" }, [
                     _vm.order.suppliers_organization.supplier.img1 != ""
                       ? _c("img", {
@@ -53165,21 +53190,40 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "col-md-10" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("h5", { staticClass: "card-title" }, [
-                      _vm.order.suppliers_organization.supplier.www != ""
-                        ? _c(
-                            "a",
-                            {
-                              attrs: {
-                                target: "_blank",
-                                href:
-                                  _vm.order.suppliers_organization.supplier.www,
-                                title: "Vai al sito del produttore"
-                              }
-                            },
-                            [
+                _c(
+                  "div",
+                  { staticClass: "col-md-10" },
+                  [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("h5", { staticClass: "card-title" }, [
+                        _vm.order.suppliers_organization.supplier.www != ""
+                          ? _c(
+                              "a",
+                              {
+                                attrs: {
+                                  target: "_blank",
+                                  href:
+                                    _vm.order.suppliers_organization.supplier
+                                      .www,
+                                  title: "Vai al sito del produttore"
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\r\n                        " +
+                                    _vm._s(
+                                      _vm.order.suppliers_organization.name
+                                    ) +
+                                    " " +
+                                    _vm._s(_vm.order.order_type.name) +
+                                    "                      \r\n                      "
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.order.suppliers_organization.supplier.www == ""
+                          ? _c("span", [
                               _vm._v(
                                 "\r\n                        " +
                                   _vm._s(
@@ -53189,295 +53233,379 @@ var render = function() {
                                   _vm._s(_vm.order.order_type.name) +
                                   "                      \r\n                      "
                               )
-                            ]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.order.suppliers_organization.supplier.www == ""
-                        ? _c("span", [
-                            _vm._v(
-                              "\r\n                        " +
-                                _vm._s(_vm.order.suppliers_organization.name) +
-                                " " +
-                                _vm._s(_vm.order.order_type.name) +
-                                "                      \r\n                      "
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c("small", { staticClass: "card-text" }, [
-                        _vm._v(
-                          "\r\n                        " +
-                            _vm._s(
-                              _vm.order.suppliers_organization.supplier
-                                .descrizione
-                            ) +
-                            "\r\n                      "
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _vm.order.des_orders_organization != null
-                      ? _c("p", { staticClass: "card-text" })
-                      : _vm._e(),
-                    _vm.order.des_orders_organization != null
-                      ? _c("div", [
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "card-text" }, [
                           _vm._v(
-                            "\r\n                        DES " +
+                            "\r\n                        " +
                               _vm._s(
-                                _vm.order.des_orders_organization.de.name
-                              ) +
-                              " terminerà " +
-                              _vm._s(
-                                _vm._f("formatDate")(
-                                  _vm.order.des_orders_organization.des_order
-                                    .data_fine_max
-                                )
+                                _vm.order.suppliers_organization.supplier
+                                  .descrizione
                               ) +
                               "\r\n                      "
                           )
                         ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.all_des_orders_organizations != null
-                      ? _c("div", [
-                          _c(
-                            "ul",
-                            { staticClass: "list-des" },
-                            _vm._l(
-                              _vm.order.all_des_orders_organizations,
-                              function(all_des_orders_organization, index) {
-                                return _c("li", [
-                                  _c(
-                                    "a",
-                                    {
-                                      attrs: {
-                                        target: "_blank",
-                                        href:
-                                          all_des_orders_organization
-                                            .organization.www,
-                                        title: "Vai al sito del GAS"
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        {
-                                          staticClass:
-                                            "content-img-organization"
-                                        },
-                                        [
-                                          all_des_orders_organization
-                                            .organization.img1 != ""
-                                            ? _c("img", {
-                                                staticClass: "img-organization",
-                                                attrs: {
-                                                  src:
-                                                    "https://www.portalgas.it/images/organizations/contents/" +
-                                                    all_des_orders_organization
-                                                      .organization.img1,
-                                                  alt:
-                                                    all_des_orders_organization
-                                                      .organization.name
-                                                }
-                                              })
-                                            : _vm._e()
-                                        ]
-                                      ),
-                                      _vm._v(
-                                        "\r\n                              \r\n                              " +
-                                          _vm._s(
-                                            all_des_orders_organization
-                                              .organization.name
-                                          ) +
-                                          "                     \r\n                            "
-                                      )
-                                    ]
-                                  )
-                                ])
-                              }
-                            ),
-                            0
-                          )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c("p"),
-                    _vm._v(" "),
-                    _vm.order.prod_gas_promotion != null
-                      ? _c("p", { staticClass: "card-text" }, [
-                          _vm._v(
-                            "\r\n                    PROMOTION " +
-                              _vm._s(_vm.order.prod_gas_promotion.name) +
-                              "\r\n                    terminerà  " +
-                              _vm._s(
-                                _vm._f("formatDate")(
-                                  _vm.order.prod_gas_promotion.data_fine
-                                )
-                              ) +
-                              "\r\n                  "
-                          )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "card-text" }),
-                    _c("div", { staticClass: "float-right" }, [
-                      _c(
-                        "span",
-                        {
-                          staticClass: "badge badge-pill",
-                          class:
-                            "text-color-background-" +
-                            _vm.order.order_state_code.css_color,
-                          style:
-                            "background-color:" +
-                            _vm.order.order_state_code.css_color
-                        },
-                        [_vm._v(_vm._s(_vm.order.order_state_code.name))]
-                      ),
+                      ]),
                       _vm._v(" "),
-                      _vm.order.order_type.name != "GAS"
-                        ? _c(
-                            "span",
-                            { staticClass: "badge badge-pill badge-primary" },
-                            [_vm._v(_vm._s(_vm.order.order_type.descri))]
-                          )
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _vm.order.order_state_code.code == "OPEN-NEXT"
-                      ? _c("span", [
-                          _vm._v(
-                            "Aprirà " +
-                              _vm._s(
-                                _vm._f("formatDate")(_vm.order.data_inizio)
-                              ) +
-                              " "
-                          )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.order_state_code.code == "OPEN"
-                      ? _c("span", [
-                          _vm._v(
-                            "chiuderà " +
-                              _vm._s(_vm._f("formatDate")(_vm.order.data_fine))
-                          )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.order_state_code.code == "OPEN-NEXT" &&
-                    _vm.order.order_state_code.code != "OPEN"
-                      ? _c("span", [
-                          _vm._v(
-                            "Data chiusura " +
-                              _vm._s(_vm._f("formatDate")(_vm.order.data_fine))
-                          )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.order_state_code.code == "RI-OPEN-VALIDATE"
-                      ? _c("span", [
-                          _vm._v(
-                            "Riaperto fino al " +
-                              _vm._s(
-                                _vm._f("formatDate")(
-                                  _vm.order.data_fine_validation
-                                )
-                              ) +
-                              " per completare i colli"
-                          )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c("hr"),
-                    _vm._v(" "),
-                    _vm.order.nota != ""
-                      ? _c("div", [
-                          _c("strong", [_vm._v("Nota:")]),
-                          _vm._v(" " + _vm._s(_vm.order.nota))
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.suppliers_organization
-                      .isSupplierOrganizationCashExcluded != null &&
-                    _vm.order.suppliers_organization
-                      .isSupplierOrganizationCashExcluded
-                      ? _c("span", { staticClass: "badge badge-secondary" }, [
-                          _vm._v("Escluso dal prepagato")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.suppliers_organization
-                      .isSupplierOrganizationCashExcluded != null &&
-                    !_vm.order.suppliers_organization
-                      .isSupplierOrganizationCashExcluded
-                      ? _c("span", { staticClass: "badge badge-secondary" }, [
-                          _vm._v("Gestito con il prepagato")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.hasTrasport == "N"
-                      ? _c("span", { staticClass: "badge badge-secondary" }, [
-                          _vm._v("Non ha spese di trasporto")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.hasTrasport == "Y"
-                      ? _c("span", { staticClass: "badge badge-warning" }, [
-                          _vm._v("Ha spese di trasporto")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.hasCostMore == "N"
-                      ? _c("span", { staticClass: "badge badge-secondary" }, [
-                          _vm._v("Non ha costi aggiuntivi")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.order.hasCostMore == "Y"
-                      ? _c("span", { staticClass: "badge badge-warning" }, [
-                          _vm._v("Ha costi aggiuntivi")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c("p"),
-                    _vm._v(" "),
-                    _vm.order.suppliers_organization.frequenza != ""
-                      ? _c("p", { staticClass: "card-text" }, [
-                          _c("small", { staticClass: "text-muted" }, [
-                            _c("strong", [_vm._v("Frequenza")]),
+                      _vm.order.des_orders_organization != null
+                        ? _c("p", { staticClass: "card-text" })
+                        : _vm._e(),
+                      _vm.order.des_orders_organization != null
+                        ? _c("div", [
                             _vm._v(
-                              " " +
+                              "\r\n                        DES " +
                                 _vm._s(
-                                  _vm.order.suppliers_organization.frequenza
+                                  _vm.order.des_orders_organization.de.name
+                                ) +
+                                " terminerà " +
+                                _vm._s(
+                                  _vm._f("formatDate")(
+                                    _vm.order.des_orders_organization.des_order
+                                      .data_fine_max
+                                  )
+                                ) +
+                                "\r\n                      "
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.all_des_orders_organizations != null
+                        ? _c("div", [
+                            _c(
+                              "ul",
+                              { staticClass: "list-des" },
+                              _vm._l(
+                                _vm.order.all_des_orders_organizations,
+                                function(all_des_orders_organization, index) {
+                                  return _c("li", [
+                                    _c(
+                                      "a",
+                                      {
+                                        attrs: {
+                                          target: "_blank",
+                                          href:
+                                            all_des_orders_organization
+                                              .organization.www,
+                                          title: "Vai al sito del GAS"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "content-img-organization"
+                                          },
+                                          [
+                                            all_des_orders_organization
+                                              .organization.img1 != ""
+                                              ? _c("img", {
+                                                  staticClass:
+                                                    "img-organization",
+                                                  attrs: {
+                                                    src:
+                                                      "https://www.portalgas.it/images/organizations/contents/" +
+                                                      all_des_orders_organization
+                                                        .organization.img1,
+                                                    alt:
+                                                      all_des_orders_organization
+                                                        .organization.name
+                                                  }
+                                                })
+                                              : _vm._e()
+                                          ]
+                                        ),
+                                        _vm._v(
+                                          "\r\n                              \r\n                              " +
+                                            _vm._s(
+                                              all_des_orders_organization
+                                                .organization.name
+                                            ) +
+                                            "                     \r\n                            "
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                }
+                              ),
+                              0
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("p"),
+                      _vm._v(" "),
+                      _vm.order.prod_gas_promotion != null
+                        ? _c("p", { staticClass: "card-text" }, [
+                            _vm._v(
+                              "\r\n                    PROMOTION " +
+                                _vm._s(_vm.order.prod_gas_promotion.name) +
+                                "\r\n                    terminerà  " +
+                                _vm._s(
+                                  _vm._f("formatDate")(
+                                    _vm.order.prod_gas_promotion.data_fine
+                                  )
+                                ) +
+                                "\r\n                  "
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("p", { staticClass: "card-text" }),
+                      _c("div", { staticClass: "float-right" }, [
+                        _c(
+                          "span",
+                          { staticClass: "badge badge-pill badge-info" },
+                          [_vm._v("Totale: " + _vm._s(_vm.totalPrice()) + " €")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "span",
+                          {
+                            staticClass: "badge badge-pill",
+                            class:
+                              "text-color-background-" +
+                              _vm.order.order_state_code.css_color,
+                            style:
+                              "background-color:" +
+                              _vm.order.order_state_code.css_color
+                          },
+                          [_vm._v(_vm._s(_vm.order.order_state_code.name))]
+                        ),
+                        _vm._v(" "),
+                        _vm.order.order_type.name != "GAS"
+                          ? _c(
+                              "span",
+                              { staticClass: "badge badge-pill badge-primary" },
+                              [_vm._v(_vm._s(_vm.order.order_type.descri))]
+                            )
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _vm.order.order_state_code.code == "OPEN-NEXT"
+                        ? _c("span", [
+                            _vm._v(
+                              "Aprirà " +
+                                _vm._s(
+                                  _vm._f("formatDate")(_vm.order.data_inizio)
+                                ) +
+                                " "
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.order_state_code.code == "OPEN"
+                        ? _c("span", [
+                            _vm._v(
+                              "chiuderà " +
+                                _vm._s(
+                                  _vm._f("formatDate")(_vm.order.data_fine)
                                 )
                             )
                           ])
-                        ])
-                      : _vm._e()
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass:
-                        "card-footer text-muted bg-transparent-disabled"
-                    },
-                    [
-                      _c("strong", [_vm._v("Consegna")]),
-                      _vm._v(
-                        " " +
-                          _vm._s(_vm.order.delivery.luogo) +
-                          " il " +
-                          _vm._s(
-                            _vm._f("formatDate")(_vm.order.delivery.data)
-                          ) +
-                          "\r\n               "
-                      )
-                    ]
-                  )
-                ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.order_state_code.code == "OPEN-NEXT" &&
+                      _vm.order.order_state_code.code != "OPEN"
+                        ? _c("span", [
+                            _vm._v(
+                              "Data chiusura " +
+                                _vm._s(
+                                  _vm._f("formatDate")(_vm.order.data_fine)
+                                )
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.order_state_code.code == "RI-OPEN-VALIDATE"
+                        ? _c("span", [
+                            _vm._v(
+                              "Riaperto fino al " +
+                                _vm._s(
+                                  _vm._f("formatDate")(
+                                    _vm.order.data_fine_validation
+                                  )
+                                ) +
+                                " per completare i colli"
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("hr"),
+                      _vm._v(" "),
+                      _vm.order.nota != ""
+                        ? _c("div", [
+                            _c("strong", [_vm._v("Nota:")]),
+                            _vm._v(" " + _vm._s(_vm.order.nota))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.suppliers_organization
+                        .isSupplierOrganizationCashExcluded != null &&
+                      _vm.order.suppliers_organization
+                        .isSupplierOrganizationCashExcluded
+                        ? _c("span", { staticClass: "badge badge-secondary" }, [
+                            _vm._v("Escluso dal prepagato")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.suppliers_organization
+                        .isSupplierOrganizationCashExcluded != null &&
+                      !_vm.order.suppliers_organization
+                        .isSupplierOrganizationCashExcluded
+                        ? _c("span", { staticClass: "badge badge-secondary" }, [
+                            _vm._v("Gestito con il prepagato")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.hasTrasport == "N"
+                        ? _c("span", { staticClass: "badge badge-secondary" }, [
+                            _vm._v("Non ha spese di trasporto")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.hasTrasport == "Y"
+                        ? _c("span", { staticClass: "badge badge-warning" }, [
+                            _vm._v("Ha spese di trasporto")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.hasCostMore == "N"
+                        ? _c("span", { staticClass: "badge badge-secondary" }, [
+                            _vm._v("Non ha costi aggiuntivi")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.order.hasCostMore == "Y"
+                        ? _c("span", { staticClass: "badge badge-warning" }, [
+                            _vm._v("Ha costi aggiuntivi")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("p"),
+                      _vm._v(" "),
+                      _vm.order.suppliers_organization.frequenza != ""
+                        ? _c("p", { staticClass: "card-text" }, [
+                            _c("small", { staticClass: "text-muted" }, [
+                              _c("strong", [_vm._v("Frequenza")]),
+                              _vm._v(
+                                " " +
+                                  _vm._s(
+                                    _vm.order.suppliers_organization.frequenza
+                                  )
+                              )
+                            ])
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "card-footer text-muted bg-transparent-disabled"
+                      },
+                      [
+                        _c("strong", [_vm._v("Consegna")]),
+                        _vm._v(
+                          " " +
+                            _vm._s(_vm.order.delivery.luogo) +
+                            " il " +
+                            _vm._s(
+                              _vm._f("formatDate")(_vm.order.delivery.data)
+                            ) +
+                            "\r\n               "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm.order.suppliers_organization
+                      .suppliers_organizations_referents != null
+                      ? _c("p", { staticClass: "card-text" })
+                      : _vm._e(),
+                    _vm._l(
+                      _vm.order.suppliers_organization
+                        .suppliers_organizations_referents,
+                      function(referent) {
+                        return _c(
+                          "div",
+                          [
+                            _vm._v(
+                              "\r\n                    \r\n                    " +
+                                _vm._s(referent.user.name) +
+                                " \r\n                    "
+                            ),
+                            referent.user.email != ""
+                              ? _c(
+                                  "a",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "href",
+                                        rawName: "v-href",
+                                        value: "mailto:" + referent.user.email,
+                                        expression:
+                                          "'mailto:'+referent.user.email"
+                                      }
+                                    ],
+                                    attrs: { target: "_blank" }
+                                  },
+                                  [_vm._v(_vm._s(referent.user.email))]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm._l(referent.user.user_profiles, function(
+                              user_profile
+                            ) {
+                              return _c("div", [
+                                user_profile.profile_key == "profile.phone" &&
+                                user_profile.profile_value != ""
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\r\n                         - " +
+                                          _vm._s(user_profile.profile_value) +
+                                          " - \r\n                      "
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                user_profile.profile_key ==
+                                  "profile.satispay" &&
+                                user_profile.profile_value == "Y"
+                                  ? _c("span", [
+                                      _c("img", {
+                                        attrs: {
+                                          src: "/img/satispay-ico.png",
+                                          title: "il referente ha Satispy"
+                                        }
+                                      })
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                user_profile.profile_key ==
+                                  "profile.satispay_phone" &&
+                                user_profile.profile_value != ""
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\r\n                         " +
+                                          _vm._s(user_profile.profile_value) +
+                                          "\r\n                      "
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ])
+                            })
+                          ],
+                          2
+                        )
+                      }
+                    ),
+                    _vm._v(" "),
+                    _c("p")
+                  ],
+                  2
+                )
               ])
             ])
           : _vm._e()

@@ -18,7 +18,6 @@
         <div v-if="!isRunOrder && order!=null" class="card mb-3">
           <div class="row no-gutters">
             <div class="col-md-2"> 
-                <span>Totale: {{ totalPrice() }} &euro;</span>
                 <div class="content-img-supplier">
                   <img v-if="order.suppliers_organization.supplier.img1 != ''"
                     class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
@@ -85,6 +84,8 @@
                   <p class="card-text">
 
                       <div class="float-right">
+                        <span class="badge badge-pill badge-info">Totale: {{ totalPrice() }} &euro;</span>
+
                         <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
                         <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
                       </div>
@@ -113,6 +114,34 @@
                <div class="card-footer text-muted bg-transparent-disabled">
                   <strong>Consegna</strong> {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
                </div> 
+
+                <!--                        -->
+                <!--    R E F E R E N T I   -->
+                <!--                        -->
+                <p v-if="order.suppliers_organization.suppliers_organizations_referents!=null" class="card-text">
+                  <div v-for="referent in order.suppliers_organization.suppliers_organizations_referents">
+                    
+                    {{ referent.user.name }} 
+                    <a v-if="referent.user.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.user.email">{{ referent.user.email }}</a>
+                  
+                    <span v-for="user_profile in referent.user.user_profiles">
+                      <span v-if="user_profile.profile_key=='profile.phone' && user_profile.profile_value!=''">
+                         - {{ user_profile.profile_value }} - 
+                      </span>
+                      <span v-if="user_profile.profile_key=='profile.satispay' && user_profile.profile_value=='Y'">
+                        <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
+                      </span>
+                      <span v-if="user_profile.profile_key=='profile.satispay_phone' && user_profile.profile_value!=''">
+                         {{ user_profile.profile_value }}
+                      </span>
+                    </span>    
+
+                  </div>
+                </p>
+                <!--                        -->
+                <!--    R E F E R E N T I   -->
+                <!--                        -->
+
             </div> <!-- col-md-10 -->
           </div> <!-- row -->
         </div> <!-- card -->

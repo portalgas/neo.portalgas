@@ -1223,11 +1223,8 @@ class LifeCycleOrdersTable extends Table
             case 'PROCESSED-POST-DELIVERY':
             break;
             case 'INCOMING-ORDER':  // merce arrivata
-                if(!isset($opts['data_incoming_order'])) {
-                    $esito['CODE'] = "500";
-                    $esito['MSG'] = "data_incoming_order non valorizzato";
-                    return $esito; 
-                }   
+                if(!isset($opts['data_incoming_order'])) 
+                    $opts['data_incoming_order'] = date('Y-m-d');
                     
                 $orderResult->data_incoming_order = $opts['data_incoming_order'];
 

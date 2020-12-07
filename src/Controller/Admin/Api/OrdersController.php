@@ -23,6 +23,7 @@ class OrdersController extends ApiAppController
   
     /*
      * dettaglio ordine x fe
+     * /admin/api/orders/get
      */
     public function get() {
 
@@ -71,7 +72,12 @@ class OrdersController extends ApiAppController
         }
 
         $results = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
+                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
+                                    'SuppliersOrganizations' => [
+                                        'Suppliers', 
+                                       /* 'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles']]*/
+                                       ]
+                                    ])
                                 ->where($where)
                                 ->order(['Orders.data_inizio'])
                                 ->all();
