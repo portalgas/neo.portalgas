@@ -121,7 +121,8 @@
                 <p v-if="order.suppliers_organization.suppliers_organizations_referents!=null" class="card-text">
                   <div v-for="referent in order.suppliers_organization.suppliers_organizations_referents">
                     
-                    {{ referent.user.name }} 
+                    <span v-if="referent.type!='REFERENTE'">({{ referent.type | lowerCase }})</span>
+                     {{ referent.user.name }} 
                     <a v-if="referent.user.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.user.email">{{ referent.user.email }}</a>
                   
                     <span v-for="user_profile in referent.user.user_profiles">
@@ -330,7 +331,10 @@ export default {
       },
       counter: function (index) {
           return index+1
-      },       
+      },
+      lowerCase : function(value) {
+        return value.toLowerCase().trim();
+    }             
   }
 };
 </script>

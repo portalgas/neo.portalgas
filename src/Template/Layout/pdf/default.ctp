@@ -15,14 +15,16 @@ use Cake\Core\Configure;
 		td {border-bottom: 1px solid #ddd}
 		td.trGroup, th.trGroup {background-color: #E1E1E1;font-weight: bold;}
 		.text-center {text-align:center}
+		.box-referents {}
+		.referent {display: inline;border-right: 1px solid #F5F5F5;margin-right: 5px;}
 	</style>	
 </head>
 <body>
 	<div class="hearder">
 
-		<img src="<?php echo Configure::read('DOMPDF_PATH_IMG');?>/150h50.png" /> 
+		<img src="<?php echo $img_path;?>/150h50.png" /> 
 
-      <div class="title">titolo titolo titolo titolo </div>
+      <div class="title"><?php echo $title;?></div>
     <div>
 
     <div class="container clearfix">

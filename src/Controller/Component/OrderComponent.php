@@ -43,7 +43,10 @@ class OrderComponent extends Component {
         }
 
         $results = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => ['Suppliers'],
+                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => [
+                                    'Suppliers',
+                                    'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
+                                  ],
                                           /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
                                           'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
                                                                        'Carts.organization_id' => $organization_id,

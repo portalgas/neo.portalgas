@@ -50,8 +50,12 @@ class DeliveriesController extends ApiAppController
         $deliveries = $deliveriesTable->gets($user, $organization_id, $where);
         if(!empty($deliveries)) {
             foreach($deliveries as $delivery) {
-                // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                $results[$delivery->id] = $delivery->data->i18nFormat('d MMMM Y');
+                /*
+                 * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                 * key array non per id, nel json perde l'ordinamento della data
+                 * $results[$delivery->id] = $delivery->data->i18nFormat('d MMMM Y');
+                 */
+                $results[] = ['id' => $delivery->id, 'label' => $delivery->data->i18nFormat('d MMMM Y')];
             }
         }
 
@@ -105,17 +109,36 @@ class DeliveriesController extends ApiAppController
                                               'Deliveries' => ['fields' => ['Deliveries.id', 'Deliveries.data', 'Deliveries.luogo', 'Deliveries.sys'], 'conditions' => $where['Deliveries']]]])
                                     ->where($where['Carts'])
                                     ->group(['Carts.order_id'])
-                                    ->order(['Orders.id'])
+                                    ->order(['Deliveries.data'])
                                     ->all();
         // debug($carts);exit;
         if(!empty($carts)) {
+            $arr_delivery_ids = [];
             foreach($carts as $cart) {
-                if($cart->order->delivery->sys=='Y')
-                    $results[$cart->order->delivery->id] = $cart->order->delivery->luogo;
-                else {
-                    // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                    $results[$cart->order->delivery->id] = $cart->order->delivery->data->i18nFormat('d MMMM Y');
-                }
+
+                if(!array_key_exists($cart->order->delivery->id, $arr_delivery_ids)) {
+
+                    if($cart->order->delivery->sys=='Y') {
+                        /*
+                         * key array non per id, nel json perde l'ordinamento della data
+                         * $results[$cart->order->delivery->id] = $cart->order->delivery->luogo;
+                         */
+                        $results[] = ['id' => $cart->order->delivery->id, 'label' => $cart->order->delivery->luogo];
+                    }
+                    else {
+                        /*
+                         * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                         * key array non per id, nel json perde l'ordinamento della data
+                         * $results[$cart->order->delivery->id] = $cart->order->delivery->data->i18nFormat('d MMMM Y');
+                         */
+                        $results[] = ['id' => $cart->order->delivery->id, 'label' => $cart->order->delivery->data->i18nFormat('d MMMM Y')];
+                    }
+
+                    $arr_delivery_ids[$cart->order->delivery->id] = $cart->order->delivery->id;
+
+                } // end if(!array_key_exists($arr_delivery_ids, $cart->order->delivery->id)
+
+                // debug($arr_delivery_ids); 
             }
         }
 

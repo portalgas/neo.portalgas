@@ -274,11 +274,12 @@ class UsersTable extends Table
                 $cashesUsersResults = $cashesUsersTable->find()
                                                     ->where($where)
                                                     ->first();
+                                                   
                 if(!empty($cashesUsersResults)) {
                     $user->user_limit_type = $cashesUsersResults->limit_type;
                     $user->user_limit_after = $cashesUsersResults->limit_after;
-                    $user->user_limit_after_ =  $cashesUsersResults->limit_after_;
-                    $user->user_limit_after_e = $cashesUsersResults->limit_after_e;
+                    $user->user_limit_after_ =  number_format($cashesUsersResults->limit_after ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                    $user->user_limit_after_e = number_format($cashesUsersResults->limit_after ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
                 }                   
                          
         } // end if($user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER')

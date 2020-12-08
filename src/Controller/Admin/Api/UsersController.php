@@ -52,7 +52,9 @@ class UsersController extends ApiAppController
         $cashesUserResults = [];
         $cashesUserResults['limit_type'] = $results['user_limit_type'];
         $cashesUserResults['limit_after'] = $results['user_limit_after'];
-        
+        $cashesUserResults['limit_after_'] = $results['user_limit_after_'];
+        $cashesUserResults['limit_after_e'] = $results['user_limit_after_e'];
+
         $results['ctrl_limit'] = $cashesUsersTable->ctrlLimit($user, $results['organization_cash_limit'], $results['organization_limit_cash_after'], $cashesUserResults, $results['user_cash'], $results['user_tot_importo_acquistato'], $debug);
 
         return $this->_response($results);

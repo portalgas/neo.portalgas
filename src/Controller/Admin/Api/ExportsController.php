@@ -8,6 +8,11 @@ use Cake\ORM\TableRegistry;
 
 class ExportsController extends AppController {
     
+    /*
+     * se true non stampa il pdf ma lo vedo a video
+     */ 
+    private $_debug = false; 
+
     public function initialize()
     {
         parent::initialize();
@@ -24,7 +29,8 @@ class ExportsController extends AppController {
         parent::beforeRender($event);
         
         // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
-        $this->viewBuilder()->setClassName('CakePdf.Pdf');
+        if(!$this->_debug) 
+            $this->viewBuilder()->setClassName('CakePdf.Pdf');
     }
 
     /*
@@ -60,6 +66,19 @@ class ExportsController extends AppController {
         $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug); 
         // debug($results); 
 
-        $this->set('results', $results);
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $delivery = $deliveriesTable->getById($user, $organization_id, $delivery_id);
+        $title = "Carrello della consegna ".$delivery->label;
+
+        $this->set(compact('results', 'delivery', 'title'));
+
+        if($this->_debug) {
+            $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
+            $this->layout = 'pdf/default';
+            $this->render('/Admin/Api/Exports/pdf/pdf');
+        } 
+        else {
+            $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
+        }
     }     
 }

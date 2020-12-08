@@ -4026,6 +4026,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 // @ is an alias to /src
 
 
@@ -4168,6 +4169,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     counter: function counter(index) {
       return index + 1;
+    },
+    lowerCase: function lowerCase(value) {
+      return value.toLowerCase().trim();
     }
   }
 });
@@ -46495,7 +46499,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.row-gray[data-v-423e7b7b] {\r\n    background-color: #dee2e6;\r\n    display: block;\r\n    padding: 10px;\n}\n.card[data-v-423e7b7b] { \r\n  border: none;\n}\n.card-header[data-v-423e7b7b] {\r\n\tcursor: pointer;\r\n\tcolor: #0a659e;\r\n\tfont-weight: normal;\n}\n.card-header[data-v-423e7b7b]:hover {\r\n\tcolor: #fa824f;\n}\n.footer[data-v-423e7b7b] {\r\n\tbackground-color: #bababa;\r\n\tfont-weight: bold;\r\n\tcolor: #0a659e;\r\n\ttext-align: right;\n}\n.box-btn-pdf[data-v-423e7b7b] {\r\n\ttext-align: right;\r\n\twidth: 100%;\n}\n.box-btn-pdf a[data-v-423e7b7b] {\r\n\tfont-size: 22px;\n}\n.box-order[data-v-423e7b7b] {\r\n\tclear: both;\n}\r\n", ""]);
+exports.push([module.i, "\n.row-gray[data-v-423e7b7b] {\r\n    background-color: #dee2e6;\r\n    display: block;\r\n    padding: 10px;\n}\n.card[data-v-423e7b7b] { \r\n  border: none;\n}\n.card-header[data-v-423e7b7b] {\r\n\tcursor: pointer;\r\n\tcolor: #0a659e;\r\n\tfont-weight: normal;\n}\n.card-header[data-v-423e7b7b]:hover {\r\n\tcolor: #fa824f;\n}\n.footer[data-v-423e7b7b] {\r\n\tbackground-color: #bababa;\r\n\tfont-weight: bold;\r\n\tcolor: #0a659e;\r\n\ttext-align: right;\n}\n.box-btn-pdf[data-v-423e7b7b] {\r\n\ttext-align: right;\r\n\twidth: 100%;\r\n\tmargin-bottom: 5px;\n}\n.box-btn-pdf a[data-v-423e7b7b] {\r\n\tfont-size: 22px;\n}\n.box-order[data-v-423e7b7b] {\r\n\tclear: both;\n}\r\n", ""]);
 
 // exports
 
@@ -51595,11 +51599,11 @@ var render = function() {
   return _c(
     "div",
     { attrs: { id: "accordion-deliveries" } },
-    _vm._l(_vm.deliveries, function(delivery, delivery_id) {
+    _vm._l(_vm.deliveries, function(delivery, index) {
       return _c(
         "div",
         {
-          key: delivery_id,
+          key: delivery.id,
           staticClass: "card",
           attrs: { delivery: delivery }
         },
@@ -51610,21 +51614,23 @@ var render = function() {
               staticClass: "card-header",
               attrs: {
                 "data-toggle": "collapse",
-                "data-target": "#" + delivery_id,
+                "data-target": "#" + delivery.id,
                 "aria-expanded": "true",
-                "aria-controls": "collapse-" + delivery_id
+                "aria-controls": "collapse-" + delivery.id
               },
               on: {
                 click: function($event) {
-                  return _vm.selectDelivery(delivery_id)
+                  return _vm.selectDelivery(delivery.id)
                 }
               }
             },
             [
-              _vm._v("\n\t          " + _vm._s(delivery) + "\n              "),
+              _vm._v(
+                "\n\t          " + _vm._s(delivery.label) + "\n              "
+              ),
               _c("i", {
                 staticClass: "fas fa-angle-down float-right",
-                attrs: { id: "fas-" + delivery_id, "aria-hidden": "true" }
+                attrs: { id: "fas-" + delivery.id, "aria-hidden": "true" }
               })
             ]
           ),
@@ -51634,8 +51640,8 @@ var render = function() {
             {
               staticClass: "collapse",
               attrs: {
-                id: "collapse-" + delivery_id,
-                "aria-labelledby": "heading-" + delivery_id,
+                id: "collapse-" + delivery.id,
+                "aria-labelledby": "heading-" + delivery.id,
                 "data-parent": "#accordion-deliveries"
               }
             },
@@ -51652,7 +51658,7 @@ var render = function() {
                   _vm._v(" "),
                   _vm._l(_vm.orders.data, function(order, index) {
                     return !_vm.isRunOrders &&
-                      _vm.orders.delivery_id === delivery_id
+                      _vm.orders.delivery_id === delivery.id
                       ? _c("p", { key: order.id, attrs: { order: order } }, [
                           _c(
                             "a",
@@ -51930,11 +51936,11 @@ var render = function() {
   return _c(
     "div",
     { attrs: { id: "accordion-deliveries" } },
-    _vm._l(_vm.deliveries, function(delivery, delivery_id) {
+    _vm._l(_vm.deliveries, function(delivery, index) {
       return _c(
         "div",
         {
-          key: delivery_id,
+          key: delivery.id,
           staticClass: "card",
           attrs: { delivery: delivery }
         },
@@ -51945,21 +51951,23 @@ var render = function() {
               staticClass: "card-header",
               attrs: {
                 "data-toggle": "collapse",
-                "data-target": "#" + delivery_id,
+                "data-target": "#" + delivery.id,
                 "aria-expanded": "true",
-                "aria-controls": "collapse-" + delivery_id
+                "aria-controls": "collapse-" + delivery.id
               },
               on: {
                 click: function($event) {
-                  return _vm.selectDelivery(delivery_id)
+                  return _vm.selectDelivery(delivery.id)
                 }
               }
             },
             [
-              _vm._v("\n\t          " + _vm._s(delivery) + "\n              "),
+              _vm._v(
+                "\n\t          " + _vm._s(delivery.label) + "\n              "
+              ),
               _c("i", {
                 staticClass: "fas fa-angle-down float-right",
-                attrs: { id: "fas-" + delivery_id, "aria-hidden": "true" }
+                attrs: { id: "fas-" + delivery.id, "aria-hidden": "true" }
               })
             ]
           ),
@@ -51969,8 +51977,8 @@ var render = function() {
             {
               staticClass: "collapse",
               attrs: {
-                id: "collapse-" + delivery_id,
-                "aria-labelledby": "heading-" + delivery_id,
+                id: "collapse-" + delivery.id,
+                "aria-labelledby": "heading-" + delivery.id,
                 "data-parent": "#accordion-deliveries"
               }
             },
@@ -51985,13 +51993,14 @@ var render = function() {
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  !_vm.isRunOrders && _vm.orders.delivery_id === delivery_id
+                  !_vm.isRunOrders && _vm.orders.delivery_id === delivery.id
                     ? _c("div", { staticClass: "box-btn-pdf" }, [
                         _c(
                           "a",
                           {
+                            staticClass: "btn btn-primary",
                             attrs: {
-                              href: "/admin/api/exports/pdf/" + delivery_id,
+                              href: "/admin/api/exports/pdf/" + delivery.id,
                               target: "_blank",
                               title: "Stampa carrello"
                             }
@@ -52006,7 +52015,7 @@ var render = function() {
                   _vm._v(" "),
                   _vm._l(_vm.orders.data, function(order, index) {
                     return !_vm.isRunOrders &&
-                      _vm.orders.delivery_id === delivery_id
+                      _vm.orders.delivery_id === delivery.id
                       ? _c(
                           "p",
                           {
@@ -52530,7 +52539,7 @@ var render = function() {
         })
       : _vm._e(),
     _vm._v(" "),
-    _vm.datas.user_cash_e != null
+    _vm.datas.user_cash_e != null && _vm.datas.ctrl_limit.fe_msg != null
       ? _c("div", {
           staticClass: "alert alert-warning",
           domProps: {
@@ -53531,8 +53540,19 @@ var render = function() {
                         return _c(
                           "div",
                           [
+                            referent.type != "REFERENTE"
+                              ? _c("span", [
+                                  _vm._v(
+                                    "(" +
+                                      _vm._s(
+                                        _vm._f("lowerCase")(referent.type)
+                                      ) +
+                                      ")"
+                                  )
+                                ])
+                              : _vm._e(),
                             _vm._v(
-                              "\r\n                    \r\n                    " +
+                              "\r\n                     " +
                                 _vm._s(referent.user.name) +
                                 " \r\n                    "
                             ),
@@ -53540,16 +53560,11 @@ var render = function() {
                               ? _c(
                                   "a",
                                   {
-                                    directives: [
-                                      {
-                                        name: "href",
-                                        rawName: "v-href",
-                                        value: "mailto:" + referent.user.email,
-                                        expression:
-                                          "'mailto:'+referent.user.email"
-                                      }
-                                    ],
-                                    attrs: { target: "_blank" }
+                                    staticClass: "a-mailto",
+                                    attrs: {
+                                      target: "_blank",
+                                      href: "mailto:" + referent.user.email
+                                    }
                                   },
                                   [_vm._v(_vm._s(referent.user.email))]
                                 )
@@ -53558,7 +53573,7 @@ var render = function() {
                             _vm._l(referent.user.user_profiles, function(
                               user_profile
                             ) {
-                              return _c("div", [
+                              return _c("span", [
                                 user_profile.profile_key == "profile.phone" &&
                                 user_profile.profile_value != ""
                                   ? _c("span", [

@@ -141,6 +141,28 @@ class DeliveriesTable extends Table
         return $listResults;
     }
 
+    public function getById($user, $organization_id, $delivery_id, $debug=false) {
+
+        $results = [];
+
+        $where = ['Deliveries.organization_id' => $organization_id,
+                  'Deliveries.id' => $delivery_id];
+
+        $results = $this->find()
+                                ->where($where)
+                                ->first();
+        // debug($results);
+
+        if(!empty($results)) {
+            if($results->sys=='Y')
+                $results->label = $results->luogo;
+            else
+                $results->label = $results->data->i18nFormat('d MMMM Y').' - '.$results->luogo;
+        }
+
+        return $results;
+    }
+
     public function gets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
         $results = [];

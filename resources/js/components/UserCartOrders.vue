@@ -3,16 +3,16 @@
 	<div id="accordion-deliveries">
 
 	    <div class="card" 
-	          v-for="(delivery, delivery_id)  in deliveries"
+	          v-for="(delivery, index)  in deliveries"
 	          :delivery="delivery"
-	          :key="delivery_id"
+	          :key="delivery.id"
 		  >
-	    <div class="card-header" data-toggle="collapse" :data-target="'#'+delivery_id" aria-expanded="true" :aria-controls="'collapse-'+delivery_id" v-on:click="selectDelivery(delivery_id)">
-	          {{ delivery }}
-              <i :id="'fas-'+delivery_id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
+	    <div class="card-header" data-toggle="collapse" :data-target="'#'+delivery.id" aria-expanded="true" :aria-controls="'collapse-'+delivery.id" v-on:click="selectDelivery(delivery.id)">
+	          {{ delivery.label }}
+              <i :id="'fas-'+delivery.id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
 	    </div>
 
-	    <div :id="'collapse-'+delivery_id" class="collapse" :aria-labelledby="'heading-'+delivery_id" data-parent="#accordion-deliveries">
+	    <div :id="'collapse-'+delivery.id" class="collapse" :aria-labelledby="'heading-'+delivery.id" data-parent="#accordion-deliveries">
 	      <div class="card-body">
 
 	        <div v-if="isRunOrders" class="box-spinner"> 
@@ -21,12 +21,12 @@
 		        </div>	  
 		    </div>
 
-	        <div class="box-btn-pdf" v-if="!isRunOrders && orders.delivery_id===delivery_id">
-	           <a :href="'/admin/api/exports/pdf/'+delivery_id" target="_blank" title="Stampa carrello"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
+	        <div class="box-btn-pdf" v-if="!isRunOrders && orders.delivery_id===delivery.id">
+	           <a :href="'/admin/api/exports/pdf/'+delivery.id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
 	        </div>
 
 	        <p 
-	          v-for="(order, index) in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery_id"
+	          v-for="(order, index) in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery.id"
 	          :order="order"
 	          :key="order.id" class="box-order">
 
@@ -216,6 +216,7 @@ export default {
 .box-btn-pdf {
 	text-align: right;
 	width: 100%;
+	margin-bottom: 5px;
 }
 .box-btn-pdf a {
 	font-size: 22px;

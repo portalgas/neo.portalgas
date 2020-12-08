@@ -410,4 +410,5 @@ Configure::write('totFilesSh', 6);  // numero file sh creati, parte da 0 => il c
  * \vendor\friendsofcake\cakepdf\src\Pdf\CakePdf.php
  * img (ex logo) lo prende da /var/www/neo.portalgas/vendor/dompdf/dompdf $dompdf->getOptions()->getChroot()
  */
-Configure::write('DOMPDF_PATH_IMG', ROOT.'/vendor/dompdf/dompdf');
+Configure::write('DOMPDF_IMG_PATH', ROOT.'/vendor/dompdf/dompdf');
+Configure::write('DOMPDF_DEBUG_IMG_PATH', '/img/pdf');

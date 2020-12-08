@@ -188,7 +188,7 @@ class HtmlCustomHelper extends FormHelper
     public function importo($value) {
     	$str = '';
     	if(!empty($value))
-    		$str = number_format($value, 2, ',', '.').' &euro;';
+    		$str = number_format($value, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia')).' &euro;';
     	return $str;
     }
 

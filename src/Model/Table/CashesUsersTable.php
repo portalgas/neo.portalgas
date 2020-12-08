@@ -201,7 +201,7 @@ class CashesUsersTable extends Table
         $results['user_cash'] = floatval($user->user_cash);
         $results['user_cash_'] = $user->user_cash_;
         $results['user_cash_e'] = $user->user_cash_e;
-        
+          
         return $results;
     }
 
@@ -361,9 +361,6 @@ class CashesUsersTable extends Table
         
         $organization_id = $user->organization->id;
         $results = [];
-
-        if(isset($cashesUser['CashesUser']))
-            $cashesUser = $cashesUser['CashesUser'];
         
         if($debug) {
             debug("organization_cashLimit ".$organization_cashLimit);
@@ -373,6 +370,8 @@ class CashesUsersTable extends Table
             debug("cashesUser");
             debug($cashesUser);
         }
+
+        $results['organization_id'] = $organization_id;
 
          /*
           * totale importo acquisti
@@ -440,9 +439,9 @@ class CashesUsersTable extends Table
                 } 
 
                 $results['has_fido'] = true;
-                $results['importo_fido'] = $results['importo'];
-                $results['importo_fido_'] = $results['importo_'];
-                $results['importo_fido_e'] = $results['importo_e'];                  
+                $results['importo_fido'] = $organization_limitCashAfter;
+                $results['importo_fido_'] = number_format($organization_limitCashAfter ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                $results['importo_fido_e'] = number_format($organization_limitCashAfter,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')) .'&nbsp;&euro;';             
             break;
             case "LIMIT-CASH-USER":
             
@@ -508,18 +507,31 @@ class CashesUsersTable extends Table
                             $results['stato'] = 'YELLOW'; 
                             $results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
                         }       
-                        
+           
                         $results['has_fido'] = true;
-                        $results['importo_fido'] = $results['importo'];
-                        $results['importo_fido_'] = $results['importo_'];
-                        $results['importo_fido_e'] = $results['importo_e'];
+                        $results['importo_fido'] = $cashesUser['limit_after'];
+                        $results['importo_fido_'] = $cashesUser['limit_after_'];
+                        $results['importo_fido_e'] = $cashesUser['limit_after_e']; 
                     break;
                 }                
             break;
         }
 
         if($debug) debug($results);
-                
+          
+        /*
+         * custom btns per gas
+         */     
+        switch($organization_id) {
+            case 15: // ivrea
+                unset($results['has_fido']);
+                unset($results['importo_fido']);
+                unset($results['importo_fido_']);
+                unset($results['importo_fido_e']);
+                unset($results['fe_msg']); // puoi fare acquisti
+            break;
+        } 
+
         return $results;
     }         
 }
