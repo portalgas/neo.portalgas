@@ -4,36 +4,37 @@ declare(strict_types=1);
 namespace App\Decorator;
 
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 class ApiArticleOrderDecorator  extends AppDecorator {
 	
 	public $serializableAttributes = null; // ['id', 'name'];
 	public $results; 
 
-    public function __construct($articles_orders)
+    public function __construct($user, $articles_orders, $order)
     {
     	$results = [];
 	    // debug($articles_orders);
 
 	    if($articles_orders instanceof \Cake\ORM\ResultSet) {
 			foreach($articles_orders as $numResult => $articles_order) {
-				$results[$numResult] = $this->_decorate($articles_order);
+				$results[$numResult] = $this->_decorate($user, $articles_order, $order);
 			}
 	    }
 	    else 
 	    if($articles_orders instanceof \App\Model\Entity\ArticlesOrder) {
-			$results = $this->_decorate($articles_orders);  	
+			$results = $this->_decorate($user, $articles_orders, $order);  	
 	    }
         else {
             foreach($articles_orders as $numResult => $articles_order) {
-                $results[$numResult] = $this->_decorate($articles_order);
+                $results[$numResult] = $this->_decorate($user, $articles_order, $order);
             }
         }
 
 		$this->results = $results;
     }
 
-	private function _decorate($articles_order) {
+	private function _decorate($user, $articles_order, $order) {
 
         // debug($articles_order);
         
@@ -55,15 +56,22 @@ class ApiArticleOrderDecorator  extends AppDecorator {
         $ids['article_id'] = $articles_order->article_id;
         $results['ids'] = $ids;
 
+        $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+        $results['isOpenToPurchasable'] = $lifeCycleOrdersTable->isOpenToPurchasable($user, $order->state_code);
+
         $results['has_variants'] = false; // e' sempre articolo e la sua variante
         $results['name'] = $articles_order->name;
         $results['stato'] = $articles_order->stato;
         $results['send_mail'] = $articles_order->send_mail;
             
-        if(empty($articles_order->codice))
+        if(empty($articles_order->codice)) {
             $results['sku'] = '';
-        else
+            $results['codice'] = '';
+        }
+        else {
             $results['sku'] = $articles_order->article->codice;
+            $results['codice'] = $articles_order->article->codice;
+        }
 
         $results['img1'] = $this->_getArticleImg1($articles_order);        
         $results['img1_width'] = Configure::read('Article.img.preview.width');
@@ -137,8 +145,27 @@ class ApiArticleOrderDecorator  extends AppDecorator {
 
         /*
          * cart
+         * se non ci sono anocra acquisti 
+         * 'user_id' => (int) 0,   
+         * 'qta' => (int) 0,
+         * 'qta_new' => (int) 0 
          */
         $results['cart'] = $articles_order->cart; 
+        if(isset($articles_order->cart) && !empty($articles_order->cart->user_id)) { 
+         
+            $final_qta = 0;
+            $final_importo = 0;
+
+            ($articles_order->cart->qta_forzato > 0 ) ? $final_qta = $articles_order->cart->qta_forzato: $final_qta = $articles_order->cart->qta;
+            $results['cart']['final_qta'] = $final_qta;
+
+            if($articles_order->cart->importo_forzato > 0 ) {
+                $results['cart']['final_price'] = $articles_order->cart->importo_forzato;
+            }
+            else {
+                $results['cart']['final_price'] = ($final_qta * $articles_order->prezzo);
+            }
+        }
 
         /*
          * promotions

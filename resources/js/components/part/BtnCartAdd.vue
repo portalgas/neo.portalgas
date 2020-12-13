@@ -36,7 +36,7 @@
           <input
             type="number"
             class="form-control text-center"
-            :value="article.cart.qta_new"
+            :value="qta_new"
             :disabled="true"
             @input="numberCart"
             min="0"
@@ -76,7 +76,7 @@
           <input
             type="number"
             class="form-control text-center"
-            :value="article.cart.qta_new"
+            :value="qta_new"
             :disabled="true"
             inputmode="numeric"
             title="Quantità"
@@ -122,8 +122,26 @@ export default {
         return (this.isRun || this.article.cart.qta === this.article.cart.qta_new);
       },
       total() {
-         return this.$options.filters.currency(this.article.cart.qta_new * this.article.price)+" €";
-      }      
+        var total = 0;
+        if(this.article.cart.final_importo!=null) 
+          total = this.article.cart.final_importo;
+        else
+          total = (this.article.cart.qta_new * this.article.price);        
+        return this.$options.filters.currency(total)+" €";
+      },
+      qta_new() {
+        var qta_new = 0;
+       /*
+        * se no non si aggiorna quando varia la qta
+        if(this.article.cart.final_qta!=null) 
+          qta_new = this.article.cart.final_qta;
+        else
+        */
+          
+        qta_new = this.article.cart.qta_new;
+        
+        return qta_new;
+      }    
   },   
   methods: {
     ...mapActions(["cashesUserReload"]),

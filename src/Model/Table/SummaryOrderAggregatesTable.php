@@ -5,6 +5,8 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 /**
  * SummaryOrderAggregates Model
@@ -51,7 +53,7 @@ class SummaryOrderAggregatesTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER',
         ]);
     }
@@ -86,7 +88,7 @@ class SummaryOrderAggregatesTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
 
         return $rules;
     }
@@ -122,11 +124,17 @@ class SummaryOrderAggregatesTable extends Table
                   'SummaryOrderAggregates.order_id IN ' => $order_ids];
         if($debug) debug($where);
 
-        $results = $this->find()
-                        ->contain(['Users'])
-                        ->where($where)
-                        ->all();
-
+        if(is_array($order_ids))
+          $results = $this->find()
+                          ->contain(['Users'])
+                          ->where($where)
+                          ->all();
+        else
+          $results = $this->find()
+                          ->contain(['Users'])
+                          ->where($where)
+                          ->first();
+      
         if($debug) debug($results);
         
         return $results;

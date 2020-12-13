@@ -8,6 +8,13 @@ echo '<div class="col-4">Produttore</div>';
 echo '<div class="col-8">'.$results['order']->suppliers_organization->name.'</div>';
 echo '</div>';
 
+if(!empty($results['articlesOrder']->codice)) {
+	echo '<div class="row">';
+	echo '<div class="col-4">Codice</div>';
+	echo '<div class="col-8">'.$results['articlesOrder']->codice.'</div>';
+	echo '</div>';
+}
+
 /*
  gia 'nell' header del modal
 echo '<div class="row">';
@@ -65,13 +72,6 @@ if($results['articlesOrder']->stato != 'Y') {
 	echo '<div class="row">';
 	echo '<div class="col-4">Stato</div>';
 	echo '<div class="col-8">'.$results['articlesOrder']->stato.'</div>';
-	echo '</div>';
-}
-
-if(!empty($results['articlesOrder']->codice)) {
-	echo '<div class="row">';
-	echo '<div class="col-4">Codice</div>';
-	echo '<div class="col-8">'.$results['articlesOrder']->codice.'</div>';
 	echo '</div>';
 }
 

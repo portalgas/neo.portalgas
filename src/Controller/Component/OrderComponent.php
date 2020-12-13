@@ -98,7 +98,7 @@ class OrderComponent extends Component {
                     }
                     else {
                         $found_cart = true;
-                        $articlesOrdersResult = new ApiArticleOrderDecorator($articlesOrdersResult); 
+                        $articlesOrdersResult = new ApiArticleOrderDecorator($user, $articlesOrdersResult, $result); 
                         $newResults[$i]['article_orders'][$ii] = $articlesOrdersResult->results;
                         $ii++;
                     }
@@ -169,7 +169,7 @@ class OrderComponent extends Component {
             $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $options);
         
             if(!empty($results)) {
-                $results = new ApiArticleOrderDecorator($results);
+                $results = new ApiArticleOrderDecorator($user, $results, $orderResults);
                 //$results = new ArticleDecorator($results);
                 $results = $results->results;
             }

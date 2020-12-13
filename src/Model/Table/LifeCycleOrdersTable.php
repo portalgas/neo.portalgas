@@ -881,7 +881,7 @@ class LifeCycleOrdersTable extends Table
     }
     
    /*
-     * Akax::admin_view_orders
+     * Ajax::admin_view_orders
      * in base allo stato dell'ordine
      * setto l'action possibile sull'ordine
      */
@@ -1318,7 +1318,19 @@ class LifeCycleOrdersTable extends Table
         
         return $tmp;
     }
+     
+    /* 
+     * ctrl se e' ordine chiuso agli acquisti
+     */     
+    public function isOpenToPurchasable($user, $order_state_code) {
         
+        if($order_state_code == 'OPEN' ||  
+            $order_state_code == 'RI-OPEN-VALIDATE') 
+            return true;
+        else
+            return false;
+    }
+
     /*
      * $modulo: sono in quel modulo e ctrl se ho anche altri moduli che possono andare in conflitto
      *          managementCartsOne (Gestisci gli acquisti nel dettaglio) con 

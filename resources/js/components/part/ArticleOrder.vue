@@ -142,6 +142,13 @@ export default {
 </script>
 
 <style scoped>
+.card {
+  min-height: 400px;
+}
+.card:hover {
+  background-color: #f8f8f8;
+  box-shadow: 3px 3px 5px 0px;
+}
 .box-bio {
     right: 0;
     padding: 10px;

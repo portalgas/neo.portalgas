@@ -100,6 +100,8 @@ export default {
   },
   methods: {
 	    totalPrice() {
+	    	var totale = 0;
+
 	    	/* console.log("Totale ordini "+this.orders.data.length); */
 	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
 	    		var totale = 0;
@@ -107,9 +109,33 @@ export default {
 	    			/ *console.log("Tratto ordine "+(index+1)); */
 	    			order.article_orders.forEach(function (article_order, index) { 
 	    				/* console.log(article_order);  */
-	    				totale += (article_order.cart.qta_new * article_order.price);
-	    			});
-	    		});
+
+	    				if(order.isOpenToPurchasable) 
+	    					totale += (article_order.cart.qta_new * article_order.price);
+	    				else {
+	    					/* ordine chiuso agli acquisti */
+	    					totale += article_order.cart.final_price;
+	    				}
+	    				
+	    			}); /* loop article_orders */
+
+					// totale = totale.replace(',', '.');
+
+					// console.log('totalPrice) totale '+totale);
+
+					if(order.summary_order_trasport!=null)
+					totale = (parseFloat(totale) + parseFloat(order.summary_order_trasport.importo_trasport));
+
+					if(order.summary_order_cost_more!=null)
+					totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_more.importo_cost_more));
+
+					if(order.summary_order_cost_less!=null)
+					totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_less.importo_cost_less));
+
+					// console.log('totalPrice) totale '+parseFloat(totale));
+
+					// totale = parseFloat(totale).toFixed(2);	    			
+	    		}); /* loop orders */
 	    	}
 
 	    	return this.$options.filters.currency(totale);

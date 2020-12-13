@@ -26,21 +26,14 @@ foreach($results as $result) {
 
 		$article_order['is_bio'] ? $is_bio = 'Bio': $is_bio = '';
 
-		/*
-		 * price
-		 */
-		$qta = $this->HtmlCustomSite->getArticleQta($article_order);
-		$importo = $this->HtmlCustomSite->getArticleImporto($article_order);
-		$cart_importo = ($importo * $qta);
-
 		$html .= '<tr>';
 		$html .= '	<td class="text-center">'.$is_bio.'</td>';
 		$html .= '	<td>'.$article_order['name'].'</td>';
-		$html .= '	<td class="text-center">'.$qta.'</td>';
+		$html .= '	<td class="text-center">'.$article_order['cart']['final_qta'].'</td>';
 		$html .= '	<td class="text-center">'.$article_order['conf'].'</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
 		$html .= '	<td class="text-center">'.$article_order['um_rif_label'].'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($cart_importo).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['cart']['final_importo']).'</td>';
 		$html .= '</tr>';
 
 	}

@@ -2597,16 +2597,33 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     totalPrice: function totalPrice() {
+      var totale = 0;
       /* console.log("Totale ordini "+this.orders.data.length); */
+
       if (typeof this.orders.data !== "undefined" && this.orders.data.length > 0) {
         var totale = 0;
         this.orders.data.forEach(function (order, index) {
           / *console.log("Tratto ordine "+(index+1)); */;
           order.article_orders.forEach(function (article_order, index) {
             /* console.log(article_order);  */
+
+            /* 
+             * se no non si aggiorna quando varia la qta
+            if(article_order.cart.final_price!=null)
+            	totale += article_order.cart.final_price;	    				else
+            */
             totale += article_order.cart.qta_new * article_order.price;
           });
+          /* loop article_orders */
+          // totale = totale.replace(',', '.');
+          // console.log('totalPrice) totale '+totale);
+
+          if (order.summary_order_trasport != null) totale = parseFloat(totale) + parseFloat(order.summary_order_trasport.importo_trasport);
+          if (order.summary_order_cost_more != null) totale = parseFloat(totale) + parseFloat(order.summary_order_cost_more.importo_cost_more);
+          if (order.summary_order_cost_less != null) totale = parseFloat(totale) + parseFloat(order.summary_order_cost_less.importo_cost_less); // console.log('totalPrice) totale '+parseFloat(totale));
+          // totale = parseFloat(totale).toFixed(2);	    			
         });
+        /* loop orders */
       }
 
       return this.$options.filters.currency(totale);
@@ -2977,7 +2994,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return this.isRun || this.article.cart.qta === this.article.cart.qta_new;
     },
     total: function total() {
-      return this.$options.filters.currency(this.article.cart.qta_new * this.article.price) + " €";
+      var total = 0;
+      if (this.article.cart.final_importo != null) total = this.article.cart.final_importo;else total = this.article.cart.qta_new * this.article.price;
+      return this.$options.filters.currency(total) + " €";
+    },
+    qta_new: function qta_new() {
+      var qta_new = 0;
+      /*
+       * se no non si aggiorna quando varia la qta
+       if(this.article.cart.final_qta!=null) 
+         qta_new = this.article.cart.final_qta;
+       else
+       */
+
+      qta_new = this.article.cart.qta_new;
+      return qta_new;
     }
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["cashesUserReload"])), {}, {
@@ -3745,6 +3776,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3754,10 +3795,27 @@ __webpack_require__.r(__webpack_exports__);
     UserCartArticle: _components_part_UserCartArticle_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   methods: {
-    totalPrice: function totalPrice() {
-      return this.$options.filters.currency(this.article_orders.reduce(function (current, next) {
-        return current + next.cart.qta_new * next.price;
+    subTotalPrice: function subTotalPrice() {
+      var totale = this.$options.filters.currency(this.article_orders.reduce( // function (current, next) { return current + (next.cart.qta_new * next.price)},
+      function (current, next) {
+        var totale = 0;
+        /*
+         * se no non si aggiorna quando varia la qta
+        if(next.cart.final_price!=null) 
+          totale += next.cart.final_price; 
+        else 
+        */
+
+        totale += next.cart.qta_new * next.price;
+        return current + totale;
       }, 0));
+      totale = totale.replace(',', '.'); // console.log('subTotalPrice) totale '+totale);
+
+      if (this.order.summary_order_trasport != null) totale = parseFloat(totale) + parseFloat(this.order.summary_order_trasport.importo_trasport);
+      if (this.order.summary_order_cost_more != null) totale = parseFloat(totale) + parseFloat(this.order.summary_order_cost_more.importo_cost_more);
+      if (this.order.summary_order_cost_less != null) totale = parseFloat(totale) + parseFloat(this.order.summary_order_cost_less.importo_cost_less); // console.log('subTotalPrice) totale '+parseFloat(totale));
+
+      return parseFloat(totale).toFixed(2);
     }
   },
   filters: {
@@ -46518,7 +46576,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.box-bio[data-v-3649dbf9] {\r\n    right: 0;\r\n    padding: 10px;\r\n    position: absolute;\r\n    top: 30px;\r\n    z-index: 1;\n}\n.box-bio img[data-v-3649dbf9] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 40px;\r\n    margin-right: 5px;\r\n    width: 40px;\n}\n.highlighted[data-v-3649dbf9] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
+exports.push([module.i, "\n.card[data-v-3649dbf9] {\r\n  min-height: 400px;\n}\n.card[data-v-3649dbf9]:hover {\r\n  background-color: #f8f8f8;\r\n  box-shadow: 3px 3px 5px 0px;\n}\n.box-bio[data-v-3649dbf9] {\r\n    right: 0;\r\n    padding: 10px;\r\n    position: absolute;\r\n    top: 30px;\r\n    z-index: 1;\n}\n.box-bio img[data-v-3649dbf9] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 40px;\r\n    margin-right: 5px;\r\n    width: 40px;\n}\n.highlighted[data-v-3649dbf9] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
 
 // exports
 
@@ -52417,7 +52475,7 @@ var render = function() {
                 inputmode: "numeric",
                 title: "Quantità"
               },
-              domProps: { value: _vm.article.cart.qta_new },
+              domProps: { value: _vm.qta_new },
               on: { input: _vm.numberCart }
             }),
             _vm._v(" "),
@@ -52482,7 +52540,7 @@ var render = function() {
               inputmode: "numeric",
               title: "Quantità"
             },
-            domProps: { value: _vm.article.cart.qta_new }
+            domProps: { value: _vm.qta_new }
           }),
           _vm._v(" "),
           _c("input", {
@@ -52967,7 +53025,7 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-text col-sm-4 col-xs-4 col-md-3" }, [
+    _c("div", { staticClass: "col-text col-sm-3 col-xs-3 col-md-4" }, [
       _vm._v("\n        " + _vm._s(_vm.article.name) + " "),
       _c("span", [
         _c("a", {
@@ -53007,7 +53065,7 @@ var render = function() {
     _vm._v(" "),
     _c(
       "div",
-      { staticClass: "col-text col-sm-3 col-xs-3 col-md-3" },
+      { staticClass: "col-text col-xs-3 col-md-2" },
       [
         _c("app-btn-cart-add", {
           key: _vm.article.id,
@@ -53052,9 +53110,45 @@ var render = function() {
         })
       }),
       _vm._v(" "),
+      _vm.order.summary_order_trasport != null
+        ? _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "footer col-sm-12 col-xs-12 col-md-12" }, [
+              _vm._v(
+                "Trasporto: " +
+                  _vm._s(_vm.order.summary_order_trasport.importo_trasport) +
+                  " €"
+              )
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.order.summary_order_cost_more != null
+        ? _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "footer col-sm-12 col-xs-12 col-md-12" }, [
+              _vm._v(
+                "Spesa aggiuntiva: " +
+                  _vm._s(_vm.order.summary_order_cost_more.importo_cost_more) +
+                  " €"
+              )
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.order.summary_order_cost_less != null
+        ? _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "footer col-sm-12 col-xs-12 col-md-12" }, [
+              _vm._v(
+                "Sconto: " +
+                  _vm._s(_vm.order.summary_order_cost_less.importo_cost_less) +
+                  " €"
+              )
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "footer col-sm-12 col-xs-12 col-md-12" }, [
-          _vm._v("Totale: " + _vm._s(_vm.totalPrice()) + " €")
+          _vm._v("Totale: " + _vm._s(_vm.subTotalPrice()) + " €")
         ])
       ])
     ],

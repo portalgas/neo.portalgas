@@ -237,16 +237,4 @@ class HtmlCustomSiteHelper extends FormHelper
 
         return $html;
     }
-
-    public function getArticleQta($article_order) {
-        ($article_order['cart']['qta_forzato'] > 0 ) ? $qta = $article_order['cart']['qta_forzato']: $qta = $article_order['cart']['qta'];
-
-        return $qta;
-    }
-
-    public function getArticleImporto($article_order) {
-        ($article_order['cart']['importo_forzato'] > 0 ) ? $importo = $article_order['cart']['importo_forzato']: $importo = $article_order['price'];
-
-        return $importo;
-    }
 }

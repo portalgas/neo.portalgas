@@ -18,8 +18,18 @@
         :key="article.id">
       </user-cart-article> 
 
+      <div class="row" v-if="order.summary_order_trasport!=null">
+        <div class="footer col-sm-12 col-xs-12 col-md-12">Trasporto: {{ order.summary_order_trasport.importo_trasport }} &euro;</div>
+      </div>
+      <div class="row" v-if="order.summary_order_cost_more!=null">
+        <div class="footer col-sm-12 col-xs-12 col-md-12">Spesa aggiuntiva: {{ order.summary_order_cost_more.importo_cost_more }} &euro;</div>
+      </div>
+      <div class="row" v-if="order.summary_order_cost_less!=null">
+        <div class="footer col-sm-12 col-xs-12 col-md-12">Sconto: {{ order.summary_order_cost_less.importo_cost_less }} &euro;</div>
+      </div> 
+     
       <div class="row">
-        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale: {{ totalPrice() }} &euro;</div>
+        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale: {{ subTotalPrice() }} &euro;</div>
       </div>
     </div>
 
@@ -36,11 +46,40 @@ export default {
     UserCartArticle: UserCartArticle
   },
   methods: {
-    totalPrice() {
-      return this.$options.filters.currency(this.article_orders.reduce(
-        (current, next) => current + (next.cart.qta_new * next.price),
+    subTotalPrice() {
+      var totale = this.$options.filters.currency(this.article_orders.reduce(
+        // function (current, next) { return current + (next.cart.qta_new * next.price)},
+        function (current, next) { 
+            var totale = 0;
+
+            if(this.order.isOpenToPurchasable) 
+              totale += next.cart.final_price; 
+            else {
+              /* ordine chiuso agli acquisti */
+              totale += (next.cart.qta_new * next.price);
+            }              
+
+            return (current + totale);     
+        },
         0
       ));
+
+      totale = totale.replace(',', '.');
+
+      // console.log('subTotalPrice) totale '+totale);
+     
+      if(this.order.summary_order_trasport!=null)
+        totale = (parseFloat(totale) + parseFloat(this.order.summary_order_trasport.importo_trasport));
+      
+      if(this.order.summary_order_cost_more!=null)
+        totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_more.importo_cost_more));
+      
+      if(this.order.summary_order_cost_less!=null)
+        totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_less.importo_cost_less));
+
+      // console.log('subTotalPrice) totale '+parseFloat(totale));
+
+      return parseFloat(totale).toFixed(2);
     }
   },
   filters: {

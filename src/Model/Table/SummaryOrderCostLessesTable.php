@@ -8,7 +8,25 @@ use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
-class SummaryOrdersTable extends Table
+/**
+ * SummaryOrderCostLesses Model
+ *
+ * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
+ * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
+ *
+ * @method \App\Model\Entity\SummaryOrderCostLess get($primaryKey, $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\SummaryOrderCostLess findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ */
+class SummaryOrderCostLessesTable extends Table
 {
     /**
      * Initialize method
@@ -20,10 +38,9 @@ class SummaryOrdersTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('k_summary_orders');
+        $this->setTable('k_summary_order_cost_lesses');
         $this->setDisplayField('id');
-        $this->setPrimaryKey(['id', 'organization_id', 'user_id', 'order_id']);
-        // $this->setPrimaryKey('id');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
@@ -33,10 +50,6 @@ class SummaryOrdersTable extends Table
         ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
-            'joinType' => 'INNER',
-        ]);
-        $this->belongsTo('Deliveries', [
-            'foreignKey' => ['organization_id', 'id'],
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
@@ -62,16 +75,13 @@ class SummaryOrdersTable extends Table
             ->notEmptyString('importo');
 
         $validator
-            ->numeric('importo_pagato')
-            ->notEmptyString('importo_pagato');
+            ->integer('peso')
+            ->requirePresence('peso', 'create')
+            ->notEmptyString('peso');
 
         $validator
-            ->scalar('saldato_a')
-            ->allowEmptyString('saldato_a');
-
-        $validator
-            ->scalar('modalita')
-            ->notEmptyString('modalita');
+            ->numeric('importo_cost_less')
+            ->notEmptyString('importo_cost_less');
 
         return $validator;
     }
@@ -87,7 +97,6 @@ class SummaryOrdersTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['organization_id', 'id'], 'Deliveries'));
         $rules->add($rules->existsIn(['organization_id', 'id'], 'Orders'));
 
         return $rules;
@@ -98,8 +107,8 @@ class SummaryOrdersTable extends Table
     */
     public function getByOrder($user, $organization_id, $order_id, $options=[], $debug=false) {
 
-        $where = ['SummaryOrders.organization_id' => $organization_id,
-                  'SummaryOrders.order_id' => $order_id];
+        $where = ['SummaryOrderCostLesses.organization_id' => $organization_id,
+                  'SummaryOrderCostLesses.order_id' => $order_id];
         if($debug) debug($where);
 
         $results = $this->find()
@@ -118,9 +127,9 @@ class SummaryOrdersTable extends Table
     */
     public function getByUserByOrder($user, $organization_id, $user_id, $order_ids, $options=[], $debug=false) {
 
-        $where = ['SummaryOrders.organization_id' => $organization_id,
-                  'SummaryOrders.user_id' => $user_id,
-                  'SummaryOrders.order_id IN ' => $order_ids];
+        $where = ['SummaryOrderCostLesses.organization_id' => $organization_id,
+                  'SummaryOrderCostLesses.user_id' => $user_id,
+                  'SummaryOrderCostLesses.order_id IN ' => $order_ids];
         if($debug) debug($where);
 
         if(is_array($order_ids))
@@ -133,9 +142,9 @@ class SummaryOrdersTable extends Table
                           ->contain(['Users'])
                           ->where($where)
                           ->first();
-        
+
         if($debug) debug($results);
         
         return $results;
-    }    
+    }     
 }
