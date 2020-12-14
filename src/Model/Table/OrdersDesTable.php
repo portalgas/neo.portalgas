@@ -19,7 +19,7 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\Order');
+        $this->setEntityClass('App\Model\Entity\Order');
 
         $this->belongsTo('DesOrders', [
             'foreignKey' => 'des_order_id',
@@ -83,8 +83,8 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
 
         $results = $this->find()  
                         ->where([
-                            $this->alias().'.organization_id' => $organization_id,
-                            $this->alias().'.id' => $order_id
+                            $this->getAlias().'.organization_id' => $organization_id,
+                            $this->getAlias().'.id' => $order_id
                         ])
                         ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
                                     'SuppliersOrganizations' => ['Suppliers'],

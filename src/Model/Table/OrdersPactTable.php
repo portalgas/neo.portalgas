@@ -19,7 +19,7 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\Order');
+        $this->setEntityClass('App\Model\Entity\Order');
     }
 
     public function validationDefault(Validator $validator)

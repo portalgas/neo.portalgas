@@ -284,15 +284,15 @@ class ArticlesOrdersTable extends Table
 
         if(!isset($where['ArticlesOrders']))
            $where['ArticlesOrders'] = [];
-        $where['ArticlesOrders'] = array_merge([$this->alias().'.organization_id' => $organization_id,
-                             // $this->alias().'.article_id' => 142,
-                              $this->alias().'.order_id' => $order_id,
-                              $this->alias().'.stato != ' => 'N'], 
+        $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $organization_id,
+                             // $this->getAlias().'.article_id' => 142,
+                              $this->getAlias().'.order_id' => $order_id,
+                              $this->getAlias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
 
         switch ($order_state_code) {
             case 'RI-OPEN-VALIDATE':
-                $where['ArticlesOrders'] += [$this->alias().'.pezzi_confezione > ' => 1];
+                $where['ArticlesOrders'] += [$this->getAlias().'.pezzi_confezione > ' => 1];
                 $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug); 
             break;
             default:
@@ -391,10 +391,10 @@ class ArticlesOrdersTable extends Table
         $article_organization_id = $ids['article_organization_id'];
         $article_id = $ids['article_id'];
 
-        $where = [$this->alias().'.organization_id' => $organization_id, 
-                  $this->alias().'.order_id' => $order_id, 
-                  $this->alias().'.article_organization_id' => $article_organization_id, 
-                  $this->alias().'.article_id' => $article_id];
+        $where = [$this->getAlias().'.organization_id' => $organization_id, 
+                  $this->getAlias().'.order_id' => $order_id, 
+                  $this->getAlias().'.article_organization_id' => $article_organization_id, 
+                  $this->getAlias().'.article_id' => $article_id];
         // debug($where);
 
         $results = $this->find()
@@ -460,7 +460,7 @@ class ArticlesOrdersTable extends Table
     }    
 
     protected function _getOptions($options) {
-        isset($options['sort'])? $this->_sort = $options['sort']: $this->_sort = [$this->alias().'.name'];
+        isset($options['sort'])? $this->_sort = $options['sort']: $this->_sort = [$this->getAlias().'.name'];
         isset($options['limit'])? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');
         isset($options['page'])? $this->_page = $options['page']: $this->_page = 1; 
     }

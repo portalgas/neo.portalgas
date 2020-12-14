@@ -21,7 +21,7 @@ class OrganizationsGasTable extends OrganizationsTable implements OrganizationTa
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\Organization');
+        $this->setEntityClass('App\Model\Entity\Organization');
     }
 
     public function validationDefault(Validator $validator)
@@ -45,10 +45,10 @@ class OrganizationsGasTable extends OrganizationsTable implements OrganizationTa
     public function gets($where=[], $debug=false) {
 
         $results = [];
-        $where = array_merge([$this->alias().'.type' => $this->_type], $where);
+        $where = array_merge([$this->getAlias().'.type' => $this->_type], $where);
         $results = $this->find()
                         ->where($where)
-                        ->order([$this->alias().'.name'])
+                        ->order([$this->getAlias().'.name'])
                         ->all();
 
         return $results;        
@@ -60,8 +60,8 @@ class OrganizationsGasTable extends OrganizationsTable implements OrganizationTa
     public function getById($organization_id, $where=[], $debug=false) {
         
         $results = [];
-        $where = array_merge([$this->alias().'.type' => $this->_type, 
-                             $this->alias().'.organization_id' => $organization_id], $where);
+        $where = array_merge([$this->getAlias().'.type' => $this->_type, 
+                             $this->getAlias().'.organization_id' => $organization_id], $where);
         $results = $this->find()
                         ->where($where)
                         ->first();
@@ -74,7 +74,7 @@ class OrganizationsGasTable extends OrganizationsTable implements OrganizationTa
      */     
     public function getsList($where=[], $debug=false) {
         $results = [];
-        $where = array_merge([$this->alias().'.type' => $this->_type], $where);        
+        $where = array_merge([$this->getAlias().'.type' => $this->_type], $where);        
         $results = $this->find('list', ['conditions' => $where]);
 
         return $results; 

@@ -19,7 +19,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\Order');
+        $this->setEntityClass('App\Model\Entity\Order');
     }
 
     public function validationDefault(Validator $validator)
@@ -98,8 +98,8 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
 
         if(isset($where['Orders']))
             $where_order = $where['Orders'];
-        $where_order = array_merge([$this->alias().'.organization_id' => $organization_id,
-                              $this->alias().'.isVisibleBackOffice' => 'Y'],
+        $where_order = array_merge([$this->getAlias().'.organization_id' => $organization_id,
+                              $this->getAlias().'.isVisibleBackOffice' => 'Y'],
                               $where_order);
         if($debug) debug($where_order); 
 
@@ -116,7 +116,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
                                   'SuppliersOrganizations' => ['Suppliers'], 
                                   'Deliveries' => ['conditions' => $where_delivery]  
                                 ])
-                                ->order([$this->alias().'.data_inizio'])
+                                ->order([$this->getAlias().'.data_inizio'])
                                 ->all();
         // debug($results);
         

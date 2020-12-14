@@ -88,7 +88,7 @@ class ProdGasArticlesPromotionsTable extends Table
         }
 
         $results = $this->find()  
-                        ->where([$this->alias().'.id' => $prod_gas_promotion_id])
+                        ->where([$this->getAlias().'.id' => $prod_gas_promotion_id])
                         ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->all();
 

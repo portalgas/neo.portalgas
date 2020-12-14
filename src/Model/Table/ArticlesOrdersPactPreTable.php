@@ -15,7 +15,7 @@ class ArticlesOrdersPactPreTable extends ArticlesOrdersTable implements Articles
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\ArticlesOrder');
+        $this->setEntityClass('App\Model\Entity\ArticlesOrder');
     }
 
     public function validationDefault(Validator $validator)

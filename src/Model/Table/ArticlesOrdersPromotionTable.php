@@ -15,7 +15,7 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\ArticlesOrder');
+        $this->setEntityClass('App\Model\Entity\ArticlesOrder');
 
         $this->belongsTo('ProdGasArticlesPromotions', [
             'className' => 'ProdGasArticlesPromotions',
@@ -56,9 +56,9 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
         $where_article_order = [];
         if(isset($where['ArticlesOrders']))
            $where_article_order = $where['ArticlesOrders'];
-        $where['ArticlesOrders'] = array_merge([$this->alias().'.organization_id' => $organization_id,
-                              $this->alias().'.order_id' => $order_id,
-                              $this->alias().'.stato != ' => 'N'], 
+        $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $organization_id,
+                              $this->getAlias().'.order_id' => $order_id,
+                              $this->getAlias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
         
         $this->_getOptions($options); // setta sort / limit / page

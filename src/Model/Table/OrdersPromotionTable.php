@@ -19,7 +19,7 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\Order');
+        $this->setEntityClass('App\Model\Entity\Order');
 
         $this->belongsTo('ProdGasPromotions', [
             'foreignKey' => 'prod_gas_promotion_id',
@@ -109,8 +109,8 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
 
         $results = $this->find()  
                         ->where([
-                            $this->alias().'.organization_id' => $organization_id,
-                            $this->alias().'.id' => $order_id
+                            $this->getAlias().'.organization_id' => $organization_id,
+                            $this->getAlias().'.id' => $order_id
                         ])
                         ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
                                     'SuppliersOrganizations' => ['Suppliers'],

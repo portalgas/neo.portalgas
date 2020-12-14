@@ -15,7 +15,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
     {
         parent::initialize($config);
 
-        $this->entityClass('App\Model\Entity\ArticlesOrder');
+        $this->setEntityClass('App\Model\Entity\ArticlesOrder');
     }
 
     public function validationDefault(Validator $validator)

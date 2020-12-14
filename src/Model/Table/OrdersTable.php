@@ -385,8 +385,8 @@ class OrdersTable extends Table
 
         $results = $this->find()  
                         ->where([
-                            $this->alias().'.organization_id' => $organization_id,
-                            $this->alias().'.id' => $order_id
+                            $this->getAlias().'.organization_id' => $organization_id,
+                            $this->getAlias().'.id' => $order_id
                         ])
                         ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
                                     'SuppliersOrganizations' => [
@@ -434,8 +434,8 @@ class OrdersTable extends Table
 
         if(isset($where['Orders']))
             $where_order = $where['Orders'];
-        $where_order = array_merge([$this->alias().'.organization_id' => $organization_id,
-                              $this->alias().'.isVisibleBackOffice' => 'Y'],
+        $where_order = array_merge([$this->getAlias().'.organization_id' => $organization_id,
+                              $this->getAlias().'.isVisibleBackOffice' => 'Y'],
                               $where_order);
         if($debug) debug($where_order); 
 
@@ -452,7 +452,7 @@ class OrdersTable extends Table
                                   'SuppliersOrganizations' => ['Suppliers'], 
                                   'Deliveries' => ['conditions' => $where_delivery]  
                                 ])
-                                ->order([$this->alias().'.data_inizio'])
+                                ->order([$this->getAlias().'.data_inizio'])
                                 ->all();
         // debug($results);
         
