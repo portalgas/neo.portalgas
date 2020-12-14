@@ -56,8 +56,12 @@ class ApiArticleOrderDecorator  extends AppDecorator {
         $ids['article_id'] = $articles_order->article_id;
         $results['ids'] = $ids;
 
+        /*
+         * dati ordine
+         */
         $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
         $results['isOpenToPurchasable'] = $lifeCycleOrdersTable->isOpenToPurchasable($user, $order->state_code);
+        $results['type_draw'] = $order->type_draw; // ENUM('SIMPLE', 'COMPLETE', 'PROMOTION')
 
         $results['has_variants'] = false; // e' sempre articolo e la sua variante
         $results['name'] = $articles_order->name;

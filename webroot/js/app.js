@@ -2572,7 +2572,9 @@ __webpack_require__.r(__webpack_exports__);
         id: null,
         data: []
       },
-      isRunOrders: false
+      storerooms: {},
+      isRunOrders: false,
+      isRunStorerooms: false
     };
   },
 
@@ -2644,8 +2646,8 @@ __webpack_require__.r(__webpack_exports__);
         delivery_id: delivery_id
       };
       this.orders = [];
-      var url = "/admin/api/orders/user-cart-gets";
-      axios.post(url, params).then(function (response) {
+      var url_orders = "/admin/api/orders/user-cart-gets";
+      axios.post(url_orders, params).then(function (response) {
         _this.isRunOrders = false;
         console.log(response.data);
 
@@ -2659,6 +2661,25 @@ __webpack_require__.r(__webpack_exports__);
         }
       })["catch"](function (error) {
         _this.isRunOrders = false;
+        console.error("Error: " + error);
+      });
+      /*
+       * storerooms
+       */
+
+      this.isRunStorerooms = true;
+      this.storerooms = [];
+      var url_storeroom = "/admin/api/storerooms/user-cart-gets";
+      axios.post(url_storeroom, params).then(function (response) {
+        _this.isRunStorerooms = false;
+        console.log(response.data);
+
+        if (typeof response.data !== "undefined") {
+          _this.storerooms = response.data;
+          console.log(_this.storerooms);
+        }
+      })["catch"](function (error) {
+        _this.isRunStorerooms = false;
         console.error("Error: " + error);
       });
     },
@@ -46569,7 +46590,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.card[data-v-3649dbf9] {\r\n  min-height: 400px;\n}\n.card[data-v-3649dbf9]:hover {\r\n  background-color: #f8f8f8;\r\n  box-shadow: 3px 3px 5px 0px;\n}\n.box-bio[data-v-3649dbf9] {\r\n    right: 0;\r\n    padding: 10px;\r\n    position: absolute;\r\n    top: 30px;\r\n    z-index: 1;\n}\n.box-bio img[data-v-3649dbf9] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 40px;\r\n    margin-right: 5px;\r\n    width: 40px;\n}\n.highlighted[data-v-3649dbf9] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
+exports.push([module.i, "\n.card-SIMPLE[data-v-3649dbf9] {\r\n  min-height: 285px;\n}\n.card-COMPLETE[data-v-3649dbf9] {\r\n  min-height: 400px;\n}\n.card[data-v-3649dbf9]:hover {\r\n  background-color: #f8f8f8;\r\n  box-shadow: 3px 3px 5px 0px;\n}\n.box-bio[data-v-3649dbf9] {\r\n    right: 0;\r\n    padding: 10px;\r\n    position: absolute;\r\n    top: 30px;\r\n    z-index: 1;\n}\n.box-bio img[data-v-3649dbf9] {\r\n    border-radius: 30px;\r\n    float: left;\r\n    height: 40px;\r\n    margin-right: 5px;\r\n    width: 40px;\n}\n.highlighted[data-v-3649dbf9] { \r\n  color: #fa824f;\r\n  text-decoration: underline;\n}\r\n", ""]);
 
 // exports
 
@@ -52220,166 +52241,172 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card" }, [
-    _c("div", {
-      staticClass: "card-header bg-primary",
-      domProps: {
-        innerHTML: _vm._s(_vm.$options.filters.highlight(_vm.article.name))
-      }
-    }),
-    _vm._v(" "),
-    _c("div", { staticClass: "content-img-article" }, [
-      _vm.article.img1 != ""
-        ? _c("img", {
-            staticClass: "img-article responsive",
-            attrs: { src: _vm.article.img1, alt: _vm.article.name }
-          })
+  return _c(
+    "div",
+    { staticClass: "card", class: "card-" + _vm.order.type_draw },
+    [
+      _c("div", {
+        staticClass: "card-header bg-primary",
+        domProps: {
+          innerHTML: _vm._s(_vm.$options.filters.highlight(_vm.article.name))
+        }
+      }),
+      _vm._v(" "),
+      _vm.order.type_draw == "COMPLETE"
+        ? _c("div", { staticClass: "content-img-article" }, [
+            _vm.article.img1 != ""
+              ? _c("img", {
+                  staticClass: "img-article responsive",
+                  attrs: { src: _vm.article.img1, alt: _vm.article.name }
+                })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.article.is_bio
+              ? _c("div", { staticClass: "box-bio" }, [
+                  _c("img", {
+                    staticClass: "responsive",
+                    attrs: {
+                      src: "/img/is-bio.png",
+                      alt: "Agricoltura Biologica",
+                      title: "Agricoltura Biologica"
+                    }
+                  })
+                ])
+              : _vm._e()
+          ])
         : _vm._e(),
       _vm._v(" "),
-      _vm.article.is_bio
-        ? _c("div", { staticClass: "box-bio" }, [
-            _c("img", {
-              staticClass: "responsive",
-              attrs: {
-                src: "/img/is-bio.png",
-                alt: "Agricoltura Biologica",
-                title: "Agricoltura Biologica"
-              }
-            })
-          ])
-        : _vm._e()
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "card-text" }, [
-        _vm.article.descri != ""
-          ? _c("div", {
-              domProps: {
-                innerHTML: _vm._s(
-                  _vm.$options.filters.highlight(
-                    _vm.$options.filters.shortDescription(_vm.article.descri)
+      _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "card-text" }, [
+          _vm.article.descri != ""
+            ? _c("div", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.$options.filters.highlight(
+                      _vm.$options.filters.shortDescription(_vm.article.descri)
+                    )
                   )
-                )
-              }
-            })
-          : _vm._e(),
-        _c("span", [
-          _c(
-            "a",
-            {
-              staticClass: "btn btn-primary btn-block",
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  return _vm.clickShowOrHiddenModal()
                 }
-              }
-            },
-            [_vm._v("maggior dettaglio")]
-          )
+              })
+            : _vm._e(),
+          _c("span", [
+            _c(
+              "a",
+              {
+                staticClass: "btn btn-primary btn-block",
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    return _vm.clickShowOrHiddenModal()
+                  }
+                }
+              },
+              [_vm._v("maggior dettaglio")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("strong", [_vm._v("Prezzo")]),
+            _vm._v(
+              " " +
+                _vm._s(_vm._f("currency")(_vm.article.price)) +
+                " €\n                  "
+            ),
+            _vm.article.price_pre_discount != null
+              ? _c("del", [
+                  _vm._v(
+                    _vm._s(_vm._f("currency")(_vm.article.price_pre_discount)) +
+                      " €"
+                  )
+                ])
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("strong", [_vm._v("Conf.")]),
+            _vm._v(" " + _vm._s(_vm.article.conf) + "\n                "),
+            _c("small", { staticClass: "text-muted" }, [
+              _c("strong", [_vm._v("Prezzo/UM")]),
+              _vm._v(" " + _vm._s(_vm.article.um_rif_label))
+            ])
+          ])
         ]),
         _vm._v(" "),
-        _c("div", [
-          _c("strong", [_vm._v("Prezzo")]),
-          _vm._v(
-            " " +
-              _vm._s(_vm._f("currency")(_vm.article.price)) +
-              " €\n                  "
-          ),
-          _vm.article.price_pre_discount != null
-            ? _c("del", [
-                _vm._v(
-                  _vm._s(_vm._f("currency")(_vm.article.price_pre_discount)) +
-                    " €"
-                )
+        _c("div", { staticClass: "card-text" }, [
+          _vm.article.package > 1
+            ? _c("div", [
+                _c("small", { staticClass: "text-muted" }, [
+                  _c("strong", [_vm._v("Pezzi in confezione")]),
+                  _vm._v(" " + _vm._s(_vm.article.package))
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.qta_multipli > 1
+            ? _c("div", [
+                _c("small", { staticClass: "text-muted" }, [
+                  _c("strong", [_vm._v("Multipli")]),
+                  _vm._v(" " + _vm._s(_vm.article.qta_multipli))
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.qta_minima > 1
+            ? _c("div", [
+                _c("small", { staticClass: "text-muted" }, [
+                  _c("strong", [_vm._v("Q.tà minima")]),
+                  _vm._v(" " + _vm._s(_vm.article.qta_minima))
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.qta_minima_order > 0
+            ? _c("div", [
+                _c("small", { staticClass: "text-muted" }, [
+                  _c("strong", [_vm._v("Q.tà minima sull'ordine totale")]),
+                  _vm._v(" " + _vm._s(_vm.article.qta_minima_order))
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.qta_massima > 0
+            ? _c("div", [
+                _c("small", { staticClass: "text-muted" }, [
+                  _c("strong", [_vm._v("Q.tà massima")]),
+                  _vm._v(" " + _vm._s(_vm.article.qta_massima))
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.article.qta_massima_order > 0
+            ? _c("div", [
+                _c("small", { staticClass: "text-muted" }, [
+                  _c("strong", [_vm._v("Q.tà massima sull'ordine totale")]),
+                  _vm._v(
+                    " " +
+                      _vm._s(_vm.article.qta_massima_order) +
+                      " (acquistati ora " +
+                      _vm._s(_vm.article.qta_cart) +
+                      ")"
+                  )
+                ])
               ])
             : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("div", [
-          _c("strong", [_vm._v("Conf.")]),
-          _vm._v(" " + _vm._s(_vm.article.conf) + "\n                "),
-          _c("small", { staticClass: "text-muted" }, [
-            _c("strong", [_vm._v("Prezzo/UM")]),
-            _vm._v(" " + _vm._s(_vm.article.um_rif_label))
-          ])
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "card-text" }, [
-        _vm.article.package > 1
-          ? _c("div", [
-              _c("small", { staticClass: "text-muted" }, [
-                _c("strong", [_vm._v("Pezzi in confezione")]),
-                _vm._v(" " + _vm._s(_vm.article.package))
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.article.qta_multipli > 1
-          ? _c("div", [
-              _c("small", { staticClass: "text-muted" }, [
-                _c("strong", [_vm._v("Multipli")]),
-                _vm._v(" " + _vm._s(_vm.article.qta_multipli))
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.article.qta_minima > 1
-          ? _c("div", [
-              _c("small", { staticClass: "text-muted" }, [
-                _c("strong", [_vm._v("Q.tà minima")]),
-                _vm._v(" " + _vm._s(_vm.article.qta_minima))
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.article.qta_minima_order > 0
-          ? _c("div", [
-              _c("small", { staticClass: "text-muted" }, [
-                _c("strong", [_vm._v("Q.tà minima sull'ordine totale")]),
-                _vm._v(" " + _vm._s(_vm.article.qta_minima_order))
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.article.qta_massima > 0
-          ? _c("div", [
-              _c("small", { staticClass: "text-muted" }, [
-                _c("strong", [_vm._v("Q.tà massima")]),
-                _vm._v(" " + _vm._s(_vm.article.qta_massima))
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.article.qta_massima_order > 0
-          ? _c("div", [
-              _c("small", { staticClass: "text-muted" }, [
-                _c("strong", [_vm._v("Q.tà massima sull'ordine totale")]),
-                _vm._v(
-                  " " +
-                    _vm._s(_vm.article.qta_massima_order) +
-                    " (acquistati ora " +
-                    _vm._s(_vm.article.qta_cart) +
-                    ")"
-                )
-              ])
-            ])
-          : _vm._e()
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { class: "card-footer " + _vm.justInCart },
-      [
-        _c("app-btn-cart-add", {
-          attrs: { article: _vm.article, order: _vm.order }
-        })
-      ],
-      1
-    )
-  ])
+      _c(
+        "div",
+        { class: "card-footer " + _vm.justInCart },
+        [
+          _c("app-btn-cart-add", {
+            attrs: { article: _vm.article, order: _vm.order }
+          })
+        ],
+        1
+      )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -17,7 +17,6 @@ class StatOrdersController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Auths');
     }
 
     public function beforeFilter(Event $event) {

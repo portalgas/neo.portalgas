@@ -238,7 +238,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
             $routes->connect('/getArticlesOrdersByOrderId', ['action' => 'getArticlesOrdersByOrderId', '_method' => 'POST']); 
-        });    
+        });
+        $routes->scope('/storerooms', ['controller' => 'Storerooms'], function (RouteBuilder $routes) {
+            $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
+        }); 
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);

@@ -1,9 +1,9 @@
 <template>
 
-  <div class="card">
+  <div class="card" :class="'card-'+order.type_draw">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)"></div>
 
-        <div class="content-img-article">
+        <div class="content-img-article" v-if="order.type_draw=='COMPLETE'">
           <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
           <div v-if="article.is_bio" class="box-bio">
               <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
@@ -142,7 +142,10 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.card-SIMPLE {
+  min-height: 285px;
+}
+.card-COMPLETE {
   min-height: 400px;
 }
 .card:hover {

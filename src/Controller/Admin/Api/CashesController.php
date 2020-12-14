@@ -11,7 +11,6 @@ class CashesController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Auths');
     }
 
     public function beforeFilter(Event $event) {

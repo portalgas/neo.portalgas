@@ -76,7 +76,9 @@ export default {
       	id: null,
       	data: []
       },
+      storerooms: {},
       isRunOrders: false,
+      isRunStorerooms: false,
     };
   },
   /*
@@ -162,9 +164,9 @@ export default {
 
 			this.orders = [];
 
-			let url = "/admin/api/orders/user-cart-gets";
+			let url_orders = "/admin/api/orders/user-cart-gets";
 			axios
-				.post(url, params)
+				.post(url_orders, params)
 				.then(response => {
 
 					this.isRunOrders=false;
@@ -185,6 +187,34 @@ export default {
 
 				console.error("Error: " + error);
 			});
+
+			/*
+			 * storerooms
+			 */
+			this.isRunStorerooms=true;
+				
+			this.storerooms = [];
+
+			let url_storeroom = "/admin/api/storerooms/user-cart-gets";
+			axios
+				.post(url_storeroom, params)
+				.then(response => {
+
+					this.isRunStorerooms=false;
+
+					console.log(response.data);
+					if(typeof response.data !== "undefined") {
+						this.storerooms = response.data;
+						console.log(this.storerooms);
+				}
+			})
+			.catch(error => {
+
+				this.isRunStorerooms=false;
+
+				console.error("Error: " + error);
+			});
+
 	    },
 	    selectOrder(order) {
 	    	console.log('selectOrder');

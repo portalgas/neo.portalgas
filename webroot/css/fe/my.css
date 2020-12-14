@@ -8,9 +8,9 @@ h2 {
     text-transform: capitalize;
 }
 .content-body {
-  overflow: none;
-  height: 100%;
-  margin: 25px 0;
+    overflow: none;
+    height: 100%;
+    margin: 25px 0;
 }
 
 .text-color-background-green,
@@ -22,14 +22,23 @@ h2 {
 .text-color-background-red  {
     color: #fff;
 }
-.bg-primary, .badge-primary {
-    background-color: #0a659e !important;
+.card-header.bg-primary {
     color: #fff;
+    background-color: #0a659e !important;
+}
+.bg-primary, .badge-primary {
+    color: #fff;
+    background-color: #0a659e !important;
 }   
 .btn-primary {
     color: #fff;
     background-color: #0a659e !important;
     border-color: #0a659e !important;
+}
+.btn-primary:hover {
+    color: #fff !important;
+    background-color: #fa824f !important;
+    border-color: #fa824f !important;
 }
 .btn-success {
     color: #fff;

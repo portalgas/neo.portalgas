@@ -121,7 +121,6 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
         // debug($results);
         
         return $results;
-
     }
     
     /*
