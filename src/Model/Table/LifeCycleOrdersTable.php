@@ -1321,6 +1321,8 @@ class LifeCycleOrdersTable extends Table
      
     /* 
      * ctrl se e' ordine chiuso agli acquisti
+     * se true l'importo e' carts.qta * article_orders.prezzo
+     * se false l'importo e' carts.final_price
      */     
     public function isOpenToPurchasable($user, $order_state_code) {
         

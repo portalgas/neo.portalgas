@@ -295,6 +295,21 @@ msgstr "Comune"
 msgid "Price Types"
 msgstr "Tipologia prezzi"
 
+msgid "Bio"
+msgstr "Bio"
+
+msgid "Conf"
+msgstr "Conf"
+
+msgid "Prezzo/UM"
+msgstr "Prezzo/UM"
+
+msgid "PrezzoUnita"
+msgstr "Prezzo unità"
+
+msgid "Qta"
+msgstr "Quantità"
+
 #
 # importi
 #
@@ -622,9 +637,6 @@ msgstr "Il produttore non ha la partita iva e non potrà essere importato!"
 #
 # validator
 #
-#
-# validator
-#
 msgid "Parameters required"
 msgstr "I parametri passati non sono completi"
 
@@ -849,8 +861,6 @@ msgstr "Hai superato il credito di cassa!"
 
 msgid "cart_msg_riopen_package_close"
 msgstr "Il collo è stato completato da un'altro gasista!"
-
-cart_msg_stato_N
 
 #
 # M S G  system

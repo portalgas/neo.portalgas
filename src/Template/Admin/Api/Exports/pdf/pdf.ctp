@@ -12,10 +12,10 @@ foreach($results as $result) {
 	$html .= '		<tr>';
 	$html .= '			<th width="5%">' . __('Bio') . '</th>';
 	$html .= '			<th width="30%">' . __('Name') . '</th>';
-	$html .= '			<th width="10%">' . __('qta') . '</th>';
 	$html .= '			<th width="10%">' . __('Conf') . '</th>';
-	$html .= '			<th width="15%">&nbsp;' . __('PrezzoUnita') . '</th>';
 	$html .= '			<th width="10%">' . __('Prezzo/UM') . '</th>';
+	$html .= '			<th width="15%">&nbsp;' . __('PrezzoUnita') . '</th>';
+	$html .= '			<th width="10%">' . __('Qta') . '</th>';
 	$html .= '			<th width="20%">' . __('Importo') . '</th>';
 	$html .= '	</tr>';
 	$html .= '	</thead><tbody>';
@@ -24,16 +24,16 @@ foreach($results as $result) {
 		
 		// debug($article_order);
 
-		$article_order['is_bio'] ? $is_bio = 'Bio': $is_bio = '';
+		$article_order['is_bio'] ? $is_bio = '<img src="'.$img_path.'/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
 		$html .= '<tr>';
 		$html .= '	<td class="text-center">'.$is_bio.'</td>';
 		$html .= '	<td>'.$article_order['name'].'</td>';
-		$html .= '	<td class="text-center">'.$article_order['cart']['final_qta'].'</td>';
 		$html .= '	<td class="text-center">'.$article_order['conf'].'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
 		$html .= '	<td class="text-center">'.$article_order['um_rif_label'].'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['cart']['final_importo']).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
+		$html .= '	<td class="text-center">'.$article_order['cart']['final_qta'].'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['cart']['final_price']).'</td>';
 		$html .= '</tr>';
 
 	}

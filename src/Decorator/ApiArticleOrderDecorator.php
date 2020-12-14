@@ -154,7 +154,7 @@ class ApiArticleOrderDecorator  extends AppDecorator {
         if(isset($articles_order->cart) && !empty($articles_order->cart->user_id)) { 
          
             $final_qta = 0;
-            $final_importo = 0;
+            $final_price = 0;
 
             ($articles_order->cart->qta_forzato > 0 ) ? $final_qta = $articles_order->cart->qta_forzato: $final_qta = $articles_order->cart->qta;
             $results['cart']['final_qta'] = $final_qta;

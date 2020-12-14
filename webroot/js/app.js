@@ -2606,13 +2606,10 @@ __webpack_require__.r(__webpack_exports__);
           / *console.log("Tratto ordine "+(index+1)); */;
           order.article_orders.forEach(function (article_order, index) {
             /* console.log(article_order);  */
-
-            /* 
-             * se no non si aggiorna quando varia la qta
-            if(article_order.cart.final_price!=null)
-            	totale += article_order.cart.final_price;	    				else
-            */
-            totale += article_order.cart.qta_new * article_order.price;
+            if (order.isOpenToPurchasable) totale += article_order.cart.qta_new * article_order.price;else {
+              /* ordine chiuso agli acquisti */
+              totale += article_order.cart.final_price;
+            }
           });
           /* loop article_orders */
           // totale = totale.replace(',', '.');
@@ -2995,7 +2992,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     total: function total() {
       var total = 0;
-      if (this.article.cart.final_importo != null) total = this.article.cart.final_importo;else total = this.article.cart.qta_new * this.article.price;
+      if (this.article.cart.final_price != null) total = this.article.cart.final_price;else total = this.article.cart.qta_new * this.article.price;
       return this.$options.filters.currency(total) + " €";
     },
     qta_new: function qta_new() {
@@ -3799,14 +3796,10 @@ __webpack_require__.r(__webpack_exports__);
       var totale = this.$options.filters.currency(this.article_orders.reduce( // function (current, next) { return current + (next.cart.qta_new * next.price)},
       function (current, next) {
         var totale = 0;
-        /*
-         * se no non si aggiorna quando varia la qta
-        if(next.cart.final_price!=null) 
-          totale += next.cart.final_price; 
-        else 
-        */
-
-        totale += next.cart.qta_new * next.price;
+        if (this.order.isOpenToPurchasable) totale += next.cart.final_price;else {
+          /* ordine chiuso agli acquisti */
+          totale += next.cart.qta_new * next.price;
+        }
         return current + totale;
       }, 0));
       totale = totale.replace(',', '.'); // console.log('subTotalPrice) totale '+totale);

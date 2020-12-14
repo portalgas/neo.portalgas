@@ -123,8 +123,8 @@ export default {
       },
       total() {
         var total = 0;
-        if(this.article.cart.final_importo!=null) 
-          total = this.article.cart.final_importo;
+        if(this.article.cart.final_price!=null) 
+          total = this.article.cart.final_price;
         else
           total = (this.article.cart.qta_new * this.article.price);        
         return this.$options.filters.currency(total)+" €";
