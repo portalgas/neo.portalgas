@@ -63,8 +63,8 @@ class TreeCustomBehavior extends TreeBehavior
         /*
         debug($this->_table);
         debug($this->_table->associations()->keys()[1]);
-        debug($this->_table->table());
-        debug($this->_table->alias());
+        debug($this->_table->getTable());
+        debug($this->_table->getAlias());
         */
         
         if($debug) echo "<pre>TreeCustomBehavior::getLevelLast() id ".$id."</pre>";

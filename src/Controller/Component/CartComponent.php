@@ -238,7 +238,7 @@ class CartComponent extends Component {
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
             // debug($articlesOrdersTable);
-            if(Configure::write('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->alias());
+            if(Configure::write('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->getAlias());
 
             if($articlesOrdersTable!==false) 
                 $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $articles_order, $debug);

@@ -125,7 +125,7 @@ class MappingGdxpPortalgasComponent extends Component {
 			 * ctrl se gia' esiste ma non puo' essere
 			 */
 			$organizationTable = $organizationTable->factory(Configure::read('Organization.type.prodgas'));	
-			$where = [$organizationTable->alias().'.name' => $supplier->name];
+			$where = [$organizationTable->getAlias().'.name' => $supplier->name];
     		$organizations = $organizationTable->gets($where);	
     		// debug($organizations);
     		if($organizations->count()==0) {

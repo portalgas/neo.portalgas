@@ -59,7 +59,7 @@ class TestsController extends AppController
 
             $deliveries = $ordersTable->getDeliveries($user, $organization_id);
             
-            $where = [$ordersTable->alias().'.state_code IN ' => ['OPEN', 'PROCESSED-BEFORE-DELIVERY']];
+            $where = [$ordersTable->getAlias().'.state_code IN ' => ['OPEN', 'PROCESSED-BEFORE-DELIVERY']];
             $orders = $ordersTable->getsList($user, $organization_id, $where);  
         
             $this->set(compact('service_urls', 'suppliersOrganizations', 'deliveries', 'orders'));
