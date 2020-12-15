@@ -2561,6 +2561,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2572,9 +2576,7 @@ __webpack_require__.r(__webpack_exports__);
         id: null,
         data: []
       },
-      storerooms: {},
-      isRunOrders: false,
-      isRunStorerooms: false
+      isRunOrders: false
     };
   },
 
@@ -2649,7 +2651,7 @@ __webpack_require__.r(__webpack_exports__);
       var url_orders = "/admin/api/orders/user-cart-gets";
       axios.post(url_orders, params).then(function (response) {
         _this.isRunOrders = false;
-        console.log(response.data);
+        /* console.log(response.data); */
 
         if (typeof response.data !== "undefined") {
           var data = {
@@ -2665,23 +2667,26 @@ __webpack_require__.r(__webpack_exports__);
       });
       /*
        * storerooms
-       */
-
-      this.isRunStorerooms = true;
+       * lo visualizzo solo per pdf del carrello
+      this.isRunStorerooms=true;
+      	
       this.storerooms = [];
-      var url_storeroom = "/admin/api/storerooms/user-cart-gets";
-      axios.post(url_storeroom, params).then(function (response) {
-        _this.isRunStorerooms = false;
-        console.log(response.data);
-
-        if (typeof response.data !== "undefined") {
-          _this.storerooms = response.data;
-          console.log(_this.storerooms);
-        }
-      })["catch"](function (error) {
-        _this.isRunStorerooms = false;
-        console.error("Error: " + error);
+      		let url_storeroom = "/admin/api/storerooms/user-cart-gets";
+      axios
+      	.post(url_storeroom, params)
+      	.then(response => {
+      				this.isRunStorerooms=false;
+      				console.log(response.data);
+      		if(typeof response.data !== "undefined") {
+      			this.storerooms = response.data;
+      			console.log(this.storerooms);
+      	}
+      })
+      .catch(error => {
+      			this.isRunStorerooms=false;
+      			console.error("Error: " + error);
       });
+      */
     },
     selectOrder: function selectOrder(order) {
       console.log('selectOrder');
@@ -3814,10 +3819,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     subTotalPrice: function subTotalPrice() {
+      var _order = this.order;
       var totale = this.$options.filters.currency(this.article_orders.reduce( // function (current, next) { return current + (next.cart.qta_new * next.price)},
       function (current, next) {
         var totale = 0;
-        if (this.order.isOpenToPurchasable) totale += next.cart.final_price;else {
+        if (_order.isOpenToPurchasable) totale += next.cart.final_price;else {
           /* ordine chiuso agli acquisti */
           totale += next.cart.qta_new * next.price;
         }
@@ -52131,8 +52137,20 @@ var render = function() {
                                 _vm._v(
                                   "\n\n\t\t\t\t\t\t" +
                                     _vm._s(order.suppliers_organization.name) +
-                                    "\n\n\t\t\t\t\t    "
+                                    "\n\t\t\t\t\t\t"
                                 ),
+                                order.suppliers_organization.supplier
+                                  .descrizione != ""
+                                  ? _c("small", [
+                                      _vm._v(
+                                        _vm._s(
+                                          order.suppliers_organization.supplier
+                                            .descrizione
+                                        )
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
                                 _c("span", [
                                   _vm._v(
                                     _vm._s(

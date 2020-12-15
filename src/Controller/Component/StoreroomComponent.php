@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
+use App\Decorator\ApiStoreroomDecorator;
 
 class StoreroomComponent extends Component {
 
@@ -29,6 +30,8 @@ class StoreroomComponent extends Component {
         $where['Users'] = ['Users.id' => $user->id];
         $storeroomsTable = TableRegistry::get('Storerooms');
         $results = $storeroomsTable->gets($user, $organization_id, $where, $debug);
+
+        // $results = new ApiStoreroomDecorator($user, $results); 
 
         return $results;
     }   

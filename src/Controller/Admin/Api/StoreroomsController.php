@@ -29,6 +29,7 @@ class StoreroomsController extends ApiAppController
   
     /* 
      * front-end - estrae la dispensa di una consegna legato al carrello dell'user
+     * api mai chiamata, solo nell'export del carrello visualizzo la dispensa
      */
     public function userCartGets() {
 

@@ -5,18 +5,22 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 class ExportsController extends AppController {
     
+    use Traits\UtilTrait;
+
     /*
      * se true non stampa il pdf ma lo vedo a video
      */ 
-    private $_debug = true; 
+    private $_debug = false; 
 
     public function initialize()
     {
         parent::initialize();
         $this->loadComponent('Order');
+        $this->loadComponent('Storeroom');
     }
 
     public function beforeFilter(Event $event) {
@@ -41,6 +45,18 @@ class ExportsController extends AppController {
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
+
+        $debug = false;
+        $results = [];
+    
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $delivery = $deliveriesTable->getById($user, $organization_id, $delivery_id);
+        $title = "Carrello della consegna ".$delivery->label;
+        $filename = $this->setFileName($title.'.pdf');
+
         Configure::write('CakePdf', [
             'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
             'margin' => [
@@ -49,28 +65,26 @@ class ExportsController extends AppController {
                 'right' => 30,
                 'top' => 45
             ],
-            'orientation' => 'landscape', // portrait
+            'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
             'download' => true,
-            'filename' => 'Invoice.pdf'
+            'filename' => $filename
         ]);
 
-        $debug = false;
-        $results = [];
-    
         $options = [];
         $options['sql_limit'] = Configure::read('sql.no.limit');
-
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
 
         $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug); 
         // debug($results); 
 
-        $deliveriesTable = TableRegistry::get('Deliveries');
-        $delivery = $deliveriesTable->getById($user, $organization_id, $delivery_id);
-        $title = "Carrello della consegna ".$delivery->label;
+        /*
+         * storerooms
+         */
+        $storeroomResults = [];
+        if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
+            $storeroomResults = $this->Storeroom->getArticlesByDeliveryId($user, $organization_id, $delivery_id, $options=[], $debug);            
+        }
 
-        $this->set(compact('results', 'delivery', 'title'));
+        $this->set(compact('results', 'storeroomResults', 'delivery', 'title', 'user'));
 
         if($this->_debug) {
             $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));

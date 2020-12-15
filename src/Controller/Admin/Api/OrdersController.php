@@ -99,36 +99,6 @@ class OrdersController extends ApiAppController
         $delivery_id = $this->request->getData('delivery_id');
 
         $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug);
-
-        if(!empty($results)) {
-
-            foreach($results as $numResult => $result) {
-
-                /*
-                 * aggiunge ad un ordine le eventuali 
-                 *  SummaryOrder 
-                 *  SummaryOrderTrapsort spese di trasporto
-                 *  SummaryOrderMore spese generiche
-                 *  SummaryOrderLess sconti
-                 */
-                $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
-                $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
-
-                if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($user, $result->state_code)) {
-                    
-                    $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $result, $user->id);
-               
-                    $results[$numResult]->summary_order = $resultsSummaryOrderPlus->summary_order;
-                    $results[$numResult]->summary_order_aggregate = $resultsSummaryOrderPlus->summary_order_aggregate;
-                    $results[$numResult]->summary_order_trasport = $resultsSummaryOrderPlus->summary_order_trasport;
-                    $results[$numResult]->summary_order_cost_more = $resultsSummaryOrderPlus->summary_order_cost_more;
-                    $results[$numResult]->summary_order_cost_less = $resultsSummaryOrderPlus->summary_order_cost_less;
-
-                    // $results = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
-                }  // if($results->state_code=='PROCESSED-ON-DELIVERY' || $results->state_code=='CLOSE')
-            } // end foreach($results as $result)
-        } // end if(!empty($results))
-
         // debug($results);
 
         return $this->_response($results);  

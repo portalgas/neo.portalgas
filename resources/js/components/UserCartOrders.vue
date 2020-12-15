@@ -40,6 +40,7 @@
 						</div>
 
 						{{ order.suppliers_organization.name }}
+						<small v-if="order.suppliers_organization.supplier.descrizione!=''">{{ order.suppliers_organization.supplier.descrizione }}</small>
 
 					    <span>{{ order.data_inizio | formatDate }} - {{ order.data_fine | formatDate }}</span>
 
@@ -47,7 +48,10 @@
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
 					</a>
 
-			        <user-cart-articles :order="order" :article_orders="order.article_orders"></user-cart-articles>
+			        <user-cart-articles 
+			        			:order="order" 
+			        			:article_orders="order.article_orders"
+			        			></user-cart-articles>
 				
 	        </p> 
 
@@ -76,9 +80,7 @@ export default {
       	id: null,
       	data: []
       },
-      storerooms: {},
-      isRunOrders: false,
-      isRunStorerooms: false,
+      isRunOrders: false
     };
   },
   /*
@@ -171,7 +173,7 @@ export default {
 
 					this.isRunOrders=false;
 
-					console.log(response.data);
+					/* console.log(response.data); */
 					if(typeof response.data !== "undefined") {
 						var data = {
 							delivery_id: delivery_id,
@@ -190,7 +192,7 @@ export default {
 
 			/*
 			 * storerooms
-			 */
+			 * lo visualizzo solo per pdf del carrello
 			this.isRunStorerooms=true;
 				
 			this.storerooms = [];
@@ -214,7 +216,7 @@ export default {
 
 				console.error("Error: " + error);
 			});
-
+			*/
 	    },
 	    selectOrder(order) {
 	    	console.log('selectOrder');

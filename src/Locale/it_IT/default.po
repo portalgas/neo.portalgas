@@ -322,6 +322,15 @@ msgstr "Importo dovuto"
 msgid "ImportoPagato"
 msgstr "Importo pagato"
 
+msgid "CostTrasport"
+msgstr "Trasporto"
+
+msgid "CostMore"
+msgstr "Spesa aggiuntiva"
+
+msgid "CostLess"
+msgstr "Sconto"
+
 #
 # gdxps
 #
@@ -786,6 +795,12 @@ msgstr "Consegna"
 
 msgid "Deliveries"
 msgstr "Consegne"
+
+msgid "Storeroom"
+msgstr "Dispensa"
+
+msgid "Storerooms"
+msgstr "Dispensa"
 
 #
 # totali

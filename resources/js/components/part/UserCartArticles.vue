@@ -1,7 +1,7 @@
 <template>
 
     <div>
-      
+
       <div class="row">
         <div class="header col-sm-2 col-xs-2 col-md-2 d-none d-sm-block"></div>
         <div class="header col-sm-3 col-xs-3 col-md-4"></div>
@@ -47,12 +47,13 @@ export default {
   },
   methods: {
     subTotalPrice() {
+      var _order = this.order;
       var totale = this.$options.filters.currency(this.article_orders.reduce(
         // function (current, next) { return current + (next.cart.qta_new * next.price)},
         function (current, next) { 
             var totale = 0;
 
-            if(this.order.isOpenToPurchasable) 
+            if(_order.isOpenToPurchasable) 
               totale += next.cart.final_price; 
             else {
               /* ordine chiuso agli acquisti */

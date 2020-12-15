@@ -141,4 +141,13 @@ trait UtilTrait
 
         return $user;
     }
+
+    public function setFileName($filename) {
+        
+        $filename = str_replace(' ', '_', $filename);
+        $filename = str_replace('_-_', '_', $filename);
+        $filename = strtolower($filename);
+
+        return $filename;
+    }    
 }
