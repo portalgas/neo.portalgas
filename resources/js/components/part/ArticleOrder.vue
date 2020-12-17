@@ -13,7 +13,7 @@
         <div class="card-body">
             <div class="card-text">
                 <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-                </div><span><a class="btn btn-primary btn-block" href="#" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
+                </div><span><a class="btn btn-primary btn-block" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
 
                 <div>
                   <strong>Prezzo</strong> {{ article.price | currency }} &euro;
@@ -82,6 +82,7 @@ export default {
     }, 
     clickShowOrHiddenModal () {
 
+      
       let params = {
         order_id: this.article.ids.order_id,
         article_organization_id: this.article.ids.article_organization_id,
@@ -98,7 +99,7 @@ export default {
               var modalContent = {
                 title: this.article.name,
                 body: response.data,
-                footer: this.article.descri+"\r\n"+this.article.ingredients
+                footer: ''
               }            
 
               this.addModalContent(modalContent);

@@ -104,7 +104,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function middleware($middlewareQueue)
     {
         $config = Configure::read('Config');
-        $portalgas_bo_url_login = $config['Portalgas.bo.url.login']; 
+        $portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
+        $portalgas_fe_url_login = $config['Portalgas.fe.url.login']; 
                 
         $middlewareQueue
             // Catch any exceptions in the lower layers,
@@ -164,15 +165,17 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                             'requireAuthorizationCheck' => true,
                             'unauthorizedHandler' => [
                                 'className' => 'Authorization.Redirect',
-                                'url' => $portalgas_bo_url_login,
+                               // 'url' => $portalgas_bo_url_login,
+                                'url' => $portalgas_fe_url_login,
                                 'queryParam' => 'redirectUrl',
                                 'exceptions' => [
                                     MissingIdentityException::class,
                                     OtherException::class,
                                 ]
                             ],
-                            //'unauthorizedRedirect' => Router::url($portalgas_bo_url_login),
-                            'unauthorizedRedirect' => $portalgas_bo_url_login,
+                            //'unauthorizedRedirect' => Router::url($portalgas_fe_url_login),
+                            //'unauthorizedRedirect' => $portalgas_bo_url_login,
+                            'unauthorizedRedirect' => $portalgas_fe_url_login,
                             // https://book.cakephp.org/authorization/2/en/middleware.html#identity-decorator
                              'identityDecorator' => function (AuthorizationServiceInterface $authorization, \ArrayAccess $identity) {
                                     /*
@@ -195,11 +198,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         $config = Configure::read('Config');
         $portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
+        $portalgas_fe_url_login = $config['Portalgas.fe.url.login'];
                 
         $service = new AuthenticationService();
 
         $service->setConfig([
-            'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login),
+            // 'unauthenticatedRedirect' => Router::url($portalgas_bo_url_login),
+            'unauthenticatedRedirect' => Router::url($portalgas_fe_url_login),
             'queryParam' => null
         ]);
         
@@ -216,7 +221,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'username' => 'username',
                 'password' => 'password'
             ]
-            // 'loginUrl' => $portalgas_bo_url_login,
         ]);
 
         /* 

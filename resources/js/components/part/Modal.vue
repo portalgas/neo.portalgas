@@ -3,11 +3,11 @@
     <transition name="fade">
       <div class="modal-wrapper" v-show="showModal" tabindex="-1" role="dialog">
 
-          <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{modalContent.title}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal()">
+                <h5 class="modal-title" id="modalLabel">{{modalContent.title}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Chiudi" @click="closeModal()">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -15,7 +15,7 @@
               </div>
               <div class="modal-footer">
                 {{modalContent.footer}}
-                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="closeModal()">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeModal()">Chiudi</button>
               </div>
             </div>
           </div>
@@ -55,7 +55,6 @@ export default {
 <style scoped>
 .modal-wrapper {
   width: 100%;
-  max-width: 500px;
   height: 300px;
   box-sizing: border-box;
   padding: 1em;
@@ -81,9 +80,19 @@ export default {
 .modal-dialog-centered {
     min-height: calc(100% - (1.75rem * 2));
 }
-.fade-enter-active, .fade-leave-active {
-  transition: all .7s;
+.modal-dialog-centered {
+    min-height: calc(100% - (1.75rem * 2));
 }
+
+@media (min-width: 1200px)
+.modal-xl {
+    max-width: 1140px;
+}
+@media (min-width: 992px)
+.modal-lg, .modal-xl {
+    max-width: 800px;
+}
+
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }

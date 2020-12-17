@@ -311,6 +311,18 @@ msgid "Qta"
 msgstr "Quantità"
 
 #
+# stati 
+#
+msgid "StateDelivery"
+msgstr "Stato della consegna"
+
+msgid "StateOrder"
+msgstr "Stato dell'ordine"
+
+msgid "StatoElaborazione"
+msgstr "Stato elaborazione"
+
+#
 # importi
 #
 msgid "Importo"

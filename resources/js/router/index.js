@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
 import Order from "../views/Order";
 import CartCheckout from "../components/CartCheckout";
@@ -14,6 +15,11 @@ const routes = [
     component: Home
   },
   {
+    path: "/fai-la-spesa",
+    name: "Cart",
+    component: Cart
+  },
+  {
     path: "/order/:order_type_id/:order_id",
     name: "Order",
     component: Order
@@ -22,11 +28,6 @@ const routes = [
     path: "/user-cart",
     name: "UserCart",
     component: UserCart
-  },
-  {
-    path: "/checkout",
-    name: "Checkout",
-    component: CartCheckout
   }
 ];
 

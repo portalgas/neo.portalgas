@@ -16,7 +16,7 @@ class HtmlCustomSiteHelper extends FormHelper
         // debug($config);
     }
 
-    public function translateMappingTypeCode($mapping) {
+    public function translateMappingTypeCode($mapping, $options=[]) {
 
     	$results = '';
         switch($mapping->mapping_type->code) {
@@ -67,7 +67,7 @@ class HtmlCustomSiteHelper extends FormHelper
         return $results;
     }       
 
-    public function boxOrder($results) {
+    public function boxOrder($results, $options=[]) {
 
         $html = '';
         $html .= '<div class="box-order">';
@@ -90,13 +90,13 @@ class HtmlCustomSiteHelper extends FormHelper
         $html .= '</select>';
         $html .= '</div>';
 
-        $html .= '<div class="col-md-6">';
-        $html .= __('StateOrder');
+        //$html .= '<div class="col-md-6">';
+        //$html .= __('StateOrder');
         // echo $this->App->utilsCommons->getOrderTime($results['Order']);
-        $html .= '</div>';
-        $html .= '<div class="col-md-6">';
-        $html .= __('StatoElaborazione');
-        $html .= __($results->state_code.'-label');
+        //$html .= '</div>';
+        $html .= '<div class="col-md-12">';
+        // $html .= __('StatoElaborazione');
+        $html .= $results->order_state_code->name.': '.$results->order_state_code->descri;
         // $html .= $this->App->drawOrdersStateDiv($results);
         $html .= '</div>';
         $html .= '</div>'; // row 
@@ -106,7 +106,7 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function boxSupplierOrganization($results) {
+    public function boxSupplierOrganization($results, $options=[]) {
 
         $config = Configure::read('Config');
         $portalgas_fe_url = $config['Portalgas.fe.url'];
@@ -125,7 +125,44 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function boxTitle($results) {
+    public function boxArticleImg($results, $options=[]) {
+
+        $config = Configure::read('Config');
+        $portalgas_fe_url = $config['Portalgas.fe.url'];
+        $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
+
+        $html = '';
+        $html .= '<div class="box-article-img">';
+        // $html .= $results->id;
+        if(!empty($results->article->img1)) {
+            $img1_path = sprintf($url, $results->article->organization_id, $results->article->img1);
+            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
+        }
+        $html .= '<span class="box-name">'.$results->name.'</span>';
+        $html .= "</div>";
+
+        return $html;
+    }
+
+    public function boxArticleImgOnly($results, $options=[]) {
+
+        $config = Configure::read('Config');
+        $portalgas_fe_url = $config['Portalgas.fe.url'];
+        $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
+
+        $html = '';
+        $html .= '<div class="box-article-img">';
+        // $html .= $results->id;
+        if(!empty($results->article->img1)) {
+            $img1_path = sprintf($url, $results->article->organization_id, $results->article->img1);
+            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
+        }
+        $html .= "</div>";
+
+        return $html;
+    }
+
+    public function boxTitle($results, $options=[]) {
 
         if(!isset($results['title']))
             $results['title'] = ''; 
@@ -145,7 +182,7 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function orderPriceTypes($price_type_enums) {
+    public function orderPriceTypes($price_type_enums, $options=[]) {
 
         $html = '';
         $html .= '<div class="panel panel-primary">';

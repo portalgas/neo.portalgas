@@ -6,8 +6,6 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
-use App\Decorator\ArticleDecorator;
-use App\Decorator\ApiArticleOrderDecorator;
 
 class DeliveriesController extends ApiAppController
 {

@@ -60,7 +60,10 @@ class HtmlArticleOrdersController extends AppController
         $ids['article_id'] = $article_id;
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
-        
+
+        $results = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
+        $articlesOrdersResults = $results->results;
+
         $results['order'] = $orderResults;
         $results['articlesOrder'] = $articlesOrdersResults;
         $this->set(compact('results'));
