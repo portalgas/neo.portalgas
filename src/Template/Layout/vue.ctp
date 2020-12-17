@@ -1,12 +1,11 @@
 <?php
 use Cake\Core\Configure;
 
-// debug($this->Identity->get('organization'));
-
 $config = Configure::read('Config');
 $portalgas_fe_url = $config['Portalgas.fe.url'];
 
 $organization = $this->Identity->get('organization');
+// debug($organization);
 ?>
 <!DOCTYPE html>
 <html lang=en>
@@ -28,7 +27,8 @@ $organization = $this->Identity->get('organization');
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
-    <?= $this->fetch('script') ?>	
+    <?= $this->fetch('script') ?>
+
 </head>
 <body class="d-flex flex-column min-vh-100">
 <main role="main" class="container-fluid">
@@ -36,7 +36,6 @@ $organization = $this->Identity->get('organization');
   <a name="top" id="top"></a>
 
     <?php echo $this->element('fe/menu', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);?>
-
 
 	<noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
 	
@@ -48,6 +47,7 @@ $organization = $this->Identity->get('organization');
     <script type="text/javascript">
     "use strict";
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
+    var j_seo = "<?php echo $organization->j_seo;?>"; // da passa a vue in app.js
     var headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/javascript, */*; q=0.01",

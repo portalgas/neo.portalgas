@@ -20,14 +20,12 @@ window.axios = axios;
 window.axios.defaults.headers.common["X-CSRF-Token"] = csrfToken;
 window.axios.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
-window.axios.defaults.headers["Access-Control-Allow-Origin"] =
-  "http://localhost:8080"; // http://localhost:8080
+window.axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
 window.axios.defaults.headers["Access-Control-Allow-Methods"] = "*";
 window.axios.defaults.headers["Access-Control-Allow-Credentials"] = true;
 window.axios.defaults.headers["Access-Control-Allow-Headers"] = "*";
 
-window.axios.defaults.headers.common["Access-Control-Allow-Origin"] =
-  "http://localhost:8080"; // http://localhost:8080
+window.axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*"; 
 window.axios.defaults.headers.common["Access-Control-Allow-Methods"] = "*";
 window.axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
 window.axios.defaults.headers.common["Access-Control-Allow-Headers"] = "*";
@@ -43,12 +41,11 @@ export const vm = new Vue({
   render: h => h(App)
 }).$mount("#app");
 
-/*
-function common() {
-  return true;
-}
-*/
 
+/*
+ * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
+ */
+window.j_seo = j_seo;
 
 /*
  * per array.equals tra ids article e ids article persisititi in store

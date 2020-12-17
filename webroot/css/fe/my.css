@@ -122,7 +122,20 @@ a:hover {
     overflow: hidden;
     width: 100px;
 }
-
+.box-bio {
+    right: 0;
+    padding: 10px;
+    position: absolute;
+    top: 30px;
+    z-index: 1;
+}
+.box-bio img {
+    border-radius: 30px;
+    float: left;
+    height: 40px;
+    margin-right: 5px;
+    width: 40px;
+}
 
 /*
  * MENU / SOTTO MENU
@@ -194,4 +207,6 @@ a:hover {
 
 .col-label {
     font-weight: bold;
+    text-align: right;
+
 }

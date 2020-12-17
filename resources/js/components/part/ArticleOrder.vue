@@ -153,20 +153,6 @@ export default {
   background-color: #f8f8f8;
   box-shadow: 3px 3px 5px 0px;
 }
-.box-bio {
-    right: 0;
-    padding: 10px;
-    position: absolute;
-    top: 30px;
-    z-index: 1;    
-}
-.box-bio img {
-    border-radius: 30px;
-    float: left;
-    height: 40px;
-    margin-right: 5px;
-    width: 40px;    
-}
 .highlighted { 
   color: #fa824f;
   text-decoration: underline;

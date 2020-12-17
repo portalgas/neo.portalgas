@@ -2,11 +2,16 @@
 
 <div>
 
-  <p>
-    <router-link to="/fai-la-spesa">Torna alla consegne</router-link>
-  </p>
+  <ul class="link-top">
+    <li>
+      <router-link to="/fai-la-spesa">Torna alla consegne</router-link>
+    </li>
+    <li>
+      <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
+    </li>
+  </ul>
 
-	<div class="row">
+  <div class="row">
 	    <div class="col-sm-12 col-xs-12 col-md-12"> 
 
         <div v-if="isRunOrder" class="box-spinner"> 
@@ -192,6 +197,7 @@ export default {
   name: "app-order",
   data() {
     return {
+      j_seo: '',
       order_type_id: 0,
       order_id: 0,
       order: null,
@@ -212,10 +218,17 @@ export default {
   	this.order_id = this.$route.params.order_id;
     console.log('mounted route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
 
+    this.getGlobals();
     this.getAjaxOrder();
     this.scroll();
   },
   methods: {
+    getGlobals() {
+      /*
+       * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
+       */
+      this.j_seo = window.j_seo;
+    },
     totalPrice() {
       return this.$options.filters.currency(this.articles.reduce(
         (current, next) => current + (next.cart.qta_new * next.price),
@@ -340,6 +353,30 @@ export default {
 </script>
 
 <style scoped>
+ul.link-top {
+  margin: 0 25px;
+  padding: 0;
+  padding-bottom: 35px;
+}
+ul.link-top li {
+  list-style: none;
+  padding: 5px;
+  border-radius: 5px;  
+}
+ul.link-top li:first-child {
+  float: left;
+}
+ul.link-top li:last-child {
+  float: right;
+}
+ul.link-top li:hover {
+  background-color: #0a659e;
+  color: #fff !important;
+}
+ul.link-top li a:hover {
+  color: #fff !important;
+  text-decoration: none;
+}
 .card { 
   border: none;
 }

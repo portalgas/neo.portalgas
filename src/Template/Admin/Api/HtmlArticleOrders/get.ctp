@@ -6,17 +6,20 @@ echo '<div class="container-fluid">';
 echo $this->HtmlCustomSite->boxSupplierOrganization($results['order']->suppliers_organization);
 // echo $this->HtmlCustomSite->boxOrder($results['order']);
 
-if(!empty($results['articlesOrder']['img1'])) {
+if(!empty($results['articlesOrder']['is_bio']) || !empty($results['articlesOrder']['img1'])) {
 	echo '<div class="row">';
-	echo '<div class="col-4 col-label"></div>';
+	echo '<div class="col-4 col-label">';
+	if(!empty($results['articlesOrder']['is_bio']))
+		echo '<span class="box-bio"><img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica"></span>';
+	echo '</div>';
 	echo '<div class="col-8">';
-	echo '<span class="box-img"><img src="'.$results['articlesOrder']['img1'].'" width="'.$results['articlesOrder']['img1_width'].'" class="img-article" /></span>';
+	if(!empty($results['articlesOrder']['img1']))
+		echo '<span class="box-img"><img src="'.$results['articlesOrder']['img1'].'" class="img-article" /></span>';
 	echo '</div>';
 	echo '</div>';	
 }
 
-
-
+           
 if(!empty($results['order']->suppliers_organization->frequenza)) {
 	echo '<div class="row">';
 	echo '<div class="col-4 col-label">Frequenza</div>';
@@ -120,27 +123,7 @@ if(isset($results['order']->suppliers_organization->suppliers_organizations_refe
 	echo '<div class="col-4 col-label">Referenti</div>';
 	echo '<div class="col-8">';
 
-	echo '<ul>';
-	foreach ($results['order']->suppliers_organization->suppliers_organizations_referents as $referent) {
-	    
-	    echo '<li>';
-	    if($referent->type!='REFERENTE')
-		    echo '('.strtolower($referent->type).') ';
-	    echo $referent->user->name.' ';
-	    if(!empty($referent->user->email))
-	    	echo $this->HtmlCustom->mail($referent->user->email);	
-	    // debug($referent->user->user_profiles);
-	    foreach ($referent->user->user_profiles as $user_profile) {
-	    	if($user_profile->profile_key=='profile.phone' && $user_profile->profile_value!='')
-                echo ' - '.$user_profile->profile_value.' - '; 
-	    	if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y')
-                echo '<img src="img/satispay-ico.png" title="il referente ha Satispy" />'; 
-	    	if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
-                echo ' - '.$user_profile->profile_value.' - '; 
-	    }
-	    echo '</li>';
-	}
-	echo '</ul>';
+	$this->HtmlCustomSite->boxSupplierOrganizationreferents($results['order']->suppliers_organization->suppliers_organizations_referents);
 
 	echo '</div>';
 	echo '</div>';

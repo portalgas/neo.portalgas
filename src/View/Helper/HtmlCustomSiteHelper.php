@@ -155,11 +155,42 @@ class HtmlCustomSiteHelper extends FormHelper
         // $html .= $results->id;
         if(!empty($results->article->img1)) {
             $img1_path = sprintf($url, $results->article->organization_id, $results->article->img1);
-            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
+            $html .= '<span class="box-img"><img src="'.$img1_path.'" class="img-article" /></span> ';
         }
         $html .= "</div>";
 
         return $html;
+    }
+
+    /*
+     * REFERENTI 
+     */
+    public function boxSupplierOrganizationreferents($results, $options=[]) {
+        
+        $html = '';
+        $html .= '<ul class="list-rferents">';
+        foreach ($results as $referent) {
+            
+            $html .= '<li>';
+            if($referent->type!='REFERENTE')
+                $html .= '('.strtolower($referent->type).') ';
+            $html .= $referent->user->name.' ';
+            if(!empty($referent->user->email))
+                $html .= $this->HtmlCustom->mail($referent->user->email);   
+            // debug($referent->user->user_profiles);
+            foreach ($referent->user->user_profiles as $user_profile) {
+                if($user_profile->profile_key=='profile.phone' && $user_profile->profile_value!='')
+                    $html .= ' - '.$user_profile->profile_value.' - '; 
+                if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y')
+                    $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />'; 
+                if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
+                    $html .= ' - '.$user_profile->profile_value.' - '; 
+            }
+            $html .= '</li>';
+        }
+        $html .= '</ul>';
+        return $html;
+
     }
 
     public function boxTitle($results, $options=[]) {
