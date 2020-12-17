@@ -40,7 +40,7 @@ class ExportsController extends AppController {
     /*
      * https://dompdf.net/examples.php
      */
-    public function pdf($delivery_id, $debug=false) { 
+    public function userCart($delivery_id, $debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -89,7 +89,7 @@ class ExportsController extends AppController {
         if($this->_debug) {
             $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
             $this->layout = 'pdf/default';
-            $this->render('/Admin/Api/Exports/pdf/pdf');
+            $this->render('/Admin/Api/Exports/pdf/user_cart');
         } 
         else {
             $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));

@@ -829,6 +829,12 @@ msgstr "Tot produttori"
 msgid "Tot Articles"
 msgstr "Tot articoli"
 
+msgid "TotaleConfirmTesoriere"
+msgstr "Totale presunto della consegna: %s<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)</i>"
+
+msgid "TotaleConfirmCassiere"
+msgstr "Totale presunto della consegna: %s<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)</i>"
+
 #
 # ordini
 #

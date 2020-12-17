@@ -10,9 +10,10 @@ $html = '';
 
 $totale_consegna = 0;
 foreach($results as $result) {
-	$html .= '<h2>Produttore '.$result->suppliers_organization->name.'</h2>';
+	$html .= '<h2>Produttore '.$result->suppliers_organization->name;
 	if(!empty($result->suppliers_organization->supplier->descrizione))
-		$html .= '<h3>'.$result->suppliers_organization->supplier->descrizione.'</h3>';
+		$html .= '<small>'.$result->suppliers_organization->supplier->descrizione.'</small>';
+	$html .= '</h2>';
 
 	$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
 	$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
@@ -101,25 +102,7 @@ foreach($results as $result) {
      * R E F E R E N T I 
      */ 
     if(isset($result->suppliers_organization->suppliers_organizations_referents)) {
-    	$html .= '<div class="box-referents">';
-		foreach ($result->suppliers_organization->suppliers_organizations_referents as $referent) {
-		    $html .= '<div class="referent">';
-		    
-		    if($referent->type!='REFERENTE')
-			    $html .= '('.strtolower($referent->type).') ';
-		    $html .= $referent->user->name.' '.$referent->user->email;	
-		    // debug($referent->user->user_profiles);
-		    foreach ($referent->user->user_profiles as $user_profile) {
-		    	if($user_profile->profile_key=='profile.phone' && $user_profile->profile_value!='')
-	                $html .= ' - '.$user_profile->profile_value.' - '; 
-		    	if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y')
-	                $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispy" />'; 
-		    	if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
-	                $html .= ' - '.$user_profile->profile_value.' - '; 
-		    }
-		    $html .= '</div>';
-		}
-		$html .= '</div>';
+    	$html .= $this->HtmlCustomSite->boxSupplierOrganizationreferents($result->suppliers_organization->suppliers_organizations_referents);
 	} 
 
 } // loop orders
@@ -127,8 +110,22 @@ foreach($results as $result) {
 /*
  * totale consegna
  */
+$label = __('Totale consegna').' '.$this->HtmlCustom->importo($totale_consegna);
+switch ($user->organization->template->payToDelivery) {
+	case 'POST':
+		$label = sprintf(__('TotaleConfirmTesoriere'), $this->HtmlCustom->importo($totale_consegna));
+	break;
+	case 'ON':
+	case 'ON-POST':
+		$label = sprintf(__('TotaleConfirmCassiere'), $this->HtmlCustom->importo($totale_consegna));
+	break;	
+}
 $html .= '<div class="box-totali">';
-$html .= __('Totale consegna').' '.$this->HtmlCustom->importo($totale_consegna);
+$html .= $label;
+$html .= '</div>';
+
+$html .= '<div class="box-legenda">';
+$html .= 'Legenda: (*) Valore modificato dal referente';
 $html .= '</div>';
 
 /*

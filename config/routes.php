@@ -206,7 +206,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          * export
          */
         $routes->scope('/exports', ['controller' => 'Exports'], function (RouteBuilder $routes) {
-            $routes->connect('/pdf', ['action' => 'pdf', '_method' => 'GET']);
+            $routes->connect('/user-cart', ['action' => 'userCart', '_method' => 'GET']);
         });
 
         /*

@@ -168,7 +168,7 @@ class HtmlCustomSiteHelper extends FormHelper
     public function boxSupplierOrganizationreferents($results, $options=[]) {
         
         $html = '';
-        $html .= '<ul class="list-rferents">';
+        $html .= '<ul class="list-referents">';
         foreach ($results as $referent) {
             
             $html .= '<li>';

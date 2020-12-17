@@ -22,7 +22,7 @@
 		    </div>
 
 	        <div class="box-btn-pdf" v-if="!isRunOrders && orders.delivery_id===delivery.id">
-	           <a :href="'/admin/api/exports/pdf/'+delivery.id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
+	           <a :href="'/admin/api/exports/user-cart/'+delivery.id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
 	        </div>
 
 	        <p 

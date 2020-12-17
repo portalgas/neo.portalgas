@@ -9,9 +9,11 @@ use Cake\Core\Configure;
         <?= $this->fetch('title') ?>
     </title>
 	<style type="text/css">
-		body {font-size: 10px;}
+		body {font-size: 12px;font-family:Helvetica, Arial, sans-serif;}
 		.hearder .title {float:right}
 		h1 {background-color:#c3d2e5;padding:2px;}
+		h2 {font-size: 1.5em;}
+		h2 small {margin-left: 10px;font-size: 0.8em;}
 		th {border-bottom:1px solid #555;background-color: #F5F5F5;}
 		td {border-bottom: 1px solid #ddd}
 		td.no-border {border-bottom: none}
@@ -19,9 +21,10 @@ use Cake\Core\Configure;
 		.text-center {text-align:center}
 		.text-left {text-align:left}
 		.text-right {text-align:right}
-		.box-referents {}
-		.referent {display: inline;border-right: 1px solid #F5F5F5;margin-right: 5px;}
-		.box-totali {text-align:center;background-color:#c3d2e5;padding:3px;margin:3px 0px;font-weight: bold;}
+		ul.list-referents {display: inline-block; margin: 0;padding: 0;}
+		ul.list-referents li {font-size: 12px; list-style: none;float: left; margin-right: 5px;white-space: nowrap;}
+		ul.list-referents li img {vertical-align: middle;}		
+		.box-totali {text-align:center;background-color:#c3d2e5;padding:3px;margin:3px 0px;font-weight: bold;font-size: 14px;}
 	</style>	
 </head>
 <body>

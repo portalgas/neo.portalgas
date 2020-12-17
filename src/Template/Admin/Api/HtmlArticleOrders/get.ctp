@@ -123,7 +123,7 @@ if(isset($results['order']->suppliers_organization->suppliers_organizations_refe
 	echo '<div class="col-4 col-label">Referenti</div>';
 	echo '<div class="col-8">';
 
-	$this->HtmlCustomSite->boxSupplierOrganizationreferents($results['order']->suppliers_organization->suppliers_organizations_referents);
+	echo $this->HtmlCustomSite->boxSupplierOrganizationreferents($results['order']->suppliers_organization->suppliers_organizations_referents);
 
 	echo '</div>';
 	echo '</div>';
