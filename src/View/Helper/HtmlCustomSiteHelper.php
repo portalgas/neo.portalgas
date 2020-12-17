@@ -166,7 +166,12 @@ class HtmlCustomSiteHelper extends FormHelper
      * REFERENTI 
      */
     public function boxSupplierOrganizationreferents($results, $options=[]) {
-        
+
+        if(isset($options['pdf_img_path']))
+            $img_path = $options['pdf_img_path'];
+        else
+            $img_path = '/img';
+
         $html = '';
         $html .= '<ul class="list-referents">';
         foreach ($results as $referent) {
@@ -182,7 +187,7 @@ class HtmlCustomSiteHelper extends FormHelper
                 if($user_profile->profile_key=='profile.phone' && $user_profile->profile_value!='')
                     $html .= ' - '.$user_profile->profile_value.' - '; 
                 if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y')
-                    $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />'; 
+                    $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispy" />'; 
                 if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
                     $html .= ' - '.$user_profile->profile_value.' - '; 
             }
