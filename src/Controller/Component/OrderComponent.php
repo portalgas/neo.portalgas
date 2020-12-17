@@ -80,11 +80,11 @@ class OrderComponent extends Component {
                 
                 $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $result, $user->id);
            
-                $newResults[$numResult]['summary_order'] = $resultsSummaryOrderPlus->summary_order;
-                $newResults[$numResult]['summary_order_aggregate'] = $resultsSummaryOrderPlus->summary_order_aggregate;
-                $newResults[$numResult]['summary_order_trasport'] = $resultsSummaryOrderPlus->summary_order_trasport;
-                $newResults[$numResult]['summary_order_cost_more'] = $resultsSummaryOrderPlus->summary_order_cost_more;
-                $newResults[$numResult]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;
+                $newResults[$i]['summary_order'] = $resultsSummaryOrderPlus->summary_order;
+                $newResults[$i]['summary_order_aggregate'] = $resultsSummaryOrderPlus->summary_order_aggregate;
+                $newResults[$i]['summary_order_trasport'] = $resultsSummaryOrderPlus->summary_order_trasport;
+                $newResults[$i]['summary_order_cost_more'] = $resultsSummaryOrderPlus->summary_order_cost_more;
+                $newResults[$i]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;
 
                 // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
             }  // if($results->state_code=='PROCESSED-ON-DELIVERY' || $results->state_code=='CLOSE')

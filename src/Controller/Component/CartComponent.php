@@ -38,8 +38,8 @@ class CartComponent extends Component {
         $article_organization_id = $articles_order['cart']['article_organization_id'];
         $article_id = $articles_order['cart']['article_id'];
 
-        if(Configure::write('Logs.cart')) Log::write('debug', 'user '.$user->id);
-        if(Configure::write('Logs.cart')) Log::write('debug', $articles_order);
+        if(Configure::read('Logs.cart')) Log::write('debug', 'user '.$user->id);
+        if(Configure::read('Logs.cart')) Log::write('debug', $articles_order);
 
         /*
          * qta = qta originale, ma la ricalcolo nel caso fosse cambiata
@@ -48,9 +48,9 @@ class CartComponent extends Component {
         $cartsTable = TableRegistry::get('Carts');
         // $qta = (int)$articles_order['cart']['qta'];                     
         $qta = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
-        if(Configure::write('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
+        if(Configure::read('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
         $qta_new = (int)$articles_order['cart']['qta_new'];
-        if(Configure::write('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
+        if(Configure::read('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
 
         /*
          * action
@@ -65,7 +65,7 @@ class CartComponent extends Component {
            $action = 'UPDATE';
         
         if($debug) debug('action '.$action);
-        if(Configure::write('Logs.cart')) Log::write('debug', 'Action '.$action);
+        if(Configure::read('Logs.cart')) Log::write('debug', 'Action '.$action);
 
         /*
          * ctrl validita
@@ -97,8 +97,8 @@ class CartComponent extends Component {
                                     ->where($where)
                                     ->first(); 
 
-                    if(Configure::write('Logs.cart')) Log::write('debug', 'DELETE CART DATA:');
-                    if(Configure::write('Logs.cart')) Log::write('debug', $cart);
+                    if(Configure::read('Logs.cart')) Log::write('debug', 'DELETE CART DATA:');
+                    if(Configure::read('Logs.cart')) Log::write('debug', $cart);
 
                     if (!$cartsTable->delete($cart)) {
                         if($debug) debug($cart->getErrors());
@@ -141,8 +141,8 @@ class CartComponent extends Component {
                         $cart = $cartsTable->newEntity();
                         $cart = $cartsTable->patchEntity($cart, $data);
                         if($debug) debug($cart);
-                        if(Configure::write('Logs.cart')) Log::write('debug', 'INSERT CART DATA:');
-                        if(Configure::write('Logs.cart')) Log::write('debug', $cart);
+                        if(Configure::read('Logs.cart')) Log::write('debug', 'INSERT CART DATA:');
+                        if(Configure::read('Logs.cart')) Log::write('debug', $cart);
 
                         if (!$cartsTable->save($cart)) {
                             if($debug) debug($cart->getErrors());
@@ -201,8 +201,8 @@ class CartComponent extends Component {
 
                         $cart = $cartsTable->patchEntity($cart, $data);
                         if($debug) debug($cart);
-                        if(Configure::write('Logs.cart')) Log::write('debug', 'UPDATE CART DATA:');
-                        if(Configure::write('Logs.cart')) Log::write('debug', $cart);
+                        if(Configure::read('Logs.cart')) Log::write('debug', 'UPDATE CART DATA:');
+                        if(Configure::read('Logs.cart')) Log::write('debug', $cart);
 
                         if (!$cartsTable->save($cart)) {
                             if($debug) debug($cart->getErrors());
@@ -232,13 +232,13 @@ class CartComponent extends Component {
         } // end if($results['esito'])
 
         // debug($results);
-        if(Configure::write('Logs.cart')) Log::write('debug', $results);
+        if(Configure::read('Logs.cart')) Log::write('debug', $results);
 
         if($results['esito']) {
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
             // debug($articlesOrdersTable);
-            if(Configure::write('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->getAlias());
+            if(Configure::read('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->getAlias());
 
             if($articlesOrdersTable!==false) 
                 $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $articles_order, $debug);
@@ -266,7 +266,7 @@ class CartComponent extends Component {
                 $esito = false;
             }
         }
-        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValiditaRiOpen pezzi_confezione '.$pezzi_confezione);
+        if(Configure::read('Logs.cart')) Log::write('debug', '_ctrlValiditaRiOpen pezzi_confezione '.$pezzi_confezione);
 
         $results['esito'] = $esito;
         $results['msg'] = $msg;
@@ -300,10 +300,10 @@ class CartComponent extends Component {
         //debug($articlesOrders);
         */
 
-        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.stato '.$articles_order['stato']);
-        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_minima '.$articles_order['qta_minima']);
-        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_massima '.$articles_order['qta_massima']);
-        if(Configure::write('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_massima_order '.$articles_order['qta_massima_order']);
+        if(Configure::read('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.stato '.$articles_order['stato']);
+        if(Configure::read('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_minima '.$articles_order['qta_minima']);
+        if(Configure::read('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_massima '.$articles_order['qta_massima']);
+        if(Configure::read('Logs.cart')) Log::write('debug', '_ctrlValidita ArticlesOrder.qta_massima_order '.$articles_order['qta_massima_order']);
 
         if($articles_order['stato']=='N') {
             $msg = __('cart_msg_stato_N');

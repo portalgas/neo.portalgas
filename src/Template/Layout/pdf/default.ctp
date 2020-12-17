@@ -9,6 +9,7 @@ use Cake\Core\Configure;
         <?= $this->fetch('title') ?>
     </title>
 	<style type="text/css">
+		body {font-size: 10px;}
 		.hearder .title {float:right}
 		h1 {background-color:#c3d2e5;padding:2px;}
 		th {border-bottom:1px solid #555;background-color: #F5F5F5;}
