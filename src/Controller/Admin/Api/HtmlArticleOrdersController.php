@@ -68,6 +68,6 @@ class HtmlArticleOrdersController extends AppController
         $results['articlesOrder'] = $articlesOrdersResults;
         $this->set(compact('results'));
 
-        $this->layout  = 'ajax';
+        $this->viewBuilder()->setLayout('ajax');
     } 
 }

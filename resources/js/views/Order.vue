@@ -3,7 +3,7 @@
 <div>
 
   <p>
-    <router-link to="/">Torna alla consegne</router-link>
+    <router-link to="/fai-la-spesa">Torna alla consegne</router-link>
   </p>
 
 	<div class="row">

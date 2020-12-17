@@ -68,7 +68,7 @@ class DeliveriesController extends ApiAppController
         
         
         if($sysDelivery->has('orders') && !empty($sysDelivery->orders)) {
-            $results[$sysDelivery->id] = $sysDelivery->luogo;
+            $results[] = ['id' => $sysDelivery->id, 'label' => $sysDelivery->luogo];
         }
 
         return $this->_response($results);

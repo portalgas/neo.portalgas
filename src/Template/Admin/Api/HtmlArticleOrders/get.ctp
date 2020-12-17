@@ -120,10 +120,10 @@ if(isset($results['order']->suppliers_organization->suppliers_organizations_refe
 	echo '<div class="col-4 col-label">Referenti</div>';
 	echo '<div class="col-8">';
 
+	echo '<ul>';
 	foreach ($results['order']->suppliers_organization->suppliers_organizations_referents as $referent) {
 	    
-
-	    
+	    echo '<li>';
 	    if($referent->type!='REFERENTE')
 		    echo '('.strtolower($referent->type).') ';
 	    echo $referent->user->name.' ';
@@ -134,12 +134,14 @@ if(isset($results['order']->suppliers_organization->suppliers_organizations_refe
 	    	if($user_profile->profile_key=='profile.phone' && $user_profile->profile_value!='')
                 echo ' - '.$user_profile->profile_value.' - '; 
 	    	if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y')
-                echo '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispy" />'; 
+                echo '<img src="img/satispay-ico.png" title="il referente ha Satispy" />'; 
 	    	if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
                 echo ' - '.$user_profile->profile_value.' - '; 
 	    }
-	    echo '</div>';
+	    echo '</li>';
 	}
+	echo '</ul>';
+
 	echo '</div>';
 	echo '</div>';
 	echo '</div>';
