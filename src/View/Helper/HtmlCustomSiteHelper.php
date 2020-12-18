@@ -210,7 +210,7 @@ class HtmlCustomSiteHelper extends FormHelper
 
         $html = '';
         $html .= '<ul class="list-inline">';
-        foreach ($results as $referent) {
+        foreach ($results as $numResult => $referent) {
 
             $html .= '<li class="list-inline-item">';
             if($referent['type']!='referente')
@@ -229,6 +229,11 @@ class HtmlCustomSiteHelper extends FormHelper
                 $html .= '&nbsp;'.$referent['phone'];
            
             $html .= '</li>';
+
+            if(isset($options['br'])) {
+                if(($numResult%2)!=0)
+                    $html .= '<br />';                
+            }
         }
         $html .= '</ul>';
 

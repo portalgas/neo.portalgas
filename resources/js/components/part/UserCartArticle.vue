@@ -21,10 +21,10 @@
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
               {{ article.conf }}
         </div>
-        <div class="col-text col-sm-2 col-xs-2 col-md-2">
+        <div class="col-text col-sm-2 col-xs-2 col-md-1">
               {{ article.um_rif_label }}
         </div>
-        <div class="col-text col-xs-3 col-md-2">
+        <div class="col-text col-xs-3 col-md-3">
            <app-btn-cart-add v-bind:article="article" v-bind:order="order" :key="article.id"></app-btn-cart-add>
         </div>
   </div>

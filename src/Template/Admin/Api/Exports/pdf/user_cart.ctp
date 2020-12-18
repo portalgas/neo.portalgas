@@ -102,7 +102,7 @@ foreach($results as $result) {
      * R E F E R E N T I 
      */ 
     if(isset($result->referents)) {
-    	$options = ['pdf_img_path' => $img_path];
+    	$options = ['pdf_img_path' => $img_path, 'br' => true];
     	$html .= $this->HtmlCustomSite->boxOrizontalSupplierOrganizationreferents($result->referents, $options);
 	} 
 
@@ -136,8 +136,8 @@ $html .= '</div>';
 if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
 
 	$totale_dispensa = 0;
-	if(!empty(($storeroomResults))) {
-		$html .= '<h2>'.__('Storeroom').'</h2>';
+	if(!empty($storeroomResults) && count($storeroomResults)>0) {
+		$html .= '<h2>'.__('Storeroom').'---</h2>';
 
 		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
 		$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
