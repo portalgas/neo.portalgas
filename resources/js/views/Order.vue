@@ -124,25 +124,22 @@
                 <!--    R E F E R E N T I   -->
                 <!--                        -->
                 <p v-if="order.referents!=null" class="card-text">
-                  <dl class="row">
-                      <span v-for="referent in order.referents">
+                  <ul class="list-inline">
+                      <li class="list-inline-item" v-for="referent in order.referents">
                         
-                          <dt class="col-sm-3">
-                            <span v-if="referent.type!='referente'">({{ referent.type }})</span>
+                          <span v-if="referent.type!='referente'">({{ referent.type }})</span>
                             {{ referent.name }} 
                             <a v-if="referent.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.email">{{ referent.email }}</a>
-                          </dt>
-                          <dd class="col-sm-9">
                             <span v-if="referent.satispay_phone">
-                                {{ referent.phone_satispay }}  
-                                <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
+                               &nbsp;{{ referent.phone_satispay }}  
+                              <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
                             </span>
                             <span v-if="referent.satispay_phone==null">
-                                {{ referent.phone }}  
+                               &nbsp;{{ referent.phone }}  
                             </span>
-                          </dd>
-                      </span>
-                  </dl>
+                      
+                      </li>
+                  </ul>
                 </p>
                 <!--                        -->
                 <!--    R E F E R E N T I   -->

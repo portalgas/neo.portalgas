@@ -184,15 +184,15 @@ class HtmlCustomSiteHelper extends FormHelper
 
             $html .= '<dd class="col-sm-9">';
             if(!empty($referent['email']))
-                $html .= $this->HtmlCustom->mail($referent['email']);   
+                $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);   
 
             if(isset($referent['satispay_phone'])) {
-                $html .= $referent['satispay_phone'];
+                $html .= '&nbsp;'.$referent['satispay_phone'];
                 $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />';
             }
             else 
             if(isset($referent['phone'])) 
-                $html .= $referent['phone'];
+                $html .= '&nbsp;'.$referent['phone'];
            
             $html .= '</dd>';
         }
@@ -218,15 +218,15 @@ class HtmlCustomSiteHelper extends FormHelper
             $html .= $referent['name'].' ';
 
             if(!empty($referent['email']))
-                $html .= $this->HtmlCustom->mail($referent['email']);   
+                $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);   
 
             if(isset($referent['satispay_phone'])) {
-                $html .= $referent['satispay_phone'];
+                $html .= '&nbsp;'.$referent['satispay_phone'];
                 $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />';
             }
             else 
             if(isset($referent['phone'])) 
-                $html .= $referent['phone'];
+                $html .= '&nbsp;'.$referent['phone'];
            
             $html .= '</li>';
         }
