@@ -61,6 +61,9 @@ a:hover {
 .card-link {
     cursor: pointer;
 }
+.cursor-pointer {
+    cursor: pointer;
+}
 .box-spinner {
 	width: 100%;
 	text-align: center;

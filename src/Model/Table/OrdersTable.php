@@ -8,6 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use App\Validation\OrderValidator;
+use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
 
 class OrdersTable extends Table
 {
@@ -405,6 +406,15 @@ class OrdersTable extends Table
         if(!empty($results) && isset($user->organization->paramsConfig['hasCashFilterSupplier']) && $user->organization->paramsConfig['hasCashFilterSupplier']=='Y') {
             $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
             $results->suppliers_organization->isSupplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->isSupplierOrganizationCashExcluded($user, $results->suppliers_organization->organization_id, $results->suppliers_organization->id);
+        }
+
+        /*
+         * referenti
+         */
+        if(isset($results->suppliers_organization->suppliers_organizations_referents)) {
+            $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $results->suppliers_organization->suppliers_organizations_referents); 
+            $results->referents = $referentsResult->results;  
+            unset($results->suppliers_organization->suppliers_organizations_referents);          
         }
 
         return $results;      

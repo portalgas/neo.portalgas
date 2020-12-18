@@ -101,9 +101,9 @@ foreach($results as $result) {
     /*
      * R E F E R E N T I 
      */ 
-    if(isset($result->suppliers_organization->suppliers_organizations_referents)) {
+    if(isset($result->referents)) {
     	$options = ['pdf_img_path' => $img_path];
-    	$html .= $this->HtmlCustomSite->boxSupplierOrganizationreferents($result->suppliers_organization->suppliers_organizations_referents, $options);
+    	$html .= $this->HtmlCustomSite->boxOrizontalSupplierOrganizationreferents($result->referents, $options);
 	} 
 
 } // loop orders

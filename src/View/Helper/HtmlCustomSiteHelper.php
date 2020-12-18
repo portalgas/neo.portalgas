@@ -165,7 +165,7 @@ class HtmlCustomSiteHelper extends FormHelper
     /*
      * REFERENTI 
      */
-    public function boxSupplierOrganizationreferents($results, $options=[]) {
+    public function boxVerticalSupplierOrganizationreferents($results, $options=[]) {
 
         if(isset($options['pdf_img_path']))
             $img_path = $options['pdf_img_path'];
@@ -173,29 +173,66 @@ class HtmlCustomSiteHelper extends FormHelper
             $img_path = '/img';
 
         $html = '';
-        $html .= '<ul class="list-referents">';
+        $html .= '<dl class="row">';
         foreach ($results as $referent) {
-            
-            $html .= '<li>';
-            if($referent->type!='REFERENTE')
-                $html .= '('.strtolower($referent->type).') ';
-            $html .= $referent->user->name.' ';
-            if(!empty($referent->user->email))
-                $html .= $this->HtmlCustom->mail($referent->user->email);   
-            // debug($referent->user->user_profiles);
-            foreach ($referent->user->user_profiles as $user_profile) {
-                if($user_profile->profile_key=='profile.phone' && $user_profile->profile_value!='')
-                    $html .= ' - '.$user_profile->profile_value.' - '; 
-                if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y')
-                    $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispy" />'; 
-                if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
-                    $html .= ' - '.$user_profile->profile_value.' - '; 
+
+            $html .= '<dt class="col-sm-3">';
+            if($referent['type']!='referente')
+                $html .= '('.$referent['type'].') ';
+            $html .= $referent['name'].' ';
+            $html .= '</dt>';
+
+            $html .= '<dd class="col-sm-9">';
+            if(!empty($referent['email']))
+                $html .= $this->HtmlCustom->mail($referent['email']);   
+
+            if(isset($referent['satispay_phone'])) {
+                $html .= $referent['satispay_phone'];
+                $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />';
             }
+            else 
+            if(isset($referent['phone'])) 
+                $html .= $referent['phone'];
+           
+            $html .= '</dd>';
+        }
+        $html .= '</dl>';
+
+        return $html;
+    }
+
+    public function boxOrizontalSupplierOrganizationreferents($results, $options=[]) {
+
+        if(isset($options['pdf_img_path']))
+            $img_path = $options['pdf_img_path'];
+        else
+            $img_path = '/img';
+
+        $html = '';
+        $html .= '<ul class="list-inline">';
+        foreach ($results as $referent) {
+
+            $html .= '<li class="list-inline-item">';
+            if($referent['type']!='referente')
+                $html .= '('.$referent['type'].') ';
+            $html .= $referent['name'].' ';
+
+            if(!empty($referent['email']))
+                $html .= $this->HtmlCustom->mail($referent['email']);   
+
+            if(isset($referent['satispay_phone'])) {
+                $html .= $referent['satispay_phone'];
+                $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />';
+            }
+            else 
+            if(isset($referent['phone'])) 
+                $html .= $referent['phone'];
+           
             $html .= '</li>';
         }
         $html .= '</ul>';
-        return $html;
 
+        return $html;
     }
 
     public function boxTitle($results, $options=[]) {

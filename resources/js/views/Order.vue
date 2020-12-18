@@ -54,7 +54,7 @@
                       </div>
 
                       <div v-if="order.all_des_orders_organizations!=null">
-                        <ul class="list-des">
+                        <ul class="list-unstyled">
                           <li v-for="(all_des_orders_organization, index) in order.all_des_orders_organizations">
                             <a target="_blank" v-bind:href="all_des_orders_organization.organization.www" title="Vai al sito del GAS">
                               
@@ -123,26 +123,26 @@
                 <!--                        -->
                 <!--    R E F E R E N T I   -->
                 <!--                        -->
-                <p v-if="order.suppliers_organization.suppliers_organizations_referents!=null" class="card-text">
-                  <div v-for="referent in order.suppliers_organization.suppliers_organizations_referents">
-                    
-                    <span v-if="referent.type!='REFERENTE'">({{ referent.type | lowerCase }})</span>
-                     {{ referent.user.name }} 
-                    <a v-if="referent.user.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.user.email">{{ referent.user.email }}</a>
-                  
-                    <span v-for="user_profile in referent.user.user_profiles">
-                      <span v-if="user_profile.profile_key=='profile.phone' && user_profile.profile_value!=''">
-                         - {{ user_profile.profile_value }} - 
+                <p v-if="order.referents!=null" class="card-text">
+                  <dl class="row">
+                      <span v-for="referent in order.referents">
+                        
+                          <dt class="col-sm-3">
+                            <span v-if="referent.type!='referente'">({{ referent.type }})</span>
+                            {{ referent.name }} 
+                            <a v-if="referent.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.email">{{ referent.email }}</a>
+                          </dt>
+                          <dd class="col-sm-9">
+                            <span v-if="referent.satispay_phone">
+                                {{ referent.phone_satispay }}  
+                                <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
+                            </span>
+                            <span v-if="referent.satispay_phone==null">
+                                {{ referent.phone }}  
+                            </span>
+                          </dd>
                       </span>
-                      <span v-if="user_profile.profile_key=='profile.satispay' && user_profile.profile_value=='Y'">
-                        <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
-                      </span>
-                      <span v-if="user_profile.profile_key=='profile.satispay_phone' && user_profile.profile_value!=''">
-                         {{ user_profile.profile_value }}
-                      </span>
-                    </span>    
-
-                  </div>
+                  </dl>
                 </p>
                 <!--                        -->
                 <!--    R E F E R E N T I   -->
@@ -216,7 +216,7 @@ export default {
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
   	this.order_id = this.$route.params.order_id;
-    console.log('mounted route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
+    // console.log('mounted route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
 
     this.getGlobals();
     this.getAjaxOrder();
@@ -250,7 +250,7 @@ export default {
       window.onscroll = () => {
         let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
 
-        console.log('scroll bottomOfWindow '+bottomOfWindow);
+        // console.log('scroll bottomOfWindow '+bottomOfWindow);
         /*
         scrollTop    get the number of pixels the content of a <div> element is scrolled horizontally and vertically
         innerHeight  get the current frame's height and width
@@ -281,7 +281,7 @@ export default {
 
           this.isRunOrder = false;
 
-          console.log(response.data);
+          //  console.log(response.data);
           if(typeof response.data !== "undefined") {
             this.order = response.data;
           }
@@ -309,8 +309,8 @@ export default {
 
           this.isRunArticles = false;
 
-          console.log('getsAjaxArticles');
-          console.log(response.data);
+          // console.log('getsAjaxArticles');
+          // console.log(response.data);
           // console.log(response.data[0]);
           // console.log(response.data[0].ids);
           if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
@@ -379,12 +379,5 @@ ul.link-top li a:hover {
 }
 .card { 
   border: none;
-}
-ul.list-des {
-  margin: 0;
-  padding: 0;
-}
-ul.list-des li {
-  list-style: none;
 }
 </style>

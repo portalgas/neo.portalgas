@@ -7,6 +7,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
 use App\Decorator\ApiArticleOrderDecorator;
+use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
 
 class OrderComponent extends Component {
 
@@ -126,6 +127,14 @@ class OrderComponent extends Component {
                     }
                 }
             } // end if($articlesOrdersTable!==false) 
+
+            /*
+             * referenti
+             */
+            if(isset($result->suppliers_organization->suppliers_organizations_referents)) { 
+                $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $result->suppliers_organization->suppliers_organizations_referents, $result); 
+                $newResults[$i]['referents'] = $referentsResult->results;
+            }
 
             if($found_cart) {
                 $i++;

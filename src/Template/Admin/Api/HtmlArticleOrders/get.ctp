@@ -117,14 +117,12 @@ if(!empty($results['articlesOrder']['ingredients'])) {
 /*
  * R E F E R E N T I 
  */ 
-if(isset($results['order']->suppliers_organization->suppliers_organizations_referents)) {
+if(isset($results['order']->referents)) {
 	
 	echo '<div class="row">';
 	echo '<div class="col-4 col-label">Referenti</div>';
 	echo '<div class="col-8">';
-
-	echo $this->HtmlCustomSite->boxSupplierOrganizationreferents($results['order']->suppliers_organization->suppliers_organizations_referents);
-
+	echo $this->HtmlCustomSite->boxVerticalSupplierOrganizationreferents($results['order']->referents);
 	echo '</div>';
 	echo '</div>';
 	echo '</div>';

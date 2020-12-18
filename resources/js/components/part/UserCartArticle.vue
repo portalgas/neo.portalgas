@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="col-text col-sm-3 col-xs-3 col-md-4">
-          {{ article.name }} <span><a class="fas fa-search" href="#" @click="clickShowOrHiddenModal()"></a></span>
+          {{ article.name }} <span><a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a></span>
         </div>
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
               {{ article.price | currency }} &euro;
@@ -68,7 +68,7 @@ export default {
       axios
         .post(url, params)
         .then(response => {
-            console.log(response.data);
+            // console.log(response.data);
             if(typeof response.data !== "undefined") {
 
               var modalContent = {

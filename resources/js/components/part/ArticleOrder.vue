@@ -13,7 +13,7 @@
         <div class="card-body">
             <div class="card-text">
                 <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-                </div><span><a class="btn btn-primary btn-block" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
+                </div><span><a class="btn btn-primary btn-block cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
 
                 <div>
                   <strong>Prezzo</strong> {{ article.price | currency }} &euro;
@@ -93,7 +93,7 @@ export default {
       axios
         .post(url, params)
         .then(response => {
-            console.log(response.data);
+            // console.log(response.data);
             if(typeof response.data !== "undefined") {
 
               var modalContent = {

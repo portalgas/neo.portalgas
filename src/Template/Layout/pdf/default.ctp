@@ -21,9 +21,20 @@ use Cake\Core\Configure;
 		.text-center {text-align:center}
 		.text-left {text-align:left}
 		.text-right {text-align:right}
-		ul.list-referents {display: inline-block; margin: 0;padding: 0;}
-		ul.list-referents li {font-size: 12px; list-style: none;float: left; margin-right: 5px;white-space: nowrap;}
-		ul.list-referents li img {vertical-align: middle;}		
+.list-inline {
+    padding-left: 0;
+    list-style: none;
+}
+dl, ol, ul {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.list-inline-item:not(:last-child) {
+    margin-right: .5rem;
+}
+.list-inline-item {
+    display: inline-block;
+}		
 		.box-totali {text-align:center;background-color:#c3d2e5;padding:3px;margin:3px 0px;font-weight: bold;font-size: 14px;}
 	</style>	
 </head>

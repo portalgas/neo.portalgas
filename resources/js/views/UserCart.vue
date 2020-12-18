@@ -53,7 +53,7 @@ export default {
 
           this.isLoading=false;
 
-          console.log(response.data);
+          // console.log(response.data);
           if(typeof response.data !== "undefined") {
             this.datas = response.data;
             // console.log(this.datas);
