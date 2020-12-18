@@ -11,7 +11,6 @@
       </div>
       <div class="modal-body">
 
-
           <div class="btn-group">
              
               <div v-if="datas.user_cash_e!=null && datas.user_cash < 0" 
@@ -38,7 +37,6 @@
 
           </div>
 
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
@@ -46,9 +44,6 @@
     </div>
   </div>
 </div>
-
-
-
 
 </template>
 
@@ -80,7 +75,7 @@ export default {
      * se justLoading.includes(this.url) i dati del tab sono gia' stati caricati
      */
     cashesUserReload (newValue, oldValue) {
-      console.log('cashesUserReload '+newValue+' - '+oldValue);
+      // console.log('cashesUserReload '+newValue+' - '+oldValue);
       
       if(newValue)
         this.get();
@@ -96,7 +91,7 @@ export default {
       axios
         .post(url)
         .then(response => {
-            console.log(response.data);
+            // console.log(response.data);
             if(typeof response.data !== "undefined") {
               this.datas = response.data;
             }

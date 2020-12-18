@@ -13,15 +13,25 @@
           {{ article.name }} <span><a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a></span>
         </div>
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
+            <span class="d-xl-none d-lg-none d-md-none"> 
+              Prezzo 
+             </span>         
               {{ article.price | currency }} &euro;
                 <del v-if="article.price_pre_discount != null"
                     >{{ article.price_pre_discount | currency }} &euro;</del
                   > 
         </div>
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
+            <span class="d-xl-none d-lg-none d-md-none"> 
+              Conf. 
+             </span> 
               {{ article.conf }}
+
         </div>
         <div class="col-text col-sm-2 col-xs-2 col-md-1">
+            <span class="d-xl-none d-lg-none d-md-none"> 
+              Prezzo/UM 
+             </span>           
               {{ article.um_rif_label }}
         </div>
         <div class="col-text col-xs-3 col-md-3">

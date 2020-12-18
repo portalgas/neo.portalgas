@@ -74,7 +74,7 @@ foreach($results as $result) {
 		$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_more->importo_cost_more). '</th>';
 		$html .= '	</tr>'; 
 
-		$totale_ordine += $result->summary_order_trasport->importo_cost_more;		
+		$totale_ordine += $result->summary_order_cost_more->importo_cost_more;		
     }
 
     if(!empty($result->summary_order_cost_less)) {
@@ -84,7 +84,7 @@ foreach($results as $result) {
 		$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_less->importo_cost_less). '</th>';
 		$html .= '	</tr>';
 
-		$totale_ordine += $result->summary_order_trasport->importo_cost_less;
+		$totale_ordine += $result->summary_order_cost_less->importo_cost_less;
     }
 
 	$html .= '	<tr>';

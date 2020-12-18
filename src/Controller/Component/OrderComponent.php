@@ -134,6 +134,7 @@ class OrderComponent extends Component {
             if(isset($result->suppliers_organization->suppliers_organizations_referents)) { 
                 $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $result->suppliers_organization->suppliers_organizations_referents, $result); 
                 $newResults[$i]['referents'] = $referentsResult->results;
+                unset($result->suppliers_organization->suppliers_organizations_referents);
             }
 
             if($found_cart) {
