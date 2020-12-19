@@ -68,7 +68,13 @@ class UsersController extends AppController
     
     public function logout()
     {
-       $this->Authentication->logout();
-       return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
+        $user = $this->Authentication->getIdentity();
+        debug($user);
+
+        ob_start();
+        $this->Authentication->logout();
+        debug($user);
+exit;
+        return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
     }
 }

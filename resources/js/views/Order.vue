@@ -130,14 +130,14 @@
                           <span v-if="referent.type!='referente'">({{ referent.type }})</span>
                             {{ referent.name }} 
                             <a v-if="referent.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.email">{{ referent.email }}</a>
-                            <span v-if="referent.satispay_phone">
+                            <span v-if="referent.phone_satispay">
                                &nbsp;{{ referent.phone_satispay }}  
                               <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
                             </span>
-                            <span v-if="referent.satispay_phone==null">
+                            <span v-if="referent.phone_satispay==null">
                                &nbsp;{{ referent.phone }}  
                             </span>
-                      
+                        
                       </li>
                   </ul>
                 </p>

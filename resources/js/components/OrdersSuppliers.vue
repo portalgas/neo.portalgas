@@ -2,6 +2,9 @@
 
 	<div id="accordion-suppliers">
 	
+		<div v-if="!dataNotFound" class="alert alert-warning">
+			Non ci sono ordini associati
+		</div>
 
 	    <div class="card" 
 	          v-for="(order, index)  in orders"
@@ -65,7 +68,8 @@ export default {
    * in Tabs al click isLoading=true e Tab popola datas con chiamata ajax
    */  
   props: {
-        datas: {}
+    datas: {},
+    dataNotFound: true
   },  
   watch: {
   	datas (newValue, oldValue) { 

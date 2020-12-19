@@ -67,29 +67,6 @@ class OrderComponent extends Component {
             $newResults[$i] = $result;
             $newResults[$i]['article_orders'] = [];
 
-            /*
-             * aggiunge ad un ordine le eventuali 
-             *  SummaryOrder 
-             *  SummaryOrderTrapsort spese di trasporto
-             *  SummaryOrderMore spese generiche
-             *  SummaryOrderLess sconti
-             */
-            $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
-            $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
-
-            if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($user, $result->state_code)) {
-                
-                $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $result, $user->id);
-           
-                $newResults[$i]['summary_order'] = $resultsSummaryOrderPlus->summary_order;
-                $newResults[$i]['summary_order_aggregate'] = $resultsSummaryOrderPlus->summary_order_aggregate;
-                $newResults[$i]['summary_order_trasport'] = $resultsSummaryOrderPlus->summary_order_trasport;
-                $newResults[$i]['summary_order_cost_more'] = $resultsSummaryOrderPlus->summary_order_cost_more;
-                $newResults[$i]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;
-
-                // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
-            }  // if($results->state_code=='PROCESSED-ON-DELIVERY' || $results->state_code=='CLOSE')
-
             $found_cart = false;
 
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
@@ -128,16 +105,40 @@ class OrderComponent extends Component {
                 }
             } // end if($articlesOrdersTable!==false) 
 
-            /*
-             * referenti
-             */
-            if(isset($result->suppliers_organization->suppliers_organizations_referents)) { 
-                $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $result->suppliers_organization->suppliers_organizations_referents, $result); 
-                $newResults[$i]['referents'] = $referentsResult->results;
-                unset($result->suppliers_organization->suppliers_organizations_referents);
-            }
-
             if($found_cart) {
+
+                /*
+                 * aggiunge ad un ordine le eventuali 
+                 *  SummaryOrder 
+                 *  SummaryOrderTrapsort spese di trasporto
+                 *  SummaryOrderMore spese generiche
+                 *  SummaryOrderLess sconti
+                 */
+                $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
+                $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
+
+                if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($user, $result->state_code)) {
+                    
+                    $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $result, $user->id);
+               
+                    $newResults[$i]['summary_order'] = $resultsSummaryOrderPlus->summary_order;
+                    $newResults[$i]['summary_order_aggregate'] = $resultsSummaryOrderPlus->summary_order_aggregate;
+                    $newResults[$i]['summary_order_trasport'] = $resultsSummaryOrderPlus->summary_order_trasport;
+                    $newResults[$i]['summary_order_cost_more'] = $resultsSummaryOrderPlus->summary_order_cost_more;
+                    $newResults[$i]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;
+
+                    // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
+                }  // if($results->state_code=='PROCESSED-ON-DELIVERY' || $results->state_code=='CLOSE')
+
+                /*
+                 * referenti
+                 */
+                if(isset($result->suppliers_organization->suppliers_organizations_referents)) { 
+                    $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $result->suppliers_organization->suppliers_organizations_referents, $result); 
+                    $newResults[$i]['referents'] = $referentsResult->results;
+                    unset($result->suppliers_organization->suppliers_organizations_referents);
+                }
+                
                 $i++;
                 $found_cart = false;
             }

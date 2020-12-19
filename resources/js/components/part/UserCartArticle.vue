@@ -41,9 +41,6 @@
 
 </template>
 
- 
-
- 
 <script>
 import { mapActions } from "vuex";
 import btnCartAdd from "../../components/part/BtnCartAdd.vue";

@@ -53,7 +53,7 @@ class ApiSuppliersOrganizationsReferentDecorator  extends AppDecorator {
             if($user_profile->profile_key=='profile.satispay' && $user_profile->profile_value=='Y') 
                $satispay = true;
 
-            if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value=='Y')
+            if($user_profile->profile_key=='profile.satispay_phone' && $user_profile->profile_value!='')
                $results['phone_satispay'] = $user_profile->profile_value; 
         } // end foreach ($referent->user->user_profiles as $user_profile)
 
@@ -61,7 +61,8 @@ class ApiSuppliersOrganizationsReferentDecorator  extends AppDecorator {
            if(!isset($results['phone_satispay']))
              $results['phone_satispay'] = $results['phone'];
         }
-
+        
+        // debug($results);
         return $results;
     }
 

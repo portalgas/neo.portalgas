@@ -1,6 +1,6 @@
 <template>
 
-  <div class="card" :class="'card-'+order.type_draw">
+  <div v-if="order!=null" class="card" :class="'card-'+order.type_draw">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)"></div>
 
         <div class="content-img-article" v-if="order.type_draw=='COMPLETE'">

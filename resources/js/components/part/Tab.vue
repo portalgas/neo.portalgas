@@ -7,9 +7,9 @@
 			</div>  
 		</div>
 
-		<orders-deliveries v-if="url=='/admin/api/deliveries/gets'" :datas="datas"></orders-deliveries> 
+		<orders-deliveries v-if="url=='/admin/api/deliveries/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-deliveries> 
 
-		<orders-suppliers v-if="url=='/admin/api/orders/gets'" :datas="datas"></orders-suppliers> 
+		<orders-suppliers v-if="url=='/admin/api/orders/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers> 
 
 	</div>
 </template>
@@ -27,6 +27,7 @@ export default {
 	data() {
 		return {
 			datas:  {},
+			dataNotFound: true,
 			isActive: false,
 			isLoading: false,
 			justLoading: []
@@ -43,8 +44,8 @@ export default {
 	},
 	 methods:{
 	  	sortObject: function(o) {
-			console.log(Object.keys(o));
-			console.log(Object.values(o));
+			// console.log(Object.keys(o));
+			// console.log(Object.values(o));
 			  // return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
 			  
 			  // return Object.values(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
@@ -64,6 +65,7 @@ export default {
 			if(newValue===true && !this.justLoading.includes(this.url)) {
 
 				this.datas = {};
+				this.dataNotFound = true;
 
 				let url = this.url;
 				console.log('tab.watch url '+url);
@@ -74,11 +76,14 @@ export default {
 
 					this.isLoading=false;
 
-					console.log(response.data);
+					// console.log(response.data);
 					if(typeof response.data !== "undefined") {
 						this.datas = response.data;
+						if(this.datas.length==0)
+							this.dataNotFound = false;
+
 						// this.datas = this.sortObject(response.data);
-					 	console.log(this.datas);                    
+					 	// console.log(this.datas);                    
 					}
 				})
 				.catch(error => {

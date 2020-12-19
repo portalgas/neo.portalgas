@@ -186,8 +186,8 @@ class HtmlCustomSiteHelper extends FormHelper
             if(!empty($referent['email']))
                 $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);   
 
-            if(isset($referent['satispay_phone'])) {
-                $html .= '&nbsp;'.$referent['satispay_phone'];
+            if(isset($referent['phone_satispay'])) {
+                $html .= '&nbsp;'.$referent['phone_satispay'];
                 $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />';
             }
             else 
@@ -220,9 +220,11 @@ class HtmlCustomSiteHelper extends FormHelper
             if(!empty($referent['email']))
                 $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);   
 
-            if(isset($referent['satispay_phone'])) {
-                $html .= '&nbsp;'.$referent['satispay_phone'];
+            if(isset($referent['phone_satispay'])) {
+                $html .= '<span>';
+                $html .= '&nbsp;'.$referent['phone_satispay'];
                 $html .= '<img src="/img/satispay-ico.png" title="il referente ha Satispy" />';
+                $html .= '</span>';
             }
             else 
             if(isset($referent['phone'])) 

@@ -2,6 +2,10 @@
 
 	<div id="accordion-deliveries">
 
+		<div v-if="!dataNotFound" class="alert alert-warning">
+			Non ci sono ordini associati
+		</div>
+
 	    <div class="card" 
 	          v-for="(delivery, index)  in deliveries"
 	          :delivery="delivery"
@@ -69,7 +73,8 @@ export default {
    * in Tabs al click isLoading=true e Tab popola datas con chiamata ajax
    */
   props: {
-    datas: {}
+    datas: {},
+    dataNotFound: true
   },
   watch: {
   	datas (newValue, oldValue) { 
@@ -87,10 +92,15 @@ export default {
 			$('#accordion-deliveries .fas').addClass("fa-angle-down");
 
 			if(!isOpen) {
+				// console.log('Tab chiuso => lo apro ');
 				$('#collapse-'+delivery_id).addClass('show');
 				$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
 			}
-			
+			else {
+				// console.log('Tab aperto => esco ');
+				return;
+			}
+
 			this.isRunOrders=true;
 				
 			let params = {
@@ -100,20 +110,21 @@ export default {
 			this.orders = [];
 
 			let url = "/admin/api/orders/gets";
+			// console.log(url);
 			axios
 				.post(url, params)
 				.then(response => {
 
 					this.isRunOrders=false;
 
-					console.log(response.data);
+					// console.log(response.data);
 					if(typeof response.data !== "undefined") {
 						var data = {
 							delivery_id: delivery_id,
 							data: response.data
 						}
 						this.orders = data;
-						console.log(this.orders);
+						// console.log(this.orders);
 				}
 			})
 			.catch(error => {
