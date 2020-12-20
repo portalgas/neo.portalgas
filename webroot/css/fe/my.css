@@ -176,11 +176,12 @@ a:hover {
     background-color: #fa824f; /* orange */
     color: #fff !important;
 }
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link,
+.nav-item.active, .nav-pills .show > .nav-link,
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     background-color: #fa824f !important; /* orange */
     color: #fff !important;
+    font-weight: normal;
+    margin-top: -5px;
 }
 
 .navbar a.nav-link, .nav-pills a.nav-link {

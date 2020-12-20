@@ -47,7 +47,7 @@ class BackupArticlesOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('ArticleOrganizations', [
@@ -143,7 +143,7 @@ class BackupArticlesOrdersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
         $rules->add($rules->existsIn(['article_organization_id'], 'ArticleOrganizations'));
         $rules->add($rules->existsIn(['article_id'], 'Articles'));
 

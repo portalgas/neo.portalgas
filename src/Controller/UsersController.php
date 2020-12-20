@@ -69,12 +69,11 @@ class UsersController extends AppController
     public function logout()
     {
         $user = $this->Authentication->getIdentity();
-        debug($user);
+        // debug($user);
 
-        ob_start();
+        // ob_start();
         $this->Authentication->logout();
-        debug($user);
-exit;
+        
         return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
     }
 }

@@ -37,7 +37,7 @@ class DesOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER',
         ]);
     }

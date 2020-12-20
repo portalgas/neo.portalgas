@@ -68,7 +68,7 @@ if(!empty($organization)) {
     <span class="navbar-toggler-icon"></span>
   </button>
 
-<?php
+<?php 
 echo '<div class="collapse navbar-collapse" id="navbarNav">';
 echo '<ul class="navbar-nav ml-auto">';
 

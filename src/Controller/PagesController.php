@@ -38,7 +38,8 @@ class PagesController extends AppController
     }
 
     public function vue() {
-        
+        // $user = $this->Authentication->getIdentity();
+        // debug($user);
     }
 
     /**

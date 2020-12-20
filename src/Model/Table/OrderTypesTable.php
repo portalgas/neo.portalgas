@@ -42,7 +42,7 @@ class OrderTypesTable extends Table
         $this->addBehavior('IsSystem');
 
         $this->hasMany('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
         ]);        
     }
 

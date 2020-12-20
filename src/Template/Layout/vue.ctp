@@ -57,6 +57,12 @@ $organization = $this->Identity->get('organization');
     
     $(document).ready(function() {
         window.setInterval(callPing, <?php echo Configure::read('pingTime');?>);
+
+        var a = $('a[href="<?php echo $this->Url->build() ?>"]');
+        // console.log("<?php echo $this->Url->build() ?>");
+        if (!a.parent().hasClass('treeview') && !a.parent().parent().hasClass('pagination')) {
+            a.parent().addClass('active').parents('.treeview').addClass('active');
+        }
     });
 
     function callPing() {

@@ -33,7 +33,7 @@ class ProdGasPromotionsOrganizationsTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Users', [
@@ -97,7 +97,7 @@ class ProdGasPromotionsOrganizationsTable extends Table
     {
         $rules->add($rules->existsIn(['prod_gas_promotion_id'], 'ProdGasPromotions'));
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;

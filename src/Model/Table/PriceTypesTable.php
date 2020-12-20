@@ -57,7 +57,7 @@ class PriceTypesTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => 'order_id',
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER',
         ]);
     }
@@ -122,7 +122,7 @@ class PriceTypesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
 
         return $rules;
     }
