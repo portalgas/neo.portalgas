@@ -135,8 +135,8 @@ export default {
 			});
 	    },
 	    selectOrder(order) {
-	    	console.log('selectOrder');
-	    	console.log(order);
+	    	// console.log('selectOrder');
+	    	// console.log(order);
 	    	
 	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    

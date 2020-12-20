@@ -4,7 +4,6 @@ import Home from "../views/Home.vue";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
 import Order from "../views/Order";
-import CartCheckout from "../components/CartCheckout";
 
 Vue.use(VueRouter);
 

@@ -19,7 +19,7 @@ window.axios = axios;
  */
 window.axios.defaults.headers.common["X-CSRF-Token"] = csrfToken;
 window.axios.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-
+/*
 window.axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
 window.axios.defaults.headers["Access-Control-Allow-Methods"] = "*";
 window.axios.defaults.headers["Access-Control-Allow-Credentials"] = true;
@@ -29,6 +29,7 @@ window.axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 window.axios.defaults.headers.common["Access-Control-Allow-Methods"] = "*";
 window.axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
 window.axios.defaults.headers.common["Access-Control-Allow-Headers"] = "*";
+*/
 
 // import "bootstrap";
 // import "bootstrap/dist/css/bootstrap.min.css";

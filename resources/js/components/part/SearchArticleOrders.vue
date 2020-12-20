@@ -25,7 +25,7 @@ export default {
 	},
 	methods: {
 		search() {
-			console.log('search '+this.q);
+			// console.log('search '+this.q);
 			this.$emit('search', this.q); /* definito in <app-search-articles @search="onSearch"> */
 		}		
 	}

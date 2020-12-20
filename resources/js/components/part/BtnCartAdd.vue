@@ -153,7 +153,7 @@ export default {
         article: this.article,
         order: this.order,
       };
-      console.log(params);
+      // console.log(params);
 
       axios
         .post("/admin/api/carts/managementCart", params)
@@ -188,7 +188,7 @@ export default {
           var _this = this;
           setTimeout(function() {_this.message ={}}, 3000);
 
-          console.log(response.data);
+          // console.log(response.data);
         })
         .catch(error => {
             console.error("Error: " + error);
@@ -211,7 +211,7 @@ export default {
       if(this.article.cart.qta_new>0) {
 
         let qta_prima_di_modifica = this.article.cart.qta_new;
-        console.log("minusCart() qta_prima_di_modifica "+qta_prima_di_modifica);
+        // console.log("minusCart() qta_prima_di_modifica "+qta_prima_di_modifica);
 
         this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
         
@@ -223,7 +223,7 @@ export default {
          * di quanto e' aumentata rispetto a prima
          */
         let qta_incremento = (qta_prima_di_modifica - this.article.cart.qta_new);
-        console.log("minusCart() qta_incremento "+qta_incremento);
+        // console.log("minusCart() qta_incremento "+qta_incremento);
 
         /* 
          * RI-OPEN-VALIDATE
@@ -250,7 +250,7 @@ export default {
       this.message = {}
 
       let qta_prima_di_modifica = this.article.cart.qta_new;
-      console.log("plusCart() qta_prima_di_modifica "+qta_prima_di_modifica);
+      // console.log("plusCart() qta_prima_di_modifica "+qta_prima_di_modifica);
 
       this.article.cart.qta_new = (this.article.cart.qta_new + (1 * this.article.qta_multipli));
 
@@ -258,7 +258,7 @@ export default {
        * di quanto e' aumentata rispetto a prima
        */
       let qta_incremento = (this.article.cart.qta_new - qta_prima_di_modifica);
-      console.log("plusCart() qta_incremento "+qta_incremento);
+      // console.log("plusCart() qta_incremento "+qta_incremento);
 
       /* 
        * RI-OPEN-VALIDATE
@@ -272,7 +272,7 @@ export default {
       }
     },
     numberCart(event) {
-      console.log("numberCart " + event.target.value);
+      // console.log("numberCart " + event.target.value);
       this.article.cart.qta_new = parseInt(event.target.value);
       this.article.cart.qta = parseInt(event.target.value);
       
@@ -289,14 +289,14 @@ export default {
        }
        else
        if(this.article.stato=="QTAMAXORDER" && this.article.cart.qta_new > this.article.cart.qta) {
-          console.log("A) "+this.article.stato+" cart.qta_new "+this.article.cart.qta_new+" cart.qta "+this.article.cart.qta);
+          // console.log("A) "+this.article.stato+" cart.qta_new "+this.article.cart.qta_new+" cart.qta "+this.article.cart.qta);
           message = "Raggiunta la quantità massima ("+this.article.qta_massima_order+") che si può ordinare";
           this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
        }  
        else
        if(this.article.qta_massima_order>0) {
           if((this.article.qta_cart - this.article.cart.qta + this.article.cart.qta_new) > this.article.qta_massima_order) {
-            console.log("B) qta_massima_order "+this.article.qta_massima_order+" cart.qta_new "+this.article.cart.qta_new+" cart.qta "+this.article.cart.qta+" article.qta_cart "+this.article.qta_cart);
+            // console.log("B) qta_massima_order "+this.article.qta_massima_order+" cart.qta_new "+this.article.cart.qta_new+" cart.qta "+this.article.cart.qta+" article.qta_cart "+this.article.qta_cart);
             message = "Raggiunta la quantità massima ("+this.article.qta_massima_order+") che si può ordinare";
             this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
           }
@@ -304,7 +304,7 @@ export default {
        else
        if(this.article.qta_massima>0) {
           if(this.article.cart.qta_new  > this.article.qta_massima) {
-            console.log("C) qta_massima "+this.article.qta_massima+" cart.qta_new "+this.article.cart.qta_new);
+            // console.log("C) qta_massima "+this.article.qta_massima+" cart.qta_new "+this.article.cart.qta_new);
             message = "Raggiunta la quantità massima ("+this.article.qta_massima_order+") che si può ordinare";
             this.article.cart.qta_new = (this.article.cart.qta_new - (1 * this.article.qta_multipli));
           }

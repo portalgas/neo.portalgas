@@ -102,7 +102,7 @@ export default {
       return this.order.article_order
     },  
   },
-  methods: {
+  methods: { 
 	    totalPrice() {
 	    	var totale = 0;
 

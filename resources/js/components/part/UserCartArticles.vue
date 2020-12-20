@@ -18,13 +18,13 @@
         :key="article.id">
       </user-cart-article> 
 
-      <div class="row" v-if="order.summary_order_trasport.importo_trasport!=null">
+      <div class="row" v-if="order.summary_order_trasport!=null && order.summary_order_trasport.importo_trasport!=null">
         <div class="footer col-sm-12 col-xs-12 col-md-12">Trasporto: {{ order.summary_order_trasport.importo_trasport }} &euro;</div>
       </div>
-      <div class="row" v-if="order.summary_order_cost_more.importo_cost_more!=null">
+      <div class="row" v-if="order.summary_order_cost_more!=null && order.summary_order_cost_more.importo_cost_more!=null">
         <div class="footer col-sm-12 col-xs-12 col-md-12">Spesa aggiuntiva: {{ order.summary_order_cost_more.importo_cost_more }} &euro;</div>
       </div>
-      <div class="row" v-if="order.summary_order_cost_less.importo_cost_less!=null">
+      <div class="row" v-if="order.summary_order_cost_less!=null && order.summary_order_cost_less.importo_cost_less!=null">
         <div class="footer col-sm-12 col-xs-12 col-md-12">Sconto: {{ order.summary_order_cost_less.importo_cost_less }} &euro;</div>
       </div> 
      
@@ -69,13 +69,13 @@ export default {
 
       // console.log('subTotalPrice) totale '+totale);
      
-      if(this.order.summary_order_trasport.importo_trasport!=null)
+      if(this.order.summary_order_trasport!=null && this.order.summary_order_trasport.importo_trasport!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_trasport.importo_trasport));
       
-      if(this.order.summary_order_cost_more.importo_cost_more!=null)
+      if(this.order.summary_order_cost_more!=null && this.order.summary_order_cost_more.importo_cost_more!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_more.importo_cost_more));
       
-      if(this.order.summary_order_cost_less.importo_cost_less!=null)
+      if(this.order.summary_order_cost_less!=null && this.order.summary_order_cost_less.importo_cost_less!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_less.importo_cost_less));
 
       // console.log('subTotalPrice) totale '+parseFloat(totale));

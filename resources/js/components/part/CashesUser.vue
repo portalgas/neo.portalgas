@@ -37,6 +37,20 @@
 
           </div>
 
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/my-profile'" class="btn btn-blue">Visualizza il tuo profilo / Modifica le impostazioni</a>
+            </li>
+            <li class="list-group-item">
+              <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/bookmarks-mails'"
+               class="btn btn-blue">Personalizza le mail</a>
+            </li>
+            <li class="list-group-item">
+              <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/carts-history'" 
+              class="btn btn-blue">Storico acquisti</a>
+            </li>
+          </ul>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
@@ -54,6 +68,7 @@ export default {
   name: "casches-user",
   data() {
     return {
+      j_seo: '',
       datas: {
         user_cash_e: null,
         ctrl_limit: {
@@ -64,6 +79,7 @@ export default {
     };
   },
   mounted() {
+    this.getGlobals();
     this.get();
   },
   computed: {
@@ -85,6 +101,12 @@ export default {
   },   
   methods: {
     ...mapActions(["cashesUserReloadFinish"]),
+    getGlobals() {
+      /*
+       * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
+       */
+      this.j_seo = window.j_seo;
+    },     
     get () {
 
       let url = "/admin/api/users/cash-ctrl-limit";
