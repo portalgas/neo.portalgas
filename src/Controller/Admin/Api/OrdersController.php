@@ -14,6 +14,7 @@ class OrdersController extends ApiAppController
         $this->loadComponent('Auths');
         $this->loadComponent('Cart');
         $this->loadComponent('Order');
+        $this->loadComponent('Distance');
     }
 
     public function beforeFilter(Event $event) {
@@ -41,6 +42,12 @@ class OrdersController extends ApiAppController
 
         $ordersTable->addBehavior('Orders');
         $results = $ordersTable->getById($user, $organization_id, $order_id, $debug);
+
+        /*
+         * distance
+         */
+        $distance = $this->Distance->get($user, $results->suppliers_organization);
+        $results->distance = $distance;
 
         return $this->_response($results); 
     } 

@@ -55,9 +55,28 @@
 				
 	        </p> 
 
-		      <div class="row">
+		      <div v-if="!isRunOrders && orders.id!=null" class="row">
 		        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale carrello per la consegna : {{ totalPrice() }} &euro;</div>
 		      </div>
+
+			<!-- 		  -->
+			<!-- DISTANCE -->
+			<!-- 		  -->
+		    <p v-if="!isRunOrders && orders.id!=null">
+				<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
+		        <span 
+		          v-for="(order, index) in orders.data" v-if="order.distance!=null"
+		          :order="order"
+		          :key="order.id">
+		
+						<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
+						</div>
+						<div class="progressBar" 
+							:style="{width: order.distance.percentuale + '%'}">&nbsp;</td>	
+							</div>
+				</span>
+				<div class="totaleKm">per un totale di {{ totalKm() }} Km</div>
+			</p>
 
 	      </div>
 	    </div>
@@ -103,12 +122,30 @@ export default {
     },  
   },
   methods: { 
+  		totalKm() {
+	    	var totale = 0;
+
+	    	/* console.log("Totale ordini "+this.orders.data.length); */
+	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
+
+	    		this.orders.data.forEach(function (order, index) { 
+	    			/ *console.log("Tratto ordine "+(index+1)); */
+
+					if(order.distance!=null) {
+						totale += order.distance.distance
+					}
+
+	    		}); /* loop orders */
+	    	}
+
+	    	return totale;
+  		},
 	    totalPrice() {
 	    	var totale = 0;
 
 	    	/* console.log("Totale ordini "+this.orders.data.length); */
 	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
-	    		var totale = 0;
+
 	    		this.orders.data.forEach(function (order, index) { 
 	    			/ *console.log("Tratto ordine "+(index+1)); */
 	    			order.article_orders.forEach(function (article_order, index) { 
@@ -154,10 +191,16 @@ export default {
 			$('#accordion-deliveries .fas').addClass("fa-angle-down");
 
 			if(!isOpen) {
+				// console.log('Tab chiuso => lo apro ');
 				$('#collapse-'+delivery_id).addClass('show');
 				$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
 			}
-			
+			else {
+				// console.log('Tab aperto => esco ');
+				return;
+			}
+
+
 			this.isRunOrders=true;
 				
 			let params = {
@@ -180,7 +223,7 @@ export default {
 							data: response.data
 						}
 						this.orders = data;
-						console.log(this.orders);
+						// console.log(this.orders);
 				}
 			})
 			.catch(error => {
@@ -265,7 +308,7 @@ export default {
 	color: #fa824f;
 }
 .footer {
-	background-color: #bababa;
+	background-color: #e4e4e4;
 	font-weight: bold;
 	color: #0a659e;
 	text-align: right; 
@@ -281,5 +324,13 @@ export default {
 }
 .box-order {
 	clear: both;
+}
+.totaleKm {
+    font-size: 18px;
+    padding: 0;
+    text-align: right;
+}
+.progressBar {
+	background-color: #0a659e;
 }
 </style> 

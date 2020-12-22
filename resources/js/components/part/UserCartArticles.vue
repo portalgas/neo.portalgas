@@ -99,7 +99,7 @@ export default {
   color: #fff;
 }
 .footer {
-  background-color: #bababa;
+  background-color: #e4e4e4;
   font-weight: bold;
   color: #0a659e;
   text-align: right;  

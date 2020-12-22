@@ -16,6 +16,7 @@ class OrderComponent extends Component {
         $this->_registry = $registry;
         $controller = $registry->getController();
         //$controller->request
+        $this->_registry->load('Distance');
     }
 
     /*
@@ -42,7 +43,7 @@ class OrderComponent extends Component {
                       ];
         }
 
-        $results = $ordersTable->find()
+        $ordersResults = $ordersTable->find()
                                 ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => [
                                     'Suppliers',
                                     'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
@@ -62,7 +63,7 @@ class OrderComponent extends Component {
          */
         $i=0;
         $newResults = [];
-        foreach($results as $numResult => $result) {
+        foreach($ordersResults as $numResult => $result) {
 
             $newResults[$i] = $result;
             $newResults[$i]['article_orders'] = [];
@@ -94,7 +95,7 @@ class OrderComponent extends Component {
                     if(!isset($articlesOrdersResult['cart']) || !isset($articlesOrdersResult['cart']['user_id']) || 
                         empty($articlesOrdersResult['cart']['user_id'])) { 
                          unset($articlesOrdersResult[$numResult2]);
-                         unset($results[$numResult]);
+                         unset($ordersResults[$numResult]);
                     }
                     else {
                         $found_cart = true;
@@ -128,7 +129,7 @@ class OrderComponent extends Component {
                     $newResults[$i]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;
 
                     // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
-                }  // if($results->state_code=='PROCESSED-ON-DELIVERY' || $results->state_code=='CLOSE')
+                }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
 
                 /*
                  * referenti
@@ -139,6 +140,12 @@ class OrderComponent extends Component {
                     unset($result->suppliers_organization->suppliers_organizations_referents);
                 }
                 
+                /*
+                 * distance
+                 */
+                $distance = $this->_registry->Distance->get($user, $result->suppliers_organization);
+                $newResults[$i]['distance'] = $distance;
+                
                 $i++;
                 $found_cart = false;
             }
@@ -146,7 +153,7 @@ class OrderComponent extends Component {
                 unset($newResults[$i]);
             }
 
-        } // end foreach($results as $numResult => $result) 
+        } // end foreach($ordersResults as $numResult => $result) 
 
         return $newResults;  
     } 

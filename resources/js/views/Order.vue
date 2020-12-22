@@ -124,6 +124,7 @@
                 <!--    R E F E R E N T I   -->
                 <!--                        -->
                 <p v-if="order.referents!=null" class="card-text">
+                  <!-- i class="fas fa-user-friends"></i -->
                   <ul class="list-inline">
                       <li class="list-inline-item" v-for="referent in order.referents">
                         
@@ -144,6 +145,14 @@
                 <!--                        -->
                 <!--    R E F E R E N T I   -->
                 <!--                        -->
+
+
+                <!--                        -->
+                <!--        DISTANCE        -->
+                <!--                        -->
+                <div v-if="order.distance!=null">          
+                    <i class="fas fa-truck"></i> I tuoi acquisti hanno percorso {{ order.distance.distance }} Km
+                </div>
 
             </div> <!-- col-md-10 -->
           </div> <!-- row -->
@@ -376,5 +385,8 @@ ul.link-top li a:hover {
 }
 .card { 
   border: none;
+}
+.progressBar {
+  background-color: #0a659e;
 }
 </style>

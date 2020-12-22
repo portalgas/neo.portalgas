@@ -321,6 +321,9 @@ Configure::write('Gdxp.protocolVersion', '1.0');
 Configure::write('Gdxp.applicationSignature', 'PortAlGas');
 Configure::write('Gdxp.file.prefix', 'gdxp-');
 
+Configure::write('LatLngNotFound', '0.0');
+Configure::write('LatLngDistanceAbsolute', '1000'); // per calcolare la distanza in %
+
 /*
  * fe front-end
  */
