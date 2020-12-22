@@ -1,7 +1,7 @@
 <template>
 
   <div v-if="order!=null" class="card" :class="'card-'+order.type_draw">
-        <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)"></div>
+        <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)" :class="justInCart"></div>
 
         <div class="content-img-article" v-if="order.type_draw=='COMPLETE'">
           <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
@@ -13,7 +13,7 @@
         <div class="card-body">
             <div class="card-text">
                 <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-                </div><span><a class="btn btn-primary btn-block cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
+                </div><span><a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
 
                 <div>
                   <strong>Prezzo</strong> {{ article.price | currency }} &euro;
@@ -55,9 +55,7 @@
 
 </template>
 
- 
 
- 
 <script>
 import { mapActions } from "vuex";
 import btnCartAdd from "../../components/part/BtnCartAdd.vue";
@@ -82,7 +80,6 @@ export default {
     }, 
     clickShowOrHiddenModal () {
 
-      
       let params = {
         order_id: this.article.ids.order_id,
         article_organization_id: this.article.ids.article_organization_id,
@@ -115,7 +112,7 @@ export default {
   computed: {
     justInCart: function() { 
         /* console.log("Article::justInCart article.cart.qta "+this.article.cart.qta) */
-        return this.article.cart.qta>0 ? 'bg-light' : 'bg-transparent';
+        return this.article.cart.qta>0 ? 'just-in-cart' : 'no-just-in-cart';
     } 
   },
   filters: {
@@ -149,6 +146,10 @@ export default {
 .card-COMPLETE {
   min-height: 400px;
 }
+.card {
+  border: 1px solid #f8f9fa !important;
+  margin-bottom: 10px;
+}
 .card:hover {
   background-color: #f8f8f8;
   box-shadow: 3px 3px 5px 0px;
@@ -156,5 +157,15 @@ export default {
 .highlighted { 
   color: #fa824f;
   text-decoration: underline;
+}
+.card-header.just-in-cart {
+  /* background-color:#fa824f !important; orange */
+  background-color:#149334 !important;
+}
+.card-footer.just-in-cart {
+  background-color:#f8f9fa !important;
+}
+.card-footer.no-just-in-cart {
+  background-color: transparent !important;
 }
 </style>
