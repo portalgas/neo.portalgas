@@ -28,7 +28,8 @@
 	        <p 
 	          v-for="(order, index)  in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery.id"
 	          :order="order"
-	          :key="order.id">
+	          :key="order.id"
+	          :class="'type-'+order.order_type.name">
 					<a v-on:click="selectOrder(order)" href="#">
 
 						<div class="content-img-supplier">
@@ -174,5 +175,15 @@ export default {
 }
 .card-header:hover {
 	color: #fa824f;
+}
+.type-PROMOTION {
+  background-image: url("/img/promotion-75w-82h.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right center;
+}
+@media screen and (max-width: 600px) {
+  .type-PROMOTION {
+     background-image: none;
+  }
 }
 </style> 

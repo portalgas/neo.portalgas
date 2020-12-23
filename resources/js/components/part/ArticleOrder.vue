@@ -3,7 +3,7 @@
   <div v-if="order!=null" class="card" :class="'card-'+order.type_draw">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)" :class="justInCart"></div>
 
-        <div class="content-img-article" v-if="order.type_draw=='COMPLETE'">
+        <div class="content-img-article" v-if="order.type_draw=='COMPLETE' || order.type_draw=='PROMOTION'">
           <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
           <div v-if="article.is_bio" class="box-bio">
               <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
@@ -37,12 +37,12 @@
                 <div v-if="article.qta_minima>1">
                   <small class="text-muted"><strong>Q.tà minima</strong> {{ article.qta_minima }}</small>
                 </div>
-                <div v-if="article.qta_minima_order>0">
-                  <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
-                </div>
                 <div v-if="article.qta_massima>0">
                   <small class="text-muted"><strong>Q.tà massima</strong> {{ article.qta_massima }}</small>
                 </div>
+                <div v-if="article.qta_minima_order>0">
+                  <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
+                </div>                
                 <div v-if="article.qta_massima_order>0">
                   <small class="text-muted"><strong>Q.tà massima sull'ordine totale</strong> {{ article.qta_massima_order }} (acquistati ora {{ article.qta_cart }})</small>
                 </div>
@@ -143,7 +143,7 @@ export default {
 .card-SIMPLE {
   min-height: 285px;
 }
-.card-COMPLETE {
+.card-COMPLETE, .card-PROMOTION {
   min-height: 400px;
 }
 .card {

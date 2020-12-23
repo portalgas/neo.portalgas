@@ -10,6 +10,7 @@
 	          v-for="(order, index)  in orders"
 	          :order="order"
 	          :key="index"
+	          :class="'type-'+order.order_type.name"
 		  >
 
 			    <div class="card-header" data-toggle="collapse" :data-target="'#'+order.id" aria-expanded="true" :aria-controls="'collapse-'+order.id" v-on:click="selectOrder(order)">
@@ -128,5 +129,15 @@ export default {
 }
 .card-header:hover {
 	color: #fa824f;
+}
+.type-PROMOTION {
+  background-image: url("/img/promotion-75w-82h.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right center;
+}
+@media screen and (max-width: 600px) {
+  .type-PROMOTION {
+     background-image: none;
+  }
 }
 </style> 

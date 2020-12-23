@@ -160,6 +160,24 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
      * implement
      */
     public function getByIds($user, $organization_id, $ids, $debug=false) {    
-       return parent::getByIds($user, $organization_id, $ids, $debug);
+
+        $organization_id = $ids['organization_id'];
+        $order_id = $ids['order_id'];
+        $article_organization_id = $ids['article_organization_id'];
+        $article_id = $ids['article_id'];
+
+        $where = [$this->getAlias().'.organization_id' => $organization_id, 
+                  $this->getAlias().'.order_id' => $order_id, 
+                  $this->getAlias().'.article_organization_id' => $article_organization_id, 
+                  $this->getAlias().'.article_id' => $article_id];
+        // debug($where);
+
+        $results = $this->find()
+                        ->contain(['Articles', 'ProdGasArticlesPromotions'])
+                        ->where($where)
+                        ->first();
+        // debug($results);
+        return $results;
+
     }     
 }

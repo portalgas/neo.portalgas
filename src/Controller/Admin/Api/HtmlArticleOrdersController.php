@@ -38,6 +38,9 @@ class HtmlArticleOrdersController extends AppController
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id;
 
+        $orderResults = [];
+        $articlesOrdersResults = [];
+
         $results = [];
         $results['order'] = [];
         $results['articlesOrder'] = [];
@@ -59,10 +62,14 @@ class HtmlArticleOrdersController extends AppController
         $ids['article_organization_id'] = $article_organization_id;
         $ids['article_id'] = $article_id;
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
+        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
 
-        $results = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
-        $articlesOrdersResults = $results->results;
+        if($articlesOrdersTable!==false) {
+            $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
+
+            $results = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
+            $articlesOrdersResults = $results->results;
+        }
 
         $results['order'] = $orderResults;
         $results['articlesOrder'] = $articlesOrdersResults;

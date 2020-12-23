@@ -34,10 +34,10 @@
                <div class="card-body">
                   <h5 class="card-title">
                       <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="Vai al sito del produttore">
-                        {{ order.suppliers_organization.name }} {{ order.order_type.name }}                      
+                        {{ order.suppliers_organization.name }}
                       </a>
                       <span v-if="order.suppliers_organization.supplier.www==''">
-                        {{ order.suppliers_organization.name }} {{ order.order_type.name }}                      
+                        {{ order.suppliers_organization.name }}
                       </span>
                       <small class="card-text">
                         {{ order.suppliers_organization.supplier.descrizione }}
@@ -78,8 +78,8 @@
                   <!--    P R O M O T I O N   -->
                   <!--                        -->
                   <p v-if="order.prod_gas_promotion!=null" class="card-text">
-                    PROMOTION {{ order.prod_gas_promotion.name }}
-                    terminerà  {{ order.prod_gas_promotion.data_fine | formatDate }}
+                    {{ order.prod_gas_promotion.name }}
+                    terminerà {{ order.prod_gas_promotion.data_fine | formatDate }}
                   </p>
                   <!--                        -->
                   <!--    P R O M O T I O N   -->
@@ -385,6 +385,16 @@ ul.link-top li a:hover {
 }
 .card { 
   border: none;
+}
+.card-body {
+  background-image: url("/img/promotion-100w-110h.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right top;
+}
+@media screen and (max-width: 600px) {
+  .card-body {
+     background-position: right bottom;
+  }
 }
 .progressBar {
   background-color: #0a659e;

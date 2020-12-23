@@ -19,15 +19,6 @@ if(!empty($results['articlesOrder']['is_bio']) || !empty($results['articlesOrder
 	echo '</div>';	
 }
 
-           
-if(!empty($results['order']->suppliers_organization->frequenza)) {
-	echo '<div class="row">';
-	echo '<div class="col-4 col-label">Frequenza</div>';
-	echo '<div class="col-8">'.$results['order']->suppliers_organization->frequenza.'</div>';
-	echo '</div>';	
-}
-
-
 if(!empty($results['articlesOrder']['codice'])) {
 	echo '<div class="row">';
 	echo '<div class="col-4 col-label">Codice</div>';
@@ -45,7 +36,14 @@ echo '</div>';
 
 echo '<div class="row">';
 echo '<div class="col-4 col-label">Prezzo</div>';
-echo '<div class="col-8">'.$this->HtmlCustom->importo($results['articlesOrder']['price']).'</div>';
+echo '<div class="col-8">';
+echo $this->HtmlCustom->importo($results['articlesOrder']['price']);
+if(!empty($results['articlesOrder']['price_pre_discount'])) {
+	echo ' <del>';
+	echo $this->HtmlCustom->importo($results['articlesOrder']['price_pre_discount']);
+	echo '</del>';	
+}
+echo '</div>';
 echo '</div>';
 
 echo '<div class="row">';
@@ -114,6 +112,14 @@ if(!empty($results['articlesOrder']['ingredients'])) {
 	echo '</div>';
 }
 
+           
+if(!empty($results['order']->suppliers_organization->frequenza)) {
+	echo '<div class="row">';
+	echo '<div class="col-4 col-label">Ordine con frequenza</div>';
+	echo '<div class="col-8">'.$results['order']->suppliers_organization->frequenza.'</div>';
+	echo '</div>';	
+}
+
 /*
  * R E F E R E N T I 
  */ 
@@ -129,3 +135,18 @@ if(isset($results['order']->referents)) {
 }
 
 echo '</div>';
+?>
+<style>
+.container-fluid {
+  background-image: url("/img/promotion-100w-110h.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right top;
+}	
+@media screen and (max-width: 600px) {
+	.container-fluid {
+	  background-image: url("/img/promotion-50w-55h.png");
+	  background-repeat: no-repeat, no-repeat;
+	  background-position: right top;
+	}	
+}
+</style>
