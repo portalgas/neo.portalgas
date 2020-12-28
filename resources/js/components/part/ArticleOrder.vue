@@ -19,7 +19,9 @@
                   <strong>Prezzo</strong> {{ article.price | currency }} &euro;
                     <del v-if="article.price_pre_discount != null"
                         >{{ article.price_pre_discount | currency }} &euro;</del
-                      >                
+                      > 
+
+                    <span v-if="article.price_pre_discount != null" class="price-promotion"></span>                 
                 </div>
                 <div>
                   <strong>Conf.</strong> {{ article.conf }}
@@ -40,12 +42,22 @@
                 <div v-if="article.qta_massima>0">
                   <small class="text-muted"><strong>Q.tà massima</strong> {{ article.qta_massima }}</small>
                 </div>
-                <div v-if="article.qta_minima_order>0">
-                  <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
-                </div>                
-                <div v-if="article.qta_massima_order>0">
-                  <small class="text-muted"><strong>Q.tà massima sull'ordine totale</strong> {{ article.qta_massima_order }} (acquistati ora {{ article.qta_cart }})</small>
-                </div>
+
+                <span v-if="order.order_type.code == 'PROMOTION'">
+                    <!-- per la promozione, qta_minima_order = qta_massima_order: qta da raggiungere per la promozione -->
+                    <div v-if="article.qta_massima_order>0">
+                      <small class="text-muted"><strong>Promozione valida</strong> se sull'ordine totale si raggiungerà la quantità di <strong>{{ article.qta_massima_order }} acquisti</strong> (acquistati ora {{ article.qta_cart }})</small>
+                    </div>                
+                </span>
+                <span v-if="order.order_type.code != 'PROMOTION'">
+                    <div v-if="article.qta_minima_order>0">
+                      <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
+                    </div>                
+                    <div v-if="article.qta_massima_order>0">
+                      <small class="text-muted"><strong>Q.tà massima sull'ordine totale</strong> {{ article.qta_massima_order }} (acquistati ora {{ article.qta_cart }})</small>
+                    </div>
+                </span>
+
             </div>
         </div>
         <div v-bind:class="'card-footer '+justInCart"> 
@@ -140,11 +152,13 @@ export default {
 </script>
 
 <style scoped>
-.card-SIMPLE {
-  min-height: 285px;
-}
-.card-COMPLETE, .card-PROMOTION {
-  min-height: 400px;
+@media screen and (min-width: 600px) {
+  .card-SIMPLE {
+    min-height: 285px;
+  }
+  .card-COMPLETE, .card-PROMOTION {
+    min-height: 400px;
+  }
 }
 .card {
   border: 1px solid #f8f9fa !important;
@@ -167,5 +181,13 @@ export default {
 }
 .card-footer.no-just-in-cart {
   background-color: transparent !important;
+}
+.price-promotion {
+  float: right;
+  padding: 28px;
+  margin-left: 15px;  
+  background-image: url("/img/promotion-50w-55h.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right center;
 }
 </style>

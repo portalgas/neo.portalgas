@@ -1,6 +1,7 @@
 <?php
 // debug($results['articlesOrder']);
-// debug($results);
+// debug($results['order']);
+
 echo '<div class="container-fluid">';
 
 echo $this->HtmlCustomSite->boxSupplierOrganization($results['order']->suppliers_organization);
@@ -38,10 +39,14 @@ echo '<div class="row">';
 echo '<div class="col-4 col-label">Prezzo</div>';
 echo '<div class="col-8">';
 echo $this->HtmlCustom->importo($results['articlesOrder']['price']);
+
+// promotion
 if(!empty($results['articlesOrder']['price_pre_discount'])) {
 	echo ' <del>';
 	echo $this->HtmlCustom->importo($results['articlesOrder']['price_pre_discount']);
-	echo '</del>';	
+	echo '</del>';
+
+	echo '<span class="price-promotion"></span>';	
 }
 echo '</div>';
 echo '</div>';
@@ -77,18 +82,29 @@ if($results['articlesOrder']['qta_massima'] > 0) {
 	echo '</div>';
 }
 
-if($results['articlesOrder']['qta_minima_order'] > 0) {
-	echo '<div class="row">';
-	echo '<div class="col-4 col-label">Quantità minima rispetto all\'ordine</div>';
-	echo '<div class="col-8">'.$results['articlesOrder']['qta_minima_order'].'</div>';
-	echo '</div>';
+if($results['order']['order_type']['code']=='PROMOTION') {
+    // per la promozione, qta_minima_order = qta_massima_order: qta da raggiungere per la promozione 
+	if($results['articlesOrder']['qta_massima_order'] > 0) {
+		echo '<div class="row">';
+		echo '<div class="col-4 col-label">Promozione valida</div>';
+		echo '<div class="col-8">se sull\'ordine totale si raggiungerà la quantità di <strong>'.$results['articlesOrder']['qta_massima_order'].'</strong> acquisti</div>';
+		echo '</div>';
+	}   
 }
-
-if($results['articlesOrder']['qta_massima_order'] > 0) {
-	echo '<div class="row">';
-	echo '<div class="col-4 col-label">Quantità massima rispetto all\'ordine</div>';
-	echo '<div class="col-8">'.$results['articlesOrder']['qta_massima_order'].'</div>';
-	echo '</div>';
+else {
+	
+	if($results['articlesOrder']['qta_minima_order'] > 0) {
+		echo '<div class="row">';
+		echo '<div class="col-4 col-label">Quantità minima rispetto all\'ordine</div>';
+		echo '<div class="col-8">'.$results['articlesOrder']['qta_minima_order'].'</div>';
+		echo '</div>';
+	}
+	if($results['articlesOrder']['qta_massima_order'] > 0) {
+		echo '<div class="row">';
+		echo '<div class="col-4 col-label">Quantità massima rispetto all\'ordine</div>';
+		echo '<div class="col-8">'.$results['articlesOrder']['qta_massima_order'].'</div>';
+		echo '</div>';
+	}	
 }
 
 if($results['articlesOrder']['stato'] != 'Y') {
@@ -148,5 +164,12 @@ echo '</div>';
 	  background-repeat: no-repeat, no-repeat;
 	  background-position: right top;
 	}	
+}
+.price-promotion {
+  padding: 25px;
+  margin-left: 15px;	
+  background-image: url("/img/promotion-50w-55h.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right center;
 }
 </style>

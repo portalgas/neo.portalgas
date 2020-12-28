@@ -33,7 +33,7 @@
             <div class="col-md-10">
                <div class="card-body">
                   <h5 class="card-title">
-                      <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="Vai al sito del produttore">
+                      <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="vai al sito del produttore">
                         {{ order.suppliers_organization.name }}
                       </a>
                       <span v-if="order.suppliers_organization.supplier.www==''">
@@ -56,7 +56,7 @@
                       <div v-if="order.all_des_orders_organizations!=null">
                         <ul class="list-unstyled">
                           <li v-for="(all_des_orders_organization, index) in order.all_des_orders_organizations">
-                            <a target="_blank" v-bind:href="all_des_orders_organization.organization.www" title="Vai al sito del GAS">
+                            <a target="_blank" v-bind:href="all_des_orders_organization.organization.www" title="vai al sito del G.A.S.">
                               
                               <div class="content-img-organization">
                                   <img v-if="all_des_orders_organization.organization.img1 != ''"

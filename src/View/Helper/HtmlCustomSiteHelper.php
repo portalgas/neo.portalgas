@@ -119,7 +119,13 @@ class HtmlCustomSiteHelper extends FormHelper
             $img1_path = sprintf($url, $results->supplier->img1);
             $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
-        $html .= '<span class="box-name">'.$results->name.'</span>';
+        $html .= '<span class="box-name">';
+        if(!empty($results->supplier->www)) 
+            $html .= '<a href="'.$results->supplier->www.'" target="_blank" title="vai al sito del produttore">';
+        $html .= $results->name;
+        if(!empty($results->supplier->www))
+            $html .= '</a>'; 
+        $html .= '</span>';
         $html .= "</div>";
 
         return $html;
