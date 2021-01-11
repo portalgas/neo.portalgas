@@ -137,7 +137,7 @@ if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organizat
 
 	$totale_dispensa = 0;
 	if(!empty($storeroomResults) && count($storeroomResults)>0) {
-		$html .= '<h2>'.__('Storeroom').'---</h2>';
+		$html .= '<h2>'.__('Storeroom').'</h2>';
 
 		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
 		$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella

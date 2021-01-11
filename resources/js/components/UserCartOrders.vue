@@ -55,19 +55,32 @@
 				
 	        </p> 
 
-		      <div v-if="!isRunOrders && orders.id!=null" class="row">
-		        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale carrello per la consegna : {{ totalPrice() }} &euro;</div>
+			<!-- 		  -->
+			<!--  TOTALE  -->
+			<!-- 		  -->
+		      <div v-if="!isRunOrders" class="row">
+
+		      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
+		      		v-if="organizationTemplatePayToDelivery=='POST'">
+					Totale presunto della consegna: {{ totalPrice() }} &euro;
+					<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)</i>
+		      	</div>
+		      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
+		      		v-if="organizationTemplatePayToDelivery=='ON' || organizationTemplatePayToDelivery=='ON-POST'">
+					Totale presunto della consegna: {{ totalPrice() }} &euro;
+					<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)</i>
+		      	</div>
 		      </div>
 
 			<!-- 		  -->
 			<!-- DISTANCE -->
 			<!-- 		  -->
-		    <p v-if="!isRunOrders && orders.id!=null">
+		    <p v-if="!isRunOrders && totalKm()>0">
 				<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
 		        <span 
 		          v-for="(order, index) in orders.data" v-if="order.distance!=null"
 		          :order="order"
-		          :key="order.id">
+		          :key="index">
 		
 						<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
 						</div>
@@ -94,6 +107,8 @@ export default {
   name: "user-cart-deliveries",
   data() {
     return {
+      j_seo: '',
+      organizationTemplatePayToDelivery: '',    
       deliveries: null,
       orders: {
       	id: null,
@@ -121,7 +136,17 @@ export default {
       return this.order.article_order
     },  
   },
+  mounted() {
+    this.getGlobals();
+  },   
   methods: { 
+	    getGlobals() {
+	      /*
+	       * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
+	       */
+	      this.j_seo = window.j_seo;
+	      this.organizationTemplatePayToDelivery = window.organizationTemplatePayToDelivery;
+	    }, 
   		totalKm() {
 	    	var totale = 0;
 
@@ -143,46 +168,50 @@ export default {
 	    totalPrice() {
 	    	var totale = 0;
 
-	    	/* console.log("Totale ordini "+this.orders.data.length); */
+	    	console.log("Totale ordini "+this.orders.data.length); 
 	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
 
 	    		this.orders.data.forEach(function (order, index) { 
-	    			/ *console.log("Tratto ordine "+(index+1)); */
-	    			order.article_orders.forEach(function (article_order, index) { 
-	    				/* console.log(article_order);  */
+	    			
+	    			// console.log("Tratto ordine "+(index+1)+' totale '+totale);
+	    			// console.log(order);
 
-	    				if(order.isOpenToPurchasable) 
+	    			order.article_orders.forEach(function (article_order, index2) { 
+	    				// console.log(article_order); 
+
+	    				if(article_order.isOpenToPurchasable)  /* aperto per acquistare */
 	    					totale += (article_order.cart.qta_new * article_order.price);
 	    				else {
 	    					/* ordine chiuso agli acquisti */
-	    					totale += article_order.cart.final_price;
+	    					totale = (totale + parseFloat(article_order.cart.final_price));	    					
 	    				}
-	    				
+
+						// totale = parseFloat(totale).toFixed(2);
 	    			}); /* loop article_orders */
 
 					// totale = totale.replace(',', '.');
 
-					// console.log('totalPrice) totale '+totale);
+					// console.log('totalPrice() totale '+totale);
 
-					if(order.summary_order_trasport!=null)
-					totale = (parseFloat(totale) + parseFloat(order.summary_order_trasport.importo_trasport));
+					if(order.summary_order_trasport!=null && order.summary_order_trasport.importo_trasport!=null)
+						totale = (parseFloat(totale) + parseFloat(order.summary_order_trasport.importo_trasport));
 
-					if(order.summary_order_cost_more!=null)
-					totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_more.importo_cost_more));
+					if(order.summary_order_cost_more!=null && order.summary_order_cost_more.importo_cost_more!=null)
+						totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_more.importo_cost_more));
 
-					if(order.summary_order_cost_less!=null)
-					totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_less.importo_cost_less));
+					if(order.summary_order_cost_less!=null && order.summary_order_cost_less.importo_cost_less!=null)
+						totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_less.importo_cost_less));
 
-					// console.log('totalPrice) totale '+parseFloat(totale));
+					// totale = parseFloat(totale).toFixed(2);	 
 
-					// totale = parseFloat(totale).toFixed(2);	    			
+					// console.log("Fine ordine "+(index+1)+' totale '+totale);   			
 	    		}); /* loop orders */
 	    	}
 
 	    	return this.$options.filters.currency(totale);
 	    },
 	    selectDelivery(delivery_id) {
-	    	console.log('selectDelivery '+delivery_id);
+	    	/* console.log('selectDelivery '+delivery_id); */
 
 			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
 			

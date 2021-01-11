@@ -48,6 +48,7 @@ $organization = $this->Identity->get('organization');
     "use strict";
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
     var j_seo = "<?php echo $organization->j_seo;?>"; // da passa a vue in app.js
+    var organizationTemplatePayToDelivery = "<?php echo $organization->template->payToDelivery;?>"; // da passa a vue in app.js
     var headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/javascript, */*; q=0.01",

@@ -44,9 +44,10 @@ export const vm = new Vue({
 
 
 /*
- * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
+ * variabile che arriva da cake, dichiarata come variabile e in app.js settata a window.
  */
 window.j_seo = j_seo;
+window.organizationTemplatePayToDelivery = organizationTemplatePayToDelivery;
 
 /*
  * per array.equals tra ids article e ids article persisititi in store

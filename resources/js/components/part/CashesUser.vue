@@ -69,6 +69,7 @@ export default {
   data() {
     return {
       j_seo: '',
+      organizationTemplatePayToDelivery: '',
       datas: {
         user_cash_e: null,
         ctrl_limit: {
@@ -106,6 +107,7 @@ export default {
        * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
        */
       this.j_seo = window.j_seo;
+      this.organizationTemplatePayToDelivery = window.organizationTemplatePayToDelivery;
     },     
     get () {
 

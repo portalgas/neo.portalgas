@@ -56,10 +56,8 @@ export default {
   components: {
     appBtnCartAdd: btnCartAdd
   },
-  mounted() {
-  },
   methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
+    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),    
     clickShowModal () {
       this.showModal(true);
     }, 

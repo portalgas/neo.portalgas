@@ -29,7 +29,7 @@
       </div> 
      
       <div class="row">
-        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale: {{ subTotalPrice() }} &euro;</div>
+        <div class="footer col-sm-12 col-xs-12 col-md-12">Totale: {{ subTotalPrice() }} &euro; </div>
       </div>
     </div>
 
@@ -44,20 +44,20 @@ export default {
   props: ['order', 'article_orders'],
   components: {
     UserCartArticle: UserCartArticle
-  },
-  methods: {
+  }, 
+  methods: {  
     subTotalPrice() {
       var _order = this.order;
       var totale = this.$options.filters.currency(this.article_orders.reduce(
         // function (current, next) { return current + (next.cart.qta_new * next.price)},
         function (current, next) { 
-            var totale = 0;
+            var totale = 0;              
 
-            if(_order.isOpenToPurchasable) 
-              totale += next.cart.final_price; 
+            if(_order.isOpenToPurchasable)  /* aperto per acquistare */
+              totale += (next.cart.qta_new * next.price);
             else {
               /* ordine chiuso agli acquisti */
-              totale += (next.cart.qta_new * next.price);
+              totale += next.cart.final_price;
             }              
 
             return (current + totale);     
@@ -67,7 +67,7 @@ export default {
 
       totale = totale.replace(',', '.');
 
-      // console.log('subTotalPrice) totale '+totale);
+      // console.log('subTotalPrice() totale '+totale);
      
       if(this.order.summary_order_trasport!=null && this.order.summary_order_trasport.importo_trasport!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_trasport.importo_trasport));
@@ -78,7 +78,7 @@ export default {
       if(this.order.summary_order_cost_less!=null && this.order.summary_order_cost_less.importo_cost_less!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_less.importo_cost_less));
 
-      // console.log('subTotalPrice) totale '+parseFloat(totale));
+      // console.log('subTotalPrice() totale '+parseFloat(totale));
 
       return parseFloat(totale).toFixed(2);
     }
