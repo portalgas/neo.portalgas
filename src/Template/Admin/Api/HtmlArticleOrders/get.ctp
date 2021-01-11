@@ -2,7 +2,7 @@
 // debug($results['articlesOrder']);
 // debug($results['order']);
 
-echo '<div class="container-fluid">';
+echo '<div class="container-fluid '.$results['order']['order_type']['name'].'">';
 
 echo $this->HtmlCustomSite->boxSupplierOrganization($results['order']->suppliers_organization);
 // echo $this->HtmlCustomSite->boxOrder($results['order']);
@@ -153,13 +153,13 @@ if(isset($results['order']->referents)) {
 echo '</div>';
 ?>
 <style>
-.container-fluid {
+.container-fluid.type-PROMOTION {
   background-image: url("/img/promotion-100w-110h.png");
   background-repeat: no-repeat, no-repeat;
   background-position: right top;
 }	
 @media screen and (max-width: 600px) {
-	.container-fluid {
+	.container-fluid.type-PROMOTION {
 	  background-image: url("/img/promotion-50w-55h.png");
 	  background-repeat: no-repeat, no-repeat;
 	  background-position: right top;

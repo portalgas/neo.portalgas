@@ -31,7 +31,7 @@
 
             </div>
             <div class="col-md-10">
-               <div class="card-body">
+               <div class="card-body" :class="'type-'+order.order_type.name">
                   <h5 class="card-title">
                       <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="vai al sito del produttore">
                         {{ order.suppliers_organization.name }}
@@ -254,14 +254,15 @@ export default {
       }
 
       window.onscroll = () => {
-        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        let scrollTop = Math.floor(document.documentElement.scrollTop);
+        let bottomOfWindow = scrollTop + window.innerHeight === document.documentElement.offsetHeight;
 
         // console.log('scroll bottomOfWindow '+bottomOfWindow);
         /*
         scrollTop    get the number of pixels the content of a <div> element is scrolled horizontally and vertically
         innerHeight  get the current frame's height and width
         offsetHeight get the height of document, including padding and border
-        console.log('document.documentElement.scrollTop '+document.documentElement.scrollTop);
+        console.log('document.documentElement.scrollTop '+scrollTop);
         console.log('window.innerHeight '+window.innerHeight);
         console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
         console.log('bottomOfWindow '+bottomOfWindow);
@@ -386,13 +387,13 @@ ul.link-top li a:hover {
 .card { 
   border: none;
 }
-.card-body {
+.card-body.type-PROMOTION {
   background-image: url("/img/promotion-100w-110h.png");
   background-repeat: no-repeat, no-repeat;
   background-position: right top;
 }
 @media screen and (max-width: 600px) {
-  .card-body {
+  .card-body.type-PROMOTION {
      background-position: right bottom;
   }
 }

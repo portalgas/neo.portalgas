@@ -245,11 +245,13 @@ class UsersTable extends Table
         /*
          * aggiungo i dati per il prepagati, x BO e FE
          */
-        $user->organization_cash_limit = $organization->paramsConfig['cashLimit'];
-        $user->organization_cash_limit_label = __('FE-'.$organization->paramsConfig['cashLimit']);
-        $user->organization_limit_cash_after = $this->convertImport($organization->paramsConfig['limitCashAfter']);
-        $user->organization_limit_cash_after_ = $organization->paramsConfig['limitCashAfter'];
-        $user->organization_limit_cash_after_e = $organization->paramsConfig['limitCashAfter'].'&nbsp;&euro;';
+        if(isset($organization->paramsConfig['cashLimit'])) {
+            $user->organization_cash_limit = $organization->paramsConfig['cashLimit'];
+            $user->organization_cash_limit_label = __('FE-'.$organization->paramsConfig['cashLimit']);
+            $user->organization_limit_cash_after = $this->convertImport($organization->paramsConfig['limitCashAfter']);
+            $user->organization_limit_cash_after_ = $organization->paramsConfig['limitCashAfter'];
+            $user->organization_limit_cash_after_e = $organization->paramsConfig['limitCashAfter'].'&nbsp;&euro;';            
+        }
 
         /*
          * totale cassa

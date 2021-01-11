@@ -16,7 +16,7 @@ $menus[$i]['target'] = '';
 if(!empty($organization)) {
   $i++;
   $menus = [];
-  $menus[$i]['label'] = 'Consegne';
+  $menus[$i]['label'] = __('Deliveries');
   // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
   $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
   $menus[$i]['target'] = '';

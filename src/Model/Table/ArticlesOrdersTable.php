@@ -460,8 +460,8 @@ class ArticlesOrdersTable extends Table
     }    
 
     protected function _getOptions($options) {
-        isset($options['sort'])? $this->_sort = $options['sort']: $this->_sort = [$this->getAlias().'.name'];
-        isset($options['limit'])? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');
-        isset($options['page'])? $this->_page = $options['page']: $this->_page = 1; 
+        isset($options['sort']) && !empty($options['sort']) ? $this->_sort = $options['sort']: $this->_sort = [$this->getAlias().'.name'];
+        isset($options['limit']) && !empty($options['limit']) ? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');
+        isset($options['page']) && !empty($options['page']) ? $this->_page = $options['page']: $this->_page = 1; 
     }
 }
