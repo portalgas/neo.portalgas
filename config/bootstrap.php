@@ -125,7 +125,8 @@ $isCli = PHP_SAPI === 'cli';
 if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
-    (new ErrorHandler(Configure::read('Error')))->register();
+    // (new ErrorHandler(Configure::read('Error')))->register();
+    Sentry\init(['dsn' => 'https://87ba0753c7ca4314a1e85fe9da02a760@o503778.ingest.sentry.io/5589346' ]);
 }
 
 /*

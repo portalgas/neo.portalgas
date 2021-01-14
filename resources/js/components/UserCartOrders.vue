@@ -21,12 +21,12 @@
 		        </div>	  
 		    </div>
 
-	        <div class="box-btn-pdf" v-if="!isRunOrders && orders.delivery_id===delivery.id">
+	        <div class="box-btn-pdf" v-if="!isRunOrders && results.delivery_id===delivery.id">
 	           <a :href="'/admin/api/exports/user-cart/'+delivery.id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
 	        </div>
 
 	        <p 
-	          v-for="(order, index) in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery.id"
+	          v-for="(order, index) in results.orders" v-if="!isRunOrders && results.delivery_id===delivery.id"
 	          :order="order"
 	          :key="order.id" class="box-order">
 
@@ -75,10 +75,10 @@
 			<!-- 		  -->
 			<!-- DISTANCE -->
 			<!-- 		  -->
-		    <p v-if="!isRunOrders && totalKm()>0">
+			<p v-if="!isRunOrders" class="box-distance">
 				<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
 		        <span 
-		          v-for="(order, index) in orders.data" v-if="order.distance!=null"
+		          v-for="(order, index) in results.orders" v-if="order.distance!=null"
 		          :order="order"
 		          :key="index">
 		
@@ -110,9 +110,9 @@ export default {
       j_seo: '',
       organizationTemplatePayToDelivery: '',    
       deliveries: null,
-      orders: {
-      	id: null,
-      	data: []
+      results: {
+      	delivery_id: null,
+      	orders: []
       },
       isRunOrders: false
     };
@@ -131,11 +131,6 @@ export default {
   components: {
     UserCartArticles
   }, 
-  computed: {
-	getArticleOrders: function(q) {
-      return this.order.article_order
-    },  
-  },
   mounted() {
     this.getGlobals();
   },   
@@ -150,10 +145,10 @@ export default {
   		totalKm() {
 	    	var totale = 0;
 
-	    	/* console.log("Totale ordini "+this.orders.data.length); */
-	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
+	    	/* console.log("Totale ordini "+this.results.orders.length); */
+	    	if(typeof this.results.orders !== "undefined" && this.results.orders.length>0) {
 
-	    		this.orders.data.forEach(function (order, index) { 
+	    		this.results.orders.forEach(function (order, index) { 
 	    			/ *console.log("Tratto ordine "+(index+1)); */
 
 					if(order.distance!=null) {
@@ -168,10 +163,10 @@ export default {
 	    totalPrice() {
 	    	var totale = 0;
 
-	    	console.log("Totale ordini "+this.orders.data.length); 
-	    	if(typeof this.orders.data !== "undefined" && this.orders.data.length>0) {
+	    	console.log("Totale ordini "+this.results.orders.length); 
+	    	if(typeof this.results.orders !== "undefined" && this.results.orders.length>0) {
 
-	    		this.orders.data.forEach(function (order, index) { 
+	    		this.results.orders.forEach(function (order, index) { 
 	    			
 	    			// console.log("Tratto ordine "+(index+1)+' totale '+totale);
 	    			// console.log(order);
@@ -249,10 +244,10 @@ export default {
 					if(typeof response.data !== "undefined") {
 						var data = {
 							delivery_id: delivery_id,
-							data: response.data
+							orders: response.data
 						}
-						this.orders = data;
-						// console.log(this.orders);
+						this.results = data;
+						// console.log(this.results);
 				}
 			})
 			.catch(error => {
@@ -353,6 +348,9 @@ export default {
 }
 .box-order {
 	clear: both;
+}
+.box-distance {
+    padding-top: 5px;
 }
 .totaleKm {
     font-size: 18px;

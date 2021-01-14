@@ -12,6 +12,9 @@
       </div>
 
       <user-cart-article 
+
+        @evChangeCart="changeCart"
+
         v-for="article in article_orders"
         v-bind:article="article"
         v-bind:order="order"
@@ -45,27 +48,29 @@ export default {
   components: {
     UserCartArticle: UserCartArticle
   }, 
-  methods: {  
+  methods: {
+    /*
+     * event emit da btnCardAdd
+     */
+    changeCart: function() {
+    },    
     subTotalPrice() {
-      var _order = this.order;
-      var totale = this.$options.filters.currency(this.article_orders.reduce(
-        // function (current, next) { return current + (next.cart.qta_new * next.price)},
-        function (current, next) { 
-            var totale = 0;              
+      var totale = 0;
+      this.article_orders.forEach(function (article_order, index2) { 
+        // console.log(article_order); 
 
-            if(_order.isOpenToPurchasable)  /* aperto per acquistare */
-              totale += (next.cart.qta_new * next.price);
-            else {
-              /* ordine chiuso agli acquisti */
-              totale += next.cart.final_price;
-            }              
+        if(article_order.isOpenToPurchasable)  /* aperto per acquistare */
+          totale += (article_order.cart.qta_new * article_order.price);
+        else {
+          /* ordine chiuso agli acquisti */
+          totale = (totale + parseFloat(article_order.cart.final_price));               
+        }
 
-            return (current + totale);     
-        },
-        0
-      ));
+      // totale = parseFloat(totale).toFixed(2);
+      }); /* loop article_orders */
 
-      totale = totale.replace(',', '.');
+
+      // totale = totale.replace(',', '.');
 
       // console.log('subTotalPrice() totale '+totale);
      
@@ -78,9 +83,9 @@ export default {
       if(this.order.summary_order_cost_less!=null && this.order.summary_order_cost_less.importo_cost_less!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_less.importo_cost_less));
 
-      // console.log('subTotalPrice() totale '+parseFloat(totale));
+      console.log('subTotalPrice() totale '+parseFloat(totale));
 
-      return parseFloat(totale).toFixed(2);
+      return this.$options.filters.currency(totale);
     }
   },
   filters: {

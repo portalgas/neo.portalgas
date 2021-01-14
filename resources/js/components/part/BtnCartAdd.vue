@@ -244,6 +244,11 @@ export default {
           this.article.riopen.differenza_da_ordinare = (this.article.riopen.differenza_da_ordinare + this.article.cart.qta);
         }      
       }
+
+      /* 
+       * richiamo userCartArticles::changeCart per ricalcolo subTotalPrice()
+       * this.$parent.$emit('evChangeCart', true);      
+       */
     },
     plusCart() {
 
@@ -270,6 +275,11 @@ export default {
       if(this.validitationCart()) {
        // this.article.cart.qta=this.article.cart.qta_new; // aggiorno la qta originale
       }
+
+      /* 
+       * richiamo userCartArticles::changeCart per ricalcolo subTotalPrice()
+       * this.$parent.$emit('evChangeCart', true);      
+       */
     },
     numberCart(event) {
       // console.log("numberCart " + event.target.value);

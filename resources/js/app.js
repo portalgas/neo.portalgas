@@ -4,6 +4,21 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./stores/store";
 import axios from "axios";
+import * as Sentry from "@sentry/browser";
+import { Integrations } from "@sentry/tracing";
+
+Sentry.init({
+  Vue,
+  dsn: "https://6a7597680c9e4f71abb2145f33d2ed6a@o503778.ingest.sentry.io/5589439",
+  autoSessionTracking: true,
+  integrations: [
+    new Integrations.BrowserTracing(),
+  ],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
 
 // Install BootstrapVue
 Vue.use(BootstrapVue);
