@@ -231,7 +231,7 @@ export default {
   methods: {
     getGlobals() {
       /*
-       * variabile che arriva da cake, dichiata come variabile e in app.js settata a windiw.
+       * variabile che arriva da cake, dichirata come variabile e in app.js settata a window.
        */
       this.j_seo = window.j_seo;
     },
