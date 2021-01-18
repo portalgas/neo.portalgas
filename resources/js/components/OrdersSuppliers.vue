@@ -100,7 +100,7 @@ export default {
     	currency(amount) {
 	      let locale = window.navigator.userLanguage || window.navigator.language;
 	      const amt = Number(amount);
-	      return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
+	      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
 	    },
         formatDate(value) {
           if (value) {

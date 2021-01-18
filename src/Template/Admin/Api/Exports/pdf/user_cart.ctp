@@ -7,6 +7,7 @@
 // debug($user);
 
 $html = '';
+$html .= '<h3>Consegna '.$delivery->label.'</h3>';
 
 $totale_consegna = 0;
 foreach($results as $result) {

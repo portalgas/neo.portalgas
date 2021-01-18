@@ -122,12 +122,16 @@ export default {
         return (this.isRun || this.article.cart.qta === this.article.cart.qta_new);
       },
       total() {
-        var total = 0;
-        if(this.article.cart.final_price!=null) 
-          total = this.article.cart.final_price;
-        else
-          total = (this.article.cart.qta_new * this.article.price);        
-        return this.$options.filters.currency(total)+" €";
+        var totale = 0;
+
+        if(this.article.isOpenToPurchasable)  /* aperto per acquistare */
+           totale = (this.article.cart.qta_new * this.article.price);  
+        else {
+           /* ordine chiuso agli acquisti */
+           totale = (totale + parseFloat(this.article.cart.final_price));               
+        }
+                
+        return this.$options.filters.currency(totale)+" €";
       },
       qta_new() {
         var qta_new = 0;
@@ -336,8 +340,8 @@ export default {
     currency(amount) {
       let locale = window.navigator.userLanguage || window.navigator.language;
       const amt = Number(amount);
-      return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
-    }
+      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
+    }     
   }  
 };
 </script>

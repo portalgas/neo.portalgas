@@ -51,9 +51,9 @@ class DeliveriesController extends ApiAppController
                 /*
                  * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
                  * key array non per id, nel json perde l'ordinamento della data
-                 * $results[$delivery->id] = $delivery->data->i18nFormat('d MMMM Y');
+                 * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
                  */
-                $results[] = ['id' => $delivery->id, 'label' => $delivery->data->i18nFormat('d MMMM Y')];
+                $results[] = ['id' => $delivery->id, 'label' => $delivery->data->i18nFormat('eeee d MMMM').' - '.$delivery->luogo];
             }
         }
 
@@ -127,9 +127,9 @@ class DeliveriesController extends ApiAppController
                         /*
                          * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
                          * key array non per id, nel json perde l'ordinamento della data
-                         * $results[$cart->order->delivery->id] = $cart->order->delivery->data->i18nFormat('d MMMM Y');
+                         * $results[$cart->order->delivery->id] = $cart->order->delivery->data->i18nFormat('eeee d MMMM Y');
                          */
-                        $results[] = ['id' => $cart->order->delivery->id, 'label' => $cart->order->delivery->data->i18nFormat('d MMMM Y')];
+                        $results[] = ['id' => $cart->order->delivery->id, 'label' => $cart->order->delivery->data->i18nFormat('eeee d MMMM').' - '.$cart->order->delivery->luogo];
                     }
 
                     $arr_delivery_ids[$cart->order->delivery->id] = $cart->order->delivery->id;

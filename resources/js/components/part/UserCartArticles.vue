@@ -5,8 +5,8 @@
       <div class="row ">
         <div class="header col-sm-2 col-xs-2 col-md-2 d-none d-md-block d-lg-block d-xl-block"></div>
         <div class="header col-sm-3 col-xs-3 col-md-4 d-none d-md-block d-lg-block d-xl-block"></div>
-        <div class="header col-sm-1 col-xs-1 col-md-1 d-none d-md-block d-lg-block d-xl-block">Prezzo</div>
         <div class="header col-sm-1 col-xs-1 col-md-1 d-none d-md-block d-lg-block d-xl-block">Conf.</div>
+        <div class="header col-sm-1 col-xs-1 col-md-1 d-none d-md-block d-lg-block d-xl-block">Prezzo</div>
         <div class="header col-sm-2 col-xs-2 col-md-2 d-none d-md-block d-lg-block d-xl-block">Prezzo/UM</div>
         <div class="header          col-xs-3 col-md-2 d-none d-md-block d-lg-block d-xl-block"></div>
       </div>
@@ -53,6 +53,7 @@ export default {
      * event emit da btnCardAdd
      */
     changeCart: function() {
+      // this.subTotalPrice();
     },    
     subTotalPrice() {
       var totale = 0;
@@ -83,7 +84,7 @@ export default {
       if(this.order.summary_order_cost_less!=null && this.order.summary_order_cost_less.importo_cost_less!=null)
         totale = (parseFloat(totale) + parseFloat(this.order.summary_order_cost_less.importo_cost_less));
 
-      console.log('subTotalPrice() totale '+parseFloat(totale));
+      // console.log('subTotalPrice() totale '+parseFloat(totale));
 
       return this.$options.filters.currency(totale);
     }
@@ -92,7 +93,7 @@ export default {
       currency(amount) {
         let locale = window.navigator.userLanguage || window.navigator.language;
         const amt = Number(amount);
-        return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
+        return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
       }      
   } 
 };

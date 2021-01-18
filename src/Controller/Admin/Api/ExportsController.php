@@ -54,7 +54,7 @@ class ExportsController extends AppController {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
         $delivery = $deliveriesTable->getById($user, $organization_id, $delivery_id);
-        $title = "Carrello della consegna ".$delivery->label;
+        $title = "Carrello della consegna ".$delivery->label.' di '.$user->username;
         $filename = $this->setFileName($title.'.pdf');
 
         Configure::write('CakePdf', [

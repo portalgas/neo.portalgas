@@ -1,7 +1,7 @@
 <template>
 
   <div class="row">
-        <div class="col-sm-2 col-xs-2 col-md-2 d-none d-sm-block">
+        <div class="col-sm-1 col-xs-1 col-md-1 d-none d-sm-block">
           <div class="content-img-article-small">
             <img v-if="article.img1!=''" class="img-article-small responsive" :src="article.img1" :alt="article.name">
             <div v-if="article.is_bio" class="box-bio">
@@ -9,8 +9,15 @@
             </div>
           </div>
         </div>
-        <div class="col-text col-sm-3 col-xs-3 col-md-4">
+        <div class="col-text col-sm-4 col-xs-4 col-md-5">
           {{ article.name }} <span><a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a></span>
+          <div><small>{{ article.descri }}</small></div>
+        </div>
+        <div class="col-text col-sm-1 col-xs-1 col-md-1">
+            <span class="d-xl-none d-lg-none d-md-none"> 
+              Conf. 
+             </span> 
+              {{ article.conf }}
         </div>
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
             <span class="d-xl-none d-lg-none d-md-none"> 
@@ -20,13 +27,6 @@
                 <del v-if="article.price_pre_discount != null"
                     >{{ article.price_pre_discount | currency }} &euro;</del
                   > 
-        </div>
-        <div class="col-text col-sm-1 col-xs-1 col-md-1">
-            <span class="d-xl-none d-lg-none d-md-none"> 
-              Conf. 
-             </span> 
-              {{ article.conf }}
-
         </div>
         <div class="col-text col-sm-2 col-xs-2 col-md-1">
             <span class="d-xl-none d-lg-none d-md-none"> 
@@ -96,7 +96,7 @@ export default {
     currency(amount) {
       let locale = window.navigator.userLanguage || window.navigator.language;
       const amt = Number(amount);
-      return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
+      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
     },  
     shortDescription(value) {
       if (value && value.length > 75) {

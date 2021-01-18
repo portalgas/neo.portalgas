@@ -157,7 +157,7 @@ class DeliveriesTable extends Table
             if($results->sys=='Y')
                 $results->label = $results->luogo;
             else
-                $results->label = $results->data->i18nFormat('d MMMM Y').' - '.$results->luogo;
+                $results->label = $results->data->i18nFormat('eeee d MMMM Y').' - '.$results->luogo;
         }
 
         return $results;

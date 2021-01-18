@@ -12,7 +12,8 @@ use Cake\Core\Configure;
 		body {font-size: 12px;font-family:Helvetica, Arial, sans-serif;}
 		.hearder .title {float:right}
 		h1 {background-color:#c3d2e5;padding:2px;}
-		h2 {font-size: 1.5em;}
+		h3 {background: none repeat scroll 0 0 #1e83c2; color: #fff; font-size: 1.5em;padding: 5px;}
+		h2 {color:#484848;font-size: 1.4em;}
 		h2 small {margin-left: 10px;font-size: 0.8em;}
 		th {border-bottom:1px solid #555;background-color: #F5F5F5;}
 		td {border-bottom: 1px solid #ddd}

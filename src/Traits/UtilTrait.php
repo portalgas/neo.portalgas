@@ -146,6 +146,7 @@ trait UtilTrait
         
         $filename = str_replace(' ', '_', $filename);
         $filename = str_replace('_-_', '_', $filename);
+        $filename = str_replace('@', '-', $filename);
         $filename = strtolower($filename);
 
         return $filename;
