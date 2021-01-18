@@ -176,6 +176,9 @@ export default {
   /* background-color:#fa824f !important; orange */
   background-color:#149334 !important;
 }
+.card-footer {
+    padding: 0.75rem 0 !important;
+}
 .card-footer.just-in-cart {
   background-color:#f8f9fa !important;
 }

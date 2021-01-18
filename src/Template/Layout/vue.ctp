@@ -16,9 +16,7 @@ $organization = $this->Identity->get('organization');
       echo '<meta name="robots" content="noindex">';
     ?>    
     <?php echo $this->element('fe/metatag');?> 
-    <title>
-        <?= $this->fetch('title') ?>
-    </title>
+    <title><?php echo Configure::read('html.title'); ?></title>
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->AssetMix->css('app') ?>

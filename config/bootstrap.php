@@ -328,6 +328,8 @@ Configure::write('LatLngDistanceAbsolute', '1000'); // per calcolare la distanza
 /*
  * fe front-end
  */
+Configure::write('html.title', "PortAlGas, il gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas");
+
 Configure::write('sql.limit', 10); // offset: num row 
 Configure::write('sql.no.limit', 1000); // offset: num row 
 

@@ -140,4 +140,7 @@ export default {
   color: #fa824f;
   text-decoration: underline;
 }
+.card-footer {
+    padding: 0.75rem 0.2rem  !important;
+}
 </style>

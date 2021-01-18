@@ -349,9 +349,10 @@ export default {
 <style scoped>
 .text-totale {
     background-color: #fff3ba !important;
+    max-width: 40%;
 }
 .btn-save {
-    margin-left: 15px;
+    /* margin-left: 15px; */
 }
 .buttons_added {
     width: 100%;
