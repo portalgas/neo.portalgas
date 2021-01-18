@@ -38,8 +38,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .tabs-details {
    padding: 10px 0; 
+}
+.nav-pills .is-active {
+    background-color: #fa824f !important;
+    color: #fff !important;
+    font-weight: normal;
 }
 </style>

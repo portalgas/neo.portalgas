@@ -242,12 +242,17 @@ export default {
       ));
     },  
     onSearch: function(q) {
+      console.log('onSearch');
       this.articles = [];
       this.page = 1;
       this.q = q;
       this.scroll();
     },      
-    scroll () {
+    scroll() {
+
+      // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles);
+      if(this.isRunArticles)
+        return;
 
       if (this.page==1) {
          this.getsAjaxArticles();
@@ -268,7 +273,7 @@ export default {
         console.log('bottomOfWindow '+bottomOfWindow);
         */
 
-        if (bottomOfWindow) {
+        if (bottomOfWindow && !this.isRunArticles) {
             this.getsAjaxArticles();
         }
       };  
@@ -309,6 +314,7 @@ export default {
         page: this.page,
         q: this.q
       };
+      // console.log('getsAjaxArticles url '+url)
 
       axios
         .post(url, params)

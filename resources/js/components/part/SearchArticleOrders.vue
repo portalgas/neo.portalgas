@@ -8,7 +8,7 @@
     </div>
     <input type="text" class="form-control" id="q-article" placeholder="Ricerca..."
           v-model="q" 
-          v-on:change="search()">
+          v-on:blur="search()">
   </div>
 
 </template>
