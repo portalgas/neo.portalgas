@@ -85,11 +85,23 @@ a:hover {
     margin-right: 5px;
     display: inline-block;
 }
+@media screen and (max-width: 600px) {
+    .content-img-supplier {
+        width: auto;
+        margin-right: 5px;
+        display: inline-block;
+    }
+}
 .img-supplier {
     max-width: 200px;
     max-height: 100px;
     display: inline;
     border-radius: 6px;
+}
+@media screen and (max-width: 600px) {
+    .img-supplier {
+        max-width: 50px !important;
+    }
 }
 .content-img-supplier-small {
     width: 100px;
