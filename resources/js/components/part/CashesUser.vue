@@ -53,6 +53,7 @@
 
       </div>
       <div class="modal-footer">
+        <a href="#"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
       </div>
     </div>

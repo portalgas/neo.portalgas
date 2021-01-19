@@ -130,7 +130,7 @@ class UsersTable extends Table
     }
 	
     /*
-     * loadIdentifier(resolver
+     * loadIdentifier(resolver)
      */    
     public function findLoginActive(Query $query, array $options)
     {

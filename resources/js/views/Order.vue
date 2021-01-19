@@ -209,6 +209,7 @@ export default {
       order: null,
       articles: [],
       page: 1,
+      isScrollFinish: false,   
       isRunOrder: false,   
       isRunArticles: false,   
       displayList: false,
@@ -247,11 +248,12 @@ export default {
       this.page = 1;
       this.q = q;
       this.scroll();
+      this.isScrollFinish = false;
     },      
     scroll() {
 
-      // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles);
-      if(this.isRunArticles)
+      // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles+' isScrollFinish '+this.isScrollFinish);
+      if(this.isScrollFinish || this.isRunArticles)
         return;
 
       if (this.page==1) {
@@ -260,20 +262,20 @@ export default {
 
       window.onscroll = () => {
         let scrollTop = Math.floor(document.documentElement.scrollTop);
-        let bottomOfWindow = scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        let bottomOfWindow = scrollTop + window.innerHeight > (document.documentElement.offsetHeight - 10);
+        // console.log((scrollTop + window.innerHeight)+' '+(document.documentElement.offsetHeight - 10));
 
-        // console.log('scroll bottomOfWindow '+bottomOfWindow);
         /*
-        scrollTop    get the number of pixels the content of a <div> element is scrolled horizontally and vertically
-        innerHeight  get the current frame's height and width
-        offsetHeight get the height of document, including padding and border
+        scrollTop    height to top
+        innerHeight  height windows
+        offsetHeight height page
         console.log('document.documentElement.scrollTop '+scrollTop);
         console.log('window.innerHeight '+window.innerHeight);
         console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
         console.log('bottomOfWindow '+bottomOfWindow);
         */
 
-        if (bottomOfWindow && !this.isRunArticles) {
+        if (bottomOfWindow && !this.isRunArticles && !this.isScrollFinish) {
             this.getsAjaxArticles();
         }
       };  
@@ -293,7 +295,7 @@ export default {
 
           this.isRunOrder = false;
 
-          //  console.log(response.data);
+          // console.log(response.data);
           if(typeof response.data !== "undefined") {
             this.order = response.data;
           }
@@ -326,17 +328,25 @@ export default {
           // console.log(response.data);
           // console.log(response.data[0]);
           // console.log(response.data[0].ids);
-          if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
-            var data = response.data;
-            for (var i = 0; i < data.length; i++) {
-                this.articles.push(data[i]);
-            }          
-            this.page++;
+          if(response.data.length>0) {
+              if(typeof response.data[0] !== "undefined" && typeof response.data[0].ids !== "undefined") {
+                var data = response.data;
+                for (var i = 0; i < data.length; i++) {
+                    this.articles.push(data[i]);
+                }          
+                this.page++;
+                this.isScrollFinish = false;
+              }          
           }
+          else {
+            this.isScrollFinish = true;
+          }
+
         })
         .catch(error => {
           this.isRunArticles = false;
           console.error("Error: " + error);
+          this.isScrollFinish = true;
         });
     }
   },

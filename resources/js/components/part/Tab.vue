@@ -60,7 +60,7 @@ export default {
 		 */
 		isLoading (newValue, oldValue) {
 			
-			console.log('tab.watch isLoading ['+this.name+'] '+newValue+' - '+oldValue);
+			// console.log('tab.watch isLoading ['+this.name+'] '+newValue+' - '+oldValue);
 			
 			if(newValue===true && !this.justLoading.includes(this.url)) {
 
@@ -68,7 +68,7 @@ export default {
 				this.dataNotFound = true;
 
 				let url = this.url;
-				console.log('tab.watch url '+url);
+				// console.log('tab.watch url '+url);
 
 				axios
 				.post(url)
@@ -101,7 +101,7 @@ export default {
 	mounted() {
 		this.isActive = this.selected; 
 		this.isLoading = this.selected;  
-		console.log('tab.mounted ['+this.name+'] isActive '+this.isActive+' isLoading '+this.isLoading); 
+		// console.log('tab.mounted ['+this.name+'] isActive '+this.isActive+' isLoading '+this.isLoading); 
 	}
 };
 </script>

@@ -6,6 +6,7 @@ use App\Controller\Component\GuardianComponent;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 
 /**
  * Class ApiAppController
@@ -53,6 +54,12 @@ class ApiAppController extends AppController
         if (!$this->request->is('ajax')) {
             throw new BadRequestException();
         }
+
+        $user = $this->Authentication->getIdentity();
+        if(empty($user)) {
+            throw new ForbiddenException();
+        }
+
     }
 
     public function beforeRender(Event $event)
