@@ -94,10 +94,10 @@ export default {
         case 'neo.portalgas.local.it:81':
           glob = require('../../../config/development.env');
         break;
-        case 'test.portalgas.it':
+        case 'neotest.portalgas.it':
           glob = require('../../../config/test.portalgas.env');
           break;
-        case 'next.portalgas.it':
+        case 'neonext.portalgas.it':
           glob = require('../../../config/next.portalgas.env');
           break;
         default:
