@@ -53,7 +53,7 @@
 
       </div>
       <div class="modal-footer">
-        <a href="#"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
+        <a :href="portalgasFeUrl+'/login'" class="mr-auto"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
       </div>
     </div>
@@ -86,6 +86,28 @@ export default {
   },
   computed: {
     ...mapGetters(["cashesUserReload"]),
+    portalgasFeUrl() {
+      var host = window.location.host.toLowerCase();
+      var glob = {};
+
+      switch(host) {
+        case 'neo.portalgas.local.it:81':
+          glob = require('../../../config/development.env');
+        break;
+        case 'test.portalgas.it':
+          glob = require('../../../config/test.portalgas.env');
+          break;
+        case 'next.portalgas.it':
+          glob = require('../../../config/next.portalgas.env');
+          break;
+        default:
+          glob = require('../../../config/production.env');
+      }
+
+      console.log('host '+host+' portalgasFeUrl '+glob.PortalgasFeUrl);
+
+      return glob.PortalgasFeUrl;
+    }
   }, 
   watch: {
     /*
@@ -105,12 +127,13 @@ export default {
     ...mapActions(["cashesUserReloadFinish"]),
     getGlobals() {
       /*
-       * variabile che arriva da cake, dichirata come variabile e in app.js settata a window.
+       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+       * recuperata nei components con getGlobals()
        */
       this.j_seo = window.j_seo;
       this.organizationTemplatePayToDelivery = window.organizationTemplatePayToDelivery;
     },     
-    get () {
+    get() {
 
       let url = "/admin/api/users/cash-ctrl-limit";
       axios

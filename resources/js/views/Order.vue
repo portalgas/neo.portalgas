@@ -232,7 +232,8 @@ export default {
   methods: {
     getGlobals() {
       /*
-       * variabile che arriva da cake, dichirata come variabile e in app.js settata a window.
+       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+       * recuperata nei components con getGlobals()
        */
       this.j_seo = window.j_seo;
     },

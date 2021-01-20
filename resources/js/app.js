@@ -59,10 +59,17 @@ export const vm = new Vue({
 
 
 /*
- * variabile che arriva da cake, dichiarata come variabile e in app.js settata a window.
+ * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+ * recuperata nei components con getGlobals()
  */
 window.j_seo = j_seo;
 window.organizationTemplatePayToDelivery = organizationTemplatePayToDelivery;
+
+/*
+var glob = process.env.NODE_ENV === 'development'
+  ? require('../../../config/development.env')
+  : require('../../../config/production.env')
+*/
 
 /*
  * per array.equals tra ids article e ids article persisititi in store

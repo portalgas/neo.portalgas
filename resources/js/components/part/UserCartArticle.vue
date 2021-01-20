@@ -11,7 +11,7 @@
         </div>
         <div class="col-text col-sm-4 col-xs-4 col-md-5">
           {{ article.name }} <span><a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a></span>
-          <div><small>{{ article.descri }}</small></div>
+          <div><small v-html="$options.filters.html(article.descri)"></small></div>
         </div>
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
             <span class="d-xl-none d-lg-none d-md-none"> 
@@ -79,7 +79,7 @@ export default {
               var modalContent = {
                 title: this.article.name,
                 body: response.data,
-                footer: this.article.descri+"\r\n"+this.article.ingredients
+                footer: ''
               }            
 
               this.addModalContent(modalContent);
@@ -112,6 +112,9 @@ export default {
       else
         return text;
     },
+    html(text) {
+        return text;
+    }    
   }
 };
 </script>
