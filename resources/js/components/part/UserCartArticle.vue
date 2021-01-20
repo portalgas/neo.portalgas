@@ -1,7 +1,7 @@
 <template>
 
-  <div class="row">
-        <div class="col-sm-1 col-xs-1 col-md-1 d-none d-sm-block">
+  <div class="row"> 
+        <div class="col-img col-sm-2 col-md-2 col-lg-1 col-xs-2 d-none d-sm-block">
           <div class="content-img-article-small">
             <img v-if="article.img1!=''" class="img-article-small responsive" :src="article.img1" :alt="article.name">
             <div v-if="article.is_bio" class="box-bio">
@@ -9,7 +9,7 @@
             </div>
           </div>
         </div>
-        <div class="col-text col-sm-4 col-xs-4 col-md-5">
+        <div class="col-text col-sm-3 col-md-2 col-lg-4 col-xs-3">
           {{ article.name }} <span><a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a></span>
           <div><small v-html="$options.filters.html(article.descri)"></small></div>
         </div>
@@ -19,7 +19,7 @@
              </span> 
               {{ article.conf }}
         </div>
-        <div class="col-text col-sm-1 col-xs-1 col-md-1">
+        <div class="col-text col-sm-1 col-md-1 col-lg-1 col-xs-1">
             <span class="d-xl-none d-lg-none d-md-none"> 
               Prezzo 
              </span>         
@@ -28,13 +28,13 @@
                     >{{ article.price_pre_discount | currency }} &euro;</del
                   > 
         </div>
-        <div class="col-text col-sm-2 col-xs-2 col-md-1">
+        <div class="col-text col-sm-2 col-md-2 col-lg-2 col-xs-2">
             <span class="d-xl-none d-lg-none d-md-none"> 
               Prezzo/UM 
              </span>           
               {{ article.um_rif_label }}
         </div>
-        <div class="col-text col-xs-3 col-md-3">
+        <div class="col-text col-md-4 col-lg-3 col-xs-3">
            <app-btn-cart-add v-bind:article="article" v-bind:order="order" :key="article.id"></app-btn-cart-add>
         </div>
   </div>
@@ -123,8 +123,11 @@ export default {
 .row {
   margin-bottom: 5px;
 }
+.col-img {
+  padding: 0px;
+}
 .col-text {
-  padding-top: 10px
+  padding: 10px 0px;
 }
 .box-bio {
     left: 0;

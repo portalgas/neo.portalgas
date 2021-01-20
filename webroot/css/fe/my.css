@@ -135,7 +135,7 @@ a:hover {
     object-fit: cover;
     object-position: center;
     overflow: hidden;
-    width: 100px;
+    width: 75px;
 }
 .box-bio {
     right: 0;
