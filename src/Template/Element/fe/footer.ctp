@@ -4,13 +4,13 @@ use Cake\Core\Configure;
 
 <style>
 footer {
-    margin-top: 20px;
+    margin-top: 15px;
     color: #fff;
     background-color: #2c3e50;
-    padding: 25px 25px 10px 25px;
+    padding: 20px 20px 10px 20px;
 }
 footer .box {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 footer a {
     color: #fff;
@@ -51,7 +51,7 @@ footer ul.social li a:hover {
 </style>
 <footer>
   <div class="row">
-    <div class="box col-md-4 col-xs-12 col-sm-6 text-left">
+    <div class="box col-md-4 col-xs-12 col-sm-6 text-left d-none d-md-block d-lg-block d-xl-block">
         Copyright &copy; <?php echo date('Y');?> PortAlGas. All Rights Reserved.            
     </div>
 
@@ -80,7 +80,7 @@ footer ul.social li a:hover {
       </ul>
     </div>
       
-    <div class="box col-md-4 col-xs-12 col-sm-6 text-right">
+    <div class="box col-md-4 col-xs-12 col-sm-6 text-right d-none d-md-block d-lg-block d-xl-block">
       <ul class="link">
         <li>
           <a href="<?php echo $config['Portalgas.fe.url'];?>/12-portalgas/2-termini-di-utilizzo" title="Leggi le condizioni di utilizzo di PortAlGas">Termini di utilizzo</a>

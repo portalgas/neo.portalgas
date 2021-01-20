@@ -170,14 +170,16 @@
     <div class="row">
 
     	    <div class="col-sm-12 col-xs-2 col-md-3" 
-    		          v-for="article in articles"
+    		          v-for="(article, index) in articles"
     		          :article="article"
     		          :key="article.article_id"
     		        > 
+                <div class="box-article-order" :class="{even: index % 2, odd: !(index % 2)}">
     		          <app-article-order
                     v-bind:article="article"
                     v-bind:order="order">
                     </app-article-order>
+                </div>
           </div> 
 
           <div v-if="isRunArticles" class="box-spinner"> 
@@ -416,5 +418,15 @@ ul.link-top li a:hover {
 }
 .progressBar {
   background-color: #0a659e;
+}
+@media screen and (max-width: 600px) {
+  .box-article-order {
+  }
+  .even {
+    background: #eee;
+  }
+  .odd {
+    background: #ffffff;
+  }
 }
 </style>

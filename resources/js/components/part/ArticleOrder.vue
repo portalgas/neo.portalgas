@@ -163,6 +163,7 @@ export default {
 .card {
   border: 1px solid #f8f9fa !important;
   margin-bottom: 10px;
+  background-color: transparent;
 }
 .card:hover {
   background-color: #f8f8f8;
