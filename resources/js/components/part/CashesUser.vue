@@ -18,9 +18,11 @@
                     v-html="$options.filters.debito_cassa(datas.user_cash_e)">
               </div>
 
-              <div v-if="datas.user_cash_e!=null && datas.user_cash >= 0" 
-                    class="alert alert-primary" 
-                    v-html="$options.filters.credito_cassa(datas.user_cash_e)">
+              <div v-if="datas.user_cash_e!=null && datas.user_cash >= 0"
+                   @click="getCashHistoryByUser"  
+                   class="alert alert-primary cursor-pointer"> 
+                <i class="fas fa-search"></i>
+                <span v-html="$options.filters.credito_cassa(datas.user_cash_e)"></span>
               </div>
 
               <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.fe_msg!=null" class="alert alert-warning" v-html="$options.filters.html(datas.ctrl_limit.fe_msg)"></div>
@@ -37,6 +39,54 @@
 
           </div>
 
+          <!--  cash history  -->
+          <!--  cash history  -->
+          <!--  cash history  -->
+          <div v-if="isRunCashHistory" class="box-spinner"> 
+            <div class="spinner-border text-info" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>    
+          </div>
+
+          <div v-if="dataNotFound===false" class="alert alert-warning">
+            Non ci sono voci in cassa precedenti
+          </div>
+          <div v-if="cashHistories!=null" class="table-responsive">
+            <table class="table table-striped">
+            <thead><tr>
+                <th>N</th>
+                <th colspan="2">Saldo</th>
+                <th>Operazione</th>
+                <th>Nota</th>
+                <th>Inserito</th>
+            </tr></thead><tbody>
+            <tr  
+              v-for="(cashHistory, index) in cashHistories"
+              :key="cashHistory.id">
+                  <td>{{ index + 1 }}</td>
+                  <td 
+                    style="width:10px;" 
+                    :style="'background-color:'+cashHistory.color_alert"></td>         
+                  <td v-html="$options.filters.html(cashHistory.importo_e)">
+                  </td>
+                  <td>
+                    <span v-if="cashHistory.operazione>0">+ </span>
+                    <span v-html="$options.filters.html(cashHistory.operazione_e)"></span>
+                  </td>
+                  <td v-html="$options.filters.html(cashHistory.nota)">
+                  </td>
+                  <td style="white-space: nowrap;">
+                    {{ cashHistory.modified | formatDate }}
+                  </td>
+            </tr>
+            </tbody></table>
+          </div>
+
+
+
+          <!--  link  -->
+          <!--  link  -->
+          <!--  link  -->
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/my-profile'" class="btn btn-blue">Visualizza il tuo profilo / Modifica le impostazioni</a>
@@ -77,12 +127,15 @@ export default {
           fe_msg: null,
           fe_msg_tot_acquisti: null
         }
-      }
+      },
+      isRunCashHistory: false,
+      dataNotFound: '',
+      cashHistories: null
     };
   },
   mounted() {
     this.getGlobals();
-    this.get();
+    this.getCashCtrlLimit();
   },
   computed: {
     ...mapGetters(["cashesUserReload"]),
@@ -118,7 +171,7 @@ export default {
       // console.log('cashesUserReload '+newValue+' - '+oldValue);
       
       if(newValue)
-        this.get();
+        this.getCashCtrlLimit();
 
       this.cashesUserReloadFinish();
     }
@@ -133,7 +186,33 @@ export default {
       this.j_seo = window.j_seo;
       this.organizationTemplatePayToDelivery = window.organizationTemplatePayToDelivery;
     },     
-    get() {
+    getCashHistoryByUser() {
+
+      this.cashHistories = null;
+      this.dataNotFound = '';
+      this.isRunCashHistory=true;
+
+      let url = "/admin/api/cashes/cash-history-by-user";
+      // console.log('getCashHistoryByUser '+url);
+      axios
+        .post(url)
+        .then(response => {
+            // console.log(response.data);
+            if(typeof response.data !== "undefined") {
+              this.cashHistories = response.data;
+              this.dataNotFound = true;
+            }
+            else
+              this.dataNotFound = false;
+
+            this.isRunCashHistory=false;
+        })
+        .catch(error => {
+          this.isRunCashHistory=false;
+          console.error("Error: " + error);
+        });
+    },    
+    getCashCtrlLimit() {
 
       let url = "/admin/api/users/cash-ctrl-limit";
       axios
@@ -145,7 +224,6 @@ export default {
             }
         })
         .catch(error => {
-          this.isRunDeliveries=false;
           console.error("Error: " + error);
         });
     },  
@@ -162,7 +240,16 @@ export default {
     },
     html(text) {
         return text;
-    }
+    },
+    formatDate(value) {
+      if (value) {
+        let locale = window.navigator.userLanguage || window.navigator.language;
+        /* console.log(locale); */
+        moment.toLocaleString(locale)
+        moment.locale(locale);
+        return moment(String(value)).format('DD MMMM YYYY')
+      }
+    },    
   }  
 };
 </script>

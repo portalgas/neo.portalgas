@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class CashesTable extends Table
 {
@@ -84,6 +85,11 @@ class CashesTable extends Table
         $results = $this->find()
                         ->where($where)
                         ->first();
+
+        if(!empty($results)) {
+            $results->importo_ = number_format($results->importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+            $results->importo_e = number_format($results->importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';          
+        }
 
         if($debug) debug($results);
         

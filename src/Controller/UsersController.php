@@ -66,6 +66,19 @@ class UsersController extends AppController
         } // end if ($this->request->is('post'))
     }
     
+    /*
+     * FE
+     * viene effettuato il logout su neo
+     * redirect su portalgas.it/login ma essendo ancora loggato compare il tasto logout
+     * viene effettuato il logout su portalgas
+     * richiamato il file /logout.php che fa un redirect su neo../users/logout
+     * redirect su portalgas.it/login
+     *
+     * BO
+     * /administrator/components/com_login/controller.php (prima ritornava alla login d'amministrazione)
+     * richiamato il file /logout.php che fa un redirect su neo../users/logout
+     * redirect su portalgas.it/login     
+     */
     public function logout()
     {
         $user = $this->Authentication->getIdentity();
@@ -73,7 +86,11 @@ class UsersController extends AppController
 
         // ob_start();
         $this->Authentication->logout();
-        
-        return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
+       
+        $config = Configure::read('Config');
+        $portalgas_fe_url_login = $config['Portalgas.fe.url.login']; 
+
+        return $this->redirect($portalgas_fe_url_login);
+        // return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
     }
 }

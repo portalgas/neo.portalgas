@@ -11,7 +11,6 @@ class CartsController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Auths');
         $this->loadComponent('Cart');
     }
 

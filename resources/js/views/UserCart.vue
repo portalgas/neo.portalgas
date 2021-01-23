@@ -42,6 +42,7 @@ export default {
   methods: {
     getDeliveries() {
 
+        this.isLoading=true;
         this.dataNotFound = false;
 
         // this.isLoading=true;
@@ -60,6 +61,7 @@ export default {
             if(this.datas.length==0) 
               this.dataNotFound = true;                  
           }
+          this.isLoading=false;
         })
         .catch(error => {
           this.isLoading=false;

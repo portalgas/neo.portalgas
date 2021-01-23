@@ -94,4 +94,22 @@ class CashesHistoriesTable extends Table
 
         return $rules;
     }
+
+    public function getByUser($user, $organization_id, $user_id, $options=[], $debug=false) {
+
+        $results = [];
+
+        $where = ['CashesHistories.organization_id' => $organization_id,
+                  'CashesHistories.user_id' => $user_id];
+        if($debug) debug($where);
+
+        $results = $this->find()
+                        ->where($where)
+                        ->order(['CashesHistories.id' => 'asc']) // per created no perche' e' sempre =
+                        ->all();
+
+        if($debug) debug($results);
+        
+        return $results;
+    }    
 }

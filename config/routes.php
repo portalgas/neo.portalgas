@@ -194,6 +194,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         });
         $routes->scope('/cashes', ['controller' => 'Cashes'], function (RouteBuilder $routes) {
             $routes->connect('/excludedUpdate', ['action' => 'cashExcludedUpdate', '_method' => 'POST']);
+            $routes->connect('/cashHistoryByUser', ['action' => 'cashHistoryByUser', '_method' => 'POST']);
         });
         $routes->scope('/cashiers', ['controller' => 'Cashiers'], function (RouteBuilder $routes) {
             $routes->connect('/getCompleteUsersByDelivery', ['action' => 'getCompleteUsersByDelivery', '_method' => 'POST']);

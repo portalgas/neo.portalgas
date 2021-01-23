@@ -11,6 +11,7 @@ class CashesController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Cash');
     }
 
     public function beforeFilter(Event $event) {
@@ -81,4 +82,24 @@ class CashesController extends ApiAppController
 
         return $this->_response($results);  
     } 
+
+    /* 
+     * elenco di tutti i movimenti di cassa di uno uses
+     * /admin/api/cashes/cash-history-by-user
+     */
+    public function cashHistoryByUser() {
+
+        $debug = false;
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $user = $this->Authentication->getIdentity();
+
+        $results = [];
+   
+        $results = $this->Cash->getHistoryByUser($user, $user->organization->id, $user->id, [], $debug);
+        
+        return $this->_response($results);
+    }     
 }

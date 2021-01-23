@@ -1,4 +1,11 @@
-<?php use Cake\Core\Configure; ?>
+<?php 
+use Cake\Core\Configure; 
+
+$config = Configure::read('Config');
+$portalgas_bo_url = $config['Portalgas.bo.url'];
+$portalgas_bo_home = $config['Portalgas.bo.home'];   
+$joomla25Salts_isActive = $config['Joomla25Salts.isActive'];  
+?>
 <nav class="navbar navbar-static-top">
 
   <?php if (isset($layout) && $layout == 'top'): ?>
@@ -312,23 +319,30 @@ if ($this->Identity->isLoggedIn()) {
           </li>
           -->
           <!-- Menu Footer-->
-          <li class="user-footer">
-            <div class="pull-left">
-              <a href="/admin/users/view/<?php echo $this->Identity->get('id');?>" class="btn btn-default btn-flat">Profile</a>
-            </div>
-            <div class="pull-right">
-              <a href="/users/logout" class="btn btn-default btn-flat">Sign out</a>
-            </div>
-          </li>
-        </ul>
-      </li>
+
+          <?php
+          echo '<li class="user-footer">';
+          echo '<div class="pull-left">';
+          // echo '<a href="/admin/users/view/'.$this->Identity->get('id').'" class="btn btn-default btn-flat">Profile</a>';
+          echo '</div>';
+          echo '<div class="pull-right">';
+          // logout valida per il FE 
+          // echo '<a href="/users/logout" class="btn btn-default btn-flat">Logout</a>';
+          if($joomla25Salts_isActive) 
+              $url = $this->Url->build('/admin/joomla25Salts');
+          else
+              $url = $portalgas_bo_url.$portalgas_bo_home;
+
+          $url = $portalgas_bo_url.$portalgas_bo_home;
+          
+          echo '<a href="'.$url.'" class="btn btn-danger btn-flat">Logout</a>';
+          echo '</div>';
+          echo '</li>';
+        echo '</ul>';
+      echo '</li>';
 
 
 
-
-
-      <!-- Control Sidebar Toggle Button -->
-      <?php 
       if(Configure::read('AdminLTEMenu')) {
           if (!isset($layout)) {
             echo '<li>';
@@ -336,10 +350,10 @@ if ($this->Identity->isLoggedIn()) {
             echo '</li>';
           }
       }
-      ?>
-    </ul>
-  </div>
-<?php
+    
+    echo '</ul>';
+  echo '</div>';
+
 } // if ($this->Identity->isLoggedIn()) {
 ?>
 
