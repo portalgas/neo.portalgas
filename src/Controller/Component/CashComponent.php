@@ -103,10 +103,19 @@ class CashComponent extends Component {
                 }
                 else {
                     /*
-                     * ultima riga non visualizzo la data perche' e' una riga di totale
+                     * ultima riga
                      */
+                    $importo_old = $cashesHistories[$numResult]->importo;
+                    if ($importo_old==0)
+                        $results[$index_next]['color_alert'] = 'trasparent';
+                    else
+                    if ($importo_old>0)
+                        $results[$index_next]['color_alert'] = 'green';
+                    else
+                    if ($importo_old<0)
+                        $results[$index_next]['color_alert'] = 'red';
+
                     $results[$index_next]['nota'] = "";
-                    $results[$index_next]['modified'] = '';
                 }
             }
         }
