@@ -522,12 +522,13 @@ class LifeCycleOrdersTable extends Table
  
         if($user->organization->template->orderUserPaid == 'Y' && in_array($orderResult->state_code, $this->getStateCodeManagementPayments($user))) {
                
-            $summaryOrdersTable = TableRegistry::get('SummaryOrders');        
+            $summaryOrdersTable = TableRegistry::get('SummaryOrders');  
+            $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');        
                
             $where = [];
             $where = ['SummaryOrders.organization_id' => $user->organization->id,
                       'SummaryOrders.order_id' => $orderResult->id];
-            $where += $this->_registry->SummaryOrder->getConditionIsSaldato($user);          
+            $where += $lifeCycleSummaryOrdersTable->getConditionIsSaldato($user);          
             $options['recursive'] =  0;                                 
             $summaryOrderPaidResults = $summaryOrdersTable->find()
                                                             ->where($where)
@@ -537,7 +538,7 @@ class LifeCycleOrdersTable extends Table
             $where = [];
             $where = ['SummaryOrders.organization_id' => $user->organization->id,
                       'SummaryOrders.order_id' => $orderResult->id];
-            $where += $this->_registry->SummaryOrder->getConditionIsNotSaldato($user);
+            $where += $lifeCycleSummaryOrdersTable->getConditionIsNotSaldato($user);
             $summaryOrderNotPaidResults = $summaryOrdersTable->find()
                                                             ->where($where)
                                                             ->all();
@@ -565,7 +566,7 @@ class LifeCycleOrdersTable extends Table
         $results = false;
 
         $ordersTable = TableRegistry::get('Orders');
-        $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrdersTable');
+        $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
@@ -987,7 +988,7 @@ class LifeCycleOrdersTable extends Table
     public function stateCodeAfter($user, $orderResult, $state_code, $debug=false) {
 
         $ordersTable = TableRegistry::get('Orders');
-        $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrdersTable');
+        $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
 
         $state_code_next = '';
         $rule_sort_next = 1; 
@@ -1981,5 +1982,5 @@ class LifeCycleOrdersTable extends Table
         }
         
         return $results;
-    }   
+    }       
 }

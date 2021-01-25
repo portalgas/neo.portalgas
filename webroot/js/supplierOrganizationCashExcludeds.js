@@ -17,7 +17,7 @@ SupplierOrganizationCashExcludeds.prototype = {
     bindEvents: function () {
         var _this = this;
 
-        console.log("SupplierOrganizationCashExcludeds bindEvents");
+        // console.log("SupplierOrganizationCashExcludeds bindEvents");
 
         $(".cashExcludeds").click(function (e) {
 
@@ -27,16 +27,18 @@ SupplierOrganizationCashExcludeds.prototype = {
             var type = $(this).attr('data-attr-type'); /* insert-{id} delete-{id} */
 
             if (typeof id === 'undefined') {
-                console.log('cashExcludeds data-attr-id undefined!');
+                // console.log('cashExcludeds data-attr-id undefined!');
                 return;
             }
                  
 
             var responseHtml = $('.msg'+'-'+id);
-            if (typeof responseHtml === 'undefined') 
-                console.log('cashExcludeds responseHtml [msg-'+id+'] undefined!');
-            else
-                console.log('cashExcludeds responseHtml [msg-'+id+']');
+            if (typeof responseHtml === 'undefined') {
+                // console.log('cashExcludeds responseHtml [msg-'+id+'] undefined!');
+            }
+            else {
+                // console.log('cashExcludeds responseHtml [msg-'+id+']');
+            }
             responseHtml.addClass('fa fa-spinner');
 
             var data = {
@@ -53,14 +55,14 @@ SupplierOrganizationCashExcludeds.prototype = {
                       'X-CSRF-Token': csrfToken
                     },                
                     success: function (response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.code) {
                         }
                         
                         responseHtml.removeClass('fa-lg fa fa-spinner');
                         responseHtml.addClass('fa-lg text-green fa fa-thumbs-o-up');
 
-                        console.log(type);
+                        // console.log(type);
                         if(type=='insert-'+id) {
                             $('[data-attr-type=insert-'+id+']').hide();
                             $('[data-attr-type=delete-'+id+']').show();
@@ -72,8 +74,8 @@ SupplierOrganizationCashExcludeds.prototype = {
                         }    
                     },
                     error: function (e) {
-                        console.log(e.responseText);
-                        console.log(e.responseText.message);
+                        // console.log(e.responseText);
+                        // console.log(e.responseText.message);
                         responseHtml.removeClass('fa-lg fa fa-spinner');
                         responseHtml.addClass('fa-lg text-red fa fa-thumbs-o-down');
                     },
@@ -84,7 +86,7 @@ SupplierOrganizationCashExcludeds.prototype = {
         }); 
     },
     init: function () {
-        console.log("SupplierOrganizationCashExcludeds.init");
+        // console.log("SupplierOrganizationCashExcludeds.init");
 
         this.bindEvents();
     }

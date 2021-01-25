@@ -30,11 +30,11 @@ class SummaryOrderPlusTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Deliveries', [
-            'foreignKey' => ['organization_id', 'id'],
+            'foreignKey' => ['organization_id', 'delivery_id'],
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [
-            'foreignKey' => ['organization_id', 'id'],
+            'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER',
         ]);
     }

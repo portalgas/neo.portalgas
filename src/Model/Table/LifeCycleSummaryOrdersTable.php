@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 
@@ -81,7 +82,7 @@ class LifeCycleSummaryOrdersTable extends Table
         $where = [];
         $where = ['SummaryOrders.organization_id' => $user->organization->id,
 				  'SummaryOrders.order_id' => $orderResult->id];
-		$where += $this->_registry->SummaryOrder->getConditionIsNotSaldato($user);
+		$where += $this->getConditionIsNotSaldato($user);
         $summaryOrderResults = $summaryOrdersTable->find()
         										->where($where)
         										->all();
@@ -158,4 +159,21 @@ class LifeCycleSummaryOrdersTable extends Table
 		return $saldato_a; 
 	}
     
+    /*
+     * condizione per considerare un SummaryOrder pagato saldato_a != null
+     *   e non 'SummaryOrder.importo = SummaryOrder.importo_pagato'
+     * saldato_a ENUM('CASSIERE','TESORIERE')
+     */
+    public function getConditionIsSaldato($user) {
+        return ['SummaryOrders.saldato_a is not null'];
+    } 
+
+    /*
+     * condizione per considerare un SummaryOrder pagato saldato_a = null
+     *   e non 'SummaryOrder.importo != SummaryOrder.importo_pagato'
+     * saldato_a ENUM('CASSIERE','TESORIERE')
+     */
+    public function getConditionIsNotSaldato($user) {
+        return ['SummaryOrders.saldato_a is null'];
+    }     
 }

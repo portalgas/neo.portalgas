@@ -33,6 +33,7 @@ class CashiersController extends ApiAppController
         if(!empty($delivery_id)) {
 
             $cashesTable = TableRegistry::get('Cashes');
+            $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
             
             $options =  [];
             $options['where'] = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
@@ -47,9 +48,10 @@ class CashiersController extends ApiAppController
                      * associo dettaglio acquisto per user (SummaryOrders)
                      */
                     $options =  [];
-                    $options['where'] = $this->SummaryOrder->getConditionIsNotSaldato($this->Authentication->getIdentity());
+                    $options['where'] = $lifeCycleSummaryOrdersTable->getConditionIsNotSaldato($this->Authentication->getIdentity());
                     $options['where'] += ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];
                     $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->Authentication->getIdentity(), $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);
+                    // debug($summaryOrderResults);
                     if(empty($summaryOrderResults) || $summaryOrderResults->count()==0) {
                         /*
                          * gasista ha gia' saldato

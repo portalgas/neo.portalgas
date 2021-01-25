@@ -43,8 +43,8 @@ if(!empty($deliveries)) {
           <th><?php echo __('Supplier-Name');?></th>
           <th></th>
           <th></th>
-          <th></th>
-          <th></th>
+          <th><?php echo __('data_inizio');?></th>
+          <th><?php echo __('data_fine');?></th>
         </tr>
       </thead>
       <tbody>
@@ -67,6 +67,8 @@ if(!empty($deliveries)) {
 
   echo '<div v-show="is_found_users === false" style="display: none;text-align: center;"  class="run run-users"><div class="spinner"></div></div>';
   echo '<div v-show="is_found_users === true" style="display:none;">';
+
+  echo '<div v-if="users!=null && users.length>0">';
   echo $this->HtmlCustomSite->boxTitle(['title' => "Elenco gasisti che devono saldare", 'subtitle' => 'Ordini nello stato "in carico al cassiere"']);
     ?>
     <table class="table table-hover">
@@ -128,10 +130,22 @@ if(!empty($deliveries)) {
     echo $this->Form->control('nota', ['type' => 'textarea', 'label' => __('Cash-Nota')]);
     echo '</div>';
     echo '</div>';
+    echo '</div>';
+
+    echo '<div v-if="users==null || users.length==0" class="row">'; 
+    echo '<div class="col-md-12">';    
+    echo $this->element('msg', ['msg' => "Non sono presenti gasisti che devono saldare"]);
+    echo '</div>';
+    echo '</div>';
+
+    /*
+     * gestisco con disabled perche' se lo includo solo se users!=null e' sempre disabled
+     */
+    echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled', 'disabled' => 'disabled']);
+
     echo '</div>'; // is_found_users
 
 	
-    echo $this->Form->submit(__('Salda tutti i gasisti'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right disabled', 'disabled' => 'disabled']);
     echo $this->Form->end();
 	  echo '</div>'; // vue-cashiers
 }

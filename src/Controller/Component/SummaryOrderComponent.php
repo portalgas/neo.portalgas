@@ -25,24 +25,6 @@ class SummaryOrderComponent extends Component {
         //$controller->request
     }
 
-    /*
-     * condizione per considerare un SummaryOrder pagato saldato_a != null
-     *   e non 'SummaryOrder.importo = SummaryOrder.importo_pagato'
-     * saldato_a ENUM('CASSIERE','TESORIERE')
-     */
-    public function getConditionIsSaldato($user) {
-        return ['SummaryOrders.saldato_a is not null'];
-    } 
-
-    /*
-     * condizione per considerare un SummaryOrder pagato saldato_a = null
-     *   e non 'SummaryOrder.importo != SummaryOrder.importo_pagato'
-     * saldato_a ENUM('CASSIERE','TESORIERE')
-     */
-    public function getConditionIsNotSaldato($user) {
-        return ['SummaryOrders.saldato_a is null'];
-    } 
-
 	public function getTotImportoByOrder($user, $organization_id, $order_id, $options=[], $debug=false) {
 
         $summaryOrdersTable = TableRegistry::get('SummaryOrders');
@@ -83,7 +65,7 @@ class SummaryOrderComponent extends Component {
                             ->all();
 
         if($debug) debug($results);
-        
+
         return $results;
     }
 

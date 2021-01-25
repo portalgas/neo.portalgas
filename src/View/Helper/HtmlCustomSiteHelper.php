@@ -109,15 +109,19 @@ class HtmlCustomSiteHelper extends FormHelper
     public function boxSupplierOrganization($results, $options=[]) {
 
         $config = Configure::read('Config');
-        $portalgas_fe_url = $config['Portalgas.fe.url'];
-        $url = $portalgas_fe_url.Configure::read('Supplier.img.path.full');
+        $img_path = sprintf(Configure::read('Supplier.img.path.full'), $results->supplier->img1);
+
+        $portalgas_app_root = $config['Portalgas.App.root'];
+        $path = $portalgas_app_root.$img_path;
 
         $html = '';
         $html .= '<div class="box-supplier-organization">';
         // $html .= $results->id;
-        if(!empty($results->supplier->img1)) {
-            $img1_path = sprintf($url, $results->supplier->img1);
-            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
+        if(!empty($results->supplier->img1) && file_exists($path)) {
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
+            $url = sprintf($portalgas_fe_url.Configure::read('Supplier.img.path.full'), $results->supplier->img1);
+
+            $html .= '<span class="box-img"><img src="'.$url.'" alt="'.$results->supplier->name.'" title="'.$results->supplier->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
         $html .= '<span class="box-name">';
         if(!empty($results->supplier->www)) 
@@ -134,15 +138,19 @@ class HtmlCustomSiteHelper extends FormHelper
     public function boxArticleImg($results, $options=[]) {
 
         $config = Configure::read('Config');
-        $portalgas_fe_url = $config['Portalgas.fe.url'];
-        $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
+        $img_path = sprintf(Configure::read('Article.img.path.full'), $results->article->organization_id, $results->article->img1);
+
+        $portalgas_app_root = $config['Portalgas.App.root'];
+        $path = $portalgas_app_root.$img_path;
 
         $html = '';
         $html .= '<div class="box-article-img">';
         // $html .= $results->id;
-        if(!empty($results->article->img1)) {
-            $img1_path = sprintf($url, $results->article->organization_id, $results->article->img1);
-            $html .= '<span class="box-img"><img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
+        if(!empty($results->article->img1) && file_exists($path)) {
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
+            $url = sprintf($portalgas_fe_url.Configure::read('Article.img.path.full'), $results->article->organization_id, $results->article->img1);
+
+            $html .= '<span class="box-img"><img src="'.$img1_path.'" alt="'.$results->article->name.'" title="'.$results->article->name.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
         }
         $html .= '<span class="box-name">'.$results->name.'</span>';
         $html .= "</div>";

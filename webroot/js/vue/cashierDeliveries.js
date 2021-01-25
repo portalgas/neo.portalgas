@@ -39,7 +39,7 @@ $(function () {
 
             let orders_state_code = 'PROCESSED-ON-DELIVERY';
             let delivery_id = $("select[name='delivery_id']").val();
-            console.log(ajaxUrlGetOrdersByDelivery+' delivery_id '+delivery_id);
+            // console.log(ajaxUrlGetOrdersByDelivery+' delivery_id '+delivery_id);
 
             if(delivery_id==0 || delivery_id=='') {
                 $('.run-orders .spinner').removeClass(ico_spinner);
@@ -71,15 +71,16 @@ $(function () {
             .catch(error => {
                   $('.run-orders .spinner').removeClass(ico_spinner);
                   this.is_found_orders = false;
-                  console.log("Error: " + error);
+                  console.error("Error: " + error);
             });            
         },
         getCompleteUsersByDelivery: function(e) {
 
+            this.users = null;
             this.is_found_users = false;
 
             let delivery_id = $("select[name='delivery_id']").val();
-            console.log(ajaxUrlGetCompleteUsersByDelivery+' delivery_id '+delivery_id);
+            // console.log(ajaxUrlGetCompleteUsersByDelivery+' delivery_id '+delivery_id);
 
             if(delivery_id==0 || delivery_id=='') {
                 $('.run-users .spinner').removeClass(ico_spinner); 
@@ -104,18 +105,25 @@ $(function () {
                   $('.run-users .spinner').removeClass(ico_spinner);
                   this.is_found_users = true;
                   this.users = response.data;
-                  $('#submit').removeClass('disabled');
-                  $('#submit').prop("disabled", false);
+
+                  if(this.users.length>0) {
+                    $('#submit').removeClass('disabled');
+                    $('#submit').prop("disabled", false);
+                  }
+                  else {
+                    $('#submit').addClass('disabled');
+                    $('#submit').prop("disabled", true);
+                  }
                 })
             .catch(error => {
                  $('.run-users .spinner').removeClass(ico_spinner);
                  this.is_found_users = false;
-                 console.log("Error: " + error);
+                 console.error("Error: " + error);
             });            
         }        
       },
       mounted: function(){
-        console.log('mounted vueCasheirs');
+        // console.log('mounted vueCasheirs');
       },
       filters: {
         currency(amount) {
@@ -133,7 +141,7 @@ $(function () {
               var dec_point = ','; 
               var thousands_sep = '.';
 
-              console.log('formatImportToDb BEFORE number '+number);
+              // console.log('formatImportToDb BEFORE number '+number);
 
               var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
               var d = dec_point == undefined ? "." : dec_point;
@@ -141,7 +149,8 @@ $(function () {
               var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
 
               number = s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-              console.log('formatImportToDb AFTER number '+number);
+              // console.log('formatImportToDb AFTER number '+number);
+
               return number;
           },         
         formatDate(value) {
