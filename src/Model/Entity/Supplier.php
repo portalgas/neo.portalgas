@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * KSupplier Entity
+ * Supplier Entity
  *
  * @property int $id
  * @property int $category_supplier_id

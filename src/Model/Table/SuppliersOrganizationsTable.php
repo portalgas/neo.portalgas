@@ -4,9 +4,9 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
 
 class SuppliersOrganizationsTable extends Table
 {

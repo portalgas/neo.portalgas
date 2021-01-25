@@ -52,6 +52,7 @@ class MappingGdxpPortalgasComponent extends Component {
 			$vatNumber = $datas['piva'];
 
 			$suppliersTable = TableRegistry::get('Suppliers');
+			$suppliersTable->setTable('k_suppliers'); // workaround se no vale Suppliers
 
 			$where = ['Suppliers.piva' => $vatNumber];
 	        $supplier = $suppliersTable->find()
@@ -103,6 +104,7 @@ class MappingGdxpPortalgasComponent extends Component {
 
 		// ctrl se gia' non esiste
 		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+		$suppliersOrganizationsTable->setTable('k_suppliers_organizations'); // workaround se no vale SuppliersOrganizations
 		// gia' non associato $suppliersOrganizationsTable->organizations->removeBehavior('OrganizationsParams');
 
 		$where = ['SuppliersOrganizations.supplier_id' => $supplier->id,
@@ -120,6 +122,7 @@ class MappingGdxpPortalgasComponent extends Component {
 			 * prima creo eventuale Organization per ottenere organization_id
 			 */
 			$organizationTable = TableRegistry::get('Organizations');
+			$organizationTable->setTable('k_organizations'); // workaround se no vale Organizations
 
 			/* 
 			 * ctrl se gia' esiste ma non puo' essere
@@ -174,6 +177,7 @@ class MappingGdxpPortalgasComponent extends Component {
 			         * aggiorno Supplier.owner_organization_id
 			         */
 			        $suppliersTable = TableRegistry::get('Suppliers');
+					$suppliersTable->setTable('k_suppliers'); // workaround se no vale Suppliers
 
 			        $data = [];
 			        $data['owner_organization_id'] = $organization->id;
@@ -213,7 +217,9 @@ class MappingGdxpPortalgasComponent extends Component {
         $msg = '';
         $results = [];
 
-        $suppliersTable = TableRegistry::get('Suppliers');        
+        $suppliersTable = TableRegistry::get('Suppliers'); 
+		$suppliersTable->setTable('k_suppliers'); // workaround se no vale Suppliers
+
 		$supplier = null;
 
 		if(empty($datas)) {
@@ -229,6 +235,7 @@ class MappingGdxpPortalgasComponent extends Component {
 			$supplier_id = $datas['supplier_id'];
 
 			$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+			$suppliersOrganizationsTable->setTable('k_suppliers_organizations'); // workaround se no vale SuppliersOrganizations
 
 			$where = ['SuppliersOrganizations.organization_id' => $organization_id,
 					 'SuppliersOrganizations.supplier_id' => $supplier_id];
@@ -312,6 +319,7 @@ class MappingGdxpPortalgasComponent extends Component {
 			$supplier_organization_id = $datas['supplier_organization_id'];
 
 			$articlesTable = TableRegistry::get('Articles');
+			$articlesTable->setTable('k_articles'); // workaround se no vale Articles
 
 			$where = ['organization_id' => $organization_id,
 					 'supplier_organization_id' => $supplier_organization_id];
@@ -349,7 +357,10 @@ class MappingGdxpPortalgasComponent extends Component {
         $supplier_id = 0;
 
 		$suppliersTable = TableRegistry::get('Suppliers');
+		$suppliersTable->setTable('k_suppliers'); // workaround se no vale Suppliers
+
 		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+		$suppliersOrganizationsTable->setTable('k_suppliers_organizations'); // workaround se no vale SuppliersOrganizations
 
 		$where = ['Suppliers.piva' => $vatNumber,
 				  // 'SuppliersOrganizations.organization_id' => $organization_id
@@ -384,6 +395,7 @@ class MappingGdxpPortalgasComponent extends Component {
         $supplier_organization_id = 0;
 
 		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+		$suppliersOrganizationsTable->setTable('k_suppliers_organizations'); // workaround se no vale SuppliersOrganizations
 
 		$where = ['Suppliers.piva' => $vatNumber,
 				  'SuppliersOrganizations.organization_id' => $organization_id];
@@ -406,6 +418,7 @@ class MappingGdxpPortalgasComponent extends Component {
 	public function getSupplierOrganizationOrganizationIdByVatNumber($organization_id, $vatNumber) {
 
 		$suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+		$suppliersOrganizationsTable->setTable('k_suppliers_organizations'); // workaround se no vale SuppliersOrganizations
 
 		$where = ['Suppliers.piva' => $vatNumber,
 				  'SuppliersOrganizations.organization_id' => $organization_id];

@@ -4,9 +4,9 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
 
 class SuppliersTable extends Table
 {
@@ -21,6 +21,7 @@ class SuppliersTable extends Table
         parent::initialize($config);
 
         $this->setTable('k_suppliers');
+        $this->setAlias('Suppliers');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 

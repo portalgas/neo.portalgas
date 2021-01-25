@@ -332,7 +332,8 @@ class QueueComponent extends Component {
         /*
          * beforeSaveFirst ini, eseguito la prima volta
          */
-        if(!empty($table->before_save_first)) {
+        if(!empty($table->before_save_first)) { 
+
             $results = $this->_registry->{$this->component}->{$table->before_save_first}($datas, $organization_id);
             // debug($results);
             $this->_registry->QueueLog->logging($uuid, $queue, $results['msg'], $results['results'], 'INFO');
