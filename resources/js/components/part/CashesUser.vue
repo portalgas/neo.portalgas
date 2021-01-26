@@ -157,7 +157,7 @@ export default {
           glob = require('../../../config/production.env');
       }
 
-      console.log('host '+host+' portalgasFeUrl '+glob.PortalgasFeUrl);
+      // console.log('host '+host+' portalgasFeUrl '+glob.PortalgasFeUrl);
 
       return glob.PortalgasFeUrl;
     }

@@ -323,9 +323,9 @@ class QueueComponent extends Component {
 
         $tableRegistry = TableRegistry::get($namespace_table_slave);
         // gia' definito nel model 
-        $tableRegistry->setTable($slave_entity);
-        $tableRegistry->setAlias($slave_entity);
-        
+        // $tableRegistry->setTable($table->table_name);
+        // $tableRegistry->setAlias($slave_entity);
+  
         $tableRegistry->setConnection(ConnectionManager::get($datasource_slave));
         $conn = $tableRegistry->getConnection($datasource_slave);
 

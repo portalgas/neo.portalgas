@@ -3,7 +3,7 @@
 	<div id="accordion-deliveries">
 
 	    <div class="card" 
-	          v-for="(delivery, index)  in deliveries"
+	          v-for="(delivery, index)  in datas"
 	          :delivery="delivery"
 	          :key="delivery.id"
 		  >
@@ -213,7 +213,7 @@ export default {
 	    	return this.$options.filters.currency(totale);
 	    },
 	    selectDelivery(delivery_id) {
-	    	/* console.log('selectDelivery '+delivery_id); */
+	    	console.log('selectDelivery '+delivery_id);
 
 			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
 			

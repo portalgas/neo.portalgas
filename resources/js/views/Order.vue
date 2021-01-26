@@ -182,6 +182,13 @@
                 </div>
           </div> 
 
+          <div class="col-sm-12 col-xs-12 col-md-12" v-if="!isRunArticles && articles.length==0">
+            <div class="alert alert-warning" role="alert">
+                <span v-if="order!=null && order.order_state_code.code=='RI-OPEN-VALIDATE'">Tutti i colli dell'ordine sono completati</span>
+                <span v-if="order!=null && order.order_state_code.code!='RI-OPEN-VALIDATE'">L'ordine sono ha articoli ordinabili</span>
+            </div>
+          </div>
+
           <div v-if="isRunArticles" class="box-spinner"> 
             <div class="spinner-border text-info" role="status">
               <span class="sr-only">Loading...</span>

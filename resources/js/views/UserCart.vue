@@ -11,7 +11,7 @@
         </div>  
       </div>
 
-      <div v-if="dataNotFound" class="alert alert-warning">
+      <div v-if="dataFound===false" class="alert alert-warning">
         Carrello vuoto, non sono stati effettuai acquisti
       </div>
       <user-cart-orders v-if="isLoading==false" :datas="datas"></user-cart-orders> 
@@ -30,7 +30,7 @@ export default {
     return {
       datas:  {},
       isLoading: false, 
-      dataNotFound: false
+      dataFound: null
     };
   },
   components: {
@@ -43,7 +43,7 @@ export default {
     getDeliveries() {
 
         this.isLoading=true;
-        this.dataNotFound = false;
+        this.dataFound = null;
 
         // this.isLoading=true;
         let url = '/admin/api/deliveries/user-cart-gets';
@@ -59,12 +59,15 @@ export default {
             this.datas = response.data;
             // console.log(this.datas);
             if(this.datas.length==0) 
-              this.dataNotFound = true;                  
+              this.dataFound = false;
+            else 
+              this.dataFound = true;                  
           }
           this.isLoading=false;
         })
         .catch(error => {
           this.isLoading=false;
+          this.dataFound = null;
           console.error("Error: " + error);
         });
     }    
