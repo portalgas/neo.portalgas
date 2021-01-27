@@ -195,13 +195,13 @@ export default {
 
 					// console.log('totalPrice() totale '+totale);
 
-					if(order.summary_order_trasport!=null && order.summary_order_trasport.importo_trasport!=null)
+					if(order.trasport!=0.00 && order.summary_order_trasport!=null && order.summary_order_trasport.importo_trasport!=null)
 						totale = (parseFloat(totale) + parseFloat(order.summary_order_trasport.importo_trasport));
 
-					if(order.summary_order_cost_more!=null && order.summary_order_cost_more.importo_cost_more!=null)
+					if(order.cost_more!=0.00 && order.summary_order_cost_more!=null && order.summary_order_cost_more.importo_cost_more!=null)
 						totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_more.importo_cost_more));
 
-					if(order.summary_order_cost_less!=null && order.summary_order_cost_less.importo_cost_less!=null)
+					if(order.cost_less!=0.00 && order.summary_order_cost_less!=null && order.summary_order_cost_less.importo_cost_less!=null)
 						totale = (parseFloat(totale) + parseFloat(order.summary_order_cost_less.importo_cost_less));
 
 					// totale = parseFloat(totale).toFixed(2);	 
@@ -230,7 +230,6 @@ export default {
 				// console.log('Tab aperto => esco ');
 				return;
 			}
-
 
 			this.isRunOrders=true;
 				

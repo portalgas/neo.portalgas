@@ -10,7 +10,18 @@
           </div>
         </div>
         <div class="col-text col-sm-3 col-md-2 col-lg-4 col-xs-3">
-          {{ article.name }} <span><a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a></span>
+          {{ article.name }} 
+
+          <span>
+            <a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a>
+
+            <div v-if="isLoading" class="box-spinner"> 
+              <div class="spinner-border text-info" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>  
+            </div> 
+          </span>
+
           <div><small v-html="$options.filters.html(article.descri)"></small></div>
         </div>
         <div class="col-text col-sm-1 col-xs-1 col-md-1">
@@ -50,6 +61,7 @@ export default {
   props: ['order', 'article'],
   data() {
     return {
+      isLoading: false,
       qta: 1
     };
   },
@@ -62,6 +74,8 @@ export default {
       this.showModal(true);
     }, 
     clickShowOrHiddenModal () {
+
+      this.isLoading=true;
 
       let params = {
         order_id: this.article.ids.order_id,
@@ -82,11 +96,14 @@ export default {
                 footer: ''
               }            
 
+              this.isLoading=false;
+
               this.addModalContent(modalContent);
               this.showOrHiddenModal();              
             }
         })
         .catch(error => {
+          this.isLoading=false;
           this.isRunDeliveries=false;
           console.error("Error: " + error);
         });

@@ -271,17 +271,17 @@ class SummaryOrderPlusTable extends Table
 
 		$resultsSummaryOrder = $summaryOrdersTable->getByUserByOrder($user, $organization_id, $user_id, $order_id, $options=[], $debug);
 			
-        if($hasTrasport=='Y') {
+        if($hasTrasport=='Y' && $trasport!=0.00) {
         	$summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
 
             $resultsSummaryOrderTrasport = $summaryOrderTrasportsTable->getByUserByOrder($user, $organization_id, $user_id, $order_id, $options=[], $debug);
         }
-        if($hasCostMore=='Y') {
+        if($hasCostMore=='Y' && $cost_more!=0.00) {
             $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
 
             $resultsSummaryOrderCostMore = $summaryOrderCostMoresTable->getByUserByOrder($user, $organization_id, $user_id, $order_id, $options=[], $debug);
         }
-        if($hasCostLess=='Y') {
+        if($hasCostLess=='Y' && $cost_less!=0.00) {
             $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
 
             $resultsSummaryOrderCostLess = $summaryOrderCostLessesTable->getByUserByOrder($user, $organization_id, $user_id, $order_id, $options=[], $debug);

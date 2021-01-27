@@ -13,7 +13,18 @@
         <div class="card-body">
             <div class="card-text">
                 <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
-                </div><span><a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a></span>
+                </div>
+
+                <span>
+                  <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a>
+                  
+                  <div v-if="isLoading" class="box-spinner"> 
+                    <div class="spinner-border text-info" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>  
+                  </div> 
+
+                </span>
 
                 <div>
                   <strong>Prezzo</strong> {{ article.price | currency }} &euro;
@@ -77,6 +88,7 @@ export default {
   props: ['order', 'article'],
   data() {
     return {
+      isLoading: false,
       qta: 1
     };
   },
@@ -91,6 +103,8 @@ export default {
       this.showModal(true);
     }, 
     clickShowOrHiddenModal () {
+
+      this.isLoading=true;
 
       let params = {
         order_id: this.article.ids.order_id,
@@ -111,11 +125,14 @@ export default {
                 footer: ''
               }            
 
+              this.isLoading=false;
+
               this.addModalContent(modalContent);
               this.showOrHiddenModal();              
             }
         })
         .catch(error => {
+          this.isLoading=false;
           this.isRunDeliveries=false;
           console.error("Error: " + error);
         });
