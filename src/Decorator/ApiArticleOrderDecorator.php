@@ -149,7 +149,7 @@ class ApiArticleOrderDecorator  extends AppDecorator {
 
         /*
          * cart
-         * se non ci sono anocra acquisti 
+         * se non ci sono ancora acquisti 
          * 'user_id' => (int) 0,   
          * 'qta' => (int) 0,
          * 'qta_new' => (int) 0 
@@ -163,11 +163,19 @@ class ApiArticleOrderDecorator  extends AppDecorator {
             ($articles_order->cart->qta_forzato > 0 ) ? $final_qta = $articles_order->cart->qta_forzato: $final_qta = $articles_order->cart->qta;
             $results['cart']['final_qta'] = $final_qta;
 
-            if($articles_order->cart->importo_forzato > 0 ) {
+            if($articles_order->cart->qta_forzato > 0) {
+                $results['cart']['is_qta_mod'] = true;
+            }
+            else {
+                $results['cart']['is_qta_mod'] = false;
+            }
+            if($articles_order->cart->importo_forzato > 0) {
                 $results['cart']['final_price'] = $articles_order->cart->importo_forzato;
+                $results['cart']['is_import_mod'] = true;
             }
             else {
                 $results['cart']['final_price'] = ($final_qta * $articles_order->prezzo);
+                $results['cart']['is_import_mod'] = false;
             }
         }
 

@@ -49,8 +49,16 @@ foreach($results as $result) {
 		$html .= '	<td class="text-center">'.$article_order['conf'].'</td>';
 		$html .= '	<td class="text-center">'.$article_order['um_rif_label'].'</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
-		$html .= '	<td class="text-center">'.$article_order['cart']['final_qta'].'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['cart']['final_price']).'</td>';
+		$html .= '	<td class="text-center">';
+		$html .= $article_order['cart']['final_qta'];
+		if($article_order['cart']['is_qta_mod'])
+			$html .= '<span>*</span>';
+		$html .= '  </td>';
+		$html .= '	<td class="text-center">';
+		$html .= $this->HtmlCustom->importo($article_order['cart']['final_price']);
+		if($article_order['cart']['is_import_mod'])
+			$html .= '<span>*</span>';
+		$html .= '  </td>';
 		$html .= '</tr>';
 
 	}

@@ -71,12 +71,13 @@
         </div>
       </div>
 
-       <div class="quantity buttons_added" v-if="order.order_state_code.code!='RI-OPEN-VALIDATE' && order.order_state_code.code!='OPEN'">
+       <div class="quantity buttons_added" 
+            v-if="order.order_state_code.code!='RI-OPEN-VALIDATE' && order.order_state_code.code!='OPEN'">
 
           <input
             type="number"
             class="form-control text-center"
-            :value="qta_new"
+            :value="qta_new_not_to_purchasable"
             :disabled="true"
             inputmode="numeric"
             title="Quantità"
@@ -134,18 +135,28 @@ export default {
         return this.$options.filters.currency(totale)+" €";
       },
       qta_new() {
+        /*
+         * ordine per acquistare article.isOpenToPurchasable
+         */
         var qta_new = 0;
-       /*
-        * se no non si aggiorna quando varia la qta
-        if(this.article.cart.final_qta!=null) 
-          qta_new = this.article.cart.final_qta;
-        else
-        */
           
         qta_new = this.article.cart.qta_new;
         
         return qta_new;
-      }    
+      },
+      qta_new_not_to_purchasable() {
+        /*
+         * ordine chiuso agli acquisti !article.isOpenToPurchasable
+         */      
+        var qta_new = 0;
+
+        if(this.article.cart.final_qta!=null) 
+            qta_new = this.article.cart.final_qta;
+        else
+            qta_new = this.article.cart.qta_new;
+        
+        return qta_new;      
+      }
   },   
   methods: {
     ...mapActions(["cashesUserReload"]),
