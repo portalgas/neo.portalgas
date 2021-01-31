@@ -55,7 +55,7 @@ footer ul.social li a:hover {
         Copyright &copy; <?php echo date('Y');?> PortAlGas. All Rights Reserved.            
     </div>
 
-    <div class="box col-md-4 col-xs-12 col-sm-6 text-center">
+    <div class="box col-md-4 col-xs-12 col-sm-12 text-center">
       <ul class="social">
         <li>
           <a href="mailto:info@portalgas.it"" title="Scrivici una mail a info@portalgas.it">

@@ -203,17 +203,19 @@ a:hover {
 .navbar a.nav-link:hover, .nav-pills a.nav-link:hover {
     color: #fff !important;
     text-decoration: none;
-}
+}/*
 .navbar .navbar-collapse {
     position: absolute;
     bottom: 0;
     right: 0;  
 }
+
 @media (max-width: 576px) {
   .navbar .navbar-collapse {
       position: relative;
   }
 }
+*/
 .navbar .navbar-toggler {
     background-color: #0a659e;
 }
