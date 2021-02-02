@@ -8,6 +8,12 @@ use Cake\Core\Configure;
 
 class HtmlCustomSiteOrdersHelper extends FormHelper
 {
+    private static $GAS = 1;
+    private static $DES_TITOLARE = 2;
+    private static $DES = 3;
+    private static $PROMOTION = 4;
+    private static $PACT_PRE = 5;
+    private static $PACT = 6;
 	private $debug = false;
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
 
@@ -16,30 +22,29 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         // debug($config);
     }
 
-    public function factory($scope, $debug=false) {
+    public function factory($order_type_id, $debug=false) {
 
         $helper = '';
 
-        switch (strtoupper($scope)) {
-            case 'DES-TITOLARE':
-            case 'DES':
-                $helper = 'HtmlCustomSiteOrdersDes';
-                break;
-            case 'GAS':
+        switch (strtoupper($order_type_id)) {
+            case self::$GAS:
                 $helper = 'HtmlCustomSiteOrdersGas';
                 break;
-            case 'PROMOTION':
+            case self::$DES:
+            case self::$DES_TITOLARE:
+                $helper = 'HtmlCustomSiteOrdersDes';
+                break;
+            case self::$PROMOTION:
                 $helper = 'HtmlCustomSiteOrdersPromotion';
                 break;
-            case 'PACT-PRE':
+            case self::$PACT_PRE:
                 $helper = 'HtmlCustomSiteOrdersPactPre';
                 break;
-            case 'PACT':
+            case self::$PACT:
                 $helper = 'HtmlCustomSiteOrdersPact';
                 break;
-            
             default:
-                die('HtmlCustomSiteHelper scope ['.$scope.'] non previsto');
+                die('HtmlCustomSiteHelper order_type_id ['.$order_type_id.'] non previsto');
                 break;
         }
 

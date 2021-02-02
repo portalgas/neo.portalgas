@@ -11,7 +11,7 @@ echo $this->element('msg', ['msg' => 'testing pact']);
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
-$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($scope);
+$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 // debug($htmlCustomSiteOrders);
 ?>
 <!-- Content Header (Page header) -->

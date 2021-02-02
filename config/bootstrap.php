@@ -280,9 +280,9 @@ Configure::write('Organization.type.pact', 'PACT');
 
 Configure::write('Order.type.gas', 1);
 Configure::write('Order.type.des', 2);
-Configure::write('Order.type.des-titolare', 3);
+Configure::write('Order.type.des_titolare', 3);
 Configure::write('Order.type.promotion', 4);
-Configure::write('Order.type.pact-pre', 5); 
+Configure::write('Order.type.pact_pre', 5); 
 Configure::write('Order.type.pact', 6);  
 Configure::write('Order.type.supplier', 7); 
 

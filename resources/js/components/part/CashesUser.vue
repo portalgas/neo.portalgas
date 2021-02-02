@@ -244,6 +244,7 @@ export default {
     formatDate(value) {
       if (value) {
         let locale = window.navigator.userLanguage || window.navigator.language;
+        locale = 'it-IT';
         /* console.log(locale); */
         moment.toLocaleString(locale)
         moment.locale(locale);

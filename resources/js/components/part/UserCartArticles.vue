@@ -92,6 +92,7 @@ export default {
   filters: {
       currency(amount) {
         let locale = window.navigator.userLanguage || window.navigator.language;
+        locale = 'it-IT';
         const amt = Number(amount);
         return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
       }      

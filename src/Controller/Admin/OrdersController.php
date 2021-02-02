@@ -158,15 +158,23 @@ class OrdersController extends AppController
 
     public function add()
     { 
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        $order_type_id = Configure::read('Order.type.promotion');
+        $order_type_id = Configure::read('Order.type.pact-pre'); ;
+        $order_type_id = Configure::read('Order.type.pact'); ;
         $order_type_id = Configure::read('Order.type.gas');
+
         debug($order_type_id);
-        $ordersTable = $this->Orders->factory($order_type_id);
+        $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
         $ordersTable->addBehavior('Orders');
         debug($ordersTable);
 
-        $this->Orders->addBehavior('Orders');
-        debug($this->Orders);
+       // $this->Orders->addBehavior('Orders');
+       // debug($this->Orders);
 
         $order = $ordersTable->newEntity();
         
@@ -179,10 +187,21 @@ class OrdersController extends AppController
             }
             $this->Flash->error($order->getErrors());
         }
-        $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
-        $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownerSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
+
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
+        // debug($suppliersOrganizations);
+        if(empty($suppliersOrganizations)) {
+            $this->Flash->error(__('no suppliersOrganizations'));
+        }
+        else {
+
+        }
+        
+        $organizations = $ordersTable->Organizations->find('list', ['limit' => 200]);
+        // $suppliersOrganizations = $ordersTable->SuppliersOrganizations->find('list', ['limit' => 200]);
+        $ownerOrganizations = $ordersTable->OwnerOrganizations->find('list', ['limit' => 200]);
+        $ownerSupplierOrganizations = $ordersTable->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
         
         /* 
          * id => id_organization;id_delivery 
