@@ -3,9 +3,17 @@ namespace App\Model\Table;
 
 interface OrderTableInterface {
 
+	// BO produttori per creare l'ordine
 	public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false);
 
+	// BO consegne per creare l'ordine
 	public function getDeliveries($user, $organization_id, $where=[], $debug=false);
+
+	/*
+	 * BO consegne per creare l'ordine
+	 * $parent_id = des_order_id / prod_gas_promotion_id
+	 */
+	public function getInfoParent($user, $organization_id, $parent_id, $where=[], $debug=false);
 
     /*
      * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)

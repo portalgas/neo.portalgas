@@ -1,11 +1,13 @@
 <?php
 namespace App\Model\Table;
 
+
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class OrdersDesTable extends OrdersTable implements OrderTableInterface
 {
@@ -70,6 +72,17 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
+    }
+
+    /*
+     * implement
+     */   
+    public function getInfoParent($user, $organization_id, $des_order_id, $where=[], $debug=false) {
+
+       if(empty($parent_id))
+        $results = '';
+
+       return $results;
     }
 
     /*

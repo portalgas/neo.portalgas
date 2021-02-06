@@ -437,7 +437,6 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         } 
         else
             $results = Configure::read('Article.img.no');
-
         
         return $results; 
     }       

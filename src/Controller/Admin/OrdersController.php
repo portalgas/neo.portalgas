@@ -156,22 +156,35 @@ class OrdersController extends AppController
         $this->set(compact('order_type_id', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
     }
 
-    public function add()
+    /*
+    $parent_id = des_order_id / prod_gas_promotion_id
+    $order_type_id = Configure::read('Order.type.pact_pre'); ;
+    $order_type_id = Configure::read('Order.type.pact'); ;
+    $order_type_id = Configure::read('Order.type.gas');
+    $order_type_id = Configure::read('Order.type.promotion');
+    */
+    public function add($order_type_id=1, $parent_id=0)
     { 
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto
         // debug($user);
 
-        $order_type_id = Configure::read('Order.type.promotion');
-        $order_type_id = Configure::read('Order.type.pact-pre'); ;
-        $order_type_id = Configure::read('Order.type.pact'); ;
-        $order_type_id = Configure::read('Order.type.gas');
+        // debug($order_type_id);
+        switch ($order_type_id) {
+            case Configure::read('Order.type.promotion'):
+                $prod_gas_promotion_id = $parent_id;
+                break;
+            case Configure::read('Order.type.des'):
+            case Configure::read('Order.type.des_titolare'):
+                $des_order_id = $parent_id;
+                break;
+        }
 
-        debug($order_type_id);
+        
         $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
         $ordersTable->addBehavior('Orders');
-        debug($ordersTable);
+        // debug($ordersTable);
 
        // $this->Orders->addBehavior('Orders');
        // debug($this->Orders);
@@ -188,6 +201,7 @@ class OrdersController extends AppController
             $this->Flash->error($order->getErrors());
         }
 
+        $infoParents = $ordersTable->getInfoParent($user, $organization_id, $parent_id);
         $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
         // debug($suppliersOrganizations);
@@ -208,11 +222,12 @@ class OrdersController extends AppController
          * $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
          * perche' doppia key
          */ 
-        $deliveries = $ordersTable->getDeliveries($user, $organization_id);
+        $where = ['ProdGasPromotionsOrganizationsDeliveries.prod_gas_promotion_id' => $prod_gas_promotion_id];
+        $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where);
 
         $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
         $desOrders = []; //  $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+        $this->set(compact('order_type_id', 'order', 'infoParents', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
     }
 
     /**

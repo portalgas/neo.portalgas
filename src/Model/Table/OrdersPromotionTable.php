@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class OrdersPromotionTable extends OrdersTable implements OrderTableInterface 
 {
@@ -88,14 +89,35 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
         $prodGasPromotionsOrganizationsDeliveriesTable = TableRegistry::get('ProdGasPromotionsOrganizationsDeliveries');
-    
-        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
-                                'Deliveries.stato_elaborazione' => 'OPEN',
-                                'Deliveries.sys' => 'N',
-                                'DATE(Deliveries.data) >= CURDATE()'];
+
+        $where_delivery = ['Deliveries.isVisibleFrontEnd' => 'Y',
+            'Deliveries.stato_elaborazione' => 'OPEN',
+            'Deliveries.sys' => 'N',
+            'DATE(Deliveries.data) >= CURDATE()'];
+
+        if(isset($where['Deliveries']))
+            $where['Deliveries'] = array_merge($where_delivery, $where['Delivery']);
+        else
+            $where['Deliveries'] = $where_delivery;
+
         $results = $prodGasPromotionsOrganizationsDeliveriesTable->getsList($user, $organization_id, $where);
 
         return $results;        
+    }
+
+    /*
+     * implement
+     */   
+    public function getInfoParent($user, $organization_id, $prod_gas_promotion_id, $where=[], $debug=false) {
+
+       if(empty($parent_id))
+        $results = '';
+
+       $prodGasPromotionsTable = TableRegistry::get('ProdGasPromotions');
+
+       $results = $prodGasPromotionsTable->getProdGasPromotion($user, $prod_gas_promotion_id, $organization_id, $debug);
+
+       return $results;
     }
 
     /*

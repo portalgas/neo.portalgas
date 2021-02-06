@@ -117,7 +117,7 @@ class ProdGasPromotionsOrganizationsDeliveriesTable extends Table
                                 ->all();
 
         // debug($results);
-        
+      
         return $results;
     }       
 }

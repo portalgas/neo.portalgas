@@ -1,11 +1,13 @@
 <?php
 namespace App\Model\Table;
 
+
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class OrdersGasTable extends OrdersTable implements OrderTableInterface 
 {
@@ -79,6 +81,17 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
 
         return $results;
     }    
+
+    /*
+     * implement
+     */   
+    public function getInfoParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
+      
+       if(empty($parent_id))
+        $results = '';
+
+       return $results;
+    }
 
     /*
      * implement

@@ -5,6 +5,9 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
+use App\Decorator\ApiProdGasArticlesPromotionDecorator;
 
 class ProdGasArticlesPromotionsTable extends Table
 {
@@ -81,17 +84,24 @@ class ProdGasArticlesPromotionsTable extends Table
         return $rules;
     }
 
-    public function getByProdGasPromotionId($user, $prod_gas_promotion_id, $debug=false) {
+    public function getByProdGasPromotionId($user, $organization_id, $prod_gas_promotion_id, $debug=false) {
 
         if (empty($prod_gas_promotion_id)) {
             return null;
         }
 
+        $where = [$this->getAlias().'.organization_id' => $organization_id,
+                  $this->getAlias().'.prod_gas_promotion_id' => $prod_gas_promotion_id];
+
         $results = $this->find()  
-                        ->where([$this->getAlias().'.id' => $prod_gas_promotion_id])
+                        ->where($where)
                         ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->all();
+        // debug($results);
+                      
+        $articlesOrdersResult = new ApiProdGasArticlesPromotionDecorator($user, $results); 
+        $results = $articlesOrdersResult->results;
 
-        return $results;      
+        return $results;
     }    
 }

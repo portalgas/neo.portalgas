@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class OrdersPactPreTable extends OrdersPactTable implements OrderTableInterface 
 {
@@ -59,6 +60,17 @@ class OrdersPactPreTable extends OrdersPactTable implements OrderTableInterface
 
         return $results;   
     } 
+
+    /*
+     * implement
+     */   
+    public function getInfoParent($user, $organization_id, $promotion_id, $where=[], $debug=false) {
+
+       if(empty($parent_id))
+        $results = '';
+
+       return $results;
+    }
 
     /*
      * implement

@@ -27,8 +27,24 @@ class HtmlCustomHelper extends FormHelper
         return $this->Form->hidden('CsrfToken', ['name' => '_csrfToken', 'value' => $this->getCsrfToken(), 'autocomplete' => 'off']);
     }
 
+    // https://api.cakephp.org/3.8/class-Cake.View.Helper.TimeHelper.html
+    public function data($data, $format='MMM dd, yyyy') {
+        $str = $data->i18nFormat($format);
+        // $str = $data->format($format);
+        return $str;
+    } 
+
     public function note($value) {
-        $str = '<div class="direct-chat-text">'.$value.'</div>';
+        $str = '<div class="direct-chat-text">'.h($value).'</div>';
+        return $str;
+    }
+
+    public function alert($msg, $level_alert='info') {
+        $str = ''; 
+        $str .= '<div class="alert alert-'.$level_alert.' alert-dismissible">';
+        $str .= '  <button type="button" class="close" data-dismiss="alert">&times;</button>';
+        $str .= $msg;
+        $str .= '</div>';
         return $str;
     }
 

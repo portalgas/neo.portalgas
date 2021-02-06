@@ -241,6 +241,18 @@ msgstr "Data visita"
 msgid "Data Visit"
 msgstr "Data visita"
 
+msgid "DataFineMax"
+msgstr "Data visita"
+
+msgid "DataFineMax"
+msgstr "Per tutti i G.A.S. si chiuderà"
+
+msgid "DataFineMaxPromotion"
+msgstr "La promozione si chiuderà"
+
+msgid "DataFineValidation"
+msgstr "Riaprire l'ordine fino a"
+
 msgid "Note"
 msgstr "Nota"
 
@@ -301,6 +313,9 @@ msgstr "Bio"
 msgid "Conf"
 msgstr "Conf"
 
+msgid "Package"
+msgstr "Conf"
+
 msgid "Prezzo/UM"
 msgstr "Prezzo/UM"
 
@@ -333,6 +348,15 @@ msgstr "Importo dovuto"
 
 msgid "ImportoPagato"
 msgstr "Importo pagato"
+
+msgid "ImportoScontato"
+msgstr "Importo scontato"
+
+msgid "ImportoTotaleScontato"
+msgstr "Importo totale scontato"
+
+msgid "ImportoOriginale"
+msgstr "Importo originale"
 
 msgid "CostTrasport"
 msgstr "Trasporto"
@@ -781,6 +805,9 @@ msgstr "Pagamenti"
 msgid "Supplier"
 msgstr "Produttore"
 
+msgid "Suppliers"
+msgstr "Produttori"
+
 msgid "SupplierOrganization"
 msgstr "Produttore del G.A.S."
 
@@ -894,6 +921,25 @@ msgstr "Hai superato il credito di cassa!"
 
 msgid "cart_msg_riopen_package_close"
 msgstr "Il collo è stato completato da un'altro gasista!"
+
+#
+# ProdGasPromotion
+#
+msgid "ProdGasPromotion"
+msgstr "Promozione"
+
+msgid "ProdGasPromotions"
+msgstr "Promozioni"
+
+msgid "ProdGasPromotion-Qta"
+msgstr "Quantità in promozione"
+
+msgid "ProdGasPromotion-Qta-small"
+msgstr "Q.tà in promozione"
+
+msgid "ProdGasPromotion-PrezzoUnita"
+msgstr "Prezzo unità in promozione"
+
 
 #
 # M S G  system
