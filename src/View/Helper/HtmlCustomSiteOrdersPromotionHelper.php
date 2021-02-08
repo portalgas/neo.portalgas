@@ -64,6 +64,8 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
      */
     public function costs($parent) {
 
+         debug($parent);
+
         $hasTrasport = $parent->prodGasPromotionsOrganizations->hasTrasport;
         $trasport = $parent->prodGasPromotionsOrganizations->trasport;
         $hasCostMore = $parent->prodGasPromotionsOrganizations->hasCostMore;

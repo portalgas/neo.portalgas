@@ -17,6 +17,11 @@ interface OrderTableInterface {
 	public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false);
 
     /*
+     * ..behaviour afterSave() ha l'entity ma non la request
+     */ 
+	public function afterSaveWithRequest($user, $organization_id, $request, $debug=false);
+
+    /*
      * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)
      */   
 	public function getById($user, $organization_id, $order_id, $debug=false);

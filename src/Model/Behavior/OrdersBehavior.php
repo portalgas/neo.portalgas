@@ -24,7 +24,7 @@ class OrdersBehavior extends Behavior
      * https://book.cakephp.org/4/en/orm/saving-data.html#before-marshal
      * modify request data before it is converted into entities
      */
-    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options)
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
         // debug('OrdersBehavior beforeMarshal');
 

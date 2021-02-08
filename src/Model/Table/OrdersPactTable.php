@@ -127,6 +127,14 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
 
     /*
      * implement
+     * ..behaviour afterSave() ha l'entity ma non la request
+     */   
+    public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
+
+    }
+    
+    /*
+     * implement
      */   
     public function getById($user, $organization_id, $order_id, $debug=false) {
        return parent::getById($user, $organization_id, $order_id, $debug);

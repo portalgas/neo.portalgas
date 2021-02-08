@@ -199,15 +199,19 @@ class OrdersController extends AppController
         $order = $ordersTable->newEntity();
         
         if ($this->request->is('post')) {
-            $request = $this->request->getData();  
+            $request = $this->request->getData();
             $order = $ordersTable->patchEntity($order, $request);
-             debug($order); exit;
+            // debug($order);
             if ($ordersTable->save($order)) {
+
+                $ordersTable->afterSaveWithRequest($user, $organization_id, $request);
+
                 $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
                 // return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error($order->getErrors());
+            else
+                $this->Flash->error($order->getErrors());
         }
 
         /*

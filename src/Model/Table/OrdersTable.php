@@ -371,6 +371,14 @@ class OrdersTable extends Table
     
     /*
      * implement
+     * ..behaviour afterSave() ha l'entity ma non la request
+     */   
+    public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
+
+    }
+
+    /*
+     * implement
      * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)
      */   
     public function getById($user, $organization_id, $order_id, $debug=false) {
@@ -488,19 +496,22 @@ class OrdersTable extends Table
                                 ->select(['SuppliersOrganizations.mail_order_open'])
                                 ->where($where)
                                 ->first();
-        debug($request);
-        debug($results);
-        exit;
+        // debug($request);
+        // debug($results);
         if($results->mail_order_open=='N')
             $mail_open_send = 'N';  
          else {
-            $data_inizio = $request->data_inizio;  
+            $data_inizio = $request['data_inizio']; 
+            $data_inizio = $data_inizio['year'].'-'.$data_inizio['month'].'-'.$data_inizio['day']; 
             $data_oggi = date("Y-m-d");
+            
             if ($data_inizio == $data_oggi)
                 $mail_open_send = 'Y';
             else 
                 $mail_open_send = 'N';  
         }
+            
+        // debug('setOrderMailOpenSend() data_inizio '.$data_inizio.' data_oggi '.$data_oggi.' mail_open_send = '.$mail_open_send);
             
         return $mail_open_send;
     }   
