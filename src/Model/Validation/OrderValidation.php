@@ -31,57 +31,36 @@ class OrderValidation extends Validation
 
     public static function dateComparisonToDelivery($value, $operator, $context)
     {
-    	// debug($context); 	
-    	$organization_id = $context['data']['organization_id'];
-    	$delivery_id = $context['data']['delivery_id'];  
+        // debug($context);     
+        $organization_id = $context['data']['organization_id'];
+        $delivery_id = $context['data']['delivery_id'];  
 
-    	$deliveriesTable = TableRegistry::get('Deliveries');
+        $deliveriesTable = TableRegistry::get('Deliveries');
 
         $where = ['Deliveries.organization_id' => $organization_id,
                   'Deliveries.id' => $delivery_id];
-        // debug($where);
+        // debug($context['data']);
 
         $results = $deliveriesTable->find()
                             ->select(['data', 'sys'])
                             ->where($where)
                             ->first();
+        if(empty($results))
+            return false;
 
-        // debug($results);
-		if($results->sys=='Y') // consegna Da definire
-        	return true;
+        if($results->sys=='Y') // consegna Da definire
+            return true;
 
         $value = $value['year'].$value['month'].$value['day'];
         // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
         // $value2 = $results->data->i18nFormat('Ymd');        
         $value2 = $results->data->format('Ymd');
+        // debug('dateComparisonToDelivery '.$value.' '.$operator.' '.$value2);
+        // debug(Validation::comparison($value, $operator, $value2));
         if (!Validation::comparison($value, $operator, $value2))
             return false;
 
-		return true; 	
-    }
-
-    /*
-     * ctrl che il produttore abbia articoli validi da associare all'ordine
-     */
-    public static function totArticles($value, $context)
-    {
-       // debug($context); 	
-        $organization_id = $context['data']['organization_id'];
-        $supplier_organization_id = $context['data']['supplier_organization_id']; 
-        
-        // $user = $this->createObjUser(['organization_id' => $organization_id]);
-        $user = new \stdClass();
-        $user->organization = new \stdClass();
-        $user->organization->id = $organization_id;
-
-        $articlesTable = TableRegistry::get('Articles');
-        $results = $articlesTable->getTotArticlesPresentiInArticlesOrder($user, $organization_id, $supplier_organization_id);
-
-        // debug($results);
-        if($results->count()==0)
-            return false;
-        else
-    		return true; 	
+        return true;    
     }
     
     public static function orderDuplicate($value, $context)

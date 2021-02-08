@@ -115,8 +115,9 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
 
     /*
      * implement
+     * dati promozione / order des
      */   
-    public function getInfoParent($user, $organization_id, $promotion_id, $where=[], $debug=false) {
+    public function getParent($user, $organization_id, $promotion_id, $where=[], $debug=false) {
 
        if(empty($parent_id))
         $results = '';

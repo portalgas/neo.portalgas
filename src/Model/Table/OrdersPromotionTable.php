@@ -30,6 +30,8 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
 
     public function validationDefault(Validator $validator)
     {
+        $validator = parent::validationDefault($validator);
+
         $validator->setProvider('orderPromotion', \App\Model\Validation\OrderPromotionValidation::class);
 
         $validator
@@ -41,8 +43,18 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
                     'provider' => 'orderPromotion',
                     'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
                 ]
-            ]);  
+            ]);
 
+        $validator
+            ->notEmpty('data_fine')
+            ->add('data_fine', [
+                'dateMaggiore' => [
+                   // 'on' => ['create', 'update', 'empty']
+                   'rule' => ['dateComparisonToParent'],
+                   'provider' => 'orderPromotion',
+                   'message' => 'La data di apertura non può essere posteriore alla data di chiusura della promozione'
+                ],
+            ]);  
 
         return $validator;
     }
@@ -70,11 +82,11 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
     
-        $where = ['SuppliersOrganizations.organization_id' => $organization_id,
-                  'SuppliersOrganizations.stato' => 'Y',
-                  'SuppliersOrganizations.can_promotions' => 'Y',
-                  'SuppliersOrganizations.owner_articles' => 'REFERENT'];
-
+        $where = array_merge(['SuppliersOrganizations.organization_id' => $organization_id,
+                              'SuppliersOrganizations.stato' => 'Y',
+                              // 'SuppliersOrganizations.owner_articles' => 'REFERENT',
+                              'SuppliersOrganizations.can_promotions' => 'Y',], $where);
+  
         $results = $suppliersOrganizationsTable->find()
                                 ->where($where)
                                 ->contain(['Suppliers', 'CategoriesSuppliers'])
@@ -99,6 +111,7 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
             $where['Deliveries'] = array_merge($where_delivery, $where['Delivery']);
         else
             $where['Deliveries'] = $where_delivery;
+        // debug($where);
 
         $results = $prodGasPromotionsOrganizationsDeliveriesTable->getsList($user, $organization_id, $where);
 
@@ -107,8 +120,9 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
 
     /*
      * implement
+     * dati promozione / order des
      */   
-    public function getInfoParent($user, $organization_id, $prod_gas_promotion_id, $where=[], $debug=false) {
+    public function getParent($user, $organization_id, $prod_gas_promotion_id, $where=[], $debug=false) {
 
        if(empty($parent_id))
         $results = '';

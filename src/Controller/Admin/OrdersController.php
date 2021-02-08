@@ -184,25 +184,39 @@ class OrdersController extends AppController
         $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
         $ordersTable->addBehavior('Orders');
-        // debug($ordersTable);
 
-       // $this->Orders->addBehavior('Orders');
-       // debug($this->Orders);
+        switch ($order_type_id) {
+            case Configure::read('Order.type.promotion'):
+                 $ordersTable->addBehavior('OrderPromotions');
+                break;
+            case Configure::read('Order.type.des'):
+            case Configure::read('Order.type.des_titolare'):
+                break;
+        }
+
+        // debug($ordersTable);
 
         $order = $ordersTable->newEntity();
         
         if ($this->request->is('post')) {
-            $order = $ordersTable->patchEntity($order, $this->request->getData());
+            $request = $this->request->getData();  
+            $order = $ordersTable->patchEntity($order, $request);
+             debug($order); exit;
             if ($ordersTable->save($order)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
-                return $this->redirect(['action' => 'index']);
+                // return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error($order->getErrors());
         }
 
-        $infoParents = $ordersTable->getInfoParent($user, $organization_id, $parent_id);
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id);
+        /*
+         * dati promozione / order des
+         */
+        $parent = $ordersTable->getParent($user, $organization_id, $parent_id);
+
+        $where = ['SuppliersOrganizations.supplier_id' => $parent->suppliersOrganization->organizations->supplier_id];
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $where);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
         // debug($suppliersOrganizations);
         if(empty($suppliersOrganizations)) {
@@ -212,10 +226,10 @@ class OrdersController extends AppController
 
         }
         
-        $organizations = $ordersTable->Organizations->find('list', ['limit' => 200]);
+        // $organizations = $ordersTable->Organizations->find('list', ['limit' => 200]);
         // $suppliersOrganizations = $ordersTable->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $ownerOrganizations = $ordersTable->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownerSupplierOrganizations = $ordersTable->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
+        // $ownerOrganizations = $ordersTable->OwnerOrganizations->find('list', ['limit' => 200]);
+        // $ownerSupplierOrganizations = $ordersTable->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
         
         /* 
          * id => id_organization;id_delivery 
@@ -225,9 +239,7 @@ class OrdersController extends AppController
         $where = ['ProdGasPromotionsOrganizationsDeliveries.prod_gas_promotion_id' => $prod_gas_promotion_id];
         $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where);
 
-        $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
-        $desOrders = []; //  $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order_type_id', 'order', 'infoParents', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+        $this->set(compact('order_type_id', 'order', 'parent', 'suppliersOrganizations', 'deliveries'));
     }
 
     /**

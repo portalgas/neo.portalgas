@@ -129,13 +129,24 @@ class ProdGasSuppliersTable extends Table
                       'SuppliersOrganizations.organization_id != ' => $organization_id];
             if(isset($filters['ownerArticles']))
                 $where += ['SuppliersOrganizations.owner_articles' => $filters['ownerArticles']];
-            if(isset($filters['organization_id']) && !empty($filters['organization_id'])) // estraggo solo il GAS corrente
+
+            /*
+             * estraggo solo il GAS corrente
+             */
+            if(isset($filters['organization_id']) && !empty($filters['organization_id'])) { // estraggo solo il GAS corrente
                 $where += ['SuppliersOrganizations.organization_id' => $filters['organization_id']];
 
-            $suppliersOrganizationResults = $suppliersOrganizationsTable->find() 
-                        ->where($where)
-                        ->order(['SuppliersOrganizations.name' => 'asc'])
-                        ->all(); 
+                $suppliersOrganizationResults = $suppliersOrganizationsTable->find() 
+                            ->where($where)
+                            ->order(['SuppliersOrganizations.name' => 'asc'])
+                            ->first(); 
+            }
+            else {
+                $suppliersOrganizationResults = $suppliersOrganizationsTable->find() 
+                            ->where($where)
+                            ->order(['SuppliersOrganizations.name' => 'asc'])
+                            ->all();                 
+            }
             if($debug) debug($where);
             if($debug) debug($suppliersOrganizationResults);
                         

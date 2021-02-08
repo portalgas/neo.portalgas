@@ -72,11 +72,6 @@ class OrdersTable extends Table
         $validator
             ->notEmpty('supplier_organization_id')
             ->add('supplier_organization_id', [
-                'totArticles' => [
-                   'rule' => ['totArticles'],
-                   'provider' => 'order',
-                   'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
-                ],
                 'orderDuplicate' => [
                     'on' => ['create'], // , 'create', 'update',
                     'rule' => ['orderDuplicate'],
@@ -98,12 +93,12 @@ class OrdersTable extends Table
                    // 'on' => ['create', 'update', 'empty']
                    'rule' => ['dateComparison', '<=', 'data_fine'],
                    'provider' => 'order',
-                   'message' => 'La data di apertura non può essere posteriore della data di chiusura'
+                   'message' => 'La data di apertura non può essere posteriore alla data di chiusura'
                 ],
                 'dateComparisonToDelivery' => [
-                    'rule' => ['dateComparisonToDelivery', '>'],
+                    'rule' => ['dateComparisonToDelivery', '<='],
                     'provider' => 'order',
-                    'message' => 'La data di apertura non può essere posteriore della data della consegna'
+                    'message' => 'La data di apertura non può essere posteriore alla data della consegna'
                 ]
             ]);            
 
@@ -116,12 +111,12 @@ class OrdersTable extends Table
                    // 'on' => ['create', 'update', 'empty']
                    'rule' => ['dateComparison', '>=', 'data_inizio'],
                    'provider' => 'order',
-                   'message' => 'La data di chiusura non può essere antecedente della data di apertura'
+                   'message' => 'La data di chiusura non può essere antecedente alla data di apertura'
                 ],
                 'dateComparisonToDelivery' => [
-                    'rule' => ['dateComparisonToDelivery', '>'],
+                    'rule' => ['dateComparisonToDelivery', '<='],
                     'provider' => 'order',
-                    'message' => 'La data di chiusura non può essere posteriore o uguale della data della consegna'
+                    'message' => 'La data di chiusura non può essere posteriore o uguale alla data della consegna'
                 ]
             ]);
 
@@ -373,7 +368,7 @@ class OrdersTable extends Table
 
         return TableRegistry::get($table_registry);
     } 
-
+    
     /*
      * implement
      * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)
@@ -469,6 +464,46 @@ class OrdersTable extends Table
         return $results;
     }
 
+    /*
+     * da OrdersBehavior
+     * 
+     * ctrl data_inizio con data_oggi
+     * 
+     *      se data_inizio < data_oggi NON invio mail
+     *      se data_inizio = data_oggi mail_open_send = Y, Cron::mailUsersOrdersOpen domani invio mail
+     *      se data_inizio > data_oggi mail_open_send = N, Cron::mailUsersOrdersOpen invio mail
+     */     
+    public function setOrderMailOpenSend($request) {
+        $mail_open_send = 'Y';
+        
+        /*
+         * ctrl che il produttore scelto abbia SuppliersOrganization.mail_order_open = Y
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+        $where = ['SuppliersOrganizations.organization_id' => $request['organization_id'],
+                  'SuppliersOrganizations.id' => $request['supplier_organization_id']];
+
+        $results = $suppliersOrganizationsTable->find()
+                                ->select(['SuppliersOrganizations.mail_order_open'])
+                                ->where($where)
+                                ->first();
+        debug($request);
+        debug($results);
+        exit;
+        if($results->mail_order_open=='N')
+            $mail_open_send = 'N';  
+         else {
+            $data_inizio = $request->data_inizio;  
+            $data_oggi = date("Y-m-d");
+            if ($data_inizio == $data_oggi)
+                $mail_open_send = 'Y';
+            else 
+                $mail_open_send = 'N';  
+        }
+            
+        return $mail_open_send;
+    }   
 
     public function riapriOrdine($user, $organization_id, $order_id, $debug=false) {
         

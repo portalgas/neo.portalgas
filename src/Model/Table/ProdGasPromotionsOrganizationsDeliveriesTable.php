@@ -85,7 +85,7 @@ class ProdGasPromotionsOrganizationsDeliveriesTable extends Table
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
-                $listResults[$result->id] = $result->delivery->luogo.' '.$result->delivery->data;
+                $listResults[$result->delivery->id] = $result->delivery->luogo.' '.$result->delivery->data;
             }
         }
    

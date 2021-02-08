@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 
-echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'test']);
@@ -17,7 +17,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      K Order
+      Order
       <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">

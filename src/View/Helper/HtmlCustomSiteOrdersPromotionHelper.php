@@ -6,7 +6,7 @@ use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
 
-class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
+class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
 {
 	private $debug = false;
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
@@ -16,14 +16,89 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
         // debug($config);
     }
 
+    public function hiddenFields($organization_id, $parent) {
+
+        $html = '';
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+
+        // prod_gas_promotion_id
+        $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
+        
+        return $html;
+    }
+
+
     public function supplierOrganizations($suppliersOrganizations) {
-        return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
+       return $this->Form->control('supplier_organization_id', ['label' => __('SupplierOrganization'), 'options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
     }
 
     public function deliveries($deliveries) {
         return $this->Form->control('delivery_id', ['options' => $deliveries]);
     }
 
+    public function data($parent) {
+
+        $html = '';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-6">'; 
+        $html .= $this->HtmlCustom->datepicker('data_inizio', ['autocomplete' => 'off']);
+        $html .= '</div>'; 
+        $html .= '<div class="col-md-6">'; 
+        $html .= $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
+        $html .= '</div>'; 
+        $html .= '</div>';
+
+        $msg = "La promozione si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
+
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-12">'; 
+        $html .= $this->HtmlCustom->alert($msg);
+        $html .= '</div>'; 
+        $html .= '</div>';        
+
+        return $html;
+    }
+
+    /*
+     * trasport / cost_more / cost_less
+     */
+    public function costs($parent) {
+
+        $hasTrasport = $parent->prodGasPromotionsOrganizations->hasTrasport;
+        $trasport = $parent->prodGasPromotionsOrganizations->trasport;
+        $hasCostMore = $parent->prodGasPromotionsOrganizations->hasCostMore;
+        $costMore = $parent->prodGasPromotionsOrganizations->costMore;
+
+        $html = '';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-2">';
+        $html .= $this->Form->label('Trasport', ['label' => __('CostTrasport')]);
+        $html .= '</div>';  
+        $html .= '<div class="col-md-2">'; 
+        $html .= $this->Form->radio('hasTrasport', ['Y' => 'Si', 'N' => 'No'], ['default' => $hasTrasport, 'disabled']);
+        $html .= '</div>'; 
+        $html .= '<div class="col-md-2">'; 
+        if($hasTrasport=='Y' && $trasport>0)
+            $html .= $this->Form->control('trasport', ['label' => false, 'disabled']);
+        $html .= '</div>'; 
+        $html .= '<div class="col-md-2">';
+        $html .= $this->Form->label('CostMore', ['label' => __('CostMore')]);
+        $html .= '</div>';  
+        $html .= '<div class="col-md-2">'; 
+        $html .= $this->Form->radio('hasCostMore', ['Y' => 'Si', 'N' => 'No'], ['default' => $hasCostMore, 'disabled']);
+        $html .= '</div>'; 
+        $html .= '<div class="col-md-2">'; 
+        if($hasCostMore=='Y' && $costMore>0)
+            $html .= $this->Form->control('cost_more', ['label' => false, 'disabled']);
+        $html .= '</div>'; 
+        $html .= '</div>'; 
+
+        return $html;
+    }
+
+    /*
+     * dettaglio promotion / order des
+     */
     public function infoParent($results) {
 
         if(empty($results)) 
@@ -33,7 +108,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
             $prodGasArticlesPromotionShow = false;
 
         $html = '';
-        $html .= '<div>';
+        $html .= '<div class="info-parent">';
         $html .= '<h1>'.__('ProdGasPromotion').'</h1>';
         
         if(!empty($results->nota)) 
@@ -65,17 +140,18 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
         $html .= $this->HtmlCustom->data($results->data_fine); 
         $html .= '</td>';
         $html .= '<td>';
-        $html .= '<span style="text-decoration: line-through;">'.$results->importo_originale.'</span><br />'.$results->importo_scontato;
+        $html .= '<span style="text-decoration: line-through;">'.$results->importo_originale.'&nbsp;&euro;</span>';
+        $html .= '<br />'.$results->importo_scontato.'&nbsp;&euro;';
         $html .= '</td>';
         $html .= '<td>';
         if($results->prodGasPromotionsOrganizations->hasTrasport=='Y')   
-            $html .= $results->prodGasPromotionsOrganizations->trasport_e;
+            $html .= $results->prodGasPromotionsOrganizations->trasport.'&nbsp;&euro;';
         else
             $html .= "Nessun costo di trasporto";
         $html .= '</td>';
         $html .= '<td>';
         if($results->prodGasPromotionsOrganizations->hasCostMore=='Y')   
-            $html .= $results->prodGasPromotionsOrganizations->cost_more_e;
+            $html .= $results->prodGasPromotionsOrganizations->cost_more.'&nbsp;&euro;';
         else
             $html .= "Nessun costo agguntivo";
         $html .= '</td>';   
@@ -94,7 +170,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
             $html .= '</a>';
             $html .= '</h4>';
             $html .= '</div>';
-            $html .= '<div id="collapseProdGasArticlesPromotions" class="panel-collapse collaps ine" aria-expanded="false">';
+            $html .= '<div id="collapseProdGasArticlesPromotions" class="panel-collapse collaps in" aria-expanded="false">';
             $html .= '<div class="box-body">';
              
             $html .= '<div class="table-responsive"><table class="table table-hover">';    
@@ -108,6 +184,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
             $html .= '<th scope="col" style="text-align:center;">'.__('ImportoTotaleScontato').'</th>';  
             $html .= '</tr></thead><tbody>';
              
+            (count($results->prodGasArticlesPromotions)) > 5 ? $open = false : $open = true; 
             foreach ($results->prodGasArticlesPromotions as $numResult => $prodGasArticlesPromotion) {
         
                 $html .= '<tr>';
@@ -117,7 +194,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
                 }       
                 $html .= '</td>';           
                 $html .= '<td>'.$prodGasArticlesPromotion->article->name.'&nbsp;';
-                $html .= $this->HtmlCustom->note($prodGasArticlesPromotion->article->nota);
+                $html .= $this->HtmlCustom->noteMore($prodGasArticlesPromotion->article->nota);
                 $html .= '</td>';
                 $html .= '<td style="text-align:center;">';
                 $html .= $prodGasArticlesPromotion->article->conf;
@@ -125,7 +202,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
                 $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion->qta.'</td>';
                 $html .= '<td style="text-align:center;"><span style="text-decoration: line-through;">'.$prodGasArticlesPromotion->article->prezzo.'</span></td>';
                 $html .= '<td style="text-align:center;"><span style="text-decoration: line-through;">'.$prodGasArticlesPromotion->importo_originale.'&nbsp;&euro;</span></td>';
-                $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion->prezzo_unita.'</td>';
+                $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion->prezzo_unita.'&nbsp;&euro;</td>';
                 $html .= '<td style="text-align:center;">';
                 $html .= '<span style="text-decoration: line-through;">'.$prodGasArticlesPromotion->importo_originale.'&nbsp;&euro;</span><br />';
                 $html .= $prodGasArticlesPromotion->importo.'</td>';
@@ -143,6 +220,13 @@ class HtmlCustomSiteOrdersPromotionHelper extends FormHelper
         $html .= '</div>';
 
         return $html;
-
     }
+
+    public function note() {
+        return parent::note();     
+    } 
+
+    public function mailOpenTesto() {
+        return parent::mailOpenTesto();     
+    }    
 }

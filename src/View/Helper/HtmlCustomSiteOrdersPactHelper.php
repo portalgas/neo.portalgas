@@ -6,7 +6,7 @@ use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
 
-class HtmlCustomSiteOrdersPactHelper extends FormHelper
+class HtmlCustomSiteOrdersPactHelper extends HtmlCustomSiteOrdersHelper
 {
 	private $debug = false;
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
@@ -23,4 +23,12 @@ class HtmlCustomSiteOrdersPactHelper extends FormHelper
     public function deliveries($deliveries) {
         return $this->Form->control('delivery_id', ['options' => $deliveries]);
     }
+
+    public function note() {
+        return parent::note();     
+    } 
+    
+    public function mailOpenTesto() {
+        return parent::note();     
+    }      
 }

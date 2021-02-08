@@ -52,7 +52,20 @@ class OrdersBehavior extends Behavior
         if (!isset($data['tesoriere_importo_pay']) || empty($data['tesoriere_importo_pay'])) {
             $data['tesoriere_importo_pay'] = 0;
         }
-
+        if (!isset($data['hasTrasport']) || empty($data['hasTrasport'])) {
+            $data['hasTrasport'] = 'Y';
+        }
+        if (!isset($data['hasCostMore']) || empty($data['hasCostMore'])) {
+            $data['hasCostMore'] = 'Y';
+        }
+        if (!isset($data['hasCostLess']) || empty($data['hasCostLess'])) {
+            $data['hasCostLess'] = 'Y';
+        }
+        
+        if (!isset($data['mail_open_send']) || empty($data['mail_open_send'])) {
+            $ordersTable = TableRegistry::get('Orders');
+            $data['mail_open_send'] = $ordersTable->setOrderMailOpenSend($data);
+        }
         // debug($data);
     }
 

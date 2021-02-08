@@ -940,6 +940,8 @@ msgstr "Q.tà in promozione"
 msgid "ProdGasPromotion-PrezzoUnita"
 msgstr "Prezzo unità in promozione"
 
+msgid "ProdGasArticlesPromotions"
+msgstr "Articoli in promozione"
 
 #
 # M S G  system

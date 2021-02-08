@@ -51,5 +51,27 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         if($debug) debug($helper);
         
         return $helper;
-    }     
+    } 
+
+    public function note() {
+        $html = '';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-12">'; 
+        $html .= $this->Form->control('nota');
+        $html .= '</div>'; 
+        $html .= '</div>';   
+
+        return $html;     
+    } 
+    
+    public function mailOpenTesto() {
+        $html = '';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-12">'; 
+        $html .= $this->Form->control('mail_open_testo');
+        $html .= '</div>'; 
+        $html .= '</div>';   
+
+        return $html;     
+    }    
 }

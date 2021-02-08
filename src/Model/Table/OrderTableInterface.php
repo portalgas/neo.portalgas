@@ -11,9 +11,10 @@ interface OrderTableInterface {
 
 	/*
 	 * BO consegne per creare l'ordine
-	 * $parent_id = des_order_id / prod_gas_promotion_id
+	 * dati promozione / order des
+	 * $parent_id = prod_gas_promotion_id / des_order_id
 	 */
-	public function getInfoParent($user, $organization_id, $parent_id, $where=[], $debug=false);
+	public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false);
 
     /*
      * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)

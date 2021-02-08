@@ -28,16 +28,44 @@ class HtmlCustomHelper extends FormHelper
     }
 
     // https://api.cakephp.org/3.8/class-Cake.View.Helper.TimeHelper.html
-    public function data($data, $format='MMM dd, yyyy') {
+    public function data($data, $format='dd MMMM yyyy') {
         $str = $data->i18nFormat($format);
         // $str = $data->format($format);
         return $str;
     } 
 
+    public function noteMore($value) {
+
+        $max_len = 150;
+
+        $str = '';
+        $len = strlen($value);
+        if($len>150) {
+            $uniq = uniqid();
+            $value = h($value);
+            $intro = substr($value, 0, $max_len);
+
+            $str .= '<div id="note-intro-'.$uniq.'"" style="max-width:200px;">';
+            $str .= $intro;
+            $str .= ' <a href="#note-'.$uniq.'" onClick="$(\'#note-intro-'.$uniq.'\').hide();$(\'#note-full-'.$uniq.'\').show(200);"><b>...</b></a>';
+            $str .= '</div>';
+
+            $str .= '<div id="note-full-'.$uniq.'"" style="display:none;max-width:200px">';
+            $str .= $value;
+            $str .= '</div>';
+        }
+        else 
+            $str = '<div class="note" style="max-width:200px;">'.$note.'</div>';
+
+        return $str;
+    }
+
     public function note($value) {
         $str = '<div class="direct-chat-text">'.h($value).'</div>';
         return $str;
     }
+
+
 
     public function alert($msg, $level_alert='info') {
         $str = ''; 

@@ -28,6 +28,18 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
     {
         $validator = parent::validationDefault($validator);
         
+        $validator->setProvider('orderGas', \App\Model\Validation\OrderGasValidation::class);
+
+        $validator
+            ->notEmpty('supplier_organization_id')
+            ->add('supplier_organization_id', [
+                'totArticles' => [
+                   'rule' => ['totArticles'],
+                   'provider' => 'order',
+                   'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
+                ]
+            ]);
+
         return $validator;
     }
 
@@ -84,8 +96,9 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
 
     /*
      * implement
+     * dati promozione / order des
      */   
-    public function getInfoParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
+    public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
       
        if(empty($parent_id))
         $results = '';

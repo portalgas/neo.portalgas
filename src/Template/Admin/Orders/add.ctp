@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 
-echo $this->Html->script('vue/orders', ['block' => 'scriptPageInclude']);
+// echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'test']);
@@ -36,17 +36,18 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($order, ['role' => 'form']); ?>
-            <div class="box-body">
-              <?php
+          <?php 
+            echo $this->Form->create($order, ['role' => 'form']);
+            echo '<div class="box-body">';
+
 
                 /*
                  * passato per OrderValidation
                  */
-                echo $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->Identity->get()->organization->id, 'required' => 'required']);
-
-                // debug($infoParents);
-                echo $this->{$htmlCustomSiteOrders}->infoParent($infoParents);
+                echo $this->{$htmlCustomSiteOrders}->hiddenFields($this->Identity->get()->organization->id, $parent);
+                
+                // debug($parents);
+                echo $this->{$htmlCustomSiteOrders}->infoParent($parent);
 
                 /*
                  * produttore
@@ -65,75 +66,20 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 
                 echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries);
 
-                echo '<div class="row">';
-                echo '<div class="col-md-6">'; 
-                echo $this->HtmlCustom->datepicker('data_inizio', ['autocomplete' => 'off']);
-                echo '</div>'; 
-                echo '<div class="col-md-6">'; 
-                echo $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
-                echo '</div>'; 
-                echo '</div>'; 
+                echo $this->{$htmlCustomSiteOrders}->data($parent);
 
-                echo '<div class="row">';
-                echo '<div class="col-md-12">'; 
-                echo $this->Form->control('nota');
-                echo '</div>'; 
-                echo '</div>'; 
+                echo $this->{$htmlCustomSiteOrders}->note();
 
-                // echo $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations]);
-                // echo $this->Form->control('owner_articles');
-                // echo $this->Form->control('owner_organization_id', ['options' => $ownerOrganizations]);
-                // echo $this->Form->control('owner_supplier_organization_id', ['options' => $ownerSupplierOrganizations]);
-                // echo $this->Form->control('delivery_id', ['options' => $deliveries]);
-                echo $this->Form->control('prod_gas_promotion_id');
-                echo $this->Form->control('des_order_id');
-                // echo $this->Form->control('data_inizio');
-                // echo $this->Form->control('data_fine');
-                echo $this->Form->control('data_fine_validation');
-                echo $this->Form->control('data_incoming_order');
-                echo $this->Form->control('data_state_code_close');
-                // echo $this->Form->control('nota');
-                echo $this->Form->control('hasTrasport');
-                echo $this->Form->control('trasport_type');
-                echo $this->Form->control('trasport');
-                echo $this->Form->control('hasCostMore');
-                echo $this->Form->control('cost_more_type');
-                echo $this->Form->control('cost_more');
-                echo $this->Form->control('hasCostLess');
-                echo $this->Form->control('cost_less_type');
-                echo $this->Form->control('cost_less');
-                echo $this->Form->control('typeGest');
-                echo $this->Form->control('state_code', ['value' => 'CREATE-INCOMPLETE']);
-                echo $this->Form->control('mail_open_send');
-                echo $this->Form->control('mail_open_data');
-                echo $this->Form->control('mail_close_data');
-                echo $this->Form->control('mail_open_testo');
-                echo $this->Form->control('type_draw');
-                echo $this->Form->control('tot_importo', ['value' => 0]);
-                echo $this->Form->control('qta_massima', ['value' => 0]);
-                echo $this->Form->control('qta_massima_um');
-                echo $this->Form->control('send_mail_qta_massima');
-                echo $this->Form->control('importo_massimo', ['value' => 0]);
-                echo $this->Form->control('send_mail_importo_massimo');
-                echo $this->Form->control('tesoriere_nota');
-                echo $this->Form->control('tesoriere_fattura_importo', ['value' => 0]);
-                echo $this->Form->control('tesoriere_doc1');
-                echo $this->Form->control('tesoriere_data_pay');
-                echo $this->Form->control('tesoriere_importo_pay', ['value' => 0]);
-                echo $this->Form->control('tesoriere_stato_pay');
-                echo $this->Form->control('inviato_al_tesoriere_da');
-                echo $this->Form->control('isVisibleFrontEnd');
-                echo $this->Form->control('isVisibleBacoffice', ['value' => 'Y']);
-              ?>
-            </div>
-            <!-- /.box-body -->
+                echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
 
-          <?php echo $this->Form->submit(__('Submit')); ?>
+                echo $this->{$htmlCustomSiteOrders}->costs($parent);
+            
+            echo '</div>';  // /.box-body 
 
-          <?php echo $this->Form->end(); ?>
-        </div>
-        <!-- /.box -->
-      </div>
-  </div>
-  <!-- /.row -->
-</section>
+          echo $this->Form->submit(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right']);
+
+          echo $this->Form->end(); 
+        echo '</div>';  // /.box -->
+      echo '</div>';
+  echo '</div>';  //  /.row -->
+echo '</section>'; 
