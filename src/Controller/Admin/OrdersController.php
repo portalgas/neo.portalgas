@@ -32,7 +32,9 @@ class OrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot']) {
+        if(!isset($this->Authentication->getIdentity()->acl) || 
+            !$this->Authentication->getIdentity()->acl['isSuperReferente'] && 
+            !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }

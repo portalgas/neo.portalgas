@@ -36,11 +36,11 @@ class HtmlCustomHelper extends FormHelper
 
     public function noteMore($value) {
 
-        $max_len = 150;
+        $max_len = Configure::read('NoteMoreLen');
 
         $str = '';
         $len = strlen($value);
-        if($len>150) {
+        if($len > $max_len) {
             $uniq = uniqid();
             $value = h($value);
             $intro = substr($value, 0, $max_len);

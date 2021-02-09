@@ -23,7 +23,13 @@
 					</div>
 					
 					{{ order.suppliers_organization.name }}
-					{{ order.delivery.luogo }} 
+	                  <span v-if="order.delivery.sys=='Y'">
+	                      {{ order.delivery.luogo }}
+	                  </span>
+	                  <span v-if="order.delivery.sys!='Y'">
+	                      {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
+	                  </span>
+
 
 					<span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT'">- aprirà {{ order.data_inizio | formatDate }} </span>
@@ -35,7 +41,11 @@
 					    <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
 
-		              <i :id="'fas-'+order.id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
+					     <div v-if="order.nota!=''" class="col-10 alert alert-info ml-auto mr-1" 
+					     	v-html="$options.filters.html(order.nota)">
+					     </div>
+
+		                <i :id="'fas-'+order.id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
 			    </div>
 
 			    <div :id="'collapse-'+order.id" class="collapse" :aria-labelledby="'heading-'+order.id" data-parent="#accordion-suppliers">
@@ -115,9 +125,12 @@ export default {
             return moment(String(value)).format('DD MMMM YYYY')
           }
         },
-          counter: function (index) {
+        counter: function (index) {
             return index+1
-        }
+        },
+	    html(text) {
+	        return text;
+	    },
      }
 };
 </script>

@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property string $contact_name
  * @property string $contact_mail
  * @property string $contact_phone
+ * @property string $type
  * @property string $state_code
  * @property string $stato
  * @property \Cake\I18n\FrozenTime|null $created
@@ -48,6 +49,7 @@ class ProdGasPromotion extends Entity
         'contact_name' => true,
         'contact_mail' => true,
         'contact_phone' => true,
+        'type' => true,
         'state_code' => true,
         'stato' => true,
         'created' => true,

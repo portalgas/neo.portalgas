@@ -56,9 +56,14 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
     public function note() {
         $html = '';
         $html .= '<div class="row">';
-        $html .= '<div class="col-md-12">'; 
-        $html .= $this->Form->control('nota');
+        $html .= '<div class="col-md-10">'; 
+        $html .= $this->Form->control('nota', ['type' => 'text', 'class' => 'form-control ctrl-length', 'maxlength' => Configure::read('OrderNotaMaxLen')]);
         $html .= '</div>'; 
+        $html .= '<div class="col-md-2">'; 
+        $html .= '<a title="clicca per ingrandire l\'immagine" class="img-helps img-fluid rounded float-right" href="" data-toggle="modal" data-target="#modalHelps" ';
+        $html .= 'data-attr-title="Dove comparirà la nota che inserisci"';
+        $html .= '><img class="img-responsive" src="/img/helps/orders-nota.png" /></a>';
+        $html .= '</div>';   
         $html .= '</div>';   
 
         return $html;     
@@ -67,9 +72,14 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
     public function mailOpenTesto() {
         $html = '';
         $html .= '<div class="row">';
-        $html .= '<div class="col-md-12">'; 
+        $html .= '<div class="col-md-10">'; 
         $html .= $this->Form->control('mail_open_testo');
         $html .= '</div>'; 
+        $html .= '<div class="col-md-2">'; 
+        $html .= '<a title="clicca per ingrandire l\'immagine" class="img-helps img-fluid rounded float-right" href="" data-toggle="modal" data-target="#modalHelps" ';
+        $html .= 'data-attr-title="Il testo sarà aggiunto alla mail di notifica di apertura dell\'ordine e sarà visibile anche sul sito"';
+        $html .= '><img class="img-responsive" src="/img/helps/orders-mail-open-testo.png" /></a>';
+        $html .= '</div>';         
         $html .= '</div>';   
 
         return $html;     

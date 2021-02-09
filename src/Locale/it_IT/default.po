@@ -931,6 +931,12 @@ msgstr "Promozione"
 msgid "ProdGasPromotions"
 msgstr "Promozioni"
 
+msgid "ProdGasPromotionsGAS"
+msgstr "Promozioni ai G.A.S."
+
+msgid "ProdGasPromotionsGAS-USERS"
+msgstr "Promozioni ai singoli utenti"
+
 msgid "ProdGasPromotion-Qta"
 msgstr "Quantità in promozione"
 

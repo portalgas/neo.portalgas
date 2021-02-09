@@ -44,6 +44,6 @@ echo '<link href="https://fonts.googleapis.com/css?family=Raleway:500i|Roboto:30
 ?>
 <style>
 .datepicker {
-  z-index: 9900 !important; /* has to be larger than 1050 */
+  z-index: 1040 !important; /* has to be larger than 1050 => se > conflitto con modal! */
 }
 </style>

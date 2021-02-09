@@ -131,8 +131,12 @@ class DeliveriesTable extends Table
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
-                // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                $listResults[$result->id] = $result->luogo.' '.$result->data->i18nFormat('d MMMM Y');
+                if($results->sys=='Y') 
+                    $listResults[$result->id] = $result->luogo;
+                else {
+                    // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                    $listResults[$result->id] = $result->luogo.' '.$result->data->i18nFormat('d MMMM Y');                    
+                }
             }
         }
 

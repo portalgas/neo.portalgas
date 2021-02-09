@@ -32,6 +32,33 @@ Script.prototype = {
         });
 
         /*
+         * gestione img per helps
+         */
+        $('.img-helps').click(function () {
+            var src = $(this).find('img').attr('src');
+            var img = '<img src="'+src+'" />';
+            var title = $(this).attr('data-attr-title');
+            /* console.log(title+' '+img); */
+            $('#modalHelps .modal-body').html(img);
+            $('#modalHelps .modal-title').html(title);
+        });
+
+        /*
+         * gestione img per helps
+         */
+        $('.ctrl-length').each(function( index ) {
+             var value = $(this).val();
+             $(this).after('<p style="float:right" class="avviso">Hai ancora <strong>'+ (orderNotaMaxLen - value.length) +'</strong> caratteri disponibili</p>');
+        });
+
+        $('.ctrl-length').keyup(function() {
+            if($(this).val().length > orderNotaMaxLen) {
+                $(this).val($(this).val().substr(0, orderNotaMaxLen));
+            }
+            $(this).parent().find('p.avviso').html("Hai ancora <strong>"+ (orderNotaMaxLen - $(this).val().length)+"</strong> caratteri disponibili");
+        });
+
+        /*
          * + / - accordion 
          */
         $('.collapse').on('shown.bs.collapse', function (e) {

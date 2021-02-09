@@ -102,7 +102,7 @@
                       <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
                       <span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
                   <hr >
-                    <div v-if="order.nota!=''"><strong>Nota:</strong> {{ order.nota }}</div>
+                    <div v-if="order.mail_open_testo!=''" class="alert alert-info" v-html="$options.filters.html(order.mail_open_testo)"></div>
 
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Escluso dal prepagato</span>
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && !order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Gestito con il prepagato</span>
@@ -119,7 +119,13 @@
                   </p>
                </div> <!-- card-body -->
                <div class="card-footer text-muted bg-transparent-disabled">
-                  <strong>Consegna</strong> {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
+                  <strong>Consegna</strong> 
+                  <span v-if="order.delivery.sys=='Y'">
+                      {{ order.delivery.luogo }}
+                  </span>
+                  <span v-if="order.delivery.sys!='Y'">
+                      {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
+                  </span>
                </div> 
 
                 <!--                        -->
@@ -384,7 +390,10 @@ export default {
       },
       lowerCase : function(value) {
         return value.toLowerCase().trim();
-    }             
+      },
+      html(text) {
+        return text;
+      },
   }
 };
 </script>

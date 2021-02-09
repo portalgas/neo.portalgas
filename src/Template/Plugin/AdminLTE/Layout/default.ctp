@@ -60,6 +60,7 @@ if(Configure::read('Theme.menu_sidebar')=='close')
 "use strict";
 var objScript;
 var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
+var orderNotaMaxLen = <?php echo Configure::read('OrderNotaMaxLen');?>;
 var headers = {
     "Content-Type": "application/json",
     "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -126,6 +127,23 @@ $(document).ready(function() {
   
 <?php echo $this->fetch('script'); ?>
 <?php echo $this->fetch('scriptBottom'); ?>
+
+<div id="modalHelps" class="modal fade">
+ <div class="modal-dialog modal-lg">
+  <div class="modal-content">
+   <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title"></h4>
+   </div->
+   <div class="modal-body" style="overflow: auto;">
+    <p><img src="" id="modalImgHelp" /></p>
+   </div>
+   <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
+   </div>
+  </div>
+ </div>
+</div>
 
 </body>
 </html>

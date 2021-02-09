@@ -377,6 +377,9 @@ Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articol
 Configure::write('DeliveryToDefinedDate', '2025-01-01');
 Configure::write('DeliveryToDefinedLabel', 'Da definire');
 
+Configure::write('OrderNotaMaxLen', 150);
+Configure::write('NoteMoreLen', 150);
+
 /*
  * pagamenti
  */

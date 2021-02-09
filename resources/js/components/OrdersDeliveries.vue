@@ -51,6 +51,10 @@
 					    <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
 					    
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
+
+					     <div v-if="order.nota!=''" class="col-10 alert alert-info ml-auto mr-1" 
+					     	v-html="$options.filters.html(order.nota)">
+					     </div>
 					</a>
 	        </p> 
 	      </div>
@@ -167,7 +171,10 @@ export default {
         },
           counter: function (index) {
             return index+1
-        }
+        },
+	    html(text) {
+	        return text;
+	    },
      }
 };
 </script>
