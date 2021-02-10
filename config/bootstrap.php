@@ -285,7 +285,9 @@ Configure::write('Order.type.promotion', 4);
 Configure::write('Order.type.pact_pre', 5); 
 Configure::write('Order.type.pact', 6);  
 Configure::write('Order.type.supplier', 7); 
+Configure::write('Order.type.promotion_gas_users', 8); 
 
+Configure::write('OrderIdPromotionGasUsers', 1);  // order_id fittizio per le promozioni GAS-USERS
 /*
  * altre tipologie di organization GAS PRODGAS PACT
  */

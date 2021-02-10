@@ -30,6 +30,10 @@ class ProdGasPromotionsTable extends Table
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->hasMany('ProdGasArticlesPromotions', [
+            'foreignKey' => 'prod_gas_promotion_id'
+        ]);          
     }
 
     /**

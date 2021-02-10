@@ -12,10 +12,10 @@
 
         <div class="card-body">
             <div class="card-text">
-                <div v-if="article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
+                <div v-if="article.descri!=null && article.descri!=''" v-html="$options.filters.highlight($options.filters.shortDescription(article.descri))">             
                 </div>
 
-                <span>
+                <span v-if="order.order_type.code!='PROMOTION_GAS_USERS'">
                   <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a>
                   
                   <div v-if="isLoading" class="box-spinner"> 
@@ -60,7 +60,7 @@
                       <small class="text-muted"><strong>Promozione valida</strong> se sull'ordine totale si raggiungerà la quantità di <strong>{{ article.qta_massima_order }} acquisti</strong> (acquistati ora {{ article.qta_cart }})</small>
                     </div>                
                 </span>
-                <span v-if="order.order_type.code != 'PROMOTION'">
+                <span v-if="order.order_type.code != 'PROMOTION' && order.order_type.code!='PROMOTION_GAS_USERS'">
                     <div v-if="article.qta_minima_order>0">
                       <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
                     </div>                

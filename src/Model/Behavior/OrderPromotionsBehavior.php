@@ -27,7 +27,7 @@ class OrderPromotionsBehavior extends Behavior
         // debug('OrderPromotionsBehavior beforeMarshal');
 
         /*
-         * valor di default
+         * valore di default
          */
         if (!isset($data['prod_gas_promotion_id']) || empty($data['prod_gas_promotion_id'])) 
             $data['prod_gas_promotion_id'] = $data['parent_id']; 

@@ -253,6 +253,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/html-article-orders', ['controller' => 'HtmlArticleOrders'], function (RouteBuilder $routes) {
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         });
+        $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
+            $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        });
 
         $routes->fallbacks(DashedRoute::class);        
     }); 

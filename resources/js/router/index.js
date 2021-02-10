@@ -1,9 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Order from "../views/Order";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
-import Order from "../views/Order";
+import Promotion from "../views/Promotion";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: "/user-cart",
     name: "UserCart",
     component: UserCart
+  },
+  {
+    path: "/promozioni",
+    name: "Promotion",
+    component: Promotion
   }
 ];
 

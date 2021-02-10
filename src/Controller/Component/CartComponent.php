@@ -23,6 +23,8 @@ class CartComponent extends Component {
     /*
      * qta = qta originale, ma la ricalcolo nel caso fosse cambiata
      * qta_new = qta aggiornata
+     *
+      se order_id = Configure::read('OrderIdPromotionGasUsers') fittizio per le promozioni GAS-USERS
      */
     public function managementCart($user, $organization_id, $order, $articles_order, $debug=false) {
 
@@ -46,8 +48,11 @@ class CartComponent extends Component {
          * qta_new = qta aggiornata
          */
         $cartsTable = TableRegistry::get('Carts');
-        // $qta = (int)$articles_order['cart']['qta'];                     
-        $qta = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
+
+        if($order_id==Configure::read('OrderIdPromotionGasUsers'))
+            $qta = (int)$articles_order['cart']['qta'];                     
+        else
+            $qta = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
         if(Configure::read('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
         $qta_new = (int)$articles_order['cart']['qta_new'];
         if(Configure::read('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
@@ -121,8 +126,15 @@ class CartComponent extends Component {
                      * lo prendo dall'ordine perche' il listino puo' gestirlo un altro
                      * $supplier_organization_id = $results['Article']['supplier_organization_id'];
                      */
-                    $supplier_organization_id = $order['supplier_organization_id'];
-                    if($cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug)) {
+                    if($order_id==Configure::read('OrderIdPromotionGasUsers')) {
+                        $esito_ctrl_limit_cart = true;
+                    }
+                    else {
+                        $supplier_organization_id = $order['supplier_organization_id'];
+                        $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);                        
+                    }
+
+                    if($esito_ctrl_limit_cart) {
 
                         $data = [];
                         $data['organization_id'] = $organization_id;
@@ -180,9 +192,13 @@ class CartComponent extends Component {
                          * lo prendo dall'ordine perche' il listino puo' gestirlo un altro
                          * $supplier_organization_id = $results['Article']['supplier_organization_id'];
                          */
-                        $supplier_organization_id = $order['supplier_organization_id'];
-                        $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
-
+                        if($order_id==Configure::read('OrderIdPromotionGasUsers')) {
+                            $esito_ctrl_limit_cart = true;
+                        }
+                        else {                        
+                            $supplier_organization_id = $order['supplier_organization_id'];
+                            $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
+                        }
                     }
 
                     if($esito_ctrl_limit_cart) {
@@ -235,8 +251,14 @@ class CartComponent extends Component {
         if(Configure::read('Logs.cart')) Log::write('debug', $results);
 
         if($results['esito']) {
-            $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-            $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
+
+            if($order_id==Configure::read('OrderIdPromotionGasUsers')) 
+                $articlesOrdersTable = TableRegistry::get('ArticlesOrdersPromotion');
+            else { 
+                $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+                $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
+            }
+            
             // debug($articlesOrdersTable);
             if(Configure::read('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->getAlias());
 
@@ -273,7 +295,6 @@ class CartComponent extends Component {
 
         return $results;
     }
-
 
     /*
      * $action = INSERT

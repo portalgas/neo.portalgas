@@ -75,17 +75,35 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
         $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
         // debug($where);
 
+        /*
+         *
+         */
+        if(!isset($where['ProdGasArticlesPromotions'])) {
+          $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');    
+          $prodGasPromotionsOrganizationsResults = $prodGasPromotionsOrganizationsTable->find(
+                      ['ProdGasPromotionsOrganizations.organization_id' => $organization_id, 
+                       'ProdGasPromotionsOrganizations.order_id' => $order_id])
+                                                          ->first();
+
+          $where['ProdGasArticlesPromotions'] = ['ProdGasArticlesPromotions.prod_gas_promotion_id' => $prodGasPromotionsOrganizationsResults->prod_gas_promotion_id];
+        }
+        else {
+          /*
+           * se promozione GAS-USERS $order_id = Configure::read('OrderIdPromotionGasUsers') e posso avere + occorrenze
+           * => gli passo prod_gas_promotion_id 
+           */         
+        }
+           
         $results = $this->find()
                         ->contain(['Articles' => ['conditions' => $where['Articles']], 
-                                   'ProdGasArticlesPromotions'])
+                                   'ProdGasArticlesPromotions' => ['conditions' => $where['ProdGasArticlesPromotions']]])
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
                         ->limit($this->_limit)
                         ->page($this->_page)
                         ->all()
                         ->toArray();
-        // debug($results);
-                        
+                      
         /*
          * estraggo eventuali acquisti / promotions
          */ 
