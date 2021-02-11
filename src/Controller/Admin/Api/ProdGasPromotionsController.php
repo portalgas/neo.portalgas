@@ -44,25 +44,26 @@ class ProdGasPromotionsController extends ApiAppController
         $user_id = $this->Authentication->getIdentity()->id;
         $user = $this->Authentication->getIdentity();
 
-        $order = $this->ProdGasPromotion->getOrderDefault($user, $debug);
-
         /* 
          * estraggo le promozioni legate al GAS dello user
          */
         $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations'); 
 
-        $where = ['ProdGasPromotionsOrganizations.organization_id' => $organization_id, 
-                  'ProdGasPromotionsOrganizations.order_id' => Configure::read('OrderIdPromotionGasUsers')];    
+        $where = ['ProdGasPromotionsOrganizations.organization_id' => $organization_id];    
         $prodGasPromotionsOrganizationsResults = $prodGasPromotionsOrganizationsTable->find()
                                 ->contain(['ProdGasPromotions' =>
                                      ['conditions' => ['ProdGasPromotions.type' => 'GAS-USERS', 'ProdGasPromotions.state_code' => 'OPEN']]])
                                 ->where($where)
                                 ->all();
+
+        // debug($prodGasPromotionsOrganizationsResults);
         if($prodGasPromotionsOrganizationsResults->count()>0) {
             
             $prodGasPromotionsTable = TableRegistry::get('ProdGasPromotions'); 
-  
+    
             foreach($prodGasPromotionsOrganizationsResults as $numResult => $prodGasPromotionsOrganizationsResult) {
+
+                $order = $this->ProdGasPromotion->getOrderDefault($user, $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id, $debug);
 
                 $where = ['ProdGasPromotions.id' => $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id,
                           'ProdGasPromotions.type' => 'GAS-USERS',

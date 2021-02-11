@@ -247,6 +247,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
         }); 
+        $routes->scope('/promotion-carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
+            $routes->connect('/managementCart', ['action' => 'managementCartProdGasPromotionGasUser', '_method' => 'POST']);
+        }); 
         $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
             $routes->connect('/cash-ctrl-limit', ['action' => 'cashCtrlLimit', '_method' => 'POST']);
         });

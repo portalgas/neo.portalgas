@@ -50,6 +50,12 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
 
         $order_id = $where['order_id'];
 
+        if(!isset($where['ProdGasArticlesPromotions']))
+           $where['ProdGasArticlesPromotions'] = ['ProdGasArticlesPromotions.prod_gas_promotion_id' => $order_id];
+        else
+            $where['ProdGasArticlesPromotions'] = array_merge(['ProdGasArticlesPromotions.prod_gas_promotion_id' => $order_id], 
+                                                  $where['ProdGasArticlesPromotions']);
+        
         if(!isset($where['ArticlesOrders']))
            $where['ArticlesOrders'] = [];
 
@@ -57,9 +63,9 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
         if(isset($where['ArticlesOrders']))
            $where_article_order = $where['ArticlesOrders'];
         $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $organization_id,
-                              $this->getAlias().'.order_id' => $order_id,
-                              $this->getAlias().'.stato != ' => 'N'], 
-                              $where['ArticlesOrders']);
+                                                  $this->getAlias().'.order_id' => $order_id,
+                                                  $this->getAlias().'.stato != ' => 'N'], 
+                                                  $where['ArticlesOrders']);
         
         $this->_getOptions($options); // setta sort / limit / page
 
@@ -75,25 +81,6 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
         $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
         // debug($where);
 
-        /*
-         *
-         */
-        if(!isset($where['ProdGasArticlesPromotions'])) {
-          $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');    
-          $prodGasPromotionsOrganizationsResults = $prodGasPromotionsOrganizationsTable->find(
-                      ['ProdGasPromotionsOrganizations.organization_id' => $organization_id, 
-                       'ProdGasPromotionsOrganizations.order_id' => $order_id])
-                                                          ->first();
-
-          $where['ProdGasArticlesPromotions'] = ['ProdGasArticlesPromotions.prod_gas_promotion_id' => $prodGasPromotionsOrganizationsResults->prod_gas_promotion_id];
-        }
-        else {
-          /*
-           * se promozione GAS-USERS $order_id = Configure::read('OrderIdPromotionGasUsers') e posso avere + occorrenze
-           * => gli passo prod_gas_promotion_id 
-           */         
-        }
-           
         $results = $this->find()
                         ->contain(['Articles' => ['conditions' => $where['Articles']], 
                                    'ProdGasArticlesPromotions' => ['conditions' => $where['ProdGasArticlesPromotions']]])

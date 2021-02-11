@@ -14,13 +14,18 @@ class ProdGasPromotionComponent extends Component {
 	public function __construct(ComponentRegistry $registry, array $config = []) {
 	}
 
-	public function getOrderDefault($user, $debug=false) {
+	/*
+	 * order_id = $prod_gas_promotion_id
+	 * order_id necessario perche' key carts / articles_orders
+	 * poi in CartProdGasPromotionGasUserComponent disabilito buildRules per $rules->existsIn(['organization_id', 'order_id'], 'Orders')
+	 */
+	public function getOrderDefault($user, $prod_gas_promotion_id, $debug=false) {
 		
         $order = new \stdClass();
         $order->order_state_code = new \stdClass();
         $order->order_type = new \stdClass();
 
-        $order->id = Configure::read('OrderIdPromotionGasUsers');
+        $order->id = $prod_gas_promotion_id;
         $order->state_code = 'OPEN';
         $order->order_state_code->code = 'OPEN';
         $order->type_draw = 'PROMOTION';

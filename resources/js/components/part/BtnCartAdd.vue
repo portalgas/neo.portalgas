@@ -171,8 +171,12 @@ export default {
       };
       // console.log(params);
 
+      var url = '/admin/api/carts/managementCart';
+      if(this.order.order_type.code == 'PROMOTION_GAS_USERS')
+         url = '/admin/api/promotion-carts/managementCart';
+
       axios
-        .post("/admin/api/carts/managementCart", params)
+        .post(url, params)
         .then(response => {
 
           this.isRun = false;

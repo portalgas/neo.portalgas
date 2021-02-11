@@ -12,6 +12,7 @@ class CartsController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Cart');
+        $this->loadComponent('CartProdGasPromotionGasUser');
     }
 
     public function beforeFilter(Event $event) {
@@ -34,6 +35,28 @@ class CartsController extends ApiAppController
         $article = $this->request->getData('article');
         // debug($article);
         $results = $this->Cart->managementCart($user, $user->organization->id, $order, $article, $debug);
+        
+        return $this->_response($results); 
+    } 
+
+    /* 
+     * carrello per promozioni GAS-USERS
+     */
+    public function managementCartProdGasPromotionGasUser() {
+        
+        $debug = false;
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $user = $this->Authentication->getIdentity();
+
+        $results = [];
+   
+        $order = $this->request->getData('order');
+        $article = $this->request->getData('article');
+        // debug($article);
+        $results = $this->CartProdGasPromotionGasUser->managementCart($user, $user->organization->id, $order, $article, $debug);
         
         return $this->_response($results); 
     } 

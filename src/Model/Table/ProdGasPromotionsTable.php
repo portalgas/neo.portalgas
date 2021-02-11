@@ -150,7 +150,10 @@ class ProdGasPromotionsTable extends Table
         if(empty($supplierResults))
             return false;
          */
-         
+            
+        if($user->organization['hasPromotionGas']=='N' && $user->organization['hasPromotionGasUsers']=='N')
+            return false;
+
         if($debug) debug($user->organization['Supplier']);
         if($user->organization['Supplier']['Supplier']['can_promotions']!='Y') 
             return false;
