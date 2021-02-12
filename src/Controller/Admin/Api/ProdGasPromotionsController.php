@@ -63,7 +63,7 @@ class ProdGasPromotionsController extends ApiAppController
     
             foreach($prodGasPromotionsOrganizationsResults as $numResult => $prodGasPromotionsOrganizationsResult) {
 
-                $order = $this->ProdGasPromotion->getOrderDefault($user, $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id, $debug);
+                $order = $this->ProdGasPromotion->getOrderDefault($user, $prodGasPromotionsOrganizationsResult->prod_gas_promotion->organization_id, $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id, $debug);
 
                 $where = ['ProdGasPromotions.id' => $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id,
                           'ProdGasPromotions.type' => 'GAS-USERS',
@@ -93,7 +93,7 @@ class ProdGasPromotionsController extends ApiAppController
                 $options['limit'] = Configure::read('sql.no.limit');
                 $options['page'] = 1;
 
-                $articlesOrdersResults = $articlesOrdersPromotionTable->getCarts($user, $organization_id, $user_id, $order, $where, $options);
+                $articlesOrdersResults = $articlesOrdersPromotionTable->getCarts($user, $prodGasPromotionsResults->organization_id, $user_id, $order, $where, $options);
 
                 $ii=0;
                 $newResults2 = [];

@@ -15,16 +15,19 @@ class ProdGasPromotionComponent extends Component {
 	}
 
 	/*
+	 * organization_id del produttore
+	 *
 	 * order_id = $prod_gas_promotion_id
 	 * order_id necessario perche' key carts / articles_orders
 	 * poi in CartProdGasPromotionGasUserComponent disabilito buildRules per $rules->existsIn(['organization_id', 'order_id'], 'Orders')
 	 */
-	public function getOrderDefault($user, $prod_gas_promotion_id, $debug=false) {
+	public function getOrderDefault($user, $organization_id, $prod_gas_promotion_id, $debug=false) {
 		
         $order = new \stdClass();
         $order->order_state_code = new \stdClass();
         $order->order_type = new \stdClass();
 
+        $order->organization_id = $organization_id;
         $order->id = $prod_gas_promotion_id;
         $order->state_code = 'OPEN';
         $order->order_state_code->code = 'OPEN';

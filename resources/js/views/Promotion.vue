@@ -83,6 +83,9 @@
 
     </div> <!-- loop -->
 
+    <div  v-if="!isRunPromotion && promotions==null" class="alert alert-warning">Nessuna promozione per te</div>
+    </div>
+
 </div> 
 
 </template>

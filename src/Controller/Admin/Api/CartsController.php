@@ -55,8 +55,9 @@ class CartsController extends ApiAppController
    
         $order = $this->request->getData('order');
         $article = $this->request->getData('article');
-        // debug($article);
-        $results = $this->CartProdGasPromotionGasUser->managementCart($user, $user->organization->id, $order, $article, $debug);
+        $organization_id = $order['organization_id']; // organization_id del produttore
+ 
+        $results = $this->CartProdGasPromotionGasUser->managementCart($user, $organization_id, $order, $article, $debug);
         
         return $this->_response($results); 
     } 
