@@ -27,6 +27,15 @@ $organization = $this->Identity->get('organization');
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KPKQD4NFR1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-KPKQD4NFR1');
+    </script>
 </head>
 <body class="d-flex flex-column min-vh-100">
 <main role="main" class="container-fluid">
