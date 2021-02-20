@@ -1,7 +1,0 @@
-table_queue
-
-	suppliers
-		before save supplierExists
-	supplier_organizations
-		getSupplierId
-	artcicles
