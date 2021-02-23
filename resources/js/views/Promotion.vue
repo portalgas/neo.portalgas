@@ -42,9 +42,9 @@
                             </small>                        
                         </h5>
 
-                        <p v-if="promotion.promotion.prod_gas_promotion!=null" class="card-text">
-                          {{ promotion.promotion.name }}
-                          terminerà {{ promotion.promotion.data_fine | formatDate }}
+                        <p v-if="promotion.promotion.id!=null" class="card-text">
+                            <b>{{ promotion.promotion.name }}</b>
+                            terminerà {{ promotion.promotion.data_fine | formatDate }}
                         </p>
 
                      </div> <!-- card-body -->
@@ -52,7 +52,7 @@
                         <strong>Consegna</strong> 
                             {{ promotion.promotion.organization.suppliers_organization.supplier.indirizzo }}
                             {{ promotion.promotion.organization.suppliers_organization.supplier.localita }}
-                     </div> 
+                     </div>  <!-- card-footer --> 
 
                   </div> <!-- col-md-10 -->
                 </div> <!-- row -->
@@ -76,14 +76,13 @@
                           v-bind:order="promotion.order">
                           </app-article-order>
                       </div>
-                </div>
-
-            </div> <!-- col-sm-12 col-xs-12 col-md-12 -->
+                </div> <!-- col-sm-12 col-xs-2 col-md-3 -->
           </div> <!-- row -->
 
     </div> <!-- loop -->
 
-    <div  v-if="!isRunPromotion && promotions==null" class="alert alert-warning">Nessuna promozione per te</div>
+    <div v-if="!isRunPromotion && promotions==null" class="alert alert-warning">
+        Nessuna promozione per te
     </div>
 
 </div> 

@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use App\Decorator\ApiArticleOrderDecorator;
+use App\Decorator\ApiProdGasArticlesPromotionDecorator;
 use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
 
 class ProdGasPromotionsController extends ApiAppController
@@ -52,7 +52,7 @@ class ProdGasPromotionsController extends ApiAppController
         $where = ['ProdGasPromotionsOrganizations.organization_id' => $organization_id];    
         $prodGasPromotionsOrganizationsResults = $prodGasPromotionsOrganizationsTable->find()
                                 ->contain(['ProdGasPromotions' =>
-                                     ['conditions' => ['ProdGasPromotions.type' => 'GAS-USERS', 'ProdGasPromotions.state_code' => 'OPEN']]])
+                                     ['conditions' => ['ProdGasPromotions.type' => 'GAS-USERS', 'ProdGasPromotions.state_code' => 'PRODGASPROMOTION-GAS-USERS-OPEN']]])
                                 ->where($where)
                                 ->all();
 
@@ -67,7 +67,7 @@ class ProdGasPromotionsController extends ApiAppController
 
                 $where = ['ProdGasPromotions.id' => $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id,
                           'ProdGasPromotions.type' => 'GAS-USERS',
-                          'ProdGasPromotions.state_code' => 'OPEN'];    
+                          'ProdGasPromotions.state_code' => 'PRODGASPROMOTION-GAS-USERS-OPEN'];    
                 if($debug) debug($where);
 
                 $where_org = ['Organizations.type' => 'PRODGAS', 'Organizations.stato' => 'Y'];
@@ -94,11 +94,12 @@ class ProdGasPromotionsController extends ApiAppController
                 $options['page'] = 1;
 
                 $articlesOrdersResults = $articlesOrdersPromotionTable->getCarts($user, $prodGasPromotionsResults->organization_id, $user_id, $order, $where, $options);
+                // debug($articlesOrdersResults);
 
                 $ii=0;
                 $newResults2 = [];
                 foreach($articlesOrdersResults as  $numResult2 => $articlesOrdersResult) { 
-                    $articlesOrdersResult = new ApiArticleOrderDecorator($user, $articlesOrdersResult, $order); 
+                    $articlesOrdersResult = new ApiProdGasArticlesPromotionDecorator($user, $articlesOrdersResult, $prodGasPromotionsResults); 
                     $newResults2[$ii] = $articlesOrdersResult->results;
                     $ii++;
                 }
@@ -109,7 +110,7 @@ class ProdGasPromotionsController extends ApiAppController
             } // end foreach($prodGasPromotionsOrganizationsResults as $numResult => $prodGasPromotionsOrganizationsResult)
         } // end if($prodGasPromotionsOrganizationsResults->count()>0)
         $results['results'] = $newResults;
-
+        
         return $this->_response($results);
     } 
 }

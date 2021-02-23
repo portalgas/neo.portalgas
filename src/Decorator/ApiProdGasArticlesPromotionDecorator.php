@@ -21,7 +21,8 @@ class ApiProdGasArticlesPromotionDecorator  extends AppDecorator {
 			}
 	    }
 	    else 
-	    if($prod_gas_articles_promotions instanceof \App\Model\Entity\ProdGasArticlesPromotion) {
+	    if(/* $prod_gas_articles_promotions instanceof \App\Model\Entity\ProdGasArticlesPromotion || */
+           $prod_gas_articles_promotions instanceof \App\Model\Entity\ArticlesOrder) {
 			$results = $this->_decorate($user, $prod_gas_articles_promotions, $promotion);  	
 	    }
         else {
