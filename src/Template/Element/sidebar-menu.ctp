@@ -14,7 +14,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
   <?php
   if($joomla25Salts_isActive) {
     echo '<li class="">';
-    echo '<a href="'.$this->Url->build('/admin/joomla25Salts').'">';
+    echo '<a href="'.$this->Url->build('/admin/joomla25Salts').'?scope=BO">';
     echo '  <i class="fa fa-home"></i> <span>'.__('PortAlGas').'</span>';
     echo '</a>';
     echo '</li>';

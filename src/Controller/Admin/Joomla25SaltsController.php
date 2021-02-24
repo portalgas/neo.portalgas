@@ -62,7 +62,6 @@ class joomla25SaltsController extends AppController
         /*
          * land page, controller / action
          */
-        
         $scope = $this->request->getQuery('scope');
         if(empty($scope))
             $scope = 'FE';
