@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Order from "../views/Order";
+import Order from "../views/Order.vue";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
-import Promotion from "../views/Promotion";
+import Promotion from "../views/Promotion.vue";
 
 Vue.use(VueRouter);
 
