@@ -132,6 +132,9 @@ class ApiProdGasArticlesPromotionDecorator  extends AppDecorator {
         $results['um'] = $articles_order->article->um;   
         $results['um_rif'] = $articles_order->article->um_riferimento;   
 
+        /*
+         * price e' il prezzo scontato
+         */
         $results['um_rif_label'] = $this->_getArticlePrezzoUM($results['price'], $results['qta'], $results['um'], $results['um_rif']);          
         $results['conf'] = $results['qta'].' '.$results['um'];
 
@@ -166,6 +169,19 @@ class ApiProdGasArticlesPromotionDecorator  extends AppDecorator {
                 $results['cart']['is_import_mod'] = false;
             }
         }
+
+        /*
+         * promotions
+         */
+        if(isset($articles_order->prod_gas_articles_promotion) && !empty($articles_order->prod_gas_articles_promotion)) {
+            $results['promotion'] = $articles_order->prod_gas_articles_promotion;
+
+            // sono gia' valorizzati quando si associano gli articoli all'ordine
+            $results['qta_minima_order'] = $articles_order->prod_gas_articles_promotion->qta;
+            $results['qta_massima_order'] = $articles_order->prod_gas_articles_promotion->qta;
+
+            $results['price_pre_discount'] = $articles_order->article->prezzo;
+        }        
 
         // debug($articles_order);
 

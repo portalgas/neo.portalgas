@@ -50,17 +50,17 @@
                 <div v-if="article.qta_minima>1">
                   <small class="text-muted"><strong>Q.tà minima</strong> {{ article.qta_minima }}</small>
                 </div>
-                <div v-if="article.qta_massima>0">
-                  <small class="text-muted"><strong>Q.tà massima</strong> {{ article.qta_massima }}</small>
-                </div>
 
                 <span v-if="order.order_type.code == 'PROMOTION'">
-                    <!-- per la promozione, qta_minima_order = qta_massima_order: qta da raggiungere per la promozione -->
+                    <!-- per la promozione, qta_massima = qta_minima_order = qta_massima_order: qta da raggiungere per la promozione -->
                     <div v-if="article.qta_massima_order>0">
                       <small class="text-muted"><strong>Promozione valida</strong> se sull'ordine totale si raggiungerà la quantità di <strong>{{ article.qta_massima_order }} acquisti</strong> (acquistati ora {{ article.qta_cart }})</small>
                     </div>                
                 </span>
                 <span v-if="order.order_type.code != 'PROMOTION' && order.order_type.code!='PROMOTION_GAS_USERS'">
+                    <div v-if="article.qta_massima>0">
+                      <small class="text-muted"><strong>Q.tà massima</strong> {{ article.qta_massima }}</small>
+                    </div>                
                     <div v-if="article.qta_minima_order>0">
                       <small class="text-muted"><strong>Q.tà minima sull'ordine totale</strong> {{ article.qta_minima_order }}</small>
                     </div>                
