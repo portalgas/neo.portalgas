@@ -14,8 +14,17 @@ $menus[$i]['url'] = $config['Portalgas.fe.url'];
 $menus[$i]['target'] = '';
 
 if(!empty($organization)) {
-  $i++;
+  
   $menus = [];
+
+  if($hasGasUsersPromotions) {
+    $i++;
+    $menus[$i]['label'] = __('Promotions');
+    $menus[$i]['url'] = '/promozioni';
+    $menus[$i]['target'] = '';    
+  }
+
+  $i++;
   $menus[$i]['label'] = __('Deliveries');
   // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
   $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;

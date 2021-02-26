@@ -14,12 +14,13 @@
  */
 namespace App\Controller;
 
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 use Cake\Filesystem\File;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 /**
  * Static content controller
@@ -35,11 +36,26 @@ class PagesController extends AppController
 
         $this->Authentication->allowUnauthenticated(['display']);
         $this->Authorization->skipAuthorization(['display']);
+
+         $this->loadComponent('ProdGasPromotion');
     }
 
     public function vue() {
         // $user = $this->Authentication->getIdentity();
         // debug($user);
+        
+        $hasGasUsersPromotions = false;
+
+        $user = $this->Authentication->getIdentity();
+
+        if(!empty($user)) {
+            $organization_id = $user->organization->id;
+
+            $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');
+            $hasGasUsersPromotions = $prodGasPromotionsOrganizationsTable->hasGasUsersPromotions($organization_id);
+        }
+
+        $this->set(compact('hasGasUsersPromotions'));
     }
 
     /**

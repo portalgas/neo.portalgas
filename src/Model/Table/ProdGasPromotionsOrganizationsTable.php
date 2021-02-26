@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class ProdGasPromotionsOrganizationsTable extends Table
 {
@@ -101,5 +102,22 @@ class ProdGasPromotionsOrganizationsTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    public function hasGasUsersPromotions($organization_id) {
+
+        $where = ['ProdGasPromotionsOrganizations.organization_id' => $organization_id,
+                  'ProdGasPromotions.type' => 'GAS-USERS'];
+
+        $results = $this->find()
+                        ->contain(['ProdGasPromotions'])
+                        ->where($where)
+                        ->count();
+        // debug($results);
+
+        if($results==0)
+            return false;
+        else
+            return true;
     }
 }
