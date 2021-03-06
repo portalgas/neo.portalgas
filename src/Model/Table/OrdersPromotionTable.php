@@ -86,7 +86,7 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
                               'SuppliersOrganizations.stato' => 'Y',
                               // 'SuppliersOrganizations.owner_articles' => 'REFERENT',
                               'SuppliersOrganizations.can_promotions' => 'Y',], $where);
-  
+        // debug($where);
         $results = $suppliersOrganizationsTable->find()
                                 ->where($where)
                                 ->contain(['Suppliers', 'CategoriesSuppliers'])

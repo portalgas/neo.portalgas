@@ -55,7 +55,7 @@ class HtmlCustomHelper extends FormHelper
             $str .= '</div>';
         }
         else 
-            $str = '<div class="note" style="max-width:200px;">'.$note.'</div>';
+            $str = '<div class="note" style="max-width:200px;">'.$value.'</div>';
 
         return $str;
     }

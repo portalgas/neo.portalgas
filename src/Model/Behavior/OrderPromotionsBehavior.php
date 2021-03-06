@@ -33,6 +33,7 @@ class OrderPromotionsBehavior extends Behavior
             $data['prod_gas_promotion_id'] = $data['parent_id']; 
 
         $data['type_draw'] = 'PROMOTION';
+        $data['order_type_id'] = 4;
 
         // debug($data);
     }

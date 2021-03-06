@@ -220,13 +220,13 @@ class OrdersController extends AppController
          * dati promozione / order des
          */
         $parent = $ordersTable->getParent($user, $organization_id, $parent_id);
-
+        // debug($parent);
         $where = ['SuppliersOrganizations.supplier_id' => $parent->suppliersOrganization->organizations->supplier_id];
         $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $where);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
         // debug($suppliersOrganizations);
         if(empty($suppliersOrganizations)) {
-            $this->Flash->error(__('no suppliersOrganizations'));
+            $this->Flash->error(__("Il produttore della promozione non è presente!"));
         }
         else {
 
@@ -244,6 +244,9 @@ class OrdersController extends AppController
          */ 
         $where = ['ProdGasPromotionsOrganizationsDeliveries.prod_gas_promotion_id' => $prod_gas_promotion_id];
         $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where);
+        if(empty($deliveries)) {
+            $this->Flash->error(__("Il Gas non ha consegne disponibili!"));
+        }
 
         $this->set(compact('order_type_id', 'order', 'parent', 'suppliersOrganizations', 'deliveries'));
     }

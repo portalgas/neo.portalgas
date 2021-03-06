@@ -296,7 +296,7 @@ $portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
                 <i class="fab fa-fw fa-facebook-f"></i>
               </a>
             </li>
-            <li class="list-inline-item">
+            <!-- li class="list-inline-item">
               <a class="btn btn-outline-light btn-social text-center rounded-circle" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
                 <i class="fab fa-fw fa-apple"></i>
               </a>
@@ -305,7 +305,7 @@ $portalgas_bo_url_login = $config['Portalgas.bo.url.login'];
               <a class="btn btn-outline-light btn-social text-center rounded-circle" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">
                 <i class="fab fa-fw fa-android"></i>
               </a>
-            </li>
+            </li -->
           </ul>
 		</p>
 		

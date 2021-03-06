@@ -14,18 +14,28 @@ class ApiProdGasArticlesPromotionDecorator  extends AppDecorator {
     public function __construct($user, $articles_orders, $promotion=null)
     {
         $results = [];
-	    // debug($articles_order);
+	    // var_dump($articles_orders);
 
 	    if($articles_orders instanceof \Cake\ORM\ResultSet) {
-			foreach($articles_orders as $numResult => $articles_order) {
-				$results[$numResult] = $this->_decorate($user, $articles_order, $promotion);
-			}
+
+            foreach($articles_orders as $numResult => $articles_order) {
+                if($articles_order instanceof \App\Model\Entity\ProdGasArticlesPromotion) {  // devo ancora creare l'ordine            
+                    $results[$numResult] = $this->_decorateProdGasArticlesPromotion($user, $articles_order, $promotion);
+                }
+                else
+                if($articles_order instanceof \App\Model\Entity\ArticlesOrder) { // gia' creato l'ordine 
+        			$results[$numResult] = $this->_decorate($user, $articles_order, $promotion);
+                }
+            }
 	    }
-	    else 
-	    if(/* $articles_orders instanceof \App\Model\Entity\ProdGasArticlesPromotion || */
-           $articles_orders instanceof \App\Model\Entity\ArticlesOrder) {
-			$results = $this->_decorate($user, $articles_orders, $promotion);  	
-	    }
+        else         
+        if($articles_orders instanceof \App\Model\Entity\ProdGasArticlesPromotion) {  // devo ancora creare l'ordine
+            $results = $this->_decorateProdGasArticlesPromotion($user, $articles_orders, $promotion);   
+        }
+        else 
+        if($articles_orders instanceof \App\Model\Entity\ArticlesOrder) { // gia' creato l'ordine
+            $results = $this->_decorate($user, $articles_orders, $promotion);   
+        }
         else {
             foreach($articles_orders as $numResult => $articles_order) {
                 $results[$numResult] = $this->_decorate($user, $articles_order, $promotion);
@@ -35,6 +45,126 @@ class ApiProdGasArticlesPromotionDecorator  extends AppDecorator {
 		$this->results = $results;
     }
 
+    /*
+     * devo ancora creare l'ordine
+     */
+    private function _decorateProdGasArticlesPromotion($user, $prod_gas_article_promotion, $promotion) {
+
+        // debug($prod_gas_article_promotion);
+
+        $results = [];
+             
+
+        $results['name'] = $prod_gas_article_promotion->article->name;
+            
+        if(empty($prod_gas_article_promotion->article->codice)) {
+            $results['sku'] = '';
+            $results['codice'] = '';
+        }
+        else {
+            $results['sku'] = $prod_gas_article_promotion->article->codice;
+            $results['codice'] = $prod_gas_article_promotion->article->codice;
+        }
+
+        $results['img1'] = $this->_getArticleImg1($prod_gas_article_promotion);        
+        $results['img1_width'] = Configure::read('Article.img.preview.width');
+
+        if(empty($prod_gas_article_promotion->prezzo_unita)) {
+            $results['prezzo_unita'] = 0;
+            $results['price'] = 0;
+        }
+        else {
+            $results['prezzo_unita'] = $prod_gas_article_promotion->prezzo_unita;
+            $results['price'] = $prod_gas_article_promotion->prezzo_unita;
+        }
+
+        if(empty($prod_gas_article_promotion->article->pezzi_confezione))
+            $results['package'] = 1;
+        else
+            $results['package'] = $prod_gas_article_promotion->article->pezzi_confezione;
+
+        if(empty($prod_gas_article_promotion->article->qta_minima))
+            $results['qta_minima'] = 1;
+        else
+            $results['qta_minima'] = $prod_gas_article_promotion->article->qta_minima;
+
+        if(empty($prod_gas_article_promotion->article->qta_massima))
+            $results['qta_massima'] = 0;
+        else
+            $results['qta_massima'] = $prod_gas_article_promotion->article->qta_massima;
+
+        if(empty($prod_gas_article_promotion->article->qta_multipli))
+            $results['qta_multipli'] = 1;
+        else
+            $results['qta_multipli'] = $prod_gas_article_promotion->article->qta_multipli;
+
+        $results['qta_minima_order'] = $prod_gas_article_promotion->article->qta_minima_order;
+        $results['qta_massima_order'] = $prod_gas_article_promotion->article->qta_massima_order;
+        $results['qta_massima_order'] = $prod_gas_article_promotion->article->qta_massima_order;
+        
+        /*
+         * dati da article
+         */
+        $results['article']['stato'] = $prod_gas_article_promotion->article->stato;
+        $results['qta'] = $prod_gas_article_promotion->article->qta; 
+        if(empty($prod_gas_article_promotion->article->bio))
+            $results['is_bio'] = '';
+        else {
+            if($prod_gas_article_promotion->article->bio=='Y')
+                $results['is_bio'] = true;
+            else
+                $results['is_bio'] = false;
+        }
+
+        if(empty($prod_gas_article_promotion->article->nota)) {
+            $results['nota'] = '';
+            $results['descri'] = '';
+        }
+        else {
+            $results['nota'] = $prod_gas_article_promotion->article->nota;
+            $results['descri'] = $prod_gas_article_promotion->article->nota;
+        }
+
+        if(empty($prod_gas_article_promotion->article->ingredienti))
+            $results['ingredients'] = '';
+        else
+            $results['ingredients'] = $prod_gas_article_promotion->article->ingredienti;
+
+        $results['um'] = $prod_gas_article_promotion->article->um;   
+        $results['um_rif'] = $prod_gas_article_promotion->article->um_riferimento;   
+
+        /*
+         * price e' il prezzo scontato
+         */
+        $results['um_rif_label'] = $this->_getArticlePrezzoUM($results['price'], $results['qta'], $results['um'], $results['um_rif']);          
+        $results['conf'] = $results['qta'].' '.$results['um'];
+
+        /*
+         * promotions
+         */
+        $results['promotion'] = $promotion;
+
+        // sono gia' valorizzati quando si associano gli articoli all'ordine
+        $results['qta'] = $prod_gas_article_promotion->qta;
+        $results['qta_minima_order'] = $prod_gas_article_promotion->qta;
+        $results['qta_massima_order'] = $prod_gas_article_promotion->qta;
+
+        $results['price_pre_discount'] = $prod_gas_article_promotion->article->prezzo;
+
+        /*
+         * totale importo qta * prezzo
+         */
+        $results['importo_originale'] = ($prod_gas_article_promotion->qta * $prod_gas_article_promotion->article->prezzo);
+        $results['importo_scontato'] = $prod_gas_article_promotion->importo;
+
+        // debug($results);
+
+        return $results;
+    }
+
+    /*
+     * gia' creato l'ordine
+     */
 	private function _decorate($user, $articles_order, $promotion) {
 
         // debug($articles_order);
@@ -183,7 +313,7 @@ class ApiProdGasArticlesPromotionDecorator  extends AppDecorator {
             $results['price_pre_discount'] = $articles_order->article->prezzo;
         }        
 
-        // debug($articles_order);
+        // debug($results);
 
         return $results;
     }

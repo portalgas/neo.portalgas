@@ -181,7 +181,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
             $html .= '<th scope="col">'.__('Package').'</th>'; 
             $html .= '<th scope="col" style="text-align:center;">'.__('ProdGasPromotion-Qta').'</th>';    
             $html .= '<th scope="col" style="text-align:center;">'.__('PrezzoUnita').'</th>';      
-            $html .= '<th style="text-align:center;">'.__('ImportoOriginale').'</th>'; 
+            // $html .= '<th style="text-align:center;">'.__('ImportoOriginale').'</th>'; 
             $html .= '<th scope="col" style="text-align:center;">'.__('ProdGasPromotion-PrezzoUnita').'</th>';
             $html .= '<th scope="col" style="text-align:center;">'.__('ImportoTotaleScontato').'</th>';  
             $html .= '</tr></thead><tbody>';
@@ -191,23 +191,23 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         
                 $html .= '<tr>';
                 $html .= '<td>';
-                if(!empty($prodGasArticlesPromotion->article->img1)) {
-                    $html .= '<img class="img-article responsive" src="'.$prodGasArticlesPromotion->article->img1.'" />';
+                if(!empty($prodGasArticlesPromotion['img1'])) {
+                    $html .= '<img class="img-article responsive" src="'.$prodGasArticlesPromotion['img1'].'" />';
                 }       
                 $html .= '</td>';           
-                $html .= '<td>'.$prodGasArticlesPromotion->article->name.'&nbsp;';
-                $html .= $this->HtmlCustom->noteMore($prodGasArticlesPromotion->article->nota);
+                $html .= '<td>'.$prodGasArticlesPromotion['name'].'&nbsp;';
+                $html .= $this->HtmlCustom->noteMore($prodGasArticlesPromotion['nota']);
                 $html .= '</td>';
                 $html .= '<td style="text-align:center;">';
-                $html .= $prodGasArticlesPromotion->article->conf;
+                $html .= $prodGasArticlesPromotion['conf'];
                 $html .= '</td>';
-                $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion->qta.'</td>';
-                $html .= '<td style="text-align:center;"><span style="text-decoration: line-through;">'.$prodGasArticlesPromotion->article->prezzo.'</span></td>';
-                $html .= '<td style="text-align:center;"><span style="text-decoration: line-through;">'.$prodGasArticlesPromotion->importo_originale.'&nbsp;&euro;</span></td>';
-                $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion->prezzo_unita.'&nbsp;&euro;</td>';
+                $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion['qta'].'</td>';
+                $html .= '<td style="text-align:center;"><span style="text-decoration: line-through;">'.$prodGasArticlesPromotion['price_pre_discount'].'&nbsp;&euro;</span></td>';
+                // $html .= '<td style="text-align:center;"><span style="text-decoration: line-through;">'.$prodGasArticlesPromotion['importo_originale'].'&nbsp;&euro;</span></td>';
+                $html .= '<td style="text-align:center;">'.$prodGasArticlesPromotion['prezzo_unita'].'&nbsp;&euro;</td>';
                 $html .= '<td style="text-align:center;">';
-                $html .= '<span style="text-decoration: line-through;">'.$prodGasArticlesPromotion->importo_originale.'&nbsp;&euro;</span><br />';
-                $html .= $prodGasArticlesPromotion->importo.'</td>';
+                $html .= '<span style="text-decoration: line-through;">'.$prodGasArticlesPromotion['importo_originale'].'&nbsp;&euro;</span><br />';
+                $html .= $prodGasArticlesPromotion['importo_scontato'].'&nbsp;&euro;</td>';
                 $html .= '</tr>';
                             
             } // end foreach ($results->prodGasArticlesPromotions as $numResult => $prodGasArticlesPromotion)
