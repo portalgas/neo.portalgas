@@ -29,7 +29,7 @@ class OrdersBehavior extends Behavior
         // debug('OrdersBehavior beforeMarshal');
 
         /*
-         * valor di default
+         * valore di default
          */
         if (!isset($data['state_code']) || empty($data['state_code'])) {
             $data['state_code'] = 'CREATE-INCOMPLETE';

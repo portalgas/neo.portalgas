@@ -77,15 +77,18 @@ class joomla25SaltsController extends AppController
          */
         $q = '';
         $queries = $this->request->getQuery();
+        if($debug) debug($queries);
         unset($queries['scope']);
         unset($queries['c_to']);
         unset($queries['a_to']);
         if(!empty($queries)) {
             foreach ($queries as $key => $value) {
-                $q = $key.'='.$value;
+                $q .= $key.'='.$value.'&';
             }
+            if(!empty($q))  
+               $q = substr($q, 0, (strlen($q)-1));
         }
-
+        if($debug) debug($q);
         /*
          * https://www.portalgas.it/api/connect?u={salt}=&c_to=Pages&a_to=home
          *

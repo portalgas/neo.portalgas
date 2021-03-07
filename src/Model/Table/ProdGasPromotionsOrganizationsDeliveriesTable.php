@@ -85,7 +85,12 @@ class ProdGasPromotionsOrganizationsDeliveriesTable extends Table
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
-                $listResults[$result->delivery->id] = $result->delivery->luogo.' '.$result->delivery->data;
+                 /*
+                  * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                  * key array non per id, nel json perde l'ordinamento della data
+                  * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
+                  */                
+                $listResults[$result->delivery->id] = $result->delivery->data->i18nFormat('eeee d MMMM').' - '.$result->delivery->luogo;
             }
         }
    

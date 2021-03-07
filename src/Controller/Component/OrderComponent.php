@@ -185,7 +185,7 @@ class OrderComponent extends Component {
             isset($options['page'])?  $page = $options['page'] : $page = '1';
             isset($options['sql_limit'])?  $sql_limit = $options['sql_limit'] : $sql_limit = Configure::read('sql.limit');
 
-            $where['order_id'] = $order_id;
+            $where=[];
             if(!empty($q)) {
                 $where_q = [];
                 if(strpos($q, ' ')!==false) {

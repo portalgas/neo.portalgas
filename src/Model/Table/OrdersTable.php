@@ -85,6 +85,10 @@ class OrdersTable extends Table
             ->notEmptyString('owner_articles');
 
         $validator
+            ->scalar('order_type_id')
+            ->notEmptyString('order_type_id');
+
+        $validator
             ->date('data_inizio')
             ->requirePresence('data_inizio', 'create')
             ->notEmptyDate('data_inizio')
@@ -315,6 +319,7 @@ class OrdersTable extends Table
         $rules->add($rules->existsIn(['owner_organization_id'], 'OwnerOrganizations'));
         $rules->add($rules->existsIn(['owner_supplier_organization_id'], 'OwnerSupplierOrganizations'));
         $rules->add($rules->existsIn(['organization_id', 'delivery_id'], 'Deliveries'));
+        $rules->add($rules->existsIn(['order_type_id'], 'OrderTypes'));
         /*
         $rules->addCreate(function ($entity, $options) {
             debug('buildRules');
@@ -430,8 +435,13 @@ class OrdersTable extends Table
         $results = $this->gets($user, $organization_id, $where, $debug);
         if(!empty($results)) {
             foreach($results as $result) {
+                 /*
+                  * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                  * key array non per id, nel json perde l'ordinamento della data
+                  * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
+                  */                 
                 // debug($result);exit;
-                $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->luogo.' '.$result->delivery->data;
+                $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->data->i18nFormat('eeee d MMMM').' - '.$result->delivery->luogo;
             }
         }
 

@@ -29,6 +29,7 @@ class ProdGasPromotionComponent extends Component {
 
         $order->organization_id = $organization_id;
         $order->id = $prod_gas_promotion_id;
+        $order->prod_gas_promotion_id = $prod_gas_promotion_id;
         $order->state_code = 'OPEN';
         $order->order_state_code->code = 'OPEN';
         $order->type_draw = 'PROMOTION';

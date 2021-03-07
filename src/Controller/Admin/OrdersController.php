@@ -166,7 +166,7 @@ class OrdersController extends AppController
     $order_type_id = Configure::read('Order.type.promotion');
     */
     public function add($order_type_id=1, $parent_id=0)
-    { 
+    {            
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto
         // debug($user);
@@ -204,13 +204,25 @@ class OrdersController extends AppController
             $request = $this->request->getData();
             $order = $ordersTable->patchEntity($order, $request);
             // debug($order);
+
+            /* 
+             * OrderBehavior / OrderPromotionsBehavior
+             */
             if ($ordersTable->save($order)) {
 
                 $ordersTable->afterSaveWithRequest($user, $organization_id, $request);
 
                 $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
-                // return $this->redirect(['action' => 'index']);
+                /*
+                 * recirect home ordine
+                 */
+                $url = ['controller' => 'joomla25Salts', 'action' => 'index', 
+                        '?'=> ['scope' => 'BO', 'c_to' => 'Orders', 'a_to' => 'home', 
+                               'delivery_id' => $order->delivery_id, 'order_id' => $order->id]
+                        ];
+
+                return $this->redirect($url);                
             }
             else
                 $this->Flash->error($order->getErrors());
@@ -227,9 +239,6 @@ class OrdersController extends AppController
         // debug($suppliersOrganizations);
         if(empty($suppliersOrganizations)) {
             $this->Flash->error(__("Il produttore della promozione non è presente!"));
-        }
-        else {
-
         }
         
         // $organizations = $ordersTable->Organizations->find('list', ['limit' => 200]);

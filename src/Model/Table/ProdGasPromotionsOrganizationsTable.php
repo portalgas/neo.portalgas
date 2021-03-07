@@ -104,6 +104,9 @@ class ProdGasPromotionsOrganizationsTable extends Table
         return $rules;
     }
 
+    /* 
+     * ctrl se ha le promozioni per gasisti (faccio comparire il tab) 
+     */
     public function hasGasUsersPromotions($organization_id) {
 
         $where = ['ProdGasPromotionsOrganizations.organization_id' => $organization_id,
@@ -119,5 +122,28 @@ class ProdGasPromotionsOrganizationsTable extends Table
             return false;
         else
             return true;
+    }
+
+    /*
+     * se ProdGasPromotions.type = 'GAS_USERS' ordine fittizio 
+     *      con order_id = prod_gas_promotion_id o organization_id quello del produttore => cosi' articlesOrders unico 
+     * se ProdGasPromotions.type = 'GAS' ordine del GAS
+     */
+    public function getProdGasPromotionsByOrder($organization_id, $order_id, $debug) {
+
+        $where = ['ProdGasPromotionsOrganizations.organization_id' => $organization_id,
+                  'ProdGasPromotionsOrganizations.order_id' => $order_id];
+        // debug($where);
+        $where_prod_gas_promotions = ['ProdGasPromotions.stato' => 'Y'];
+ 
+        $results = $this->find()
+                        ->contain(['ProdGasPromotions' => ['conditions' => $where_prod_gas_promotions]])
+                        ->where($where)
+                        ->first();
+        // debug($results);
+        if(!empty($results))
+            return $results->prod_gas_promotion;
+        else
+            return $results;
     }
 }

@@ -167,8 +167,13 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
+                 /*
+                  * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                  * key array non per id, nel json perde l'ordinamento della data
+                  * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
+                  */                  
                 // debug($result);exit;
-                $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->luogo.' '.$result->delivery->data;
+                $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->data->i18nFormat('eeee d MMMM').' - '.$result->delivery->luogo;
             }
         }
 

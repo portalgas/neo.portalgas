@@ -84,7 +84,6 @@ class ProdGasPromotionsController extends ApiAppController
                 $articlesOrdersPromotionTable = TableRegistry::get('ArticlesOrdersPromotion');
                    
                 $where = [];
-                $where['order_id'] = $prodGasPromotionsOrganizationsResult->order_id;
 
                 $where['ProdGasArticlesPromotions'] = ['ProdGasArticlesPromotions.prod_gas_promotion_id' => $prodGasPromotionsOrganizationsResult->prod_gas_promotion_id];
 

@@ -100,6 +100,9 @@ msgstr "Mail"
 msgid "Mail PEC"
 msgstr "Mail P.E.C."
 
+msgid "Mail Open Testo"
+msgstr "Testo da aggiungere alla mail di apertura"
+
 msgid "Users"
 msgstr "Utenti"
 

@@ -49,9 +49,8 @@
 
                      </div> <!-- card-body -->
                      <div class="card-footer text-muted bg-transparent-disabled">
-                        <strong>Consegna</strong> 
-                            {{ promotion.promotion.organization.suppliers_organization.supplier.indirizzo }}
-                            {{ promotion.promotion.organization.suppliers_organization.supplier.localita }}
+                        <strong>Note per la consegna e il pagamento</strong> 
+                        <div v-html="$options.filters.html(promotion.promotion.nota)"></div>
                      </div>  <!-- card-footer --> 
 
                   </div> <!-- col-md-10 -->
@@ -81,7 +80,7 @@
 
     </div> <!-- loop -->
 
-    <div v-if="!isRunPromotion && promotions==null" class="alert alert-warning">
+    <div v-if="!isRunPromotion && (promotions==null || promotions.length==0)" class="alert alert-warning">
         Nessuna promozione per te
     </div>
 

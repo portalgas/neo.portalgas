@@ -48,14 +48,15 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) { 
 
-        $order_id = $where['order_id'];
+        $order_id = $orderResults->id;
+        $prod_gas_promotion_id = $orderResults->prod_gas_promotion_id;
 
         if(!isset($where['ProdGasArticlesPromotions']))
-           $where['ProdGasArticlesPromotions'] = ['ProdGasArticlesPromotions.prod_gas_promotion_id' => $order_id];
+           $where['ProdGasArticlesPromotions'] = ['ProdGasArticlesPromotions.prod_gas_promotion_id' => $prod_gas_promotion_id];
         else
-            $where['ProdGasArticlesPromotions'] = array_merge(['ProdGasArticlesPromotions.prod_gas_promotion_id' => $order_id], 
+            $where['ProdGasArticlesPromotions'] = array_merge(['ProdGasArticlesPromotions.prod_gas_promotion_id' => $prod_gas_promotion_id], 
                                                   $where['ProdGasArticlesPromotions']);
-        
+      
         if(!isset($where['ArticlesOrders']))
            $where['ArticlesOrders'] = [];
 
@@ -90,7 +91,8 @@ class ArticlesOrdersPromotionTable extends ArticlesOrdersTable implements Articl
                         ->page($this->_page)
                         ->all()
                         ->toArray();
-                      
+        // debug($results); 
+
         /*
          * estraggo eventuali acquisti / promotions
          */ 

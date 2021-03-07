@@ -76,7 +76,7 @@ class OrderPromotionsBehavior extends Behavior
                                 ->where($where)
                                 ->contain(['Articles'])
                                 ->all();
-
+        // debug($results);
         foreach ($results as $result) {
  
             $data = [];
@@ -153,6 +153,8 @@ class OrderPromotionsBehavior extends Behavior
         
         $this->_importProdGasArticlesPromotions($organization_id, $prod_gas_promotion_id, $order_id);
 
-        $this->_updateProdGasPromotionsOrganizations($organization_id, $prod_gas_promotion_id, $order_id);                      
+        $this->_updateProdGasPromotionsOrganizations($organization_id, $prod_gas_promotion_id, $order_id); 
+
+        // dopo il sava redirect sulla home dell'ordine => ordersStatoElaborazione aggiorna stato                      
     } 
 }

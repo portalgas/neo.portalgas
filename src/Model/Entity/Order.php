@@ -9,6 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $organization_id
  * @property int $supplier_organization_id
+ * @property int $order_type_id
  * @property string $owner_articles
  * @property int $owner_organization_id
  * @property int $owner_supplier_organization_id
@@ -77,6 +78,7 @@ class Order extends Entity
     protected $_accessible = [
         'organization_id' => true,
         'supplier_organization_id' => true,
+        'order_type_id' => true,
         'owner_articles' => true,
         'owner_organization_id' => true,
         'owner_supplier_organization_id' => true,
