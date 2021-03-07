@@ -75,7 +75,7 @@ class OrganizationsPaysController extends AppController
              * tolgo info@nomegas.portalgas.it
              * eventuale dispensa@nomegas.portalgas.it
              */
-            if($organization->paramsConfig['hasStoreroom']=='Y') 
+            if(isset($organization->paramsConfig['hasStoreroom']) && $organization->paramsConfig['hasStoreroom']=='Y') 
                 $users_default = 2;
             else
                 $users_default = 1;
@@ -176,8 +176,8 @@ class OrganizationsPaysController extends AppController
 
         $this->paginate = [
             'conditions' => [$where],
-            'contain' => ['Organizations'],
-            'order' => ['OrganizationsPays.year' => 'desc'],
+            'contain' => ['Organizations' => ['sort' => ['Organizations.name' => 'asc']]],
+            'order' => ['OrganizationsPays.year' => 'desc', 'Organizations.name' => 'asc'],
             'limit' => 100
         ];
         $organizationsPays = $this->paginate($this->OrganizationsPays);
@@ -212,11 +212,12 @@ class OrganizationsPaysController extends AppController
             // debug($organizationsPay->doc_url);
 
         } // foreach($organizationsPays as $organizationsPay)
+        // debug($organizationsPays);
 
         $hasMsgs = ['Y' => __('Si'), 'N' => __('No')];
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
-        $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
+        $organizations = $this->OrganizationsPays->Organizations->find('list', ['order' => ['Organizations.name' => 'asc'], 'limit' => 200]);
 
         $this->set(compact('organizationsPays', 'hasMsgs', 'beneficiario_pays', 'type_pays', 'organizations'));
     }
