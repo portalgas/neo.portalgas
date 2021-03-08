@@ -278,7 +278,7 @@ class ArticlesOrdersTable extends Table
      */
     public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
 
-        $order_id = $where['order_id'];
+        $order_id = $orderResults->id;
 
         $order_state_code = $orderResults->state_code;
 
