@@ -318,9 +318,14 @@ class ArticlesOrdersTable extends Table
                           'Carts.order_id' => $result['order_id'],
                           'Carts.article_organization_id' => $result['article_organization_id'],
                           'Carts.article_id' => $result['article_id'],
-                          'Carts.user_id' => $user_id, 
                           'Carts.deleteToReferent' => 'N',
                           'Carts.stato' => 'Y'];
+                if(!empty($user_id)) {
+                    /*
+                     * acquisti solo dell'utente passato
+                     */
+                    $where_cart += ['Carts.user_id' => $user_id];
+                }                          
                 $cartResults = $cartsTable->find()
                             ->where($where_cart)
                             ->first();

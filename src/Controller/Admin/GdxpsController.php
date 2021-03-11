@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use App\Decorator\ApiArticleOrderDecorator;
 use Cake\Http\Exception\NotFoundException;
 
 class GdxpsController extends AppController
@@ -24,20 +25,10 @@ class GdxpsController extends AppController
     {
         parent::beforeRender($event);    
 
-        // if(!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isSuperReferente'] || !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
-        $continua = false;
-
-        if($this->Authentication->getIdentity()->acl['isRoot'])
-            $continua = true;
-        else
-        if($this->Authentication->getIdentity()->acl['isSuperReferente'] && $this->Authentication->getIdentity()->organization->paramsConfig['hasArticlesGdxp']=='Y')
-            $continua = true;
-
-        if(!$continua )
-         {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-          //  return $this->redirect(Configure::read('routes_msg_stop'));
-        }
+        /*
+         * $user = $this->Authentication->getIdentity();
+         * if(!isset($user->acl) || !$user->acl['isSuperReferente'] || !$user->acl['isReferentGeneric']) {
+         */
     }
 
     /*
@@ -48,6 +39,17 @@ class GdxpsController extends AppController
      */
     public function index()
     {
+        $debug = false;
+
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        if(!$user->acl['isRoot'] || !$user->acl['isSuperReferente'] || $user->organization->paramsConfig['hasArticlesGdxp']!='Y') {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+          //  return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         $gdxp_suppliers_index_url_remote = Configure::read('Gdxp.suppliers.index.url.remote');
         $gdxp_suppliers_index_url_local = Configure::read('Gdxp.suppliers.index.url.local');
         $gdxp_articles_index_url = Configure::read('Gdxp.articles.index.url');
@@ -55,27 +57,36 @@ class GdxpsController extends AppController
         $this->set(compact('gdxp_suppliers_index_url_remote', 'gdxp_suppliers_index_url_local', 'gdxp_articles_index_url'));
     }
 
-    public function export()
+    public function articlesExport()
     {
         $debug = false;
 
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        if(!$user->acl['isRoot'] || !$user->acl['isSuperReferente'] || $user->organization->paramsConfig['hasArticlesGdxp']!='Y') {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+          //  return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         $articles = [];
         $supplier_organization_id = 0;
-        $acl_supplier_organizations = $this->Auths->getAclSupplierOrganizationsList($this->Authentication->getIdentity());
+        $acl_supplier_organizations = $this->Auths->getAclSupplierOrganizationsList($user);
 
         if ($this->request->is('post')) {
 
             $supplier_organization_id = $this->request->getData('supplier_organization_id');
 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            $supplier_organization = $suppliersOrganizationsTable->get($this->Authentication->getIdentity(), ['SuppliersOrganizations.id' => $supplier_organization_id]);
+            $supplier_organization = $suppliersOrganizationsTable->get($user, ['SuppliersOrganizations.id' => $supplier_organization_id]);
             $this->set(compact('supplier_organization'));
 
             /*
              * ricerco chi gestisce il listino articoli del produttore del GAS
              */
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            $ownArticles = $suppliersOrganizationsTable->getOwnArticles($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $supplier_organization_id, $debug);
+            $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $user->organization->id, $supplier_organization_id, $debug);
 
             $articlesTable = TableRegistry::get('Articles');
 
@@ -83,10 +94,70 @@ class GdxpsController extends AppController
                       'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
                       'Articles.stato' => 'Y'];
 
-            $articles = $articlesTable->gets($this->Authentication->getIdentity(), $where);
+            $articles = $articlesTable->gets($user, $where);
             // debug($articles);
         } // end if ($this->request->is('post')) {
 
         $this->set(compact('acl_supplier_organizations', 'supplier_organization_id', 'articles'));
+    }
+
+    public function orderExport($order_type_id, $order_id, $parent_id=0) {
+
+        $debug = false;
+
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        if(!$user->acl['isRoot'] || $user->organization->paramsConfig['hasOrdersGdxp']!='Y') {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+          //  return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
+        $ordersTable = TableRegistry::get('Orders');
+        $ordersTable = $ordersTable->factory($user, $organization_id, $order_type_id);
+
+        $ordersTable->addBehavior('Orders');
+
+        switch ($order_type_id) {
+            case Configure::read('Order.type.promotion'):
+                 $ordersTable->addBehavior('OrderPromotions');
+                 $prod_gas_promotion_id = $parent_id;
+                break;
+            case Configure::read('Order.type.des'):
+            case Configure::read('Order.type.des_titolare'):
+                $des_order_id = $parent_id;
+                break;
+        }
+
+        // debug($ordersTable);
+        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
+        // debug($orderResults);
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
+
+        if($articlesOrdersTable!==false) {
+
+            $where = [];
+$where['ArticlesOrders'] = ['article_id' => 1808];
+            $options = [];
+            $options['sort'] = [];
+            $options['limit'] = Configure::read('sql.no.limit');
+            $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $options);
+
+        debug($results);
+        exit;
+
+            if(!empty($results)) {
+                $results = new ApiArticleOrderDecorator($user, $results, $orderResults);
+                //$results = new ArticleDecorator($results);
+                $results = $results->results;
+            }
+        }
+
+        debug($results);
+
+        exit;
     }
 }

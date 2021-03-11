@@ -132,7 +132,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </span>
       <ul class="treeview-menu">
         <li><a href="<?php echo $this->Url->build('/admin/gdxps/'); ?>"><?php echo $icon;?><?php echo __('Gdxp-Suppliers-index-short');?></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/gdxps/export'); ?>"><?php echo $icon;?><?php echo __('Article-Export-short');?></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/gdxps/articlesExport'); ?>"><?php echo $icon;?><?php echo __('Article-Export-short');?></a></li>
         <li class="treeview">
           <a href="#"><?php echo $icon;?><?php echo __('Import-File-short');?>
             <span class="pull-right-container">

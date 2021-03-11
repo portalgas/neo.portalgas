@@ -172,16 +172,6 @@ class OrdersController extends AppController
         // debug($user);
 
         // debug($order_type_id);
-        switch ($order_type_id) {
-            case Configure::read('Order.type.promotion'):
-                $prod_gas_promotion_id = $parent_id;
-                break;
-            case Configure::read('Order.type.des'):
-            case Configure::read('Order.type.des_titolare'):
-                $des_order_id = $parent_id;
-                break;
-        }
-
         
         $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
 
@@ -190,9 +180,11 @@ class OrdersController extends AppController
         switch ($order_type_id) {
             case Configure::read('Order.type.promotion'):
                  $ordersTable->addBehavior('OrderPromotions');
+                 $prod_gas_promotion_id = $parent_id;
                 break;
             case Configure::read('Order.type.des'):
             case Configure::read('Order.type.des_titolare'):
+                $des_order_id = $parent_id;
                 break;
         }
 
