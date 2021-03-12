@@ -5,8 +5,14 @@ interface ArticlesOrdersTableInterface {
 
 	/* 
 	 * options: sort, offset, page
+     * ricerca articoli di un ordine ed eventuali acquisti di uno user
 	 */ 
-	public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false);
+	public function getCartsByUser($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false);
+
+    /* 
+     * ricerca articoli di un ordine ed eventuali acquisti di tutti gli users
+     */ 
+    public function getCarts($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
 
     public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
 

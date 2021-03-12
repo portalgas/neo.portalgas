@@ -92,7 +92,7 @@ class ProdGasPromotionsController extends ApiAppController
                 $options['limit'] = Configure::read('sql.no.limit');
                 $options['page'] = 1;
 
-                $articlesOrdersResults = $articlesOrdersPromotionTable->getCarts($user, $prodGasPromotionsResults->organization_id, $user_id, $order, $where, $options);
+                $articlesOrdersResults = $articlesOrdersPromotionTable->getCartsByUser($user, $prodGasPromotionsResults->organization_id, $user_id, $order, $where, $options);
                 // debug($articlesOrdersResults);
 
                 $ii=0;

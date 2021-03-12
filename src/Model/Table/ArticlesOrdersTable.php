@@ -276,7 +276,7 @@ class ArticlesOrdersTable extends Table
      * ArticlesOrders.article_id              = Articles.id
      * ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCarts($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
+    public function getCartsByUser($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
 
         $order_id = $orderResults->id;
 
@@ -328,7 +328,7 @@ class ArticlesOrdersTable extends Table
                 }                          
                 $cartResults = $cartsTable->find()
                             ->where($where_cart)
-                            ->first();
+                            ->first();exit;
                 if($debug) debug($where_cart);
                 if($debug) debug($cartResults);
 
@@ -347,6 +347,105 @@ class ArticlesOrdersTable extends Table
                     $results[$numResult]['cart']['stato'] = 'Y';                  
                     $results[$numResult]['cart']['qta'] = 0;
                     $results[$numResult]['cart']['qta_new'] = 0;  // nuovo valore da FE
+                }
+            }
+        } // if($results)
+
+        if($debug) debug($results);
+
+        return $results;
+    }  
+
+    /*
+     * implement
+     *
+     * estrae gli articoli associati ad un ordine ed evenuuali acquisti di tutti gli users
+     * ArticlesOrders.article_id              = Articles.id
+     * ArticlesOrders.article_organization_id = Articles.organization_id
+     */
+    public function getCarts($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
+
+        $order_id = $orderResults->id;
+
+        $order_state_code = $orderResults->state_code;
+
+        if(!isset($where['ArticlesOrders']))
+           $where['ArticlesOrders'] = [];
+        $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $organization_id,
+                             // $this->getAlias().'.article_id' => 142,
+                              $this->getAlias().'.order_id' => $order_id,
+                              $this->getAlias().'.stato != ' => 'N'], 
+                              $where['ArticlesOrders']);
+
+        switch ($order_state_code) {
+            case 'RI-OPEN-VALIDATE':
+                $where['ArticlesOrders'] += [$this->getAlias().'.pezzi_confezione > ' => 1];
+                $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug); 
+            break;
+            default:
+                $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
+            break;
+        }          
+        if($debug) debug($results);
+
+        /*
+         * estraggo eventuali acquisti
+         */ 
+        if($results) {
+            
+            $cartsTable = TableRegistry::get('Carts');
+            foreach($results as $numResult => $result) {
+
+                $results[$numResult]['order'] = $orderResults;
+
+                /*
+                 * Carts
+                 */
+                $where_cart = ['Carts.organization_id' => $result['organization_id'],
+                          'Carts.order_id' => $result['order_id'],
+                          'Carts.article_organization_id' => $result['article_organization_id'],
+                          'Carts.article_id' => $result['article_id'],
+                          'Carts.deleteToReferent' => 'N',
+                          'Carts.stato' => 'Y'];
+
+                $cartResults = $cartsTable->find()
+                            ->where($where_cart)
+                            ->all();
+                if($debug) debug($where_cart);
+                if($debug) debug($cartResults);
+
+                $results[$numResult]['cart'] = [];
+                if($cartResults->count()>0) {
+                    /*
+                     * calcolo totali
+                     */
+                    $qta_tot = 0;
+                    $importo_tot = 0;
+                    foreach($cartResults as $cartResult) {
+                        if($cartResult->qta_forzato > 0)
+                            $qta_tot += $cartResult->qta_forzato;
+                        else
+                            $qta_tot += $cartResult->qta;
+
+                        /*
+                         * gestione importi
+                         * */
+                        if ($cartResult->importo_forzato == 0) {
+                            if ($cartResult->qta_forzato > 0)
+                                $importo_tot += ($cartResult->qta_forzato * $result->prezzo);
+                            else {
+                                $importo_tot += ($cartResult->qta * $result->prezzo);
+                            }
+                        } else {
+                            $importo_tot += $cartResult->importo_forzato;
+                        }
+                    }
+                    $results[$numResult]['cart']['qta_tot'] = $qta_tot;
+                    $results[$numResult]['cart']['importo_tot'] = $importo_tot;
+                } 
+                else {
+                    $results[$numResult]['cart']['qta_tot'] = 0;
+                    $results[$numResult]['cart']['importo_tot'] = 0;
                 }
             }
         } // if($results)

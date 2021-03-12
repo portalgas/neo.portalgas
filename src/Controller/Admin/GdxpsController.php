@@ -104,6 +104,7 @@ class GdxpsController extends AppController
     public function orderExport($order_type_id, $order_id, $parent_id=0) {
 
         $debug = false;
+        $results = [];
 
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto
@@ -140,14 +141,11 @@ class GdxpsController extends AppController
         if($articlesOrdersTable!==false) {
 
             $where = [];
-$where['ArticlesOrders'] = ['article_id' => 1808];
+            // $where['ArticlesOrders'] = ['article_id' => 2662]; 
             $options = [];
             $options['sort'] = [];
             $options['limit'] = Configure::read('sql.no.limit');
-            $results = $articlesOrdersTable->getCarts($user, $organization_id, $user->id, $orderResults, $where, $options);
-
-        debug($results);
-        exit;
+            $results = $articlesOrdersTable->getCarts($user, $organization_id, $orderResults, $where, $options);
 
             if(!empty($results)) {
                 $results = new ApiArticleOrderDecorator($user, $results, $orderResults);
@@ -155,9 +153,8 @@ $where['ArticlesOrders'] = ['article_id' => 1808];
                 $results = $results->results;
             }
         }
-
         debug($results);
 
-        exit;
+        $this->set(compact('results'));
     }
 }

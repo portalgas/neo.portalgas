@@ -151,7 +151,7 @@ else {
     <?php
     } // if(empty($articles) || $articles->count()==0)
 
-    echo $this->Html->link(__('Export'), ['controller' => 'gdxpExports','action'=> 'index', $supplier_organization_id], ['target' => '_blank', 'class' => 'btn btn-primary pull-right']);
+    echo $this->Html->link(__('Export'), ['controller' => 'gdxpExports', 'action'=> 'index', $supplier_organization_id], ['target' => '_blank', 'class' => 'btn btn-primary pull-right']);
 
 } // if(empty($supplier_organization_id))
 echo '</section>';
