@@ -145,7 +145,7 @@ class GdxpsController extends AppController
             $options = [];
             $options['sort'] = [];
             $options['limit'] = Configure::read('sql.no.limit');
-            $results = $articlesOrdersTable->getCarts($user, $organization_id, $orderResults, $where, $options);
+            $results = $articlesOrdersTable->getCartsByArticles($user, $organization_id, $orderResults, $where, $options);
 
             if(!empty($results)) {
                 $results = new ApiArticleOrderDecorator($user, $results, $orderResults);

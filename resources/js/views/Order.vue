@@ -170,30 +170,57 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div  class="col-12">
+        <div class="col-10">
             <app-search-article-orders @search="onSearch" />
+        </div>
+        <div class="col-2">
+            <app-view-article-orders :viewList="viewList" @changeView="onChangeView" />
         </div>
     </div>
 
     <div class="row">
 
+          <!-- modalita list -->
+          <div class="col-sm-12 col-xs-12 col-md-12" 
+                  v-if="viewList"
+                  v-for="(article, index) in articles"
+                  :article="article"
+                  :key="article.article_id"
+                > 
+                <div class="box-article-order">
+                 
+                  <app-article-order-list
+                    v-bind:article="article"
+                    v-bind:order="order"
+                    >
+                    </app-article-order-list>
+
+                </div> 
+          </div>
+
+
+          <!-- modalita grid -->
     	    <div class="col-sm-12 col-xs-2 col-md-3" 
+                  v-if="!viewList"
     		          v-for="(article, index) in articles"
     		          :article="article"
     		          :key="article.article_id"
     		        > 
                 <div class="box-article-order" :class="{even: index % 2, odd: !(index % 2)}">
-    		          <app-article-order
+    	           
+                  <app-article-order
                     v-bind:article="article"
                     v-bind:order="order">
                     </app-article-order>
-                </div>
-          </div> 
+                    
+                </div> 
+          </div>
+
 
           <div class="col-sm-12 col-xs-12 col-md-12" v-if="!isRunArticles && articles.length==0">
             <div class="alert alert-warning" role="alert">
                 <span v-if="order!=null && order.order_state_code.code=='RI-OPEN-VALIDATE'">Tutti i colli dell'ordine sono completati</span>
-                <span v-if="order!=null && order.order_state_code.code!='RI-OPEN-VALIDATE'">L'ordine sono ha articoli ordinabili</span>
+                <span v-if="order!=null && order.order_state_code.code!='RI-OPEN-VALIDATE'">L'ordine non ha articoli ordinabili</span>
             </div>
           </div>
 
@@ -214,7 +241,9 @@
 import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 import articleOrder from "../components/part/ArticleOrder.vue";
+import articleOrderList from "../components/part/ArticleOrderList.vue";
 import searchArticleOrders from "../components/part/SearchArticleOrders.vue";
+import viewArticleOrders from "../components/part/ViewArticleOrders.vue";
 
 export default {
   name: "app-order",
@@ -230,17 +259,28 @@ export default {
       isRunOrder: false,   
       isRunArticles: false,   
       displayList: false,
-      q: null // parola ricerca
+      q: null, // parola ricerca
+      viewList: false // di default e' vista griglia 
     };
   },
   components: {
     appArticleOrder: articleOrder,
-    appSearchArticleOrders: searchArticleOrders
-  },  
+    appArticleOrderList: articleOrderList,
+    appSearchArticleOrders: searchArticleOrders,
+    appViewArticleOrders: viewArticleOrders,
+  },/* 
+  computed: {
+    viewListCookie: function() { 
+         * recupero modalita' visualizzazione griglia / lista da cookie
+        return this.getCookie('viewList');
+    }
+  }, */
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
   	this.order_id = this.$route.params.order_id;
     // console.log('mounted route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
+
+    this.viewList = this.getCookie('viewList');
 
     this.getGlobals();
     this.getAjaxOrder();
@@ -261,12 +301,16 @@ export default {
       ));
     },  
     onSearch: function(q) {
-      console.log('onSearch');
       this.articles = [];
       this.page = 1;
       this.q = q;
       this.scroll();
       this.isScrollFinish = false;
+      // console.log('onSearch '+q);
+    },
+    onChangeView: function(viewList) {
+      this.viewList = viewList;
+      console.log('onChangeView '+this.viewList);
     },      
     scroll() {
 
@@ -366,7 +410,28 @@ export default {
           console.error("Error: " + error);
           this.isScrollFinish = true;
         });
-    }
+    },
+    getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            var viewList = c.substring(name.length, c.length);
+
+            if(viewList=='false') 
+                return false;
+            else
+            if(viewList=='true') 
+              return true;
+          }
+        }
+        return "";
+    }    
   },
   filters: {
     	currency(amount) {

@@ -43,9 +43,9 @@ class ArticlesOrdersPactTable extends ArticlesOrdersTable implements ArticlesOrd
     /*
      * implement
      */
-    public function getCarts($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
+    public function getCartsByArticles($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
         $this->_getOptions($options); // setta sort
-        $results = parent::getCarts($user, $organization_id, $orderResults, $where, $options, $debug);
+        $results = parent::getCartsByArticles($user, $organization_id, $orderResults, $where, $options, $debug);
     } 
 
     /*

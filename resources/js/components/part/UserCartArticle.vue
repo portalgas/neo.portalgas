@@ -10,6 +10,7 @@
           </div>
         </div>
         <div class="col-text col-sm-3 col-md-2 col-lg-4 col-xs-3">
+          
           {{ article.name }} 
 
           <span>

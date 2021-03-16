@@ -12,7 +12,7 @@ interface ArticlesOrdersTableInterface {
     /* 
      * ricerca articoli di un ordine ed eventuali acquisti di tutti gli users
      */ 
-    public function getCarts($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
+    public function getCartsByArticles($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
 
     public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
 

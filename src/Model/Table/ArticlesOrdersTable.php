@@ -300,7 +300,7 @@ class ArticlesOrdersTable extends Table
             break;
         }          
         if($debug) debug($results);
-
+    
         /*
          * estraggo eventuali acquisti
          */ 
@@ -328,7 +328,7 @@ class ArticlesOrdersTable extends Table
                 }                          
                 $cartResults = $cartsTable->find()
                             ->where($where_cart)
-                            ->first();exit;
+                            ->first();
                 if($debug) debug($where_cart);
                 if($debug) debug($cartResults);
 
@@ -363,7 +363,7 @@ class ArticlesOrdersTable extends Table
      * ArticlesOrders.article_id              = Articles.id
      * ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getCarts($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
+    public function getCartsByArticles($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
 
         $order_id = $orderResults->id;
 

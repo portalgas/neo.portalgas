@@ -17,7 +17,7 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-	name: "search-artticles",
+	name: "search-articles",
 	data() {
 		return {
 		  q: null,

@@ -95,9 +95,9 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
     /*
      * implement
      */
-    public function getCarts($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
+    public function getCartsByArticles($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
         $this->_getOptions($options); // setta sort
-        return parent::getCarts($user, $organization_id, $orderResults, $where, $options, $debug);
+        return parent::getCartsByArticles($user, $organization_id, $orderResults, $where, $options, $debug);
     }
 
     /*
