@@ -91,8 +91,8 @@ $(function () {
 		                }
 	                },
 	                error: function (e) {
-	                    console.log(e);
-	                    console.log(e.responseText.message);
+	                    console.error(e);
+	                    console.error(e.responseText.message);
 	                },
 	                complete: function (e) {
 				    	this.spinner_run_supplier_organization = false;

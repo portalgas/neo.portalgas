@@ -132,8 +132,8 @@ $(function () {
 		                }
 	                },
 	                error: function (e) {
-	                    console.log(e);
-	                    console.log(e.responseText.message);
+	                    console.error(e);
+	                    console.error(e.responseText.message);
 	                },
 	                complete: function (e) {
 				    	_this.spinner_run_type_prices = false;

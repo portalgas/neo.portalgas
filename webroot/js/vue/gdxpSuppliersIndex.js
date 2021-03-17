@@ -68,7 +68,7 @@ $(function () {
                   .catch(error => {
                         $('.run-suppliers .spinner').removeClass(ico_spinner);
                         _this.is_found_suppliers = false;
-                        console.log("Error: " + error);
+                        console.error("Error: " + error);
                   }); 
             });            
         }       

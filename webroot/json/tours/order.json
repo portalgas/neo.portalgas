@@ -1,0 +1,23 @@
+{
+   "results":{
+      "steps":[
+         {
+            "element":"#btn-view-grid",
+            "title": "Se usi lo smartphone",
+            "content": "Visualizza gli articoli in formato griglia"
+         },
+         {
+            "element":"#btn-view-list",
+            "title": "Se usi il computer",
+            "content": "Visualizza gli articoli in formato lista"
+         },
+         {
+            "element":"#btn-cart-previous",
+            "title": "Sei un nostalgico",
+            "content": "Torna alla precedente versione per gli acquisti"
+         }
+      ],
+      "esito":true,
+      "msg":""
+   }
+}

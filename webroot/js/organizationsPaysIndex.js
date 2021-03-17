@@ -84,7 +84,7 @@ OrganizationsPaysIndex.prototype = {
                         alert(response.message);
                     },
                     error: function (e) {
-                        console.log(e.responseText);
+                        console.error(e.responseText);
                         responseHtml.removeClass(_this.ico_spinner);
                         responseHtml.addClass(_this.ico_ko);
                     },

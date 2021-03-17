@@ -58,7 +58,7 @@ if(Configure::read('Theme.menu_sidebar')=='close')
 
 <script type="text/javascript">
 "use strict";
-var objScript;
+var objScript = null;
 var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
 var orderNotaMaxLen = <?php echo Configure::read('OrderNotaMaxLen');?>;
 var headers = {

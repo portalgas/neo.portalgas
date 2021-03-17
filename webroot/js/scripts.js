@@ -246,7 +246,7 @@ Script.prototype = {
                     }
                 },
                 error: function (e) {
-                    console.log(e.responseText.message);
+                    console.error(e.responseText.message);
                     responseHtml.removeClass(_this.ico_spinner);
                     responseHtml.addClass(_this.ico_ko);
                 },

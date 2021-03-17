@@ -3,6 +3,7 @@ use Cake\Core\Configure;
 
 // Bootstrap 4.5.2
 echo $this->Html->css('bootstrap-4/bootstrap.min', ['block' => 'css']); 
+echo $this->Html->css('bootstrap-tourist/bootstrap-tourist', ['block' => 'css']);
 
 // Font Awesome 5.11.2
 echo $this->Html->css('fe/all', ['block' => 'css']);  

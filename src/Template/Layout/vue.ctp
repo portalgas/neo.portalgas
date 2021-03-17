@@ -41,6 +41,8 @@ $organization = $this->Identity->get('organization');
 
 	<noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
 	
+    <a href='http://example.com/' data-intro='Hello step one!'></a>
+
 	<?php echo $this->fetch('content');?>
     
     <?php echo $this->element('fe/footer', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);?>
@@ -48,6 +50,7 @@ $organization = $this->Identity->get('organization');
     
     <script type="text/javascript">
     "use strict";
+    var objMyTour = null;
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
     var j_seo = "<?php echo $organization->j_seo;?>"; // da passa a vue in app.js
     var organizationTemplatePayToDelivery = "<?php echo $organization->template->payToDelivery;?>"; // da passa a vue in app.js
@@ -66,6 +69,8 @@ $organization = $this->Identity->get('organization');
         if (!a.parent().hasClass('treeview') && !a.parent().parent().hasClass('pagination')) {
             a.parent().addClass('active').parents('.treeview').addClass('active');
         }
+
+        objMyTour = new MyTour(window.location.href); 
     });
 
     function callPing() {

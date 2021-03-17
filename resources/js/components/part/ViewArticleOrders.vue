@@ -2,12 +2,12 @@
 
 	<div class="btn-toolbar d-flex flex-row-reverse" role="toolbar" aria-label="Toolbar to view">
 	  <div class="btn-group mr-2" role="group" aria-label="First group">
-	    <button type="button" class="btn btn-primary" v-on:click="setViewList(false)" v-bind:class="{ active: !viewList }"
+	    <button type="button" id="btn-view-grid" class="btn btn-primary" v-on:click="setViewList(false)" v-bind:class="{ active: !viewList }"
 	    data-toggle="tooltip" data-placement="top" title="Visualizza in modalità griglia"
 	    >
 	    	<i class="fas fa-th-large"></i>
 	    </button>
-	    <button type="button" class="btn btn-primary" v-on:click="setViewList(true)" v-bind:class="{ active: viewList }" 
+	    <button type="button" id="btn-view-list" class="btn btn-primary" v-on:click="setViewList(true)" v-bind:class="{ active: viewList }" 
 	    data-toggle="tooltip" data-placement="top" title="Visualizza in modalità lista"
 	    >
 	    	<i class="fas fa-th-list"></i>

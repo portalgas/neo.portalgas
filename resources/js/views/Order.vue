@@ -7,7 +7,7 @@
       <router-link to="/fai-la-spesa">Torna alla consegne</router-link>
     </li>
     <li>
-      <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
+      <a id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
     </li>
   </ul>
 

@@ -62,7 +62,7 @@ $(function () {
             .catch(error => {
                   $('.run-submit .spinner').removeClass(ico_spinner);
                   _this.is_run = false;
-                  console.log("Error: " + error);
+                  console.error("Error: " + error);
             });            
         },
       },
