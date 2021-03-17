@@ -70,6 +70,8 @@ $organization = $this->Identity->get('organization');
             a.parent().addClass('active').parents('.treeview').addClass('active');
         }
 
+        $('[data-toggle="tooltip"]').tooltip()
+
         objMyTour = new MyTour(window.location.href); 
     });
 
