@@ -11,12 +11,12 @@
 
         <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xs-6">
 
-                <div class="card-header bg-primary d-flex justify-content-between bd-highlight mb-3"> 
-                    <div v-html="$options.filters.highlight(article.name)" :class="justInCart"></div>
+                <div class="card-header bg-primary d-flex justify-content-between bd-highlight mb-3" :class="justInCart"> 
+                    <div v-html="$options.filters.highlight(article.name)"></div>
 
                     <div v-if="order.order_type.code!='PROMOTION_GAS_USERS'" class="">
                       <a @click="clickShowOrHiddenModal()" class="cursor-pointer">
-                        <i class="fas fa-search"></i><span class="d-none d-md-block d-lg-block d-xl-block"> maggior dettaglio</span></a>
+                        <i class="fas fa-search"></i></a>
                     </div>
 
                 </div>

@@ -34,7 +34,7 @@
             :disabled="btnMinusIsDisabled" />
 
           <input
-            type="number"
+            type="text"
             class="form-control text-center"
             :value="qta_new"
             :disabled="true"
