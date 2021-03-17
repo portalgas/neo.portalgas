@@ -227,6 +227,6 @@ a:hover {
  * tour
  */
 .popover-header {
-    background-color: #fa824f;
+    background-color: #fa824f !important;
     color: #fff;
 }
