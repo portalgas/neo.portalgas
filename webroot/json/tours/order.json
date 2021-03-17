@@ -3,13 +3,13 @@
       "steps":[
          {
             "element":"#btn-view-grid",
-            "title": "Se usi lo smartphone",
-            "content": "Visualizza gli articoli in formato griglia"
+            "title": "Visualizza in modalità griglia",
+            "content": "Se usi lo smartphone, visualizza gli articoli in formato griglia"
          },
          {
             "element":"#btn-view-list",
-            "title": "Se usi il computer",
-            "content": "Visualizza gli articoli in formato lista"
+            "title": "Visualizza in modalità lista",
+            "content": "Se usi il computer, visualizza gli articoli in formato lista"
          },
          {
             "element":"#btn-cart-previous",
