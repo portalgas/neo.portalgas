@@ -283,16 +283,16 @@ export default {
       },     
       steps:[
          {
+            "target":"#btn-cart-previous",
+            "content": "Sei un nostalgico? Torna alla precedente versione per gli acquisti"
+         },      
+         {
             "target":"#btn-view-grid",
             "content": "Se usi lo smartphone, visualizza gli articoli in formato griglia"
          },
          {
             "target":"#btn-view-list",
             "content": "Se usi il computer, visualizza gli articoli in formato lista"
-         },
-         {
-            "target":"#btn-cart-previous",
-            "content": "Sei un nostalgico? Torna alla precedente versione per gli acquisti"
          }
       ],
 
