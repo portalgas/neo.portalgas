@@ -268,6 +268,7 @@ export default {
       scope: 'order',
       tourOptions: {
         startTimeout: 3,
+        highlight: true,
         useKeyboardNavigation: false,
         labels: {
           buttonSkip: 'Salta tour',
@@ -277,7 +278,6 @@ export default {
         }
       },
       tourCallbacks: {
-        onStart: this.onStart,
         onSkip: this.onSkip,
         onFinish: this.onFinish,
       },     
@@ -454,7 +454,9 @@ export default {
 
 
 
-
+    /*
+     * ctrl cooies per viewList / tour
+     */
     getCookie(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -552,9 +554,6 @@ export default {
       }
 
       return found;
-    },
-    onStart() {
-      console.log('onStart');
     },
     onSkip () {
       this.addCookie(this.cookie_name, this.scope);
