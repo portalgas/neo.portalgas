@@ -14,7 +14,7 @@
   <div class="clearfix"></div>
 
   <div class="row">
-	    <div class="col-sm-12 col-xs-12 col-md-12"> 
+      <div class="col-sm-12 col-xs-12 col-md-12"> 
 
         <div v-if="isRunOrder" class="box-spinner"> 
           <div class="spinner-border text-info" role="status">
@@ -166,7 +166,7 @@
           </div> <!-- row -->
         </div> <!-- card -->
 
-	    </div> <!-- col... -->
+      </div> <!-- col... -->
     </div> <!-- row -->
 
     <div class="row">
@@ -200,14 +200,14 @@
 
 
           <!-- modalita grid -->
-    	    <div class="col-sm-12 col-xs-2 col-md-3" 
+          <div class="col-sm-12 col-xs-2 col-md-3" 
                   v-if="!viewList"
-    		          v-for="(article, index) in articles"
-    		          :article="article"
-    		          :key="article.article_id"
-    		        > 
+                  v-for="(article, index) in articles"
+                  :article="article"
+                  :key="article.article_id"
+                > 
                 <div class="box-article-order" :class="{even: index % 2, odd: !(index % 2)}">
-    	           
+                 
                   <app-article-order
                     v-bind:article="article"
                     v-bind:order="order">
@@ -232,7 +232,9 @@
 
     </div> <!-- row -->
 
-	</div> 
+    <v-tour name="myTour" :steps="steps" :options="tourOptions" :callbacks="tourCallbacks"></v-tour>
+
+  </div> 
 
 </template>
 
@@ -260,7 +262,40 @@ export default {
       isRunArticles: false,   
       displayList: false,
       q: null, // parola ricerca
-      viewList: false // di default e' vista griglia 
+      viewList: false, // di default e' vista griglia 
+
+      cookie_name: 'tour',
+      scope: 'order',
+      tourOptions: {
+        startTimeout: 3,
+        useKeyboardNavigation: false,
+        labels: {
+          buttonSkip: 'Salta tour',
+          buttonPrevious: 'Precedente',
+          buttonNext: 'Prossimo',
+          buttonStop: 'Finito'
+        }
+      },
+      tourCallbacks: {
+        onStart: this.onStart,
+        onSkip: this.onSkip,
+        onFinish: this.onFinish,
+      },     
+      steps:[
+         {
+            "target":"#btn-view-grid",
+            "content": "Se usi lo smartphone, visualizza gli articoli in formato griglia"
+         },
+         {
+            "target":"#btn-view-list",
+            "content": "Se usi il computer, visualizza gli articoli in formato lista"
+         },
+         {
+            "target":"#btn-cart-previous",
+            "content": "Sei un nostalgico? Torna alla precedente versione per gli acquisti"
+         }
+      ],
+
     };
   },
   components: {
@@ -277,7 +312,7 @@ export default {
   }, */
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
-  	this.order_id = this.$route.params.order_id;
+    this.order_id = this.$route.params.order_id;
     // console.log('mounted route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
 
     this.viewList = this.getCookie('viewList');
@@ -285,6 +320,11 @@ export default {
     this.getGlobals();
     this.getAjaxOrder();
     this.scroll();
+
+    var found = this.checkCookieTour(this.scope);
+    console.log('checkCookieTour found '+found+' per lo scope '+this.scope);
+    if(!found)
+      this.$tours['myTour'].start()
   },
   methods: {
     getGlobals() {
@@ -411,6 +451,10 @@ export default {
           this.isScrollFinish = true;
         });
     },
+
+
+
+
     getCookie(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -428,18 +472,104 @@ export default {
             else
             if(viewList=='true') 
               return true;
+            else
+              return viewList;
           }
         }
         return "";
-    }    
+    }, 
+
+    /*
+     * event: btn CLOSE
+     * acconda i valori del cookies key=value'+this.delimiter+'value...
+     */
+    addCookie: function(name, value) {
+
+      var found = false;
+      var value_old = this.getCookie(name);
+      var value_new = '';
+      console.log("addCookie scope corrente " + value);
+      console.log("addCookie oldCookies value " + value_old);
+
+      if(value_old=='') {
+        value_new = value;
+      }
+      else
+      if(value_old!='') {
+        if(value_old.indexOf(this.delimiter)>0) {
+          var value_olds = value_old.split(this.delimiter);
+          for(var i = 0; i < value_olds.length; i++)
+          {
+            if(value_olds[i].toLowerCase() == value.toLowerCase())
+              found = true;
+              console.log(value_olds[i]);
+          }
+        }
+        else {
+          if(value_old.toLowerCase() == value.toLowerCase())
+            found = true;
+        }
+
+        if(!found) {
+          value_new = value_old + this.delimiter + value;
+          value_new = value_new.toLowerCase();    
+        }
+      } 
+
+      if(!found) {
+        console.log("addCookie newCookies value " + value_new);
+        this.setCookie(name, value_new, 365);
+      }
+      else {
+        console.log("addCookie value gia' presente ");
+      }
+    },
+    setCookie: function (name, value, exdays) {
+      var d = new Date();
+      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+      var expires = "expires="+ d.toUTCString();
+      document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    },
+    checkCookieTour: function(value) {
+      var found = false;
+      var values = this.getCookie(this.cookie_name);
+      console.log('checkCookieTour get cookie_name '+this.cookie_name);
+      if(values=='')
+        console.log('not found cookie_name '+this.cookie_name+' => eseguo tour');
+      else {
+        if(values.indexOf(this.delimiter)>0) {
+          var value_splits = values.split(this.delimiter);
+          for(var i = 0; i < value_splits.length; i++) 
+          {
+            if(value_splits[i].toLowerCase() == value.toLowerCase())
+              found = true;
+          }     
+        }
+        else {
+          if(values.toLowerCase() == value.toLowerCase())
+            found = true;
+        }     
+      }
+
+      return found;
+    },
+    onStart() {
+      console.log('onStart');
+    },
+    onSkip () {
+      this.addCookie(this.cookie_name, this.scope);
+    }, 
+    onFinish () {
+      this.addCookie(this.cookie_name, this.scope);
+    }, 
   },
   filters: {
-    	currency(amount) {
-	      let locale = window.navigator.userLanguage || window.navigator.language;
+      currency(amount) {
+        let locale = window.navigator.userLanguage || window.navigator.language;
         locale = 'it-IT';
-	      const amt = Number(amount);
-	      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
-	    },
+        const amt = Number(amount);
+        return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
+      },
       formatDate(value) {
         if (value) {
           let locale = window.navigator.userLanguage || window.navigator.language;
@@ -513,5 +643,9 @@ ul.link-top li a:hover {
   .odd {
     background: #ffffff;
   }
+}
+
+.v-tour__target--highlighted {
+  box-shadow: 0 0 0 99999px rgba(0,0,0,.4);
 }
 </style>

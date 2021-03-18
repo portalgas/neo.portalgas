@@ -1,16 +1,9 @@
 "use strict";
 
 /*
- * new Tour(window.location.href) = url completa (il servizio considera da /dwwe/)
- * 
- * Intro.js v2.9.3
- * https://github.com/usablica/intro.js
- *
- * richiamato in 
- * tutte le pagine 
- * da dashborads.js dopo message auths new Tour(); tourStart = false; 
- * da scripts/tab_action.js matchTabsToContent() dopo select tab; tourStart = false; 
- * da scripts/tab_action.js switchTab() dopo click su tab; tourStart = false;  
+ * cpn vue non funziona, solo backoffice
+ * var objMyTour = null;
+ * objMyTour = new MyTour(window.location.href); 
  */
 function MyTour(scope) {
 

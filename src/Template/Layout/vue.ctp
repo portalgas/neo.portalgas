@@ -50,7 +50,6 @@ $organization = $this->Identity->get('organization');
     
     <script type="text/javascript">
     "use strict";
-    var objMyTour = null;
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
     var j_seo = "<?php echo $organization->j_seo;?>"; // da passa a vue in app.js
     var organizationTemplatePayToDelivery = "<?php echo $organization->template->payToDelivery;?>"; // da passa a vue in app.js
@@ -71,8 +70,6 @@ $organization = $this->Identity->get('organization');
         }
 
         $('[data-toggle="tooltip"]').tooltip()
-
-        objMyTour = new MyTour(window.location.href); 
     });
 
     function callPing() {

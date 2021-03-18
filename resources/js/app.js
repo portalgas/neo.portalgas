@@ -7,6 +7,13 @@ import axios from "axios";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 
+/*
+ * https://github.com/pulsardev/vue-tourd
+ */
+import VueTour from 'vue-tour';
+require('vue-tour/dist/vue-tour.css')
+Vue.use(VueTour)
+
 Sentry.init({
   Vue,
   dsn: "https://6a7597680c9e4f71abb2145f33d2ed6a@o503778.ingest.sentry.io/5589439",

@@ -52,9 +52,9 @@
 					    
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
 
-					     <div v-if="order.nota!=''" class="col-10 alert alert-info ml-auto mr-1" 
+					    <div v-if="order.nota!=''" class="col-10 alert alert-info ml-auto mr-1 no-decoration" 
 					     	v-html="$options.filters.html(order.nota)">
-					     </div>
+					    </div>
 					</a>
 	        </p> 
 	      </div>
@@ -200,5 +200,9 @@ export default {
   .type-PROMOTION {
      background-image: none;
   }
+}
+.no-decoration, .no-decoration:link, .no-decoration:visited,
+.no-decoration:active, .no-decoration:hover {
+    text-decoration: none !important;
 }
 </style> 
