@@ -74,7 +74,7 @@ Script.prototype = {
         /*
          * aggiorna il DB con l'ico true/flase
          */
-        $('.fieldUpdateAjax').click(function (e) {
+        $('.fieldUpdateAjaxClick').click(function (e) {
             console.log('fieldUpdateAjax click()');
             _this.fieldUpdateAjax(this);
         }); 
@@ -82,7 +82,7 @@ Script.prototype = {
         /*
          * aggiorna il DB con il valore del campo
          */
-        $('.fieldUpdateAjax').change(function (e) {
+        $('.fieldUpdateAjaxChange').change(function (e) {
             console.log('fieldUpdateAjax change()');
             e.preventDefault();
             _this.fieldUpdateAjax(this);               
@@ -168,6 +168,11 @@ Script.prototype = {
         var value = '';
         var type = $(obj).attr('type');
         // console.log('type '+type);
+        if (typeof type === 'undefined')
+            type = $(obj).prop('nodeName');
+        if (typeof type === 'undefined')
+            type = $(obj).prop('tagName');
+
         if (typeof type === 'undefined') 
             type = 'icon-true-false';
 

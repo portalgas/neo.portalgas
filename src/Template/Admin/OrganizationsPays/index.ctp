@@ -98,7 +98,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   if(empty($search_year))
                       echo '<td>'.h($organizationsPay->year).'</td>';
                   echo '<td>';
-                  echo $this->HtmlCustom->mail($organizationsPay->paramsPay['payMail']);
+                  echo $this->HtmlCustom->mailIco($organizationsPay->paramsPay['payMail']);
                   echo '</td>';
                   echo '<td>';
                   echo h($organizationsPay->lastVisitDate->lastvisitDate).'<br />';
@@ -120,7 +120,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   echo $this->Form->control('beneficiario_pay', ['label' => false, 
                       'options' => $beneficiario_pays,
                       'default' => $organizationsPay->beneficiario_pay,
-                      'class' => 'form-control fieldUpdateAjax', 
+                      'class' => 'form-control fieldUpdateAjaxChange', 
                       'data-attr-entity' => 'OrganizationsPays', 
                       'data-attr-field' => 'beneficiario_pay', 
                       'data-attr-id' => $organizationsPay->id
@@ -144,7 +144,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   echo $this->Form->control('type_pay', ['label' => false, 
                       'options' => $type_pays,
                       'default' => $organizationsPay->type_pay,
-                      'class' => 'form-control fieldUpdateAjax', 
+                      'class' => 'form-control fieldUpdateAjaxChange', 
                       'data-attr-entity' => 'OrganizationsPays', 
                       'data-attr-field' => 'type_pay', 
                       'data-attr-id' => $organizationsPay->id

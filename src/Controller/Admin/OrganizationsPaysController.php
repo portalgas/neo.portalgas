@@ -40,6 +40,7 @@ class OrganizationsPaysController extends AppController
         $debug = false;
         $continue = true;
         $year = date('Y');
+        $year_prev = (date('Y')-1);
 
         /*
          * ctrl se per l'anno corrente esiste gia'
@@ -63,6 +64,29 @@ class OrganizationsPaysController extends AppController
             
             if($debug) debug($organization->name.' ('.$organization->id.')');
 
+            /*
+             * dati anno precedente per  beneficiario_pay / type_pay
+             */
+            $beneficiario_pay = '';
+            $type_pay = '';
+            $organization_prev = $this->OrganizationsPays
+                                ->find()
+                                ->where(['OrganizationsPays.organization_id' => $organization->id,
+                                         'OrganizationsPays.year' => $year_prev])
+                                ->first();  
+            if(!empty($organization_prev)) {
+                $beneficiario_pay = $organization_prev->beneficiario_pay;
+                $type_pay = $organization_prev->type_pay;
+            }
+
+            if(empty($beneficiario_pay))
+                $beneficiario_pay = strtoupper($this->OrganizationsPays::BENEFICIARIO_PAY_MARCO);
+            if(empty($type_pay))
+                $type_pay = strtoupper($this->OrganizationsPays::TYPE_PAY_RICEVUTA);
+
+            /*
+             * totale users
+             */
             $where = ['organization_id' => $organization->id,
                       'block' => 0];
             $tot_users = $this->Total->totUsers($this->Authentication->getIdentity(), $where, $debug);
@@ -109,8 +133,8 @@ class OrganizationsPaysController extends AppController
             $data['import_additional_cost'] = 0;
             
             $data['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
-            $data['beneficiario_pay'] = strtoupper($this->OrganizationsPays::BENEFICIARIO_PAY_MARCO);
-            $data['type_pay'] = strtoupper($this->OrganizationsPays::TYPE_PAY_RICEVUTA);
+            $data['beneficiario_pay'] = $beneficiario_pay;
+            $data['type_pay'] = $type_pay;
             if($debug) debug($data);
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $data);
             if($debug) debug($organizationsPay);
@@ -176,7 +200,9 @@ class OrganizationsPaysController extends AppController
 
         $this->paginate = [
             'conditions' => [$where],
-            'contain' => ['Organizations' => ['sort' => ['Organizations.name' => 'asc']]],
+            'contain' => ['Organizations' => [
+                                'conditions' => ['Organizations.type' => 'GAS', 'Organizations.stato' => 'Y'],
+                                'sort' => ['Organizations.name' => 'asc']]],
             'order' => ['OrganizationsPays.year' => 'desc', 'Organizations.name' => 'asc'],
             'limit' => 100
         ];

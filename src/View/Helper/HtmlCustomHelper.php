@@ -89,14 +89,18 @@ class HtmlCustomHelper extends FormHelper
     }
 
     public function mail($value, $label='') {
-    	$str = '';
+        $str = '';
 
-    	if(!empty($value)) {
-    		if(empty($label))
-    			$label = $value;
-	    	$str = '<a href="mailto:'.$value.'" target="_blank">'.$label.'</a>';
-    	}
-    	return $str;
+        if(!empty($value)) {
+            if(empty($label))
+                $label = $value;
+            $str = '<a href="mailto:'.$value.'" target="_blank">'.$label.'</a>';
+        }
+        return $str;
+    }    
+
+    public function mailIco($value) {
+        return $this->mail($value, '<i class="fa fa-fw fa-envelope"></i>');
     }
 
     public function www($value, $label='') {
@@ -106,17 +110,6 @@ class HtmlCustomHelper extends FormHelper
     		if(empty($label))
     			$label = $value;
 	    	$str = '<a href="'.$value.'" target="_blank">'.$label.'</a>';
-    	}
-    	return $str;
-    }
-
-    public function mailIco($value, $ico='fa-envelope') {
-    	$str = '';
-
-    	if(!empty($value)) {
-    		if(empty($label))
-    			$label = $value;
-	    	$str = '<a href="mailto:'.$value.'" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>';
     	}
     	return $str;
     }
@@ -201,12 +194,12 @@ class HtmlCustomHelper extends FormHelper
         $data_attrs .= 'data-attr-id='.$model->id.' data-attr-entity="'.$entity.'" data-attr-field="'.$field.'" data-attr-value="'.$data_attr_value.'"';
         
         /*
-         * per is_default_ini e is_default_end disabilito fieldUpdateAjax perche' devo aggiornarli tutti
+         * per is_default_ini e is_default_end disabilito fieldUpdateAjaxClick perche' devo aggiornarli tutti
          */
         if($field=='is_default_ini' || $field=='is_default_end')
-            $class = 'fieldUpdateAjax-disabled';
+            $class = 'fieldUpdateAjaxClick-disabled';
         else 
-            $class = 'fieldUpdateAjax';
+            $class = 'fieldUpdateAjaxClick';
 
         if($value===true) {
             if(isset($icons['OK']))

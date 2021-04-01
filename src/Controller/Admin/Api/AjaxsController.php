@@ -25,7 +25,7 @@ class AjaxsController extends ApiAppController
     }
 
     /*
-     * aggiorna i dati del campo .fieldUpdateAjax 
+     * aggiorna i dati del campo .fieldUpdateAjaxClick / fieldUpdateAjaxChange
      *	entity
      *	field
      *	value
