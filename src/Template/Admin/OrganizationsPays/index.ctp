@@ -175,8 +175,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                               'value' => $organizationsPay->organization->hasMsg, 
                               'options' => $hasMsgs];
 
-                  if(empty($organizationsPay->doc_url))
-                    $options += ['disabled' => 'disabled'];
+                  if(empty($organizationsPay->doc_url)) 
+                    $options += ['disabled' => 'disabled', 'title' => 'File PDF non presente'];
 
                   echo '<td>';
                   echo $this->Form->control('hasMsg', $options, ['class' => 'width-75']);
