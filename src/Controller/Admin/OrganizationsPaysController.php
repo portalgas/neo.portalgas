@@ -335,7 +335,7 @@ class OrganizationsPaysController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Organizations Pay'));
         }
 
-        $organizations = $this->OrganizationsPays->find('list', [
+        $organizations = $this->OrganizationsPays->Organizations->find('list', [
                 'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
                 'order' => ['Organizations.name' => 'asc'], 
                 'limit' => 500]);
