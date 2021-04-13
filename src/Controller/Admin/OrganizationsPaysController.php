@@ -243,7 +243,10 @@ class OrganizationsPaysController extends AppController
         $hasMsgs = ['Y' => __('Si'), 'N' => __('No')];
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
-        $organizations = $this->OrganizationsPays->Organizations->find('list', ['order' => ['Organizations.name' => 'asc'], 'limit' => 200]);
+        $organizations = $this->OrganizationsPays->Organizations->find('list', [
+                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
+                'order' => ['Organizations.name' => 'asc'], 
+                'limit' => 500]);
 
         $this->set(compact('organizationsPays', 'hasMsgs', 'beneficiario_pays', 'type_pays', 'organizations'));
     }
@@ -292,7 +295,10 @@ class OrganizationsPaysController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Organizations Pay'));
         }
 
-        $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
+        $organizations = $this->OrganizationsPays->Organizations->find('list', [
+                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
+                'order' => ['Organizations.name' => 'asc'], 
+                'limit' => 500]);
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
         
@@ -329,7 +335,10 @@ class OrganizationsPaysController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Organizations Pay'));
         }
 
-        $organizations = $this->OrganizationsPays->Organizations->find('list', ['limit' => 200]);
+        $organizations = $this->OrganizationsPays->find('list', [
+                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
+                'order' => ['Organizations.name' => 'asc'], 
+                'limit' => 500]);
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay'); 
 

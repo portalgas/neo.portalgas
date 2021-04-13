@@ -150,5 +150,17 @@ trait UtilTrait
         $filename = strtolower($filename);
 
         return $filename;
-    }    
+    }  
+
+    /* 
+     * se delivery.sys = Y prendo il luogo = "Da definire"
+     */
+    public function getDeliveryDate($delivery) {
+
+        if($delivery->sys=='Y')
+            $results = $delivery->luogo;
+        else
+            $results = $delivery->data->i18nFormat('Y-MM-dd');
+        return $results;
+    }  
 }

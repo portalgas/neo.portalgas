@@ -399,7 +399,7 @@ Configure::write('OrganizationPayBeneficiarioFrancescoLabel', 'Francesco Actis G
 Configure::write('OrganizationPayBeneficiarioFrancescoIbanLabel', 'Francesco Actis Grosso e Sara Besacchi');
 Configure::write('OrganizationPayBeneficiarioFrancescoIban', 'IT05P0347501605CC0010194166');
 Configure::write('OrganizationPayBeneficiarioFrancescoCell', '347 491 5588');
-Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco@portalgas.it'); 
+Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco.actis@portalgas.it'); 
 
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');

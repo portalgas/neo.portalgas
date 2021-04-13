@@ -5,7 +5,6 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use App\Decorator\ApiArticleOrderDecorator;
 use Cake\Http\Exception\NotFoundException;
 
 class GdxpsController extends AppController
@@ -37,7 +36,7 @@ class GdxpsController extends AppController
      * has been blocked by CORS policy: Request header field x-csrf-token is not allowed by Access-Control-Allow-Headers in preflight response.
      *  prendo quello locale
      */
-    public function index()
+    public function suppliersIndex()
     {
         $debug = false;
 
@@ -57,7 +56,7 @@ class GdxpsController extends AppController
         $this->set(compact('gdxp_suppliers_index_url_remote', 'gdxp_suppliers_index_url_local', 'gdxp_articles_index_url'));
     }
 
-    public function articlesExport()
+    public function articlesIndex()
     {
         $debug = false;
 
@@ -99,62 +98,5 @@ class GdxpsController extends AppController
         } // end if ($this->request->is('post')) {
 
         $this->set(compact('acl_supplier_organizations', 'supplier_organization_id', 'articles'));
-    }
-
-    public function orderExport($order_type_id, $order_id, $parent_id=0) {
-
-        $debug = false;
-        $results = [];
-
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id; // gas scelto
-        // debug($user);
-
-        if(!$user->acl['isRoot'] || $user->organization->paramsConfig['hasOrdersGdxp']!='Y') {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-          //  return $this->redirect(Configure::read('routes_msg_stop'));
-        }
-
-        $ordersTable = TableRegistry::get('Orders');
-        $ordersTable = $ordersTable->factory($user, $organization_id, $order_type_id);
-
-        $ordersTable->addBehavior('Orders');
-
-        switch ($order_type_id) {
-            case Configure::read('Order.type.promotion'):
-                 $ordersTable->addBehavior('OrderPromotions');
-                 $prod_gas_promotion_id = $parent_id;
-                break;
-            case Configure::read('Order.type.des'):
-            case Configure::read('Order.type.des_titolare'):
-                $des_order_id = $parent_id;
-                break;
-        }
-
-        // debug($ordersTable);
-        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
-        // debug($orderResults);
-
-        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
-
-        if($articlesOrdersTable!==false) {
-
-            $where = [];
-            // $where['ArticlesOrders'] = ['article_id' => 2662]; 
-            $options = [];
-            $options['sort'] = [];
-            $options['limit'] = Configure::read('sql.no.limit');
-            $results = $articlesOrdersTable->getCartsByArticles($user, $organization_id, $orderResults, $where, $options);
-
-            if(!empty($results)) {
-                $results = new ApiArticleOrderDecorator($user, $results, $orderResults);
-                //$results = new ArticleDecorator($results);
-                $results = $results->results;
-            }
-        }
-        debug($results);
-
-        $this->set(compact('results'));
     }
 }

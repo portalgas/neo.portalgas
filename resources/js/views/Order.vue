@@ -346,11 +346,11 @@ export default {
       this.q = q;
       this.scroll();
       this.isScrollFinish = false;
-      // console.log('onSearch '+q);
+      /* console.log('onSearch '+q); */
     },
     onChangeView: function(viewList) {
       this.viewList = viewList;
-      console.log('onChangeView '+this.viewList);
+      /* console.log('onChangeView '+this.viewList); */
     },      
     scroll() {
 
@@ -490,8 +490,8 @@ export default {
       var found = false;
       var value_old = this.getCookie(name);
       var value_new = '';
-      console.log("addCookie scope corrente " + value);
-      console.log("addCookie oldCookies value " + value_old);
+      /* console.log("addCookie scope corrente " + value); */
+      /* console.log("addCookie oldCookies value " + value_old); */
 
       if(value_old=='') {
         value_new = value;
@@ -504,7 +504,7 @@ export default {
           {
             if(value_olds[i].toLowerCase() == value.toLowerCase())
               found = true;
-              console.log(value_olds[i]);
+              /* console.log(value_olds[i]); */
           }
         }
         else {
@@ -519,11 +519,11 @@ export default {
       } 
 
       if(!found) {
-        console.log("addCookie newCookies value " + value_new);
+        /* console.log("addCookie newCookies value " + value_new); */
         this.setCookie(name, value_new, 365);
       }
       else {
-        console.log("addCookie value gia' presente ");
+        /* console.log("addCookie value gia' presente "); */
       }
     },
     setCookie: function (name, value, exdays) {
@@ -535,9 +535,10 @@ export default {
     checkCookieTour: function(value) {
       var found = false;
       var values = this.getCookie(this.cookie_name);
-      console.log('checkCookieTour get cookie_name '+this.cookie_name);
-      if(values=='')
+      /* console.log('checkCookieTour get cookie_name '+this.cookie_name); */
+      if(values=='') {
         console.log('not found cookie_name '+this.cookie_name+' => eseguo tour');
+      }
       else {
         if(values.indexOf(this.delimiter)>0) {
           var value_splits = values.split(this.delimiter);
