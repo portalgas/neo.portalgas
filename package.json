@@ -11,7 +11,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "axios": "^0.19.2",
+        "axios": ">=0.21.1",
         "cross-env": "^5.1",
         "laravel-mix": "^5.0.1",
         "resolve-url-loader": "^2.3.1",

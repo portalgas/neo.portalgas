@@ -165,36 +165,48 @@ class OrganizationsPaysController extends AppController
          */
         $where = [];
         $request = $this->request->getData();
-        // debug($request);        
-        $search_year = $this->request->getQuery('search_year');
-        $search_beneficiario_pay = $this->request->getQuery('search_beneficiario_pay');
-        $search_hasMsg = $this->request->getQuery('search_hasMsg');
-        $search_type_pay = $this->request->getQuery('search_type_pay'); 
-        $search_organization_id = $this->request->getQuery('search_organization_id');       
-        if(empty($search_year))
-            $search_year = date('Y');
-        if(!empty($search_year)) {
-            array_push($where, ['OrganizationsPays.year' => $search_year]);
-        } 
-
-        if(!empty($request['search_beneficiario_pay'])) {
+        // debug($request);  
+        if(!empty($request['search_beneficiario_pay']))  
             $search_beneficiario_pay = $request['search_beneficiario_pay'];
+        else
+            $search_beneficiario_pay = '';
+        if(!empty($request['search_hasMsg']))  
+            $search_hasMsg = $request['search_hasMsg'];
+        else
+            $search_hasMsg = '';
+        if(!empty($request['search_hasPdf']))  
+            $search_hasPdf = $request['search_hasPdf'];
+        else
+            $search_hasPdf = '';
+        if(!empty($request['search_type_pay']))  
+            $search_type_pay = $request['search_type_pay']; 
+        else
+            $search_type_pay = '';
+        if(!empty($request['search_organization_id']))  
+            $search_organization_id = $request['search_organization_id'];
+        else
+            $search_organization_id = '';
+        
+        if(!empty($request['search_year']))
+            $search_year = $request['search_year'];
+        else
+            $search_year = date('Y');
+        array_push($where, ['OrganizationsPays.year' => $search_year]);
+         
+        if(!empty($search_beneficiario_pay)) {
             array_push($where, ['OrganizationsPays.beneficiario_pay' => $search_beneficiario_pay]);
         }
-        if(!empty($request['search_hasMsg'])) {
-            $search_hasMsg = $request['search_hasMsg'];
+        if(!empty($search_hasMsg)) {
             array_push($where, ['Organizations.hasMsg' => $search_hasMsg]);
         }
-        if(!empty($request['search_type_pay'])) {
-            $search_type_pay = $request['search_type_pay'];
+        if(!empty($search_type_pay)) {
             array_push($where, ['OrganizationsPays.type_pay' => $search_type_pay]);
         }
-        if(!empty($request['search_organization_id'])) {
-            $search_organization_id = $request['search_organization_id'];
+        if(!empty($search_organization_id)) {
             array_push($where, ['OrganizationsPays.organization_id' => $search_organization_id]);
         }
         // debug($where);
-        $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_type_pay', 'search_organization_id'));
+        $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_hasPdf', 'search_type_pay', 'search_organization_id'));
         
         // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
@@ -208,7 +220,7 @@ class OrganizationsPaysController extends AppController
         ];
         $organizationsPays = $this->paginate($this->OrganizationsPays);
 
-        foreach($organizationsPays as $organizationsPay) {
+        foreach($organizationsPays as $numResult => $organizationsPay) {
             
             /*
              * mail per i pagamento
@@ -234,13 +246,14 @@ class OrganizationsPaysController extends AppController
             }
             else 
                 $organizationsPay->doc_url = '';
-
+            
             // debug($organizationsPay->doc_url);
 
         } // foreach($organizationsPays as $organizationsPay)
         // debug($organizationsPays);
 
         $hasMsgs = ['Y' => __('Si'), 'N' => __('No')];
+        $hasPdfs = ['Y' => __('Presente'), 'N' => __('Non presente')];
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
         $organizations = $this->OrganizationsPays->Organizations->find('list', [
@@ -248,7 +261,7 @@ class OrganizationsPaysController extends AppController
                 'order' => ['Organizations.name' => 'asc'], 
                 'limit' => 500]);
 
-        $this->set(compact('organizationsPays', 'hasMsgs', 'beneficiario_pays', 'type_pays', 'organizations'));
+        $this->set(compact('organizationsPays', 'hasMsgs', 'hasPdfs', 'beneficiario_pays', 'type_pays', 'organizations'));
     }
 
     /**
