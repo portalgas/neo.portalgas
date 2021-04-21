@@ -94,7 +94,7 @@ export default {
   }, 
   methods: { 
 	    selectDelivery(delivery_id) {
-	    	console.log('selectDelivery '+delivery_id);
+	    	/* console.log('selectDelivery '+delivery_id); */
 
 			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
 			

@@ -91,8 +91,8 @@ export default {
   },     
   methods: { 
 	    selectOrder(order) {
-	    	console.log('selectOrder');
-	    	console.log(order);
+	    	/* console.log('selectOrder'); */
+	    	/* console.log(order); */
 
 			let isOpen = $('#collapse-'+order.id).hasClass('show');
 			

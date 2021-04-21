@@ -34,16 +34,19 @@ class PagesController extends AppController
     public function beforeFilter(Event $event) {
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['display']);
-        $this->Authorization->skipAuthorization(['display']);
+        $this->Authentication->allowUnauthenticated(['display', 'vueGuest']);
+        $this->Authorization->skipAuthorization(['display', 'vueGuest']);
 
          $this->loadComponent('ProdGasPromotion');
     }
 
+    /* 
+     * / - vue login
+     */
     public function vue() {
         // $user = $this->Authentication->getIdentity();
         // debug($user);
-        
+
         $hasGasUsersPromotions = false;
 
         $user = $this->Authentication->getIdentity();
@@ -57,6 +60,21 @@ class PagesController extends AppController
 
         $this->set(compact('hasGasUsersPromotions'));
     }
+
+    /* 
+     * /site - vue without login
+     */
+    public function vueGuest() {
+    }
+
+    /* 
+     * vue without login
+    public function socialMarket() {
+        $hasGasUsersPromotions = false;
+        $this->set(compact('hasGasUsersPromotions'));
+    }
+     */
+
 
     /**
      * Displays a view

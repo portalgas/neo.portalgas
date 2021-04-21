@@ -63,6 +63,22 @@ class ApiAppController extends AppController
         $this->viewBuilder()->setClassName('Json');       
     }
     
+    protected function _response($results) {
+
+        // https://book.cakephp.org/3/en/controllers/request-response.html#setting-the-body
+        // corretto ma non restituisce nulla 
+        // $this->response->withStringBody(json_encode($results));
+
+        // Notice: Deprecated (16384): Response::body() is deprecated. Mutable response methods are deprecated. Use `withBody()` and `getBody()` instead
+        // $this->response->body(json_encode($results));
+
+        $body = $this->response->getBody();
+        $body->write(json_encode($results));        
+        $this->response->withBody($body);  
+
+        return $this->response;      
+    }
+        
     /**
      * Respond with the given status $code and the specified $reason.
      *

@@ -98,7 +98,12 @@ class DeliveriesController extends ApiAppController
                             'Carts.organization_id' => $organization_id,
                             'Carts.deleteToReferent' => 'N'];        
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
-                                'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY '];
+                               /*
+                                * non imposto + un limite di data al carrello
+                                 'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY ',
+                                */
+                                'DATE(Deliveries.data) <= CURDATE()'
+                                ];
         $where['Orders'] = ['Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         // debug($where);
         $carts = $cartsTable->find()
@@ -107,7 +112,7 @@ class DeliveriesController extends ApiAppController
                                               'Deliveries' => ['fields' => ['Deliveries.id', 'Deliveries.data', 'Deliveries.luogo', 'Deliveries.sys'], 'conditions' => $where['Deliveries']]]])
                                     ->where($where['Carts'])
                                     ->group(['Carts.order_id'])
-                                    ->order(['Deliveries.data'])
+                                    ->order(['Deliveries.data' => 'desc'])
                                     ->all();
         // debug($carts);exit;
         if(!empty($carts)) {

@@ -57,9 +57,12 @@ class ApiAppController extends AppController
 
         $user = $this->Authentication->getIdentity();
         if(empty($user)) {
+            /*
+             * per evitare Error: [Cake\Http\Exception\ForbiddenException] Forbidden Request URL: /admin/api/pings
             throw new ForbiddenException();
+            */
+            die("user empty!");
         }
-
     }
 
     public function beforeRender(Event $event)

@@ -5,6 +5,8 @@ import Order from "../views/Order.vue";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
 import Promotion from "../views/Promotion.vue";
+import SocialMarket from "../views/SocialMarket.vue"; 
+import SocialShop from "../views/SocialShop.vue"; 
 
 Vue.use(VueRouter);
 
@@ -33,6 +35,16 @@ const routes = [
     path: "/promozioni",
     name: "Promotion",
     component: Promotion
+  },
+  {
+    path: "/site/social-market",
+    name: "SocialMarket",
+    component: SocialMarket
+  },
+  {
+    path: "/site/social-market/get-articles/:market_id",
+    name: "SocialShop",
+    component: SocialShop
   }
 ];
 

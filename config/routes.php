@@ -84,7 +84,10 @@ Router::scope('/', function (RouteBuilder $routes) {
     else {
         $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
         $routes->connect('/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
-        $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']); 
+        $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
+        $routes->connect('/site', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
+        $routes->connect('/site/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
+        $routes->connect('/site/*/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
 
         /*
          * mapping route gestiti da cakephp e non da vue
@@ -154,6 +157,21 @@ Router::prefix('api', function (RouteBuilder $routes) {
     $routes->scope('/tokenJwt', ['controller' => 'TokenJwts'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'POST']);
         $routes->connect('/getUser', ['action' => 'getUser', '_method' => 'POST']);
+    });
+
+    /*
+     * vue
+     */
+    $routes->scope('/social-market', ['controller' => 'Markets'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        // $routes->connect('/getArticles', ['action' => 'getArticles', '_method' => 'GET']);
+
+        $routes->connect('/getArticles/:market_id', ['action' => 'getArticles', '_method' => 'GET'],
+            [
+                'pass' => ['market_id'],
+                'market_id' => '[0-9]+'
+            ]);
+
     });
 });
 

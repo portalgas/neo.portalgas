@@ -70,6 +70,18 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
     </ul>
     </a>
   </li>
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-apple"></i> <span><?php echo __('SocialMarket');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/markets/index'); ?>"><?php echo $icon;?><?php echo __('Markets');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/market-articles/index'); ?>"><?php echo $icon;?><?php echo __('Articles Market');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+    </ul>
+    </a>
+  </li>
 
   <li class="treeview"> 
     <a href="#">

@@ -40,8 +40,6 @@ $organization = $this->Identity->get('organization');
     <?php echo $this->element('fe/menu', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity, 'hasGasUsersPromotions' => $hasGasUsersPromotions]);?>
 
 	<noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
-	
-    <a href='http://example.com/' data-intro='Hello step one!'></a>
 
 	<?php echo $this->fetch('content');?>
     
@@ -51,8 +49,8 @@ $organization = $this->Identity->get('organization');
     <script type="text/javascript">
     "use strict";
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
-    var j_seo = "<?php echo $organization->j_seo;?>"; // da passa a vue in app.js
-    var organizationTemplatePayToDelivery = "<?php echo $organization->template->payToDelivery;?>"; // da passa a vue in app.js
+    var j_seo = "<?php echo (isset($organization->j_seo)) ? $organization->j_seo : '';?>"; // da passa a vue in app.js
+    var organizationTemplatePayToDelivery = "<?php echo (isset($organization) && isset($organization->template)) ? $organization->template->payToDelivery : '';?>"; // da passa a vue in app.js
     var headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/javascript, */*; q=0.01",

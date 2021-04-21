@@ -43,7 +43,7 @@ class OrganizationsTable extends Table
         ]); 
 
         /*
-         * se l'organization type = PACT / PRODGAS
+         * se l'organization type = PACT / PRODGAS / PROD
          *  e il legame con il produttore associato
          */
         $this->hasOne('SuppliersOrganizations');                 

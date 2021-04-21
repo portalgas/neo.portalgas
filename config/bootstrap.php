@@ -359,7 +359,7 @@ Configure::write('Sh.template.path.full', APP.'Command/Sh/template.php');
  */
 Configure::write('GGOrganizationsPayment', 60);   // dopo quanto far vedere i dati del pagamento
 Configure::write('GGinMenoPerEstrarreDeliveriesInTabs', 5);
-Configure::write('GGinMenoPerEstrarreDeliveriesCartInTabs', 35);
+Configure::write('GGinMenoPerEstrarreDeliveriesCartInTabs', 35); // non imposto + un limite di data al carrello
 Configure::write('GGMailToAlertOrderOpen', 0);   // perche' eseguito dopo mezzanotte: oggi si aprono
 Configure::write('GGMailToAlertOrderClose', 2);  // perche' eseguito dopo mezzanotte: tra n+1 si chiuderanno
 Configure::write('GGMailToAlertDeliveryOn', 1);  // perche' eseguito dopo mezzanotte: tra n+1 c'e' la consegna

@@ -2,10 +2,10 @@
 /*
  * link menu' su portalas rimappati in /templates/v01/index.php
  */
-
 use Cake\Core\Configure; 
 
 $user = $this->Identity->get();
+$socialMarketIsActive = $config['SocialMarket.isActive'];
 
 $i=0;
 $menus = [];
@@ -13,9 +13,16 @@ $menus[$i]['label'] = 'Home';
 $menus[$i]['url'] = $config['Portalgas.fe.url'];
 $menus[$i]['target'] = '';
 
+$menus = [];
+
 if(!empty($organization)) {
   
-  $menus = [];
+  if($socialMarketIsActive) {
+    $i++;
+    $menus[$i]['label'] = __('SocialMarket');
+    $menus[$i]['url'] = '/social-market';
+    $menus[$i]['target'] = '';   
+  }
 
   if($hasGasUsersPromotions) {
     $i++;
@@ -89,10 +96,12 @@ foreach($menus as $numResults => $menu) {
   echo '</li>';
 }
 
-echo '<li class="nav-item">';
-echo '<a href="" class="nav-link" data-toggle="modal" data-target="#cashesUserModal">'.$user->get('username').'</a>';
-echo '</li>';
+if(isset($user)) {
+  echo '<li class="nav-item">';
+  echo '<a href="" class="nav-link" data-toggle="modal" data-target="#cashesUserModal">'.$user->get('username').'</a>';
+  echo '</li>';  
+}
+
 echo '</ul>';
 echo '</div>';
 echo '</nav>';
-

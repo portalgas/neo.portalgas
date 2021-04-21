@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import App from "./App.vue";
+import AppGuest from "./AppGuest.vue";
 import router from "./router";
 import store from "./stores/store";
 import axios from "axios";
@@ -61,12 +62,26 @@ window.axios.defaults.headers.common["Access-Control-Allow-Headers"] = "*";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
+/* 
+ * carico App.vue (con autenticazione) / Appguest.vue (senza autenticazione)
+ */
+var divToMount = '';
+var appToMount = '';
+if(document.getElementById("app") !== null) {
+  divToMount = '#app';
+}
+else
+if(document.getElementById("app-guest") !== null) {
+  appToMount = AppGuest;
+  divToMount = '#app-guest';  
+} 
+// console.log('divToMount '+divToMount);
+
 export const vm = new Vue({
   router,
   store,
-  render: h => h(App)
-}).$mount("#app");
-
+  render: h => h(appToMount)
+}).$mount(divToMount);
 
 /*
  * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 

@@ -5,7 +5,6 @@
       <modal-component></modal-component>
       <cashes-user></cashes-user>
  
-
       <transition name="leave">
         <router-view></router-view>
       </transition>
@@ -24,7 +23,7 @@ export default {
   components: {
     modalComponent: modal,
     cashesUser: cashesUser
-  },
+  } 
 };
 </script>
 
