@@ -99,10 +99,9 @@ class DeliveriesController extends ApiAppController
                             'Carts.deleteToReferent' => 'N'];        
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
                                /*
-                                * non imposto + un limite di data al carrello
+                                * imposto + un limite di data al carrello
                                  'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY ',
                                 */
-                                'DATE(Deliveries.data) <= CURDATE()'
                                 ];
         $where['Orders'] = ['Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         // debug($where);

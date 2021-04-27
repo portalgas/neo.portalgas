@@ -319,6 +319,9 @@ msgstr "Conf"
 msgid "Package"
 msgstr "Conf"
 
+msgid "pezzi_confezione"
+msgstr "Conf"
+
 msgid "Prezzo/UM"
 msgstr "Prezzo/UM"
 
