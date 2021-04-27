@@ -65,9 +65,10 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 /* 
  * carico App.vue (con autenticazione) / Appguest.vue (senza autenticazione)
  */
-var divToMount = '';
-var appToMount = '';
+var appToMount = App;
+var divToMount = '#app';
 if(document.getElementById("app") !== null) {
+  appToMount = App;
   divToMount = '#app';
 }
 else
@@ -75,6 +76,7 @@ if(document.getElementById("app-guest") !== null) {
   appToMount = AppGuest;
   divToMount = '#app-guest';  
 } 
+
 // console.log('divToMount '+divToMount);
 
 export const vm = new Vue({

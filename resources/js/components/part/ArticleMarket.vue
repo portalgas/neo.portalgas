@@ -1,6 +1,5 @@
 <template>
 
-{{ market }}
   <div v-if="market!=null" class="card">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)" :class="justInCart"></div>
 
