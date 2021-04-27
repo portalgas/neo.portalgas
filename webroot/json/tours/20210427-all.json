@@ -10,6 +10,11 @@
             "element":"#btn-view-list",
             "title": "Visualizza in modalità lista",
             "content": "Se usi il computer, visualizza gli articoli in formato lista"
+         },
+         {
+            "element":"#btn-cart-previous",
+            "title": "Sei un nostalgico",
+            "content": "Torna alla precedente versione per gli acquisti"
          }
       ],
       "esito":true,
