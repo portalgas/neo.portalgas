@@ -1,1 +1,26 @@
-{"count":2,"results":[{"id":67,"name":"Le Galline Felici","vat":"04539170870","lastchange":"2020-09-22"},{"id":68,"name":"Teanatura","vat":"02804570428","lastchange":"2020-09-28"}]}
+{
+   "count":3,
+   "results":[
+      {
+         "id":1,
+         "name":"Teanatura",
+         "vat":"02804570428",
+         "locality":"",
+         "lastchange":"2020-11-07"
+      },
+      {
+         "id":57,
+         "name":"Bargiolina",
+         "vat":"03606010043",
+         "locality":"Barge (CN)",
+         "lastchange":"2020-04-15"
+      },
+      {
+         "id":63,
+         "name":"Altro Modo Flegreo",
+         "vat":"96020510630",
+         "locality":" ",
+         "lastchange":"2021-04-27"
+      }
+   ]
+}

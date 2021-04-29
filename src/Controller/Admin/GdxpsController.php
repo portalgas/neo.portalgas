@@ -31,7 +31,7 @@ class GdxpsController extends AppController
     }
 
     /*
-     * list suppliers gdxp da http://www.economiasolidale.net/api/v1/list.php
+     * list suppliers gdxp da http://hub.gasdotto.net/api/list
      * se no lo trovo 
      * has been blocked by CORS policy: Request header field x-csrf-token is not allowed by Access-Control-Allow-Headers in preflight response.
      *  prendo quello locale
