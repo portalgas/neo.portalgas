@@ -256,7 +256,7 @@ class ArticlesOrdersTable extends Table
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
 
         $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
-        $articlesOrder = $this->patchEntity($articlesOrder, $article_order);
+        $articlesOrder = $articlesOrdersTable->patchEntity($articlesOrder, $article_order);
 
         if(Configure::read('Logs.cart')) Log::write('debug', $articlesOrder);
 
