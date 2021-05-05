@@ -6,6 +6,8 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 class OrganizationsProdGasTable extends OrganizationsTable implements OrganizationTableInterface 
 {
@@ -90,7 +92,7 @@ class OrganizationsProdGasTable extends OrganizationsTable implements Organizati
         $data['j_group_registred'] = 0;
         $data['j_page_category_id'] = 0;
         $data['type'] = 'PRODGAS';
-        $data['paramsConfig'] = '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N","canOrdersClose":"ALL","canOrdersDelete":"ALL","hasDesUserManager":"N","hasUserFlagPrivacy":"N","hasUserRegistrationExpire":"N","userRegistrationExpireDate":"","hasCashFilterSupplier":"N","hasArticlesGdxp":"N","hasDocuments":"N"}';
+        $data['paramsConfig'] = Configure::read('OrganizationProdGas.paramsConfig.default');
         $data['paramsFields'] = '{"hasFieldArticleCodice":"Y","hasFieldArticleIngredienti":"Y","hasFieldArticleCategoryId":"Y"}';
         $data['descrizione'] = $supplier->descrizione;
         $data['indirizzo'] = $supplier->indirizzo;

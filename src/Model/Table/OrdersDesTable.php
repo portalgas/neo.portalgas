@@ -8,6 +8,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
+use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
 
 class OrdersDesTable extends OrdersTable implements OrderTableInterface
 {
@@ -119,6 +120,15 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
                                   ])
                         ->first();        
         // debug($results);
+
+        /*
+         * produttori esclusi dal prepagato
+         */
+        if(!empty($results) && isset($user->organization->paramsConfig['hasCashFilterSupplier']) && $user->organization->paramsConfig['hasCashFilterSupplier']=='Y') {
+            $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
+            $results->suppliers_organization->isSupplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->isSupplierOrganizationCashExcluded($user, $results->suppliers_organization->organization_id, $results->suppliers_organization->id);
+        }
+                     
         return $results; 
     }
     

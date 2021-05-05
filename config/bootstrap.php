@@ -402,6 +402,8 @@ Configure::write('OrganizationPayBeneficiarioFrancescoIban', 'IT05P0347501605CC0
 Configure::write('OrganizationPayBeneficiarioFrancescoCell', '347 491 5588');
 Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco.actis@portalgas.it'); 
 
+Configure::write('OrganizationProdGas.paramsConfig.default', '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N","hasPromotionGas":"N","hasPromotionGasUsers":"N"}'); 
+
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');
 
