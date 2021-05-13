@@ -8,9 +8,12 @@ use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
+use App\Traits;
 
 class GdxpArticleOrdersBehavior extends Behavior
 {
+	use Traits\UtilTrait;
+
 	private $config = [];
 
     public function initialize(array $config)
@@ -24,6 +27,8 @@ class GdxpArticleOrdersBehavior extends Behavior
     public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)  {
         $results = $query->all();
 		
+		$cartsTable = TableRegistry::get('Carts');
+
         // debug($results);exit;
         foreach ($results as $key => $result) {
       	
@@ -50,9 +55,22 @@ class GdxpArticleOrdersBehavior extends Behavior
 
 			/*
 			 * qta acquistata
-			 */
+             * calcolo totale qta per ogni articolo
+			 *
+			 * non posso prendere il totale della qta acquistata da ArticlesOrders.qta_cart perche' se ordine DES e' la somma di tutti i GAS
+			 * sommo qta / qta_forzato da Carts
+			*/
+			$user = $this->createObjUser();
+			$organization_id = $result->organization_id;
+			$order_id = $result->order_id;
+			$article_organization_id = $result->article_organization_id;
+			$article_id = $result->article_id;
+			
+            $qta_cart = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id); 
+            
             $result->bookingInfo = [
-                "qta_cart" => $result->qta_cart
+                // "totalQty" => $result->qta_cart, // ArticlesOrders.qta_cart
+                "totalQty" => $qta_cart
             ];
 
 			unset($result->article);
@@ -76,7 +94,7 @@ class GdxpArticleOrdersBehavior extends Behavior
 			unset($result->send_mail);
 			unset($result->stato);
 			unset($result->created);
-			unset($result->modified);			
+			unset($result->modified);				
 		}
     }
 }
