@@ -266,7 +266,6 @@ class GdxpExportsController extends AppController
     private function _getArticlesBySupplierOrganizationId($user, $organization_id, $supplier_organization_id) { 
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-
         $suppliersOrganizationsTable->Articles->addBehavior('GdxpArticles');
 
         $where = ['Articles.organization_id' => $organization_id,
