@@ -232,11 +232,11 @@ class GdxpExportsController extends AppController
         switch ($order_type_id) {
             case Configure::read('Order.type.promotion'):
                  $ordersTable->addBehavior('OrderPromotions');
-                 $prod_gas_promotion_id = $parent_id;
+                // $prod_gas_promotion_id = $parent_id;
                 break;
             case Configure::read('Order.type.des'):
             case Configure::read('Order.type.des_titolare'):
-                $des_order_id = $parent_id;
+               // $des_order_id = $parent_id;
                 break;
         }
 
@@ -286,12 +286,20 @@ class GdxpExportsController extends AppController
         return $articleResults;
     }  
 
+    /*
+     * non posso prendere il totale della qta acquistata da ArticlesOrders.qta_cart perche' se ordine DES e' la somma di tutti i GAS
+     * sommo qta / qta_forzato da Carts
+     */
     private function _getArticlesByOrderId($user, $organization_id, $orderResults) {
 
         $results = [];
 
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        
 
+        /*
+         * articoli associati all'ordine 
+         */
         $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
         $articlesOrdersTable->addBehavior('GdxpArticleOrders');
 
@@ -312,6 +320,7 @@ class GdxpExportsController extends AppController
             $results = $articlesOrdersTable->gets($user, $organization_id, $orderResults, $where, $options=[]);
         }
 
+        // debug($results);
         return $results;
     } 
 }
