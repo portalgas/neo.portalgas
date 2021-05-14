@@ -111,42 +111,48 @@ class GdxpExportsController extends AppController
         $subject = ['subject' => $this->_getOrganization($this->Authentication->getIdentity()->organization)];
 
         $results = [];
+        $file_name = '';
 
         $orderResults = $this->_getOrder($user, $organization_id, $order_type_id, $order_id, $debug);
+        if(!empty($orderResults)) {
 
-        $supplier_name = $orderResults->suppliers_organization->name;
-        $supplier_organization_id = $orderResults->suppliers_organization->id;
-        // debug($supplier_name);
+            $supplier_name = $orderResults->suppliers_organization->name;
+            $supplier_organization_id = $orderResults->suppliers_organization->id;
+            // debug($supplier_name);
 
-        $article_orders = $this->_getArticlesByOrderId($user, $organization_id, $orderResults, $debug); 
-        // debug($article_orders);
+            $article_orders = $this->_getArticlesByOrderId($user, $organization_id, $orderResults, $debug); 
+            // debug($article_orders);
 
-        $blocks =[];  
-        $supplier = $this->_getSupplier($user, $organization_id, $supplier_organization_id);
-        if(!empty($supplier)) {
-            $blocks[0]['supplier'] = $supplier;
-            $blocks[0]['supplier']['products'] = $article_orders; 
-            $blocks[0]['supplier']['orderInfo'] = $this->_getOrderInfo($orderResults); 
+            $blocks =[];  
+            $supplier = $this->_getSupplier($user, $organization_id, $supplier_organization_id);
+            if(!empty($supplier)) {
+                $blocks[0]['supplier'] = $supplier;
+                $blocks[0]['supplier']['products'] = $article_orders; 
+                $blocks[0]['supplier']['orderInfo'] = $this->_getOrderInfo($orderResults); 
 
-            $supplier_name = $blocks[0]['supplier']['name'];
-        } 
+                $supplier_name = $blocks[0]['supplier']['name'];
+            } 
+            else {
+                $supplier_name = 'Produttore non trovato';
+            } // end if(!empty($supplier))
+
+            // $this->set('_rootNode', 'gdxp'); node xml
+            $this->set($gdxp);
+            $this->set($subject);
+            $this->set(compact('blocks', 'supplier'));
+            $this->set('_serialize', ['protocolVersion', 'creationDate', 'applicationSignature', 'subject', 'blocks']);
+            
+            /*
+            * commentare per visualizzarlo a video
+            * Set Force Download https://book.cakephp.org/3/en/views/json-and-xml-views.html#example-usage
+            */
+            $supplier_name = $this->setFileName($supplier_name);
+            $delivery_data = $this->setFileName($this->getDeliveryDate($orderResults->delivery));
+            $file_name = Configure::read('Gdxp.file.prefix').$supplier_name.'-'.$delivery_data.'-'.date('YmdHis').'.json';
+        } // end if(!empty($orderResults))
         else {
-            $supplier_name = 'Produttore non trovato';
-        } // end if(!empty($supplier))
-
-        // $this->set('_rootNode', 'gdxp'); node xml
-        $this->set($gdxp);
-        $this->set($subject);
-        $this->set(compact('blocks', 'supplier'));
-        $this->set('_serialize', ['protocolVersion', 'creationDate', 'applicationSignature', 'subject', 'blocks']);
-        
-        /*
-         * commentare per visualizzarlo a video
-         * Set Force Download https://book.cakephp.org/3/en/views/json-and-xml-views.html#example-usage
-         */
-        $supplier_name = $this->setFileName($supplier_name);
-        $delivery_data = $this->setFileName($this->getDeliveryDate($orderResults->delivery));
-        $file_name = Configure::read('Gdxp.file.prefix').$supplier_name.'-'.$delivery_data.'-'.date('YmdHis').'.json';
+            $this->set('_serialize', ['results']);
+        }
 
         // Prior to 3.4.0
         if(!$debug) return $this->response->download($file_name);
