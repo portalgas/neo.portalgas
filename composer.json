@@ -34,7 +34,6 @@
         "phpoffice/phpspreadsheet": "^1.14",
         "phpoffice/phpword": "^0.16.0",
         "rkorebrits/htmltoopenxml": "^0.1.9",
-        "sentry/sdk": "^3.1",
         "sunra/php-simple-html-dom-parser": "^1.5",
         "swaggest/json-schema": "^0.12.28",
         "twbs/bootstrap": "3.*",

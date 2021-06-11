@@ -1061,7 +1061,7 @@ msgid "msg_organization_payment_incomplete"
 msgstr "Completa i dati per il pagamento del canone annuo di PortAlGas"
 
 msgid "msg_organization_pay_to_pay"
-msgstr "Hai già saldato il canone annuale di PortAlGas?<br /><a href='%s' target="_blank"><br />Scarica qui il documento</a><br />Effettua un bonifico a %s<br />o paga con Satispy al numero %s<br />Se vuoi scrivermi <a href='mailto:%s'>%s</a>"
+msgstr "Hai già saldato il canone annuale di PortAlGas?<br /><a href='%s' target="_blank"><br />Scarica qui il documento</a><br />Effettua un bonifico a %s<br />o paga con Satispy al numero %s<br />Indica come <b>causale</b> il nome del tuo G.A.S.<br />Se vuoi scrivermi <a href='mailto:%s'>%s</a>"
 
 msgid "export_docs_not_found"
 msgstr "Non ci sono acquisti."

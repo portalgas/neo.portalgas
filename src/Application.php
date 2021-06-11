@@ -137,8 +137,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // Token check will be skipped when callback returns `true`.
             $csrf->whitelistCallback(function (ServerRequestInterface $request) {            
                 $prefix = $request->getParam('prefix'); 
+                $prefix = strtolower($prefix);
                 /* debug($prefix); */
-                if (strtolower($prefix) === 'api') {
+                if (!empty($prefix) && $prefix === 'api') {
                     return true;
                 }
             });            
