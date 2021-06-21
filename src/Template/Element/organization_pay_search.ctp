@@ -16,6 +16,14 @@
 <fieldset>
     <legend><?= __('Search {0}', ['OrganizationPay']) ?></legend>
     <?php
+    if(!empty($search_year)) {
+        echo '<div class="row-">';
+        echo '<div class="col-md-12">';    
+        echo $this->Form->control('search_year', ['options' => $years, 'class' => 'form-control', 'default' => $search_year]);
+        echo '</div>';
+        echo '</div>';    
+    }
+
     echo '<div class="row-">';
     echo '<div class="col-md-3">';    
     echo $this->Form->control('search_beneficiario_pay', ['options' => $beneficiario_pays, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);

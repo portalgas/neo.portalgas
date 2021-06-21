@@ -261,7 +261,12 @@ class OrganizationsPaysController extends AppController
                 'order' => ['Organizations.name' => 'asc'], 
                 'limit' => 500]);
 
-        $this->set(compact('organizationsPays', 'hasMsgs', 'hasPdfs', 'beneficiario_pays', 'type_pays', 'organizations'));
+        $years = [];
+        for($i=2014; $i<=date('Y'); $i++) {
+            $years[$i] = $i;
+        }
+
+        $this->set(compact('organizationsPays', 'hasMsgs', 'hasPdfs', 'beneficiario_pays', 'type_pays', 'organizations', 'years'));
     }
 
     /**
