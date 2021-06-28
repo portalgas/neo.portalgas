@@ -5,6 +5,7 @@ import Order from "../views/Order.vue";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
 import Promotion from "../views/Promotion.vue";
+import Suppliers from "../views/Suppliers.vue";
 /* import SocialMarket from "../views/SocialMarket.vue"; */
 /* import SocialShop from "../views/SocialShop.vue";  */
 
@@ -30,6 +31,11 @@ const routes = [
     path: "/user-cart",
     name: "UserCart",
     component: UserCart
+  },
+  {
+    path: "/produttori",
+    name: "Suppliers",
+    component: Suppliers
   },
   {
     path: "/promozioni",

@@ -96,4 +96,34 @@ class TestsController extends AppController
 		
         $this->set(compact('results'));
     }
+
+    /*
+     *  SELECT name, MATCH(name) AGAINST('azie*' 'agric*' 'biologica' IN BOOLEAN MODE) AS relevance
+     FROM k_suppliers WHERE MATCH(name) AGAINST('azie*' 'agric*' 'biologica' IN BOOLEAN MODE) ORDER BY relevance DESC LIMIT 10;
+     *
+     */
+    public function searchable() {
+
+        $search = "'iris*'";
+        $search = "'azie*' 'agric*' 'biologica*'";
+ 
+        $suppliersTable = TableRegistry::get('Suppliers');
+        $results = $suppliersTable->find() 
+        ->select(['name', 'id', 
+                  'relevance' => "MATCH(Suppliers.name) AGAINST(".$search." IN BOOLEAN MODE)"])
+            ->where([
+                "MATCH(Suppliers.name) AGAINST(:search IN BOOLEAN MODE)" 
+            ])
+            ->order(['relevance' => 'desc'])
+            ->bind(':search', $search, 'string');
+
+        debug('Found '.$results->count());    
+        debug($search);    
+        foreach($results as $result) {
+            debug($result->relevance.' '.$result->name);
+        }
+
+        $this->set(compact('results'));
+        $this->render('index');        
+    }
 }

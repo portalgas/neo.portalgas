@@ -173,6 +173,20 @@ Router::prefix('api', function (RouteBuilder $routes) {
             ]);
 
     });
+    
+    $routes->scope('/categories-suppliers', ['controller' => 'CategoriesSuppliers'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+    });    
+    $routes->scope('/suppliers', ['controller' => 'Suppliers'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+    }); 
+    $routes->scope('/regions', ['controller' => 'Regions'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+    });
+    $routes->scope('/provinces', ['controller' => 'provinces'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+    });
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) { 

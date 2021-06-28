@@ -8,10 +8,8 @@ $portalgas_bo_url = $config['Portalgas.bo.url'];
 $portalgas_bo_home = $config['Portalgas.bo.home'];
 $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
 
-?>	
-  <?php echo $this->fetch('tb_sidebar') ?>
+  echo $this->fetch('tb_sidebar');
 
-  <?php
   if($joomla25Salts_isActive) {
     echo '<li class="">';
     echo '<a href="'.$this->Url->build('/admin/joomla25Salts').'?scope=BO">';
@@ -35,11 +33,14 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
         <i class="fa fa-mail pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>      
+      <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>   
+      <li><a href="<?php echo $this->Url->build('/admin/tests/searchable'); ?>"><?php echo $icon;?><?php echo __('Tests searchable');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>      
       <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Logs Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('OrderTypes Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/order-state-codes/index'); ?>"><?php echo $icon;?><?php echo __('OrderStateCodes Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/geo-regions/index'); ?>"><?php echo $icon;?><?php echo __('Regions Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/geo-provincies/index'); ?>"><?php echo $icon;?><?php echo __('Provincies Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>  

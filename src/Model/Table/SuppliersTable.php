@@ -35,6 +35,10 @@ class SuppliersTable extends Table
             'foreignKey' => 'owner_organization_id',
             'joinType' => 'INNER'
         ]); 
+        $this->belongsTo('Content', [
+            'foreignKey' => 'j_content_id',
+            'joinType' => 'LEFT'
+        ]); 
         $this->hasMany('SuppliersOrganizations', [
             'foreignKey' => 'supplier_id'
         ]);        
