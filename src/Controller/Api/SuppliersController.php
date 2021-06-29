@@ -22,13 +22,10 @@ class SuppliersController extends ApiAppController
     }
     
     /*
-     * lista di tutti i produttori
+     * dati del produttore
      * 
-     * POST /api/suppliers/gets
-     * Content-Type: application/json
-     * X-Requested-With: XMLHttpRequest
-     * Authorization: Bearer 5056b8cf17f6dea5a65018f4....
-     */  
+     * POST /api/suppliers/get
+     */
     public function get() {
 
         $debug = false;
@@ -64,10 +61,10 @@ class SuppliersController extends ApiAppController
     } 
 
     /*
-     * dati del produttore
+     * lista di tutti i produttori
      * 
-     * POST /api/suppliers/get
-     */  
+     * POST /api/suppliers/gets
+     */ 
     public function gets() {
 
         $debug = false;
@@ -84,10 +81,24 @@ class SuppliersController extends ApiAppController
         $suppliersTable = TableRegistry::get('Suppliers'); 
 
         $where = ['Suppliers.stato' => 'Y'];
+        $where_suppliers_organizations = ['SuppliersOrganizations.stato' => 'Y']; 
 
         $category_id = $this->request->getData('category_id');
         if(!empty($category_id)) 
             $where += ['Suppliers.category_supplier_id' => $category_id];
+        $region_id = $this->request->getData('region_id');
+        if(!empty($region_id)) {
+            /*
+             * suppliers non ha il campo region_id
+             */
+            $provincesTable = TableRegistry::get('GeoProvinces');
+            $provinces = $provincesTable->getSiglaByIdGeoRegion($region_id);
+
+            $where += ['Suppliers.provincia IN ' => $provinces];
+        }
+        $province_id = $this->request->getData('province_id');
+        if(!empty($province_id)) 
+            $where += ['Suppliers.provincia' => $province_id];
         
         $q = $this->request->getData('q');
         if(!empty($q)) {
@@ -112,8 +123,9 @@ class SuppliersController extends ApiAppController
             $where += ['MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'];
 
             $suppliersResults = $suppliersTable->find() 
-                ->select(['name', 'id', 
+                ->select(['name', 'id', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
                       'relevance' => 'MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'])
+                ->contain(['SuppliersOrganizations' => ['conditions' => $where_suppliers_organizations]])
                 ->where($where)
                 ->order(['relevance' => 'desc']);
                 // ->bind(':search', $search, 'string')
@@ -124,7 +136,7 @@ class SuppliersController extends ApiAppController
              * ricerca senza nome
              */ 
             $suppliersResults = $suppliersTable->find() 
-                ->select(['name', 'id'])
+                ->contain(['SuppliersOrganizations' => ['conditions' => $where_suppliers_organizations]])
                 ->where($where)
                 ->order(['name' => 'asc']);            
         }

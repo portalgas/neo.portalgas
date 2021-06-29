@@ -57,5 +57,5 @@ class GeoRegionsTable extends Table
             ->notEmptyString('name');
 
         return $validator;
-    }
+    }   
 }

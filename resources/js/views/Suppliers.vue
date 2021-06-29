@@ -14,7 +14,7 @@
               </div>
               <input type="text" class="form-control input-lg" id="q" autocomplete="off"  placeholder="Ricerca..."
                     v-model="q" 
-                    v-on:blur="search()" />
+                    v-on:blur="searchByName()" />
             </div>
             <!-- div class="panel-footer" v-if="suppliers.length">
               <ul class="list-group">
@@ -25,12 +25,52 @@
     </div> <!-- row -->  
     <div class="row">  
         <div class="col-sm-12 col-xs-12 col-md-12">
-              <select id="category_id" v-if="!isRunCategoriesSuppliers && categories!=null" class="form-control input-lg" @change="categoryOnChange($event)" v-model="category_id">
+            <div class="form-group">
+                <select id="category_id" v-if="!isRunCategoriesSuppliers && categories!=null" class="form-control input-lg" @change="categoryOnChange($event)" v-model="category_id">
+                  <option value="0">Filtra per categoria</option>
+                  <option 
+                      v-for="(category, index) in categories"
+                      :value="category[1]">{{ category[0] }}</option>
+                </select>
+                <div v-if="isRunCategoriesSuppliers" class="box-spinner"> 
+                    <div class="spinner-border text-info" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>  
+                </div>                 
+            </div>
+        </div> <!-- col-sm-12 col-xs-12 col-md-12 -->
+    </div> <!-- row -->
+    <div class="row">  
+        <div class="col-sm-6 col-xs-6 col-md-6">
+          <div class="form-group">
+              <select id="region_id" v-if="!isRunRegions && regions!=null" class="form-control input-lg" @change="regionOnChange($event)" v-model="region_id">
+                <option value="0">Filtra per regione</option>
                 <option 
-                    v-for="(category, index) in categories"
-                    :value="category[1]">{{ category[0] }}</option>
+                    v-for="(region, index) in regions"
+                    :value="region[1]">{{ region[0] }}</option>
               </select>
-      </div> <!-- col-sm-12 col-xs-12 col-md-12 -->
+              <div v-if="isRunRegions" class="box-spinner"> 
+                  <div class="spinner-border text-info" role="status">
+                      <span class="sr-only">Loading...</span>
+                  </div>  
+              </div>              
+          </div>
+        </div> <!-- col-sm-6 col-xs-6 col-md-6 -->
+        <div class="col-sm-6 col-xs-6 col-md-6">
+          <div class="form-group">
+              <select id="province_id" v-if="!isRunProvinces && provinces!=null" class="form-control input-lg" @change="provinceOnChange($event)" v-model="province_id">
+                <option value="0">Filtra per provincia</option>
+                <option 
+                    v-for="(province, index) in provinces"
+                    :value="index">{{ province }}</option>
+              </select>
+              <div v-if="isRunProvinces" class="box-spinner"> 
+                  <div class="spinner-border text-info" role="status">
+                      <span class="sr-only">Loading...</span>
+                  </div>  
+              </div>              
+          </div>
+        </div> <!-- col-sm-6 col-xs-6 col-md-6 -->
     </div> <!-- row -->
     </form> 
 
@@ -53,7 +93,7 @@
       <div class="card">
           <h5 class="card-header">{{ supplier.name }}</h5>
           <img v-if="supplier.img1 != ''"
-            class="card-img-top"
+            class="img-article responsive"
             :src="'https://www.portalgas.it/images/organizations/contents/'+supplier.img1"
             :alt="supplier.name">
 
@@ -70,7 +110,7 @@
                v-html="$options.filters.html(supplier.content.introtext)"></span>
 
               <span>
-                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal(supplier.supplier.id)">maggior dettaglio</a>
+                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal(supplier.id)">maggior dettaglio</a>
                 
                 <div v-if="isLoading" class="box-spinner"> 
                   <div class="spinner-border text-info" role="status">
@@ -117,16 +157,24 @@ export default {
       timer: null,
       q: '',
       category_id: 0,
+      region_id: 0,
+      province_id: 0,
       categories: null,
+      regions: null,
+      provinces: null,
       suppliers: [],
-      isRunCategoriesSuppliers: false
+      isRunCategoriesSuppliers: false,
+      isRunProvinces: false,
+      isRunRegions: false,
       isRunSuppliers: false,
       isLoading: false
     };
   },
   mounted() {
     this.getCategoriesSuppliers();
-    this.search();
+    this.getRegions();
+    this.getProvinces();
+    this.getSuppliers();
   },
   methods: {
     ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
@@ -150,15 +198,63 @@ export default {
            if(typeof response.data !== "undefined") {
              this.categories = this.sortByValue(response.data.results);
            }
-           console.log(this.categories);
+           // console.log(this.categories);
         })
         .catch(error => {
           this.isRunCategoriesSuppliers = false;
           console.error("Error: " + error);
         });    
+    }, 
+    getRegions() {
+
+      this.isRunRegions = true;
+
+      let url = "/api/regions/gets";
+
+      axios
+        .post(url)
+        .then(response => {
+
+          this.isRunRegions = false;
+
+           // console.log(response.data);
+           if(typeof response.data !== "undefined") {
+             this.regions = this.sortByValue(response.data.results);
+           }
+           // console.log(this.regions);
+        })
+        .catch(error => {
+          this.isRunRegions = false;
+          console.error("Error: " + error);
+        });    
+    }, 
+    getProvinces() {
+
+      this.isRunProvinces = true;
+
+      let data = {region_id: this.region_id};
+
+      let url = "/api/provinces/gets";
+
+      axios
+        .post(url, data)
+        .then(response => {
+
+          this.isRunProvinces = false;
+
+           // console.log(response.data);
+           if(typeof response.data !== "undefined") {
+             this.provinces = response.data.results;
+           }
+           // console.log(this.provinces);
+        })
+        .catch(error => {
+          this.isRunProvinces = false;
+          console.error("Error: " + error);
+        });    
     },
-    search() {
-      console.log('search() q '+this.q);
+    searchByName() {
+      console.log('searchByName() q '+this.q);
       if(this.q=='') 
         return;
 
@@ -167,7 +263,7 @@ export default {
           this.timer = null;
       }
       this.timer = setTimeout(() => {
-          this.gets();
+          this.getSuppliers();
       }, 800);
     },
     categoryOnChange(event) {
@@ -175,13 +271,26 @@ export default {
         console.log('categoryOnChange '+this.category_id);
         this.gets();
     },
-    gets() {
+    regionOnChange(event) {
+        console.log(event.target.value);
+        console.log('regionOnChange '+this.region_id);
+        this.gets();
+        this.getProvinces();
+    },
+    provinceOnChange(event) {
+        console.log(event.target.value);
+        console.log('provinceOnChange '+this.province_id);
+        this.gets();
+    },
+    getSuppliers() {
       this.isRunSuppliers = true;
 
       let url = "/api/suppliers/gets";
       let data = {
         q: this.q,
-        category_id: this.category_id 
+        category_id: this.category_id,
+        region_id: this.region_id,
+        province_id: this.province_id,
       }
       console.log(url, data);
 

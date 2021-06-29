@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Cache\Cache;
 
 /**
  * GeoProvinces Model
@@ -87,43 +88,51 @@ class GeoProvincesTable extends Table
     public function getList($geo_region_id=0, $debug=false) {
         
         $geoProvinces = [];
-        
-        $options = [];
-        $options['order'] = ['GeoProvince.name'];
-        if(isset($geo_region_id) && !empty($geo_region_id))
-            $options['conditions'] = ['GeoProvince.geo_region_id' => $geo_region_id];
-        $results = $this->find('all', $options);
-        if(!empty($results)) {
-            foreach($results as $result) {
-                $geoProvinces[$result['GeoProvince']['sigla']] = $result['GeoProvince']['name'].' ('.$result['GeoProvince']['sigla'].')';
-            }
+        $where = [];
+
+        $provinces = Cache::read('provinces_'.$geo_region_id);
+        if ($provinces !== false) {
+            $geoProvinces = $provinces;
         }
+        else {
+            if(!empty($geo_region_id))
+                $where = ['geo_region_id' => $geo_region_id];
+
+            $results = $this->find()
+                            ->where($where)
+                            ->order(['name' => 'asc'])
+                            ->all();
+
+            if($results->count()>0) {
+                foreach($results as $result) {
+                    $geoProvinces[$result->sigla] = $result->name.' ('.$result->sigla.')';
+                }
+            }
+
+            Cache::write('provinces_'.$geo_region_id, $geoProvinces);
+        }
+
         return $geoProvinces;   
     }
-    
+
+    /*
+     * estarggo tuttle le province di una regione 
+     */
     public function getByIdGeoRegion($geo_region_id, $debug=false) {
         
-        $options = [];
-        $options['conditions'] = ['GeoProvince.geo_region_id' => $geo_region_id];
-        $options['recursive'] = -1;
-        $geoProvinces = $this->find('all', $options);
+        $where = ['geo_region_id' => $geo_region_id];
 
-        return $geoProvinces;
+        $results = $this->find()
+                        ->where($where)
+                        ->order(['name' => 'asc'])
+                        ->all();
+
+        return $results;
     }
 
-    public function getIdsByIdGeoRegion($geo_region_id, $debug=false) {
-        
-        $geoProvinces = [];
-        
-        $results = $this->getByIdGeoRegion($geo_region_id);
-        if(!empty($results)) {
-            foreach($results as $result) {
-                array_push($geoProvinces, $result['GeoProvince']['id']);
-            }
-        }
-        return $geoProvinces;
-    }
-    
+    /*
+     * estarggo tuttle le sigle di una regione 
+     */
     public function getSiglaByIdGeoRegion($geo_region_id, $debug=false) {
         
         $geoProvinces = [];
@@ -131,9 +140,10 @@ class GeoProvincesTable extends Table
         $results = $this->getByIdGeoRegion($geo_region_id);
         if(!empty($results)) {
             foreach($results as $result) {
-                array_push($geoProvinces, $result['GeoProvince']['sigla']);
+                array_push($geoProvinces, $result->sigla);
             }
         }
+
         return $geoProvinces;
-    }    
+    } 
 }

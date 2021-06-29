@@ -5,9 +5,8 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use Cake\Cache\Cache;
 
-class RegionsController extends ApiAppController
+class ProvincesController extends ApiAppController
 {
     public function initialize(): void 
     {
@@ -36,21 +35,15 @@ class RegionsController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $regions = Cache::read('regions');
-        if ($regions !== false) {
-            $results['results'] =  $regions;
-        }
-        else {
-            $geoRegionsTable = TableRegistry::get('GeoRegions'); 
+        $geo_region_id = $this->request->getData('region_id');
+        if($geo_region_id=='') 
+            $geo_region_id = 0;
 
-            $geoRegionsResults = $geoRegionsTable->find('list')
-                                    ->order(['name' => 'asc'])
-                                    ->all();
+        $geoProvincesTable = TableRegistry::get('GeoProvinces'); 
 
-            Cache::write('regions', $geoRegionsResults);
+        $geoProvincesResults = $geoProvincesTable->getList($geo_region_id, $debug);
 
-            $results['results'] = $geoRegionsResults;
-        }
+        $results['results'] = $geoProvincesResults;
         
         return $this->_response($results);
     } 
