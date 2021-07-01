@@ -41,7 +41,11 @@ class PagesController extends AppController
     }
 
     /* 
-     * / - vue login
+     * vue login
+     *
+     * $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']); ...
+     *
+     * view src\Template\Pages\vue.ctp => $this->layout = 'vue';   
      */
     public function vue() {
         // $user = $this->Authentication->getIdentity();
@@ -62,9 +66,28 @@ class PagesController extends AppController
     }
 
     /* 
-     * /site - vue without login
+     * site - vue without login
+     *
+     * $routes->connect('/site', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  ...
+     *
+     * /site/produttori
+     *
+     * view src\Template\Pages\vue_guest.ctp => $this->layout = 'vue';
      */
     public function vueGuest() {
+
+        $hasGasUsersPromotions = false;
+
+        $user = $this->Authentication->getIdentity();
+
+        if(!empty($user)) {
+            $organization_id = $user->organization->id;
+
+            $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');
+            $hasGasUsersPromotions = $prodGasPromotionsOrganizationsTable->hasGasUsersPromotions($organization_id);
+        }
+
+        $this->set(compact('hasGasUsersPromotions')); 
     }
 
     /* 
@@ -86,7 +109,7 @@ class PagesController extends AppController
      *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
      */
     public function display(...$path)
-    {
+    {  
         $count = count($path);
         if (!$count) {
             return $this->redirect('/');

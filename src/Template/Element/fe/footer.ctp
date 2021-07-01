@@ -58,7 +58,8 @@ footer ul.social li a:hover {
     <div class="box col-md-4 col-xs-12 col-sm-12 text-center">
       <ul class="social">
         <li>
-          <a href="mailto:info@portalgas.it"" title="Scrivici una mail a info@portalgas.it">
+          <!-- a href="mailto:info@portalgas.it"" title="Scrivici una mail a info@portalgas.it" -->
+          <a href="<?php echo $config['Portalgas.fe.url'];?>/contattaci" title="Scrivici">
             <i class="fas fa-envelope-square"></i></a>
         </li>  
         <li>

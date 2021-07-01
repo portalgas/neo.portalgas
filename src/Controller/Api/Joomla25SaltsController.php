@@ -8,7 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Security;
 use Authentication\AuthenticationService;
 
-class joomla25SaltsController extends AppController
+class Joomla25SaltsController extends AppController
 {		
     public function initialize(): void 
     {

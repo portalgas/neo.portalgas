@@ -83,59 +83,19 @@
 
 
     <div class="row">
-      <div class="col-sm-12 col-xs-2 col-md-3"
+        <div class="col-sm-12 col-xs-2 col-md-3"
           v-if="!isRunSuppliers && suppliers.length"
           v-for="(supplier, index) in suppliers"
-          :supplier="supplier.id"
+          :supplier="supplier"
           :key="supplier.id"
-          >
+        >
 
-      <div class="card">
-          <h5 class="card-header">{{ supplier.name }}</h5>
-          <img v-if="supplier.img1 != ''"
-            class="img-article responsive"
-            :src="'https://www.portalgas.it/images/organizations/contents/'+supplier.img1"
-            :alt="supplier.name">
+              <app-supplier
+                v-bind:supplier="supplier">
+              </app-supplier>
 
-          <div class="card-body">
-            <h5 class="card-title">{{ supplier.descrizione }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">
-              {{ supplier.localita }} ({{ supplier.provincia }})
-            </h6>
-            <p class="card-text">
-             
-              {{ supplier.nota }}
-
-              <span v-if="supplier.content!=null && supplier.content.introtext!=null"
-               v-html="$options.filters.html(supplier.content.introtext)"></span>
-
-              <span>
-                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal(supplier.id)">maggior dettaglio</a>
-                
-                <div v-if="isLoading" class="box-spinner"> 
-                  <div class="spinner-border text-info" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>  
-                </div> 
-
-              </span>
-
-            </p>
-            <p class="card-text">
-              <small class="text-muted">
-                {{ supplier.www }}
-              </small>
-            </p>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">
-              <a class="btn btn-primary" v-on:click="selectMarket(supplier)">Acquista</a>
-            </small>
-          </div>
-
-          </div> <!-- card -->
         </div> <!-- loop -->
-      </div> <!-- row -->
+    </div> <!-- row -->
 
     <div v-if="!isRunSuppliers && suppliers.length==0" class="alert alert-warning">
         Nessun produttore trovato
@@ -149,6 +109,7 @@
 // @ is an alias to /src
 import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
+import appSupplier from "../components/part/Supplier.vue";
 
 export default {
   name: "app-suppliers",
@@ -166,10 +127,12 @@ export default {
       isRunCategoriesSuppliers: false,
       isRunProvinces: false,
       isRunRegions: false,
-      isRunSuppliers: false,
-      isLoading: false
+      isRunSuppliers: false
     };
   },
+  components: {
+    appSupplier: appSupplier
+  },  
   mounted() {
     this.getCategoriesSuppliers();
     this.getRegions();
@@ -267,20 +230,20 @@ export default {
       }, 800);
     },
     categoryOnChange(event) {
-        console.log(event.target.value);
-        console.log('categoryOnChange '+this.category_id);
-        this.gets();
+        // console.log(event.target.value);
+        // console.log('categoryOnChange '+this.category_id);
+        this.getSuppliers();
     },
     regionOnChange(event) {
-        console.log(event.target.value);
-        console.log('regionOnChange '+this.region_id);
-        this.gets();
+        // console.log(event.target.value);
+        // console.log('regionOnChange '+this.region_id);
+        this.getSuppliers();
         this.getProvinces();
     },
     provinceOnChange(event) {
-        console.log(event.target.value);
-        console.log('provinceOnChange '+this.province_id);
-        this.gets();
+        // console.log(event.target.value);
+        // console.log('provinceOnChange '+this.province_id);
+        this.getSuppliers();
     },
     getSuppliers() {
       this.isRunSuppliers = true;
@@ -310,71 +273,7 @@ export default {
           this.isRunSuppliers = false;
           console.error("Error: " + error);
         });    
-    },
-    get() {
-
-      this.isRunSuppliers = true;
-
-      let url = "/api/suppliers/get";
-
-      axios
-        .post(url)
-        .then(response => {
-
-          this.isRunSuppliers = false;
-
-           // console.log(response.data);
-           if(typeof response.data !== "undefined") {
-             this.suppliers = response.data.results;
-           }
-           console.log(this.suppliers);
-        })
-        .catch(error => {
-          this.isRunSuppliers = false;
-          console.error("Error: " + error);
-        });    
-    },    
-    clickShowOrHiddenModal (supplier_id) {
-
-      console.log('clickShowOrHiddenModal supplier_id '+supplier_id);
-
-      this.isLoading=true;
-
-      let params = {
-        supplier_id: supplier_id
-      };
-
-      let url = "/admin/api/html-article-orders/get";
-      axios
-        .post(url, params)
-        .then(response => {
-            // console.log(response.data);
-            if(typeof response.data !== "undefined") {
-
-              var modalContent = {
-                title: this.article.name,
-                body: response.data,
-                footer: ''
-              }            
-
-              this.isLoading=false;
-
-              this.addModalContent(modalContent);
-              this.showOrHiddenModal();              
-            }
-        })
-        .catch(error => {
-          this.isLoading=false;
-          this.isRunDeliveries=false;
-          console.error("Error: " + error);
-        });
-    }, 
-    selectMarket(supplier) {
-        /* console.log('selectMarket'); */
-        /* console.log(supplier); */
-      
-        this.$router.push({ name: 'SocialShop', params: {supplier_id: supplier.id}})
-    },
+    },   
     sortByValue(jsObj) {
         var sortedArray = [];
         for(var i in jsObj) {

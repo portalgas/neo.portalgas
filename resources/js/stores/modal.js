@@ -25,13 +25,6 @@ export const modal = {
         footer
       };
     }, 
-    ADD_CONTENT: (state, { title, body, footer }) => {
-      state.content = {
-        title,
-        body,
-        footer
-      };
-    },  
     CLEAR_CONTENT: state => {
       state.content = {
         title,
@@ -45,11 +38,11 @@ export const modal = {
   },
   actions: {
     runModal: commit => {
-      console.log('RUN_CONTENT ');
+      /* console.log('RUN_CONTENT '); */
       commit("RUN_CONTENT");
     },
     addModalContent: ({ commit }, obj) => {
-      console.log('ADD_CONTENT ');
+      /* console.log('ADD_CONTENT '); */
       commit("ADD_CONTENT", obj);
     },
     clearModalContent: commit => {

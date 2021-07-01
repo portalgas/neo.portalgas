@@ -191,4 +191,31 @@ class SuppliersTable extends Table
                     ->first();
         return $results;
     }  
+
+    public function getById($user, $supplier_id, $where=[], $debug=false) {
+
+        $results = [];
+
+        if(!isset($where['Organizations']))
+           $where['Organizations'] = [];
+        $where['Organizations'] = array_merge(['Organizations.stato' => 'Y', 'Organizations.type IN' => ['GAS']], $where['Organizations']);
+        
+        if(!isset($where['SuppliersOrganizations']))
+           $where['SuppliersOrganizations'] = [];
+        $where['SuppliersOrganizations'] = array_merge(['SuppliersOrganizations.stato' => 'Y'], $where['SuppliersOrganizations']);
+        
+        if(!isset($where['Suppliers']))
+           $where['Suppliers'] = [];
+        $where['Suppliers'] = array_merge(['Suppliers.id' => $supplier_id], $where['Suppliers']);
+
+        $results = $this->find()
+                        ->contain(['Content', 'CategoriesSuppliers',
+                                    'SuppliersOrganizations' => 
+                                      ['conditions' => $where['SuppliersOrganizations'], 'Organizations' => ['conditions' =>  $where['Organizations']]],
+                        ])
+                        ->where($where['Suppliers'])
+                        ->first();
+
+        return $results;
+    }
 }

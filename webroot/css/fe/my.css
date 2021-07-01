@@ -105,6 +105,12 @@ a:hover {
     display: inline;
     border-radius: 6px;
 }
+.img-supplier-no-focus {
+    max-width: 200px;
+    max-height: 100px;
+    display: inline;
+    border-radius: 6px;
+}
 @media screen and (max-width: 600px) {
     .img-supplier {
         max-width: 50px !important;
@@ -148,7 +154,7 @@ a:hover {
 .img-article-small:focus, .img-article-small:hover,
 .img-supplier:focus, .img-supplier:hover,
 .img-supplier-small:focus, .img-supplier-small:hover {
-    transform: scale(3);
+    transform: scale(2);
 }
 .box-bio {
     right: 0;

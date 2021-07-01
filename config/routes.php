@@ -187,6 +187,9 @@ Router::prefix('api', function (RouteBuilder $routes) {
     $routes->scope('/provinces', ['controller' => 'provinces'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
     });
+    $routes->scope('/html-suppliers', ['controller' => 'HtmlSuppliers'], function (RouteBuilder $routes) {
+        $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+    });    
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) { 

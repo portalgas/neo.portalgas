@@ -260,4 +260,13 @@ trait SqlTrait
         } 
         return true;       
     } 
+
+    public function SQLinjection($params) {
+        
+        $params = str_ireplace('delete ', '', $params);
+        $params = str_ireplace('drop ', '', $params);
+        $params = str_ireplace('truncate ', '', $params);
+
+        return $params;
+    } 
 }

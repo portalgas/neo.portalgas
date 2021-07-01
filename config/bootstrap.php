@@ -343,6 +343,10 @@ Configure::write('Supplier.img.path.full', '/images/organizations/contents/%s');
 Configure::write('Supplier.img.path.fulljs', '/images/organizations/contents/');
 Configure::write('Supplier.img.preview.width', '50px');
 
+Configure::write('Organization.img.path.full', '/images/organizations/contents/%s');
+Configure::write('Organization.img.path.fulljs', '/images/organizations/contents/');
+Configure::write('Organization.img.preview.width', '50px');
+
 /*
  * https://github.com/madbob/gdxp
  */
@@ -381,6 +385,16 @@ Configure::write('DeliveryToDefinedLabel', 'Da definire');
 
 Configure::write('OrderNotaMaxLen', 150);
 Configure::write('NoteMoreLen', 150);
+
+/*
+ * https://maps.google.com/maps/api/geocode 
+ * https://console.developers.google.com/apis/credentials?project=fractis-portalgas-2104
+ *
+ * utilizzato 
+ * UtilsCrons::_gmap()
+ * FE gmaps supplier modules\mod_gas_supplier_gmaps\tmpl\default.php (configuration.php)
+ */
+Configure::write('GoogleApiKey','AIzaSyAp-NnExLO326PSxVoEXdb1ak3z-jzRtO0'); 
 
 /*
  * pagamenti

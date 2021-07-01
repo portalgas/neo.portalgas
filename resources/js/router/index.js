@@ -33,7 +33,7 @@ const routes = [
     component: UserCart
   },
   {
-    path: "/produttori",
+    path: "/site/produttori",
     name: "Suppliers",
     component: Suppliers
   },
@@ -42,6 +42,19 @@ const routes = [
     name: "Promotion",
     component: Promotion
   },
+  /*
+   * url non trovato
+   */
+  {
+    path: "/*",
+    name: "404",
+    component: Home
+  },  
+  {
+    path: "/site/*",
+    name: "site404",
+    component: Home
+  },  
   /*
   {
     path: "/site/social-market",

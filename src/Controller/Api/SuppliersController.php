@@ -5,20 +5,22 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 class SuppliersController extends ApiAppController
 {
+    use Traits\SqlTrait;
+
     public function initialize(): void 
     {
         parent::initialize();
-        //$this->loadComponent('Market');
     }
 
     public function beforeFilter(Event $event): void {
      
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['gets', 'get']); 
+        $this->Authentication->allowUnauthenticated(['gets']); 
     }
     
     /*
@@ -36,24 +38,15 @@ class SuppliersController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
     
-        /* 
-         * estraggo i Suppliers
-         */
+        $user = $this->Authentication->getIdentity();
+
+        $supplier_id = $this->request->getData('supplier_id');
+
         $suppliersTable = TableRegistry::get('Suppliers'); 
    
-        $where_organizations = ['Organizations.stato' => 'Y', 'Organizations.type IN' => ['GAS']]; 
-        $where_suppliers_organizations = ['SuppliersOrganizations.stato' => 'Y']; 
-        $where_suppliers = ['Suppliers.stato' => 'Y'];
-
-        $suppliersResults = $suppliersTable->find()
-                                ->contain(['Content',
-                                            'SuppliersOrganizations' => 
-                                              ['conditions' => $where_suppliers_organizations, 'Organizations' => ['conditions' => $where_organizations]],
-                                ])
-                                ->where($where_suppliers) 
-                                ->order(['name' => 'asc'])
-                                ->limit(10)
-                                ->all();
+        $where = [];
+        $where['Suppliers'] = ['Suppliers.stato' => 'Y'];
+        $suppliersResults = $suppliersTable->getById($user, $supplier_id, $where, $debug);
 
         $results['results'] = $suppliersResults;
         
@@ -81,7 +74,6 @@ class SuppliersController extends ApiAppController
         $suppliersTable = TableRegistry::get('Suppliers'); 
 
         $where = ['Suppliers.stato' => 'Y'];
-        $where_suppliers_organizations = ['SuppliersOrganizations.stato' => 'Y']; 
 
         $category_id = $this->request->getData('category_id');
         if(!empty($category_id)) 
@@ -102,6 +94,9 @@ class SuppliersController extends ApiAppController
         
         $q = $this->request->getData('q');
         if(!empty($q)) {
+
+            $q = $this->SQLinjection($q);
+
             /*
              * ricerca per nome
              */ 
@@ -125,8 +120,9 @@ class SuppliersController extends ApiAppController
             $suppliersResults = $suppliersTable->find() 
                 ->select(['name', 'id', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
                       'relevance' => 'MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'])
-                ->contain(['SuppliersOrganizations' => ['conditions' => $where_suppliers_organizations]])
+                ->contain(['CategoriesSuppliers'])
                 ->where($where)
+                ->limit(10)
                 ->order(['relevance' => 'desc']);
                 // ->bind(':search', $search, 'string')
                 // ->bind(':search', $search, 'string')                        
@@ -136,57 +132,14 @@ class SuppliersController extends ApiAppController
              * ricerca senza nome
              */ 
             $suppliersResults = $suppliersTable->find() 
-                ->contain(['SuppliersOrganizations' => ['conditions' => $where_suppliers_organizations]])
+                ->contain(['CategoriesSuppliers'])
                 ->where($where)
-                ->order(['name' => 'asc']);            
+                ->limit(10)
+                ->order(['Suppliers.name' => 'asc']);            
         }
 
         $results['results'] = $suppliersResults;
   
         return $this->_response($results);
     } 
-
-    /*
-     * market e i suoi articoli
-     *
-     * GET /api/social-market/getArticles/:market_id
-     * Content-Type: application/json
-     * X-Requested-With: XMLHttpRequest
-     * Authorization: Bearer 5056b8cf17f6dea5a65018f4....
-     */  
-    public function getArticles() {
-
-        $debug = false;
-
-        $market_id = $this->request->getParam('market_id');
-
-        $results = [];
-        $results['code'] = 200;
-        $results['message'] = 'OK';
-        $results['errors'] = '';
-        $results['results'] = [];
-    
-        /* 
-         * estraggo il Markets
-         */
-        $marketsTable = TableRegistry::get('Markets'); 
-
-        $where_organizations = ['Organizations.stato' => 'Y', 'Organizations.type IN' => ['PRODGAS', 'PROD']]; 
-        $where_market = ['Markets.id' => $market_id, 'Markets.state_code' => 'OPEN', 'Markets.is_active' => true]; // data_inizio / data_fine
-
-        $marketsResults = $marketsTable->find()
-                                ->contain([
-                                    'Organizations' => [
-                                        'conditions' => $where_organizations, 
-                                        'SuppliersOrganizations' => ['Suppliers']],
-                                    'MarketArticles' => ['Articles' => ['conditions' => ['Articles.stato' => 'Y']]]
-                                ])
-                                ->where($where_market)
-                                ->first();
-
-        $results['results'] = $marketsResults;
-        
-        return $this->_response($results);
-    } 
-
 }
