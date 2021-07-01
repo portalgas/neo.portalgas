@@ -387,16 +387,6 @@ Configure::write('OrderNotaMaxLen', 150);
 Configure::write('NoteMoreLen', 150);
 
 /*
- * https://maps.google.com/maps/api/geocode 
- * https://console.developers.google.com/apis/credentials?project=fractis-portalgas-2104
- *
- * utilizzato 
- * UtilsCrons::_gmap()
- * FE gmaps supplier modules\mod_gas_supplier_gmaps\tmpl\default.php (configuration.php)
- */
-Configure::write('GoogleApiKey','AIzaSyAp-NnExLO326PSxVoEXdb1ak3z-jzRtO0'); 
-
-/*
  * pagamenti
  */
 Configure::write('OrganizationPayImportMax', 80); // massimo importo per il canone annuo
