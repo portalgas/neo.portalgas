@@ -23,7 +23,7 @@
                v-html="$options.filters.html(supplier.content.introtext)"></span>
 
               <span>
-                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal(supplier.id)">maggior dettaglio</a>
+                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalSupplier(supplier.id)">maggior dettaglio</a>
                 
                 <div v-if="isLoading" class="box-spinner"> 
                   <div class="spinner-border text-info" role="status">
@@ -50,6 +50,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import modalSupplier from '../../components/part/ModalSupplier';
 
 export default {
   name: "app-supplier",
@@ -59,14 +60,17 @@ export default {
       isLoading: false,
     };
   },
+  components: {
+    modalSupplier: modalSupplier
+  },  
   methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
-    clickShowModal () {
-      this.showModal(true);
+    ...mapActions(["showModalSupplier", "showOrHiddenModalSupplier", "addModalContent"]),
+    clickShowModalSupplier () {
+      this.showModalSupplier(true);
     }, 
-    clickShowOrHiddenModal (supplier_id) {
+    clickShowOrHiddenModalSupplier (supplier_id) {
 
-      console.log('clickShowOrHiddenModal supplier_id '+supplier_id);
+      console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id);
 
       this.isLoading=true;
 
@@ -74,24 +78,28 @@ export default {
         supplier_id: supplier_id
       };
 
-      let url = "/api/html-suppliers/get";
+      // let url = "/api/html-suppliers/get";
+      let url = "/api/suppliers/get";
       
       axios
         .post(url, params)
         .then(response => {
-            /* console.log(response.data); */
+            
+            console.log(response.data); 
+            
             if(typeof response.data !== "undefined") {
 
               var modalContent = {
                 title: this.supplier.name,
-                body: response.data,
+                body: '',
+                extra: response.data.results,
                 footer: ''
               }            
 
               this.isLoading=false;
 
               this.addModalContent(modalContent);
-              this.showOrHiddenModal();              
+              this.showOrHiddenModalSupplier();              
             }
         })
         .catch(error => {

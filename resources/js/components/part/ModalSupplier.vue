@@ -1,8 +1,8 @@
 <template>
   <div>
-
+ --------- {{ modalContent.extra }} -----------
     <transition name="fade">
-      <div class="modal-wrapper" v-show="showModal" tabindex="-1" role="dialog">
+      <div class="modal-wrapper" v-show="showModalSupplier" tabindex="-1" role="dialog">
 
           <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -12,7 +12,12 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body" v-html="modalContent.body">
+              <div class="modal-body">
+
+                <div v-if="modalContent.extra!=null">
+                  {{ modalContent.extra.name }}
+                </div>
+
               </div>
               <div class="modal-footer">
                 {{modalContent.footer}}
@@ -24,7 +29,7 @@
       </div>
     </transition>
     <transition name="fade">
-        <mask-component v-show="showModal"/>
+        <mask-component v-show="showModalSupplier"/>
     </transition>
   </div>
 </template>
@@ -34,20 +39,20 @@ import { mapGetters, mapActions } from 'vuex';
 import mask from "./Mask.vue";
 
 export default {
-  name: "app-modal",
+  name: "app-modal-supplier",
   components: {
     maskComponent: mask,
   },
   computed: {
     ...mapGetters({
-      showModal: "getShowModal", 
+      showModalSupplier: "getShowModalSupplier", 
       modalContent: "getModalContent"
     })
   },
   methods: {
-    ...mapActions(['showOrHiddenModal']),
+    ...mapActions(['showOrHiddenModalSupplier']),
     closeModal() {
-      this.showOrHiddenModal();
+      this.showOrHiddenModalSupplier();
     },
   },
 };

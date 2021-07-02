@@ -20,7 +20,7 @@ class SuppliersController extends ApiAppController
      
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['gets']); 
+        $this->Authentication->allowUnauthenticated(['get', 'gets']); 
     }
     
     /*
@@ -43,7 +43,7 @@ class SuppliersController extends ApiAppController
         $supplier_id = $this->request->getData('supplier_id');
 
         $suppliersTable = TableRegistry::get('Suppliers'); 
-   
+
         $where = [];
         $where['Suppliers'] = ['Suppliers.stato' => 'Y'];
         $suppliersResults = $suppliersTable->getById($user, $supplier_id, $where, $debug);
