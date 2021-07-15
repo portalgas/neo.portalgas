@@ -96,6 +96,10 @@ class SuppliersController extends ApiAppController
         if(!empty($province_id)) 
             $where += ['Suppliers.provincia' => $province_id];
         
+        $page = $this->request->getData('page');
+        if(empty($page)) $page = '1';
+        $limit = Configure::read('sql.limit');
+        
         $q = $this->request->getData('q');
         if(!empty($q)) {
 
@@ -126,7 +130,8 @@ class SuppliersController extends ApiAppController
                       'relevance' => 'MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'])
                 ->contain(['CategoriesSuppliers'])
                 ->where($where)
-                ->limit(10)
+                ->limit($limit)
+                ->page($page)
                 ->order(['relevance' => 'desc']);
                 // ->bind(':search', $search, 'string')
                 // ->bind(':search', $search, 'string')                        
@@ -138,7 +143,8 @@ class SuppliersController extends ApiAppController
             $suppliersResults = $suppliersTable->find() 
                 ->contain(['CategoriesSuppliers'])
                 ->where($where)
-                ->limit(10)
+                ->limit($limit)
+                ->page($page)
                 ->order(['Suppliers.name' => 'asc']);            
         }
 

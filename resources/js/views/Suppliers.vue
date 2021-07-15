@@ -5,7 +5,7 @@
     <modal-component-supplier></modal-component-supplier>
 
     <form>
-   
+
     <div class="row">
       <div class="col-sm-12 col-xs-12 col-md-12"> 
 
@@ -78,16 +78,9 @@
     </form> 
 
 
-    <div v-if="isRunSuppliers" class="box-spinner"> 
-        <div class="spinner-border text-info" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>  
-    </div>
-
-
     <div class="row">
         <div class="col-sm-12 col-xs-2 col-md-3"
-          v-if="!isRunSuppliers && suppliers.length"
+          v-if="suppliers.length"
           v-for="(supplier, index) in suppliers"
           :supplier="supplier"
           :key="supplier.id"
@@ -99,6 +92,12 @@
 
         </div> <!-- loop -->
     </div> <!-- row -->
+
+    <div v-if="isRunSuppliers" class="box-spinner"> 
+        <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>  
+    </div>
 
     <div v-if="!isRunSuppliers && suppliers.length==0" class="alert alert-warning">
         Nessun produttore trovato
@@ -131,7 +130,9 @@ export default {
       isRunCategoriesSuppliers: false,
       isRunProvinces: false,
       isRunRegions: false,
-      isRunSuppliers: false
+      isRunSuppliers: false,
+      page: 1,
+      isScrollFinish: false,       
     };
   },
   components: {
@@ -142,7 +143,7 @@ export default {
     this.getCategoriesSuppliers();
     this.getRegions();
     this.getProvinces();
-    this.getSuppliers();
+    this.onSearch();
   },
   methods: {
     ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
@@ -231,25 +232,61 @@ export default {
           this.timer = null;
       }
       this.timer = setTimeout(() => {
-          this.getSuppliers();
+          this.onSearch();
       }, 800);
     },
     categoryOnChange(event) {
         // console.log(event.target.value);
         // console.log('categoryOnChange '+this.category_id);
-        this.getSuppliers();
+        this.onSearch();
     },
     regionOnChange(event) {
         // console.log(event.target.value);
         // console.log('regionOnChange '+this.region_id);
-        this.getSuppliers();
+        this.onSearch();
         this.getProvinces();
     },
     provinceOnChange(event) {
         // console.log(event.target.value);
         // console.log('provinceOnChange '+this.province_id);
-        this.getSuppliers();
+        this.onSearch();
     },
+    onSearch: function() {
+      this.suppliers = [];
+      this.page = 1;
+      this.scroll();
+      this.isScrollFinish = false;
+    },
+    scroll() {
+
+      // console.log('scroll page '+this.page+' isRunSuppliers '+this.isRunSuppliers+' isScrollFinish '+this.isScrollFinish);
+      if(this.isScrollFinish || this.isRunSuppliers)
+        return;
+
+      if (this.page==1) {
+         this.getSuppliers();
+      }
+
+      window.onscroll = () => {
+        let scrollTop = Math.floor(document.documentElement.scrollTop);
+        let bottomOfWindow = scrollTop + window.innerHeight > (document.documentElement.offsetHeight - 10);
+        // console.log((scrollTop + window.innerHeight)+' '+(document.documentElement.offsetHeight - 10));
+
+        /*
+        scrollTop    height to top
+        innerHeight  height windows
+        offsetHeight height page
+        console.log('document.documentElement.scrollTop '+scrollTop);
+        console.log('window.innerHeight '+window.innerHeight);
+        console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
+        console.log('bottomOfWindow '+bottomOfWindow);
+        */
+
+        if (bottomOfWindow && !this.isRunSuppliers && !this.isScrollFinish) {
+            this.getSuppliers();
+        }
+      };  
+    },    
     getSuppliers() {
       this.isRunSuppliers = true;
 
@@ -259,6 +296,7 @@ export default {
         category_id: this.category_id,
         region_id: this.region_id,
         province_id: this.province_id,
+        page: this.page
       }
       console.log(url, data);
 
@@ -270,12 +308,22 @@ export default {
 
            // console.log(response.data);
            if(typeof response.data !== "undefined") {
-             this.suppliers = response.data.results;
+
+              var data = response.data.results;
+              for (var i = 0; i < data.length; i++) {
+                  this.suppliers.push(data[i]);
+              } 
+
+          //   this.suppliers = response.data.results;
+
+             this.page++;
+             this.isScrollFinish = false;             
            }
            console.log(this.suppliers);
         })
         .catch(error => {
           this.isRunSuppliers = false;
+          this.isScrollFinish = true;
           console.error("Error: " + error);
         });    
     },   

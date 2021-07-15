@@ -16,7 +16,7 @@
 
             <h5 class="card-title">{{ supplier.descrizione }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">
-              {{ supplier.localita }} ({{ supplier.provincia }})
+              {{ supplier.localita }} <span v-if="supplier.provincia">({{ supplier.provincia }})</span> {{ supplier.cap }} 
             </h6>
             <p class="card-text">
              
