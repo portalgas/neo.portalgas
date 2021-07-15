@@ -24,7 +24,7 @@
         "@googlemaps/js-api-loader": "^1.12.1",
         "@sentry/tracing": "^5.29.2",
         "@sentry/vue": "^5.29.2",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "bootstrap": "^4.4.1",
         "bootstrap-vue": "^2.5.0",
         "bulma": "^0.8.0",
