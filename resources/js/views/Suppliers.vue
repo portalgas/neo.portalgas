@@ -2,7 +2,10 @@
 
 <div>
  
+    <modal-component-supplier></modal-component-supplier>
+
     <form>
+   
     <div class="row">
       <div class="col-sm-12 col-xs-12 col-md-12"> 
 
@@ -110,6 +113,7 @@
 import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 import appSupplier from "../components/part/Supplier.vue";
+import modalSupplier from '../components/part/ModalSupplier';
 
 export default {
   name: "app-suppliers",
@@ -131,7 +135,8 @@ export default {
     };
   },
   components: {
-    appSupplier: appSupplier
+    appSupplier: appSupplier,
+    modalComponentSupplier: modalSupplier,
   },  
   mounted() {
     this.getCategoriesSuppliers();

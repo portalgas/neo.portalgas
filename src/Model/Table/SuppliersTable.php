@@ -196,9 +196,12 @@ class SuppliersTable extends Table
 
         $results = [];
 
+        /*
+         * prendo anche i Organizations.stato cosi' su /site/produttori compaiono i gas associati 
+         */
         if(!isset($where['Organizations']))
            $where['Organizations'] = [];
-        $where['Organizations'] = array_merge(['Organizations.stato' => 'Y', 'Organizations.type IN' => ['GAS']], $where['Organizations']);
+        $where['Organizations'] = array_merge(['Organizations.stato IN' => ['Y', 'N'], 'Organizations.type IN' => ['GAS']], $where['Organizations']);
         
         if(!isset($where['SuppliersOrganizations']))
            $where['SuppliersOrganizations'] = [];

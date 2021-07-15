@@ -20,7 +20,7 @@ schema.xlsx
 # vue #
 ##########################
 /node_modules/* 
-# /resources/* 
+/resources/js/config/* 
 npm-debug.log*
 
 # OS generated files #

@@ -17,7 +17,7 @@
         <h5 class="card-header">{{ market.organization.suppliers_organization.supplier.name }}</h5>
         <img v-if="market.organization.suppliers_organization.supplier.img1 != ''"
           class="card-img-top"
-          :src="'https://www.portalgas.it/images/organizations/contents/'+market.organization.suppliers_organization.supplier.img1"
+          :src="appConfig.$siteUrl+'/images/organizations/contents/'+market.organization.suppliers_organization.supplier.img1"
           :alt="market.organization.suppliers_organization.supplier.name">
 
         <div class="card-body">

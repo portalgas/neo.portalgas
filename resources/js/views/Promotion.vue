@@ -23,7 +23,7 @@
                   <div class="col-md-2"> 
                       <div class="content-img-supplier">
                         <img v-if="promotion.promotion.organization.suppliers_organization.supplier.img1 != ''"
-                          class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+promotion.promotion.organization.suppliers_organization.supplier.img1"
+                          class="img-supplier" :src="appConfig.$siteUrl+'/images/organizations/contents/'+promotion.promotion.organization.suppliers_organization.supplier.img1"
                           :alt="promotion.promotion.organization.suppliers_organization.supplier.name">
                       </div>
 

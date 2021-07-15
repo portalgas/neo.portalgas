@@ -5,6 +5,11 @@ import AppGuest from "./AppGuest.vue";
 import router from "./router";
 import store from "./stores/store";
 import axios from "axios";
+import { config } from './config/config';
+
+Vue.prototype.appConfig = config
+/* console.log(config); console.log('siteUrl'+this.appConfig.$siteUrl);  */
+
 /*
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
@@ -91,12 +96,6 @@ export const vm = new Vue({
  */
 window.j_seo = j_seo;
 window.organizationTemplatePayToDelivery = organizationTemplatePayToDelivery;
-
-/*
-var glob = process.env.NODE_ENV === 'development'
-  ? require('../../../config/development.env')
-  : require('../../../config/production.env')
-*/
 
 /*
  * per array.equals tra ids article e ids article persisititi in store

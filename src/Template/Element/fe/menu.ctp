@@ -82,6 +82,7 @@ if(!empty($organization)) {
   $menus[$i]['label'] = 'Produttori del G.A.S.';
   // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/gmaps-produttori';
   $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/gmaps-produttori';
+  // $menus[$i]['url'] = '/site/gas-produttori';
   $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = 'Gasisti';

@@ -20,7 +20,7 @@
                     <div class="content-img-supplier">
                         <img v-if="market.organization.suppliers_organization.supplier.img1 != ''"
                           class="card-img-top"
-                          :src="'https://www.portalgas.it/images/organizations/contents/'+market.organization.suppliers_organization.supplier.img1"
+                          :src="appConfig.$siteUrl+'/images/organizations/contents/'+market.organization.suppliers_organization.supplier.img1"
                           :alt="market.organization.suppliers_organization.supplier.name">
                       </div>
 

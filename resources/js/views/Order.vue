@@ -27,7 +27,7 @@
             <div class="col-md-2"> 
                 <div class="content-img-supplier">
                   <img v-if="order.suppliers_organization.supplier.img1 != ''"
-                    class="img-supplier" :src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+                    class="img-supplier" :src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
                     :alt="order.suppliers_organization.supplier.name">
                 </div>
 
@@ -62,7 +62,7 @@
                               
                               <div class="content-img-organization">
                                   <img v-if="all_des_orders_organization.organization.img1 != ''"
-                                  class="img-organization" :src="'https://www.portalgas.it/images/organizations/contents/'+all_des_orders_organization.organization.img1"
+                                  class="img-organization" :src="appConfig.$siteUrl+'/images/organizations/contents/'+all_des_orders_organization.organization.img1"
                                   :alt="all_des_orders_organization.organization.name" />
                               </div>
                               

@@ -4,7 +4,7 @@ export const modal = {
       title: null,
       body: null,
       footer: null,
-      extra: null
+      entity: null
     },
     run: false,
     showModal: false,
@@ -21,12 +21,12 @@ export const modal = {
     RUN_CONTENT: state => {
       state.run = true;
     },
-    ADD_CONTENT: (state, { title, body, footer, extra }) => {
+    ADD_CONTENT: (state, { title, body, footer, entity }) => {
       state.content = {
         title,
         body,
         footer,
-        extra
+        entity
       };
     }, 
     CLEAR_CONTENT: state => {
@@ -34,7 +34,7 @@ export const modal = {
         title,
         body,
         footer,
-        extra
+        entity
       };
     },
     SHOW_MODAL: (state) => {

@@ -35,7 +35,7 @@
 						<div class="content-img-supplier-small">
 							<img v-if="order.suppliers_organization.supplier.img1 != ''" 
 								class="img-supplier-small" 
-								:src="'https://www.portalgas.it/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+								:src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
 								:alt="order.suppliers_organization.name">
 						</div>
 

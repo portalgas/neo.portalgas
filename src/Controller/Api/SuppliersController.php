@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
+use App\Decorator\ApiSupplierDecorator;
 
 class SuppliersController extends ApiAppController
 {
@@ -48,8 +49,11 @@ class SuppliersController extends ApiAppController
         $where['Suppliers'] = ['Suppliers.stato' => 'Y'];
         $suppliersResults = $suppliersTable->getById($user, $supplier_id, $where, $debug);
 
-        $results['results'] = $suppliersResults;
-        
+        if(!empty($suppliersResults)) {
+            $suppliersResults = new ApiSupplierDecorator($suppliersResults);
+            $results['results'] = $suppliersResults->results;
+        }
+
         return $this->_response($results);
     } 
 
