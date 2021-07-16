@@ -26,7 +26,7 @@
           <div class="col-lg-3 text-center">
               <img v-if="modalContent.entity.img1 != ''"
               class="img-supplier responsive img-fluid"
-              :src="appConfig.$siteUrl+'/images/organizations/contents/'+modalContent.entity.img1"
+              :src="modalContent.entity.img1"
               :alt="modalContent.entity.name" />
           </div>
           <div class="col-lg-9 pt-4 pt-lg-0 content">
@@ -39,9 +39,8 @@
               </div> <!-- row -->
 
               <div class="row" v-if="modalContent.entity.content!=null && modalContent.entity.content.introtext!=null">
-                  <div class="col-lg-12" v-html="$options.filters.html(modalContent.entity.content.introtext)">
-                      <span v-html="$options.filters.html(modalContent.entity.content.fulltext)"></span>
-                  </div>
+                  <div class="col-lg-12" v-html="$options.filters.html(modalContent.entity.content.introtext)"></div>
+                  <div class="col-lg-12" v-html="$options.filters.html(modalContent.entity.content.fulltext)"></div>
               </div> <!-- row -->
 
               
@@ -51,8 +50,8 @@
                       <li><i class="bi bi-rounded-right"></i> <i class="fas fa-map-marker-alt"></i> {{ modalContent.entity.indirizzo }} {{ modalContent.entity.localita }} <span v-if="modalContent.entity.provincia">({{ modalContent.entity.provincia }})</span> {{ modalContent.entity.cap }}</li>
                       <li v-if="modalContent.entity.www!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-globe"></i> <a :href="modalContent.entity.www" target="_blank" title="vai al sito del produttore">{{ modalContent.entity.www }}</a></li>
                       <li v-if="modalContent.entity.mail!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-envelope"></i> <a :href="'mailto:'+modalContent.entity.mail" title="scrivigli una mail">{{ modalContent.entity.mail }}</a></li>
-                      <li v-if="modalContent.entity.telefono!=''"><i class="bi bi-rounded-right"></i> <strong>Telefono:</strong> {{ modalContent.entity.telefono }}</li>
-                      <li v-if="modalContent.entity.telefono2!=''"><i class="bi bi-rounded-right"></i> <strong>Telefono:</strong> {{ modalContent.entity.telefono2 }}</li>
+                      <li v-if="modalContent.entity.telefono!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-phone"></i> {{ modalContent.entity.telefono }}</li>
+                      <li v-if="modalContent.entity.telefono2!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-phone"></i> {{ modalContent.entity.telefono2 }}</li>
                     </ul>
                 </div>
               </div> <!-- row -->
@@ -82,6 +81,9 @@
               </div>
           </div> <!-- row -->
 
+          <!--  GAS   -->
+          <!--  GAS   -->
+          <!--  GAS   -->
           <div class="row" v-if="modalContent.entity.suppliers_organizations!=null && modalContent.entity.suppliers_organizations.length>0">
             <div class="col-lg-12">
               <h2>Fornisce i G.A.S.</h2>
@@ -101,6 +103,37 @@
               </ul>
             </div>
           </div> <!-- row -->
+
+
+          <!--  ARTICLES   -->
+          <!--  ARTICLES   -->
+          <!--  ARTICLES   -->
+          <div v-if="modalContent.entity.articles!=null && modalContent.entity.articles.length>0">
+
+              <h2>Prodotti</h2>
+
+
+              <div class="row pb-2" 
+                v-for="(article, index) in modalContent.entity.articles"
+                :article="article"
+                :key="article.id"
+              >
+
+                  <div class="content-img-article-small col-2">
+                    <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
+                    <div v-if="article.is_bio" class="box-bio">
+                        <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
+                    </div>
+                  </div>
+
+                  <div class="col-10">
+                      {{ article.name }} <strong>Conf.</strong> {{ article.conf }}
+                      <div class="p-2" v-if="article.descri!=null && article.descri!=''" v-html="$options.filters.shortDescription(article.descri)"></div>
+                  </div>
+                      
+              </div> <!-- loop -->
+
+          </div>  <!-- v-if -->
 
     </div>
   </section>
@@ -176,6 +209,19 @@ export default {
       html(text) {
           return text;
       },
+      currency(amount) {
+        let locale = window.navigator.userLanguage || window.navigator.language;
+        locale = 'it-IT';
+        const amt = Number(amount);
+        return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
+      },       
+      shortDescription(value) {
+        if (value && value.length > 75) {
+          return value.substring(0, 75) + "...";
+        } else {
+          return value;
+        }
+      },      
   }  
 };
 </script>
@@ -219,6 +265,24 @@ export default {
 @media (min-width: 992px)
 .modal-lg, .modal-xl {
     max-width: 800px;
+}
+
+/* images */
+.content-img-article-small {
+  width: 75px;
+  text-align: center;  
+}
+.img-article {
+    max-width: 75px;
+    max-height: 75px;
+    display: inline;
+}
+.box-bio img {
+    border-radius: 30px;
+    float: left;
+    height: 25px;
+    margin-right: 35px;
+    width: 25px;
 }
 
 .fade-enter, .fade-leave-to {

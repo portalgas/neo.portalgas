@@ -424,14 +424,24 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         
         // debug($row);
         
+        if(isset($row->article_organization_id))
+            $organization_id = $row->article_organization_id; // articleOrder
+        else 
+            $organization_id = $row->organization_id;  // article  
+
+        if(isset($row->article->img1))
+            $img1 = $row->article->img1; // articleOrder
+        else 
+            $img1 = $row->img1;  // article
+
         $config = Configure::read('Config');
-        $img_path = sprintf(Configure::read('Article.img.path.full'), $row->article_organization_id, $row->article->img1);
+        $img_path = sprintf(Configure::read('Article.img.path.full'), $organization_id, $img1);
 
         $portalgas_app_root = $config['Portalgas.App.root'];
         $path = $portalgas_app_root.$img_path;
 
         $results = '';
-        if(!empty($row->article->img1) && file_exists($path)) {
+        if(!empty($img1) && file_exists($path)) {
             $portalgas_fe_url = $config['Portalgas.fe.url'];
             $results = $portalgas_fe_url . $img_path;
         } 

@@ -1,6 +1,6 @@
 <template>
 
-<div>
+  <main>
  
     <modal-component-supplier></modal-component-supplier>
 
@@ -103,7 +103,7 @@
         Nessun produttore trovato
     </div>
 
-</div> 
+  </main> 
 
 </template>
 

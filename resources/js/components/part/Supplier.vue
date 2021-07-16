@@ -6,7 +6,7 @@
           <div class="text-center">
             <img v-if="supplier.img1 != ''"
             class="img-supplier-no-focus responsive"
-            :src="appConfig.$siteUrl+'/images/organizations/contents/'+supplier.img1"
+            :src="supplier.img1"
             :alt="supplier.name">
           </div>
 
@@ -43,6 +43,9 @@
                 </li>
                 <li v-if="supplier.mail!=''">
                     <a :href="'mailto:'+supplier.mail" title="scrivigli una mail"><i class="fas fa-envelope"></i></a>
+                </li>
+                <li v-if="supplier.telefono!=''">
+                    <a :href="'tel:'+supplier.telefono" title="telefona al produttore"><i class="fas fa-phone"></i></a>
                 </li>
             </ul>
           </div>

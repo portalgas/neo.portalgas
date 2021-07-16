@@ -15,6 +15,7 @@ class SuppliersController extends ApiAppController
     public function initialize(): void 
     {
         parent::initialize();
+        $this->loadComponent('Supplier');
     }
 
     public function beforeFilter(Event $event): void {
@@ -47,11 +48,16 @@ class SuppliersController extends ApiAppController
 
         $where = [];
         $where['Suppliers'] = ['Suppliers.stato' => 'Y'];
-        $suppliersResults = $suppliersTable->getById($user, $supplier_id, $where, $debug);
+        $suppliersResult = $suppliersTable->getById($user, $supplier_id, $where, $debug);
 
-        if(!empty($suppliersResults)) {
-            $suppliersResults = new ApiSupplierDecorator($suppliersResults);
-            $results['results'] = $suppliersResults->results;
+        if(!empty($suppliersResult)) {
+
+            $supplier_id = $suppliersResult->id;
+
+            $suppliersResult = new ApiSupplierDecorator($suppliersResult);
+            $results['results'] = $suppliersResult->results;
+
+            $results['results']['articles'] = $this->Supplier->getArticles($user, $supplier_id);
         }
 
         return $this->_response($results);
@@ -148,7 +154,11 @@ class SuppliersController extends ApiAppController
                 ->order(['Suppliers.name' => 'asc']);            
         }
 
-        $results['results'] = $suppliersResults;
+
+        if(!empty($suppliersResults)) {
+            $suppliersResults = new ApiSupplierDecorator($suppliersResults);
+            $results['results'] = $suppliersResults->results;
+        }
   
         return $this->_response($results);
     } 

@@ -37,14 +37,40 @@ class ApiSupplierDecorator  extends AppDecorator {
 	private function _decorate($supplier) {
 
         // debug($supplier);
-
         
-        if(isset($supplier->content) && isset($supplier->content->fulltext)) {
-            $supplier->content->fulltext = str_replace('{flike}', '', $supplier->content->fulltext);
+        if(isset($supplier->content)) {
+        	if(isset($supplier->content->introtext)) 
+	            $supplier->content->introtext = str_replace('{flike}', '', $supplier->content->introtext);
+        	if(isset($supplier->content->fulltext)) 
+	            $supplier->content->fulltext = str_replace('{flike}', '', $supplier->content->fulltext);
         }
+
+        $supplier->img1 = $this->_getImg1($supplier);
+        
         // debug($supplier);
         return $supplier;
     }
+
+    private function _getImg1($row) {
+        
+        // debug($row);
+        
+        $img1 = $row->img1;  
+
+        $config = Configure::read('Config');
+        $img_path = sprintf(Configure::read('Supplier.img.path.full'),$img1);
+
+        $portalgas_app_root = $config['Portalgas.App.root'];
+        $path = $portalgas_app_root.$img_path;
+
+        $results = '';
+        if(!empty($img1) && file_exists($path)) {
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
+            $results = $portalgas_fe_url . $img_path;
+        } 
+        
+        return $results; 
+    } 
 
 	function name() {
 		return $this->results;
