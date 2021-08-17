@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <div class="google-map" ref="googleMap"></div>
     <template v-if="Boolean(this.google) && Boolean(this.map)">
       <slot
@@ -7,7 +7,7 @@
         :map="map"
       />
     </template>
-  </div>
+  </main>
 </template>
 
 <script>

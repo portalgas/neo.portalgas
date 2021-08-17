@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
-    getName:function(name){
+    getName:function(name) {
       this.q = name;
       this.suppliers = [];
     },    

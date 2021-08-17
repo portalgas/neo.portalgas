@@ -18,7 +18,7 @@
             <h6 class="card-subtitle mb-2 text-muted">
               {{ supplier.localita }} <span v-if="supplier.provincia">({{ supplier.provincia }})</span> {{ supplier.cap }} 
             </h6>
-            <p class="card-text">
+            <div class="card-text">
              
               {{ supplier.nota }}
 
@@ -33,11 +33,17 @@
 
               </span>
 
-            </p>
+              <div v-if="supplier.voto!=0" v-html="supplier.voto_html"></div>
+
+            </div> <!-- card-text -->
             
-          </div>
+          </div> <!-- cart-body -->
+
           <div class="card-footer">
-              <ul class="contact" v-if="supplier.www!='' || supplier.mail!=''">
+              <ul class="contact">
+                <li v-if="supplier.slug!=''">
+                    <a :href="'/site/produttore/'+supplier.slug" title="link diretto"><i class="fas fa-link"></i></a>
+                </li>
                 <li v-if="supplier.www!=''">
                     <a :href="supplier.www" target="_blank" title="vai al sito del produttore"><i class="fas fa-globe"></i></a>
                 </li>

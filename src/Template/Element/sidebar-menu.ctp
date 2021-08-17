@@ -46,6 +46,17 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
   </li>  
   <li class="treeview"> 
     <a href="#">
+      <i class="fa fa-envelope"></i> <span><?php echo __('Mail');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-mail pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/mails/suppliers'); ?>"><?php echo $icon;?><?php echo __('Suppliers');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+    </ul>
+    </a>
+  </li>   
+  <li class="treeview"> 
+    <a href="#">
       <i class="fa fa-book"></i> <span><?php echo __('Documents');?></span>
       <span class="pull-right-container">
         <i class="fa fa-mail pull-right"></i>

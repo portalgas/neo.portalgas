@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<main>
 
     <div v-if="isRunMarket" class="box-spinner"> 
         <div class="spinner-border text-info" role="status">
@@ -59,7 +59,7 @@
         Nessun produttore vende i suoi prodotti 
     </div>
 
-</div> 
+</main> 
 
 </template>
 

@@ -92,7 +92,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         // $this->addPlugin('CakeImpersonate');
         $this->addPlugin('AdminLTE');
        
-        $this->addPlugin('CakePdf', ['bootstrap' => true]);        
+        $this->addPlugin('CakePdf', ['bootstrap' => true]); 
+
+        // https://github.com/cwbit/cakephp-sluggable
+        $this->addPlugin('Sluggable');       
     }
 
     /**

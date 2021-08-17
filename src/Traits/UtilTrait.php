@@ -94,10 +94,10 @@ trait UtilTrait
         if(empty($file_name))
             return '';
 
-        if(strpos($file_name, '.')===false)
+        if(strrpos($file_name, '.')===false)
             return '';
 
-        $ext = substr($file_name, strpos($file_name, '.')+1, strlen($file_name));
+        $ext = substr($file_name, strrpos($file_name, '.')+1, strlen($file_name));
 
         return $ext;
     }

@@ -22,7 +22,7 @@ class SuppliersController extends ApiAppController
      
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['get', 'gets']); 
+        $this->Authentication->allowUnauthenticated(['get', 'getBySlug', 'gets']); 
     }
     
     /*
@@ -33,6 +33,7 @@ class SuppliersController extends ApiAppController
     public function get() {
 
         $debug = false;
+        $continua = true;
 
         $results = [];
         $results['code'] = 200;
@@ -43,22 +44,91 @@ class SuppliersController extends ApiAppController
         $user = $this->Authentication->getIdentity();
 
         $supplier_id = $this->request->getData('supplier_id');
+        if(empty($supplier_id)) {
+            $results['code'] = 500;
+            $results['message'] = 'Parametro supplier_id richiesto';
+            $results['errors'] = '';
+            $continua = false;
+        }
 
-        $suppliersTable = TableRegistry::get('Suppliers'); 
+        if($continua) {
+            $suppliersTable = TableRegistry::get('Suppliers'); 
 
-        $where = [];
-        $where['Suppliers'] = ['Suppliers.stato' => 'Y'];
-        $suppliersResult = $suppliersTable->getById($user, $supplier_id, $where, $debug);
+            $where = [];
+            $where['Suppliers'] = ['Suppliers.stato' => 'Y'];
+            $suppliersResult = $suppliersTable->getById($user, $supplier_id, $where, $debug);
 
-        if(!empty($suppliersResult)) {
+            if(empty($suppliersResult)) {
+                $results['code'] = 500;
+                $results['message'] = 'Produttore non trovato con id ['.$supplier_id.']';
+                $results['errors'] = '';
+                $continua = false;
+            }
+        } // end if($continua)
 
+        if($continua) {
             $supplier_id = $suppliersResult->id;
 
             $suppliersResult = new ApiSupplierDecorator($suppliersResult);
             $results['results'] = $suppliersResult->results;
 
             $results['results']['articles'] = $this->Supplier->getArticles($user, $supplier_id);
+        } // end if($continua)
+
+        return $this->_response($results);
+    } 
+
+    
+    /*
+     * dati del produttore cercati per slug
+     * 
+     * POST /api/suppliers/getBySlug
+     */
+    public function getBySlug() {
+
+        $debug = false;
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+    
+        /*
+         * null se non autenticato
+         */
+        $user = $this->Authentication->getIdentity();
+
+        $slug = $this->request->getData('slug');
+        if(empty($slug)) {
+            $results['code'] = 500;
+            $results['message'] = 'Parametro slug richiesto';
+            $results['errors'] = '';
+            $continua = false;
         }
+
+        if($continua) {
+            $suppliersTable = TableRegistry::get('Suppliers'); 
+
+            $suppliersResult = $suppliersTable->getBySlug($user, $slug, $debug);
+
+            if(empty($suppliersResult)) {
+                $results['code'] = 500;
+                $results['message'] = 'Produttore non trovato con id ['.$supplier_id.']';
+                $results['errors'] = '';
+                $continua = false;
+            }
+        } // end if($continua)
+
+        if($continua) {
+            $supplier_id = $suppliersResult->id;
+
+            $suppliersResult = new ApiSupplierDecorator($suppliersResult);
+            $results['results'] = $suppliersResult->results;
+
+            $results['results']['articles'] = $this->Supplier->getArticles($user, $supplier_id);
+        } // end if($continua)
 
         return $this->_response($results);
     } 
@@ -83,7 +153,7 @@ class SuppliersController extends ApiAppController
          */
         $suppliersTable = TableRegistry::get('Suppliers'); 
 
-        $where = ['Suppliers.stato' => 'Y'];
+        $where = []; 
 
         $category_id = $this->request->getData('category_id');
         if(!empty($category_id)) 
@@ -102,6 +172,12 @@ class SuppliersController extends ApiAppController
         if(!empty($province_id)) 
             $where += ['Suppliers.provincia' => $province_id];
         
+        if(empty($where)) // non e' stata effettuata alcuna ricerca
+            $order = ['Suppliers.voto' => 'desc'];
+        else
+            $order = ['Suppliers.name' => 'asc'];   
+        $where += ['Suppliers.stato' => 'Y'];
+
         $page = $this->request->getData('page');
         if(empty($page)) $page = '1';
         $limit = Configure::read('sql.limit');
@@ -151,7 +227,7 @@ class SuppliersController extends ApiAppController
                 ->where($where)
                 ->limit($limit)
                 ->page($page)
-                ->order(['Suppliers.name' => 'asc']);            
+                ->order($order);            
         }
 
 

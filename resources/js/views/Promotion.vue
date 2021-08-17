@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<main>
 
     <div v-if="isRunPromotion" class="box-spinner"> 
         <div class="spinner-border text-info" role="status">
@@ -84,7 +84,7 @@
         Nessuna promozione per te
     </div>
 
-</div> 
+</main> 
 
 </template>
 

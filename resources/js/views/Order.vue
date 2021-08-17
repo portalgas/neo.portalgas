@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<main>
 
   <ul class="link-top">
     <li>
@@ -170,10 +170,13 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-10">
+        <div class="col-12 col-md-8">
             <app-search-article-orders @search="onSearch" />
         </div>
-        <div class="col-2">
+        <div class="col-8 col-md-2">
+            <app-sort-article-orders @changeSort="onChangeSort" />
+        </div>
+        <div class="col-4 col-md-2">
             <app-view-article-orders :viewList="viewList" @changeView="onChangeView" />
         </div>
     </div>
@@ -234,7 +237,7 @@
 
     <v-tour name="myTour" :steps="steps" :options="tourOptions" :callbacks="tourCallbacks"></v-tour>
 
-  </div> 
+  </main> 
 
 </template>
 
@@ -245,6 +248,7 @@ import { mapGetters, mapActions } from "vuex";
 import articleOrder from "../components/part/ArticleOrder.vue";
 import articleOrderList from "../components/part/ArticleOrderList.vue";
 import searchArticleOrders from "../components/part/SearchArticleOrders.vue";
+import sortArticleOrders from "../components/part/SortArticleOrders.vue";
 import viewArticleOrders from "../components/part/ViewArticleOrders.vue";
 
 export default {
@@ -257,6 +261,7 @@ export default {
       order: null,
       articles: [],
       page: 1,
+      sort: null,
       isScrollFinish: false,   
       isRunOrder: false,   
       isRunArticles: false,   
@@ -303,6 +308,7 @@ export default {
     appArticleOrderList: articleOrderList,
     appSearchArticleOrders: searchArticleOrders,
     appViewArticleOrders: viewArticleOrders,
+    appSortArticleOrders: sortArticleOrders
   },/* 
   computed: {
     viewListCookie: function() { 
@@ -351,7 +357,12 @@ export default {
     onChangeView: function(viewList) {
       this.viewList = viewList;
       /* console.log('onChangeView '+this.viewList); */
-    },      
+    },
+    onChangeSort: function(sort) {
+      this.sort = sort;
+      console.log('sort '+this.sort);
+      this.onSearch();
+    },    
     scroll() {
 
       // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles+' isScrollFinish '+this.isScrollFinish);
@@ -416,7 +427,8 @@ export default {
         order_type_id: this.order_type_id,
         order_id: this.order_id,
         page: this.page,
-        q: this.q
+        q: this.q,
+        sort: this.sort
       };
       // console.log('getsAjaxArticles url '+url)
 

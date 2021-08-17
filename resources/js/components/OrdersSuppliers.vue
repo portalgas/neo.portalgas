@@ -1,6 +1,6 @@
 <template>
 
-	<div id="accordion-suppliers">
+	<main id="accordion-suppliers">
 	
 		<div v-if="!dataNotFound" class="alert alert-warning">
 			Non ci sono ordini associati
@@ -57,8 +57,8 @@
 
 	  	</div>
 
-	</div> <!-- <div accordion-suppliers -->
-
+	</main> 
+	
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<main>
 
     <div v-if="isRunArticles" class="box-spinner"> 
         <div class="spinner-border text-info" role="status">
@@ -67,7 +67,7 @@
         Nessuna market aperto
     </div>
 
-</div> 
+</main> 
 
 </template>
 

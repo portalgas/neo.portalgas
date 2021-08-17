@@ -5,7 +5,9 @@ schema.xlsx
 /_sql/*
 /log/*
 /logs/*
-/src/Command/Sh/*.sh
+/src/Command/Sh/MailUsersDelivery-*.sh
+/src/Command/Sh/MailUsersOrdersClose-*.sh
+/src/Command/Sh/MailUsersOrdersOpen-*.sh
 
 # CakePHP specific files #
 ##########################

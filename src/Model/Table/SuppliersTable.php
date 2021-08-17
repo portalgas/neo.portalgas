@@ -27,6 +27,13 @@ class SuppliersTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        // https://github.com/cwbit/cakephp-sluggable
+        $this->addBehavior('Sluggable.Sluggable', [
+                                        'pattern' => ':name',
+                                        'replacement' => '-',
+                                        'overwrite' => true,
+                                    ]);
+
         $this->belongsTo('CategoriesSuppliers', [
             'foreignKey' => 'category_supplier_id',
             'joinType' => 'INNER'
@@ -183,12 +190,34 @@ class SuppliersTable extends Table
         return $rules;
     }
 
-    public function getByVatNumber($vatNumber) {
+    public function getByVatNumber($vatNumber, $debug=false) {
 
         $where = ['Suppliers.piva' => $vatNumber];
         $results = $this->find()
                     ->where($where)
                     ->first();
+        return $results;
+    }  
+
+    public function getBySlug($user, $slug, $debug=false) {
+
+        $results = null;
+
+        $slug = strtolower($slug);
+        $where = ['Suppliers.slug' => $slug];
+        $results = $this->find()
+                    ->select(['id'])        
+                    ->where($where)
+                    ->first();
+
+        if(!empty($results)) {     
+
+            $supplier_id = $results->id;
+
+            $where = [];
+            $where['Suppliers'] = ['Suppliers.stato' => 'Y'];            
+            $results = $this->getById($user, $supplier_id, $where, $debug);
+        }
         return $results;
     }  
 

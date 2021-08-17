@@ -261,6 +261,11 @@ class CashesTable extends Table
     */
     public function getTotaleCashToUser($user, $user_id, $debug = false) {
     
+        $results = [];
+
+        if(!isset($user->organization))
+            return $results;
+        
         $organization_id = $user->organization->id;
 
         $where = ['Cashes.organization_id' => $organization_id,

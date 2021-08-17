@@ -563,9 +563,17 @@ class ArticlesOrdersTable extends Table
         return $results;
     }    
 
-    protected function _getOptions($options) {
-        isset($options['sort']) && !empty($options['sort']) ? $this->_sort = $options['sort']: $this->_sort = ['Articles.codice', $this->getAlias().'.name'];
+    protected function _getOptions($options) {        
         isset($options['limit']) && !empty($options['limit']) ? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');
         isset($options['page']) && !empty($options['page']) ? $this->_page = $options['page']: $this->_page = 1; 
+
+        isset($options['sort']) && !empty($options['sort']) ? $this->_sort = $options['sort']: $this->_sort = ['Articles.codice', $this->getAlias().'.name'];
+        
+        if($this->_sort=='name-desc') $this->_sort = [$this->getAlias().'.name' => 'desc'];
+        else if($this->_sort=='name-asc') $this->_sort = [$this->getAlias().'.name' => 'asc'];
+        else if($this->_sort=='codice-desc') $this->_sort = ['Articles.codice' => 'desc'];
+        else if($this->_sort=='codice-asc') $this->_sort = ['Articles.codice' => 'asc'];        
+        else if($this->_sort=='prezzo-desc') $this->_sort = [$this->getAlias().'.prezzo' => 'desc'];            
+        else if($this->_sort=='prezzo-asc') $this->_sort = [$this->getAlias().'.prezzo' => 'asc'];
     }
 }

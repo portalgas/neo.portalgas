@@ -47,6 +47,15 @@ class ApiSupplierDecorator  extends AppDecorator {
 
         $supplier->img1 = $this->_getImg1($supplier);
         
+        $html = '';
+        if($supplier->voto>0) {
+            
+            $html .= '<ul class="ratings">';
+            $html_items = str_repeat('<li class="star" aria-hidden="true"></li>', ($supplier->voto + 1));
+            $html .= $html_items.'</ul>';
+        }
+        $supplier->voto_html = $html;
+
         // debug($supplier);
         return $supplier;
     }

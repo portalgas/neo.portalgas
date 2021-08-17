@@ -1,6 +1,6 @@
 <template>
 
-	<div id="accordion-deliveries">
+	<main id="accordion-deliveries">
 
 	    <div class="card" 
 	          v-for="(delivery, index)  in datas"
@@ -100,7 +100,7 @@
 	    </div>
 
 	  </div>
-	</div> <!-- <div accordion-deliveries -->
+	</main>
 
 </template>
 

@@ -1,6 +1,6 @@
 <template>
 
-    <div>
+    <main>
 
       <h2>
         Carrello
@@ -16,7 +16,7 @@
       </div>
       <user-cart-orders v-if="isLoading==false" :datas="datas"></user-cart-orders> 
 
-    </div>
+    </main>
 
 </template>
 

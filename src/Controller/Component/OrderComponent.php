@@ -182,6 +182,7 @@ class OrderComponent extends Component {
              * options
              */
             isset($options['q'])? $q = $options['q'] : $q = '';
+            isset($options['sort'])? $sort = $options['sort'] : $sort = '';
             isset($options['page'])?  $page = $options['page'] : $page = '1';
             isset($options['sql_limit'])?  $sql_limit = $options['sql_limit'] : $sql_limit = Configure::read('sql.limit');
 
@@ -203,7 +204,7 @@ class OrderComponent extends Component {
             }
 
             $options = [];
-            $options['sort'] = [];
+            $options['sort'] = $sort;
             $options['limit'] = $sql_limit;
             $options['page'] = $page;
             $results = $articlesOrdersTable->getCartsByUser($user, $organization_id, $user->id, $orderResults, $where, $options);

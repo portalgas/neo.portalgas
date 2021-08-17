@@ -49,7 +49,7 @@ Router::defaultRouteClass(DashedRoute::class);
 Router::scope('/', function (RouteBuilder $routes) {
     // Register scoped middleware for in scopes.
     /*
-    https://book.cakephp.org/3.0/en/controllers/middleware.html#cross-site-request-forgery-csrf-middleware gia' abilitato in AppController $this->loadComponent('Csrf')
+    https://book.cakephp.org/4/en/controllers/middleware.html#cross-site-request-forgery-csrf-middleware gia' abilitato in Applcation.php
 
     $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
         'httpOnly' => true
@@ -122,6 +122,8 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
     $routes->connect('/vue/index', ['controller' => 'Vue', 'action' => 'index']);
 
+    $routes->connect('/sitemap.xml', ['controller' => 'SiteMaps', 'action' => 'index']);
+
     $routes->fallbacks(DashedRoute::class);
 });
 
@@ -180,6 +182,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
     $routes->scope('/suppliers', ['controller' => 'Suppliers'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
         $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+        $routes->connect('/getBySlug', ['action' => 'getBySlug', '_method' => 'POST']);
     }); 
     $routes->scope('/regions', ['controller' => 'Regions'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);

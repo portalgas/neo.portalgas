@@ -236,3 +236,39 @@ a:hover {
     background-color: #fa824f !important;
     color: #fff;
 }
+/*
+ * ratings star
+ */
+.ratings {
+  list-style-type: none;
+  direction: rtl;
+
+    box-shadow: 5px 5px 5px #f0eaea;
+    border: 1px solid #f0eaea;
+    padding: 0px;
+    margin: 25px;
+    text-align: center;  
+}
+
+.star {
+  position: relative;
+  line-height: 50px;
+  display: inline-block;
+  transition: color 0.2s ease;
+  color: yellow;
+}
+
+.star:before {
+  content: '\2605';
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+}
+
+.star:hover,
+.star.selected,
+.star:hover ~ .star,
+.star.selected ~ .star{
+  transition: color 0.8s ease;
+  color: #ebebeb;
+} 

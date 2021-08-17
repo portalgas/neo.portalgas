@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <h1>Cart {{ article_id }} {{ msg }}</h1>
     <button type="button" name="button" v-on:click="$emit('onIncrementEmit')">
       Click me to increment!
@@ -8,7 +8,7 @@
     <!-- set a variable then trigger a method which calls `$emit()` -->
     <label for="child-input">Child input: </label>
     <input id="child-input" type="text" name="msg" v-model="childMessage" />
-  </div>
+  </main>
 
   <!-- v-on:keyup="emitToParent" -->
 </template>

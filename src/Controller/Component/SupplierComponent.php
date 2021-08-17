@@ -65,7 +65,7 @@ class SupplierComponent extends Component {
                 /*
                  * il produttore ha + suppliers_organizations, ciclo per individuare il piu' aggiornato
                  */
-                $article_ids = $this->_getSupplierOrganizationLastModifiedArticles($suppliersResults->suppliers_organizations); 
+                $article_ids = $this->_getSupplierOrganizationLastModifiedArticles($user, $suppliersResults->suppliers_organizations); 
             }
         }
         else {
@@ -87,18 +87,20 @@ class SupplierComponent extends Component {
         }
 
         if($debug) debug('supplier id '.$suppliersResults->id.' name ['.$suppliersResults->name.'] owner_articles '.$article_ids['owner_articles'].' owner_organization_id '.$article_ids['organization_id'].' owner_supplier_organization_id '.$article_ids['supplier_organization_id']);
-
-        $results = $this->_getArticles($article_ids['organization_id'], $article_ids['supplier_organization_id']);
-
-        $results = new ArticleDecorator($results);
-        $results = $results->results;
-        if($debug) debug($results);
-        // exit;
         
+        if(!empty($article_ids)) {
+            $results = $this->_getArticles($user, $article_ids['organization_id'], $article_ids['supplier_organization_id']);
+
+            $results = new ArticleDecorator($results);
+            $results = $results->results;
+            if($debug) debug($results);
+            // exit;
+        }
+
         return $results;
     }
 
-    private function _getSupplierOrganizationLastModifiedArticles($suppliers_organizations, $debug=false) {
+    private function _getSupplierOrganizationLastModifiedArticles($user, $suppliers_organizations, $debug=false) {
 
         $results = [];
         foreach($suppliers_organizations as $suppliers_organization) {
@@ -120,9 +122,11 @@ class SupplierComponent extends Component {
 
         } //
 
-        $article_ids['owner_articles'] = $results['owner_articles'];
-        $article_ids['organization_id'] = $results['organization_id'];
-        $article_ids['supplier_organization_id'] = $results['supplier_organization_id'];
+        if(!empty($results)) {
+            $article_ids['owner_articles'] = $results['owner_articles'];
+            $article_ids['organization_id'] = $results['organization_id'];
+            $article_ids['supplier_organization_id'] = $results['supplier_organization_id'];            
+        }
 
         if($debug) debug($results);
 
@@ -147,6 +151,10 @@ class SupplierComponent extends Component {
                                     ->where($where)
                                     ->order($order)
                                     ->first();
+        /*
+        debug($where);
+        debug($article);
+        */
 
         if(!empty($article))
             $results = $article->modified;
@@ -154,10 +162,14 @@ class SupplierComponent extends Component {
         return $results;                       
     }
 
-    private function _getArticles($organization_id, $supplier_organization_id) {
+    private function _getArticles($user, $organization_id, $supplier_organization_id) {
 
         $results = '';
 
+        $select = ['id', 'name', 'codice', 'nota', 'ingredienti', 'pezzi_confezione', 'img1', 'bio', 'qta', 'um', 'um_riferimento', 'stato', 'qta_massima', 'qta_minima', 'qta_multipli'];
+        if($user!==null) 
+            array_push($select, 'prezzo'); // autenticato
+        
         $articlesTable = TableRegistry::get('Articles');
         $order = ['Articles.name' => 'asc'];
 
@@ -167,6 +179,7 @@ class SupplierComponent extends Component {
             'Articles.stato' => 'Y'];
 
         $results = $articlesTable->find()
+                                    ->select($select)
                                     ->where($where)
                                     ->order($order)
                                     ->all();

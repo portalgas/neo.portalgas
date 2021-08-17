@@ -10,5 +10,5 @@ mix.setPublicPath('./webroot')
     'resources/css/style.css',
   ], 'webroot/css/main.css')
   .copyDirectory('resources/css/foundation-icons', 'webroot/css/foundation-icons')
-  */  
+  */
   .version();

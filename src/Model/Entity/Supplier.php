@@ -55,6 +55,7 @@ class Supplier extends Entity
     protected $_accessible = [
         'category_supplier_id' => true,
         'name' => true,
+        'slug' => true,
         'nome' => true,
         'cognome' => true,
         'descrizione' => true,
@@ -75,6 +76,7 @@ class Supplier extends Entity
         'conto' => true,
         'j_content_id' => true,
         'img1' => true,
+        'voto' => true,
         'can_promotions' => true,
         'delivery_type_id' => true,
         'owner_organization_id' => true,

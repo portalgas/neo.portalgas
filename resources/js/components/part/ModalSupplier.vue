@@ -55,7 +55,11 @@
                     </ul>
                 </div>
               </div> <!-- row -->
+
+              <div v-if="modalContent.entity.voto!=0" v-html="modalContent.entity.voto_html"></div>
+
            </div>
+
         </div>  <!-- row -->
 
 
@@ -76,7 +80,7 @@
               </div>
               <div class="col-lg-6">
                 <ul>
-                  <li v-if="modalContent.entity.cf!=''"><i class="bi bi-rounded-right"></i> <strong>Codice Fiscale.:</strong> {{ modalContent.entity.cf }}</li>
+                  <li v-if="modalContent.entity.cf!=''"><i class="bi bi-rounded-right"></i> <strong>Codice Fiscale:</strong> {{ modalContent.entity.cf }}</li>
                 </ul>
               </div>
           </div> <!-- row -->

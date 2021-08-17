@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<main>
  
 
     <div v-if="isRunSuppliers" class="box-spinner"> 
@@ -29,7 +29,7 @@
         Nessun produttore trovato
     </div>
 
-</div> 
+</main> 
 
 </template>
 

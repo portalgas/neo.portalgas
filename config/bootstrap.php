@@ -247,7 +247,7 @@ Configure::write('ckeditor5.toolbar', "['heading', '|', 'bold', 'italic', 'link'
 Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']);
 
 /*
- * fornt-end richiamti dal modulo di joomla mod_gas_documents
+ * front-end richiamti dal modulo di joomla mod_gas_documents
  */
 Configure::write('document.path', '/files/Documents/file_name/%d/');
 
@@ -273,6 +273,27 @@ Configure::write('group_id_storeroom',9);
 Configure::write('group_id_user',2);  
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
+
+Configure::write('EmailConfig', 'aws');
+Configure::write('SOC.name', 'PortAlGas');
+Configure::write('SOC.descrizione', "Gestionale per Gruppi di Acquisto Solidale");
+Configure::write('SOC.site', 'www.portalgas.it');
+Configure::write('SOC.mail', 'info@portalgas.it');
+Configure::write('SOC.mail-contatti', 'contatti@portalgas.it');
+Configure::write('SOC.mail-assistenza', 'info@portalgas.it'); // utilizzato in default.po
+Configure::write('SOC.mail-privacy', 'info@portalgas.it'); 
+Configure::write('EmailExcludeDomains', ['portalgas.it']);
+Configure::write('SOC.hosting.url',"https://www.hetzner.com/");
+Configure::write('SOC.hosting.name',"Hosting (Cloud VPS (Virtual Private Server) presso Hetzner: https://www.hetzner.com/)");
+Configure::write('SOC.hosting.responsabile',"( Hetzner Online GmbH email: support@hetzner.com)");
+
+Configure::write('Mail.body_header', "Salve %s, <br />\n");
+Configure::write('Mail.body_footer_simple', "\nhttps://".Configure::read('SOC.site')." <br />\n%s");
+Configure::write('Mail.body_footer', "\nhttps://".Configure::read('SOC.site'));
+Configure::write('Mail.body_footer_no_reply', "Non rispondere a questo messaggio in quanto generato automaticamente.<br /> \n <br /> \nhttps://".Configure::read('SOC.site')."<br />\n%s");
+Configure::write('Mail.body_footer_no_reply_simple', "Non rispondere a questo messaggio in quanto generato automaticamente.<br /> \n<br />\n%s");
+Configure::write('Mail.no_reply_mail', "no-reply@portalgas.it");
+Configure::write('Mail.no_reply_name', "Non rispondere a questa mail");
 
 Configure::write('Organization.type.gas', 'GAS');
 Configure::write('Organization.type.prodgas', 'PRODGAS');

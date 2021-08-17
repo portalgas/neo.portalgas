@@ -264,10 +264,10 @@ class HtmlCustomSiteHelper extends FormHelper
         $html = '';
         $html .= '<section class="content-header">';
         $html .= '<h1>';
-        $html .= $results['title'];
+        $html .= __($results['title']);
         if(isset($results['subtitle']) && !empty($results['subtitle'])) {
             $html .= '<small>';
-            $html .= $results['subtitle'];
+            $html .= __($results['subtitle']);
             $html .= '</small>';
         }            
         $html .= '</h1>';
