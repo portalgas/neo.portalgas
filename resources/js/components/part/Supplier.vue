@@ -41,16 +41,16 @@
 
           <div class="card-footer">
               <ul class="contact">
-                <li v-if="supplier.slug!=''">
+                <li v-if="supplier.slug!='' && supplier.slug!=null">
                     <a :href="'/site/produttore/'+supplier.slug" title="link diretto"><i class="fas fa-link"></i></a>
                 </li>
-                <li v-if="supplier.www!=''">
+                <li v-if="supplier.www!='' && supplier.www!=null">
                     <a :href="supplier.www" target="_blank" title="vai al sito del produttore"><i class="fas fa-globe"></i></a>
                 </li>
-                <li v-if="supplier.mail!=''">
+                <li v-if="supplier.mail!='' && supplier.mail!=null">
                     <a :href="'mailto:'+supplier.mail" title="scrivigli una mail"><i class="fas fa-envelope"></i></a>
                 </li>
-                <li v-if="supplier.telefono!=''">
+                <li v-if="supplier.telefono!='' && supplier.telefono!=null">
                     <a :href="'tel:'+supplier.telefono" title="telefona al produttore"><i class="fas fa-phone"></i></a>
                 </li>
             </ul>
