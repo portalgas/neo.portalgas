@@ -3,8 +3,12 @@
   <main>
  
     <modal-component-supplier></modal-component-supplier>
+    <modal-component-supplier-import></modal-component-supplier-import>
 
     <form>
+
+    <!-- v-if="is_logged" -->
+    <suppliers-type @changeSupplierType="onChangeSupplierType" ></suppliers-type>
 
     <div class="row">
       <div class="col-sm-12 col-xs-12 col-md-12"> 
@@ -87,7 +91,8 @@
         >
 
               <app-supplier
-                v-bind:supplier="supplier">
+                v-bind:supplier="supplier"
+                v-bind:supplier_type="supplier_type">
               </app-supplier>
 
         </div> <!-- loop -->
@@ -113,6 +118,8 @@ import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 import appSupplier from "../components/part/Supplier.vue";
 import modalSupplier from '../components/part/ModalSupplier';
+import modalSupplierImport from '../components/part/ModalSupplierImport';
+import suppliersType from '../components/part/SuppliersType';
 
 export default {
   name: "app-suppliers",
@@ -127,19 +134,25 @@ export default {
       regions: null,
       provinces: null,
       suppliers: [],
+      listSuppliersFinish: false,
       isRunCategoriesSuppliers: false,
       isRunProvinces: false,
       isRunRegions: false,
       isRunSuppliers: false,
       page: 1,
-      isScrollFinish: false,       
+      isScrollFinish: false, 
+      is_logged: false,
+      supplier_type: 'ALL'      
     };
   },
   components: {
     appSupplier: appSupplier,
     modalComponentSupplier: modalSupplier,
+    modalComponentSupplierImport: modalSupplierImport,
+    suppliersType
   },  
   mounted() {
+    this.getGlobals();
     this.getCategoriesSuppliers();
     this.getRegions();
     this.getProvinces();
@@ -147,6 +160,18 @@ export default {
   },
   methods: {
     ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
+    getGlobals() {
+      /*
+       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+       * recuperata nei components con getGlobals()
+       */
+      this.is_logged = window.is_logged;
+    },
+    onChangeSupplierType: function(supplier_type) {
+      this.supplier_type = supplier_type;
+      console.log('supplier_type '+this.supplier_type);
+      this.onSearch();
+    },    
     getName:function(name) {
       this.q = name;
       this.suppliers = [];
@@ -254,13 +279,14 @@ export default {
     onSearch: function() {
       this.suppliers = [];
       this.page = 1;
+      this.listSuppliersFinish=false;
       this.scroll();
       this.isScrollFinish = false;
     },
     scroll() {
 
-      // console.log('scroll page '+this.page+' isRunSuppliers '+this.isRunSuppliers+' isScrollFinish '+this.isScrollFinish);
-      if(this.isScrollFinish || this.isRunSuppliers)
+      // console.log('scroll page '+this.page+' isRunSuppliers '+this.isRunSuppliers+' isScrollFinish '+this.isScrollFinish+' listSuppliersFinish '+this.listSuppliersFinish);
+      if(this.isScrollFinish || this.isRunSuppliers || this.listSuppliersFinish)
         return;
 
       if (this.page==1) {
@@ -282,15 +308,27 @@ export default {
         console.log('bottomOfWindow '+bottomOfWindow);
         */
 
-        if (bottomOfWindow && !this.isRunSuppliers && !this.isScrollFinish) {
+        if (bottomOfWindow && !this.isRunSuppliers && !this.isScrollFinish && !this.listSuppliersFinish) {
             this.getSuppliers();
         }
       };  
     },    
     getSuppliers() {
+
       this.isRunSuppliers = true;
 
-      let url = "/api/suppliers/gets";
+      let url = '';
+      switch(this.supplier_type) {
+        case 'ALL':
+          url = "/api/suppliers/gets";
+        break;
+        case 'OWNER-ARTICLES': // produttori che gestiscono il listino articoli 
+          url = "/api/suppliers/produttoriGets";
+        break;
+        default:
+          url = "/api/suppliers/gets";
+      }
+
       let data = {
         q: this.q,
         category_id: this.category_id,
@@ -309,15 +347,25 @@ export default {
            // console.log(response.data);
            if(typeof response.data !== "undefined") {
 
-              var data = response.data.results;
-              for (var i = 0; i < data.length; i++) {
-                  this.suppliers.push(data[i]);
-              } 
+              if(response.data.results.length==0) {
+                /*
+                 * non trovato altri elementi
+                 */
+                 this.listSuppliersFinish = true;
+              }
+              else {
+                this.listSuppliersFinish = false;
+                
+                var data = response.data.results;
+                for (var i = 0; i < data.length; i++) {
+                    this.suppliers.push(data[i]);
+                } 
 
-          //   this.suppliers = response.data.results;
+            //   this.suppliers = response.data.results;
 
-             this.page++;
-             this.isScrollFinish = false;             
+                this.page++;
+                this.isScrollFinish = false;
+              }
            }
            console.log(this.suppliers);
         })

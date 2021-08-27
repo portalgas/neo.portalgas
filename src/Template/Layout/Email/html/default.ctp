@@ -98,11 +98,13 @@ use Cake\Core\Configure;
                         <!-- H E A D E R -->
                         <table width="100%" border="0" cellpadding="5" cellspacing="0">
                             <tr valign="middle" class="bgContenuto" bgcolor="#FFFFFF">
-                                <td align="right"><?php echo $header;?></td>
+                                <td align="right">
+                                    <?php (isset($header['logo'])) ? echo $header['logo']: echo ''; ?>
+                                </td>
                             </tr>
                             <tr valign="middle" class="tblHeader" bgcolor="#CCCCCC">
                                 <td height="35" align="left" nowrap="nowrap" bgcolor="#CCCCCC">
-                                    <?php echo $body_header;?>
+                                    <?php (isset($header['greeting'])) ? echo $header['greeting']: echo ''; ?>
                                 </td>
                             </tr>
                         </table>
@@ -134,7 +136,7 @@ use Cake\Core\Configure;
                         <table width="100%" border="0" cellpadding="1" cellspacing="5" class="tblFooter" bgcolor="#F0F0F0">
                             <tr valign="middle">
                                 <td align="left" width="59%">
-                                    <?php echo $body_footer;?>
+                                    <?php (isset($footer['text'])) ? echo $footer['text']: echo ''; ?>
                                 </td>
                                 <td align="left" width="20%">
                                         <!-- span>

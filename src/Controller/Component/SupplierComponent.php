@@ -21,7 +21,7 @@ class SupplierComponent extends Component {
 
     public function getArticles($user, $supplier_id, $options=[], $debug=false) {
  
-        // $debug=true;
+         $debug=false;
         
         if (empty($supplier_id)) {
             return null;
@@ -39,7 +39,7 @@ class SupplierComponent extends Component {
                             ->contain(['SuppliersOrganizations'])
                             ->where($where)
                             ->first();
-        // debug($suppliersResults);
+        if($debug) debug($suppliersResults);
 
         if(empty($suppliersResults))
             return null;
@@ -52,7 +52,7 @@ class SupplierComponent extends Component {
             if(!$suppliersResults->has('suppliers_organizations') || empty($suppliersResults->suppliers_organizations))
                 return null;
 
-           // debug('count(suppliersResults->suppliers_organizations) '.count($suppliersResults->suppliers_organizations));
+           if($debug) debug('count(suppliersResults->suppliers_organizations) '.count($suppliersResults->suppliers_organizations));
 
             if(count($suppliersResults->suppliers_organizations)==1) {
                 $suppliers_organization = $suppliersResults->suppliers_organizations[0];
@@ -74,7 +74,7 @@ class SupplierComponent extends Component {
              */
             $where = [];
             $where = ['organization_id' => $suppliersResults->owner_organization_id,
-                       'supplier_id' =>  $suppliersResults->id];            
+                       'supplier_id' =>  $suppliersResults->id]; 
             $suppliersOrganizationsResults = $suppliersOrganizationsTable->find()
                             ->where($where)
                             ->first();

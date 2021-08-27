@@ -41,13 +41,14 @@ class GdxpsController extends AppController
         $debug = false;
 
         $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id; // gas scelto
-        // debug($user);
 
-        if(!$user->acl['isRoot'] || !$user->acl['isSuperReferente'] || $user->organization->paramsConfig['hasArticlesGdxp']!='Y') {
+        if(empty($user) || empty($user->organization) || !$user->acl['isRoot'] || !$user->acl['isSuperReferente'] || $user->organization->paramsConfig['hasArticlesGdxp']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
           //  return $this->redirect(Configure::read('routes_msg_stop'));
         }
+
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
 
         $gdxp_suppliers_index_url_remote = Configure::read('Gdxp.suppliers.index.url.remote');
         $gdxp_suppliers_index_url_local = Configure::read('Gdxp.suppliers.index.url.local');

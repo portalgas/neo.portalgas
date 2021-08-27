@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class OrganizationsGasTable extends OrganizationsTable implements OrganizationTableInterface 
 {
@@ -42,7 +43,7 @@ class OrganizationsGasTable extends OrganizationsTable implements OrganizationTa
     /*
      * implement
      */ 
-    public function gets($where=[], $debug=false) {
+    public function gets($user=null, $where=[], $debug=false) {
 
         $results = [];
         $where = array_merge([$this->getAlias().'.type' => $this->_type], $where);

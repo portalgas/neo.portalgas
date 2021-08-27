@@ -1,3 +1,8 @@
+/*
+#fa824f orange 
+#0a659e blue
+#1e83c2 blue chiaro 
+*/
 h2 {
     background: none repeat scroll 0 0 #1e83c2;
     color: #fff;
@@ -30,6 +35,19 @@ h2 {
     color: #fff !important;
     background-color: #0a659e !important;
 }   
+a {
+    color: #0a659e;
+    text-decoration: none;
+    background-color: transparent;
+}   
+a:hover {
+    color: #fa824f !important; /* orange */
+    text-decoration: none;
+    background-color: transparent;
+}
+.a-mailto {
+    cursor: pointer;
+}
 .btn-primary {
     color: #fff !important;
     background-color: #0a659e !important;
@@ -44,25 +62,21 @@ h2 {
     color: #fff !important;
     background-color: #fa824f !important; /* orange */
     border-color: #fa824f !important; /* orange */
-}   
-a {
-    color: #0a659e;
-    text-decoration: none;
-    background-color: transparent;
-}   
-a:hover {
-    color: #fa824f !important; /* orange */
-    text-decoration: none;
-    background-color: transparent;
 }
-.a-mailto {
-    cursor: pointer;
-}
+.btn-success:hover {
+    color: #0a659e !important;
+    color: #fff !important;
+    background-color: #1e83c2 !important; /* blue chiaro */
+    border-color: #1e83c2 !important; /* blue chiaro */
+}   
 .card-link {
     cursor: pointer;
 }
 .cursor-pointer {
     cursor: pointer;
+}
+.no-cursor-pointer {
+    cursor: default !important;
 }
 .box-spinner {
 	width: 100%;

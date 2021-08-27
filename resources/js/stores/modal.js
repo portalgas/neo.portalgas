@@ -9,6 +9,7 @@ export const modal = {
     run: false,
     showModal: false,
     showModalSupplier: false,
+    showModalSupplierImport: false,
   },
   getters: {
     getModalContent: state => {
@@ -16,6 +17,7 @@ export const modal = {
     },    
     getShowModal: state => state.showModal,
     getShowModalSupplier: state => state.showModalSupplier,
+    getShowModalSupplierImport: state => state.showModalSupplierImport,
   },  
   mutations: {
     RUN_CONTENT: state => {
@@ -45,6 +47,12 @@ export const modal = {
       if(!state.showModalSupplier) {
       
       }
+    },  
+    SHOW_MODAL_SUPPLIER_IMPORT: (state) => {
+      state.showModalSupplierImport = !state.showModalSupplierImport;
+      if(!state.showModalSupplierImport) {
+      
+      }
     },    
   },
   actions: {
@@ -64,6 +72,9 @@ export const modal = {
     },
     showOrHiddenModalSupplier: (context) => {
       context.commit('SHOW_MODAL_SUPPLIER');
+    },
+    showOrHiddenModalSupplierImport: (context) => {
+      context.commit('SHOW_MODAL_SUPPLIER_IMPORT');
     },
   },
   modules: {}

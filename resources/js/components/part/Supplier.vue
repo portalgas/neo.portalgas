@@ -22,17 +22,30 @@
              
               {{ supplier.nota }}
 
-              <span>
+              <div class="box-more-info">
                 <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalSupplier(supplier.id)">maggior dettaglio</a>
                 
-                <div v-if="isLoading" class="box-spinner"> 
+                <div v-if="isLoadingSupplier" class="box-spinner"> 
                   <div class="spinner-border text-info" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>  
                 </div> 
+              </div>
 
-              </span>
+              <div v-if="supplier.hasOrganization!=null && supplier.hasOrganization">
+                <a class="btn btn-primary btn-block btn-sm no-cursor-pointer">rifornisce già il tuo G.A.S.</a> 
+              </div>
 
+              <div v-if="supplier.hasOrganization!=null && !supplier.hasOrganization && supplier_type=='OWNER-ARTICLES'">
+                <a class="btn btn-success btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalSupplierImport(supplier.id)">voglio comprare dal produttore</a>
+                
+                <div v-if="isLoadingSupplierImport" class="box-spinner"> 
+                  <div class="spinner-border text-info" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>  
+                </div> 
+              </div>
+                 
               <div v-if="supplier.voto!=0" v-html="supplier.voto_html"></div>
 
             </div> <!-- card-text -->
@@ -64,20 +77,24 @@
 <script>
 import { mapActions } from "vuex";
 import modalSupplier from '../../components/part/ModalSupplier';
+import modalSupplierImport from '../../components/part/ModalSupplierImport';
 
 export default {
   name: "app-supplier",
-  props: ['supplier'],
+  props: ['supplier', 'supplier_type'],
   data() {
     return {
-      isLoading: false,
+      isLoadingSupplier: false,
+      isLoadingSupplierImport: false,
+      is_logged: false
     };
   },
   components: {
-    modalSupplier: modalSupplier
+    modalSupplier: modalSupplier,
+    modalSupplierImport: modalSupplierImport
   },  
   methods: {
-    ...mapActions(["showModalSupplier", "showOrHiddenModalSupplier", "addModalContent"]),
+    ...mapActions(["showModalSupplier", "showOrHiddenModalSupplier", "showModalSupplierImport", "showOrHiddenModalSupplierImport", "addModalContent"]),
     clickShowModalSupplier () {
       this.showModalSupplier(true);
     }, 
@@ -85,7 +102,7 @@ export default {
 
       console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id);
 
-      this.isLoading=true;
+      this.isLoadingSupplier=true;
 
       let params = {
         supplier_id: supplier_id
@@ -109,17 +126,61 @@ export default {
                 footer: ''
               }            
 
-              this.isLoading=false;
+              this.isLoadingSupplier=false;
 
               this.addModalContent(modalContent);
               this.showOrHiddenModalSupplier();              
             }
         })
         .catch(error => {
-          this.isLoading=false;
+          this.isLoadingSupplier=false;
           console.error("Error: " + error);
         });
     },   
+
+    clickShowModalSupplierImport () {
+      this.showModalSupplierImport(true);
+    }, 
+    clickShowOrHiddenModalSupplierImport (supplier_id) {
+
+      console.log('clickShowOrHiddenModalSupplierImport supplier_id '+supplier_id);
+
+      this.isLoadingSupplierImport=true;
+
+      let params = {
+        supplier_id: supplier_id
+      };
+
+      // let url = "/api/html-suppliers/get";
+      let url = "/api/suppliers/get";
+      
+      axios
+        .post(url, params)
+        .then(response => {
+            
+            console.log(response.data); 
+            
+            if(typeof response.data !== "undefined") {
+
+              var modalContent = {
+                title: this.supplier.name,
+                body: '',
+                entity: response.data.results,
+                footer: ''
+              }            
+
+              this.isLoadingSupplierImport=false;
+
+              this.addModalContent(modalContent);
+              this.showOrHiddenModalSupplierImport();              
+            }
+        })
+        .catch(error => {
+          this.isLoadingSupplierImport=false;
+          console.error("Error: " + error);
+        });
+    },   
+
   },
 };
 </script>
@@ -149,5 +210,8 @@ ul.contact li {
 ul.contact li a {
   color: #0a659e !important;
   font-size: 25px;
+}
+.box-more-info {
+  padding-bottom: 10px;
 }
 </style>

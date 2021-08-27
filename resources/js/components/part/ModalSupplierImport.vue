@@ -37,12 +37,6 @@
                     {{ modalContent.entity.nota }}
                   </div>
               </div> <!-- row -->
-
-              <div class="row" v-if="modalContent.entity.content!=null && modalContent.entity.content.introtext!=null">
-                  <div class="col-lg-12" v-html="$options.filters.html(modalContent.entity.content.introtext)"></div>
-                  <div class="col-lg-12" v-html="$options.filters.html(modalContent.entity.content.fulltext)"></div>
-              </div> <!-- row -->
-
               
               <div class="row">
                 <div class="col-lg-12">
@@ -61,53 +55,6 @@
            </div>
 
         </div>  <!-- row -->
-
-
-          <google-map
-            :config="mapConfig"
-            :apikey="apikey"
-            :markers="mapMarkers"
-            >
-            <!-- GoogleMapMarkers :markers="mapMarkers"/ -->
-          </google-map>
-
-
-          <div class="row">
-              <div class="col-lg-6">
-                <ul>
-                  <li v-if="modalContent.entity.piva!=''"><i class="bi bi-rounded-right"></i> <strong>Partita iva:</strong> {{ modalContent.entity.piva }}</li>
-                </ul>
-              </div>
-              <div class="col-lg-6">
-                <ul>
-                  <li v-if="modalContent.entity.cf!=''"><i class="bi bi-rounded-right"></i> <strong>Codice Fiscale:</strong> {{ modalContent.entity.cf }}</li>
-                </ul>
-              </div>
-          </div> <!-- row -->
-
-          <!--  GAS   -->
-          <!--  GAS   -->
-          <!--  GAS   -->
-          <div class="row" v-if="modalContent.entity.suppliers_organizations!=null && modalContent.entity.suppliers_organizations.length>0">
-            <div class="col-lg-12">
-              <h2>Fornisce i G.A.S.</h2>
-              <ul>
-                  <li v-for="(suppliers_organization, index) in modalContent.entity.suppliers_organizations" class="bi bi-rounded-right">
-                      <a target="_blank" v-bind:href="suppliers_organization.organization.www" title="vai al sito del G.A.S.">
-                          <div class="content-img-organization">
-                              <img v-if="suppliers_organization.organization.img1 != ''"
-                              class="img-organization" :src="appConfig.$siteUrl+'/images/organizations/contents/'+suppliers_organization.organization.img1"
-                              :alt="suppliers_organization.organization.name" />
-                          </div>
-                      </a>
-                      
-                      <strong>{{ suppliers_organization.organization.name }}</strong> 
-                      {{ suppliers_organization.organization.indirizzo }} {{ suppliers_organization.organization.localita }} <span v-if="suppliers_organization.organization.provincia">({{ suppliers_organization.organization.provincia }})</span>                 
-                  </li>              
-              </ul>
-            </div>
-          </div> <!-- row -->
-
 
           <!--  ARTICLES   -->
           <!--  ARTICLES   -->
@@ -134,7 +81,7 @@
                       {{ article.name }} <strong>Conf.</strong> {{ article.conf }}
                       <div class="p-2" v-if="article.descri!=null && article.descri!=''" v-html="$options.filters.shortDescription(article.descri)"></div>
                   </div>
-                     
+
                   <div class="col-2" v-if="article.price!=null">
                     <strong>Prezzo</strong> {{ article.price | currency }} &euro;
                   </div>
@@ -166,51 +113,24 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import mask from "./Mask.vue";
-import GoogleMap from '../common/GoogleMap';
-import GoogleMapMarkers from '../common/GoogleMapMarkers'; /* non utilizzato */
 
 export default {
-  name: "app-modal-supplier",
+  name: "app-modal-supplier-import",
   components: {
-    maskComponent: mask,
-    GoogleMap,
-    GoogleMapMarkers,   /* non utilizzato */ 
+    maskComponent: mask
   },
-  data() {
-    return {
-      apikey: this.appConfig.$googlemap_api_key,
-    };
-  },  
   mounted() {
   },
   computed: {
     ...mapGetters({
-      showModalSupplier: "getShowModalSupplier", 
+      showModalSupplier: "getShowModalSupplierImport", 
       modalContent: "getModalContent"
     }),
-    mapConfig() {
-        return {
-            zoom: 10,
-            center: {
-               lat: parseFloat(this.modalContent.entity.lat), 
-               lng: parseFloat(this.modalContent.entity.lng)
-            }        
-        }
-      },
-    mapMarkers() {
-      return [
-        {
-           name: this.modalContent.entity.name,
-           lat: parseFloat(this.modalContent.entity.lat), 
-           lng: parseFloat(this.modalContent.entity.lng)        
-        }
-      ]
-    }    
   },
   methods: {
-    ...mapActions(['showOrHiddenModalSupplier']),
+    ...mapActions(['showOrHiddenModalSupplierImport']),
     closeModal() {
-      this.showOrHiddenModalSupplier();
+      this.showOrHiddenModalSupplierImport();
     },      
   },
   filters: {

@@ -44,11 +44,19 @@ $organization = $this->Identity->get('organization');
 	<?php echo $this->fetch('content');?>
     
     <?php echo $this->element('fe/footer', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);?>
-    <?php echo $this->element('fe/include_js');?>
+    <?php echo $this->element('fe/include_js'); ?>
     
     <script type="text/javascript">
     "use strict";
+
+    <?php
+    /*
+     * posso essere in pagina public (ex /site/produttori) ma sono autenticato
+     * => gestito in is_logged
+     */
+    ?>
     var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
+    var is_logged = <?php echo ($this->Identity->get()!==null) ? 'true' : 'false'; ?>;  // da passa a vue in app.js
     var j_seo = "<?php echo (isset($organization->j_seo)) ? $organization->j_seo : '';?>"; // da passa a vue in app.js
     var organizationTemplatePayToDelivery = "<?php echo (isset($organization) && isset($organization->template)) ? $organization->template->payToDelivery : '';?>"; // da passa a vue in app.js
     var headers = {

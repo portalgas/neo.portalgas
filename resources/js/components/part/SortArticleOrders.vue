@@ -17,8 +17,6 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-
 export default {
 	name: "sort-articles",
 	data() {

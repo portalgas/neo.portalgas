@@ -22,7 +22,7 @@ class SuppliersController extends ApiAppController
      
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['get', 'getBySlug', 'gets']); 
+        $this->Authentication->allowUnauthenticated(['get', 'prodGasSupplierGets', 'getBySlug', 'gets']); 
     }
     
     /*
@@ -148,6 +148,14 @@ class SuppliersController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
     
+        /*
+         * elenco produttori publici
+         * se autenticato posso importarlo
+         */ 
+        $user = $this->Authentication->getIdentity();
+        // $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
         /* 
          * estraggo i Suppliers
          */
@@ -214,7 +222,8 @@ class SuppliersController extends ApiAppController
                 ->where($where)
                 ->limit($limit)
                 ->page($page)
-                ->order(['relevance' => 'desc']);
+                ->order(['relevance' => 'desc'])
+                ->toArray();
                 // ->bind(':search', $search, 'string')
                 // ->bind(':search', $search, 'string')                        
         }
@@ -227,9 +236,161 @@ class SuppliersController extends ApiAppController
                 ->where($where)
                 ->limit($limit)
                 ->page($page)
-                ->order($order);            
+                ->order($order)
+                ->toArray();    
         }
 
+        if(!empty($suppliersResults)) {
+         
+            /*
+             * utente autenticato, controllo se il produttore e' gia' associato al GAS
+             */
+            if($user!==null) {
+                
+                $organization_id = $user->organization->id; // gas scelto
+
+                $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+                foreach($suppliersResults as $numResult => $suppliersResult) {
+
+                    $suppliersOrganizationsResults = $suppliersOrganizationsTable->find()
+                            ->where(['SuppliersOrganizations.supplier_id' => $suppliersResult->id,
+                                     'SuppliersOrganizations.organization_id' => $organization_id])
+                            ->first();                
+                    
+                    if(!empty($suppliersOrganizationsResults)) {
+                        $suppliersResults[$numResult]['hasOrganization'] = true;
+                    }
+                    else
+                        $suppliersResults[$numResult]['hasOrganization'] = false;
+                }
+            } 
+
+            /*
+             * Decorator
+             */             
+            $suppliersResults = new ApiSupplierDecorator($suppliersResults);
+            $results['results'] = $suppliersResults->results;
+        }
+  
+        return $this->_response($results);
+    } 
+
+
+    /*
+     * lista di tutti i produttori che gestiscono il listino 
+     * prodGasSuppliers: OrganizationsProdGasTable
+     * 
+     * POST /api/suppliers/produttoriGets
+     */ 
+    public function prodGasSupplierGets() {
+
+        $debug = false;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+    
+        /*
+         * elenco produttori publici
+         * se autenticato posso importarlo
+         */ 
+        $user = $this->Authentication->getIdentity();
+        // $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        /* 
+         * estraggo i Suppliers
+         */
+        $organizationsProdGasTable = TableRegistry::get('OrganizationsProdGas'); 
+
+        $where = []; 
+        $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
+        $where['Suppliers'] = [];
+        $where['SuppliersOrganizations'] = [];
+
+        $category_id = $this->request->getData('category_id');
+        if(!empty($category_id)) 
+            $where['Suppliers'] += ['Suppliers.category_supplier_id' => $category_id];
+        $region_id = $this->request->getData('region_id');
+        if(!empty($region_id)) {
+            /*
+             * suppliers non ha il campo region_id
+             */
+            $provincesTable = TableRegistry::get('GeoProvinces');
+            $provinces = $provincesTable->getSiglaByIdGeoRegion($region_id);
+
+            $where['Suppliers'] += ['Suppliers.provincia IN ' => $provinces];
+        }
+        $province_id = $this->request->getData('province_id');
+        if(!empty($province_id)) 
+            $where['Suppliers'] += ['Suppliers.provincia' => $province_id];
+        
+        if(empty($where)) // non e' stata effettuata alcuna ricerca
+            $order = ['Suppliers.voto' => 'desc'];
+        else
+            $order = ['Suppliers.name' => 'asc'];   
+        $where['Suppliers'] += ['Suppliers.stato' => 'Y'];
+
+        $page = $this->request->getData('page');
+        if(empty($page)) $page = '1';
+        $limit = Configure::read('sql.limit');
+        $sort = ['Suppliers.name']; 
+
+        $q = $this->request->getData('q');
+        if(!empty($q)) {
+
+            $q = $this->SQLinjection($q);
+
+            /*
+             * ricerca per nome
+             */ 
+
+            $search = '';
+        
+            // debug($q);
+            if(strpos($q, ' ')!==false) {
+                $searchs = explode(' ', $q);
+                // debug($searchs);
+                foreach($searchs as $s) {
+                    $search .= "'$s*' ";
+                }
+            }
+            else
+                $search = "'$q*'";
+            // debug($search);
+
+            $where += ['MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'];
+
+            $suppliersResults = $suppliersTable->find() 
+                ->select(['name', 'id', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
+                      'relevance' => 'MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'])
+                ->contain(['CategoriesSuppliers'])
+                ->where($where)
+                ->limit($limit)
+                ->page($page)
+                ->order(['relevance' => 'desc']);
+                // ->bind(':search', $search, 'string')
+                // ->bind(':search', $search, 'string')                        
+        }
+        else {
+            /*
+             * ricerca senza nome
+             */ 
+            $options = [];
+            $options['page'] = $page;
+            $options['q'] = $q;
+            $options['sort'] = $sort;
+            $options['sql_limit'] = Configure::read('sql.limit');
+
+            $suppliersResults = [];
+            $organizationsProdGas = $organizationsProdGasTable->gets($user, $where, $options);
+            foreach($organizationsProdGas as $organizationsProdGa) {
+                $suppliersResults[] = $organizationsProdGa->supplier;
+            }        
+        }
 
         if(!empty($suppliersResults)) {
             $suppliersResults = new ApiSupplierDecorator($suppliersResults);

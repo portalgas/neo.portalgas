@@ -6,7 +6,6 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
-use Cake\Mailer\Email;
 
 class MailsController extends AppController
 {
@@ -17,10 +16,7 @@ class MailsController extends AppController
         parent::initialize();
         $this->loadComponent('Auths');
         $this->loadComponent('Mail');
-
-        $this->_fullbaseUrl = Router::fullbaseUrl();
     }
-
 
     public function beforeFilter(Event $event) {
         
@@ -30,38 +26,42 @@ class MailsController extends AppController
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
+
+        $this->_fullbaseUrl = Router::fullbaseUrl();
     }
 
     public function suppliers() {
+        
+        $debug=false;
+
+        $organizationsProdGas = [];
+        $listOrganizationsProdGas = [];
+        $listSuppliers = [];
 
         $user = $this->Authentication->getIdentity();
         if(isset($user->organization))  
             $organization_id = $user->organization->id; // gas scelto
         // debug($user);
 
-        if ($this->request->is('post')) {
 
-            $name = '';
-            $to = 'francesco.actis@gmail.com';
-            $subject = $this->request->getData('mail_subject');
-            $body = $this->request->getData('mail_body');
+        /*
+         * produttori che gestiscono il listino
+         */
+        $organizationsProdGasTable = TableRegistry::get('OrganizationsProdGas');
             
-            $email = $this->getMailSystem($user);
-            
-            $email->setViewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)])
-                ->setTo($to)
-                ->setSubject($subject);
-
-            try {
-                $email->send($body);
-            } catch (Exception $e) {
-                debug($e);
-            }                
-                
-            $this->Flash->success(__('send mail to ').$to);
-
+        $where = [];
+        $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
+        $organizationsProdGas = $organizationsProdGasTable->gets($where);
+        foreach($results as $result) {
+            // debug($fullbaseUrl.'/site/produttore/'.$result->slug);
+            $listOrganizationsProdGas[$result->supplier->id] = $this->_fullbaseUrl.'/site/produttore/'.$result->supplier->slug;
         }
-
+        // debug($listOrganizationsProdGas);
+        $this->set(compact('listOrganizationsProdGas'));
+       
+        /*
+         * produttori 
+         */        
         $suppliersTable = TableRegistry::get('Suppliers'); 
        
         $where = []; // ['Suppliers.stato' => 'Y'];
@@ -72,10 +72,57 @@ class MailsController extends AppController
                                 ->all(); 
         foreach($results as $result) {
             // debug($fullbaseUrl.'/site/produttore/'.$result->slug);
-            $suppliers[$result->id] = $this->_fullbaseUrl.'/site/produttore/'.$result->slug;
+            $listSuppliers[$result->id] = $this->_fullbaseUrl.'/site/produttore/'.$result->slug;
         }
+        $this->set(compact('listSuppliers'));
 
-        $this->set(compact('suppliers'));
+        if ($this->request->is('post')) {
+
+                    $name = '';
+                    $to = 'francesco.actis@gmail.com';
+                    $mail_subject = $this->request->getData('mail_subject');
+                    $mail_body = $this->request->getData('mail_body');
+                    
+                    $options = [];
+                    $options['name'] = $name;
+                    $email = $this->Mail->getMailSystem($user, $options);
+                    
+                    $email->setTo($to)
+                          ->setSubject($mail_subject);
+        
+                    $this->Mail->send($email, $mails, $body_mail, $debug);
+
+            /*
+            foreach($organizationsProdGas as $organizationsProdGa) {
+                debug($organizationsProdGa);
+
+                $mail = $organizationsProdGa->supplier->mail;
+                if(!empty($mail)) {
+                    
+                    $name = '';
+                    $to = 'francesco.actis@gmail.com';
+                    $subject = $this->request->getData('mail_subject');
+                    $body = $this->request->getData('mail_body');
+                    
+                    $options = [];
+                    $options['name'] = $name;
+                    $email = $this->Mail->getMailSystem($user, $options);
+                    
+                    $email->setTo($to)
+                          ->setSubject($subject);
+        
+                    try {
+                        $email->send($body);
+                    } catch (Exception $e) {
+                        debug($e);
+                    }
+                }
+            } // foreach
+            */
+            exit;
+                
+            $this->Flash->success(__('send mail to ').$to);
+        } // end POST
 
         $this->set('fullbaseUrl', $this->_fullbaseUrl);
     }  

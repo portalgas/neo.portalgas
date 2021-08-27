@@ -181,6 +181,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
     });    
     $routes->scope('/suppliers', ['controller' => 'Suppliers'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        $routes->connect('/produttoriGets', ['action' => 'prodGasSupplierGets', '_method' => 'POST']);
         $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         $routes->connect('/getBySlug', ['action' => 'getBySlug', '_method' => 'POST']);
     }); 

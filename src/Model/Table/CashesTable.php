@@ -264,7 +264,7 @@ class CashesTable extends Table
         $results = [];
 
         if(!isset($user->organization))
-            return $results;
+            return 0;
         
         $organization_id = $user->organization->id;
 
@@ -290,7 +290,6 @@ class CashesTable extends Table
 
         if($debug) debug($results);
 
-        
         return $results;
     }    
 }

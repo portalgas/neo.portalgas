@@ -7,7 +7,6 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
 
 class OrganizationsProdGasTable extends OrganizationsTable implements OrganizationTableInterface 
 {
@@ -24,6 +23,11 @@ class OrganizationsProdGasTable extends OrganizationsTable implements Organizati
         parent::initialize($config);
 
         $this->setEntityClass('App\Model\Entity\Organization');
+
+        $this->hasOne('Suppliers', [
+            'foreignKey' => 'owner_organization_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     public function validationDefault(Validator $validator)
@@ -41,14 +45,68 @@ class OrganizationsProdGasTable extends OrganizationsTable implements Organizati
     /*
      * implement
      */ 
-    public function gets($where=[], $debug=false) {
+    public function gets($user=null, $where=[], $options=[], $debug=false) {
+
+        /*
+         * options
+         */
+        isset($options['q'])? $q = $options['q'] : $q = '';
+        isset($options['sort'])? $sort = $options['sort'] : $sort = ['Suppliers.name'];
+        isset($options['page'])?  $page = $options['page'] : $page = '1';
+        isset($options['sql_limit'])?  $sql_limit = $options['sql_limit'] : $sql_limit = Configure::read('sql.limit');
 
         $results = [];
-        $where = array_merge([$this->getAlias().'.type' => $this->_type], $where);
+
+        $where_organization = [$this->getAlias().'.type' => $this->_type];
+        $where_suppliers = [];
+        $where_suppliers_organizations = ['SuppliersOrganizations.stato' => 'Y'];
+
+        if(isset($where['Organizations']))
+            $where_organization = array_merge($where_organization, $where['Organizations']);
+
+        if(isset($where['Suppliers']))
+            $where_suppliers = array_merge($where_suppliers, $where['Suppliers']);
+
+        if(isset($where['SuppliersOrganizations']))
+            $where_suppliers_organizations = array_merge($where_suppliers_organizations, $where['SuppliersOrganizations']);
+    
         $results = $this->find()
+                        ->contain(['Suppliers' => ['conditions' => $where_suppliers,
+                                   'SuppliersOrganizations' => ['conditions' => $where_suppliers_organizations],
+                                   'CategoriesSuppliers']])
+                        ->where($where_organization)
+                        ->order($sort)
+                        ->limit($sql_limit)
+                        ->page($page)                        
+                        ->all()
+                        ->toArray();
+            
+        /*
+         * utente autenticato, controllo se il produttore e' gia' associato al GAS
+         */ 
+        if($user!==null) {
+
+            $organization_id = $user->organization->id; // gas scelto
+
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+            foreach($results as $numResult => $result) {
+
+                $where = ['SuppliersOrganizations.supplier_id' => $result['supplier']['id'],
+                          'SuppliersOrganizations.organization_id' => $organization_id];
+                // debug($where);
+                
+                $suppliersOrganizationsResults = $suppliersOrganizationsTable->find()
                         ->where($where)
-                        ->order([$this->getAlias().'.name'])
-                        ->all();
+                        ->first();                
+                
+                if(!empty($suppliersOrganizationsResults)) {
+                    $results[$numResult]['supplier']['hasOrganization'] = true;
+                }
+                else
+                    $results[$numResult]['supplier']['hasOrganization'] = false;                
+            }
+        }
 
         return $results;        
     }

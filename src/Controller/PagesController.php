@@ -55,7 +55,7 @@ class PagesController extends AppController
 
         $user = $this->Authentication->getIdentity();
 
-        if(!empty($user)) {
+        if(!empty($user) && !empty($user->organization)) {
             $organization_id = $user->organization->id;
 
             $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');

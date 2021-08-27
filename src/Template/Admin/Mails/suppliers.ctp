@@ -15,7 +15,9 @@ echo $this->Form->create(null, ['role' => 'form']);
 echo '<fieldset>';
 echo '<legend></legend>';
 echo '<div class="box-body">'; 
-echo $this->Form->control('supplier_id', ['options' => $suppliers, 'empty' => Configure::read('HtmlOptionEmpty')]);
+
+echo $this->Form->control('organization_prod_gas_id', ['options' => $listOrganizationsProdGas, 'empty' => Configure::read('HtmlOptionEmpty')]);
+echo $this->Form->control('supplier_id', ['options' => $listSuppliers, 'empty' => Configure::read('HtmlOptionEmpty')]);
 echo $this->Form->control('mail_subject', ['type' => 'text']);
 echo $this->Form->control('mail_body', ['type' => 'textarea']);
 echo '</fieldset>';

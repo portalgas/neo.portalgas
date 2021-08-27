@@ -6,29 +6,34 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
+use Cake\Mailer\Email;
+use Cake\Routing\Router;
 
 class MailComponent extends Component {
 
-	private $_mail_send;
+	private $_mail_send;  // se false non invia mail (config_{env}.php)
+	private $_fullbaseUrl = null;
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_registry = $registry;
         $controller = $registry->getController();
         //$controller->request
+
+        $this->_fullbaseUrl = Router::fullbaseUrl();
     }
 
 	/*
 	 * crea oggetto mail per invio mail di sistema
 	 */
-	 public function getMailSystem($user) {
+	 public function getMailSystem($user, $options) {
 		
         $config = Configure::read('Config');
         $this->_mail_send = $config['mail.send'];
 
 		$email = new Email(Configure::read('EmailConfig')); // aws
 		$email->setFrom([Configure::read('SOC.mail') => Configure::read('SOC.name')])
-			  ->setReplyTo([Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name')])
+			  ->setReplyTo([Configure::read('Mail.no_reply_mail') => Configure::read('Mail.no_reply_name')])
 			  ->setSender([Configure::read('SOC.mail') => Configure::read('SOC.name')]) // real sender
 			  ;
 
@@ -38,10 +43,10 @@ class MailComponent extends Component {
          */
         $email->setTemplate('default', 'default')
         	  ->setEmailFormat('html')
-        	  ->setViewVars(['header' => $this->_drawLogo($user->organization)])
-        	  ->setViewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'))]);
+        	  ->setViewVars(['body_header' => $this->_getHeader($user, $options)])
+        	  ->setViewVars(['body_footer' => $this->_getFooter($user, $options)]);
 
-		return $Email;
+		return $email;
 	}
 	
 	/*
@@ -124,7 +129,24 @@ class MailComponent extends Component {
 		
 		return $results;
 	}
-							
+	
+	private function _getHeader($user, $options) {
+		$results = [];
+		if(isset($options['name'])) {
+			$results['greeting'] = sprintf(Configure::read('Mail.body_header'), $options['name']);
+		}
+		$results['logo'] = $this->_drawLogo($user->organization);
+		
+		return $results;
+	}						
+	
+	private function _getFooter($user, $options) {
+		$results = [];
+		$results['text'] = sprintf(Configure::read('Mail.body_footer'));
+		
+		return $results;
+	}						
+
     private function _drawLogo($organization=null) {
     
         $logo_url = $this->_fullbaseUrl.'/img/loghi/150h50.png';

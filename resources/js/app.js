@@ -94,6 +94,7 @@ export const vm = new Vue({
  * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
  * recuperata nei components con getGlobals()
  */
+window.is_logged = is_logged;
 window.j_seo = j_seo;
 window.organizationTemplatePayToDelivery = organizationTemplatePayToDelivery;
 
