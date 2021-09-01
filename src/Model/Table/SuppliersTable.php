@@ -243,7 +243,9 @@ class SuppliersTable extends Table
         $results = $this->find()
                         ->contain(['Content', 'CategoriesSuppliers',
                                     'SuppliersOrganizations' => 
-                                      ['conditions' => $where['SuppliersOrganizations'], 'Organizations' => ['conditions' =>  $where['Organizations']]],
+                                        ['conditions' => $where['SuppliersOrganizations'], 
+                                    'Organizations' => 
+                                        ['conditions' =>  $where['Organizations']]],
                         ])
                         ->where($where['Suppliers'])
                         ->first();

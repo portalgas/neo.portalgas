@@ -38,6 +38,18 @@
                   </div>
               </div> <!-- row -->
               
+              <div class="box-more-info">
+                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickImport(modalContent.entity.id)">importalo</a>
+                
+                <div v-if="isLoadingSupplier" class="box-spinner"> 
+                  <div class="spinner-border text-info" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>  
+                </div> 
+              </div>
+
+
+
               <div class="row">
                 <div class="col-lg-12">
                     <ul>
@@ -119,6 +131,11 @@ export default {
   components: {
     maskComponent: mask
   },
+  data() {
+    return {
+      isLoadingSupplier: false,
+    };
+  },  
   mounted() {
   },
   computed: {
@@ -131,6 +148,35 @@ export default {
     ...mapActions(['showOrHiddenModalSupplierImport']),
     closeModal() {
       this.showOrHiddenModalSupplierImport();
+    },  
+    clickImport (supplier_id) {
+
+      console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id);
+
+      this.isLoadingSupplier=true;
+
+      let params = {
+        supplier_id: supplier_id
+      };
+
+      let url = "/admin/api/ProdGasSuppliers/import";
+      
+      axios
+        .post(url, params)
+        .then(response => {
+            
+            console.log(response.data); 
+            
+            if(typeof response.data !== "undefined") {
+
+              this.isLoadingSupplier=false;
+            }
+        })
+        .catch(error => {
+          this.isLoadingSupplier=false;
+          console.error("Error: " + error);
+        });
+      
     },      
   },
   filters: {

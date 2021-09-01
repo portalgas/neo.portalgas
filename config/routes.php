@@ -184,7 +184,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
         $routes->connect('/produttoriGets', ['action' => 'prodGasSupplierGets', '_method' => 'POST']);
         $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         $routes->connect('/getBySlug', ['action' => 'getBySlug', '_method' => 'POST']);
-    }); 
+    });  
     $routes->scope('/regions', ['controller' => 'Regions'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
     });
@@ -265,7 +265,12 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/SuppliersOrganizations', ['controller' => 'SuppliersOrganizations'], function (RouteBuilder $routes) {
             $routes->connect('/getsById', ['action' => 'getsById', '_method' => 'POST']);
             $routes->connect('/getByOrderId', ['action' => 'getByOrderId', '_method' => 'POST']);
-        });        
+            // $routes->connect('/import', ['action' => 'import', '_method' => 'POST']);
+        });     
+
+        $routes->scope('/ProdGasSuppliers', ['controller' => 'ProdGasSuppliers'], function (RouteBuilder $routes) {
+            $routes->connect('/import', ['action' => 'import', '_method' => 'POST']);
+        });     
 
         /*
          * ecommerce vue

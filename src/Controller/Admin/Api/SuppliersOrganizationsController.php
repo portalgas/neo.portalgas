@@ -12,6 +12,7 @@ class SuppliersOrganizationsController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Auths');
+        $this->loadComponent('SuppliersOrganization');
     }
 
     public function beforeFilter(Event $event) {
@@ -84,4 +85,30 @@ class SuppliersOrganizationsController extends ApiAppController
 
         return $this->_response($results);
     } 
+
+    /*
+     * dato un supplier_id, creo l'associazione con il GAS (suppliersOrganizations)
+     *
+     * TODO, per ora fatto ProdGaSuppliersController::import
+     */
+    public function import() {
+
+        $debug = false;
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = '';
+    
+        $supplier_id = $this->request->getData('supplier_id');
+        // debug($supplier_id);
+
+        $user = $this->Authentication->getIdentity();
+        // $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
+        $this->SuppliersOrganization->import($user, $supplier_id, $debug);
+
+        return $this->_response($results);        
+    }
 }

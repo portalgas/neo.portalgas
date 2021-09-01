@@ -65,7 +65,52 @@ $(function () {
                   console.error("Error: " + error);
             });            
         },
-      },
+        submitService: function(e) {
+
+              e.preventDefault();
+
+              var _this = this;
+              _this.esito = null;
+              _this.is_run = false;
+
+              let service_url = $("select[name='service_url']").val();
+              let value1 = $("input[name='value1']").val();
+              let param1 = $("input[name='param1']").val();
+              console.log('service_url '+service_url+' value1 '+value1+' param1 '+param1);
+
+              if(service_url==0 || service_url=='') {
+                  $('.run-submit .spinner').removeClass(ico_spinner);
+                  // $('#submit').addClass('disabled');
+                  // $('#submit').prop("disabled", true);
+                  return;
+              }
+
+              $('.run-submit').show();
+              $('.run-submit .spinner').addClass(ico_spinner);
+
+              let params = {
+                  'supplier_id': param1
+              }; 
+              console.log(params);
+
+              axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+              axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
+              axios.post(service_url, params)
+                  .then(response => {
+                    console.log(response.data);
+                    $('.run-submit .spinner').removeClass(ico_spinner);
+                    _this.is_run = true;
+                    _this.esito = response.data;        
+
+                  })
+              .catch(error => {
+                    $('.run-submit .spinner').removeClass(ico_spinner);
+                    _this.is_run = false;
+                    console.error("Error: " + error);
+              });
+          }              
+      },      
       mounted: function(){
         console.log('mounted testAjax');
       },

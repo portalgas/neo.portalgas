@@ -30,6 +30,33 @@ class TestsController extends AppController
         $organization_id = $user->organization->id; // gas scelto
         // debug($user);
 
+        $service_urls = [];
+        $service_urls['/admin/api/ProdGasSuppliers/import'] = '/admin/api/ProdGasSuppliers/import';
+        // $service_urls['/admin/api/SuppliersOrganizations/import'] = '/admin/api/SuppliersOrganizations/import';
+
+        $service_url = $this->request->getData('service_url');
+        $this->set(compact('service_url'));
+
+        if(!empty($service_url)) {
+
+            $results = [];
+        
+        }  // end if(!empty($service_url)) 
+            
+        $value1 = 'supplier_id';            
+
+        $this->set(compact('service_urls', 'value1'));
+    }
+
+    /*
+     * testing chiamata ajax getCartsByOrder
+     */
+    public function ajaxCart()
+    {
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+        // debug($user);
+
         $order_type_ids = [];
         $order_type_ids[Configure::read('Order.type.gas')] = 'Order.type.gas';
         $order_type_ids[Configure::read('Order.type.des')] = 'Order.type.des';

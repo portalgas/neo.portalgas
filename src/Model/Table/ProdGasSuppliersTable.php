@@ -31,9 +31,22 @@ class ProdGasSuppliersTable extends Table
             'foreignKey' => 'category_supplier_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('OwnerOrganizations', [
+        $this->belongsTo('Organizations', [
             'foreignKey' => 'owner_organization_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
+            'conditions' => ['Organizations.type' => 'PRODGAS', 'Organizations.stato' => 'Y']
+        ]); 
+
+        /* 
+         * SuppliersOrganizations legato al produttore
+         */
+        $this->belongsTo('OwnerSupplierOrganizations', [
+            'className' => 'OwnerSupplierOrganizations',
+            'joinType' => 'INNER',
+            'conditions' => ['OwnerSupplierOrganizations.stato' => 'Y'],
+            //'foreignKey' => 'supplier_id'
+            'foreignKey' => ['owner_organization_id', 'id'],     // fields Suppliers
+            'bindingKey' => ['organization_id', 'supplier_id'],  // fields OwnSuppliersOrganizations
         ]); 
         $this->hasMany('SuppliersOrganizations', [
             'foreignKey' => 'supplier_id'
@@ -65,42 +78,29 @@ class ProdGasSuppliersTable extends Table
     }
 
     /*
-     * dato un supplier_id estraggo l'eventuale ProdGasSupplier
+     * dato un supplier_id estraggo l'eventuale ProdGasSupplier e
+     * Organizations.type PRODGAS 
+     * SupplierOrganization (Suppliers.owner_organization_id) associato
      */
-    public function getBySupplierId($user, $supplier_id, $debug=false) {
-         
-        App::import('Model', 'Supplier');
-        $Supplier = new Supplier;
+    public function getBySupplierId($user, $supplier_id, $where=[], $debug=false) {
         
-        $Supplier->unbindModel(['belongsTo' => ['CategoriesSupplier', 'SuppliersDeliveriesType', 'Organization']]);
-        $Supplier->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization', 'foreignKey' => 'owner_organization_id']]]);
+        $where_supplier = [];
+        if(isset($where['Suppliers']))
+            $where_supplier = $where['Suppliers'];
+        $where_supplier = array_merge(['Suppliers.id' => $supplier_id,
+                              'Suppliers.stato IN ' => ['Y', 'T']], 
+                              $where_supplier);
+        if($debug) debug($where_supplier);
+
+        $supplier = $this->find()
+                    ->contain(['Organizations', // type = 'PRODGAS'
+                               'OwnerSupplierOrganizations'])
+                    ->where($where_supplier)
+                    ->first();
         
-        $options = [];
-        $options['conditions'] = ['Organization.type' => 'PRODGAS', 
-                                  'Supplier.id' => $supplier_id];
-        $options['recursive'] = 0;
-        $supplierResults = $Supplier->find('first', $options);
-        if($debug) debug($options);
-        if($debug) debug($options);
+        if($debug) debug($supplier);
         
-        if(!empty($supplierResults)) {
-            
-            App::import('Model', 'SuppliersOrganization');
-            $SuppliersOrganization = new SuppliersOrganization;
-            
-            $options = [];
-            $options['conditions'] = ['SuppliersOrganization.organization_id' => $supplierResults['Organization']['id'], 
-                                      'SuppliersOrganization.supplier_id' => $supplierResults['Supplier']['id']];
-            $options['recursive'] = -1;
-            if($debug) debug($options);
-            $suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
-        
-            $supplierResults += $suppliersOrganizationResults;
-        }
-        
-        if($debug) debug($supplierResults);
-        
-        return $supplierResults;
+        return $supplier;
     }           
                 
     /*

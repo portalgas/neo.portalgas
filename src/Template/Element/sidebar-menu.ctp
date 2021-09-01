@@ -34,6 +34,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </span>
     <ul class="treeview-menu">
       <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>   
+      <li><a href="<?php echo $this->Url->build('/admin/tests/ajax_cart'); ?>"><?php echo $icon;?><?php echo __('Tests ajax cart');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>   
       <li><a href="<?php echo $this->Url->build('/admin/tests/searchable'); ?>"><?php echo $icon;?><?php echo __('Tests searchable');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>      
       <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Logs Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
