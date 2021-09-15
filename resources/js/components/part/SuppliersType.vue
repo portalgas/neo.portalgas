@@ -3,8 +3,8 @@
   <div>
 
     <div class="wrapper">
-     <input type="radio" name="supplier_type" id="option-1" checked v-model="supplier_type" value="ALL">
-     <input type="radio" name="supplier_type" id="option-2" v-model="supplier_type" value="OWNER-ARTICLES">
+     <input type="radio" name="supplier_type" id="option-1" checked v-model="supplier_type" value="ALL" :disabled="isRunSuppliers">
+     <input type="radio" name="supplier_type" id="option-2" v-model="supplier_type" value="OWNER-ARTICLES" :disabled="isRunSuppliers">
        <label for="option-1" class="option option-1">
          <div class="dot"></div>
           <span>Tutti i produttori</span>
@@ -30,7 +30,8 @@ export default {
     return {
       supplier_type: 'ALL'
     };
-  },  
+  }, 
+  props: ['isRunSuppliers'], 
   watch: {
       supplier_type: function() {
       /* definito in <suppliers-type @changeSupplierType="onChangeSupplierType"> */

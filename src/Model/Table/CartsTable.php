@@ -159,9 +159,9 @@ class CartsTable extends Table
         if($debug) debug($where);
 
         $cartsResults = $this->find()
+                            ->contain(['Orders', 'ArticlesOrders'])
                             ->select(['Carts.qta', 'Carts.qta_forzato', 'Carts.importo_forzato', 'ArticlesOrders.prezzo'])
                             ->where($where) 
-                            ->contain(['Orders', 'ArticlesOrders'])
                             ->all();
         if(!empty($cartsResults) && $cartsResults->count()>0) {
             foreach($cartsResults as $cartsResult) {

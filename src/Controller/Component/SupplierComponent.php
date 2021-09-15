@@ -166,7 +166,7 @@ class SupplierComponent extends Component {
 
         $results = '';
 
-        $select = ['id', 'name', 'codice', 'nota', 'ingredienti', 'pezzi_confezione', 'img1', 'bio', 'qta', 'um', 'um_riferimento', 'stato', 'qta_massima', 'qta_minima', 'qta_multipli'];
+        $select = ['id', 'organization_id', 'name', 'codice', 'nota', 'ingredienti', 'pezzi_confezione', 'img1', 'bio', 'qta', 'um', 'um_riferimento', 'stato', 'qta_massima', 'qta_minima', 'qta_multipli'];
         if($user!==null) 
             array_push($select, 'prezzo'); // autenticato
         

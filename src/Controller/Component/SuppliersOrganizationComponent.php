@@ -47,79 +47,109 @@ class SuppliersOrganizationComponent extends Component {
 
     /*
      * dato un supplier_id, creo l'associazione con il GAS (suppliersOrganizations)
+     * options = owner_articles  'SUPPLIER', 'REFERENT', 'DES', 'PACT'
+     *           owner_organization_id 
+     *           owner_supplier_organization_id
      */
-    public function import($user, $supplier_id, $debug=false) {
+    public function import($user, $supplier_id, $options=[], $debug=false) {
 
         // $debug = true;
-        
+        $continua = true;
+
+        $results = [];
+        $results['esito'] = true;
+        $results['msg'] = '';
+        $results['msg_human'] = '';
+        $results['datas'] = [];
+            
         $organization_id = $user->organization->id; // gas scelto
 
         /*
-         * ctrl che il supplier sia Organizations.type = 'PRODGAS' o owner_organization_id
+         * ctrl se il GAS non
+         * gia' associato => salto
+         * e' in stato N => lo attivo
          */
-        $suppliersTable = TableRegistry::get('Suppliers');
-
-        $where = ['Suppliers.owner_organization_id != ' => 0,
-                 'Suppliers.stato' => ['Y', 'T']];
-        $supplier = $suppliersTable->find()
-                    ->where($where)
-                    ->first();
-
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
         $where = ['SuppliersOrganizations.organization_id' => $organization_id,
                  'SuppliersOrganizations.supplier_id' => $supplier_id];
+        if($debug) debug($where);
         $suppliersOrganization = $suppliersOrganizationsTable->find()
                     ->where($where)
                     ->first();
-        if($debug) debug($where);
+        
         if($debug) debug($suppliersOrganization);
-debug($suppliersOrganization);
-exit;
+
         if(!empty($suppliersOrganization))  {
-            $esito = true;
-            $code = 200;
-            $msg = 'supplierOrganizationsExists - supplier exist with supplier_id = ['.$supplier_id.'], organization_id = ['.$organization_id.'] => not insert';
-            $action = false;
+
+            switch ($suppliersOrganization->stato) {
+                case 'N':
+                    /*
+                     * lo riattivo
+                     */
+                    $datas = [];
+                    $datas['stato'] = 'Y';
+                    $suppliersOrganization = $suppliersOrganizationsTable->patchEntity($suppliersOrganization, $datas);
+                    if (!$suppliersOrganizationsTable->save($suppliersOrganization)) {
+                        $errors = $suppliersOrganization->getErrors();
+                        $results['esito'] = false;
+                        $results['msg'] = $errors;
+                        $results['msg_human'] = 'Errore nel salvataggio del produttore';
+                        $results['datas'] = $suppliersOrganization;
+
+                        $continua = false;
+                    }     
+                break;
+                case 'Y':
+                    /*
+                     * gia' presente
+                     */
+                    $results['esito'] = true;
+                    $results['msg'] = $suppliersOrganization;
+                    $results['msg_human'] = 'Produttore già presente';
+                    $results['datas'] = $suppliersOrganization;
+
+                    $continua = false;
+                break;
+                default:
+                    $results['esito'] = false;
+                    $results['msg'] = $suppliersOrganization->stato;
+                    $results['msg_human'] = 'Stato del produttore non previsto';
+                    $results['datas'] = $suppliersOrganization;
+
+                    $continua = false;
+                break;
+            }
         }
         else {
-
             /*
-             * creo SuppliersOrganizations ma il listino lo gestisce il produttore
-             */
+             * produttore non presente, lo associo al GAS
+             */            
             $suppliersTable = TableRegistry::get('Suppliers');
 
             $supplier = $suppliersTable->find()
-                                    ->contain(['SuppliersOrganizations' =>  
-                                                ['Organizations' => ['conditions' => ['type' => 'PRODGAS']]]])
                                     ->where(['Suppliers.id' => $supplier_id])
                                     ->first();
-             debug($supplier);
-            $data_override = [];
-            $data_override['owner_articles'] = 'SUPPLIER';
-            $data_override['owner_organization_id'] = $supplier->owner_organization_id;
-            $data_override['owner_supplier_organization_id'] = $supplier->suppliers_organizations[0]->id;
-             debug($data_override);
-exit;
-            $results = $suppliersOrganizationsTable->create($organization_id, $supplier, $data_override);   
-            if(!$results['esito']) {
-                $esito = $results['esito'];
-                $code = $results['code'];
-                $msg = $results['msg'];
-                $results = $results['results'];
+            // debug($supplier);
+
+
+            $suppliersOrganizationResults = $suppliersOrganizationsTable->create($organization_id, $supplier, $options);
+            if($suppliersOrganizationResults['esito']===false) {
+                $results['esito'] = false;
+                $results['msg'] = $suppliersOrganizationResults['esito'];
+                $results['msg_human'] = $suppliersOrganizationResults['msg_human'];
+                $results['datas'] = $suppliersOrganizationResults['datas'];
+
+                $continua = false;                
             }
-            else {
-                $esito = true;
-                $code = 200;
-                $msg = 'supplierOrganizationsExists - supplier not exist with supplier_id = ['.$supplier_id.'], organization_id = ['.$organization_id.'] => insert';                
+
+            if($continua) {
+                // restituisco il suppliersOrganizations creato, ex id
+                $results['datas'] = $suppliersOrganizationResults['datas'];;
             }
-            
-            /* 
-             * sempre a false perche' l'ho salvato prima
-             */
-            $action = false;
         }
 
-        exit;
+        return $results;
+
     }
 }

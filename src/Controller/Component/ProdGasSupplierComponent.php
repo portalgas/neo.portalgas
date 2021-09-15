@@ -9,7 +9,7 @@ use Cake\Controller\ComponentRegistry;
 
 class ProdGasSupplierComponent extends Component {
 
-    public $components = ['SuppliersOrganization'];
+    public $components = ['SuppliersOrganization', 'SuppliersOrganizationsReferent'];
 
     /*
      * dato un supplier_id, creo l'associazione con il GAS (suppliersOrganizations)
@@ -18,7 +18,8 @@ class ProdGasSupplierComponent extends Component {
     public function import($user, $supplier_id, $debug=false) {
 
         // $debug = true;
-       
+        $results = [];
+               
         $organization_id = $user->organization->id; // gas scelto
 
         /*
@@ -29,11 +30,28 @@ class ProdGasSupplierComponent extends Component {
         $where = [];
         $where['Suppliers'] = ['Suppliers.stato IN ' => ['Y', 'T']];
         $supplier = $prodGasSuppliersTable->getBySupplierId($user, $supplier_id, $where, $debug);
-   
+
         if(!empty($supplier)) {
-            $this->SuppliersOrganization->import($user, $supplier_id, $debug);
+
+            /*
+             * creo occorrenza SuppliersOrganization
+             */
+            $options = [];
+            $options['owner_articles'] = 'SUPPLIER';
+            $options['owner_organization_id'] = $supplier->owner_supplier_organization->organization_id;
+            $options['owner_supplier_organization_id'] = $supplier->owner_supplier_organization->id;
+
+            $results = $this->SuppliersOrganization->import($user, $supplier_id, $options, $debug);
+
+            if($results['esito']==true) {
+
+                $suppliersOrganization = $results['datas'];
+                $supplier_organization_id = $suppliersOrganization->id;
+
+                $results = $SuppliersOrganizationsReferent->import($user, $supplier_organization_id);          
+            }
         }
      
-        return [];
+        return $results;
     }
 }

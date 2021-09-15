@@ -216,7 +216,7 @@ class SuppliersController extends ApiAppController
             $where += ['MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'];
 
             $suppliersResults = $suppliersTable->find() 
-                ->select(['name', 'id', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
+                ->select(['name', 'id', 'descrizione', 'slug', 'voto', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
                       'relevance' => 'MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'])
                 ->contain(['CategoriesSuppliers'])
                 ->where($where)
@@ -311,6 +311,12 @@ class SuppliersController extends ApiAppController
         $where['Suppliers'] = [];
         $where['SuppliersOrganizations'] = [];
 
+        /*
+         * tratto solo i produttori che gestiscono il listino
+         */
+        $where['Suppliers'] += ['Suppliers.owner_organization_id != ' => 0];
+        $where['Suppliers'] += ['Suppliers.stato' => 'Y'];
+        
         $category_id = $this->request->getData('category_id');
         if(!empty($category_id)) 
             $where['Suppliers'] += ['Suppliers.category_supplier_id' => $category_id];
@@ -332,7 +338,6 @@ class SuppliersController extends ApiAppController
             $order = ['Suppliers.voto' => 'desc'];
         else
             $order = ['Suppliers.name' => 'asc'];   
-        $where['Suppliers'] += ['Suppliers.stato' => 'Y'];
 
         $page = $this->request->getData('page');
         if(empty($page)) $page = '1';
@@ -361,14 +366,16 @@ class SuppliersController extends ApiAppController
             else
                 $search = "'$q*'";
             // debug($search);
+            
+            $where['Suppliers'] += ['MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'];
 
-            $where += ['MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'];
+            $suppliersTable = TableRegistry::get('Suppliers'); 
 
             $suppliersResults = $suppliersTable->find() 
-                ->select(['name', 'id', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
+                ->select(['name', 'id', 'descrizione', 'slug', 'voto', 'indirizzo', 'localita', 'cap', 'provincia', 'lat', 'lng', 'telefono', 'telefono2', 'fax', 'mail', 'www', 'nota', 'piva', 'img1', 
                       'relevance' => 'MATCH(Suppliers.name) AGAINST('.$search.' IN BOOLEAN MODE)'])
                 ->contain(['CategoriesSuppliers'])
-                ->where($where)
+                ->where($where['Suppliers'])
                 ->limit($limit)
                 ->page($page)
                 ->order(['relevance' => 'desc']);

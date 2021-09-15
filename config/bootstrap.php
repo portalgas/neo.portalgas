@@ -338,7 +338,7 @@ Configure::write('SupplierOrganizationMailOrderCloseIni', 'Y');
 Configure::write('SupplierOrganizationOwnerArticlesIni', 'REFERENT');  
 Configure::write('SupplierOrganizationCanViewOrdersIni', 'Y');
 Configure::write('SupplierOrganizationCanViewOrdersUserIni', 'Y');
-Configure::write('SupplierOrganizationCanPromotionsIni', 'Y');
+Configure::write('SupplierOrganizationCanPromotionsIni', 'N');
 
 Configure::write('Gdxp.protocolVersion', '1.0');
 Configure::write('Gdxp.applicationSignature', 'PortAlGas');

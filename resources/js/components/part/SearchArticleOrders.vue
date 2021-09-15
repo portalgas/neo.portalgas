@@ -8,7 +8,7 @@
     </div>
     <input type="text" class="form-control" id="q-article" placeholder="Ricerca..."
           v-model="q" 
-          v-on:blur="search()" />
+          v-on:keyup="search()" />
   </div>
 
 </template>
@@ -26,7 +26,14 @@ export default {
 	methods: {
 		search() {
 			// console.log('search '+this.q);
-			this.$emit('search', this.q); /* definito in <app-search-articles @search="onSearch"> */
+
+      if (this.timer) {
+          clearTimeout(this.timer);
+          this.timer = null;
+      }
+      this.timer = setTimeout(() => {
+					this.$emit('search', this.q); /* definito in <app-search-articles @search="onSearch"> */
+      }, 800);		
 		}		
 	}
 };

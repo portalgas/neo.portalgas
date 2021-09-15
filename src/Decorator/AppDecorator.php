@@ -423,7 +423,7 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
     protected function _getArticleImg1($row) {
         
         // debug($row);
-        
+     
         if(isset($row->article_organization_id))
             $organization_id = $row->article_organization_id; // articleOrder
         else 

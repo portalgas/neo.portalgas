@@ -134,10 +134,12 @@ class SuppliersOrganizationsTable extends Table
      */
     public function create($organization_id, $supplier, $data_override=[], $debug = false)
     {
-        $esito = true;
-        $code = '200';
-        $msg = '';
-        $results = []; 
+        $results = [];
+        $results['esito'] = true;
+        $results['code'] = '200';
+        $results['msg'] = '';
+        $results['msg_human'] = '';
+        $results['datas'] = []; 
 
         // debug($supplier);
 
@@ -174,12 +176,11 @@ class SuppliersOrganizationsTable extends Table
         $entity = $this->patchEntity($entity, $data);
         // debug($entity);
         if (!$this->save($entity)) {
-            $esito = false;
-            $code = '500';
-            $msg = '';
-            $results = $entity->getErrors();
-
-            debug($results); exit;             
+            $results['esito'] = false;
+            $results['code'] = '500';
+            $results['msg'] = $entity->getErrors();
+            $results['msg_human'] = "Errore nell'inserimento del porduttore";
+            $results['datas'] = $entity->getErrors();              
         }
         else {
             if(empty($data['owner_supplier_organization_id']) || empty($data['owner_organization_id'])) {
@@ -192,21 +193,18 @@ class SuppliersOrganizationsTable extends Table
 
                 $entity = $this->patchEntity($entity, $data);
                 if (!$this->save($entity)) {
-                    $esito = false;
-                    $code = '500';
-                    $msg = '';
-                    $results = $entity->getErrors();   
-
-                    debug($results); exit;         
+                    $results['esito'] = false;
+                    $results['code'] = '500';
+                    $results['msg'] = $entity->getErrors();
+                    $results['msg_human'] = "Errore nell'aggiornamento del porduttore";
+                    $results['datas'] = $entity->getErrors();   
                 } 
                 else 
-                    $results = $entity;
+                    $results['datas'] = $entity;
             }  // end if(empty($data['owner_supplier_organization_id']) || empty($data['owner_organization_id']))              
             else
-                $results = $entity;                
+                $results['datas'] = $entity;
         }
-
-        $results = ['esito' => $esito, 'code' => $code, 'msg' => $msg, 'results' => $results];
 
         return $results; 
     }   

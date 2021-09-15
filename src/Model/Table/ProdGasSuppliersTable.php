@@ -93,8 +93,9 @@ class ProdGasSuppliersTable extends Table
         if($debug) debug($where_supplier);
 
         $supplier = $this->find()
-                    ->contain(['Organizations', // type = 'PRODGAS'
-                               'OwnerSupplierOrganizations'])
+                    ->contain(['Organizations' => ['conditions' => ['Organizations.type' => 'PRODGAS', 'Organizations.stato' => 'Y']],
+                               'OwnerSupplierOrganizations'
+                              ])  
                     ->where($where_supplier)
                     ->first();
         
