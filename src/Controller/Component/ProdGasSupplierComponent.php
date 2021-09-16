@@ -48,7 +48,7 @@ class ProdGasSupplierComponent extends Component {
                 $suppliersOrganization = $results['datas'];
                 $supplier_organization_id = $suppliersOrganization->id;
 
-                $results = $SuppliersOrganizationsReferent->import($user, $supplier_organization_id);          
+                $results = $this->SuppliersOrganizationsReferent->import($user, $supplier_organization_id);          
             }
         }
      

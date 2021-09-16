@@ -24,6 +24,8 @@ class UserUsergroupMap extends Entity
      * @var array
      */
     protected $_accessible = [
+        'user_id' => true,
+        'group_id' => true,
         'user' => true,
         'group' => true
     ];

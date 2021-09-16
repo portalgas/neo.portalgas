@@ -10,8 +10,8 @@ class SuppliersOrganizationsReferentComponent extends Component {
 
     /*
      * se !isSuperReferente = dato un supplier_organization_id e uno user creo l'associazione 
-     * se !isReferente = lo metto nel gruppo
-     * options = type (default REFERENT) / group_id (default Configure::read('group_id_referent'))
+     * se !isReferentGeneric = lo metto nel gruppo
+     * options = type (REFERENTE / COREFERENTE - default REFERENTE) / group_id (default Configure::read('group_id_referent'))
      */
     public function import($user, $supplier_organization_id, $options=[], $debug=false) {
 
@@ -39,10 +39,11 @@ class SuppliersOrganizationsReferentComponent extends Component {
         }  
 
         $user_id = $user->get('id');
+        $organization_id = $user->organization->id; // gas scelto
 
         if($continua) {
 
-            isset($options['type']) ?     $type = $options['type']: $type = 'REFERENT';
+            isset($options['type']) ?     $type = $options['type']: $type = 'REFERENTE';
             isset($options['group_id']) ? $group_id = $options['group_id']: $group_id = Configure::read('group_id_referent');
 
             $organization_id = $user->organization->id; // gas scelto
@@ -52,13 +53,14 @@ class SuppliersOrganizationsReferentComponent extends Component {
             /*
              * ctrl che non esista gia'
              */
-            $where = ['SuppliersOrganizationsReferents.supplier_organization_id' => $supplier_organization_id,
+            $where = ['SuppliersOrganizationsReferents.organization_id' => $organization_id,
+                      'SuppliersOrganizationsReferents.supplier_organization_id' => $supplier_organization_id,
                       'SuppliersOrganizationsReferents.user_id' => $user_id];
-            $SuppliersOrganizationsReferentResults = $SuppliersOrganizationsReferentsTable->find()
+            $suppliersOrganizationsReferentResults = $SuppliersOrganizationsReferentsTable->find()
                                                                                         ->where($where)
                                                                                         ->first();
 
-            if(!empty($SuppliersOrganizationsReferentResults)) {
+            if(!empty($suppliersOrganizationsReferentResults)) {
                 return $results;
             }   
                                                                                                  
@@ -66,6 +68,7 @@ class SuppliersOrganizationsReferentComponent extends Component {
              * inserisco occorrenza
              */
             $datas = [];
+            $datas['organization_id'] = $organization_id;
             $datas['supplier_organization_id'] = $supplier_organization_id;
             $datas['type'] = $type;
             $datas['user_id'] = $user_id;
@@ -73,7 +76,7 @@ class SuppliersOrganizationsReferentComponent extends Component {
             if($debug) debug($datas);
 
             $suppliersOrganizationsReferent = $SuppliersOrganizationsReferentsTable->newEntity();
-            $suppliersOrganizationsReferent = $SuppliersOrganizationsReferentsTable->patchEntity($suppliersOrganizationsReferent, $data);
+            $suppliersOrganizationsReferent = $SuppliersOrganizationsReferentsTable->patchEntity($suppliersOrganizationsReferent, $datas);
             // debug($suppliersOrganizationsReferent);
             if (!$SuppliersOrganizationsReferentsTable->save($suppliersOrganizationsReferent)) {
                 $results['esito'] = false;
@@ -87,7 +90,7 @@ class SuppliersOrganizationsReferentComponent extends Component {
         } // end if($continua)
      
         if($continua) {
-            if(!$user->acl['isReferente']) {
+            if(!$user->acl['isReferentGeneric']) {
                 /* 
                  * associo lo user al gruppo referente (j_user_usergroup_map)
                  */
@@ -99,8 +102,8 @@ class SuppliersOrganizationsReferentComponent extends Component {
                 if($debug) debug($datas);
 
                 $userUsergroupMap = $userUsergroupMapTable->newEntity();
-                $userUsergroupMap = $userUsergroupMapTable->patchEntity($suppliersOrganizationsReferent, $data);
-                // debug($suppliersOrganizationsReferent);
+                $userUsergroupMap = $userUsergroupMapTable->patchEntity($userUsergroupMap, $datas);
+                // debug($userUsergroupMap);
                 if (!$userUsergroupMapTable->save($userUsergroupMap)) {
                     $results['esito'] = false;
                     $results['code'] = '500';
@@ -110,7 +113,6 @@ class SuppliersOrganizationsReferentComponent extends Component {
 
                     $continua = false;            
                 }
-
             }  
         }
 

@@ -80,33 +80,6 @@ class OrganizationsProdGasTable extends OrganizationsTable implements Organizati
                         ->page($page)                        
                         ->all()
                         ->toArray();
-            
-        /*
-         * utente autenticato, controllo se il produttore e' gia' associato al GAS
-         */ 
-        if($user!==null) {
-
-            $organization_id = $user->organization->id; // gas scelto
-
-            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-
-            foreach($results as $numResult => $result) {
-
-                $where = ['SuppliersOrganizations.supplier_id' => $result['supplier']['id'],
-                          'SuppliersOrganizations.organization_id' => $organization_id];
-                // debug($where);
-                
-                $suppliersOrganizationsResults = $suppliersOrganizationsTable->find()
-                        ->where($where)
-                        ->first();                
-                
-                if(!empty($suppliersOrganizationsResults)) {
-                    $results[$numResult]['supplier']['hasOrganization'] = true;
-                }
-                else
-                    $results[$numResult]['supplier']['hasOrganization'] = false;                
-            }
-        }
 
         return $results;        
     }

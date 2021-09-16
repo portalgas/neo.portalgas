@@ -37,7 +37,7 @@
               </div>
 
               <div v-if="supplier.hasOrganization!=null && !supplier.hasOrganization && supplier_type=='OWNER-ARTICLES'">
-                <a class="btn btn-success btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalSupplierImport(supplier.id)">voglio comprare dal produttore</a>
+                <a class="btn btn-success btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalSupplierImport(supplier.id)">con il mio G.A.S., voglio comprare dal produttore</a>
                 
                 <div v-if="isLoadingSupplierImport" class="box-spinner"> 
                   <div class="spinner-border text-info" role="status">
@@ -143,7 +143,7 @@ export default {
     }, 
     clickShowOrHiddenModalSupplierImport (supplier_id) {
 
-      console.log('clickShowOrHiddenModalSupplierImport supplier_id '+supplier_id);
+      /* console.log('clickShowOrHiddenModalSupplierImport supplier_id '+supplier_id); */
 
       this.isLoadingSupplierImport=true;
 

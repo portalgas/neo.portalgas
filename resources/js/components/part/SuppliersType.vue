@@ -40,7 +40,7 @@ export default {
   },  
   methods: {
     onClick() {
-      console.log('- supplier_type '+this.supplier_type);
+      /* console.log('- supplier_type '+this.supplier_type); */
       
       /* definito in <suppliers-type @changeSupplierType="onChangeSupplierType"> */
       this.$emit('changeSupplierType', this.supplier_type); 

@@ -41,6 +41,9 @@ class SuppliersController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
     
+        /*
+         * null se non autenticato
+         */
         $user = $this->Authentication->getIdentity();
 
         $supplier_id = $this->request->getData('supplier_id');
@@ -69,7 +72,7 @@ class SuppliersController extends ApiAppController
         if($continua) {
             $supplier_id = $suppliersResult->id;
 
-            $suppliersResult = new ApiSupplierDecorator($suppliersResult);
+            $suppliersResult = new ApiSupplierDecorator($user, $suppliersResult);
             $results['results'] = $suppliersResult->results;
 
             $results['results']['articles'] = $this->Supplier->getArticles($user, $supplier_id);
@@ -124,7 +127,7 @@ class SuppliersController extends ApiAppController
         if($continua) {
             $supplier_id = $suppliersResult->id;
 
-            $suppliersResult = new ApiSupplierDecorator($suppliersResult);
+            $suppliersResult = new ApiSupplierDecorator($user, $suppliersResult);
             $results['results'] = $suppliersResult->results;
 
             $results['results']['articles'] = $this->Supplier->getArticles($user, $supplier_id);
@@ -241,35 +244,11 @@ class SuppliersController extends ApiAppController
         }
 
         if(!empty($suppliersResults)) {
-         
-            /*
-             * utente autenticato, controllo se il produttore e' gia' associato al GAS
-             */
-            if($user!==null) {
-                
-                $organization_id = $user->organization->id; // gas scelto
-
-                $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-
-                foreach($suppliersResults as $numResult => $suppliersResult) {
-
-                    $suppliersOrganizationsResults = $suppliersOrganizationsTable->find()
-                            ->where(['SuppliersOrganizations.supplier_id' => $suppliersResult->id,
-                                     'SuppliersOrganizations.organization_id' => $organization_id])
-                            ->first();                
-                    
-                    if(!empty($suppliersOrganizationsResults)) {
-                        $suppliersResults[$numResult]['hasOrganization'] = true;
-                    }
-                    else
-                        $suppliersResults[$numResult]['hasOrganization'] = false;
-                }
-            } 
 
             /*
              * Decorator
              */             
-            $suppliersResults = new ApiSupplierDecorator($suppliersResults);
+            $suppliersResults = new ApiSupplierDecorator($user, $suppliersResults);
             $results['results'] = $suppliersResults->results;
         }
   
@@ -378,9 +357,10 @@ class SuppliersController extends ApiAppController
                 ->where($where['Suppliers'])
                 ->limit($limit)
                 ->page($page)
-                ->order(['relevance' => 'desc']);
+                ->order(['relevance' => 'desc'])
+                ->toArray();
                 // ->bind(':search', $search, 'string')
-                // ->bind(':search', $search, 'string')                        
+                // ->bind(':search', $search, 'string')                                         
         }
         else {
             /*
@@ -400,7 +380,7 @@ class SuppliersController extends ApiAppController
         }
 
         if(!empty($suppliersResults)) {
-            $suppliersResults = new ApiSupplierDecorator($suppliersResults);
+            $suppliersResults = new ApiSupplierDecorator($user, $suppliersResults);
             $results['results'] = $suppliersResults->results;
         }
   

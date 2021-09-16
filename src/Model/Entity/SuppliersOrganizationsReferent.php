@@ -31,6 +31,11 @@ class SuppliersOrganizationsReferent extends Entity
      * @var array
      */
     protected $_accessible = [
+        'organization_id' => true,
+        'supplier_organization_id' => true,
+        'user_id' => true,
+        'group_id' => true,
+        'type' => true,
         'created' => true,
         'modified' => true,
         'organization' => true,

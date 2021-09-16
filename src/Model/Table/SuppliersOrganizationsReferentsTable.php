@@ -86,9 +86,9 @@ class SuppliersOrganizationsReferentsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['supplier_organization_id'], 'SupplierOrganizations'));
+        // $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['group_id'], 'Groups'));
+        // $rules->add($rules->existsIn(['group_id'], 'Groups'));
 
         return $rules;
     }

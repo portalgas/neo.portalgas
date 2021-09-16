@@ -104,7 +104,7 @@ class SuppliersOrganizationComponent extends Component {
                     /*
                      * gia' presente
                      */
-                    $results['esito'] = true;
+                    $results['esito'] = false;
                     $results['msg'] = $suppliersOrganization;
                     $results['msg_human'] = 'Produttore già presente';
                     $results['datas'] = $suppliersOrganization;

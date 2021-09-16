@@ -5,7 +5,7 @@
     <modal-component-supplier></modal-component-supplier>
     <modal-component-supplier-import></modal-component-supplier-import>
 
-    <form>
+    <form @submit.prevent="onSubmitMethod">
 
     <!-- v-if="is_logged" -->
     <suppliers-type @changeSupplierType="onChangeSupplierType" v-bind:isRunSuppliers="isRunSuppliers"></suppliers-type>
@@ -248,6 +248,9 @@ export default {
           this.isRunProvinces = false;
           console.error("Error: " + error);
         });    
+    },
+    onSubmitMethod(event) {
+      event.preventDefault();
     },
     searchByName() {
       console.log('searchByName() q '+this.q);

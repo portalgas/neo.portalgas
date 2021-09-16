@@ -18,6 +18,57 @@
 <section id="about" class="about" v-if="modalContent.entity!=null">
     <div class="content container aos-init aos-animate" data-aos="fade-up">
 
+      <!-- I M P O R T -->
+    <div v-if="!modalContent.entity.hasOrganization">
+        
+        <div class="jumbotron jumbotron-fluid" v-if="!importFinish">
+          <div class="container">
+            <h1 class="display-4">Importalo tra i produttori del tuo G.A.S.</h1>
+            <p class="lead">Questo <b>produttore</b> gestisce il proprio listino articoli, quindi il <b>referente</b> dovrà solo aprire e gestire l'ordine! </p>
+            <hr class="my-4">
+            <p>Clicca sul bottone sottostante per iniziare l'importazione</p>
+            
+            <p class="lead">
+                
+                <a v-if="!isImportSupplier" class="btn btn-success btn-block btn-lg cursor-pointer mb-3" @click="clickImport(modalContent.entity.id)" role="button">
+                  Importa</a>
+            
+                <div v-if="isImportSupplier" class="box-spinner"> 
+                  <div class="spinner-border text-info" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>  
+                </div> 
+              </div>
+
+            </p>        
+          </div> <!-- container -->
+        </div> <!-- jumbotron -->
+
+        <div class="alert alert-success alert-dismissible fade show" role="alert" v-if="importFinish && msg==null">
+          <h4 class="alert-heading">Produttore importato</h4>
+          <p>
+          <ol>
+            <li>Contatta il produttore</li>
+            <li>Poi potrai accedere a <a href="https://www.portalgas.it/my" target="_blank">https://www.portalgas.it/my</a> e creare un ordine</li>
+          </ol>
+          <hr>
+          <p class="mb-3">Potrai <b>consultare</b> il listino articoli ma non dovrai più preoccuparti di aggiornarlo, ci penserà il produttore!</p>
+
+          <p>
+            <a class="btn btn-primary btn-block btn-lg cursor-pointer mb-3" href="/site/produttori" role="button">ricarica la pagina</a>
+          </p> 
+        </div>
+
+        <div class="alert alert-danger" role="alert" v-if="importFinish && msg!=null">
+          {{ msg }}
+        </div>
+
+    </div> <!-- !modalContent.entity.hasOrganization -->
+    
+    <div class="alert alert-danger" role="alert" v-if="modalContent.entity.hasOrganization">
+      Il produttore rifornisce già il tuo G.A.S.
+    </div>
+
       <div class="section-title" v-if="modalContent.entity.descrizione">
         <p>{{ modalContent.entity.descrizione }}</p>
       </div>
@@ -39,16 +90,6 @@
               </div> <!-- row -->
               
               <div class="box-more-info">
-                <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickImport(modalContent.entity.id)">importalo</a>
-                
-                <div v-if="isLoadingSupplier" class="box-spinner"> 
-                  <div class="spinner-border text-info" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>  
-                </div> 
-              </div>
-
-
 
               <div class="row">
                 <div class="col-lg-12">
@@ -133,7 +174,9 @@ export default {
   },
   data() {
     return {
-      isLoadingSupplier: false,
+      isImportSupplier: false,
+      importFinish: false,
+      msg: null
     };
   },  
   mounted() {
@@ -147,14 +190,18 @@ export default {
   methods: {
     ...mapActions(['showOrHiddenModalSupplierImport']),
     closeModal() {
+      this.isImportSupplier = false;
+      this.importFinish = false;  
+      this.msg = null;
+
       this.showOrHiddenModalSupplierImport();
     },  
     clickImport (supplier_id) {
 
       console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id);
 
-      this.isLoadingSupplier=true;
-
+      this.isImportSupplier=true;
+ 
       let params = {
         supplier_id: supplier_id
       };
@@ -168,12 +215,16 @@ export default {
             console.log(response.data); 
             
             if(typeof response.data !== "undefined") {
+              this.isImportSupplier=false;
 
-              this.isLoadingSupplier=false;
+              if(response.data.esito==false)
+                this.msg = response.data.msg_human;
+
+              this.importFinish = true;
             }
         })
         .catch(error => {
-          this.isLoadingSupplier=false;
+          this.isImportSupplier=false;
           console.error("Error: " + error);
         });
       
@@ -263,7 +314,7 @@ export default {
   opacity: 0;
 }
 
-a {
+a:not[.btn] {
   color: #0a659e !important;
 }
 .about .content ul {
