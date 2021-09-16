@@ -286,15 +286,6 @@ class SuppliersController extends ApiAppController
         $organizationsProdGasTable = TableRegistry::get('OrganizationsProdGas'); 
 
         $where = []; 
-        $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
-        $where['Suppliers'] = [];
-        $where['SuppliersOrganizations'] = [];
-
-        /*
-         * tratto solo i produttori che gestiscono il listino
-         */
-        $where['Suppliers'] += ['Suppliers.owner_organization_id != ' => 0];
-        $where['Suppliers'] += ['Suppliers.stato' => 'Y'];
         
         $category_id = $this->request->getData('category_id');
         if(!empty($category_id)) 
@@ -318,6 +309,16 @@ class SuppliersController extends ApiAppController
         else
             $order = ['Suppliers.name' => 'asc'];   
 
+        $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
+        $where['Suppliers'] = [];
+        $where['SuppliersOrganizations'] = [];
+
+        /*
+         * tratto solo i produttori che gestiscono il listino
+         */
+        $where['Suppliers'] += ['Suppliers.owner_organization_id != ' => 0];
+        $where['Suppliers'] += ['Suppliers.stato' => 'Y'];
+        
         $page = $this->request->getData('page');
         if(empty($page)) $page = '1';
         $limit = Configure::read('sql.limit');
