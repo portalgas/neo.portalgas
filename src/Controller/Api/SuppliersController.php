@@ -286,7 +286,10 @@ class SuppliersController extends ApiAppController
         $organizationsProdGasTable = TableRegistry::get('OrganizationsProdGas'); 
 
         $where = []; 
-        
+        $where['Organizations'] = []; 
+        $where['Suppliers'] = [];
+        $where['SuppliersOrganizations'] = [];
+
         $category_id = $this->request->getData('category_id');
         if(!empty($category_id)) 
             $where['Suppliers'] += ['Suppliers.category_supplier_id' => $category_id];
@@ -310,8 +313,6 @@ class SuppliersController extends ApiAppController
             $order = ['Suppliers.name' => 'asc'];   
 
         $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
-        $where['Suppliers'] = [];
-        $where['SuppliersOrganizations'] = [];
 
         /*
          * tratto solo i produttori che gestiscono il listino
