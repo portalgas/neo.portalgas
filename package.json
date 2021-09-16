@@ -11,7 +11,7 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "axios": ">=0.21.1",
+        "axios": ">=0.21.2",
         "cross-env": "^5.1",
         "laravel-mix": "^5.0.1",
         "resolve-url-loader": "^2.3.1",
@@ -24,7 +24,7 @@
         "@googlemaps/js-api-loader": "^1.12.1",
         "@sentry/tracing": "^5.29.2",
         "@sentry/vue": "^5.29.2",
-        "axios": "^0.19.2",
+        "axios": "^0.21.2",
         "bootstrap": "^4.4.1",
         "bootstrap-vue": "^2.5.0",
         "bulma": "^0.8.0",
