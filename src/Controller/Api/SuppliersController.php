@@ -303,7 +303,7 @@ class SuppliersController extends ApiAppController
         $province_id = $this->request->getData('province_id');
         if(!empty($province_id)) 
             $where['Suppliers'] += ['Suppliers.provincia' => $province_id];
-        
+
         if(empty($where)) // non e' stata effettuata alcuna ricerca
             $order = ['Suppliers.voto' => 'desc'];
         else
@@ -318,11 +318,10 @@ class SuppliersController extends ApiAppController
          */
         $where['Suppliers'] += ['Suppliers.owner_organization_id != ' => 0];
         $where['Suppliers'] += ['Suppliers.stato' => 'Y'];
-        
+
         $page = $this->request->getData('page');
         if(empty($page)) $page = '1';
-        $limit = Configure::read('sql.limit');
-        $sort = ['Suppliers.name']; 
+        $limit = Configure::read('sql.limit'); 
 
         $q = $this->request->getData('q');
         if(!empty($q)) {
@@ -370,7 +369,7 @@ class SuppliersController extends ApiAppController
             $options = [];
             $options['page'] = $page;
             $options['q'] = $q;
-            $options['sort'] = $sort;
+            $options['sort'] = $order;
             $options['sql_limit'] = Configure::read('sql.limit');
 
             $suppliersResults = [];
