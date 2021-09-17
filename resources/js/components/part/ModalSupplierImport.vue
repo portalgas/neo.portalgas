@@ -1,30 +1,36 @@
 <template>
-  <div>
 
-    <transition name="fade">
-      <div class="modal-wrapper" v-show="showModalSupplier" tabindex="-1" role="dialog">
+  <main>
 
-          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">{{modalContent.title}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Chiudi" @click="closeModal()">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
+  <transition name="fade">
+    
+    <div class="modal-wrapper" v-show="showModalSupplier" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+          <div class="modal-content">
+            
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel">{{modalContent.title}}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Chiudi" @click="closeModal()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            
+            <div class="modal-body">
+
 
 
 <section id="about" class="about" v-if="modalContent.entity!=null">
-    <div class="content container aos-init aos-animate" data-aos="fade-up">
+<div class="content container aos-init aos-animate" data-aos="fade-up">
 
-      <!-- I M P O R T -->
+    
+    <!-- I M P O R T -->
     <div v-if="!modalContent.entity.hasOrganization">
         
         <div class="jumbotron jumbotron-fluid" v-if="!importFinish">
           <div class="container">
             <h1 class="display-4">Importalo tra i produttori del tuo G.A.S.</h1>
-            <p class="lead">Questo <b>produttore</b> gestisce il proprio listino articoli, quindi il <b>referente</b> dovrà solo aprire e gestire l'ordine! </p>
+            <p class="lead">Questo <b>produttore</b> gestisce il proprio listino articoli, quindi il <b>referente</b> dovrà solo aprire e gestire l'ordine!</p>
             <hr class="my-4">
             <p>Clicca sul bottone sottostante per iniziare l'importazione</p>
             
@@ -38,7 +44,6 @@
                     <span class="sr-only">Loading...</span>
                   </div>  
                 </div> 
-              </div>
 
             </p>        
           </div> <!-- container -->
@@ -64,32 +69,29 @@
         </div>
 
     </div> <!-- !modalContent.entity.hasOrganization -->
-    
-    <div class="alert alert-danger" role="alert" v-if="modalContent.entity.hasOrganization">
-      Il produttore rifornisce già il tuo G.A.S.
+
+
+    <div class="section-title" v-if="modalContent.entity.descrizione">
+      <p>{{ modalContent.entity.descrizione }}</p>
     </div>
 
-      <div class="section-title" v-if="modalContent.entity.descrizione">
-        <p>{{ modalContent.entity.descrizione }}</p>
-      </div>
-
-      <div class="row">
-          <div class="col-lg-3 text-center">
-              <img v-if="modalContent.entity.img1 != ''"
-              class="img-supplier responsive img-fluid"
-              :src="modalContent.entity.img1"
-              :alt="modalContent.entity.name" />
-          </div>
-          <div class="col-lg-9 pt-4 pt-lg-0 content">
-            <h3 v-if="modalContent.entity.categories_supplier!=null">Categoria: {{ modalContent.entity.categories_supplier.name }}</h3>
+    <div class="row">
+        <div class="col-lg-3 text-center">
+            <img v-if="modalContent.entity.img1 != ''"
+            class="img-supplier responsive img-fluid"
+            :src="modalContent.entity.img1"
+            :alt="modalContent.entity.name" />
+        </div>
+        <div class="col-lg-9 pt-4 pt-lg-0 content">
+          <h3 v-if="modalContent.entity.categories_supplier!=null">Categoria: {{ modalContent.entity.categories_supplier.name }}</h3>
+          
+            <div class="row" v-if="modalContent.entity.nota">
+                <div class="col-lg-12">
+                  {{ modalContent.entity.nota }}
+                </div>
+            </div> <!-- row -->
             
-              <div class="row" v-if="modalContent.entity.nota">
-                  <div class="col-lg-12">
-                    {{ modalContent.entity.nota }}
-                  </div>
-              </div> <!-- row -->
-              
-              <div class="box-more-info">
+            <div class="box-more-info">
 
               <div class="row">
                 <div class="col-lg-12">
@@ -102,12 +104,14 @@
                     </ul>
                 </div>
               </div> <!-- row -->
+            
+            </div> <!-- box-more-info -->
 
-              <div v-if="modalContent.entity.voto!=0" v-html="modalContent.entity.voto_html"></div>
+            <div v-if="modalContent.entity.voto!=0" v-html="modalContent.entity.voto_html"></div>
 
-           </div>
+         </div>
 
-        </div>  <!-- row -->
+      </div>  <!-- row -->
 
           <!--  ARTICLES   -->
           <!--  ARTICLES   -->
@@ -141,26 +145,29 @@
 
               </div> <!-- loop -->
 
-          </div>  <!-- v-if -->
+</div>  <!-- v-if -->
+</div> <!-- content container --> 
+</section>
 
-    </div>
-  </section>
 
+
+
+            </div> <!-- modal-body -->
   
-              </div> <!-- modal-content -->
-              <div class="modal-footer">
+          </div> <!-- modal-content -->
+          
+          <div class="modal-footer">
                 {{modalContent.footer}}
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeModal()">Chiudi</button>
-              </div>
-            </div>
           </div>
+        </div> <!-- modal-dialog -->
+    </div>
 
-      </div>
     </transition>
     <transition name="fade">
         <mask-component v-show="showModalSupplier"/>
     </transition>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -198,7 +205,7 @@ export default {
     },  
     clickImport (supplier_id) {
 
-      console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id);
+      /* console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id); */
 
       this.isImportSupplier=true;
  
@@ -212,7 +219,7 @@ export default {
         .post(url, params)
         .then(response => {
             
-            console.log(response.data); 
+            /* console.log(response.data); */
             
             if(typeof response.data !== "undefined") {
               this.isImportSupplier=false;

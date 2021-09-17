@@ -171,7 +171,7 @@ export default {
     },
     onChangeSupplierType: function(supplier_type) {
       this.supplier_type = supplier_type;
-      console.log('supplier_type '+this.supplier_type);
+      /* console.log('supplier_type '+this.supplier_type); */
       this.onSearch();
     },    
     getName:function(name) {
@@ -283,7 +283,7 @@ export default {
     },
     onSearch: function() {
 
-      console.log('onSearch');
+      /* console.log('onSearch'); */
       
       this.suppliers = [];
       this.page = 1;

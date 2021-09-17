@@ -100,7 +100,7 @@ export default {
     }, 
     clickShowOrHiddenModalSupplier (supplier_id) {
 
-      console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id);
+      /* console.log('clickShowOrHiddenModalSupplier supplier_id '+supplier_id); */
 
       this.isLoadingSupplier=true;
 
@@ -115,7 +115,7 @@ export default {
         .post(url, params)
         .then(response => {
             
-            console.log(response.data); 
+            /* console.log(response.data); */
             
             if(typeof response.data !== "undefined") {
 

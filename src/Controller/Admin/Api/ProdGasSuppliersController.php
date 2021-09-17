@@ -2,9 +2,10 @@
 namespace App\Controller\Admin\Api;
 
 use App\Controller\AppController;
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Cake\Log\Log;
+use Cake\Core\Configure;
 
 class ProdGasSuppliersController extends ApiAppController
 {
@@ -38,6 +39,7 @@ class ProdGasSuppliersController extends ApiAppController
         $results['datas'] = [];
     
         $supplier_id = $this->request->getData('supplier_id');
+        Log::info("import produttore - supplier_id [".$supplier_id."] ", ['scope' => ['monitoring']]);
         if(empty($supplier_id)) {
             $continua = false;
             $results['esito'] = false;
@@ -49,6 +51,7 @@ class ProdGasSuppliersController extends ApiAppController
 
         if($continua) {
             $user = $this->Authentication->getIdentity();
+            Log::info("import produttore - organization_id [".$user->organization->id."] ", ['scope' => ['monitoring']]);
             // $organization_id = $user->organization->id; // gas scelto
             // debug($user);
             if(empty($user) || empty($user->organization)) {
