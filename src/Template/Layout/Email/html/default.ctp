@@ -99,12 +99,12 @@ use Cake\Core\Configure;
                         <table width="100%" border="0" cellpadding="5" cellspacing="0">
                             <tr valign="middle" class="bgContenuto" bgcolor="#FFFFFF">
                                 <td align="right">
-                                    <?php (isset($header['logo'])) ? echo $header['logo']: echo ''; ?>
+                                    <?php echo (isset($body_header['logo'])) ? $body_header['logo']: ''; ?>
                                 </td>
                             </tr>
                             <tr valign="middle" class="tblHeader" bgcolor="#CCCCCC">
                                 <td height="35" align="left" nowrap="nowrap" bgcolor="#CCCCCC">
-                                    <?php (isset($header['greeting'])) ? echo $header['greeting']: echo ''; ?>
+                                    <?php echo (isset($body_header['greeting'])) ? $body_header['greeting']: ''; ?>
                                 </td>
                             </tr>
                         </table>
@@ -136,7 +136,7 @@ use Cake\Core\Configure;
                         <table width="100%" border="0" cellpadding="1" cellspacing="5" class="tblFooter" bgcolor="#F0F0F0">
                             <tr valign="middle">
                                 <td align="left" width="59%">
-                                    <?php (isset($footer['text'])) ? echo $footer['text']: echo ''; ?>
+                                    <?php echo (isset($body_footer['text'])) ? $body_footer['text']: ''; ?>
                                 </td>
                                 <td align="left" width="20%">
                                         <!-- span>

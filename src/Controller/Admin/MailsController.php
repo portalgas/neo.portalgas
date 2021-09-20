@@ -34,7 +34,6 @@ class MailsController extends AppController
         
         $debug=false;
 
-        $organizationsProdGas = [];
         $listOrganizationsProdGas = [];
         $listSuppliers = [];
 
@@ -52,7 +51,7 @@ class MailsController extends AppController
         $where = [];
         $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
         $organizationsProdGas = $organizationsProdGasTable->gets($where);
-        foreach($results as $result) {
+        foreach($organizationsProdGas as $result) {
             // debug($fullbaseUrl.'/site/produttore/'.$result->slug);
             $listOrganizationsProdGas[$result->supplier->id] = $this->_fullbaseUrl.'/site/produttore/'.$result->supplier->slug;
         }
@@ -64,8 +63,7 @@ class MailsController extends AppController
          */        
         $suppliersTable = TableRegistry::get('Suppliers'); 
        
-        $where = []; // ['Suppliers.stato' => 'Y'];
-        $suppliers = [];
+        $where = ['Suppliers.stato IN' => ['Y', 'T']]; // ENUM('Y', 'N', 'T', 'PG')
         $results = $suppliersTable->find()
                                 ->where($where)
                                 ->order(['Suppliers.name' => 'asc'])
@@ -78,19 +76,15 @@ class MailsController extends AppController
 
         if ($this->request->is('post')) {
 
-                    $name = '';
-                    $to = 'francesco.actis@gmail.com';
-                    $mail_subject = $this->request->getData('mail_subject');
-                    $mail_body = $this->request->getData('mail_body');
+            $name = 'fractis';
+            $mails = ['francesco.actis@gmail.com'];
+            $mail_subject = $this->request->getData('mail_subject');
+            $mail_body = $this->request->getData('mail_body');
+            
+            $options = [];
+            $options['name'] = $name;
                     
-                    $options = [];
-                    $options['name'] = $name;
-                    $email = $this->Mail->getMailSystem($user, $options);
-                    
-                    $email->setTo($to)
-                          ->setSubject($mail_subject);
-        
-                    $this->Mail->send($email, $mails, $body_mail, $debug);
+            $this->Mail->send($user, $mails, $mail_subject, $mail_body, $options, $debug);
 
             /*
             foreach($organizationsProdGas as $organizationsProdGa) {
@@ -119,7 +113,6 @@ class MailsController extends AppController
                 }
             } // foreach
             */
-            exit;
                 
             $this->Flash->success(__('send mail to ').$to);
         } // end POST

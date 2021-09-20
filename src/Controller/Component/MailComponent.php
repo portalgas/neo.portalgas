@@ -9,8 +9,12 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Mailer\Email;
 use Cake\Routing\Router;
 
+/*
+ * layout /src/Template/Layout/Email/html/default.ctp
+ */
 class MailComponent extends Component {
 
+	private $_email;  // se false non invia mail (config_{env}.php)
 	private $_mail_send;  // se false non invia mail (config_{env}.php)
 	private $_fullbaseUrl = null;
 
@@ -25,34 +29,37 @@ class MailComponent extends Component {
 
 	/*
 	 * crea oggetto mail per invio mail di sistema
+	 * options = name (nome user per header)
 	 */
-	 public function getMailSystem($user, $options) {
+	 private function _setMailSystem($user, $options) {
 		
         $config = Configure::read('Config');
         $this->_mail_send = $config['mail.send'];
 
-		$email = new Email(Configure::read('EmailConfig')); // aws
-		$email->setFrom([Configure::read('SOC.mail') => Configure::read('SOC.name')])
+		$this->_email = new Email(Configure::read('EmailConfig')); // aws
+		$this->_email->setFrom([Configure::read('SOC.mail') => Configure::read('SOC.name')])
 			  ->setReplyTo([Configure::read('Mail.no_reply_mail') => Configure::read('Mail.no_reply_name')])
 			  ->setSender([Configure::read('SOC.mail') => Configure::read('SOC.name')]) // real sender
 			  ;
 
         /*
-         * Template\Email\html\default.ctp
-         * Template\Layout\Email\html\portalgas.ctp
+         * /src/Template/Email/html/default.ctp
+         * /src/Template/Layout/Email/html/default.ctp
          */
-        $email->setTemplate('default', 'default')
+        $this->_email->setTemplate('default', 'default')
         	  ->setEmailFormat('html')
         	  ->setViewVars(['body_header' => $this->_getHeader($user, $options)])
         	  ->setViewVars(['body_footer' => $this->_getFooter($user, $options)]);
-
-		return $email;
 	}
 	
 	/*
 	 * $mails = [$UserProfile.email, User.email] perche' restituisco il risultato solo della  
 	 */
-	public function send($Email, $mails, $body_mail, $debug=false) {
+	public function send($user, $mails, $subject, $body, $options=array(), $debug=false) {
+
+		$this->_setMailSystem($user, $options);
+
+		$this->_email->setSubject($subject);
 
 		$results = [];
 		$_mails = [];
@@ -84,9 +91,9 @@ class MailComponent extends Component {
 				*/
 			
 				$exclude = false;
-				foreach(Configure::read('EmailExcludeDomains') as $emailExcludeDomain) {
-					if($debug) debug('Mail::send - EmailExcludeDomains '.$mail.' - '.$emailExcludeDomain);
-					if(strpos($mail, $emailExcludeDomain)!==false) {
+				foreach(Configure::read('EmailExcludeDomains') as $this->_emailExcludeDomain) {
+					if($debug) debug('Mail::send - EmailExcludeDomains '.$mail.' - '.$this->_emailExcludeDomain);
+					if(strpos($mail, $this->_emailExcludeDomain)!==false) {
 						$exclude = true;
 						break;
 					}
@@ -97,22 +104,23 @@ class MailComponent extends Component {
 					$results['OK'] = $mail.' (modalita DEBUG)';
 				}
 				else {
-					$Email->viewVars(array('content_info' => $this->_getContentInfo()));
-					
-					if(!$this->_mail_send) $Email->transport('Debug');
-					
+					/*
+					 * todo
+					 * $this->_email->viewVars(array('content_info' => $this->_getContentInfo()));
+					 */
+										
 					if($debug) {
 						if (!$this->_mail_send)
 							if($debug) debug("Mail::send - inviata a " . $mail . " (modalita DEBUG)");
 						else
 							if($debug) debug("Mail::send - inviata a " . $mail);
 											
-						if($debug) debug("Mail::send - mail TO: ".$mail." body_mail ".$body_mail);
+						if($debug) debug("Mail::send - mail TO: ".$mail." $body ".$body);
 					}
 
 					try {
-						$Email->to($mail);
-						$Email->send($body_mail);
+						$this->_email->setTo($mail);
+						$this->_email->send($body);
 						
 						if (!$this->_mail_send)
 							$results['OK'] = $mail.' (modalita DEBUG)';
@@ -124,7 +132,9 @@ class MailComponent extends Component {
 					}
 				}
 			} // end if(empty($mail)) 
-			self::d($results, $debug);
+			
+			if($debug) debug($result);
+
 		} // loops mails
 		
 		return $results;
@@ -136,7 +146,7 @@ class MailComponent extends Component {
 			$results['greeting'] = sprintf(Configure::read('Mail.body_header'), $options['name']);
 		}
 		$results['logo'] = $this->_drawLogo($user->organization);
-		
+			
 		return $results;
 	}						
 	
