@@ -7,16 +7,24 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
 use App\Decorator\ArticleDecorator;
+use Cake\Routing\Router;
 
 class SupplierComponent extends Component {
 
     protected $_registry;
+    private $_fullbaseUrl = null;
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_registry = $registry;
         $controller = $registry->getController();
         //$controller->request
+
+        $this->_fullbaseUrl = Router::fullbaseUrl();
+    }
+
+    public function getSlug($supplier) {
+        return $this->_fullbaseUrl.'/site/produttore/'.$supplier->slug;
     }
 
     public function getArticles($user, $supplier_id, $options=[], $debug=false) {

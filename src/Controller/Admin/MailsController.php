@@ -5,34 +5,45 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-use Cake\Routing\Router;
+use Cake\Log\Log;
 
 class MailsController extends AppController
 {
-    private $_fullbaseUrl = null;
-
     public function initialize()
     {
         parent::initialize();
         $this->loadComponent('Auths');
         $this->loadComponent('Mail');
+        $this->loadComponent('Supplier');
     }
 
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
 
-        if(!isset($this->Authentication->getIdentity()->acl) && !$this->Authentication->getIdentity()->acl['isRoot']) {
+        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) && !$this->Authentication->getIdentity()->acl['isRoot'])) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
-
-        $this->_fullbaseUrl = Router::fullbaseUrl();
     }
 
     public function suppliers() {
-        
-        $debug=false;
+   
+        $mail_subject = "Nuova pagina produttori";
+        $mail_body = "Abbiamo ridisegnato la pagina dei produttori per renderla più fruibile ai G.A.S.<br />
+Questo è l'indirizzo relativo alla tua pagina <a href='%s' target='_blank'>%s</a>: se i dati non fossero corretti scrivici all'indirizzo mail 
+<a href='mailto:".Configure::read('SOC.mail-contatti')."'>".Configure::read('SOC.mail-contatti')."</a><br />
+Grazie per la collaborazione.<br />
+Francesco & Marco
+        ";
+        $this->set(compact('mail_subject', 'mail_body')); 
+
+        /*
+         * in MailComponent scrive log su debug.log 
+         */
+        $config = Configure::read('Config');
+        ($config['mail.send']==true) ? $debug = false: $debug = true;
+        // debug($debug);
 
         $listOrganizationsProdGas = [];
         $listSuppliers = [];
@@ -51,9 +62,9 @@ class MailsController extends AppController
         $where = [];
         $where['Organizations'] = ['OrganizationsProdGas.stato' => 'Y']; 
         $organizationsProdGas = $organizationsProdGasTable->gets($where);
+        // $listOrganizationsProdGas[0] = __('ALL');
         foreach($organizationsProdGas as $result) {
-            // debug($fullbaseUrl.'/site/produttore/'.$result->slug);
-            $listOrganizationsProdGas[$result->supplier->id] = $this->_fullbaseUrl.'/site/produttore/'.$result->supplier->slug;
+            $listOrganizationsProdGas[$result->supplier->id] = $this->Supplier->getSlug($result->supplier);
         }
         // debug($listOrganizationsProdGas);
         $this->set(compact('listOrganizationsProdGas'));
@@ -68,55 +79,82 @@ class MailsController extends AppController
                                 ->where($where)
                                 ->order(['Suppliers.name' => 'asc'])
                                 ->all(); 
+        // $listSuppliers[0] = __('ALL');                                
         foreach($results as $result) {
-            // debug($fullbaseUrl.'/site/produttore/'.$result->slug);
-            $listSuppliers[$result->id] = $this->_fullbaseUrl.'/site/produttore/'.$result->slug;
+            $listSuppliers[$result->id] = $this->Supplier->getSlug($result);
         }
         $this->set(compact('listSuppliers'));
 
         if ($this->request->is('post')) {
 
-            $name = 'fractis';
-            $mails = ['francesco.actis@gmail.com'];
+            // debug($this->request->getData());
+            
+            $organization_prod_gas_id = $this->request->getData('organization_prod_gas_id');
+            $supplier_id = $this->request->getData('supplier_id');
+
+             $ids = [];
+            if(!empty($organization_prod_gas_id))
+                $ids = $organization_prod_gas_id;
+            else
+            if(!empty($supplier_id))
+                $ids = $supplier_id;
+
+            if(empty($ids)) {
+                $this->Flash->error('Seleziona i produttori ai quali inviare la mail');                
+                return $this->redirect(['action' => 'suppliers']);
+            }
+
             $mail_subject = $this->request->getData('mail_subject');
             $mail_body = $this->request->getData('mail_body');
-            
-            $options = [];
-            $options['name'] = $name;
-                    
-            $this->Mail->send($user, $mails, $mail_subject, $mail_body, $options, $debug);
+            if(empty($mail_subject) || empty($mail_body)) {
+                $this->Flash->error('Soggetto e testo obbligatorio');                
+                return $this->redirect(['action' => 'suppliers']);
+            }
 
             /*
-            foreach($organizationsProdGas as $organizationsProdGa) {
-                debug($organizationsProdGa);
+             * estraggo produttori
+             */
+            $where = ['Suppliers.id IN' => $ids];
+            $results = $suppliersTable->find()
+                                    ->where($where)
+                                    ->all(); 
+            // debug($where);
 
-                $mail = $organizationsProdGa->supplier->mail;
-                if(!empty($mail)) {
-                    
-                    $name = '';
-                    $to = 'francesco.actis@gmail.com';
-                    $subject = $this->request->getData('mail_subject');
-                    $body = $this->request->getData('mail_body');
-                    
-                    $options = [];
-                    $options['name'] = $name;
-                    $email = $this->Mail->getMailSystem($user, $options);
-                    
-                    $email->setTo($to)
-                          ->setSubject($subject);
-        
-                    try {
-                        $email->send($body);
-                    } catch (Exception $e) {
-                        debug($e);
-                    }
+            $msg_mails = '';
+            foreach($results as $result) {
+
+                // debug($result);
+
+                $mails = trim($result['mail']);
+                $slug = $this->Supplier->getSlug($result);
+
+                if(empty($mails)) {
+                    Log::error('ERROR mail EMPTY!', ['scope' => ['mail']]);
+                    Log::error($result, ['scope' => ['mail']]);
+                    Log::error('ERROR ----------------------!', ['scope' => ['mail']]);
                 }
-            } // foreach
-            */
-                
-            $this->Flash->success(__('send mail to ').$to);
-        } // end POST
+                else
+                if(empty($slug)) {
+                    Log::error('ERROR slug EMPTY!', ['scope' => ['mail']]);
+                    Log::error($result, ['scope' => ['mail']]);
+                    Log::error('ERROR ----------------------!', ['scope' => ['mail']]);
+                }
+                else {
+                    $options = [];
+                    // $options['name'] = $name;                    
+                    $mail_body = sprintf($mail_body, $slug, $slug);
 
-        $this->set('fullbaseUrl', $this->_fullbaseUrl);
+                    $msg_mails .= "<br />".$mails;
+                    $mails = ['francesco.actis@gmail.com', 'fractis@libero.it'];
+
+                    $this->Mail->send($user, $mails, $mail_subject, $mail_body, $options, $debug);
+                }
+            } // foreach($results as $result)
+                
+            if(!empty($msg_mails))
+                $this->Flash->success(__('send mail to ').$msg_mails, ['escape' => false]);
+            else
+                $this->Flash->error('Nessuna mail inviata, controllare mail.log', ['escape' => false]);
+        } // end POST  
     }  
 }

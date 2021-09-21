@@ -82,17 +82,17 @@ class MailComponent extends Component {
 				
 			if(!empty($mail)) { 
 			
-				if($debug) debug("Mail::send - tratto la mail ".$mail);
+				if($debug) Log::debug("Mail::send - tratto la mail ".$mail, ['scope' => ['mail']]);
 									
 				/*
 				non + perche' mail2 = UserProfile.email
-				$results['KO'] = 'Mail vuota!';
+				$results['KO'][] = 'Mail vuota!';
 				return $results;
 				*/
 			
 				$exclude = false;
 				foreach(Configure::read('EmailExcludeDomains') as $this->_emailExcludeDomain) {
-					if($debug) debug('Mail::send - EmailExcludeDomains '.$mail.' - '.$this->_emailExcludeDomain);
+					if($debug) Log::debug('Mail::send - EmailExcludeDomains '.$mail.' - '.$this->_emailExcludeDomain, ['scope' => ['mail']]);
 					if(strpos($mail, $this->_emailExcludeDomain)!==false) {
 						$exclude = true;
 						break;
@@ -100,42 +100,45 @@ class MailComponent extends Component {
 				}
 				
 				if($exclude)  {	
-					if($debug) debug("EXCLUDE mail TO: ".$mail);
-					$results['OK'] = $mail.' (modalita DEBUG)';
+					if($debug) Log::debug("EXCLUDE mail TO: ".$mail, ['scope' => ['mail']]);
+					$results['OK'][] = $mail.' (modalita DEBUG)';
 				}
 				else {
 					/*
 					 * todo
 					 * $this->_email->viewVars(array('content_info' => $this->_getContentInfo()));
 					 */
-										
+									
 					if($debug) {
 						if (!$this->_mail_send)
-							if($debug) debug("Mail::send - inviata a " . $mail . " (modalita DEBUG)");
+							if($debug) Log::debug("Mail::send - inviata a " . $mail . " (modalita DEBUG)", ['scope' => ['mail']]);
 						else
-							if($debug) debug("Mail::send - inviata a " . $mail);
+							if($debug) Log::debug("Mail::send - inviata a " . $mail, ['scope' => ['mail']]);
 											
-						if($debug) debug("Mail::send - mail TO: ".$mail." $body ".$body);
+						if($debug) Log::debug($body, ['scope' => ['mail']]);
 					}
 
 					try {
 						$this->_email->setTo($mail);
-						$this->_email->send($body);
 						
 						if (!$this->_mail_send)
-							$results['OK'] = $mail.' (modalita DEBUG)';
-						else
-							$results['OK'] = $mail;
+							$results['OK'][] = $mail.' (modalita DEBUG)';
+						else {
+							$this->_email->send($body);
+							$results['OK'][] = $mail;
+						}
 					} catch (Exception $e) {
-						$results['KO'] = $mail;
-						CakeLog::write("error", $e, array("mails"));
+						$results['KO'][] = $mail;
+						Log::error('mail', 'ERROR ----------------------!', ['scope' => ['mail']]);
+						Log::error('mail', $e, ['scope' => ['mail']]);
+						Log::error('mail', 'ERROR ----------------------!', ['scope' => ['mail']]);
 					}
 				}
 			} // end if(empty($mail)) 
-			
-			if($debug) debug($result);
-
+		
 		} // loops mails
+		
+		if($debug) Log::debug($results, ['scope' => ['mail']]);
 		
 		return $results;
 	}

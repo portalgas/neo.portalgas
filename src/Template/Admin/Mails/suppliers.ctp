@@ -16,10 +16,16 @@ echo '<fieldset>';
 echo '<legend></legend>';
 echo '<div class="box-body">'; 
 
-echo $this->Form->control('organization_prod_gas_id', ['options' => $listOrganizationsProdGas, 'empty' => Configure::read('HtmlOptionEmpty')]);
-echo $this->Form->control('supplier_id', ['options' => $listSuppliers, 'empty' => Configure::read('HtmlOptionEmpty')]);
-echo $this->Form->control('mail_subject', ['type' => 'text']);
-echo $this->Form->control('mail_body', ['type' => 'textarea']);
+echo '<div class="row">';
+echo '<div class="col-md-6">';
+echo $this->Form->control('organization_prod_gas_id', ['label' => 'Produtti che gestiscono il proprio listino', 'options' => $listOrganizationsProdGas, 'multiple' => true, 'size' => 10]);
+echo '</div>';
+echo '<div class="col-md-6">';
+echo $this->Form->control('supplier_id', ['label' => 'Tutti i produttori', 'options' => $listSuppliers, 'multiple' => true, 'size' => 10]);
+echo '</div>';
+echo '</div>'; // row
+echo $this->Form->control('mail_subject', ['type' => 'text', 'value' => $mail_subject]);
+echo $this->Form->control('mail_body', ['type' => 'textarea', 'value' => $mail_body]);
 echo '</fieldset>';
 echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary pull-right', '@click' => 'submit($event);']);
 echo $this->Form->end(); 
