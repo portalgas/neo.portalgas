@@ -288,6 +288,7 @@ Configure::write('SOC.hosting.name',"Hosting (Cloud VPS (Virtual Private Server)
 Configure::write('SOC.hosting.responsabile',"( Hetzner Online GmbH email: support@hetzner.com)");
 
 Configure::write('Mail.body_header', "Salve %s, <br />\n");
+Configure::write('Mail.body_header_no_name', "Salve, <br />\n");
 Configure::write('Mail.body_footer_simple', "\nhttps://".Configure::read('SOC.site')." <br />\n%s");
 Configure::write('Mail.body_footer', "\nhttps://".Configure::read('SOC.site'));
 Configure::write('Mail.body_footer_no_reply', "Non rispondere a questo messaggio in quanto generato automaticamente.<br /> \n <br /> \nhttps://".Configure::read('SOC.site')."<br />\n%s");

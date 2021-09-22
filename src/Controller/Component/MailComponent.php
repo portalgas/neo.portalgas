@@ -144,10 +144,14 @@ class MailComponent extends Component {
 	}
 	
 	private function _getHeader($user, $options) {
+		
 		$results = [];
-		if(isset($options['name'])) {
+
+		if(isset($options['name'])) 
 			$results['greeting'] = sprintf(Configure::read('Mail.body_header'), $options['name']);
-		}
+		else 
+			$results['greeting'] = Configure::read('Mail.body_header_no_name');
+		
 		$results['logo'] = $this->_drawLogo($user->organization);
 			
 		return $results;
