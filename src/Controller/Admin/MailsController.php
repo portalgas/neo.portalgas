@@ -162,11 +162,11 @@ Francesco & Marco
                 else {
                     $options = [];
                     // $options['name'] = $name;                    
-                    $mail_body = sprintf($mail_body, $slug, $slug);
+                    $mail_body_finaly = sprintf($mail_body, $slug, $slug);
 
                     $msg_mails .= "<br />".$mails;
       
-                    $this->Mail->send($user, $mails, $mail_subject, $mail_body, $options, $debug);
+                    $this->Mail->send($user, $mails, $mail_subject, $mail_body_finaly, $options, $debug);
                 }
             } // foreach($results as $result)
                 
