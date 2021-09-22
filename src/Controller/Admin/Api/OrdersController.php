@@ -46,8 +46,10 @@ class OrdersController extends ApiAppController
         /*
          * distance
          */
-        $distance = $this->Distance->get($user, $results->suppliers_organization);
-        $results->distance = $distance;
+        if(!empty($results)) {
+            $distance = $this->Distance->get($user, $results->suppliers_organization);
+            $results->distance = $distance;            
+        }
 
         return $this->_response($results); 
     } 

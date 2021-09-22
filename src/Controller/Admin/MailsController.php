@@ -29,6 +29,7 @@ class MailsController extends AppController
 
     public function suppliers() {
    
+        $mail_test = 'francesco.actis@gmail.com';
         $mail_subject = "Nuova pagina produttori";
         $mail_body = "Abbiamo ridisegnato la pagina dei produttori per renderla più fruibile ai G.A.S.<br />
 Questo è l'indirizzo relativo alla tua pagina <a href='%s' target='_blank'>%s</a>: se i dati non fossero corretti scrivici all'indirizzo mail 
@@ -36,14 +37,14 @@ Questo è l'indirizzo relativo alla tua pagina <a href='%s' target='_blank'>%s</
 Grazie per la collaborazione.<br />
 Francesco & Marco
         ";
-        $this->set(compact('mail_subject', 'mail_body')); 
+        $this->set(compact('mail_subject', 'mail_body', 'mail_test')); 
 
         /*
          * in MailComponent scrive log su debug.log 
          */
         $config = Configure::read('Config');
-        ($config['mail.send']==true) ? $debug = false: $debug = true;
-        // debug($debug);
+        ($config['mail.send']===false) ? $mail_send_label = "Modalità invio mail DEBUG": $mail_send_label = "Modalità invio mail PRODUZIONE";
+        $this->set('mail_send_label', $mail_send_label);
 
         $listOrganizationsProdGas = [];
         $listSuppliers = [];
@@ -85,24 +86,39 @@ Francesco & Marco
         }
         $this->set(compact('listSuppliers'));
 
+        /* 
+         * log file mail.log
+         */
+        $is_logs = ['Y' => 'Si', 'N' => 'No'];
+        $is_log = $this->request->getData('is_log');
+        if(empty($is_log)) $is_log = 'Y';
+        $this->set(compact('is_logs', 'is_log'));
+        ($is_log=='Y') ? $debug = true: $debug = false;
+
         if ($this->request->is('post')) {
 
             // debug($this->request->getData());
             
-            $organization_prod_gas_id = $this->request->getData('organization_prod_gas_id');
-            $supplier_id = $this->request->getData('supplier_id');
+            $mail_test = $this->request->getData('mail_test');
+            if(empty($mail_test)) {
+                $organization_prod_gas_id = $this->request->getData('organization_prod_gas_id');
+                $supplier_id = $this->request->getData('supplier_id');
 
-             $ids = [];
-            if(!empty($organization_prod_gas_id))
-                $ids = $organization_prod_gas_id;
-            else
-            if(!empty($supplier_id))
-                $ids = $supplier_id;
+                $ids = [];
+                if(!empty($organization_prod_gas_id))
+                    $ids = $organization_prod_gas_id;
+                else
+                if(!empty($supplier_id))
+                    $ids = $supplier_id;
 
-            if(empty($ids)) {
-                $this->Flash->error('Seleziona i produttori ai quali inviare la mail');                
-                return $this->redirect(['action' => 'suppliers']);
+                if(empty($ids)) {
+                    $this->Flash->error('Seleziona i produttori ai quali inviare la mail');                
+                    return $this->redirect(['action' => 'suppliers']);
+                }
             }
+            else {
+                $ids = [21]; // allegro-natura: produttore per avere i dati (ex slug)
+            }  // end if(empty($mail_test))  
 
             $mail_subject = $this->request->getData('mail_subject');
             $mail_body = $this->request->getData('mail_body');
@@ -125,7 +141,11 @@ Francesco & Marco
 
                 // debug($result);
 
-                $mails = trim($result['mail']);
+                if(empty($mail_test)) 
+                    $mails = trim($result['mail']);
+                else
+                    $mails = $mail_test;
+
                 $slug = $this->Supplier->getSlug($result);
 
                 if(empty($mails)) {
@@ -145,8 +165,7 @@ Francesco & Marco
                     $mail_body = sprintf($mail_body, $slug, $slug);
 
                     $msg_mails .= "<br />".$mails;
-                    $mails = ['francesco.actis@gmail.com', 'fractis@libero.it'];
-
+      
                     $this->Mail->send($user, $mails, $mail_subject, $mail_body, $options, $debug);
                 }
             } // foreach($results as $result)
