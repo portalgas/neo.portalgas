@@ -118,7 +118,7 @@ class SuppliersController extends ApiAppController
 
             if(empty($suppliersResult)) {
                 $results['code'] = 500;
-                $results['message'] = 'Produttore non trovato con id ['.$supplier_id.']';
+                $results['message'] = 'Produttore non trovato con slug ['.$slug.']';
                 $results['errors'] = '';
                 $continua = false;
             }

@@ -28,6 +28,10 @@ if(!isset($user) || empty($user)) {
   $menus[$i]['label'] = __('Notizie');
   $menus[$i]['url'] = $config['Portalgas.fe.url'].'/notizie';
   $menus[$i]['target'] = ''; 
+  $i++;
+  $menus[$i]['label'] = __('Login');
+  $menus[$i]['url'] = $config['Portalgas.fe.url'].'/login';
+  $menus[$i]['target'] = ''; 
 }
 
 if(!empty($organization)) {
