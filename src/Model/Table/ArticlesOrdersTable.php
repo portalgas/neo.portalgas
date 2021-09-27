@@ -256,16 +256,21 @@ class ArticlesOrdersTable extends Table
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
 
         $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
-        $articlesOrder = $articlesOrdersTable->patchEntity($articlesOrder, $article_order);
+        if(!empty($articlesOrder)) {
+            $articlesOrder = $articlesOrdersTable->patchEntity($articlesOrder, $article_order);
 
-        if(Configure::read('Logs.cart')) Log::write('debug', $articlesOrder);
+            if(Configure::read('Logs.cart')) Log::write('debug', $articlesOrder);
 
-        if (!$articlesOrdersTable->save($articlesOrder)) {
-            Log::write('debug', $articlesOrder->getErrors());
-            if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
+            if (!$articlesOrdersTable->save($articlesOrder)) {
+                Log::write('debug', $articlesOrder->getErrors());
+                if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
+            }
+            else  {
+                if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
+            }
         }
-        else  {
-            if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
+        else {
+           if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - ERROR record NON trovato! - NO aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']); 
         }
     }
 
