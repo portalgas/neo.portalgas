@@ -131,7 +131,7 @@ class DeliveriesTable extends Table
         $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
-                if($results->sys=='Y') 
+                if($result->sys=='Y') 
                     $listResults[$result->id] = $result->luogo;
                 else {
                     // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
