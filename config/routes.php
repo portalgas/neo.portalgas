@@ -247,6 +247,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          */
         $routes->scope('/exports', ['controller' => 'Exports'], function (RouteBuilder $routes) {
             $routes->connect('/user-cart', ['action' => 'userCart', '_method' => 'GET']);
+            $routes->connect('/user-promotion-cart', ['action' => 'userPromotionCart', '_method' => 'GET']);
         });
 
         /*
@@ -302,6 +303,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         });
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+            $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
         });
 
         $routes->fallbacks(DashedRoute::class);        

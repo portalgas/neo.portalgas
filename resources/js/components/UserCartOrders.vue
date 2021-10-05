@@ -1,34 +1,15 @@
 <template>
 
-	<main id="accordion-deliveries">
+	<main>
 
-	    <div class="card" 
-	          v-for="(delivery, index)  in datas"
-	          :delivery="delivery"
-	          :key="delivery.id"
-		  >
-	    <div class="card-header" data-toggle="collapse" :data-target="'#'+delivery.id" aria-expanded="true" :aria-controls="'collapse-'+delivery.id" v-on:click="selectDelivery(delivery.id)">
-	          {{ delivery.label }}
-              <i :id="'fas-'+delivery.id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
-	    </div>
+        <div class="box-btn-pdf">
+           <a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
+        </div>
 
-	    <div :id="'collapse-'+delivery.id" class="collapse" :aria-labelledby="'heading-'+delivery.id" data-parent="#accordion-deliveries">
-	      <div class="card-body">
-
-	        <div v-if="isRunOrders" class="box-spinner"> 
-	        	<div class="spinner-border text-info" role="status">
-		          <span class="sr-only">Loading...</span>
-		        </div>	  
-		    </div>
-
-	        <div class="box-btn-pdf" v-if="!isRunOrders && results.delivery_id===delivery.id">
-	           <a :href="'/admin/api/exports/user-cart/'+delivery.id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
-	        </div>
-
-	        <p 
-	          v-for="(order, index) in results.orders" v-if="!isRunOrders && results.delivery_id===delivery.id"
-	          :order="order"
-	          :key="order.id" class="box-order">
+        <p 
+          v-for="(order, index) in results.orders"
+          :order="order"
+          :key="order.id" class="box-order">
 
 					<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
@@ -53,53 +34,49 @@
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
 					</a>
 
-			        <user-cart-articles 
-			        			:order="order" 
-			        			:article_orders="order.article_orders"
-			        			></user-cart-articles>
-				
-	        </p> 
+		        <user-cart-articles 
+		        			:order="order" 
+		        			:article_orders="order.article_orders"
+		        			></user-cart-articles>
+			
+        </p> <!-- loop orders -->
 
-			<!-- 		  -->
-			<!--  TOTALE  -->
-			<!-- 		  -->
-		      <div v-if="!isRunOrders" class="row">
+				<!-- 		  		-->
+				<!--  TOTALE  -->
+				<!-- 		 		  -->
+	      <div class="row">
 
-		      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
-		      		v-if="organizationTemplatePayToDelivery=='POST'">
-					Totale presunto della consegna: {{ totalPrice() }} &euro;
-					<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)</i>
-		      	</div>
-		      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
-		      		v-if="organizationTemplatePayToDelivery=='ON' || organizationTemplatePayToDelivery=='ON-POST'">
-					Totale presunto della consegna: {{ totalPrice() }} &euro;
-					<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)</i>
-		      	</div>
-		      </div>
-
-			<!-- 		  -->
-			<!-- DISTANCE -->
-			<!-- 		  -->
-			<p v-if="!isRunOrders" class="box-distance">
-				<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
-		        <span 
-		          v-for="(order, index) in results.orders" v-if="order.distance!=null"
-		          :order="order"
-		          :key="index">
-		
-						<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
-						</div>
-						<div class="progressBar" 
-							:style="{width: order.distance.percentuale + '%'}">&nbsp;</td>	
-							</div>
-				</span>
-				<div class="totaleKm">per un totale di {{ totalKm() }} Km</div>
-			</p>
-
+	      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
+	      		v-if="organizationTemplatePayToDelivery=='POST'">
+				Totale presunto della consegna: {{ totalPrice() }} &euro;
+				<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)</i>
+	      	</div>
+	      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
+	      		v-if="organizationTemplatePayToDelivery=='ON' || organizationTemplatePayToDelivery=='ON-POST'">
+				Totale presunto della consegna: {{ totalPrice() }} &euro;
+				<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)</i>
+	      	</div>
 	      </div>
-	    </div>
 
-	  </div>
+				<!-- 		  		-->
+				<!-- DISTANCE -->
+				<!-- 		  		-->
+				<p class="box-distance">
+					<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
+			        <span 
+			          v-for="(order, index) in results.orders" v-if="order.distance!=null"
+			          :order="order"
+			          :key="index">
+			
+							<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
+							</div>
+							<div class="progressBar" 
+								:style="{width: order.distance.percentuale + '%'}">&nbsp;</td>	
+								</div>
+					</span>
+					<div class="totaleKm">per un totale di {{ totalKm() }} Km</div>
+				</p>
+
 	</main>
 
 </template>
@@ -109,29 +86,22 @@ import { mapActions } from "vuex";
 import UserCartArticles from "../components/part/UserCartArticles.vue";
 
 export default {
-  name: "user-cart-deliveries",
+  name: "user-cart-orders",
+  /*
+   * results: {
+   * 		delivery_id: null,
+   *   	orders: [],
+   *  	promotions: []
+   * },
+   */
+  props: {
+    results: {}
+  },
   data() {
     return {
       j_seo: '',
       organizationTemplatePayToDelivery: '',    
-      deliveries: null,
-      results: {
-      	delivery_id: null,
-      	orders: []
-      },
-      isRunOrders: false
     };
-  },
-  /*
-   * in Tabs al click isLoading=true e Tab popola datas con chiamata ajax
-   */
-  props: {
-    datas: {}
-  },
-  watch: {
-  	datas (newValue, oldValue) { 
-  		this.deliveries = newValue;
-  	}
   },
   components: {
     UserCartArticles
@@ -212,85 +182,6 @@ export default {
 
 	    	return this.$options.filters.currency(totale);
 	    },
-	    selectDelivery(delivery_id) {
-	    	console.log('selectDelivery '+delivery_id);
-
-			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
-			
-			$('.collapse').removeClass('show');
-			$('#accordion-deliveries .fas').removeClass("fa-angle-up");
-			$('#accordion-deliveries .fas').addClass("fa-angle-down");
-
-			if(!isOpen) {
-				// console.log('Tab chiuso => lo apro ');
-				$('#collapse-'+delivery_id).addClass('show');
-				$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
-			}
-			else {
-				// console.log('Tab aperto => esco ');
-				return;
-			}
-
-			this.isRunOrders=true;
-				
-			let params = {
-				delivery_id: delivery_id
-			};
-
-			this.orders = [];
-
-			let url_orders = "/admin/api/orders/user-cart-gets";
-			axios
-				.post(url_orders, params)
-				.then(response => {
-
-					this.isRunOrders=false;
-
-					/* console.log(response.data); */
-					if(typeof response.data !== "undefined") {
-						var data = {
-							delivery_id: delivery_id,
-							orders: response.data
-						}
-						this.results = data;
-						// console.log(this.results);
-				}
-			})
-			.catch(error => {
-
-				this.isRunOrders=false;
-
-				console.error("Error: " + error);
-			});
-
-			/*
-			 * storerooms
-			 * lo visualizzo solo per pdf del carrello
-			this.isRunStorerooms=true;
-				
-			this.storerooms = [];
-
-			let url_storeroom = "/admin/api/storerooms/user-cart-gets";
-			axios
-				.post(url_storeroom, params)
-				.then(response => {
-
-					this.isRunStorerooms=false;
-
-					console.log(response.data);
-					if(typeof response.data !== "undefined") {
-						this.storerooms = response.data;
-						console.log(this.storerooms);
-				}
-			})
-			.catch(error => {
-
-				this.isRunStorerooms=false;
-
-				console.error("Error: " + error);
-			});
-			*/
-	    },
 	    selectOrder(order) {
 	    	console.log('selectOrder');
 	    	console.log(order);
@@ -298,13 +189,13 @@ export default {
 	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    
   	},
-	filters: {
-    	currency(amount) {
-	      let locale = window.navigator.userLanguage || window.navigator.language;
-          locale = 'it-IT';
-	      const amt = Number(amount);
-	      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
-	    },
+	  filters: {
+	    	currency(amount) {
+		      let locale = window.navigator.userLanguage || window.navigator.language;
+	          locale = 'it-IT';
+		      const amt = Number(amount);
+		      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
+		    },
         formatDate(value) {
           if (value) {
             let locale = window.navigator.userLanguage || window.navigator.language;
@@ -328,24 +219,6 @@ export default {
     display: block;
     padding: 10px;
 }
-.card { 
-  border: none;
-}
-.card-header {
-	cursor: pointer;
-	color: #0a659e;
-	font-weight: normal;
-}
-.card-header:hover {
-	color: #fa824f;
-}
-.footer {
-	background-color: #e4e4e4;
-	font-weight: bold;
-	color: #0a659e;
-	text-align: right; 
-}
-
 .box-btn-pdf {
 	text-align: right;
 	width: 100%;

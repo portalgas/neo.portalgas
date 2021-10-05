@@ -76,7 +76,9 @@ class DeliveriesController extends ApiAppController
 
   
     /* 
-     * front-end - estrae le consegne legato al carrello dell'user
+     * front-end - estrae
+     * le consegne legato al carrello dell'user
+     * eventuali promozioni
      */
     public function userCartGets() {
 
@@ -143,6 +145,11 @@ class DeliveriesController extends ApiAppController
                 // debug($arr_delivery_ids); 
             }
         }
+
+        /*
+         * promozioni
+         */
+        $results[] = ['id' => 0, 'label' => __('ProdGasPromotions')];
 
         return $this->_response($results); 
     }    

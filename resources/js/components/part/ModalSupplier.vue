@@ -258,21 +258,23 @@ export default {
   overflow-y: auto;
   height: 400px;
 }
-@media (min-width: 576px)
 .modal-dialog-centered {
     min-height: calc(100% - (1.75rem * 2));
 }
-.modal-dialog-centered {
-    min-height: calc(100% - (1.75rem * 2));
+@media (min-width: 576px) {
+  .modal-dialog-centered {
+      min-height: calc(100% - (1.75rem * 2));
+  }  
 }
-
-@media (min-width: 1200px)
-.modal-xl {
-    max-width: 1140px;
+@media (min-width: 1200px) {
+  .modal-xl {
+      max-width: 1140px;
+  }  
 }
-@media (min-width: 992px)
-.modal-lg, .modal-xl {
-    max-width: 800px;
+@media (min-width: 992px) {
+  .modal-lg, .modal-xl {
+      max-width: 800px;
+  }  
 }
 
 /* images */

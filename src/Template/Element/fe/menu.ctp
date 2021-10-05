@@ -45,7 +45,7 @@ if(!empty($organization)) {
 
   if($hasGasUsersPromotions) {
     $i++;
-    $menus[$i]['label'] = __('Promotions');
+    $menus[$i]['label'] = __('ProdGasPromotions');
     $menus[$i]['url'] = '/promozioni';
     $menus[$i]['target'] = '';    
   }

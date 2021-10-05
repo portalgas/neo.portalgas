@@ -14,7 +14,7 @@
       <div v-if="dataFound===false" class="alert alert-warning">
         Carrello vuoto, non sono stati effettuai acquisti
       </div>
-      <user-cart-orders v-if="isLoading==false" :datas="datas"></user-cart-orders> 
+      <user-cart-deliveries v-if="isLoading==false" :datas="datas"></user-cart-deliveries> 
 
     </main>
 
@@ -22,7 +22,7 @@
 
 <script>
 import axios from "axios";
-import UserCartOrders from '../components/UserCartOrders.vue';
+import UserCartDeliveries from '../components/UserCartDeliveries.vue';
 
 export default {
   name: "Home",
@@ -34,7 +34,7 @@ export default {
     };
   },
   components: {
-    UserCartOrders
+    UserCartDeliveries
   },  
   mounted() {
     this.getDeliveries();
