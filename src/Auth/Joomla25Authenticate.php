@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use App\Traits;
+use Cake\Log\Log;
 
 /*
  * https://book.cakephp.org/4.next/en/controllers/components/authentication.html#creating-custom-authentication-objects
@@ -27,18 +28,23 @@ class Joomla25Authenticate extends AbstractAuthenticator
 {
 	use Traits\UtilTrait;
 
-	private $debug = false;
-
+    private $debug = false;
+    private $_log = false;
 
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         parent::__construct($identifiers, $config); 
+
+        $config = Configure::read('Config');
+        $this->_log = $config['Joomla25Salts.log'];
     }
 
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $user_salt = $request->getQuery('u');
-		if(empty($user_salt)) {
+        if($this->_log) Log::debug('user_salt '.$user_salt);
+
+ 		if(empty($user_salt)) {
 			return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
 		}
 
@@ -59,13 +65,16 @@ class Joomla25Authenticate extends AbstractAuthenticator
             return false;
 
 		$user = $this->decrypt($user_salt);
+        if($this->_log) Log::debug($user);
 		$user = unserialize($user);
+        if($this->_log) Log::debug($user);
 		if($this->debug) debug($user);
         if(empty($user) || !isset($user['user_organization_id']) || !isset($user['user_id']) || !isset($user['organization_id']))
             return false;
 
 		$usersTable = TableRegistry::get('Users');
 		$user = $usersTable->findLogin($user['user_organization_id'], $user['user_id'], $user['organization_id'], $this->debug); 
+        if($this->_log) Log::debug($user);
 
 		return $user;
     }      
