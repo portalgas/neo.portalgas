@@ -14,6 +14,7 @@ class DeliveriesController extends ApiAppController
     public function initialize(): void 
     {
         parent::initialize();
+        $this->loadComponent('ProdGasPromotion');
     }
 
     public function beforeFilter(Event $event): void  {
@@ -82,6 +83,8 @@ class DeliveriesController extends ApiAppController
      */
     public function userCartGets() {
 
+        $debug = false;
+
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
@@ -89,6 +92,7 @@ class DeliveriesController extends ApiAppController
         $results = [];
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id;
+        $user_id = $this->Authentication->getIdentity()->id;
 
         /*
          * elenco consegne partendo dagli acquisti dello user
@@ -149,7 +153,13 @@ class DeliveriesController extends ApiAppController
         /*
          * promozioni
          */
-        $results[] = ['id' => 0, 'label' => __('ProdGasPromotions')];
+        $prod_gas_promotion_state_code = ['PRODGASPROMOTION-GAS-USERS-OPEN', 'PRODGASPROMOTION-GAS-USERS-CLOSE'];
+        $prod_gas_promotion_organization_state_code = ['OPEN', 'CLOSE'];
+
+        $prodGasPromotionsResults = $this->ProdGasPromotion->userCartGets($user, $organization_id, $user_id, $prod_gas_promotion_state_code, $prod_gas_promotion_organization_state_code);
+        // debug($prodGasPromotionsResults);
+        if(!empty($prodGasPromotionsResults))
+            $results[] = ['id' => 0, 'label' => __('ProdGasPromotions')];
 
         return $this->_response($results); 
     }    

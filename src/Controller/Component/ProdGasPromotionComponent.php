@@ -45,6 +45,9 @@ class ProdGasPromotionComponent extends Component {
      */  
 	public function gets($user, $organization_id, $user_id, $prod_gas_promotion_state_code, $prod_gas_promotion_organization_state_code, $debug=false) {
 
+        $results = [];
+        $newResults = [];
+
         /* 
          * estraggo le promozioni OPEN / CLOSE legate al GAS dello user
          */
@@ -110,7 +113,9 @@ class ProdGasPromotionComponent extends Component {
                 $newResults[$numResult]['article_orders'] = $newResults2;
             } // end foreach($prodGasPromotionsOrganizationsResults as $numResult => $prodGasPromotionsOrganizationsResult)
         } // end if($prodGasPromotionsOrganizationsResults->count()>0)
-        $results['results'] = $newResults;
+
+        if(!empty($newResults))
+            $results['results'] = $newResults;
 
         return $results;
 	}
