@@ -108,30 +108,30 @@ export default {
 	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    
   	},
-	filters: {
-    	currency(amount) {
-	      let locale = window.navigator.userLanguage || window.navigator.language;
-          locale = 'it-IT';
-	      const amt = Number(amount);
-	      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
-	    },
-        formatDate(value) {
-          if (value) {
-            let locale = window.navigator.userLanguage || window.navigator.language;
-            locale = 'it-IT';
-            /* console.log(locale); */
-            moment.toLocaleString(locale)
-            moment.locale(locale);
-            return moment(String(value)).format('DD MMMM YYYY')
-          }
-        },
-        counter: function (index) {
-            return index+1
-        },
-	    html(text) {
-	        return text;
-	    },
-  }
+		filters: {
+	    	currency(amount) {
+		      let locale = window.navigator.userLanguage || window.navigator.language;
+	          locale = 'it-IT';
+		      const amt = Number(amount);
+		      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
+		    },
+	        formatDate(value) {
+	          if (value) {
+	            let locale = window.navigator.userLanguage || window.navigator.language;
+	            locale = 'it-IT';
+	            /* console.log(locale); */
+	            moment.toLocaleString(locale)
+	            moment.locale(locale);
+	            return moment(String(value)).format('DD MMMM YYYY')
+	          }
+	        },
+	        counter: function (index) {
+	            return index+1
+	        },
+		    html(text) {
+		        return text;
+		    },
+	  }
 };
 </script>
 

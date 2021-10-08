@@ -4,10 +4,12 @@ export const modal = {
       title: null,
       body: null,
       footer: null,
-      entity: null
+      entity: null,
+      msg: null
     },
     run: false,
     showModal: false,
+    showModalArticleOrder: false,
     showModalSupplier: false,
     showModalSupplierImport: false,
   },
@@ -16,6 +18,7 @@ export const modal = {
       return state.content;
     },    
     getShowModal: state => state.showModal,
+    getShowModalArticleOrder: state => state.showModalArticleOrder,
     getShowModalSupplier: state => state.showModalSupplier,
     getShowModalSupplierImport: state => state.showModalSupplierImport,
   },  
@@ -23,20 +26,22 @@ export const modal = {
     RUN_CONTENT: state => {
       state.run = true;
     },
-    ADD_CONTENT: (state, { title, body, footer, entity }) => {
+    ADD_CONTENT: (state, { title, body, footer, entity, msg }) => {
       state.content = {
         title,
         body,
         footer,
-        entity
+        entity,
+        msg
       };
     }, 
     CLEAR_CONTENT: state => {
       state.content = {
-        title,
-        body,
-        footer,
-        entity
+        title: null,
+        body: null,
+        footer: null,
+        entity: null,
+        msg: null
       };
     },
     SHOW_MODAL: (state) => {
@@ -45,6 +50,12 @@ export const modal = {
     SHOW_MODAL_SUPPLIER: (state) => {
       state.showModalSupplier = !state.showModalSupplier;
       if(!state.showModalSupplier) {
+      
+      }
+    },
+    SHOW_MODAL_ARTICLE_ORDER: (state) => {
+      state.showModalArticleOrder = !state.showModalArticleOrder;
+      if(!state.showModalArticleOrder) {
       
       }
     },  
@@ -64,11 +75,14 @@ export const modal = {
       /* console.log('ADD_CONTENT '); */
       commit("ADD_CONTENT", obj);
     },
-    clearModalContent: commit => {
+    clearModalContent: ({ commit }) => {
       commit("CLEAR_CONTENT");
     }, 
     showOrHiddenModal: (context) => {
       context.commit('SHOW_MODAL');
+    },
+    showOrHiddenModalArticleOrder: (context) => {
+      context.commit('SHOW_MODAL_ARTICLE_ORDER');
     },
     showOrHiddenModalSupplier: (context) => {
       context.commit('SHOW_MODAL_SUPPLIER');

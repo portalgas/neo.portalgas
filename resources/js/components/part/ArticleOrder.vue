@@ -2,9 +2,8 @@
 
   <div v-if="order!=null" class="card" :class="'card-'+order.type_draw">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)" :class="justInCart"></div>
-
         <div class="content-img-article" v-if="order.type_draw=='COMPLETE' || order.type_draw=='PROMOTION'">
-          <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
+          <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name" />
           <div v-if="article.is_bio" class="box-bio">
               <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
           </div>
@@ -16,14 +15,14 @@
                 </div>
 
                 <span v-if="order.order_type.code!='PROMOTION_GAS_USERS'">
-                  <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModal()">maggior dettaglio</a>
+                  <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalArticleOrder()">
+                    maggior dettaglio<span v-if="organizationHasFieldCartNote='Y' && justInCart=='just-in-cart'"> / nota per il referente</span></a>
                   
                   <div v-if="isLoading" class="box-spinner"> 
                     <div class="spinner-border text-info" role="status">
                       <span class="sr-only">Loading...</span>
                     </div>  
                   </div> 
-
                 </span>
 
                 <div>
@@ -88,6 +87,7 @@ export default {
   props: ['order', 'article'],
   data() {
     return {
+      organizationHasFieldCartNote: 'N',
       isLoading: false,
       qta: 1
     };
@@ -96,44 +96,53 @@ export default {
     appBtnCartAdd: btnCartAdd
   },
   mounted() {
+    this.getGlobals();
   },
-  methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
-    clickShowModal () {
-      this.showModal(true);
-    }, 
-    clickShowOrHiddenModal () {
+  methods: {  
+    ...mapActions(['showModalArticleOrder', 'showOrHiddenModalArticleOrder', 'addModalContent', 'clearModalContent']),
+    getGlobals() {
+      /*
+       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+       * recuperata nei components con getGlobals()
+       */
+      this.organizationHasFieldCartNote = window.organizationHasFieldCartNote;
+    },    
+    clickShowOrHiddenModalArticleOrder () {
 
-      this.isLoading=true;
+      var _this = this;
+      
+      _this.isLoading=true;
+      _this.clearModalContent();
 
       let params = {
         order_id: this.article.ids.order_id,
         article_organization_id: this.article.ids.article_organization_id,
         article_id: this.article.ids.article_id
       };
-
-      let url = "/admin/api/html-article-orders/get";
+            
+      let url = "/admin/api/article-orders/get";
       axios
         .post(url, params)
         .then(response => {
-            // console.log(response.data);
+            /*console.log(response.data);*/
             if(typeof response.data !== "undefined") {
 
               var modalContent = {
-                title: this.article.name,
-                body: response.data,
-                footer: ''
+                title: response.data.results.articlesOrder.name,
+                body: '',
+                entity: response.data.results,
+                footer: '',
+                msg: ''
               }            
 
-              this.isLoading=false;
+              _this.isLoading=false;
 
-              this.addModalContent(modalContent);
-              this.showOrHiddenModal();              
+              _this.addModalContent(modalContent);
+              _this.showOrHiddenModalArticleOrder();              
             }
         })
         .catch(error => {
-          this.isLoading=false;
-          this.isRunDeliveries=false;
+          _this.isLoading=false;
           console.error("Error: " + error);
         });
     },  

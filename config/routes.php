@@ -230,6 +230,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/getUsersByDelivery', ['action' => 'getUsersByDelivery', '_method' => 'POST']);
             $routes->connect('/getUsersCashByDelivery', ['action' => 'getUsersCashByDelivery', '_method' => 'POST']);
+            $routes->connect('/setNota', ['action' => 'setNota', '_method' => 'POST']);
         });
         $routes->scope('/cashes', ['controller' => 'Cashes'], function (RouteBuilder $routes) {
             $routes->connect('/excludedUpdate', ['action' => 'cashExcludedUpdate', '_method' => 'POST']);
@@ -298,7 +299,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
             $routes->connect('/cash-ctrl-limit', ['action' => 'cashCtrlLimit', '_method' => 'POST']);
         });
+        /*
+         * non + utilizzata, sostituita da /article-orders
+         */
         $routes->scope('/html-article-orders', ['controller' => 'HtmlArticleOrders'], function (RouteBuilder $routes) {
+            $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+        });
+        $routes->scope('/article-orders', ['controller' => 'ArticleOrders'], function (RouteBuilder $routes) {
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         });
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {

@@ -15,7 +15,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import modal from './components/part/Modal';
+import modal from './components/part/ModalArticleOrder';
 import cashesUser from './components/part/CashesUser';
 
 export default {

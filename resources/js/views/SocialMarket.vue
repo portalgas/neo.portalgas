@@ -81,7 +81,7 @@ export default {
     this.getSocialMarkets();
   },
   methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
+    ...mapActions(['showModalArticleOrder', 'showOrHiddenModalArticleOrder', 'addModalContent', 'clearModalContent']),
     getSocialMarkets() {
 
       this.isRunMarket = true;
@@ -109,7 +109,10 @@ export default {
 
       console.log('clickShowOrHiddenModal supplier_id '+supplier_id);
 
-      this.isLoading=true;
+      var _this = this;
+      
+      _this.isLoading=true;
+      _this.clearModalContent();
 
       let params = {
         supplier_id: supplier_id
@@ -124,19 +127,20 @@ export default {
 
               var modalContent = {
                 title: this.article.name,
-                body: response.data,
-                footer: ''
+                body: '',
+                entity: response.data.results,
+                footer: '',
+                msg: ''
               }            
 
-              this.isLoading=false;
+              _this.isLoading=false;
 
-              this.addModalContent(modalContent);
-              this.showOrHiddenModal();              
+              _this.addModalContent(modalContent);
+              _this.showOrHiddenModal();              
             }
         })
         .catch(error => {
-          this.isLoading=false;
-          this.isRunDeliveries=false;
+          _this.isLoading=false;
           console.error("Error: " + error);
         });
     }, 

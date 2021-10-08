@@ -59,6 +59,7 @@ $organization = $this->Identity->get('organization');
     var is_logged = <?php echo ($this->Identity->get()!==null) ? 'true' : 'false'; ?>;  // da passa a vue in app.js
     var j_seo = "<?php echo (isset($organization->j_seo)) ? $organization->j_seo : '';?>"; // da passa a vue in app.js
     var organizationTemplatePayToDelivery = "<?php echo (isset($organization) && isset($organization->template)) ? $organization->template->payToDelivery : '';?>"; // da passa a vue in app.js
+    var organizationHasFieldCartNote = "<?php echo (isset($organization) && isset($organization->paramsFields)) ? $organization->paramsFields['hasFieldCartNote'] : 'N';?>"; // da passa a vue in app.js
     var headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/javascript, */*; q=0.01",

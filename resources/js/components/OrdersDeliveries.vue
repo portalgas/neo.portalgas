@@ -26,7 +26,7 @@
 		    </div>
 
 	        <p 
-	          v-for="(order, index)  in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery.id"
+	          v-for="(order, index) in orders.data" v-if="!isRunOrders && orders.delivery_id===delivery.id"
 	          :order="order"
 	          :key="order.id"
 	          :class="'type-'+order.order_type.name">
@@ -151,7 +151,7 @@ export default {
 	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    
   	},
-	filters: {
+		filters: {
     	currency(amount) {
 	      let locale = window.navigator.userLanguage || window.navigator.language;
           locale = 'it-IT';
@@ -174,7 +174,7 @@ export default {
 	    html(text) {
 	        return text;
 	    },
-     }
+    }
 };
 </script>
 

@@ -209,6 +209,31 @@ class CartsTable extends Table
         return $results;
     }
 
+    public function setNota($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $nota='', $debug=false) {
+                            
+        $where = ['Carts.organization_id' => $organization_id,
+                  'Carts.order_id' => $order_id,
+                  'Carts.user_id' => $user_id,
+                  'Carts.article_organization_id' => $article_organization_id,
+                  'Carts.article_id' => $article_id];
+        // debug($where);
+
+        $cart = $this->find()->where($where)
+                        ->first();
+
+        if(empty($cart))
+            return false;
+
+        $datas = [];
+        $datas['nota'] = $nota;
+        $cart = $this->patchEntity($cart, $datas);
+        if (!$this->save($cart)) {
+            return $cart->getErrors();
+        }        
+
+        return true;
+    }
+
     /*
      * front-end - estrae gli articoli associati ad un ordine filtrati per user  
      *  ArticlesOrders.article_id              = Articles.id

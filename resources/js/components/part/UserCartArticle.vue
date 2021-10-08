@@ -70,13 +70,12 @@ export default {
     appBtnCartAdd: btnCartAdd
   },
   methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),    
-    clickShowModal () {
-      this.showModal(true);
-    }, 
+    ...mapActions(['showModalArticleOrder', 'showOrHiddenModalArticleOrder', 'addModalContent', 'clearModalContent']),    
     clickShowOrHiddenModal () {
-
-      this.isLoading=true;
+      var _this = this;
+      
+      _this.isLoading=true;
+      _this.clearModalContent();
 
       let params = {
         order_id: this.article.ids.order_id,
@@ -84,28 +83,29 @@ export default {
         article_id: this.article.ids.article_id
       };
 
-      let url = "/admin/api/html-article-orders/get";
+      let url = "/admin/api/article-orders/get";
       axios
         .post(url, params)
         .then(response => {
-            // console.log(response.data);
+            /*console.log(response.data);*/
             if(typeof response.data !== "undefined") {
 
               var modalContent = {
-                title: this.article.name,
-                body: response.data,
-                footer: ''
+                title: response.data.results.articlesOrder.name,
+                body: '',
+                entity: response.data.results,
+                footer: '',
+                msg: ''
               }            
 
-              this.isLoading=false;
+              _this.isLoading=false;
 
-              this.addModalContent(modalContent);
-              this.showOrHiddenModal();              
+              _this.addModalContent(modalContent);
+              _this.showOrHiddenModalArticleOrder();              
             }
         })
         .catch(error => {
           this.isLoading=false;
-          this.isRunDeliveries=false;
           console.error("Error: " + error);
         });
     },  

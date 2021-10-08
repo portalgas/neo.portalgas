@@ -166,9 +166,9 @@ export default {
     return {
       apikey: this.appConfig.$googlemap_api_key,
       isLoading: false,
+      is_logged: false,
       slug: '',
-      modalContent: null,
-      is_logged: false
+      modalContent: null
     };
   },/*
   beforeRouteEnter(to, from, next) {

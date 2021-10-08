@@ -6,11 +6,12 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Decorator\ApiArticleOrderDecorator;
+use App\Decorator\ApiSupplierDecorator;
 
 /*
- * sostituito da ArticleOrdersController, l'html nella view non poteva contenere js
+ * sostituisce htmlArticleOrdersController, l'html nella view non poteva contenere js
  */
-class HtmlArticleOrdersController extends AppController
+class ArticleOrdersController extends ApiAppController
 {
     public function initialize()
     {
@@ -41,12 +42,21 @@ class HtmlArticleOrdersController extends AppController
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id;
 
-        $orderResults = [];
-        $articlesOrdersResults = [];
+        $continua = true;
 
         $results = [];
-        $results['order'] = [];
-        $results['articlesOrder'] = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $datas = [];
+        $datas['order'] = [];
+        $datas['articlesOrder'] = [];
+        $datas['cart'] = [];
+
+        $orderResults = [];
+        $articlesOrdersResults = [];
 
         $order_id = $this->request->getData('order_id');
         $article_organization_id = $this->request->getData('article_organization_id');
@@ -58,6 +68,11 @@ class HtmlArticleOrdersController extends AppController
 
         $ordersTable->addBehavior('Orders');
         $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
+        if(!empty($orderResults)) {
+            $supplier = $orderResults['suppliers_organization']['supplier'];
+            $supplier = new ApiSupplierDecorator($user, $supplier);
+            $orderResults['suppliers_organization']['supplier'] = $supplier->results;
+        }
 
         $ids = [];
         $ids['organization_id'] = $organization_id;
@@ -70,19 +85,17 @@ class HtmlArticleOrdersController extends AppController
         if($articlesOrdersTable!==false) {
             $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
 
-            $results = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
-            $articlesOrdersResults = $results->results;
+            $articlesOrdersResults2 = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
+            $articlesOrdersResults = $articlesOrdersResults2->results;
         }
 
-        $results['order'] = $orderResults;
-        $results['articlesOrder'] = $articlesOrdersResults;
-        $this->set(compact('results'));
+        $datas['order'] = $orderResults;
+        $datas['articlesOrder'] = $articlesOrdersResults;
 
         /*
          * nota per il referente
          */
         $hasFieldCartNote = $user->organization->paramsFields['hasFieldCartNote'];
-        $this->set('hasFieldCartNote', $hasFieldCartNote);
         
         if($hasFieldCartNote=='Y') {
             
@@ -101,11 +114,20 @@ class HtmlArticleOrdersController extends AppController
                                         ->where($where)
                                         ->first();
             if(!empty($cartResults))
-                $nota = $cartResults['nota'];
+                $datas['cart']['nota'] = $cartResults['nota'];
+            else {
+                /*
+                 * l'articolo dev'essere prima acquitato
+                 */
+                $hasFieldCartNote = 'N';
+                $datas['cart']['nota'] = '';
+            }
 
-            $this->set(compact('nota'));
         } // end if($hasFieldCartNote=='Y')
+        $datas['cart']['hasFieldCartNote'] = $hasFieldCartNote;
 
-        $this->viewBuilder()->setLayout('ajax');
+        $results['results'] = $datas;
+        
+        return $this->_response($results); 
     } 
 }

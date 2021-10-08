@@ -130,6 +130,60 @@ class CartsController extends ApiAppController
     }  
 
     /* 
+     * url: /admin/api/carts/setNota
+     * front-end - salva la nota per il referente
+     */
+    public function setNota() {
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+
+        $results = [];
+        $results['esito'] = true;
+        $results['msg'] = '';
+        $results['results'] = [];
+
+        $user = $this->Authentication->getIdentity();
+        $user_id = $user->id;
+        $organization_id = $user->organization->id;
+
+        $order_id = $this->request->getData('order_id');
+        $article_organization_id = $this->request->getData('article_organization_id');
+        $article_id = $this->request->getData('article_id');
+        $nota = $this->request->getData('nota');
+
+        if(empty($user_id) || empty($organization_id) || empty($order_id) || empty($article_organization_id) || empty($article_id)) {
+            $results['esito'] = false;
+            $results['msg'] = 'Errore nel salvataggio della nota';
+            $results['results'] = [];
+
+            return $this->_response($results); 
+        }
+
+        $cartsTable = TableRegistry::get('Carts');
+        $esito = $cartsTable->setNota($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $nota);
+        if($esito===false) {
+            $results['esito'] = false;
+            $results['msg'] = "L'articolo non è stato ancora acquistato!";
+            $results['results'] = [];            
+        } 
+        else 
+        if($esito===true) {
+            $results['esito'] = true;
+            $results['msg'] = 'Nota al referente salvata';
+            $results['results'] = [];            
+        }     
+        else {
+            $results['esito'] = false;
+            $results['msg'] = $esito;
+            $results['results'] = $esito;            
+        } 
+
+        return $this->_response($results); 
+    }
+
+    /* 
      * url: /admin/api/carts/getByOrder
      * front-end - estrae gli articoli associati ad un ordine filtrati per user  
      */

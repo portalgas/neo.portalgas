@@ -67,7 +67,6 @@ class DeliveriesController extends ApiAppController
         $sysDelivery = $deliveriesTable->getDeliverySys($user, $organization_id, $where);
         // debug($sysDelivery);
         
-        
         if($sysDelivery->has('orders') && !empty($sysDelivery->orders)) {
             $results[] = ['id' => $sysDelivery->id, 'label' => $sysDelivery->luogo];
         }

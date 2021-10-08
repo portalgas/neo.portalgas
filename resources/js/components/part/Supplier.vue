@@ -137,7 +137,6 @@ export default {
           console.error("Error: " + error);
         });
     },   
-
     clickShowModalSupplierImport () {
       this.showModalSupplierImport(true);
     }, 

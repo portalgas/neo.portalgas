@@ -14,7 +14,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import modal from './components/part/Modal';
+import modal from './components/part/ModalArticleOrder';
 
 
 export default {

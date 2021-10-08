@@ -147,7 +147,22 @@ if(isset($results['order']->referents)) {
 	echo $this->HtmlCustomSite->boxVerticalSupplierOrganizationreferents($results['order']->referents);
 	echo '</div>';
 	echo '</div>';
+}
+
+if($hasFieldCartNote=='Y') {
+	echo '<form>';
+	echo '<div class="row">';
+	echo '<div class="col-12">';
+	echo '<div class="form-group">';
+  echo '<label for="cart-note">Nota per il referente</label>';
+	echo '<textarea cols="100" rows="10" id="cart-note" name="cart-note" class="form-control">'.$nota.'</textarea>';
 	echo '</div>';
+	echo '</div>';
+	echo '</div>';
+
+	echo '<button type="button" onClick="javascript:sendCartNote();return false;" class="btn btn-primary" id="frm-cart-note">Submit</button>';
+
+	echo '</form>';
 }
 
 echo '</div>';

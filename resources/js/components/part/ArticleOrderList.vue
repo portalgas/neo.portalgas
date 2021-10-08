@@ -3,7 +3,7 @@
   <div v-if="order!=null" class="row" :class="'card-'+order.type_draw">
         
         <div class="content-img-article col-sm-2 col-md-2 col-lg-2 col-xs-2 d-none d-md-block d-lg-block d-xl-block">
-          <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name">
+          <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name" />
           <div v-if="article.is_bio" class="box-bio">
               <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
           </div>
@@ -15,7 +15,7 @@
                     <div v-html="$options.filters.highlight(article.name)"></div>
 
                     <div v-if="order.order_type.code!='PROMOTION_GAS_USERS'" class="">
-                      <a @click="clickShowOrHiddenModal()" class="cursor-pointer">
+                      <a @click="clickShowOrHiddenModalArticleOrder()" class="cursor-pointer">
                         <i class="fas fa-search"></i></a>
                     </div>
 
@@ -100,13 +100,12 @@ export default {
   mounted() {
   },
   methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
-    clickShowModal () {
-      this.showModal(true);
-    }, 
-    clickShowOrHiddenModal () {
-
-      this.isLoading=true;
+    ...mapActions(['showModalArticleOrder', 'showOrHiddenModalArticleOrder', 'addModalContent', 'clearModalContent']),
+    clickShowOrHiddenModalArticleOrder () {
+      var _this = this;
+      
+      _this.isLoading=true;
+      _this.clearModalContent();
 
       let params = {
         order_id: this.article.ids.order_id,
@@ -114,23 +113,25 @@ export default {
         article_id: this.article.ids.article_id
       };
 
-      let url = "/admin/api/html-article-orders/get";
+      let url = "/admin/api/article-orders/get";
       axios
         .post(url, params)
         .then(response => {
-            // console.log(response.data);
+            /*console.log(response.data);*/
             if(typeof response.data !== "undefined") {
 
               var modalContent = {
-                title: this.article.name,
-                body: response.data,
-                footer: ''
+                title: response.data.results.articlesOrder.name,
+                body: '',
+                entity: response.data.results,
+                footer: '',
+                msg: ''
               }            
 
-              this.isLoading=false;
+              _this.isLoading=false;
 
-              this.addModalContent(modalContent);
-              this.showOrHiddenModal();              
+              _this.addModalContent(modalContent);
+              _this.showOrHiddenModalArticleOrder();              
             }
         })
         .catch(error => {
