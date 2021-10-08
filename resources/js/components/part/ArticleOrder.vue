@@ -16,7 +16,7 @@
 
                 <span v-if="order.order_type.code!='PROMOTION_GAS_USERS'">
                   <a class="btn btn-primary btn-block btn-sm cursor-pointer" @click="clickShowOrHiddenModalArticleOrder()">
-                    maggior dettaglio<span v-if="organizationHasFieldCartNote='Y' && justInCart=='just-in-cart'"> / nota per il referente</span></a>
+                    maggior dettaglio<span v-if="organizationHasFieldCartNote=='Y' && justInCart=='just-in-cart'"> / nota per il referente</span></a>
                   
                   <div v-if="isLoading" class="box-spinner"> 
                     <div class="spinner-border text-info" role="status">
