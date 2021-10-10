@@ -57,7 +57,8 @@ class joomla25SaltsController extends AppController
         // debug($user);
         $user = serialize($user);
         
-        $user_salt = $this->encrypt($user);
+        $date = date('Ymd');
+        $user_salt = $this->encrypt($user, $date);
 
         /*
          * land page, controller / action

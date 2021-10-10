@@ -9,8 +9,12 @@ trait UtilTrait
     private $key = '';
     private $iv = '';
 
-    private function _getSecretKey($salt) {
-        $secret_key = $salt.date('Ymd');
+    private function _getSecretKey($salt, $date='') {
+       
+        if(empty($date))
+           $date = date('Ymd');
+
+        $secret_key = $salt.$date;
         return hash('sha256', $secret_key);
     }
         
@@ -21,7 +25,10 @@ trait UtilTrait
         return $iv;
     }
                 
-    public function encrypt($string) {
+    public function encrypt($string, $date='') {
+
+        if(empty($date))
+           $date = date('Ymd');
 
         $config = Configure::read('Config');
         if(isset($config['Salt']))
@@ -29,7 +36,7 @@ trait UtilTrait
         else
             $salt = '';
         
-        $key = $this->_getSecretKey($salt);
+        $key = $this->_getSecretKey($salt, $date);
         $iv = $this->_getSecretIv($salt);
 
         $results = openssl_encrypt($string, $this->encrypt_method, $key, 0, $iv);
@@ -38,7 +45,10 @@ trait UtilTrait
         return $results;
     }
     
-    public function decrypt($string) {
+    public function decrypt($string, $date='') {
+
+        if(empty($date))
+           $date = date('Ymd');
 
         $config = Configure::read('Config');
         if(isset($config['Salt']))
@@ -46,7 +56,7 @@ trait UtilTrait
         else
             $salt = '';
 
-        $key = $this->_getSecretKey($salt);
+        $key = $this->_getSecretKey($salt, $date);
         $iv = $this->_getSecretIv($salt);
 
         $results = openssl_decrypt(base64_decode($string), $this->encrypt_method, $key, 0, $iv);
