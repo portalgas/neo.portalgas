@@ -60,11 +60,18 @@ class Joomla25Authenticate extends AbstractAuthenticator
     private function _getUser(ServerRequestInterface $request)
     {    
         $user_salt = $request->getQuery('u');
-        if($this->debug) debug($user_salt);
         if(empty($user_salt))
             return false;
 
-		$user = $this->decrypt($user_salt);
+        $date = date('Ymd');
+		$user = $this->decrypt($user_salt, $date);
+        if(empty($user)) {
+            /*
+             * workaround se il sal viene creato a cavallo tra i 2 gg
+             */
+            $date = date('Ymd',strtotime("-1 days"));
+            $user = $this->decrypt($user_salt, $date); 
+        }
         if($this->_log) Log::debug($user);
 		$user = unserialize($user);
         if($this->_log) Log::debug($user);
