@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 class TestsController extends AppController
 {
@@ -153,4 +154,29 @@ class TestsController extends AppController
         $this->set(compact('results'));
         $this->render('index');        
     }
+
+    public function salt() {
+        
+        $debug = true;
+
+        $salt = 'QllTdjVQc05lSEFaOHBoRGxGQkloYnRrT2MyRDZsOEs3Vk5ER3ladTBhT1VBdW1NbEpnS0VEMXdscklhcXZyaldCb0RTSm96dUJ3NFZMRm91NFI3UUdZWXp2SjlzVlFWaCtVbFR5UE5GMUUyTXBPWkpsYWhnT3BHeTY1Y3I5cUdEbHVVbUY2L1V6Tnd0MldvSmRRMnh3PT0=';
+        
+        $date = date('Ymd');
+        debug($date);
+        $results =$this->decrypt($salt, $date);
+        debug($results);
+
+        $date = date('Ymd',strtotime("-1 days"));
+        debug($date);
+        $results =$this->decrypt($salt, $date);
+        debug($results);
+
+        $date = date('Ymd',strtotime("+1 days"));
+        debug($date);
+        $results =$this->decrypt($salt, $date);
+        debug($results);
+        
+        $this->set(compact('results'));
+        $this->render('index');
+    }    
 }

@@ -65,13 +65,24 @@ class Joomla25Authenticate extends AbstractAuthenticator
 
         $date = date('Ymd');
 		$user = $this->decrypt($user_salt, $date);
-        if(empty($user)) {
-            /*
-             * workaround se il sal viene creato a cavallo tra i 2 gg
-             */
+        
+        /*
+         * workaround se il sal viene creato a cavallo tra i 2 gg
+         */
+        if(empty($user) || $user===false) {
+
             $date = date('Ymd',strtotime("-1 days"));
+            if($this->_log) Log::debug('-1 days '. $date);
             $user = $this->decrypt($user_salt, $date); 
         }
+
+        if(empty($user) || $user===false) {
+
+            $date = date('Ymd',strtotime("+1 days"));
+            if($this->_log) Log::debug('+1 days '. $date);
+            $user = $this->decrypt($user_salt, $date); 
+        }
+
         if($this->_log) Log::debug($user);
 		$user = unserialize($user);
         if($this->_log) Log::debug($user);
