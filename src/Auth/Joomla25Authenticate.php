@@ -71,15 +71,15 @@ class Joomla25Authenticate extends AbstractAuthenticator
          */
         if(empty($user) || $user===false) {
 
-            $date = date('Ymd',strtotime("-1 days"));
-            if($this->_log) Log::debug('-1 days '. $date);
-            $user = $this->decrypt($user_salt, $date); 
-        }
-
-        if(empty($user) || $user===false) {
-
             $date = date('Ymd',strtotime("+1 days"));
             if($this->_log) Log::debug('+1 days '. $date);
+            $user = $this->decrypt($user_salt, $date); 
+        }
+                
+        if(empty($user) || $user===false) {
+
+            $date = date('Ymd',strtotime("-1 days"));
+            if($this->_log) Log::debug('-1 days '. $date);
             $user = $this->decrypt($user_salt, $date); 
         }
 
