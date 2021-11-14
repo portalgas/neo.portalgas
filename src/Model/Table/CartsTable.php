@@ -154,12 +154,13 @@ class CartsTable extends Table
         foreach ($where as $key => $value) {
             $where += [$key => $value];
         }
-        $where += ['Carts.organization_id' => $user->organization->id];
+        $where += ['Carts.organization_id' => $user->organization->id, 
+                   'Carts.deleteToReferent' => 'N'];
             
         if($debug) debug($where);
 
         $cartsResults = $this->find()
-                            ->contain(['Orders', 'ArticlesOrders'])
+                            ->contain(['Orders', 'ArticlesOrders' => ['conditions' => ['ArticlesOrders.stato != ' => 'N']]])
                             ->select(['Carts.qta', 'Carts.qta_forzato', 'Carts.importo_forzato', 'ArticlesOrders.prezzo'])
                             ->where($where) 
                             ->all();
