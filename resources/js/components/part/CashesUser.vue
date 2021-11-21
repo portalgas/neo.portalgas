@@ -103,7 +103,7 @@
 
       </div>
       <div class="modal-footer">
-        <a :href="portalgasFeUrl+'/login'" class="mr-auto"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
+        <a :href="appConfig.$siteUrl+'/login'" class="mr-auto"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
       </div>
     </div>
@@ -138,29 +138,7 @@ export default {
     this.getCashCtrlLimit();
   },
   computed: {
-    ...mapGetters(["cashesUserReload"]),
-    portalgasFeUrl() {
-      var host = window.location.host.toLowerCase();
-      var glob = {};
-
-      switch(host) {
-        case 'neo.portalgas.local.it:81':
-          glob = require('../../../config/development.env');
-        break;
-        case 'neotest.portalgas.it':
-          glob = require('../../../config/test.portalgas.env');
-          break;
-        case 'neonext.portalgas.it':
-          glob = require('../../../config/next.portalgas.env');
-          break;
-        default:
-          glob = require('../../../config/production.env');
-      }
-
-      // console.log('host '+host+' portalgasFeUrl '+glob.PortalgasFeUrl);
-
-      return glob.PortalgasFeUrl;
-    }
+    ...mapGetters(["cashesUserReload"])
   }, 
   watch: {
     /*

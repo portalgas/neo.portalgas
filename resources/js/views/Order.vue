@@ -4,14 +4,56 @@
 
   <ul class="link-top">
     <li>
-      <router-link to="/fai-la-spesa">Torna alla consegne</router-link>
+      <router-link to="/fai-la-spesa" class="btn btn-primary">Torna alla consegne</router-link>
     </li>
     <li>
-      <a id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
+      <a class="btn btn-primary" id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
     </li>
   </ul>
 
   <div class="clearfix"></div>
+
+  <!--               -->
+  <!-- elenco ordini -->
+  <!--               -->
+  <div class="col-sm-12 col-xs-12 col-md-12">
+    <div class="form-group">
+
+        <b-dropdown text="Vai all'ordine" block class="m-md-2" menu-class="w-100" 
+        v-if="!isRunOrders && orders.length>0">
+
+          <template v-for="(order, index) in orders"
+              :value="order.id">
+            <a :href="'/order/'+order.order_type_id+'/'+order.id" class="order-change">
+              <b-dropdown-item-button block >
+
+                <img style="max-width:75px" v-if="order.suppliers_organization.supplier.img1 != ''" 
+                  :src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+                  :alt="order.suppliers_organization.name">
+
+                  {{ order.suppliers_organization.name }} 
+
+                    <b-badge variant="secondary" v-if="order.delivery.sys=='Y'" style="float:right">
+                        {{ order.delivery.luogo }}
+                    </b-badge>
+                    <b-badge variant="secondary" v-if="order.delivery.sys!='Y'" style="float:right">
+                        {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
+                    </b-badge>            
+              </b-dropdown-item-button>
+            </a>
+          </template>
+
+        </b-dropdown>
+        <div v-if="isRunOrders" class="box-spinner"> 
+            <div class="spinner-border text-info" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>  
+        </div>              
+    </div>
+  </div> <!-- col-sm-12 col-xs-12 col-md-12 -->
+  <!--               -->
+  <!-- elenco ordini -->
+  <!--               -->
 
   <div class="row">
       <div class="col-sm-12 col-xs-12 col-md-12"> 
@@ -259,10 +301,12 @@ export default {
       order_type_id: 0,
       order_id: 0,
       order: null,
+      orders: [],
       articles: [],
       page: 1,
       sort: null,
       isScrollFinish: false,   
+      isRunOrders: false,    
       isRunOrder: false,   
       isRunArticles: false,   
       displayList: false,
@@ -402,6 +446,7 @@ export default {
         order_type_id: this.order_type_id,
         order_id: this.order_id
       };
+
       axios
         .post(url, params)
         .then(response => {
@@ -411,7 +456,10 @@ export default {
           // console.log(response.data);
           if(typeof response.data !== "undefined") {
             this.order = response.data;
+
+            this.getListOrders();
           }
+
         })
         .catch(error => {
           this.isRunOrder = false;
@@ -463,9 +511,44 @@ export default {
           this.isScrollFinish = true;
         });
     },
+    getListOrders() {
 
+        if(this.order==null) 
+          return;
 
+        this.isRunOrders=true;
 
+        let params = {
+          /*
+           * per gli ordini per produttore non ho la consegna
+           delivery_id: this.order.delivery_id 
+          */
+        };
+
+        this.orders = [];
+
+        let url = "/admin/api/orders/gets";
+        // console.log(url);
+        axios
+          .post(url, params)
+          .then(response => {
+
+            this.isRunOrders=false;
+
+            // console.log(response.data);
+            if(typeof response.data !== "undefined") {
+              this.orders = response.data;
+              // console.log(this.orders);
+          }
+        })
+        .catch(error => {
+
+          this.isRunOrders=false;
+
+          console.error("Error: " + error);
+        });
+
+    },
     /*
      * ctrl cooies per viewList / tour
      */

@@ -28,7 +28,7 @@ class Joomla25Authenticate extends AbstractAuthenticator
 {
 	use Traits\UtilTrait;
 
-    private $debug = false;
+    private $_debug = false;
     private $_log = false;
 
     public function __construct(IdentifierCollection $identifiers, array $config = [])
@@ -49,7 +49,7 @@ class Joomla25Authenticate extends AbstractAuthenticator
 		}
 
 		$user = $this->_getUser($request);
-        if($this->debug) debug($user);
+        if($this->_debug) debug($user);
         if (empty($user) || $user===false) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
@@ -86,12 +86,12 @@ class Joomla25Authenticate extends AbstractAuthenticator
         if($this->_log) Log::debug($user);
 		$user = unserialize($user);
         if($this->_log) Log::debug($user);
-		if($this->debug) debug($user);
+		if($this->_debug) debug($user);
         if(empty($user) || !isset($user['user_organization_id']) || !isset($user['user_id']) || !isset($user['organization_id']))
             return false;
 
 		$usersTable = TableRegistry::get('Users');
-		$user = $usersTable->findLogin($user['user_organization_id'], $user['user_id'], $user['organization_id'], $this->debug); 
+		$user = $usersTable->findLogin($user['user_organization_id'], $user['user_id'], $user['organization_id'], $this->_debug); 
         if($this->_log) Log::debug($user);
 
 		return $user;

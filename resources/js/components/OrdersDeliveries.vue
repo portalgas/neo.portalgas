@@ -52,7 +52,7 @@
 					    
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
 
-					    <div v-if="order.nota!=''" class="col-10 alert alert-info ml-auto mr-1 no-decoration" 
+					    <div v-if="order.nota!=null && order.nota!=''" class="col-10 alert alert-info ml-auto mr-1 no-decoration" 
 					     	v-html="$options.filters.html(order.nota)">
 					    </div>
 					</a>
@@ -95,54 +95,54 @@ export default {
 	    selectDelivery(delivery_id) {
 	    	/* console.log('selectDelivery '+delivery_id); */
 
-			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
-			
-			$('.collapse').removeClass('show');
-			$('#accordion-deliveries .fas').removeClass("fa-angle-up");
-			$('#accordion-deliveries .fas').addClass("fa-angle-down");
-
-			if(!isOpen) {
-				// console.log('Tab chiuso => lo apro ');
-				$('#collapse-'+delivery_id).addClass('show');
-				$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
-			}
-			else {
-				// console.log('Tab aperto => esco ');
-				return;
-			}
-
-			this.isRunOrders=true;
+				let isOpen = $('#collapse-'+delivery_id).hasClass('show');
 				
-			let params = {
-				delivery_id: delivery_id
-			};
+				$('.collapse').removeClass('show');
+				$('#accordion-deliveries .fas').removeClass("fa-angle-up");
+				$('#accordion-deliveries .fas').addClass("fa-angle-down");
 
-			this.orders = [];
+				if(!isOpen) {
+					// console.log('Tab chiuso => lo apro ');
+					$('#collapse-'+delivery_id).addClass('show');
+					$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
+				}
+				else {
+					// console.log('Tab aperto => esco ');
+					return;
+				}
 
-			let url = "/admin/api/orders/gets";
-			// console.log(url);
-			axios
-				.post(url, params)
-				.then(response => {
+				this.isRunOrders=true;
+					
+				let params = {
+					delivery_id: delivery_id
+				};
+
+				this.orders = [];
+
+				let url = "/admin/api/orders/gets";
+				// console.log(url);
+				axios
+					.post(url, params)
+					.then(response => {
+
+						this.isRunOrders=false;
+
+						// console.log(response.data);
+						if(typeof response.data !== "undefined") {
+							var data = {
+								delivery_id: delivery_id,
+								data: response.data
+							}
+							this.orders = data;
+							// console.log(this.orders);
+					}
+				})
+				.catch(error => {
 
 					this.isRunOrders=false;
 
-					// console.log(response.data);
-					if(typeof response.data !== "undefined") {
-						var data = {
-							delivery_id: delivery_id,
-							data: response.data
-						}
-						this.orders = data;
-						// console.log(this.orders);
-				}
-			})
-			.catch(error => {
-
-				this.isRunOrders=false;
-
-				console.error("Error: " + error);
-			});
+					console.error("Error: " + error);
+				});
 	    },
 	    selectOrder(order) {
 	    	// console.log('selectOrder');
@@ -158,19 +158,19 @@ export default {
 	      const amt = Number(amount);
 	      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
 	    },
-        formatDate(value) {
-          if (value) {
-            let locale = window.navigator.userLanguage || window.navigator.language;
-            locale = 'it-IT';
-            /* console.log(locale); */
-            moment.toLocaleString(locale)
-            moment.locale(locale);
-            return moment(String(value)).format('DD MMMM YYYY')
-          }
-        },
-          counter: function (index) {
-            return index+1
-        },
+      formatDate(value) {
+        if (value) {
+          let locale = window.navigator.userLanguage || window.navigator.language;
+          locale = 'it-IT';
+          /* console.log(locale); */
+          moment.toLocaleString(locale)
+          moment.locale(locale);
+          return moment(String(value)).format('DD MMMM YYYY')
+        }
+      },
+        counter: function (index) {
+          return index+1
+      },
 	    html(text) {
 	        return text;
 	    },

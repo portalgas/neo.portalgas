@@ -61,12 +61,14 @@
             :disabled="btnSaveIsDisabled"
             @click="save()"
           >      
-            Save
+            Salva
           </button>
 
-          <div v-if="isRun" class="spinner-border text-info" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
+          <div v-if="isRun" class="box-spinner"> 
+              <div class="spinner-border text-info" role="status">
+                  <span class="sr-only">Loading...</span>
+              </div>  
+          </div>  
 
         </div>
       </div>
@@ -379,6 +381,9 @@ export default {
 .buttons_added {
     width: 100%;
     display: inline-flex;
+}
+.box-spinner {
+    margin: 0px;
 }
 .buttons_added .spinner-border {
     display: inline-table;

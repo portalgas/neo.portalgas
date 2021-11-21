@@ -162,7 +162,7 @@
         <div class="form-group">
           <label for="cart-note">Nota per il referente</label>
           <textarea cols="100" rows="10" id="cart-nota" name="cart-nota" ref="cart-nota" class="form-control" 
-            :value="modalContent.entity.cart.nota">
+            v-model="modalContent.entity.cart.nota">
           </textarea>
 
         </div>
@@ -235,7 +235,9 @@ export default {
       /*
        * se gestisco textarea con v-model=nota nno si puo' settare il valore!
        */
-        var nota = this.$refs["cart-nota"].value;
+        // var nota = this.$refs["cart-nota"].value;
+        let nota = this.modalContent.entity.cart.nota;
+        // console.log(nota, 'sendCartNota');
         // console.log(this.modalContent.entity.articlesOrder.ids);
 
         _this.modalContent.msg = null;
@@ -253,7 +255,7 @@ export default {
           .post(url, params)
           .then(response => {
               
-              _this.$refs["cart-nota"].value = nota;
+              // _this.$refs["cart-nota"].value = nota;
 
               /*console.log(response.data);*/
               if(typeof response.data !== "undefined") { 
