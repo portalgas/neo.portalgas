@@ -22,7 +22,6 @@ export default {
   },
   data() {
     return {
-      test: "fractis",
       google: null,
       map: null,
       ms: []
