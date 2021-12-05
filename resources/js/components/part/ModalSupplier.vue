@@ -47,7 +47,7 @@
               <div class="row">
                 <div class="col-lg-12">
                     <ul>
-                      <li><i class="bi bi-rounded-right"></i> <i class="fas fa-map-marker-alt"></i> {{ modalContent.entity.indirizzo }} {{ modalContent.entity.localita }} <span v-if="modalContent.entity.provincia">({{ modalContent.entity.provincia }})</span> {{ modalContent.entity.cap }}</li>
+                      <li v-if="modalContent.entity.indirizzo!='' || modalContent.entity.localita!='' || modalContent.entity.provincia!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-map-marker-alt"></i> {{ modalContent.entity.indirizzo }} {{ modalContent.entity.localita }} <span v-if="modalContent.entity.provincia">({{ modalContent.entity.provincia }})</span> {{ modalContent.entity.cap }}</li>
                       <li v-if="modalContent.entity.www!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-globe"></i> <a :href="modalContent.entity.www" target="_blank" title="vai al sito del produttore">{{ modalContent.entity.www }}</a></li>
                       <li v-if="modalContent.entity.mail!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-envelope"></i> <a :href="'mailto:'+modalContent.entity.mail" title="scrivigli una mail">{{ modalContent.entity.mail }}</a></li>
                       <li v-if="modalContent.entity.telefono!=''"><i class="bi bi-rounded-right"></i> <i class="fas fa-phone"></i> {{ modalContent.entity.telefono }}</li>
@@ -64,6 +64,7 @@
 
 
           <google-map
+            v-if="mapMarkers!=null && mapMarkers[0].lat!='' && mapMarkers[0].lng!=''"
             :config="mapConfig"
             :apikey="apikey"
             :markers="mapMarkers"
@@ -198,11 +199,19 @@ export default {
         }
       },
     mapMarkers() {
+      let lat = '';
+      if(this.modalContent.entity.lat!='')
+        lat = parseFloat(this.modalContent.entity.lat);
+        
+      let lng = '';
+      if(this.modalContent.entity.lng!='')
+        lng = parseFloat(this.modalContent.entity.lng);
+
       return [
         {
            name: this.modalContent.entity.name,
-           lat: parseFloat(this.modalContent.entity.lat), 
-           lng: parseFloat(this.modalContent.entity.lng)        
+           lat: lat, 
+           lng: lng       
         }
       ]
     }    
