@@ -364,6 +364,15 @@ msgstr "Importo totale scontato"
 msgid "ImportoOriginale"
 msgstr "Importo originale"
 
+msgid "ImportoTotale"
+msgstr "Importo totale"
+
+msgid "ImportoTotaleOrdine"
+msgstr "Importo totale dell'ordine"
+
+msgid "ImportoTotaleOrdineShort"
+msgstr "Imp. ord."
+
 msgid "CostTrasport"
 msgstr "Trasporto"
 

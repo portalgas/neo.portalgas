@@ -42,7 +42,8 @@ if(!empty($deliveries)) {
         <tr>
           <th><?php echo __('Supplier-Name');?></th>
           <th></th>
-          <th></th>
+          <th><?php echo __('StateOrder');?></th>
+          <th><?php echo __('ImportoTotaleOrdine');?></th>
           <th><?php echo __('data_inizio');?></th>
           <th><?php echo __('data_fine');?></th>
         </tr>
@@ -57,6 +58,7 @@ if(!empty($deliveries)) {
           	<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-supplier" width="<?php echo Configure::read('Supplier.img.preview.width');?>" :src="'<?php echo $portalgas_fe_url.Configure::read('Supplier.img.path.fulljs');?>'+order.suppliers_organization.supplier.img1" alt="" /></td>
           <td>{{ order.suppliers_organization.name }}</td>
           <td>{{ order.state_code | orderStateCode }}</td>
+          <td>{{ order.tot_importo | formatImportToDb }}</td>
           <td>{{ order.data_inizio | formatDate }}</td>
           <td>{{ order.data_fine | formatDate }}</td>
         </tr>
