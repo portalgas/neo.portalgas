@@ -17,7 +17,7 @@ if(!empty($supplier_organization->supplier->img1)) {
 
     $url = $portalgas_fe_url.Configure::read('Supplier.img.path.full');
 
-    $img1_path = sprintf($supplier_organization->supplier->img1, $url);
+    $img1_path = sprintf($url, $supplier_organization->supplier->img1);
     echo '<img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" /> ';
 }
 echo $supplier_organization->name;
@@ -79,7 +79,7 @@ else {
                 <?php  
                 echo '<td>';
                 if(!empty($article->img1)) {
-                    $url = Configure::read('Article.img.path.full').$portalgas_fe_url;
+                    $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
 
                     $img1_path = sprintf($url, $article->organization_id, $article->img1);
                     echo '<img src="'.$img1_path.'" width="'.Configure::read('Article.img.preview.width').'" />';
