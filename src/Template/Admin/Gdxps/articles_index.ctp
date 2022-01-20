@@ -39,7 +39,7 @@ else {
 
         $url = $portalgas_fe_url.Configure::read('Supplier.img.path.full');
 
-        $img1_path = sprintf($url, $supplier_organization->supplier->img1);
+        $img1_path = sprintf($supplier_organization->supplier->img1, $url);
         echo '<img src="'.$img1_path.'" width="'.Configure::read('Supplier.img.preview.width').'" /> ';
     }
     echo $supplier_organization->name;
