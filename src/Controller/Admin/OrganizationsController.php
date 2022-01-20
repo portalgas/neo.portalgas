@@ -2,6 +2,9 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * Organizations Controller
@@ -28,6 +31,88 @@ class OrganizationsController extends AppController
         }
     }
 	
+    public function settingParams()
+    {
+        $debug = true;
+        $continua = true;
+        $type_params = ['paramsConfig' => 'paramsConfig (parametri di configurazione)', 
+                        'paramsFields' => 'paramsFields (parametri dei campi)',
+                        'paramsPay' => 'paramsPay (parametri di pagamento)'];
+        $types = ['GAS' => 'GAS', 'PRODGAS' => 'PRODGAS'];
+
+        if ($this->request->is('post')) {
+
+            $type_param = $this->request->getData('type_params'); 
+            $type = $this->request->getData('types');
+            $field = $this->request->getData('field');
+            $value = $this->request->getData('value');
+            if(empty($field) || empty($value)) {
+                $this->Flash->error('Campo field e value obbligatori', ['escape' => false]);
+                $continua = false;
+            }
+            
+            if($continua) {
+                $where = ['Organizations.type' => $type];
+                if($debug) debug($where);
+
+                $this->Organizations->addBehavior('OrganizationsParams');
+                $organizations = $this->Organizations->find()
+                                                    ->where($where)
+                                                    ->order('Organizations.name')
+                                                    ->all();
+
+                /*
+                 * in OrganizationsParamsBehavior::beforeSave arriva vuoto perche' la validazione non accetta un array()
+                 */
+                $this->Organizations->removeBehavior('OrganizationsParams');
+
+                foreach($organizations as $numResult => $organization) {
+                    
+                    // if($debug) debug($organization->{$type_param});
+                    if(isset($organization->{$type_param}[$field])) {
+                        $organization->{$type_param}[$field] = $value;
+                        $value_old = $value;
+                    }
+                    else {
+                        $organization->{$type_param} += [$field => $value];
+                        $value_old = '';
+                    }
+                    // if($debug) debug($organization->{$type_param});
+
+                    if($debug) {
+                        if(empty($value_old))
+                            debug($numResult.') Tratto '.$organization->name.' ('.$organization->id.') INSERT in '.$type_param.' '.$field.':'.$value);
+                        elseif($value_old==$value)
+                            debug($numResult.') Tratto '.$organization->name.' ('.$organization->id.') SALTO in '.$type_param.' '.$field.' da '.$value_old.' a '.$value);
+                        else
+                            debug($numResult.') Tratto '.$organization->name.' ('.$organization->id.') UPDATE in '.$type_param.' '.$field.' da '.$value_old.' a '.$value);
+                    }
+
+                    if($value_old!=$value) {
+
+                        $datas = [];
+                        /*
+                         * in OrganizationsParamsBehavior::beforeSave arriva vuoto perche' la validazione non accetta un array()
+                         */
+                        $datas[$type_param] = json_encode($organization->{$type_param}, true);
+                        // if($debug) debug($datas);
+
+                        $org = $this->Organizations->get($organization->id);
+                        $org = $this->Organizations->patchEntity($org, $datas);
+                        // if($debug) debug($org);
+                        if (!$this->Organizations->save($org)) {
+                            debug($org->getErrors());
+                            exit;
+                        }
+                    } // end if($value_old!=$value)
+    
+                } // end foreach($organizations as $organization)               
+            } // end if($continua) 
+        }
+
+        $this->set(compact('type_params', 'types'));
+    }
+
     /**
      * Index method
      *
@@ -37,7 +122,7 @@ class OrganizationsController extends AppController
     {
         $this->Organizations->addBehavior('OrganizationsParams');
         $this->paginate = [
-            'contain' => ['Templates', 'JPageCategories', 'Gcalendars'],
+            'contain' => ['Templates' /* , 'JPageCategories', 'Gcalendars' */],
         ];
         $organizations = $this->paginate($this->Organizations);
 

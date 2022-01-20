@@ -282,5 +282,15 @@ class UsergroupsTable extends Table
             return true;
         else
             return false;
-    }    
+    }  
+
+    /*
+     * produttori, ha i gruppi gasSuperReferente / prodGasSupplierManager 
+     */
+    public function isProdGasSupplierManager($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('prod_gas_supplier_manager'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }  
 }

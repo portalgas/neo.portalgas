@@ -29,7 +29,7 @@ class OrganizationsTable extends Table
 		
         $this->belongsTo('Templates', [
             'foreignKey' => 'template_id',
-            'joinType' => 'INNER'
+            'joinType' => 'RIGHT' 
         ]);
         /*
         $this->belongsTo('JPageCategories', [
@@ -46,7 +46,7 @@ class OrganizationsTable extends Table
          * se l'organization type = PACT / PRODGAS / PROD
          *  e il legame con il produttore associato
          */
-        $this->hasOne('SuppliersOrganizations');                 
+        $this->hasOne('SuppliersOrganizations');  
     }
 
     /**

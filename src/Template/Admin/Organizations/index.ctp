@@ -68,44 +68,44 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($kOrganizations as $kOrganization): ?>
+              <?php foreach ($organizations as $organization): ?>
                 <tr>
-                  <td><?= $this->Number->format($kOrganization->id) ?></td>
-                  <td><?= h($kOrganization->name) ?></td>
-                  <td><?= h($kOrganization->indirizzo) ?></td>
-                  <td><?= h($kOrganization->localita) ?></td>
-                  <td><?= h($kOrganization->cap) ?></td>
-                  <td><?= h($kOrganization->provincia) ?></td>
-                  <td><?= h($kOrganization->telefono) ?></td>
-                  <td><?= h($kOrganization->telefono2) ?></td>
-                  <td><?= h($kOrganization->mail) ?></td>
-                  <td><?= h($kOrganization->www) ?></td>
-                  <td><?= h($kOrganization->www2) ?></td>
-                  <td><?= h($kOrganization->sede_logistica_1) ?></td>
-                  <td><?= h($kOrganization->sede_logistica_2) ?></td>
-                  <td><?= h($kOrganization->sede_logistica_3) ?></td>
-                  <td><?= h($kOrganization->sede_logistica_4) ?></td>
-                  <td><?= h($kOrganization->cf) ?></td>
-                  <td><?= h($kOrganization->piva) ?></td>
-                  <td><?= h($kOrganization->banca) ?></td>
-                  <td><?= h($kOrganization->banca_iban) ?></td>
-                  <td><?= h($kOrganization->lat) ?></td>
-                  <td><?= h($kOrganization->lng) ?></td>
-                  <td><?= h($kOrganization->img1) ?></td>
-                  <td><?= $kOrganization->has('template') ? $this->Html->link($kOrganization->template->name, ['controller' => 'Templates', 'action' => 'view', $kOrganization->template->id]) : '' ?></td>
-                  <td><?= $this->Number->format($kOrganization->j_group_registred) ?></td>
-                  <td><?= $this->Number->format($kOrganization->j_page_category_id) ?></td>
-                  <td><?= h($kOrganization->j_seo) ?></td>
-                  <td><?= h($kOrganization->gcalendar_id) ?></td>
-                  <td><?= h($kOrganization->type) ?></td>
-                  <td><?= h($kOrganization->hasMsg) ?></td>
-                  <td><?= h($kOrganization->stato) ?></td>
-                  <td><?= h($kOrganization->created) ?></td>
-                  <td><?= h($kOrganization->modified) ?></td>
+                  <td><?= $this->Number->format($organization->id) ?></td>
+                  <td><?= h($organization->name) ?></td>
+                  <td><?= h($organization->indirizzo) ?></td>
+                  <td><?= h($organization->localita) ?></td>
+                  <td><?= h($organization->cap) ?></td>
+                  <td><?= h($organization->provincia) ?></td>
+                  <td><?= h($organization->telefono) ?></td>
+                  <td><?= h($organization->telefono2) ?></td>
+                  <td><?= h($organization->mail) ?></td>
+                  <td><?= h($organization->www) ?></td>
+                  <td><?= h($organization->www2) ?></td>
+                  <td><?= h($organization->sede_logistica_1) ?></td>
+                  <td><?= h($organization->sede_logistica_2) ?></td>
+                  <td><?= h($organization->sede_logistica_3) ?></td>
+                  <td><?= h($organization->sede_logistica_4) ?></td>
+                  <td><?= h($organization->cf) ?></td>
+                  <td><?= h($organization->piva) ?></td>
+                  <td><?= h($organization->banca) ?></td>
+                  <td><?= h($organization->banca_iban) ?></td>
+                  <td><?= h($organization->lat) ?></td>
+                  <td><?= h($organization->lng) ?></td>
+                  <td><?= h($organization->img1) ?></td>
+                  <td><?= $organization->has('template') ? $this->Html->link($organization->template->name, ['controller' => 'Templates', 'action' => 'view', $organization->template->id]) : '' ?></td>
+                  <td><?= $this->Number->format($organization->j_group_registred) ?></td>
+                  <td><?= $this->Number->format($organization->j_page_category_id) ?></td>
+                  <td><?= h($organization->j_seo) ?></td>
+                  <td><?= h($organization->gcalendar_id) ?></td>
+                  <td><?= h($organization->type) ?></td>
+                  <td><?= h($organization->hasMsg) ?></td>
+                  <td><?= h($organization->stato) ?></td>
+                  <td><?= h($organization->created) ?></td>
+                  <td><?= h($organization->modified) ?></td>
                   <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $kOrganization->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $kOrganization->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $kOrganization->id], ['confirm' => __('Are you sure you want to delete # {0}?', $kOrganization->id), 'class'=>'btn btn-danger btn-xs']) ?>
+                      <?= $this->Html->link(__('View'), ['action' => 'view', $organization->id], ['class'=>'btn btn-info btn-xs']) ?>
+                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $organization->id], ['class'=>'btn btn-warning btn-xs']) ?>
+                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $organization->id], ['confirm' => __('Are you sure you want to delete # {0}?', $organization->id), 'class'=>'btn btn-danger btn-xs']) ?>
                   </td>
                 </tr>
               <?php endforeach; ?>

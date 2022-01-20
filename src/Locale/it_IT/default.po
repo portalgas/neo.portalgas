@@ -394,8 +394,14 @@ msgstr "Elenco produttori"
 msgid "Article-Export"
 msgstr "Esporta articoli in formato GDXPS"
 
+msgid "Article-Send"
+msgstr "Trasmetti articoli in formato GDXPS"
+
 msgid "Article-Export-short"
-msgstr "Esporta articoli"
+msgstr "Esporta listino articoli"
+
+msgid "Article-Send-short"
+msgstr "Trasmetti listino articoli"
 
 msgid "Import-File"
 msgstr "Importa articoli in formato GDXPS"
@@ -447,6 +453,12 @@ msgstr "Aggiungi nuovo record"
 
 msgid "ReAddN"
 msgstr "Torna all'elenco"
+
+msgid "Export"
+msgstr "Esporta"
+
+msgid "Send"
+msgstr "Trasmetti"
 
 #
 # New
@@ -813,6 +825,12 @@ msgstr "Nome classe Component per i metodi custom"
 #
 msgid "OrganizationPay"
 msgstr "Pagamenti"
+
+#
+# Organization
+#
+msgid "Organization Setting Params"
+msgstr "Settaggio dei parametri"
 
 #
 # Supplier

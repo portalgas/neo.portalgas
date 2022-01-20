@@ -54,6 +54,8 @@ class Joomla25Authenticate extends AbstractAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
+        if($this->_debug) exit;
+
         return new Result($user, Result::SUCCESS);
     }
 
@@ -67,7 +69,7 @@ class Joomla25Authenticate extends AbstractAuthenticator
 		$user = $this->decrypt($user_salt, $date);
         
         /*
-         * workaround se il sal viene creato a cavallo tra i 2 gg
+         * workaround se il salt viene creato a cavallo tra i 2 gg
          */
         if(empty($user) || $user===false) {
 

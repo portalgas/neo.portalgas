@@ -94,6 +94,7 @@ Router::scope('/', function (RouteBuilder $routes) {
          */ 
         $routes->connect('/users/login', ['controller' => 'Users', 'action' => 'login']);  
         $routes->connect('/users/logout', ['controller' => 'Users', 'action' => 'logout']);
+        $routes->connect('/users/logout_bo', ['controller' => 'Users', 'action' => 'logoutBo']);
     }
     
     /**
@@ -243,6 +244,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/setMsgText', ['action' => 'setMsgText', '_method' => 'POST']);
         });
         
+        /*
+         * gdxp
+         */
+        $routes->scope('/gdpx', ['controller' => 'GdxpExports'], function (RouteBuilder $routes) {
+            $routes->connect('/send-articles', ['action' => 'sendArticles', '_method' => 'POST']);
+        });
+
         /*
          * export
          */

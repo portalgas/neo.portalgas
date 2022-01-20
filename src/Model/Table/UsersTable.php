@@ -143,29 +143,23 @@ class UsersTable extends Table
      * Joomla25Authenticate
      * UserController::login
      *
-     * user_organization_id = organization_id dell'utente
+     * user_organization_id = organization_id dell'utente (per root==0)
      * user_id = id dell'utente 
      * organization_id = organization_id scelta (per root)
      */
     public function findLogin($user_organization_id, $user_id, $organization_id, $debug=false)
     {
-        if($debug) debug('user_organization_id '.$user_organization_id);
-        if($debug) debug('user_id '.$user_id);
-        if($debug) debug('organization_id '.$organization_id);
+        if($debug) debug('user_organization_id (organization_id dell\'utente) '.$user_organization_id);
+        if($debug) debug('user_id (id dell\'utente) '.$user_id);
+        if($debug) debug('organization_id (organization_id scelta (per root)) '.$organization_id);
         // $user_organization_id / organization_id puo' essere 0 (per root)
         if (empty($user_id)) {
             return null;
         }
-     
-        /*
-         * sono root user_organization_id = 0
-         */
-        if(empty($organization_id))
-            $user_organization_id = $organization_id;
 
         $where = ['organization_id' => $user_organization_id,
-                  'id' => $user_id,
-                  'block' => 0];
+                  'block' => 0,
+                  'id' => $user_id];
         if($debug) debug($where);
         
         $user = $this->find()
@@ -181,19 +175,146 @@ class UsersTable extends Table
             ->contain(['UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
             ->first();
         // if($debug) debug($user);
-        
+
         if (!$user) {
             return null;
         }
 
         $user->unsetProperty('password');
 
+       /*
+         * creo array con i group_id dell'utente, per UserComponent
+         */
+        $group_ids = [];
+        if($user->has('user_usergroup_map')) {
+            foreach($user->user_usergroup_map as $user_usergroup_map) {
+                $group_ids[$user_usergroup_map->group_id] = $user_usergroup_map->user_group->title;
+            }
+            unset($user->user_usergroup_map);
+        }
+        // debug($group_ids);
+        $user->group_ids = $group_ids;
+        
+        /*
+         * rimappo array user.profiles
+         * user->user_profiles['profile.address'] = value
+         */
+        $user_profiles = [];
+        if($user->has('user_profiles')) {
+            foreach($user->user_profiles as $user_profile) {
+                $profile_key = str_replace('profile.', '', $user_profile->profile_key);
+                /*
+                 * elimino primo e ultimo carattere se sono "
+                 */
+                if(!empty($user_profile->profile_value) && strpos(substr($user_profile->profile_value, 0, 1), '"')!==false) {
+                    $user_profile->profile_value = substr($user_profile->profile_value, 1, strlen($user_profile->profile_value)-2);
+                }
+
+                $user_profiles[$profile_key] = $user_profile->profile_value;
+            }
+            
+            unset($user->user_profiles);
+        }
+        // debug($user_profiles);
+        $user->user_profiles = $user_profiles;           
+        
+        /*
+         *
+         * acl
+         */
+        $usergroupsTable = TableRegistry::get('UserGroups');        
+        
+        $user->acl = [];
+        $user->acl['isRoot'] = $usergroupsTable->isRoot($user);
+        $user->acl['isManager'] = $usergroupsTable->isManager($user);
+        $user->acl['isCassiere'] = $usergroupsTable->isCassiere($user);
+        $user->acl['isSuperReferente'] = $usergroupsTable->isSuperReferente($user);
+        $user->acl['isReferentGeneric'] = $usergroupsTable->isReferentGeneric($user);
+        
+        // produttore
+        $user->acl['isProdGasSupplierManager'] = $usergroupsTable->isProdGasSupplierManager($user);
+
+        $organization = $this->_getOrganization($user, $user_organization_id, $organization_id, $debug); 
+
+        switch($organization->type) {
+            case 'GAS':
+                $user = $this->_getOrganizationByGas($user, $user_organization_id, $organization_id, $debug);
+                $user = $this->_setCash($user, $user->organization);
+            break;
+            case 'PRODGAS':
+                $user = $this->_getOrganizationByProdGasSupplier($user, $user_organization_id, $organization_id, $debug);
+            break;     
+        }
+
+        // debug($user);
+       
+        return $user;
+    }
+
+    private function _getOrganization($user, $user_organization_id, $organization_id, $debug=false) {
+
+        /*
+         * sono root user_organization_id = 0
+         */
+        if(empty($user_organization_id))
+            $user_organization_id = $organization_id;
+
         /*
          * dati organization
          * organizzazione al quale appartiene lo user
          * root: organizzazione scelta
          */ 
-        $where = ['Organizations.id' => $organization_id,
+        $where = ['Organizations.id' => $user_organization_id,
+                  'Organizations.stato' => 'Y'];
+        if($debug) debug($where);
+        
+        $this->Organizations->addBehavior('OrganizationsParams');
+        $organization = $this->Organizations->find()
+            ->select([
+                'Organizations.id',  
+                'Organizations.name',
+                'Organizations.cf',
+                'Organizations.piva',
+                'Organizations.mail',
+                'Organizations.www',
+                'Organizations.www2',
+                'Organizations.telefono',
+                'Organizations.indirizzo',
+                'Organizations.localita',
+                'Organizations.cap',
+                'Organizations.provincia',
+                'Organizations.lat',
+                'Organizations.lng',
+                'Organizations.img1',
+                'Organizations.template_id',
+                'Organizations.type',
+                'Organizations.paramsConfig',
+                'Organizations.paramsFields',
+                'Organizations.hasMsg',
+                'Organizations.msgText',
+                'Organizations.j_seo'               
+            ])
+            ->where($where)
+            ->first();
+        // if($debug) debug($organization);            
+
+        return $organization;
+    }
+
+    private function _getOrganizationByGas($user, $user_organization_id, $organization_id, $debug=false) {
+
+        /*
+         * sono root user_organization_id = 0
+         */
+        if(empty($user_organization_id))
+            $user_organization_id = $organization_id;
+
+        /*
+         * dati organization
+         * organizzazione al quale appartiene lo user
+         * root: organizzazione scelta
+         */ 
+        $where = ['Organizations.id' => $user_organization_id,
                   'Organizations.stato' => 'Y'];
         if($debug) debug($where);
         
@@ -242,6 +363,41 @@ class UsersTable extends Table
         $user->organization = $organization;
         if($debug) debug($user);  
 
+        return $user;
+    }
+
+    private function _getOrganizationByProdGasSupplier($user, $user_organization_id, $organization_id, $debug=false) {
+ 
+        /*
+         * sono root user_organization_id = 0
+         */
+        if(empty($user_organization_id))
+            $user_organization_id = $organization_id;
+
+        /*
+         * dati organization
+         * organizzazione al quale appartiene lo user
+         * root: organizzazione scelta
+         */ 
+        $where = ['Organizations.id' => $user_organization_id,
+                  'Organizations.stato' => 'Y'];
+        if($debug) debug($where);
+        
+        $this->Organizations->addBehavior('OrganizationsParams');
+        $organization = $this->Organizations->find()
+            ->where($where)
+            ->contain(['SuppliersOrganizations' => ['Suppliers']])
+            ->first();
+        if($debug) debug($organization);            
+
+        $user->organization = $organization;
+        if($debug) debug($user);  
+
+        return $user;
+    }
+
+    private function _setCash($user, $organization) {
+        
         /*
          * aggiungo i dati per il prepagati, x BO e FE
          */
@@ -266,7 +422,7 @@ class UsersTable extends Table
         /*
          * gestione prepagato
          */
-         if($user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER') {
+         if(isset($user->organization->paramsConfig) && $user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER') {
 
                 $cashesUsersTable = TableRegistry::get('CashesUsers');
                 
@@ -285,57 +441,6 @@ class UsersTable extends Table
                          
         } // end if($user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER')
 
-        /*
-         * creo array con i group_id dell'utente, per UserComponent
-         */
-        $group_ids = [];
-        if($user->has('user_usergroup_map')) {
-            foreach($user->user_usergroup_map as $user_usergroup_map) {
-                $group_ids[$user_usergroup_map->group_id] = $user_usergroup_map->user_group->title;
-            }
-            unset($user->user_usergroup_map);
-        }
-        // debug($group_ids);
-        $user->group_ids = $group_ids;
-        
-        /*
-         * rimappo array user.profiles
-         * user->user_profiles['profile.address'] = value
-         */
-        $user_profiles = [];
-        if($user->has('user_profiles')) {
-            foreach($user->user_profiles as $user_profile) {
-                $profile_key = str_replace('profile.', '', $user_profile->profile_key);
-                /*
-                 * elimino primo e ultimo carattere se sono "
-                 */
-                if(!empty($user_profile->profile_value) && strpos(substr($user_profile->profile_value, 0, 1), '"')!==false) {
-                    $user_profile->profile_value = substr($user_profile->profile_value, 1, strlen($user_profile->profile_value)-2);
-                }
-
-                $user_profiles[$profile_key] = $user_profile->profile_value;
-            }
-            
-            unset($user->user_profiles);
-        }
-        // debug($user_profiles);
-        $user->user_profiles = $user_profiles;           
-        
-        /*
-         *
-         * acl
-         */
-        $usergroupsTable = TableRegistry::get('UserGroups');        
-        
-        $user->acl = [];
-        $user->acl['isRoot'] = $usergroupsTable->isRoot($user);
-        $user->acl['isManager'] = $usergroupsTable->isManager($user);
-        $user->acl['isCassiere'] = $usergroupsTable->isCassiere($user);
-        $user->acl['isSuperReferente'] = $usergroupsTable->isSuperReferente($user);
-        $user->acl['isReferentGeneric'] = $usergroupsTable->isReferentGeneric($user);
-
-        // debug($user);
-        
         return $user;
-    }    
+    }        
 }

@@ -372,9 +372,10 @@ Configure::write('Organization.img.preview.width', '50px');
 /*
  * https://github.com/madbob/gdxp
  */
-Configure::write('Gdxp.suppliers.index.url.remote', 'http://hub.gasdotto.net/api/list');
+Configure::write('Gdxp.articles.send.url', 'https://hub.economiasolidale.net/api/push/mMvjyOsT61');
+Configure::write('Gdxp.suppliers.index.url.remote', 'https://hub.economiasolidale.net/api/list');
 Configure::write('Gdxp.suppliers.index.url.local', '/json/gdxp-suppliers.json');
-Configure::write('Gdxp.articles.index.url', 'http://hub.gasdotto.net/api/get');
+Configure::write('Gdxp.articles.index.url', 'https://hub.economiasolidale.net/api/get');
 Configure::write('Gdxp.queue.code', 'GDXP-PORTALGAS');
 Configure::write('Gdxp.schema_path', WWW_ROOT.'/json/json-schema.json');
 

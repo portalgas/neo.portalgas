@@ -44,7 +44,7 @@ class GdxpsController extends AppController
 
         if(empty($user) || empty($user->organization) || !$user->acl['isRoot'] || !$user->acl['isSuperReferente'] || $user->organization->paramsConfig['hasArticlesGdxp']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-          //  return $this->redirect(Configure::read('routes_msg_stop'));
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
         $organization_id = $user->organization->id; // gas scelto
@@ -67,7 +67,7 @@ class GdxpsController extends AppController
 
         if(!$user->acl['isRoot'] || !$user->acl['isSuperReferente'] || $user->organization->paramsConfig['hasArticlesGdxp']!='Y') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-          //  return $this->redirect(Configure::read('routes_msg_stop'));
+            return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
         $articles = [];
@@ -100,4 +100,49 @@ class GdxpsController extends AppController
 
         $this->set(compact('acl_supplier_organizations', 'supplier_organization_id', 'articles'));
     }
+
+    /*
+     * produttore invio listino a https://hub.economiasolidale.net/api/push/mMvjyOsT61
+     */
+    public function articlesSendIndex()
+    {
+        $debug = false;
+
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id; // gas scelto
+  //       debug($user);
+
+        if(!$user->acl['isRoot'] || !$user->acl['isProdGasSupplierManager'] && (isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']!='Y')) {  
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
+        $supplier_organization_id = $user->organization->suppliers_organization->id;
+        $supplier_organization = $user->organization->suppliers_organization;
+        $this->set(compact('supplier_organization'));
+
+        /*
+         * ricerco chi gestisce il listino articoli del produttore del GAS
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $user->organization->id, $supplier_organization_id, $debug);
+
+        $articlesTable = TableRegistry::get('Articles');
+
+        $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
+                  'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
+                  'Articles.stato' => 'Y'];
+
+        $articles = [];
+        $articles = $articlesTable->gets($user, $where);
+        // debug($articles);
+
+        $this->set(compact('articles'));
+
+        if(empty($user->organization->suppliers_organization->supplier->piva))
+            $canSend = false;
+        else 
+            $canSend = true;
+        $this->set(compact('canSend'));
+    }    
 }

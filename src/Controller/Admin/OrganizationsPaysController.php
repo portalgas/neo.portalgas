@@ -2,8 +2,9 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
-use Cake\Event\Event;
 use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * OrganizationsPays Controller

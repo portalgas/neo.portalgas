@@ -88,9 +88,28 @@ class UsersController extends AppController
         $this->Authentication->logout();
        
         $config = Configure::read('Config');
-        $portalgas_fe_url_login = $config['Portalgas.fe.url.login']; 
+        $portalgas_fe_url_login = $config['Portalgas.fe.url.login'];   
 
         return $this->redirect($portalgas_fe_url_login);
+        // return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
+    }
+
+    public function logoutBo()
+    {
+        $user = $this->Authentication->getIdentity();
+        // debug($user);
+
+        // ob_start();
+        $this->Authentication->logout();
+       
+        $config = Configure::read('Config');
+        $portalgas_bo_url = $config['Portalgas.bo.url'];
+        $portalgas_bo_home = $config['Portalgas.bo.home']; 
+
+        // /administrator/index.php?option=com_cake&controller=Pages&action=home
+        $url = $portalgas_bo_url.$portalgas_bo_home;
+        // debug($url);
+        return $this->redirect($url);
         // return $this->redirect(['controller' => 'Pages', 'action' => 'index']);
     }
 }

@@ -40,13 +40,19 @@ class OrganizationsParamsBehavior extends Behavior
 		}
     }
 
+    /*
+     * arriva vuoto perche' la validazione non accetta un array()
+     */
     public function beforeSave(Event $event, EntityInterface $entity) {
        
-        //debug($entity);
+        // debug($entity);
         
-        $entity->paramsConfig = json_encode($entity->paramsConfig, true);
-        $entity->paramsFields = json_encode($entity->paramsFields, true);
-        $entity->paramsPay = json_encode($entity->paramsPay, true);
+        if(!empty($entity->paramsConfig))
+            $entity->paramsConfig = json_encode($entity->paramsConfig, true);
+        if(!empty($entity->paramsFields))
+            $entity->paramsFields = json_encode($entity->paramsFields, true);
+        if(!empty($entity->paramsPay))
+            $entity->paramsPay = json_encode($entity->paramsPay, true);
         
         // debug($entity);
     }     

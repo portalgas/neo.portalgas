@@ -1,12 +1,12 @@
 {
-   "count":3,
+   "count":5,
    "results":[
       {
          "id":1,
          "name":"Teanatura",
          "vat":"02804570428",
-         "locality":"",
-         "lastchange":"2020-11-07"
+         "locality":"Ancona",
+         "lastchange":"2021-05-06"
       },
       {
          "id":57,
@@ -19,8 +19,22 @@
          "id":63,
          "name":"Altro Modo Flegreo",
          "vat":"96020510630",
-         "locality":" ",
-         "lastchange":"2021-04-27"
+         "locality":" Cancello ed Arnone",
+         "lastchange":"2021-04-29"
+      },
+      {
+         "id":64,
+         "name":"Frantoio Olivarum",
+         "vat":"01796930673",
+         "locality":"Morro D'Oro TE",
+         "lastchange":"2022-01-15"
+      },
+      {
+         "id":65,
+         "name":"Agribiscotto",
+         "vat":"10782960016",
+         "locality":"Pianezza TO",
+         "lastchange":"2022-01-19"
       }
    ]
 }

@@ -3,7 +3,15 @@ use Cake\Core\Configure;
 
 echo '<ul class="sidebar-menu" data-widget="tree">'; 
 
-echo $this->element('sidebar-menu');
+// debug($user->organization->type);
+switch($user->organization->type) {
+    case 'GAS':
+        echo $this->element('sidebar-menu-gas');
+    break;
+    case 'PRODGAS':
+        echo $this->element('sidebar-menu-prodgas');
+    break;
+}
   
 if(Configure::read('AdminLTEMenu')) {
 ?>

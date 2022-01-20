@@ -334,7 +334,8 @@ if ($this->Identity->isLoggedIn()) {
               $url = $portalgas_bo_url.$portalgas_bo_home;
 
           $url = $portalgas_bo_url.$portalgas_bo_home;
-          
+          $url = '/users/logout_bo';
+
           echo '<a href="'.$url.'" class="btn btn-danger btn-flat">Logout</a>';
           echo '</div>';
           echo '</li>';
