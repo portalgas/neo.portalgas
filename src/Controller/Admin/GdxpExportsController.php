@@ -105,7 +105,7 @@ class GdxpExportsController extends AppController
           //  return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
-        $results = $this->Gdxp->exportOrder($user, $organization_id, $supplier_organization_id, $order_type_id, $order_id, $debug);
+        $results = $this->Gdxp->exportOrder($user, $organization_id, $order_type_id, $order_id, $debug);
 
         $gdxp = $results['gdxp'];
         $subject = $results['subject'];
@@ -125,7 +125,7 @@ class GdxpExportsController extends AppController
         * Set Force Download https://book.cakephp.org/3/en/views/json-and-xml-views.html#example-usage
         */
         $supplier_name = $this->setFileName($supplier_name);
-        $delivery_data = $this->setFileName($this->getDeliveryDate($orderResults->delivery));
+        $delivery_data = $this->setFileName($this->getDeliveryDate($delivery));
         $file_name = Configure::read('Gdxp.file.prefix').$supplier_name.'-'.$delivery_data.'-'.date('YmdHis').'.json';
 
         // Prior to 3.4.0

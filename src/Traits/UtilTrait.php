@@ -198,10 +198,16 @@ trait UtilTrait
      */
     public function getDeliveryDate($delivery) {
 
+        $results = '';
+
+        if(empty($delivery))
+            return $results;
+
         if($delivery->sys=='Y')
             $results = $delivery->luogo;
         else
             $results = $delivery->data->i18nFormat('Y-MM-dd');
+        
         return $results;
     }  
 }

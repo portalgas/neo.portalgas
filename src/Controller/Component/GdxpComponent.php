@@ -6,8 +6,11 @@ use Cake\Core\Configure;
 use Cake\Controller\ComponentRegistry;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
+use App\Traits;
 
 class GdxpComponent extends Component {
+
+    use Traits\UtilTrait;
 
 	private $controller = '';
 	private $action = '';
@@ -43,7 +46,7 @@ class GdxpComponent extends Component {
         return $results;
 	}
 
-    public function exportOrder($user, $organization_id, $supplier_organization_id, $order_type_id, $order_id, $debug=false) {
+    public function exportOrder($user, $organization_id, $order_type_id, $order_id, $debug=false) {
 
 		$results = [];
 
@@ -53,14 +56,17 @@ class GdxpComponent extends Component {
         $results['blocks'] = []; 
         $results['supplier_name'] = '';
         $results['supplier'] = []; 
+        $results['delivery'] = []; 
 
         $orderResults = $this->_getOrder($user, $organization_id, $order_type_id, $order_id, $debug);
+        // debug($orderResults);
         if(!empty($orderResults)) {
 
             $supplier_name = $orderResults->suppliers_organization->name;
             $supplier_organization_id = $orderResults->suppliers_organization->id;
             // debug($supplier_name);
 
+            $results['delivery'] = $orderResults->delivery;
             $article_orders = $this->_getArticlesByOrderId($user, $organization_id, $orderResults, $debug); 
             // debug($article_orders);
 
