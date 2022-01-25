@@ -403,7 +403,7 @@ Configure::write('GGDeleteDump', 5);         // dopo quanti giorni il Cron::file
 Configure::write('CartLimitPreview', 5);  // numero di ultimi articoli acquistati 
 Configure::write('ArticlesOrderToTypeDrawComplete', 100);  // numero articoli in un ordine per la modalita' COMPLETE
 Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE 
-Configure::write('DeliveryToDefinedDate', '2025-01-01');
+Configure::write('DeliveryToDefinedDate', '2050-01-01');
 Configure::write('DeliveryToDefinedLabel', 'Da definire');
 
 Configure::write('OrderNotaMaxLen', 150);

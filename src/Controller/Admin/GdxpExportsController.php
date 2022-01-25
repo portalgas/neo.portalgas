@@ -106,7 +106,7 @@ class GdxpExportsController extends AppController
         }
 
         $results = $this->Gdxp->exportOrder($user, $organization_id, $order_type_id, $order_id, $debug);
-
+        // debug($results); 
         $gdxp = $results['gdxp'];
         $subject = $results['subject'];
         $blocks = $results['blocks'];
