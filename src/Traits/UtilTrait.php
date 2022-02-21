@@ -209,5 +209,34 @@ trait UtilTrait
             $results = $delivery->data->i18nFormat('Y-MM-dd');
         
         return $results;
-    }  
+    } 
+
+    public function getListYears()
+    {
+        $year = date('Y');
+        
+        $results = [];
+        $results[$year ] = $year;
+        for($i=20; $i>=0; $i--) {
+            
+            $year = ($year-1);
+            $results[$year ] = $year;
+        }
+
+        return $results;
+    }   
+
+    /*
+     * se non c'e' accoda http://
+     */
+    public function decorateWWW($value)
+    {
+        if(empty($value))
+            return $value;
+
+        if(!$this->stringStartsWith($value, 'http://') && !$this->stringStartsWith($value, 'https://'))
+            $value = 'http://'.$value;
+     
+        return $value;
+    }     
 }

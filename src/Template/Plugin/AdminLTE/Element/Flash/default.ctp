@@ -2,6 +2,8 @@
 if (!isset($params['escape']) || $params['escape'] !== false) {
     $message = h($message);
 }
+
+// debug($message);
 ?>
 <section class="content-header">
     <div class="alert alert-info alert-dismissible">
@@ -9,16 +11,23 @@ if (!isset($params['escape']) || $params['escape'] !== false) {
         <h4><i class="icon fa fa-info"></i> <?= __('Flash-Alert') ?>!</h4>
         <?php
         if(is_array($message)) {
-        	foreach($message as $key => $values) {
-        		echo __($key).' ';
-        		foreach($values as $key => $value) 
-        			echo $value;
-
-        		echo '<br />';
-        	}
+            foreach($message as $key => $values) {
+                echo '<div class="row">';
+                echo '<div class="col-md-2">'.__($key).'</div>';
+                echo '<div class="col-md-10">';
+                echo '<ul>';
+                foreach($values as $key => $value) {
+                    echo '<li>';
+                    echo $value;
+                    echo '</li>';
+                }
+                echo '</ul>';
+                echo '</div>';
+                echo '</div>';
+            }
         }
         else
-        	echo $message;
+            echo $message;
         ?>
     </div>
 </section>

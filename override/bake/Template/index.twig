@@ -1,0 +1,155 @@
+{#
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @since         2.0.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+#}
+{% set fields = Bake.filterFields(fields, schema, modelObject, indexColumns, ['binary', 'text']) %}
+<?php
+use Cake\Core\Configure;
+use Cake\I18n\Time;
+
+$this->start('tb_actions');
+echo '<li class="sidebar-menu-action">';
+echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</span>', ['action' => 'add'], ['title' => __('New'), 'escape' => false]);
+echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('View').'</span>', ['action' => 'view', ${{ pluralVar }}->id], ['title' => __('View'), 'escape' => false]);
+echo '</li>';
+$this->end();
+$this->assign('tb_sidebar', $this->fetch('tb_actions')); 
+?>
+
+<section class="content-header">
+  <h1>
+    <?php echo __('{{ pluralHumanName }}');?>
+
+    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?></div>
+  </h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title"><?php echo __('List'); ?></h3>
+
+          <div class="box-tools">
+            <?php
+            /*
+            <form action="<?php echo $this->Url->build(); ?>" method="POST">
+              <div class="input-group input-group-sm" style="width: 150px;">
+                <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
+
+                <div class="input-group-btn">
+                  <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                </div>
+              </div>
+            </form>
+            */
+            ?>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+
+          <?php
+          if(${{ pluralVar }}->count()>0) {
+          // if(!empty(${{ pluralVar }})) {
+          ?>
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+<th scope="col" class="actions text-left"><?= __('Actions') ?></th>
+  {% for field in fields %}
+   {% set class = '' %}
+   {% if field == 'is_active' or field == 'is_system' %}
+     {% set class = 'text-center' %}
+   {% endif %}
+   {% if field != 'id' %}
+<th scope="col" class="{{class}}"><?= $this->Paginator->sort('{{ field }}') ?></th>
+   {% endif %}
+  {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <?php 
+              foreach (${{ pluralVar }} as ${{ singularVar }}) { 
+
+                // debug(${{ singularVar }});
+{% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}              
+  echo '<tr>';
+  echo '<td class="actions text-left">';
+  echo $this->Html->link('', ['action' => 'view', {{ pk|raw }}], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
+  echo $this->Html->link('', ['action' => 'edit', {{ pk|raw }}], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+  if(!${{ singularVar }}->is_system) 
+    echo $this->Form->postLink('', ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', ${{ singularVar }}->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+  else
+    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+  echo '</td>';             
+{% for field in fields %}
+{% set isKey = false %}
+{% if associations.BelongsTo %}
+{% for alias, details in associations.BelongsTo|filter(field == details.foreignKey) %}
+{% set isKey = true %}
+  echo '<td>';
+  echo ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '';
+  echo '</td>';
+{% endfor %}
+{% endif %}
+{% if isKey is not same as(true) %}
+{% set columnData = Bake.columnData(field, schema) %}
+{% if columnData.type not in ['integer', 'float', 'decimal', 'biginteger', 'smallinteger', 'tinyinteger'] %}
+   {% if field == 'is_active' %}
+  echo '<td class="text-center">'.$this->HtmlCustom->drawTruFalse(${{ singularVar }}, '{{ field }}').'</td>';
+   {% endif %}
+   {% if field == 'is_system' %}
+  echo '<td class="text-center">'.$this->HtmlCustom->drawTruFalse(${{ singularVar }}, '{{ field }}', Configure::read('icon_is_system')).'</td>';
+   {% endif %}
+   {% if field == 'mail' %}
+  echo '<td class="text-center">'.$this->HtmlCustom->mailIco(${{ singularVar }}->{{ field }}).'</td>';
+   {% endif %}
+   {% if field == 'www' %}
+  echo '<td class="text-center">'.$this->HtmlCustom->wwwIco(${{ singularVar }}->{{ field }}).'</td>';
+   {% endif %}
+   {% if field == 'created' or field == 'modified' %}
+  echo '<td title="'.h(${{ singularVar }}->{{ field }}).'">'.$this->Time->nice(${{ singularVar }}->{{ field }}).'</td>';
+   {% endif %}
+   {% if field != 'is_active' and field != 'is_system' and field != 'mail' and field != 'www' and field != 'created' and field != 'modified'%}
+  echo '<td>'.h(${{ singularVar }}->{{ field }}).'</td>';
+   {% endif %}
+  {% else %}
+   {% if field != 'id' %}
+  echo '<td>'.$this->Number->format(${{ singularVar }}->{{ field }}).'</td>';
+   {% endif %}
+{% endif %}
+{% endif %}
+{% endfor %}
+                echo '</tr>';
+              } // end loop
+            echo '</tbody>';
+          echo '</table>';
+          }
+          else {
+            echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);
+          } // end if(!empty(${{ pluralVar }}))
+          ?>
+        </div>
+        <!-- /.box-body -->        
+      </div>
+      <!-- /.box -->
+
+      <?php echo $this->element('paginator'); ?>
+
+    </div>
+  </div>
+</section>

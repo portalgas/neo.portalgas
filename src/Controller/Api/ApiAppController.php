@@ -73,7 +73,8 @@ class ApiAppController extends AppController
         // $this->response->body(json_encode($results));
 
         $body = $this->response->getBody();
-        $body->write(json_encode($results));        
+        $body->write(json_encode($results));
+        $this->response->withType('application/json'); 
         $this->response->withBody($body);  
 
         return $this->response;      

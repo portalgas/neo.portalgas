@@ -6,11 +6,14 @@ use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
 use Cake\I18n\FrozenDate;
+use App\Traits;
 
 class HtmlCustomHelper extends FormHelper
 {
 	private $debug = false;
 	public  $helpers = ['Html', 'Form'];
+
+    use Traits\UtilTrait;
 
     public function initialize(array $config)
     {
@@ -109,11 +112,25 @@ class HtmlCustomHelper extends FormHelper
     	if(!empty($value)) {
     		if(empty($label))
     			$label = $value;
+
+            $value = $this->decorateWWW($value);
 	    	$str = '<a href="'.$value.'" target="_blank">'.$label.'</a>';
     	}
     	return $str;
     }
+  
+    public function drawBagde($name, $html_class, $options=[]) {
 
+        $html = '';
+
+        if(!empty($html_class))
+          echo '<span class="label label-'.$html_class.'">'.$name.'</span>';
+        else
+          echo $name;
+
+        return $html;
+    }
+    
     public function drawState($state, $options=[]) {
 
         $html = '';
@@ -227,6 +244,65 @@ class HtmlCustomHelper extends FormHelper
     	if(!empty($value))
     		$str = number_format($value, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia')).' &euro;';
     	return $str;
+    }
+
+    /*
+     * id dell'entity, in edit escludo se stesso
+     * modificare /webroot/js/vue/users-roles-add-edit.js
+     */
+    public function textExist($id, $fieldName, $value='', $options=[]) {
+
+        $html = '';
+        $html .= '<div class="form-group">';
+        $html .= '<label for="'.__($fieldName).'" class="control-label">'.__($fieldName).'</label>';
+        $html .= '<div class="input-group">
+                  <div class="input-group-addon"><i class="fa fa-shield"></i></div>';
+        $html .= '<input type="text" name="'.$fieldName.'" 
+                                     placeholder="'.__($fieldName).'" 
+                                     data-attr-id="'.$id.'"
+                                     value="'.$value.'" 
+                                     id="'.$fieldName.'" 
+                                     class="form-control" 
+                                     @blur="ctrlExist($event, \''.$fieldName.'\');" />';
+        $html .= '</div>';
+        $html .= '<div v-if="isRun_'.$fieldName.'" class="fa-lg fa fa-spinner"></div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /* 
+     * '@change' => $select1 ['change'] metodo definito in file vue
+     */
+    public function selectOnChange($select1, $select2, $options=[]) {
+
+        if(isset($options['col-size']))
+            $col_size = $options['col-size'];
+        else
+            $col_size = '6';
+
+        if(isset($select2['value']))
+            $value2 = $select2['value'];
+        else
+            $value2 = 0;
+
+        $html = '';
+        $html .= '<div class="col-md-'.$col_size.'">';
+        $html .= $this->Form->control($select1['id'], ['options' => $select1 ['options'], 'class' => 'form-control', 'empty' => [0 => __('FrmListEmpty')], '@change' => $select1 ['change'], 'v-model' => $select1['id'], 'required' => $select1['required']]);
+        $html .= '</div>';
+        $html .= '<div class="col-md-'.$col_size.'">';
+        $html .= '<div class="form-group input select">';
+        $html .= '<label for="'.$select2['label'].'" class="control-label">'.$select2['label'].'</label>';
+        $html .= '<select id="'.$select2['id'].'" name="'.$select2['id'].'" class="form-control" v-model="'.$select2['id'].'" required='.$select1['required'].'>';
+        $html .= '<option 
+                  v-for="(row, index) in '.$select2['model'].'"
+                  :value="index">{{ row }}</option>';
+        $html .= '</select>';
+        $html .= '<div v-if="isRun_'.$select2['model'].'" class="fa-lg fa fa-spinner"></div>';
+        $html .= '</div>'; // form-group
+        $html .= '</div>'; // col
+        
+        return $html;
     }
 
     public function datepicker($fieldName, $options=[]) {

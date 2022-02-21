@@ -244,7 +244,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 ],              
                 'resolver' => [
                     'className' => 'Authentication.Orm',
-                    'finder' => 'loginActive' 
+                    'finder' => 'loginActive'  // resolve Users::findLoginActive
                 ],       
             ]
         );
