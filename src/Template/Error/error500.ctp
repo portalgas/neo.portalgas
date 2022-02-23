@@ -2,12 +2,16 @@
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
 
+$msg = $error->getMessage();
+if(empty($msg))
+    $msg = $message;
+
 $this->layout = 'error';
 
 if (Configure::read('debug')) :
     $this->layout = 'dev_error';
 
-    $this->assign('title', $message);
+    $this->assign('title', $msg);
     $this->assign('templateName', 'error500.ctp');
 
     $this->start('file');
@@ -39,5 +43,5 @@ endif;
 <h2><?= __d('cake', 'An Internal Error Has Occurred') ?></h2>
 <p class="error">
     <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= h($message) ?>
+    <?= h($msg) ?>
 </p>

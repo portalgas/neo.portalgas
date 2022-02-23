@@ -185,7 +185,7 @@ class HtmlCustomHelper extends FormHelper
     /*
      * Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']); 
      */
-    public function drawTruFalse($model, $field, $icons=[]) {
+    public function drawTrueFalse($model, $field, $icons=[]) {
 
         $html = '';
 
@@ -209,14 +209,7 @@ class HtmlCustomHelper extends FormHelper
             $data_attr_value = '0';
         $data_attrs = '';
         $data_attrs .= 'data-attr-id='.$model->id.' data-attr-entity="'.$entity.'" data-attr-field="'.$field.'" data-attr-value="'.$data_attr_value.'"';
-        
-        /*
-         * per is_default_ini e is_default_end disabilito fieldUpdateAjaxClick perche' devo aggiornarli tutti
-         */
-        if($field=='is_default_ini' || $field=='is_default_end')
-            $class = 'fieldUpdateAjaxClick-disabled';
-        else 
-            $class = 'fieldUpdateAjaxClick';
+        $class = 'fieldUpdateAjaxClick';
 
         if($value===true) {
             if(isset($icons['OK']))
@@ -238,6 +231,23 @@ class HtmlCustomHelper extends FormHelper
 
         return $html;
     }   
+
+    public function drawTrueFalseReadOnly($value) {
+
+        $html = '';
+        $class = 'fieldUpdateAjax-disabled';
+
+        if(!$value) {
+            $icon = 'glyphicon glyphicon-remove';
+            $html .= '<span class="'.$class.' trueFalse '.$icon.' icon-false" title="'.__('No').'"></span>';
+        }
+        else {
+            $icon = 'glyphicon glyphicon-ok';
+            $html .= '<span class="'.$class.' trueFalse '.$icon.' icon-true" title="'.__('Yes').'"></span>';
+        }
+
+        return $html;
+    } 
 
     public function importo($value) {
     	$str = '';

@@ -68,7 +68,6 @@ class UsersController extends AppController
     
     /*
      * FE
-     * viene effettuato il logout su neo
      * redirect su portalgas.it/login ma essendo ancora loggato compare il tasto logout
      * viene effettuato il logout su portalgas
      * richiamato il file /logout.php che fa un redirect su neo../users/logout

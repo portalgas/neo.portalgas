@@ -67,10 +67,10 @@ else {
         echo $this->HtmlCustom->drawDocumentPreview($document);
         echo '</td>';
         echo '<td>';
-        echo $this->HtmlCustom->drawTruFalse($document, $document->is_system);
+        echo $this->HtmlCustom->drawTrueFalse($document, $document->is_system);
         echo '</td>';
         echo '<td>';
-        echo $this->HtmlCustom->drawTruFalse($document, $document->is_active);
+        echo $this->HtmlCustom->drawTrueFalse($document, $document->is_active);
         echo '</td>';
         echo '<td>';
         echo h($document->created);

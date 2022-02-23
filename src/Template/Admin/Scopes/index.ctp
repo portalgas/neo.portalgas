@@ -50,8 +50,8 @@
                   <td><?= h($scope->name) ?></td>
                   <td><?= h($scope->namespace) ?></td>
                   <td><?= h($scope->db_datasource) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($scope, 'is_system') ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($scope, 'is_active') ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTrueFalse($scope, 'is_system') ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTrueFalse($scope, 'is_active') ?></td>
                   <td><?= h($scope->created) ?></td>
                   <td><?= h($scope->modified) ?></td>
                   <td class="actions text-right">

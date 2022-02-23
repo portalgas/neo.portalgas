@@ -51,8 +51,8 @@
                   <td><?= $this->Number->format($mappingType->id) ?></td>
                   <td><?= h($mappingType->code) ?></td>
                   <td><?= h($mappingType->name) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($mappingType, 'is_system'); ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($mappingType, 'is_active'); ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTrueFalse($mappingType, 'is_system'); ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTrueFalse($mappingType, 'is_active'); ?></td>
                   <td><?= h($mappingType->is_default_ini) ?></td>
                   <td><?= h($mappingType->is_default_end) ?></td>
                   <td class="text-center"><?= $this->Number->format($mappingType->sort) ?></td>

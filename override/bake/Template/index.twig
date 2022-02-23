@@ -21,7 +21,6 @@ use Cake\I18n\Time;
 $this->start('tb_actions');
 echo '<li class="sidebar-menu-action">';
 echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</span>', ['action' => 'add'], ['title' => __('New'), 'escape' => false]);
-echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('View').'</span>', ['action' => 'view', ${{ pluralVar }}->id], ['title' => __('View'), 'escape' => false]);
 echo '</li>';
 $this->end();
 $this->assign('tb_sidebar', $this->fetch('tb_actions')); 
@@ -110,10 +109,10 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 {% set columnData = Bake.columnData(field, schema) %}
 {% if columnData.type not in ['integer', 'float', 'decimal', 'biginteger', 'smallinteger', 'tinyinteger'] %}
    {% if field == 'is_active' %}
-  echo '<td class="text-center">'.$this->HtmlCustom->drawTruFalse(${{ singularVar }}, '{{ field }}').'</td>';
+  echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse(${{ singularVar }}, '{{ field }}').'</td>';
    {% endif %}
    {% if field == 'is_system' %}
-  echo '<td class="text-center">'.$this->HtmlCustom->drawTruFalse(${{ singularVar }}, '{{ field }}', Configure::read('icon_is_system')).'</td>';
+  echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse(${{ singularVar }}, '{{ field }}', Configure::read('icon_is_system')).'</td>';
    {% endif %}
    {% if field == 'mail' %}
   echo '<td class="text-center">'.$this->HtmlCustom->mailIco(${{ singularVar }}->{{ field }}).'</td>';

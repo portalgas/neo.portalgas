@@ -123,8 +123,8 @@ echo '</section>';
                     ?>
                   </td>
                   <td class="text-center"><?= $this->Number->format($mapping->sort) ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($mapping, 'is_required'); ?></td>
-                  <td class="text-center"><?= $this->HtmlCustom->drawTruFalse($mapping, 'is_active'); ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTrueFalse($mapping, 'is_required'); ?></td>
+                  <td class="text-center"><?= $this->HtmlCustom->drawTrueFalse($mapping, 'is_active'); ?></td>
                   <td class="actions text-right">
                       <?php
                       echo $this->Html->link(__('Edit'), ['action' => 'edit', $mapping->id, '?' => [

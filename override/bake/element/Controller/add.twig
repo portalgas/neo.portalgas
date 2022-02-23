@@ -22,7 +22,7 @@
      */
     public function add()
     {
-        ${{ singularName }} = $this->{{ currentModelName }}->newEmptyEntity();
+        ${{ singularName }} = $this->{{ currentModelName }}->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
             // debug($datas);
