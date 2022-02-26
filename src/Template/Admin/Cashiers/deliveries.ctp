@@ -90,8 +90,9 @@ if(!empty($deliveries)) {
           :key="user.id"
         >
           <td>
-            <a href="#" data-toggle="collapse" :data-target="'#user-' + user.id">{{ user.name }}</a>
-            <div v-bind:id="['user-'+user.id]" class="collapse box-collapse" style="max-width: 75%;">
+            <a style="cursor: pointer;" data-toggle="collapse" :data-target="'#user-' + user.id">{{ user.name }}</a>
+            <div v-bind:id="['user-'+user.id]" class="collapse box-collapse" 
+                  style="max-width: 50%; box-shadow: 5px 5px #e6e1e1;">
                 <div v-for="summary_order in user.summary_orders"
                 :summary_order="summary_order.id"
                 :key="summary_order.id"
@@ -108,7 +109,7 @@ if(!empty($deliveries)) {
             :key="summary_order.id"
             > 
               <div>{{ summary_order.order.suppliers_organization.name }}</div>
-              <div><?php echo __('Importo');?> {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo __('Importo');?> {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
             </div>
           </td>
           <td>

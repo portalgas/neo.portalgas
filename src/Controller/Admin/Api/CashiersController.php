@@ -26,6 +26,10 @@ class CashiersController extends ApiAppController
      */
     public function getCompleteUsersByDelivery() {
 
+        /*
+         * in fondo settare user_id per debuggare un solo user 
+         */
+
         $debug = false;
         $results = [];
 
@@ -102,6 +106,16 @@ class CashiersController extends ApiAppController
             } // if(!empty($userResults))
 
         } // end if(!empty($delivery_id))
+
+        /*
+         * debuggare un solo user 
+        $user_id = 1986;
+        foreach($results as $numResult => $result) {
+            if($result['id'] != $user_id)
+                unset($results[$numResult]);
+        }
+        // debug($results);
+        */
 
         return $this->_response($results); 
     } 
