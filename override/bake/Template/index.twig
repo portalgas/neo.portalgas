@@ -59,8 +59,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           </div>
         </div>
         <!-- /.box-header -->
-        <div class="box-body table-responsive no-padding">
-
+        <div class="box-body table-responsive <?php echo (${{ pluralVar }}->count()>0) ? 'no-padding': '';?>">
           <?php
           if(${{ pluralVar }}->count()>0) {
           // if(!empty(${{ pluralVar }})) {
