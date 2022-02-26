@@ -90,7 +90,7 @@ if(!empty($deliveries)) {
           :key="user.id"
         >
           <td>
-            <a data-toggle="collapse" :data-target="'#user-' + user.id">{{ user.name }}</a>
+            <a href="#" data-toggle="collapse" :data-target="'#user-' + user.id">{{ user.name }}</a>
             <div v-bind:id="['user-'+user.id]" class="collapse box-collapse" style="max-width: 75%;">
                 <div v-for="summary_order in user.summary_orders"
                 :summary_order="summary_order.id"
@@ -112,8 +112,6 @@ if(!empty($deliveries)) {
             </div>
           </td>
           <td>
-            [{{ user.summary_delivery.tot_importo | currency }} ]
-            [{{ user.summary_delivery.tot_importo_pagato | currency }} ]
             {{ (user.summary_delivery.tot_importo - user.summary_delivery.tot_importo_pagato) | currency }} &euro;
           </td>
           <td v-show="is_cash === '1'">
