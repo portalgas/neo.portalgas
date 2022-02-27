@@ -109,7 +109,7 @@ class CashesUsersTable extends Table
         } // end if(!empty($supplierOrganizationCashExcludedResults))
         if($debug) debug($sql_supplier_organization_cash_excluded);
 
-        $sql = "SELECT ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
+        $sql = "SELECT `Order`.id, ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
                 FROM
                     ".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
                     ".Configure::read('DB.prefix')."carts as Cart
@@ -133,8 +133,14 @@ class CashesUsersTable extends Table
         $conn = ConnectionManager::get('default');
         $results = $conn->execute($sql);
 
+        /*
+         * memorizzo tutti gli order_id per calcolare eventuali costi di trasporto / costi aggiuntivi / sconti
+         */
+        $order_ids = [];
         foreach($results as $numResult => $result) {
             
+            $order_ids[$result['id']] = $result['id'];
+
             // debug($result); 
 
             $prezzo = floatval($result['prezzo']);
@@ -163,6 +169,37 @@ class CashesUsersTable extends Table
             $tot_importo = ($tot_importo + $importo);
             if($debug) debug('CashesUser::getTotImportoAcquistato - tot_importo '.$tot_importo);
         } // end foreach($results as $numResult => $result)
+
+        // debug($order_ids);
+        if(!empty($order_ids)) {
+            foreach($order_ids as $order_id) {
+                
+                $importo_trasport = 0;
+                $importo_cost_less = 0;
+                $importo_cost_more = 0;
+
+                $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
+
+                $summaryOrderTrasportResults = $summaryOrderTrasportsTable->getByUserByOrder($user, $organization_id, $user_id, $order_id);
+                if(!empty($summaryOrderTrasportResults)) 
+                    $importo_trasport = $summaryOrderTrasportResults['importo_trasport'];
+
+                $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
+
+                $summaryOrderCostLessResults = $summaryOrderCostLessesTable->getByUserByOrder($user, $organization_id, $user_id, $order_id);
+                if(!empty($summaryOrderCostLessResults))
+                    $importo_cost_less = $summaryOrderCostLessResults['importo_cost_less'];
+
+                $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
+
+                $summaryOrderCostMoreResults = $summaryOrderCostMoresTable->getByUserByOrder($user, $organization_id, $user_id, $order_id);
+                if(!empty($summaryOrderCostMoreResults))
+                    $importo_cost_more = $summaryOrderCostMoreResults['importo_cost_more'];
+
+                $tot_importo += ($importo_trasport + $importo_cost_less + $importo_cost_more);
+            }
+
+        } // if(!empty($order_ids))
                 
         if($debug) debug('CashesUser::getTotImportoAcquistato - RESULTS '.$tot_importo);
 
