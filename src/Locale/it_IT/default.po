@@ -706,6 +706,9 @@ msgstr "Imposta i parametri di ricerca"
 msgid "MsgSupplierExportVatNumberRequired"
 msgstr "Il produttore non ha la partita iva e non potrà essere importato!"
 
+msgid "MsgSupplierSendVatNumberRequired"
+msgstr "Il produttore non ha la partita iva e il listino non potrà essere trasmesso"
+
 #
 # validator
 #

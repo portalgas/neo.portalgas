@@ -36,7 +36,8 @@ class GdxpExportsController extends ApiAppController
         $organization_id = $user->organization->id; // gas scelto
         // debug($user);
 
-        if(!$user->acl['isRoot'] || !$user->acl['isProdGasSupplierManager'] && (isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']!='Y')) {  
+        if(!$user->acl['isRoot'] && !$user->acl['isProdGasSupplierManager'] && 
+            (!isset($user->organization->paramsConfig['hasArticlesGdxp']) || $user->organization->paramsConfig['hasArticlesGdxp']!='Y')) {  
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }

@@ -24,7 +24,7 @@ echo $supplier_organization->name;
 echo '</span>';
 if(empty($supplier_organization->supplier->piva)) {
     echo '<p>';
-    echo $this->element('msg', ['msg' => __('MsgSupplierExportVatNumberRequired'), 'class' => 'danger']);
+    echo $this->element('msg', ['msg' => __('MsgSupplierSendVatNumberRequired'), 'class' => 'danger']);
     echo '</p>';
 }
 else {
