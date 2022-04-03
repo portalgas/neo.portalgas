@@ -11,6 +11,7 @@ use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\SitemapComponent;
 
 /*
+ * creo sitemap.xml
  * /var/www/neo.portalgas/src/Command/Sh/sitemap.sh
  * /var/www/neo.portalgas/bin/cake Sitemap
  */ 
