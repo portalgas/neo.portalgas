@@ -15,11 +15,25 @@ class TestsController extends AppController
 
         $this->loadComponent('MappingGdxpPortalgas');
         $this->loadComponent('SuppliersOrganization');
+        $this->loadComponent('Sitemap');
     }
 
     public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event);
+
+        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+    }
+
+    public function sitemap()
+    {
+        $results = $this->Sitemap->create();
+
+        $this->set(compact('results'));
+        $this->render('index');
     }
 
     /*
