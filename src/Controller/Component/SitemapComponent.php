@@ -53,8 +53,9 @@ class SitemapComponent extends Component {
         $organizationGas = $this->_getOrganizationGas($debug);
         foreach($organizationGas as $organization) {
             // dd($organization);
-            $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo);
-            $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo . '/consegne-' . $organization->j_seo);
+            $options['lastmod'] = $organization->modified->i18nFormat('yyyy-MM-dd');
+            $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo, $options);
+            $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo . '/consegne-' . $organization->j_seo, $options);
         }
 
         /*
@@ -63,7 +64,8 @@ class SitemapComponent extends Component {
         $suppliers = $this->_getSuppliers($debug);
         foreach($suppliers as $supplier) {
             // dd($supplier);
-            $sitemap .= $this->_getTagUrl($this->_neo_portalgas_fe_url . '/site/produttore/' . $supplier->slug);
+            $options['lastmod'] = $supplier->modified->i18nFormat('yyyy-MM-dd');
+            $sitemap .= $this->_getTagUrl($this->_neo_portalgas_fe_url . '/site/produttore/' . $supplier->slug, $options);
         }
 
         $sitemap .= "\n" . '</urlset>';
@@ -83,16 +85,17 @@ class SitemapComponent extends Component {
 
     private function _getTagUrl($url, $options=[]) {
 
-        (isset($options['priority']))? $priority = $options['priority']: $priority = '0.5';
-        (isset($options['lastmod']))? $lastmod = $lastmod['priority']: $lastmod = '';
+        (isset($options['priority']))?   $priority   = $options['priority']: $priority = '0.5';
+        (isset($options['lastmod']))?    $lastmod    = $options['lastmod']: $lastmod = '';
         (isset($options['changefreq']))? $changefreq = $options['changefreq']: $changefreq = 'yearly';
 
         $results = '';
         $results .= '<url>' . "\n";
         $results .= '<loc>' . $url .'</loc>' . "\n";
         $results .= '<priority>'.$priority.'</priority>' . "\n";
-        if(!empty($changefreq))
-            $results .= '<changefreq>'.$changefreq.'</changefreq>' . "\n";
+        $results .= '<changefreq>'.$changefreq.'</changefreq>' . "\n";
+        if(!empty($lastmod))
+            $results .= '<lastmod>'.$lastmod.'</lastmod>' . "\n";
 
         $results .= '</url>' . "\n";
 
