@@ -59,9 +59,20 @@ class SitemapComponent extends Component {
         }
 
         /*
-         * PRODUTTORI
+         * PRODUTTORI su /produttori/*.html
         */
+        $sitemap .= $this->_getTagUrl($this->_portalgas_fe_url . '/produttori/index.html');
+
         $suppliers = $this->_getSuppliers($debug);
+        foreach($suppliers as $supplier) {
+            // dd($supplier);
+            $options['lastmod'] = $supplier->modified->i18nFormat('yyyy-MM-dd');
+            $sitemap .= $this->_getTagUrl($this->_portalgas_fe_url . '/produttori/' . $supplier->slug . '.html', $options);
+        }
+
+        /*
+         * PRODUTTORI su neo
+        */
         foreach($suppliers as $supplier) {
             // dd($supplier);
             $options['lastmod'] = $supplier->modified->i18nFormat('yyyy-MM-dd');
