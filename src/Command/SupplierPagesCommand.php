@@ -33,6 +33,7 @@ class SupplierPagesCommand extends Command
         $debug = false;
 
         $config = Configure::read('Config');
+       // $this->_portalgas_app_root = '/home/luca/progetti/portalgas';
         $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
         $this->_neo_portalgas_fe_url = 'https://neo.portalgas.it';
@@ -61,13 +62,13 @@ class SupplierPagesCommand extends Command
         */
         $html = '';
         $html .= $this->_getHtmlHeader();
-        $html .= '<h1>Elenco produttori</h1>';
+        $html .= '<h1>Elenco produttori che adeiscono al progetto PortAlGas <small>(gestionale per Gruppi d\'acquisto solidale)</small></h1>';
         $html .= '<ul>';
         foreach($suppliers as $supplier) {
             $html .= '<li>';
-            $html .= '<a href="'.$this->_portalgas_fe_url .'/produttori/'.$supplier->slug.'.html">'.$supplier->name;
+            $html .= '<a title="'.$supplier->name.'" href="'.$this->_portalgas_fe_url .'/produttori/'.$supplier->slug.'.html">'.$supplier->name;
             if (!empty($supplier->descrizione))
-                $html .= ' '.$supplier->descrizione;
+                $html .= ' - '.$supplier->descrizione;
             $html .= '</a>';
         }
         $html .= '</ul>';
@@ -94,7 +95,7 @@ class SupplierPagesCommand extends Command
             $html = '';
             $html .= $this->_getHtmlHeader();
             $html .= '<h1>' . $supplier->name . '</h1>';
-            $html .= '<h3><a href="'.$this->_neo_portalgas_fe_url.'/site/produttore/'.$supplier->slug.'">'.$supplier->name.'</a></h3>';
+            $html .= '<h3>Vai alla pagina del produttore <a title="'.$supplier->slug.'" href="'.$this->_neo_portalgas_fe_url.'/site/produttore/'.$supplier->slug.'">'.$supplier->name.'</a></h3>';
 
             if (!empty($supplier->img1)) {
                 $img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $supplier->img1);
@@ -106,11 +107,11 @@ class SupplierPagesCommand extends Command
                     $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
                 }
                 $html .= '<p>';
-                $html .= '<img src="'.$url.'">';
+                $html .= '<img src="'.$url.'" title="'.$supplier->name.' alt="'.$supplier->name.'">';
                 $html .= '</p>';
             }
 
-            $html .= '<p>';
+            $html .= '<p><b>Categoria</b> ';
             $html .= $supplier->categories_supplier->name;
             $html .= '</p>';
 
@@ -140,20 +141,22 @@ class SupplierPagesCommand extends Command
                 $html .= '<h2>'.__('Descri').'</h2>';
                 $html .= '<p>';
                 if(!empty($supplier->content->introtext))
-                    $html .= $supplier->content->introtext;
-                if(!empty($supplier->content->fulltext))
-                    $html .= $supplier->content->fulltext;
+                    $html .= str_replace('{like}', '', $supplier->content->introtext);
+                if(!empty($supplier->content->fulltext)) {}
+                    $html .= str_replace('{like}', '', $supplier->content->fulltext);
                 $html .= '</p>';
             }
 
             if(!empty($supplier->suppliers_organizations)) {
-                $html .= '<h2>' . __('GAS') . '</h2>';
+                $html .= '<h2>G.A.S. (Gruppi d\'acquisto solidale) che collaborano con il produttore</h2>';
                 $html .= '<ul>';
                 foreach ($supplier->suppliers_organizations as $suppliers_organization) {
                     $html .= '<li>';
+                    $html .= '<a hrf="'.$this->_portalgas_fe_url.'/home-'.$suppliers_organization->organization->slug.'" title="'.$suppliers_organization->organization->name.'">';
                     $html .= $suppliers_organization->organization->name.' ';
                     if(!empty($suppliers_organization->organization->localita))
                         $html .= $suppliers_organization->organization->localita;
+                    $html .= '</a>';
                     $html .= '</li>';
                 }
                 $html .= '</ul>';
