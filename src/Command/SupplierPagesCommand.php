@@ -162,7 +162,7 @@ class SupplierPagesCommand extends Command
                     $url = sprintf($this->_portalgas_fe_url.Configure::read('Organization.img.path.full'), $suppliers_organization->organization->img1);
 
                     $html .= '<li>';
-                    $html .= '<a hrf="'.$this->_portalgas_fe_url.'/home-'.$suppliers_organization->organization->slug.'" title="'.$suppliers_organization->organization->name.'">';
+                    $html .= '<a href="'.$this->_portalgas_fe_url.'/home-'.$suppliers_organization->organization->j_seo.'" title="'.$suppliers_organization->organization->name.'">';
 
                     $html .= '<img style="max-width:150px" src="'.$url.'" title="'.$suppliers_organization->organization->name.' alt="'.$suppliers_organization->organization->name.'">';
 
