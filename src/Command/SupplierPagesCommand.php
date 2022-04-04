@@ -36,12 +36,7 @@ class SupplierPagesCommand extends Command
         $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
         $this->_neo_portalgas_fe_url = 'https://neo.portalgas.it';
-
-        $portalgas_app_root = '/home/luca/progetti/portalgas'; // fractis
-
-
-
-        $file_path = $portalgas_app_root . DS . 'produttori';
+        $file_path = $this->_portalgas_app_root . DS . 'produttori';
 
         /*
          * cancello file di log
