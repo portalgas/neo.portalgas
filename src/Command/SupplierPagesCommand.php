@@ -98,7 +98,7 @@ class SupplierPagesCommand extends Command
 
             if (!empty($supplier->img1)) {
                 $img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $supplier->img1);
-                $img_path_supplier = $portalgas_app_root.$img_path_supplier;
+                $img_path_supplier = $this->_portalgas_app_root . $img_path_supplier;
 
                 $url = '';
                 if(file_exists($img_path_supplier)) {
