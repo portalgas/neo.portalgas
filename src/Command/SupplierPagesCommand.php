@@ -61,7 +61,11 @@ class SupplierPagesCommand extends Command
          * INDEX
         */
         $html = '';
-        $html .= $this->_getHtmlHeader();
+
+        $options = [];
+        $options['title'] = "Elenco produttori che aderiscono al gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas";
+        $html .= $this->_getHtmlHeader($options);
+
         $html .= '<h1>Elenco produttori che adeiscono al progetto PortAlGas <small>(gestionale per Gruppi d\'acquisto solidale)</small></h1>';
         $html .= '<ul>';
         foreach($suppliers as $supplier) {
@@ -93,7 +97,11 @@ class SupplierPagesCommand extends Command
         foreach($suppliers as $supplier) {
             // dd($supplier);
             $html = '';
-            $html .= $this->_getHtmlHeader();
+
+            $options = [];
+            $options['title'] = "Produttore ".$supplier->name." che rifornisce i G.A.S. (Gruppi d'Acquisto Solidale)";
+            $html .= $this->_getHtmlHeader($options);
+
             $html .= '<h1>' . $supplier->name . '</h1>';
             $html .= '<h3>Vai alla pagina del produttore <a title="'.$supplier->slug.'" href="'.$this->_neo_portalgas_fe_url.'/site/produttore/'.$supplier->slug.'">'.$supplier->name.'</a></h3>';
 
@@ -103,7 +111,6 @@ class SupplierPagesCommand extends Command
 
                 $url = '';
                 if(file_exists($img_path_supplier)) {
-
                     $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
                 }
                 $html .= '<p>';
@@ -141,9 +148,9 @@ class SupplierPagesCommand extends Command
                 $html .= '<h2>'.__('Descri').'</h2>';
                 $html .= '<p>';
                 if(!empty($supplier->content->introtext))
-                    $html .= str_replace('{like}', '', $supplier->content->introtext);
+                    $html .= str_replace('{flike}', '', $supplier->content->introtext);
                 if(!empty($supplier->content->fulltext)) {}
-                    $html .= str_replace('{like}', '', $supplier->content->fulltext);
+                    $html .= str_replace('{flike}', '', $supplier->content->fulltext);
                 $html .= '</p>';
             }
 
@@ -151,8 +158,14 @@ class SupplierPagesCommand extends Command
                 $html .= '<h2>G.A.S. (Gruppi d\'acquisto solidale) che collaborano con il produttore</h2>';
                 $html .= '<ul>';
                 foreach ($supplier->suppliers_organizations as $suppliers_organization) {
+
+                    $url = sprintf($this->_portalgas_fe_url.Configure::read('Organization.img.path.full'), $suppliers_organization->organization->img1);
+
                     $html .= '<li>';
                     $html .= '<a hrf="'.$this->_portalgas_fe_url.'/home-'.$suppliers_organization->organization->slug.'" title="'.$suppliers_organization->organization->name.'">';
+
+                    $html .= '<img src="'.$url.'" title="'.$suppliers_organization->organization->name.' alt="'.$suppliers_organization->organization->name.'">';
+
                     $html .= $suppliers_organization->organization->name.' ';
                     if(!empty($suppliers_organization->organization->localita))
                         $html .= $suppliers_organization->organization->localita;
@@ -200,7 +213,9 @@ class SupplierPagesCommand extends Command
             ->all();
     }
 
-    private function _getHtmlHeader() {
+    private function _getHtmlHeader($options) {
+
+        isset($options['title']) ? $title = $options['title']: $title = "PortAlGas, il gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas";
 
         $html = '		
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -210,7 +225,7 @@ class SupplierPagesCommand extends Command
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="keywords" content="gruppi di acquisto solidale, gas, des, gestionale, software, programma, distretto economia solidale, consegne, ordini, referenti, km zero, sostenibilità" />
         <meta name="description" content="Gestionale web per G.A.S. (GAS gruppo d\'acquisto solidale) e D.E.S. (DES distretto economia solidale)" />
-        <title>PortAlGas, il gestionale web e app per i gruppi d\'acquisto solidale - GAS - e i DES - PortAlGas</title>
+        <title>'.$title.'</title>
         <link href="'.$this->_portalgas_fe_url.'/templates/v01/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
