@@ -114,7 +114,7 @@ class SupplierPagesCommand extends Command
                     $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
                 }
                 $html .= '<p>';
-                $html .= '<img src="'.$url.'" title="'.$supplier->name.' alt="'.$supplier->name.'">';
+                $html .= '<img style="max-width:250px" src="'.$url.'" title="'.$supplier->name.' alt="'.$supplier->name.'">';
                 $html .= '</p>';
             }
 
@@ -156,7 +156,7 @@ class SupplierPagesCommand extends Command
 
             if(!empty($supplier->suppliers_organizations)) {
                 $html .= '<h2>G.A.S. (Gruppi d\'acquisto solidale) che collaborano con il produttore</h2>';
-                $html .= '<ul>';
+                $html .= '<ul style="list-style-type:none;">';
                 foreach ($supplier->suppliers_organizations as $suppliers_organization) {
 
                     $url = sprintf($this->_portalgas_fe_url.Configure::read('Organization.img.path.full'), $suppliers_organization->organization->img1);
@@ -164,7 +164,7 @@ class SupplierPagesCommand extends Command
                     $html .= '<li>';
                     $html .= '<a hrf="'.$this->_portalgas_fe_url.'/home-'.$suppliers_organization->organization->slug.'" title="'.$suppliers_organization->organization->name.'">';
 
-                    $html .= '<img src="'.$url.'" title="'.$suppliers_organization->organization->name.' alt="'.$suppliers_organization->organization->name.'">';
+                    $html .= '<img style="max-width:150px" src="'.$url.'" title="'.$suppliers_organization->organization->name.' alt="'.$suppliers_organization->organization->name.'">';
 
                     $html .= $suppliers_organization->organization->name.' ';
                     if(!empty($suppliers_organization->organization->localita))
