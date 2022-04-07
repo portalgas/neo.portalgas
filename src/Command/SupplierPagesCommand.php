@@ -33,8 +33,8 @@ class SupplierPagesCommand extends Command
         $debug = false;
 
         $config = Configure::read('Config');
-       // $this->_portalgas_app_root = '/home/luca/progetti/portalgas';
-        $this->_portalgas_app_root = $config['Portalgas.App.root'];
+        $this->_portalgas_app_root = '/home/luca/progetti/portalgas';
+       // $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
         $this->_neo_portalgas_fe_url = 'https://neo.portalgas.it';
         $file_path = $this->_portalgas_app_root . DS . 'produttori';
@@ -67,7 +67,10 @@ class SupplierPagesCommand extends Command
         $html .= $this->_getHtmlHeader($options);
 
         $html .= '<h1>Elenco produttori che adeiscono al progetto PortAlGas <small>(gestionale per Gruppi d\'acquisto solidale)</small></h1>';
-        $html .= '<ul>';
+
+        $html .= $this->_getHtmlFilter();
+
+        $html .= '<ul id="list-search">';
         foreach($suppliers as $supplier) {
             $html .= '<li>';
             $html .= '<a title="'.$supplier->name.'" href="'.$this->_portalgas_fe_url .'/produttori/'.$supplier->slug.'.html">'.$supplier->name;
@@ -213,6 +216,36 @@ class SupplierPagesCommand extends Command
             ->all();
     }
 
+    /*
+     * filtro di ricerca pagina index.html con elenco produttori
+     */
+    private function  _getHtmlFilter() {
+
+        $html = '<input type="text" id="search" class="form-control" onkeyup="filter()" placeholder="Ricerca per nome" aria-describedby="search" style="width: 100%;margin:15px"/>
+                <script>
+                function filter() {
+                  let input, filter, ul, li, a, i, txtValue;
+                  input = document.getElementById("search");
+                  filter = input.value.toUpperCase();
+                  ul = document.getElementById("list-search");
+                  li = ul.getElementsByTagName("li");
+                
+                  for (i = 0; i < li.length; i++) {
+                      a = li[i].getElementsByTagName("a")[0];
+                      txtValue = a.textContent || a.innerText;
+                      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                          li[i].style.display = "";
+                      } else {
+                          li[i].style.display = "none";
+                      }
+                  }
+                }
+                </script>
+                <style>ul#list-search > li {padding: 2px;} ul#list-search > li a {font-size: 16px;}</style>';
+
+        return $html;
+    }
+    
     private function _getHtmlHeader($options) {
 
         isset($options['title']) ? $title = $options['title']: $title = "PortAlGas, il gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas";
