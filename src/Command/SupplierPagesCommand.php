@@ -33,8 +33,8 @@ class SupplierPagesCommand extends Command
         $debug = false;
 
         $config = Configure::read('Config');
-        $this->_portalgas_app_root = '/home/luca/progetti/portalgas';
-       // $this->_portalgas_app_root = $config['Portalgas.App.root'];
+       // $this->_portalgas_app_root = '/home/luca/progetti/portalgas';
+        $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
         $this->_neo_portalgas_fe_url = 'https://neo.portalgas.it';
         $file_path = $this->_portalgas_app_root . DS . 'produttori';
