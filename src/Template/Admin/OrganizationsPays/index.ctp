@@ -200,9 +200,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
 
                     echo '<td class="actions text-right">';
                     echo $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id], ['class'=>'btn btn-warning btn-xs']);
-                    /* 
-                    echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $organizationsPay->id], ['confirm' => __('Are you sure you want to delete # {0}?', $organizationsPay->id), 'class'=>'btn btn-danger btn-xs']);
-                    */ 
+                    echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $organizationsPay->id], ['confirm' => __('Are you sure you want to delete # {0}?', $organizationsPay->organization->name), 'class'=>'btn btn-danger btn-xs']);
+
                     echo '</td>';
                     echo '</tr>';
                 } 
