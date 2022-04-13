@@ -63,12 +63,19 @@ class SupplierPagesCommand extends Command
         $html = '';
 
         $options = [];
-        $options['title'] = "Elenco produttori che aderiscono al gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas";
+        $options['title'] = "Elenco produttori che aderiscono al gestionale per i gruppi d'acquisto solidale GAS/DES";
         $html .= $this->_getHtmlHeader($options);
 
-        $html .= '<h1>Elenco produttori che adeiscono al progetto PortAlGas <small>(gestionale per Gruppi d\'acquisto solidale)</small></h1>';
+        $html .= '<h1>Elenco produttori che adeiscono al progetto PortAlGas<br /><small>(gestionale per Gruppi d\'acquisto solidale)</small></h1>';
 
         $html .= $this->_getHtmlFilter();
+
+        $html .= '<p>';
+        $html .= "Di seguito l'elenco dei produttori locali e nazionali che riforniscono i Gruppi d'acquisto solidale.";
+        $html .= '</p>';
+        $html .= '<p>';
+        $html .= "Potrete filtrare per nominativo e poi visualizzare la loro scheda per aver maggior dettagli.";
+        $html .= '</p>';
 
         $html .= '<ul id="list-search">';
         foreach($suppliers as $supplier) {
@@ -102,7 +109,8 @@ class SupplierPagesCommand extends Command
             $html = '';
 
             $options = [];
-            $options['title'] = "Produttore ".$supplier->name." che rifornisce i G.A.S. (Gruppi d'Acquisto Solidale)";
+            $options['title'] = "Produttore ".$supplier->name; // per SEO troppo lungo ." che rifornisce i G.A.S. (Gruppi d'Acquisto Solidale)";
+            $options['description'] = "Produttore ".$supplier->name." che rifornisce i G.A.S. (Gruppi d'Acquisto Solidale) con il gestionale PortAlGas";
             $html .= $this->_getHtmlHeader($options);
 
             $html .= '<h1>' . $supplier->name . '</h1>';
@@ -121,7 +129,7 @@ class SupplierPagesCommand extends Command
                 $html .= '</p>';
             }
 
-            $html .= '<p><b>Categoria</b> ';
+            $html .= '<p><b>Categoria alla quale è associato il produttore</b> ';
             $html .= $supplier->categories_supplier->name;
             $html .= '</p>';
 
@@ -155,6 +163,9 @@ class SupplierPagesCommand extends Command
                 if(!empty($supplier->content->fulltext)) {}
                     $html .= str_replace('{flike}', '', $supplier->content->fulltext);
                 $html .= '</p>';
+            }
+            else {
+
             }
 
             if(!empty($supplier->suppliers_organizations)) {
@@ -249,6 +260,7 @@ class SupplierPagesCommand extends Command
     private function _getHtmlHeader($options) {
 
         isset($options['title']) ? $title = $options['title']: $title = "PortAlGas, il gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas";
+        isset($options['description']) ? $description = $options['description']: $description = "Gestionale web per G.A.S. (GAS gruppo d\'acquisto solidale) e D.E.S. (DES distretto economia solidale)";
 
         $html = '		
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -257,7 +269,7 @@ class SupplierPagesCommand extends Command
         <base href="'.$this->_portalgas_fe_url.'/" />
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="keywords" content="gruppi di acquisto solidale, gas, des, gestionale, software, programma, distretto economia solidale, consegne, ordini, referenti, km zero, sostenibilità" />
-        <meta name="description" content="Gestionale web per G.A.S. (GAS gruppo d\'acquisto solidale) e D.E.S. (DES distretto economia solidale)" />
+        <meta name="description" content="'.$description.'" />
         <title>'.$title.'</title>
         <link href="'.$this->_portalgas_fe_url.'/templates/v01/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
