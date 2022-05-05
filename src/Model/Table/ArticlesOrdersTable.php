@@ -572,7 +572,7 @@ class ArticlesOrdersTable extends Table
         isset($options['limit']) && !empty($options['limit']) ? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');
         isset($options['page']) && !empty($options['page']) ? $this->_page = $options['page']: $this->_page = 1; 
 
-        isset($options['sort']) && !empty($options['sort']) ? $this->_sort = $options['sort']: $this->_sort = ['Articles.codice', $this->getAlias().'.name'];
+        isset($options['sort']) && !empty($options['sort']) ? $this->_sort = $options['sort']: $this->_sort = [$this->getAlias().'.name', 'Articles.codice'];
         
         if($this->_sort=='name-desc') $this->_sort = [$this->getAlias().'.name' => 'desc'];
         else if($this->_sort=='name-asc') $this->_sort = [$this->getAlias().'.name' => 'asc'];
