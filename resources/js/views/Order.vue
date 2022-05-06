@@ -212,13 +212,13 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-12 col-lg-8">
             <app-search-article-orders @search="onSearch" />
         </div>
-        <div class="col-8 col-md-2">
+        <div class="col-8 col-md-8 col-lg-2">
             <app-sort-article-orders @changeSort="onChangeSort" />
         </div>
-        <div class="col-4 col-md-2">
+        <div class="col-4 col-md-4 col-lg-2">
             <app-view-article-orders :viewList="viewList" @changeView="onChangeView" />
         </div>
     </div>
