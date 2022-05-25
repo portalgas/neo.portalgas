@@ -210,5 +210,42 @@ class CartsController extends ApiAppController
         */
         
         return $this->_response($results); 
-    }       
+    }
+
+    /*
+     * url: /admin/api/carts/getTotImportByOrderId
+     * front-end - estrae il totale importo del carrello di un ordine filtrati per user
+     */
+    public function getTotImportByOrderId() {
+
+        $debug = false;
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $user = $this->Authentication->getIdentity();
+        $order_id = $this->request->getData('order_id');
+        if(empty($order_id)) {
+            $results['code'] = 500;
+            $results['message'] = 'Parametro order_id richiesto';
+            $results['errors'] = '';
+            $continua = false;
+        }
+
+        if($continua) {
+            $cartsTable = TableRegistry::get('Carts');
+
+            $where = [];
+            $where = ['Carts.order_id' => $order_id];
+            $tot_importo = $cartsTable->getTotImporto($user, $where);
+
+            $results['results'] = $tot_importo;
+        }
+
+        return $this->_response($results);
+    }
 }

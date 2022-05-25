@@ -71,7 +71,7 @@
             </div>
         </div>
         <div v-bind:class="'card-footer '+justInCart"> 
-           <app-btn-cart-add v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
+           <app-btn-cart-add v-on:emitCartSave="emitCartSave" v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
         </div>
   </div>
 
@@ -100,6 +100,10 @@ export default {
   },
   methods: {  
     ...mapActions(['showModalArticleOrder', 'showOrHiddenModalArticleOrder', 'addModalContent', 'clearModalContent']),
+    emitCartSave() {
+      // console.log('emitCartSave', 'ArticleOrder');
+      this.$emit('emitCartSave', true);
+    },
     getGlobals() {
       /*
        * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 

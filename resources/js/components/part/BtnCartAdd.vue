@@ -163,6 +163,10 @@ export default {
   },   
   methods: {
     ...mapActions(["cashesUserReload"]),
+    emitCartSave() {
+      // console.log('emitCartSave', 'BtnCartAdd');
+      this.$emit('emitCartSave', true);
+    },
     save() {
 
       this.isRun = true;
@@ -192,6 +196,8 @@ export default {
               this.article.cart.qta = this.article.cart.qta_new;  // aggiorno la qta 
 
               this.cashesUserReload();  // cambio lo state cosi' ricarico i msg della cassa
+
+              this.emitCartSave();
           }
           else {
               messageClass = "danger";

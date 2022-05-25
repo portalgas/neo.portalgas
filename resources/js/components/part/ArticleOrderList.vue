@@ -74,7 +74,7 @@
 
         </div>
         <div v-bind:class="'col-btn col-6 col-sm-6 col-md-4 col-lg-4 col-xs-4 '+justInCart"> 
-           <app-btn-cart-add v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
+           <app-btn-cart-add v-on:emitCartSave="emitCartSave" v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
         </div>
   </div>
 
@@ -101,6 +101,10 @@ export default {
   },
   methods: {
     ...mapActions(['showModalArticleOrder', 'showOrHiddenModalArticleOrder', 'addModalContent', 'clearModalContent']),
+    emitCartSave() {
+      // console.log('emitCartSave', 'ArticleOrderList');
+      this.$emit('emitCartSave', true);
+    },
     clickShowOrHiddenModalArticleOrder () {
       var _this = this;
       

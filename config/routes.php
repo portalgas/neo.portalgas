@@ -159,7 +159,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
     */ 
     $routes->scope('/tokenJwt', ['controller' => 'TokenJwts'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'POST']);
-        $routes->connect('/getUser', ['action' => 'getUser', '_method' => 'POST']);
+        $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
     });
 
     /*
@@ -176,10 +176,10 @@ Router::prefix('api', function (RouteBuilder $routes) {
             ]);
 
     });
-    
+
     $routes->scope('/categories-suppliers', ['controller' => 'CategoriesSuppliers'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
-    });    
+    });
     $routes->scope('/suppliers', ['controller' => 'Suppliers'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
         $routes->connect('/produttoriGets', ['action' => 'prodGasSupplierGets', '_method' => 'POST']);
@@ -300,6 +300,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
+            $routes->connect('/getTotImportByOrderId', ['action' => 'getTotImportByOrderId', '_method' => 'POST']);
         }); 
         $routes->scope('/promotion-carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCartProdGasPromotionGasUser', '_method' => 'POST']);

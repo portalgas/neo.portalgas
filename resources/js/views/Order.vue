@@ -133,7 +133,14 @@
                   <p class="card-text">
 
                       <div class="float-right">
-                        <span class="badge badge-pill badge-info">Totale: {{ totalPrice() }} &euro;</span>
+
+                       <span v-if="isRunTotCart" class="box-spinner">
+                         <div class="spinner-border text-info" role="status">
+                           <span class="sr-only">Loading...</span>
+                         </div>
+                       </span>
+
+                       <span v-if="!isRunTotCart" class="badge badge-pill badge-info">Totale: {{ tot_cart | currency }} &euro;</span>
 
                         <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
                         <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
@@ -237,6 +244,7 @@
                   <app-article-order-list
                     v-bind:article="article"
                     v-bind:order="order"
+                    v-on:emitCartSave="emitCartSave"
                     >
                     </app-article-order-list>
 
@@ -255,7 +263,9 @@
                  
                   <app-article-order
                     v-bind:article="article"
-                    v-bind:order="order">
+                    v-bind:order="order"
+                    v-on:emitCartSave="emitCartSave"
+                    >
                     </app-article-order>
                     
                 </div> 
@@ -305,7 +315,9 @@ export default {
       articles: [],
       page: 1,
       sort: null,
-      isScrollFinish: false,   
+      isScrollFinish: false,
+      tot_cart: 0,
+      isRunTotCart: false,
       isRunOrders: false,    
       isRunOrder: false,   
       isRunArticles: false,   
@@ -369,6 +381,7 @@ export default {
 
     this.getGlobals();
     this.getAjaxOrder();
+    this.totalPrice();
     this.scroll();
 
     var found = this.checkCookieTour(this.scope);
@@ -384,11 +397,42 @@ export default {
        */
       this.j_seo = window.j_seo;
     },
+    emitCartSave() {
+      // console.log('emitCartSave', 'Order');
+      this.totalPrice();
+    },
     totalPrice() {
+
+      /*
+       * visualizzando un tot di articoli alla volta il calcolo del totale e' solo parziale
       return this.$options.filters.currency(this.articles.reduce(
         (current, next) => current + (next.cart.qta_new * next.price),
         0
       ));
+      */
+      this.isRunTotCart = true;
+
+      let url = "/admin/api/carts/getTotImportByOrderId";
+      let params = {
+        order_type_id: this.order_type_id,
+        order_id: this.order_id
+      };
+
+      axios
+          .post(url, params)
+          .then(response => {
+
+            this.isRunTotCart = false;
+
+            console.log(response.data);
+            if(typeof response.data !== "undefined") {
+               this.tot_cart = response.data.results;
+            }
+          })
+          .catch(error => {
+            this.isRunOrder = false;
+            console.error("Error: " + error);
+          });
     },  
     onSearch: function(q) {
       this.articles = [];
