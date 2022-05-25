@@ -240,7 +240,8 @@ class CartsController extends ApiAppController
             $cartsTable = TableRegistry::get('Carts');
 
             $where = [];
-            $where = ['Carts.order_id' => $order_id];
+            $where = ['Carts.order_id' => $order_id,
+                      'Carts.user_id' => $user->id];
             $tot_importo = $cartsTable->getTotImporto($user, $where);
 
             $results['results'] = $tot_importo;
