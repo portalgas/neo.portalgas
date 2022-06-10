@@ -58,7 +58,7 @@ class ProdGasSuppliersController extends ApiAppController
                 $continua = false;
                 $results['esito'] = false;
                 $results['msg'] = 'user o user->organization empty';
-                $results['msg_human'] = 'Auteticazione non correta!';
+                $results['msg_human'] = 'Autenticazione non correta!';
                 $results['datas'] = $user;           
             }                
         }

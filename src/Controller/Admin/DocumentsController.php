@@ -88,7 +88,7 @@ class DocumentsController extends AppController
 
             $request = $this->request->getData();     
             $request = $this->_prepareRequest($request, $debug);
-            
+
             $file = $request['file_name']; // upload del file e' in edit
             unset($request['file_name']);
 

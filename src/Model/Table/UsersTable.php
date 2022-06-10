@@ -236,6 +236,7 @@ class UsersTable extends Table
 
         $organization = $this->_getOrganization($user, $user_organization_id, $organization_id, $debug); 
 
+        if(isset($organization->type))
         switch($organization->type) {
             case 'GAS':
                 $user = $this->_getOrganizationByGas($user, $user_organization_id, $organization_id, $debug);

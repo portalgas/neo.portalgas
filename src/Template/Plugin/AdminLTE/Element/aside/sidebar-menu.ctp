@@ -3,7 +3,9 @@ use Cake\Core\Configure;
 
 echo '<ul class="sidebar-menu" data-widget="tree">'; 
 
-// debug($user->organization->type);
+if(!isset($user->organization->type))
+    $user->organization->type = '';
+
 switch($user->organization->type) {
     case 'GAS':
         echo $this->element('sidebar-menu-gas');

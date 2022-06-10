@@ -28,6 +28,13 @@ class CartComponent extends CartSuperComponent {
         $results['msg'] = '';
         $results['results'] = '';
 
+        if (empty($articles_order)) {
+            $results['esito'] = false;
+            $results['code'] = 500;
+            $results['msg'] = 'Login scaduta';
+            $results['results'] = 'Login scaduta';
+        }
+
         $organization_id = $organization_id; // $articles_order['cart']['organization_id'];
         $user_id = $user->id; // $articles_order['cart']['user_id'];
         $order_id = $articles_order['cart']['order_id'];
