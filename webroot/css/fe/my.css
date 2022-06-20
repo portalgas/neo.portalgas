@@ -261,7 +261,8 @@ a:hover {
     border: 1px solid #f0eaea;
     padding: 0px;
     margin: 25px;
-    text-align: center;  
+    text-align: center;
+    background-color: #0a659e;
 }
 
 .star {
