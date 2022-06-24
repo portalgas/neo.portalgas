@@ -34,7 +34,7 @@ class DeliveriesController extends ApiAppController
         $results = [];
         $user = $this->Authentication->getIdentity();
 
-        ($is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
         /*
          * elenco consegne

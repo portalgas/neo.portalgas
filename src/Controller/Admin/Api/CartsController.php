@@ -29,7 +29,7 @@ class CartsController extends ApiAppController
 
         $user = $this->Authentication->getIdentity();
 
-        ($is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
         $results = [];
    
@@ -241,7 +241,7 @@ class CartsController extends ApiAppController
             $cartsTable = TableRegistry::get('Carts');
             $user = $this->Authentication->getIdentity();
 
-            ($is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+            ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
             $where = [];
             $where = ['Carts.order_id' => $order_id,

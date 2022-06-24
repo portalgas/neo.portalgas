@@ -454,6 +454,6 @@ Configure::write('DOMPDF_IMG_PATH', ROOT.'/vendor/dompdf/dompdf');
 Configure::write('DOMPDF_DEBUG_IMG_PATH', '/img/pdf');
 
 /*
- * se false e' disattivato
+ * se false e' disattivato, anche su portalgas
  */
 Configure::write('public_organization_id', 15);

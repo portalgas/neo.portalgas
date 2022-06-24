@@ -77,8 +77,7 @@ export default {
     UserCartOrders,
     UserCartPromotions
   }, 
-  methods: { 
-
+  methods: {
 	    selectDelivery(delivery_id) {
 	    	console.log('selectDelivery '+delivery_id);
 

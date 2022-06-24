@@ -14,7 +14,13 @@
       <div v-if="dataFound===false" class="alert alert-warning">
         Carrello vuoto, non sono stati effettuai acquisti
       </div>
-      <user-cart-deliveries v-if="isLoading==false" :datas="datas"></user-cart-deliveries> 
+
+      <user-cart-deliveries v-if="isLoading==false" :datas="datas"></user-cart-deliveries>
+
+      <h2>
+        SocialMarket
+      </h2>
+      <social-market-user-cart v-if="isLoading==false" :datas="datas"></social-market-user-cart>
 
     </main>
 
@@ -23,6 +29,7 @@
 <script>
 import axios from "axios";
 import UserCartDeliveries from '../components/UserCartDeliveries.vue';
+import SocialMarketUserCart from '../components/SocialMarketUserCart.vue';
 
 export default {
   name: "Home",
@@ -34,7 +41,8 @@ export default {
     };
   },
   components: {
-    UserCartDeliveries
+    UserCartDeliveries,
+    SocialMarketUserCart
   },  
   mounted() {
     this.getDeliveries();

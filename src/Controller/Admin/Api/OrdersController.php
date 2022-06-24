@@ -100,13 +100,15 @@ class OrdersController extends ApiAppController
      * /admin/api/orders/user-cart-gets
      * elenco ordini con acquisti dell'utente x fe
      */
-    public function userCartGets() {
+    public function userCartGets($is_public=false) {
 
         $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
+
+        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+
         $delivery_id = $this->request->getData('delivery_id');
 
         $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug);

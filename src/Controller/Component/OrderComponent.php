@@ -27,7 +27,7 @@ class OrderComponent extends Component {
     public function userCartGets($user, $organization_id, $delivery_id, $debug=false) {
 
         $results = [];
-        
+
         $ordersTable = TableRegistry::get('Orders');
 
         $where = ['Orders.organization_id' => $organization_id,
