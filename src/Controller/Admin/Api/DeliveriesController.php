@@ -25,7 +25,7 @@ class DeliveriesController extends ApiAppController
     /* 
      * front-end - estrae le consegne anche senza ordine e l'eventuale "da definire" con ordini
      */
-    public function gets() {
+    public function gets($is_public=false) {
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -33,7 +33,8 @@ class DeliveriesController extends ApiAppController
 
         $results = [];
         $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
+
+        ($is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
         /*
          * elenco consegne
@@ -44,7 +45,8 @@ class DeliveriesController extends ApiAppController
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
                                 'Deliveries.stato_elaborazione' => 'OPEN',
                                 'Deliveries.sys' => 'N',
-                                'DATE(Deliveries.data) >= CURDATE()'];
+                               // 'DATE(Deliveries.data) >= CURDATE()'
+        ];
         $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
         $deliveries = $deliveriesTable->gets($user, $organization_id, $where);
         if(!empty($deliveries)) {

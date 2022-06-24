@@ -26,13 +26,14 @@ class OrdersController extends ApiAppController
      * dettaglio ordine x fe
      * /admin/api/orders/get
      */
-    public function get() {
+    public function get($is_public=false) {
 
         $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
+
+        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
         $order_id = $this->request->getData('order_id');
         $order_type_id = $this->request->getData('order_type_id');
@@ -57,13 +58,14 @@ class OrdersController extends ApiAppController
     /*
      * elenco ordini x fe
      */
-    public function gets() {
+    public function gets($is_public=false) {
 
         $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
+
+        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
         $delivery_id = $this->request->getData('delivery_id');
         
@@ -117,7 +119,7 @@ class OrdersController extends ApiAppController
      * /admin/api/orders/getArticlesOrdersByOrderId 
      * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
      */
-    public function getArticlesOrdersByOrderId() {
+    public function getArticlesOrdersByOrderId($is_public=false) {
 
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
@@ -125,7 +127,8 @@ class OrdersController extends ApiAppController
         }
 
         $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
+
+        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
         $order_id = $this->request->getData('order_id');
         $order_type_id = $this->request->getData('order_type_id');

@@ -20,7 +20,7 @@ class CartsController extends ApiAppController
         parent::beforeFilter($event);
     }
   
-    public function managementCart() {
+    public function managementCart($is_public=false) {
         
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
@@ -29,12 +29,14 @@ class CartsController extends ApiAppController
 
         $user = $this->Authentication->getIdentity();
 
+        ($is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+
         $results = [];
    
         $order = $this->request->getData('order');
         $article = $this->request->getData('article');
         // debug($article);
-        $results = $this->Cart->managementCart($user, $user->organization->id, $order, $article, $debug);
+        $results = $this->Cart->managementCart($user, $organization_id, $order, $article, $debug);
         
         return $this->_response($results); 
     } 
@@ -216,7 +218,7 @@ class CartsController extends ApiAppController
      * url: /admin/api/carts/getTotImportByOrderId
      * front-end - estrae il totale importo del carrello di un ordine filtrati per user
      */
-    public function getTotImportByOrderId() {
+    public function getTotImportByOrderId($is_public=false) {
 
         $debug = false;
         $continua = true;
@@ -227,7 +229,6 @@ class CartsController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $user = $this->Authentication->getIdentity();
         $order_id = $this->request->getData('order_id');
         if(empty($order_id)) {
             $results['code'] = 500;
@@ -238,11 +239,14 @@ class CartsController extends ApiAppController
 
         if($continua) {
             $cartsTable = TableRegistry::get('Carts');
+            $user = $this->Authentication->getIdentity();
+
+            ($is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
 
             $where = [];
             $where = ['Carts.order_id' => $order_id,
                       'Carts.user_id' => $user->id];
-            $tot_importo = $cartsTable->getTotImporto($user, $where);
+            $tot_importo = $cartsTable->getTotImporto($user, $organization_id, $where);
 
             $results['results'] = $tot_importo;
         }

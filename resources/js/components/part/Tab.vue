@@ -1,4 +1,5 @@
 <template>
+
 	<div class="tab" v-show="isActive">
 
 		<div v-if="isLoading" class="box-spinner"> 
@@ -7,11 +8,14 @@
 			</div>  
 		</div>
 
-		<orders-deliveries v-if="url=='/admin/api/deliveries/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-deliveries> 
+		<orders-deliveries v-if="url=='/admin/api/deliveries/gets'" :is_public="false" :datas="datas" :dataNotFound="dataNotFound"></orders-deliveries>
 
-		<orders-suppliers v-if="url=='/admin/api/orders/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers> 
+    <orders-suppliers v-if="url=='/admin/api/orders/gets'" :is_public="false" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>		<orders-suppliers v-if="url=='/admin/api/orders/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>
 
-	</div>
+    <orders-suppliers v-if="url=='/admin/api/orders/gets/public'" :is_public="true" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>
+
+  </div>
+
 </template>
 
 <script>
@@ -101,7 +105,7 @@ export default {
 	mounted() {
 		this.isActive = this.selected; 
 		this.isLoading = this.selected;  
-		// console.log('tab.mounted ['+this.name+'] isActive '+this.isActive+' isLoading '+this.isLoading); 
+		// console.log('tab.mounted ['+this.name+'] isActive '+this.isActive+' isLoading '+this.isLoading);
 	}
 };
 </script>

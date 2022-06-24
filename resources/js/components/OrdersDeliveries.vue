@@ -84,7 +84,8 @@ export default {
    */
   props: {
     datas: {},
-    dataNotFound: true
+    dataNotFound: true,
+    is_public: false /* se true e' SocialMarket */
   },
   watch: {
   	datas (newValue, oldValue) { 
@@ -147,8 +148,13 @@ export default {
 	    selectOrder(order) {
 	    	// console.log('selectOrder');
 	    	// console.log(order);
-	    	
-	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
+
+        let params = {}
+        if(this.is_public)
+          params = {order_type_id: order.order_type_id, order_id: order.id, is_public: true}
+        else
+          params = {order_type_id: order.order_type_id, order_id: order.id, is_public: false}
+	    	this.$router.push({ name: 'Order', params: params})
 	    }    
   	},
 		filters: {

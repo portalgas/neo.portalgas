@@ -146,7 +146,7 @@ class CartsTable extends Table
      * $where = ['Carts.user_id' => $user_id];
      * $where = ['Orders.delivery_id' => $delivery_id];
      */    
-    public function getTotImporto($user, $where=[], $options=[], $debug=false) {
+    public function getTotImporto($user, $organization_id, $where=[], $options=[], $debug=false) {
 
         $importo_totale = 0;
 
@@ -154,7 +154,7 @@ class CartsTable extends Table
         foreach ($where as $key => $value) {
             $where += [$key => $value];
         }
-        $where += ['Carts.organization_id' => $user->organization->id, 
+        $where += ['Carts.organization_id' => $organization_id,
                    'Carts.deleteToReferent' => 'N'];
             
         if($debug) debug($where);

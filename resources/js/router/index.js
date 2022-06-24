@@ -8,7 +8,8 @@ import Promotion from "../views/Promotion.vue";
 import Suppliers from "../views/Suppliers.vue";
 import Supplier from "../views/Supplier.vue";
 import GasSuppliers from "../views/GasSuppliers.vue";
-import Gmaps from "../views/GoogleMapLoader.vue"; 
+import Gmaps from "../views/GoogleMapLoader.vue";
+import SocialMarketOrders from "../views/SocialMarketOrders.vue";
 /* import SocialMarket from "../views/SocialMarket.vue"; */
 /* import SocialShop from "../views/SocialShop.vue";  */
 
@@ -26,7 +27,7 @@ const routes = [
     component: Cart
   },
   {
-    path: "/order/:order_type_id/:order_id",
+    path: "/order/:order_type_id/:order_id/:is_public",
     name: "Order",
     component: Order
   },
@@ -60,8 +61,20 @@ const routes = [
     name: "Promotion",
     component: Promotion
   },
+  {
+    path: "/social-market-orders",
+    name: "SocialMarketOrders",
+    component: SocialMarketOrders
+  },
+  /*
+  {
+    path: "/site/social-market/get-articles/:market_id",
+    name: "SocialShop",
+    component: SocialShop
+  }*/
   /*
    * url non trovato
+   * non aggiungere path dopo perche' verranno sovrascritti da /*
    */
   {
     path: "/*",
@@ -72,18 +85,7 @@ const routes = [
     path: "/site/*",
     name: "site404",
     component: Home
-  },  
-  /*
-  {
-    path: "/site/social-market",
-    name: "SocialMarket",
-    component: SocialMarket
-  },
-  {
-    path: "/site/social-market/get-articles/:market_id",
-    name: "SocialShop",
-    component: SocialShop
-  }*/
+  }
 ];
 
 const router = new VueRouter({

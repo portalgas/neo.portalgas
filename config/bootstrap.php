@@ -452,3 +452,8 @@ Configure::write('totFilesSh', 6);  // numero file sh creati, parte da 0 => il c
  */
 Configure::write('DOMPDF_IMG_PATH', ROOT.'/vendor/dompdf/dompdf');
 Configure::write('DOMPDF_DEBUG_IMG_PATH', '/img/pdf');
+
+/*
+ * se false e' disattivato
+ */
+Configure::write('public_organization_id', 15);

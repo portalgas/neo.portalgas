@@ -3,10 +3,13 @@
 <main>
 
   <ul class="link-top">
-    <li>
+    <li v-if="!is_public">
       <router-link to="/fai-la-spesa" class="btn btn-primary">Torna alla consegne</router-link>
     </li>
-    <li>
+    <li v-if="is_public">
+      <router-link to="/social-market-orders" class="btn btn-primary">Torna all'elenco dei produttori</router-link>
+    </li>
+    <li v-if="!is_public">
       <a class="btn btn-primary" id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
     </li>
   </ul>
@@ -310,6 +313,7 @@ export default {
       j_seo: '',
       order_type_id: 0,
       order_id: 0,
+      is_public: false,
       order: null,
       orders: [],
       articles: [],
@@ -375,7 +379,8 @@ export default {
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
     this.order_id = this.$route.params.order_id;
-    // console.log('mounted route.params.order_type_id  '+this.order_type_id+' route.params.order_id  '+this.order_id);
+    this.is_public = this.$route.params.is_public;
+    // console.log('mounted route.params.order_type_id '+this.order_type_id+' route.params.order_id '+this.order_id+' route.params.is_public '+this.is_public);
 
     this.viewList = this.getCookie('viewList');
 
@@ -413,6 +418,8 @@ export default {
       this.isRunTotCart = true;
 
       let url = "/admin/api/carts/getTotImportByOrderId";
+      if(this.is_public) url += '/public';
+
       let params = {
         order_type_id: this.order_type_id,
         order_id: this.order_id
@@ -486,6 +493,8 @@ export default {
       this.isRunOrder = true;
 
       let url = "/admin/api/orders/get";
+      if(this.is_public) url += '/public';
+
       let params = {
         order_type_id: this.order_type_id,
         order_id: this.order_id
@@ -515,6 +524,8 @@ export default {
       this.isRunArticles = true;
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
+      if(this.is_public) url += '/public';
+
       let params = {
         order_type_id: this.order_type_id,
         order_id: this.order_id,
@@ -572,7 +583,9 @@ export default {
         this.orders = [];
 
         let url = "/admin/api/orders/gets";
-        // console.log(url);
+        if(this.is_public) url += '/public';
+
+      // console.log(url);
         axios
           .post(url, params)
           .then(response => {

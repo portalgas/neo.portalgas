@@ -82,7 +82,8 @@ export default {
    */  
   props: {
     datas: {},
-    dataNotFound: true
+    dataNotFound: true,
+    is_public: false /* se true e' SocialMarket */
   },  
   watch: {
   	datas (newValue, oldValue) { 
@@ -91,22 +92,28 @@ export default {
   },     
   methods: { 
 	    selectOrder(order) {
-	    	/* console.log('selectOrder'); */
-	    	/* console.log(order); */
+        /* console.log('selectOrder'); */
+        /* console.log(order); */
 
-			let isOpen = $('#collapse-'+order.id).hasClass('show');
-			
-			$('.collapse').removeClass('show');
-			$('#accordion-suppliers .fas').removeClass("fa-angle-up");
-			$('#accordion-suppliers .fas').addClass("fa-angle-down");
+        let isOpen = $('#collapse-'+order.id).hasClass('show');
 
-			if(!isOpen) {
-				$('#collapse-'+order.id).addClass('show');
-				$('#accordion-suppliers #fas-'+order.id).addClass("fa-angle-up");
-			}
-			
-	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
-	    }    
+        $('.collapse').removeClass('show');
+        $('#accordion-suppliers .fas').removeClass("fa-angle-up");
+        $('#accordion-suppliers .fas').addClass("fa-angle-down");
+
+        if(!isOpen) {
+          $('#collapse-'+order.id).addClass('show');
+          $('#accordion-suppliers #fas-'+order.id).addClass("fa-angle-up");
+        }
+
+
+        let params = {}
+        if(this.is_public)
+          params = {order_type_id: order.order_type_id, order_id: order.id, is_public: true}
+        else
+          params = {order_type_id: order.order_type_id, order_id: order.id, is_public: false}
+        this.$router.push({ name: 'Order', params: params})
+	    }
   	},
 		filters: {
 	    	currency(amount) {

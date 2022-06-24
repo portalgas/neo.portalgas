@@ -562,7 +562,7 @@ class OrdersTable extends Table
             
             $where = [];
             $where = ['Carts.order_id' => $order_id];
-            $importo_totale = $CartsTable->getTotImporto($user, $where);
+            $importo_totale = $CartsTable->getTotImporto($user, $organization_id, $where);
             
             if($debug) debug("Cart::getTotImporto() ".$importo_totale);
         } // end if($summaryOrderAggregateResults->count()>0)

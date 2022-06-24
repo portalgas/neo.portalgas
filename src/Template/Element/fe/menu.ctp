@@ -69,6 +69,14 @@ if(!empty($organization)) {
   // $menus[$i]['url'] = 'admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
   $menus[$i]['url'] = '/fai-la-spesa';
   $menus[$i]['target'] = '';
+
+  if(Configure::read('public_organization_id')!==false) {
+      $i++;
+      $menus[$i]['label'] = 'Acquista SocialMarket';
+      $menus[$i]['url'] = '/social-market-orders';
+      $menus[$i]['target'] = '';
+  }
+
   $i++;
   $menus[$i]['label'] = 'Stampe';
   // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
