@@ -113,7 +113,7 @@ export default {
       isRun: false
     };
   },
-  props: ['order', 'article'], 
+  props: ['order', 'article', 'is_public'],
   computed: {
       btnMinusIsDisabled() {
         return (this.isRun || this.article.cart.qta_new == 0);
@@ -180,6 +180,7 @@ export default {
       var url = '/admin/api/carts/managementCart';
       if(this.order.order_type.code == 'PROMOTION_GAS_USERS')
          url = '/admin/api/promotion-carts/managementCart';
+      if(this.is_public) url += '/public';
 
       axios
         .post(url, params)

@@ -71,7 +71,11 @@
             </div>
         </div>
         <div v-bind:class="'card-footer '+justInCart"> 
-           <app-btn-cart-add v-on:emitCartSave="emitCartSave" v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
+           <app-btn-cart-add
+               v-on:emitCartSave="emitCartSave"
+               v-bind:article="article"
+               v-bind:order="order"
+               v-bind:is_public="is_public"></app-btn-cart-add>
         </div>
   </div>
 
@@ -84,7 +88,7 @@ import btnCartAdd from "../../components/part/BtnCartAdd.vue";
 
 export default {
   name: "app-article",
-  props: ['order', 'article'],
+  props: ['order', 'article', 'is_public'],
   data() {
     return {
       organizationHasFieldCartNote: 'N',

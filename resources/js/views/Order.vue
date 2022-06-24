@@ -248,6 +248,7 @@
                     v-bind:article="article"
                     v-bind:order="order"
                     v-on:emitCartSave="emitCartSave"
+                    v-bind:is_public="is_public"
                     >
                     </app-article-order-list>
 
@@ -268,6 +269,7 @@
                     v-bind:article="article"
                     v-bind:order="order"
                     v-on:emitCartSave="emitCartSave"
+                    v-bind:is_public="is_public"
                     >
                     </app-article-order>
                     
