@@ -8,11 +8,11 @@
 			</div>  
 		</div>
 
-		<orders-deliveries v-if="url=='/admin/api/deliveries/gets'" :is_public="false" :datas="datas" :dataNotFound="dataNotFound"></orders-deliveries>
+		<orders-deliveries v-if="url=='/admin/api/deliveries/gets'" :is_social_market="false" :datas="datas" :dataNotFound="dataNotFound"></orders-deliveries>
 
-    <orders-suppliers v-if="url=='/admin/api/orders/gets'" :is_public="false" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>		<orders-suppliers v-if="url=='/admin/api/orders/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>
+    <orders-suppliers v-if="url=='/admin/api/orders/gets'" :is_social_market="false" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>		<orders-suppliers v-if="url=='/admin/api/orders/gets'" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>
 
-    <orders-suppliers v-if="url=='/admin/api/orders/gets/public'" :is_public="true" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>
+    <orders-suppliers v-if="url=='/admin/api/orders/gets/socialmarket'" :is_social_market="true" :datas="datas" :dataNotFound="dataNotFound"></orders-suppliers>
 
   </div>
 

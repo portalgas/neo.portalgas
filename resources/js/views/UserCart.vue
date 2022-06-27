@@ -17,9 +17,6 @@
 
       <user-cart-deliveries v-if="isLoading==false" :datas="datas"></user-cart-deliveries>
 
-      <h2>
-        SocialMarket
-      </h2>
       <social-market-user-cart v-if="isLoading==false" :datas="datas"></social-market-user-cart>
 
     </main>

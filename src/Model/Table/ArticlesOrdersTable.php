@@ -177,6 +177,7 @@ class ArticlesOrdersTable extends Table
                 $table_registry = 'ArticlesOrdersDes';
                 break;
             case Configure::read('Order.type.gas'):
+            case Configure::read('Order.type.socialmarket'):
                 $table_registry = 'ArticlesOrdersGas';
                 break;
             case Configure::read('Order.type.promotion'):
@@ -188,7 +189,7 @@ class ArticlesOrdersTable extends Table
             case Configure::read('Order.type.pact'):
                 $table_registry = 'ArticlesOrdersPact';
                 break;
-            
+
             default:
                 die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
                 break;

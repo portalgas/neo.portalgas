@@ -37,7 +37,7 @@ class PagesController extends AppController
         $this->Authentication->allowUnauthenticated(['display', 'vueGuest']);
         $this->Authorization->skipAuthorization(['display', 'vueGuest']);
 
-         $this->loadComponent('ProdGasPromotion');
+        $this->loadComponent('ProdGasPromotion');
     }
 
     /* 
@@ -52,6 +52,7 @@ class PagesController extends AppController
         // debug($user);
 
         $hasGasUsersPromotions = false;
+        $hasSocialMarketOrders = false;
 
         $user = $this->Authentication->getIdentity();
 
@@ -60,9 +61,20 @@ class PagesController extends AppController
 
             $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');
             $hasGasUsersPromotions = $prodGasPromotionsOrganizationsTable->hasGasUsersPromotions($organization_id);
+
+            if(Configure::read('social_market_organization_id')!=false) {
+
+                $ordersTable = TableRegistry::get('Orders');
+                $ordersTable = $ordersTable->factory($user, Configure::read('social_market_organization_id'), Configure::read('Order.type.socialmarket'));
+
+                $where = [];
+                $where['orders'] = ['state_code IN ' => ['OPEN']];
+                $ordersSocialMarkets = $ordersTable->gets($user, Configure::read('social_market_organization_id'), $where);
+                ($ordersSocialMarkets->count()==0) ? $hasSocialMarketOrders = false: $hasSocialMarketOrders = true;
+            }
         }
 
-        $this->set(compact('hasGasUsersPromotions'));
+        $this->set(compact('hasGasUsersPromotions', 'hasSocialMarketOrders'));
     }
 
     /* 

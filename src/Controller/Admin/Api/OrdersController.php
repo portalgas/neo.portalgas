@@ -26,14 +26,14 @@ class OrdersController extends ApiAppController
      * dettaglio ordine x fe
      * /admin/api/orders/get
      */
-    public function get($is_public=false) {
+    public function get($is_social_market=false) {
 
         $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         $order_id = $this->request->getData('order_id');
         $order_type_id = $this->request->getData('order_type_id');
@@ -58,14 +58,14 @@ class OrdersController extends ApiAppController
     /*
      * elenco ordini x fe
      */
-    public function gets($is_public=false) {
+    public function gets($is_social_market=false) {
 
         $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         $delivery_id = $this->request->getData('delivery_id');
         
@@ -100,14 +100,14 @@ class OrdersController extends ApiAppController
      * /admin/api/orders/user-cart-gets
      * elenco ordini con acquisti dell'utente x fe
      */
-    public function userCartGets($is_public=false) {
+    public function userCartGets($is_social_market=false) {
 
         $debug = false;
         $results = [];
     
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         $delivery_id = $this->request->getData('delivery_id');
 
@@ -121,7 +121,7 @@ class OrdersController extends ApiAppController
      * /admin/api/orders/getArticlesOrdersByOrderId 
      * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
      */
-    public function getArticlesOrdersByOrderId($is_public=false) {
+    public function getArticlesOrdersByOrderId($is_social_market=false) {
 
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
@@ -130,7 +130,7 @@ class OrdersController extends ApiAppController
 
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         $order_id = $this->request->getData('order_id');
         $order_type_id = $this->request->getData('order_type_id');

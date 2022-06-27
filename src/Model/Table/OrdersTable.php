@@ -365,6 +365,9 @@ class OrdersTable extends Table
             case Configure::read('Order.type.pact'):
                 $table_registry = 'OrdersPact';
                 break;
+            case Configure::read('Order.type.socialmarket'):
+                $table_registry = 'OrdersSocialMarket';
+                break;
             
             default:
                 die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');

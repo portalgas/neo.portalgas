@@ -306,8 +306,9 @@ Configure::write('Order.type.des_titolare', 3);
 Configure::write('Order.type.promotion', 4);
 Configure::write('Order.type.pact_pre', 5); 
 Configure::write('Order.type.pact', 6);  
-Configure::write('Order.type.supplier', 7); 
-Configure::write('Order.type.promotion_gas_users', 8); 
+Configure::write('Order.type.supplier', 7);
+Configure::write('Order.type.promotion_gas_users', 8);
+Configure::write('Order.type.socialmarket', 9);
 
 /*
  * altre tipologie di organization GAS PRODGAS PACT
@@ -456,4 +457,5 @@ Configure::write('DOMPDF_DEBUG_IMG_PATH', '/img/pdf');
 /*
  * se false e' disattivato, anche su portalgas
  */
-Configure::write('public_organization_id', 15);
+Configure::write('social_market_organization_id', 142);
+Configure::write('social_market_delivery_id', 9511);

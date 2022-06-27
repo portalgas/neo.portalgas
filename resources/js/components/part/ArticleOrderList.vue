@@ -78,7 +78,7 @@
                 v-on:emitCartSave="emitCartSave"
                 v-bind:article="article"
                 v-bind:order="order"
-                v-bind:is_public="is_public"></app-btn-cart-add>
+                v-bind:is_social_market="is_social_market"></app-btn-cart-add>
         </div>
   </div>
 
@@ -91,7 +91,7 @@ import btnCartAdd from "../../components/part/BtnCartAdd.vue";
 
 export default {
   name: "app-article",
-  props: ['order', 'article', 'is_public'],
+  props: ['order', 'article', 'is_social_market'],
   data() {
     return {
       isLoading: false,

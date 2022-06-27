@@ -208,7 +208,7 @@ class OrderComponent extends Component {
             $options['limit'] = $sql_limit;
             $options['page'] = $page;
             $results = $articlesOrdersTable->getCartsByUser($user, $organization_id, $user->id, $orderResults, $where, $options);
- 
+
             if(!empty($results)) {
                 $results = new ApiArticleOrderDecorator($user, $results, $orderResults);
                 //$results = new ArticleDecorator($results);

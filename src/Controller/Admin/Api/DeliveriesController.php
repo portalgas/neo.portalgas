@@ -25,7 +25,7 @@ class DeliveriesController extends ApiAppController
     /* 
      * front-end - estrae le consegne anche senza ordine e l'eventuale "da definire" con ordini
      */
-    public function gets($is_public=false) {
+    public function gets($is_social_market=false) {
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -34,7 +34,7 @@ class DeliveriesController extends ApiAppController
         $results = [];
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         /*
          * elenco consegne

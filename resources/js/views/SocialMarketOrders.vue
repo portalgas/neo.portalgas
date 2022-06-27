@@ -3,7 +3,7 @@
     <div>
       <h2>Ordini aperti</h2>
       <tab :name="'Ordini per produttore'"
-           :url="'/admin/api/orders/gets/public'"
+           :url="'/admin/api/orders/gets/socialmarket'"
            :selected="true"></tab>
     </div>
 

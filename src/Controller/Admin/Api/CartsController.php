@@ -20,7 +20,7 @@ class CartsController extends ApiAppController
         parent::beforeFilter($event);
     }
   
-    public function managementCart($is_public=false) {
+    public function managementCart($is_social_market=false) {
         
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
@@ -29,7 +29,7 @@ class CartsController extends ApiAppController
 
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         $results = [];
    
@@ -218,7 +218,7 @@ class CartsController extends ApiAppController
      * url: /admin/api/carts/getTotImportByOrderId
      * front-end - estrae il totale importo del carrello di un ordine filtrati per user
      */
-    public function getTotImportByOrderId($is_public=false) {
+    public function getTotImportByOrderId($is_social_market=false) {
 
         $debug = false;
         $continua = true;
@@ -241,7 +241,7 @@ class CartsController extends ApiAppController
             $cartsTable = TableRegistry::get('Carts');
             $user = $this->Authentication->getIdentity();
 
-            ((bool)$is_public) ? $organization_id = Configure::read('public_organization_id'): $organization_id = $user->organization->id;
+            ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
             $where = [];
             $where = ['Carts.order_id' => $order_id,

@@ -1,7 +1,10 @@
 <template>
 
 	<main>
-        <user-cart-orders v-if="!isRun" :results="results"></user-cart-orders>
+    <h2>
+      SocialMarket
+    </h2>
+    <user-cart-orders v-if="!isRun" :results="results"></user-cart-orders>
 	</main>
 
 </template>
@@ -42,7 +45,7 @@ export default {
 
 				this.orders = [];
 
-				let url_orders = "/admin/api/orders/user-cart-gets/public";
+				let url_orders = "/admin/api/orders/user-cart-gets/socialmarket";
 
 				axios
 					.post(url_orders, params)

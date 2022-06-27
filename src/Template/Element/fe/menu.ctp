@@ -70,10 +70,10 @@ if(!empty($organization)) {
   $menus[$i]['url'] = '/fai-la-spesa';
   $menus[$i]['target'] = '';
 
-  if(Configure::read('public_organization_id')!==false) {
+  if($hasSocialMarketOrders) {
       $i++;
       $menus[$i]['label'] = 'Acquista SocialMarket';
-      $menus[$i]['url'] = '/social-market-orders';
+      $menus[$i]['url'] = '/social-market';
       $menus[$i]['target'] = '';
   }
 

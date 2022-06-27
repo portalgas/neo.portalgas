@@ -83,7 +83,7 @@ export default {
   props: {
     datas: {},
     dataNotFound: true,
-    is_public: false /* se true e' SocialMarket */
+    is_social_market: false /* se true e' SocialMarket */
   },  
   watch: {
   	datas (newValue, oldValue) { 
@@ -108,10 +108,10 @@ export default {
 
 
         let params = {}
-        if(this.is_public)
-          params = {order_type_id: order.order_type_id, order_id: order.id, is_public: true}
+        if(this.is_social_market)
+          params = {order_type_id: order.order_type_id, order_id: order.id, is_social_market: 'socialmarket'}
         else
-          params = {order_type_id: order.order_type_id, order_id: order.id, is_public: false}
+          params = {order_type_id: order.order_type_id, order_id: order.id, is_social_market: 'socialmarket'}
         this.$router.push({ name: 'Order', params: params})
 	    }
   	},

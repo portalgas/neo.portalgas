@@ -3,13 +3,13 @@
 <main>
 
   <ul class="link-top">
-    <li v-if="!is_public">
+    <li v-if="!is_social_market">
       <router-link to="/fai-la-spesa" class="btn btn-primary">Torna alla consegne</router-link>
     </li>
-    <li v-if="is_public">
+    <li v-if="is_social_market">
       <router-link to="/social-market-orders" class="btn btn-primary">Torna all'elenco dei produttori</router-link>
     </li>
-    <li v-if="!is_public">
+    <li v-if="!is_social_market">
       <a class="btn btn-primary" id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
     </li>
   </ul>
@@ -159,14 +159,14 @@
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Escluso dal prepagato</span>
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && !order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Gestito con il prepagato</span>
 
-                    <span v-if="order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
-                    <span v-if="order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
+                    <span v-if="!is_social_market && order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
+                    <span v-if="!is_social_market && order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
 
-                    <span v-if="order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
-                    <span v-if="order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>              
+                    <span v-if="!is_social_market && order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
+                    <span v-if="!is_social_market && order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>
                   </p>
 
-                  <p v-if="order.suppliers_organization.frequenza!=''" class="card-text">
+                  <p v-if="!is_social_market && order.suppliers_organization.frequenza!=''" class="card-text">
                       <small class="text-muted"><strong>Frequenza</strong> {{ order.suppliers_organization.frequenza }}</small>
                   </p>
                </div> <!-- card-body -->
@@ -248,7 +248,7 @@
                     v-bind:article="article"
                     v-bind:order="order"
                     v-on:emitCartSave="emitCartSave"
-                    v-bind:is_public="is_public"
+                    v-bind:is_social_market="is_social_market"
                     >
                     </app-article-order-list>
 
@@ -269,7 +269,7 @@
                     v-bind:article="article"
                     v-bind:order="order"
                     v-on:emitCartSave="emitCartSave"
-                    v-bind:is_public="is_public"
+                    v-bind:is_social_market="is_social_market"
                     >
                     </app-article-order>
                     
@@ -315,7 +315,7 @@ export default {
       j_seo: '',
       order_type_id: 0,
       order_id: 0,
-      is_public: false,
+      is_social_market: false,
       order: null,
       orders: [],
       articles: [],
@@ -381,8 +381,8 @@ export default {
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
     this.order_id = this.$route.params.order_id;
-    this.is_public = this.$route.params.is_public;
-    // console.log('mounted route.params.order_type_id '+this.order_type_id+' route.params.order_id '+this.order_id+' route.params.is_public '+this.is_public);
+    this.is_social_market = this.$route.params.is_social_market;
+    // console.log('mounted route.params.order_type_id '+this.order_type_id+' route.params.order_id '+this.order_id+' route.params.is_social_market '+this.is_social_market);
 
     this.viewList = this.getCookie('viewList');
 
@@ -420,7 +420,7 @@ export default {
       this.isRunTotCart = true;
 
       let url = "/admin/api/carts/getTotImportByOrderId";
-      if(this.is_public) url += '/public';
+      if(this.is_social_market) url += '/socialmarket';
 
       let params = {
         order_type_id: this.order_type_id,
@@ -495,7 +495,7 @@ export default {
       this.isRunOrder = true;
 
       let url = "/admin/api/orders/get";
-      if(this.is_public) url += '/public';
+      if(this.is_social_market) url += '/socialmarket';
 
       let params = {
         order_type_id: this.order_type_id,
@@ -526,7 +526,7 @@ export default {
       this.isRunArticles = true;
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
-      if(this.is_public) url += '/public';
+      if(this.is_social_market) url += '/socialmarket';
 
       let params = {
         order_type_id: this.order_type_id,
@@ -585,7 +585,7 @@ export default {
         this.orders = [];
 
         let url = "/admin/api/orders/gets";
-        if(this.is_public) url += '/public';
+        if(this.is_social_market) url += '/socialmarket';
 
       // console.log(url);
         axios

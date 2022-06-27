@@ -27,7 +27,7 @@ const routes = [
     component: Cart
   },
   {
-    path: "/order/:order_type_id/:order_id/:is_public",
+    path: "/order/:order_type_id/:order_id/:is_social_market",
     name: "Order",
     component: Order
   },
@@ -62,7 +62,7 @@ const routes = [
     component: Promotion
   },
   {
-    path: "/social-market-orders",
+    path: "/social-market",
     name: "SocialMarketOrders",
     component: SocialMarketOrders
   },
