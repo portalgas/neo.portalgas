@@ -17,7 +17,7 @@
 
       <user-cart-deliveries v-if="isLoading==false" :datas="datas"></user-cart-deliveries>
 
-      <social-market-user-cart v-if="isLoading==false" :datas="datas"></social-market-user-cart>
+      <social-market-user-cart v-if="isSocialMarketLoading==false" :datas="socialMarketDatas"></social-market-user-cart>
 
     </main>
 
@@ -33,8 +33,10 @@ export default {
   data() {
     return {
       datas:  {},
-      isLoading: false, 
-      dataFound: null
+      isLoading: false,
+      dataFound: null,
+      socialMarketDatas: {},
+      isSocialMarketLoading: false
     };
   },
   components: {
@@ -43,8 +45,32 @@ export default {
   },  
   mounted() {
     this.getDeliveries();
+    this.getSocialMarketSuppliers();
   },  
   methods: {
+    getSocialMarketSuppliers() {
+      this.isSocialMarketLoading = true;
+
+      let url = '/admin/api/social-markets/user-cart-gets';
+
+      axios
+          .post(url)
+          .then(response => {
+
+            this.isSocialMarketLoading = false;
+
+            // console.log(response.data);
+            if(typeof response.data !== "undefined") {
+              this.socialMarketDatas = response.data;
+              // console.log(this.socialMarketDatas);
+            }
+            this.isSocialMarketLoading = false;
+          })
+          .catch(error => {
+            this.isSocialMarketLoading=false;
+            console.error("Error: " + error);
+          });
+    },
     getDeliveries() {
 
         this.isLoading=true;

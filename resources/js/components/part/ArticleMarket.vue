@@ -54,7 +54,9 @@
             </div>
         </div>
         <div v-bind:class="'card-footer '+justInCart"> 
-           <app-btn-cart-add v-bind:article="article" v-bind:order="order"></app-btn-cart-add>
+           <app-btn-cart-add v-bind:article="article"
+                             v-bind:order="order"
+                             v-bind:is_social_market="is_social_market"></app-btn-cart-add>
         </div>
   </div>
 

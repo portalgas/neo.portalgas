@@ -47,7 +47,10 @@
               {{ article.um_rif_label }}
         </div>
         <div class="col-text col-md-4 col-lg-3 col-xs-3">
-           <app-btn-cart-add v-bind:article="article" v-bind:order="order" :key="article.id"></app-btn-cart-add>
+           <app-btn-cart-add v-bind:article="article"
+                             v-bind:order="order"
+                             v-bind:is_social_market="is_social_market"
+                             :key="article.id"></app-btn-cart-add>
         </div>
   </div>
 
@@ -59,7 +62,7 @@ import btnCartAdd from "../../components/part/BtnCartAdd.vue";
 
 export default {
   name: "user-cart-article",
-  props: ['order', 'article'],
+  props: ['order', 'article', 'is_social_market'],
   data() {
     return {
       isLoading: false,

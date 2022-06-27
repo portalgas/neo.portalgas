@@ -304,7 +304,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         }); 
         $routes->scope('/promotion-carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCartProdGasPromotionGasUser', '_method' => 'POST']);
-        }); 
+        });
+        $routes->scope('/social-markets', ['controller' => 'socialMarkets'], function (RouteBuilder $routes) {
+            $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
+        });
         $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
             $routes->connect('/cash-ctrl-limit', ['action' => 'cashCtrlLimit', '_method' => 'POST']);
         });

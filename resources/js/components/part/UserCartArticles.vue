@@ -18,6 +18,7 @@
         v-for="article in article_orders"
         v-bind:article="article"
         v-bind:order="order"
+        v-bind:is_social_market="is_social_market"
         :key="article.id">
       </user-cart-article> 
 
@@ -44,7 +45,7 @@ import UserCartArticle from "../../components/part/UserCartArticle.vue";
 
 export default {
   name: "user-cart-articles",
-  props: ['order', 'article_orders'],
+  props: ['order', 'article_orders', 'is_social_market'],
   components: {
     UserCartArticle: UserCartArticle
   }, 
