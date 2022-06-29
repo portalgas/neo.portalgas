@@ -7,7 +7,7 @@
       <router-link to="/fai-la-spesa" class="btn btn-primary">Torna alla consegne</router-link>
     </li>
     <li v-if="is_social_market">
-      <router-link to="/social-market-orders" class="btn btn-primary">Torna all'elenco dei produttori</router-link>
+      <router-link to="/social-market" class="btn btn-primary">Torna all'elenco dei produttori</router-link>
     </li>
     <li v-if="!is_social_market">
       <a class="btn btn-primary" id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>

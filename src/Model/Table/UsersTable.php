@@ -174,7 +174,7 @@ class UsersTable extends Table
             ->where($where)
             ->contain(['UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
             ->first();
-        // if($debug) debug($user);
+         if($debug) debug($user);
 
         if (!$user) {
             return null;
@@ -241,7 +241,10 @@ class UsersTable extends Table
             case 'GAS':
                 $user = $this->_getOrganizationByGas($user, $user_organization_id, $organization_id, $debug);
                 $user = $this->_setCash($user, $user->organization);
-            break;
+                break;
+            case 'SOCIALMARKET':
+                $user = $this->_getOrganizationByGas($user, $user_organization_id, $organization_id, $debug);
+                break;
             case 'PRODGAS':
                 $user = $this->_getOrganizationByProdGasSupplier($user, $user_organization_id, $organization_id, $debug);
             break;     

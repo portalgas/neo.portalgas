@@ -37,7 +37,12 @@ $organization = $this->Identity->get('organization');
 
   <a name="top" id="top"></a>
 
-    <?php echo $this->element('fe/menu', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity, 'hasGasUsersPromotions' => $hasGasUsersPromotions]);?>
+    <?php
+    if($organization->type=='SOCIALMARKET')
+        echo $this->element('fe/menu-socialmarket', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);
+    else
+        echo $this->element('fe/menu', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity, 'hasGasUsersPromotions' => $hasGasUsersPromotions]);
+    ?>
 
 	<noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
 
