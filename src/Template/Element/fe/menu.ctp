@@ -75,6 +75,7 @@ if(!empty($organization)) {
       $menus[$i]['label'] = 'Acquista SocialMarket';
       $menus[$i]['url'] = '/social-market';
       $menus[$i]['target'] = '';
+      $menus[$i]['star'] = true;
   }
 
   $i++;
@@ -126,7 +127,11 @@ foreach($menus as $numResults => $menu) {
   echo '<li class="nav-item ';
   // if($numResults==0) echo ' active'; lo fa js Layout/vue.ctp
   echo '">';
-  echo '<a class="nav-link" target="'.$menu['target'].'" href="'.$menu['url'].'">'.$menu['label'].'</a>';
+  echo '<a class="nav-link" target="'.$menu['target'].'" href="'.$menu['url'].'">'.$menu['label'];
+  if(isset($menu['star']) && $menu['star']==true)
+        echo '<i class="menu-star fas fa-star"></i>';
+  echo '</a>';
+
   echo '</li>';
 }
 

@@ -286,4 +286,12 @@ a:hover {
 .star.selected ~ .star{
   transition: color 0.8s ease;
   color: #ebebeb;
-} 
+}
+
+.menu-star {
+    position: absolute;
+    top: -1px;
+    color: #1e83c2;
+    font-size: 33px;
+    transform: rotate(25deg);
+}

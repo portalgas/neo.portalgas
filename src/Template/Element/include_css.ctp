@@ -31,7 +31,7 @@ echo $this->Html->css('AdminLTE./plugins/iCheck/all', ['block' => 'css']);
 echo $this->Html->css('AdminLTE./bower_components/datatables.net-bs/css/dataTables.bootstrap.min', ['block' => 'css']); 
 
 echo $this->Html->css('style'); 
-echo $this->Html->css('my'); 
+echo $this->Html->css('my.min');
 
 // HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries 
 // WARNING: Respond.js doesn't work if you view the page via file:// 
