@@ -34,7 +34,7 @@
                   :src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
                   :alt="order.suppliers_organization.name">
 
-                  {{ order.suppliers_organization.name }} 
+                  {{ order.suppliers_organization.name }}&nbsp;
 
                     <b-badge variant="secondary" v-if="order.delivery.sys=='Y'" style="float:right">
                         {{ order.delivery.luogo }}
@@ -80,15 +80,12 @@
             <div class="col-md-10">
                <div class="card-body" :class="'type-'+order.order_type.name">
                   <h5 class="card-title">
-                      <a v-if="order.suppliers_organization.supplier.www!=''" target="_blank" v-bind:href="order.suppliers_organization.supplier.www" title="vai al sito del produttore">
+                      <a target="_blank" v-bind:href="'https://neo.portalgas.it/site/produttore/'+order.suppliers_organization.supplier.slug" title="vai alla pagina del produttore">
                         {{ order.suppliers_organization.name }}
                       </a>
-                      <span v-if="order.suppliers_organization.supplier.www==''">
-                        {{ order.suppliers_organization.name }}
-                      </span>
                       <small class="card-text">
                         {{ order.suppliers_organization.supplier.descrizione }}
-                      </small>                        
+                      </small>
                   </h5>
 
                   <!--            -->
@@ -135,7 +132,7 @@
 
                   <p class="card-text">
 
-                      <div class="float-right">
+                      <div class="float-right mb-2">
 
                        <span v-if="isRunTotCart" class="box-spinner">
                          <div class="spinner-border text-info" role="status">
@@ -149,12 +146,25 @@
                         <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
                       </div>
 
-                      <span v-if="order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
-                      <span v-if="order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
-                      <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
-                      <span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
-                  <hr >
-                    <div v-if="order.mail_open_testo!=''" class="alert alert-info" v-html="$options.filters.html(order.mail_open_testo)"></div>
+                      <span v-if="!is_social_market && order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
+                      <span v-if="!is_social_market && order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
+                      <span v-if="!is_social_market && order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
+                      <span v-if="!is_social_market && order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
+
+                  <hr style="clear: both;">
+
+                    <div v-if="order.mail_open_testo!=''" class="alert alert-info">
+                      <p v-html="$options.filters.html(order.mail_open_testo)"></p>
+
+                      <!--                         -->
+                      <!-- S O C I A L M A R K E T -->
+                      <!--                         -->
+                      <div class="quote-wrapper" v-if="is_social_market">
+                        <blockquote class="text">
+                          <p>Ti piace questo produttore? consigliato al tuo GAS!</p>
+                        </blockquote>
+                      </div>
+                    </div>
 
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Escluso dal prepagato</span>
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && !order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Gestito con il prepagato</span>
@@ -178,7 +188,9 @@
                   <span v-if="order.delivery.sys!='Y'">
                       {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
                   </span>
-               </div> 
+               </div>
+
+
 
                 <!--                        -->
                 <!--    R E F E R E N T I   -->
@@ -801,5 +813,126 @@ ul.link-top li a:hover {
 
 .v-tour__target--highlighted {
   box-shadow: 0 0 0 99999px rgba(0,0,0,.4);
+}
+
+
+
+.quote-wrapper {
+  position: absolute;
+  top: -50px;
+  right: 1px;
+  width: 170px;
+  height: 170px;
+  margin: 10vh auto 0; /*OPTIONAL MARGIN*/
+}
+
+.text {
+  width: 100%;
+  height: 100%;
+  /*BLUE BG*/
+  background: radial-gradient(
+      ellipse at center,
+      rgba(0, 128, 172, 1) 0%,
+      rgba(0, 128, 172, 1) 70%,
+      rgba(0, 128, 172, 0) 70.3%
+  );
+  /*RED BG
+  background: radial-gradient(
+    ellipse at center,
+    rgba(210, 20, 20, 1) 0%,
+    rgba(210, 20, 20, 1) 70%,
+    rgba(210, 20, 20, 0) 70.3%
+  );*/
+  position: relative;
+  margin: 0;
+  color: white;
+}
+
+.text p {
+  height: 100%;
+  font-size: 18px;
+  line-height: 1.25;
+  padding: 0;
+  text-align: center;
+  font-style: italic;
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3);
+}
+
+.text::before {
+  content: "";
+  width: 50%;
+  height: 100%;
+  float: left;
+  shape-outside: polygon(
+      0 0,
+      98% 0,
+      50% 6%,
+      23.4% 17.3%,
+      6% 32.6%,
+      0 50%,
+      6% 65.6%,
+      23.4% 82.7%,
+      50% 94%,
+      98% 100%,
+      0 100%
+  );
+  shape-margin: 7%;
+}
+
+.text p::before {
+  content: "";
+  width: 50%;
+  height: 100%;
+  float: right;
+  shape-outside: polygon(
+      2% 0%,
+      100% 0%,
+      100% 100%,
+      2% 100%,
+      50% 94%,
+      76.6% 82.7%,
+      94% 65.6%,
+      100% 50%,
+      94% 32.6%,
+      76.6% 17.3%,
+      50% 6%
+  );
+  shape-margin: 7%;
+}
+
+.quote-wrapper::before {
+  content: "\201C";
+  font-size: 270px;
+  height: 82px;
+  line-height: 0.78;
+  line-height: 1;
+  position: absolute;
+  top: -48px;
+  left: 0;
+  z-index: 1;
+  font-family: sans-serif, serif;
+  color: #ccc;
+  opacity: 0.9;
+}
+
+@media (min-width: 850px) {
+  .quote-wrapper {
+    width: 170px;
+    height: 170px;
+  }
+
+  .quote-wrapper::before {
+    font-size: 250px;
+  }
+
+  .text p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .quote-wrapper {
+    position: relative;
+  }
 }
 </style>

@@ -22,16 +22,17 @@
 							:alt="order.suppliers_organization.name">
 					</div>
 					
-					{{ order.suppliers_organization.name }}
-	                  <span v-if="order.delivery.sys=='Y'">
-	                      {{ order.delivery.luogo }}
-	                  </span>
-	                  <span v-if="order.delivery.sys!='Y'">
-	                      {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
-	                  </span>
+					{{ order.suppliers_organization.name }}&nbsp;
+
+                <span v-if="!is_social_market && order.delivery.sys=='Y'">
+                    {{ order.delivery.luogo }}
+                </span>
+                <span v-if="!is_social_market && order.delivery.sys!='Y'">
+                    {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
+                </span>
 
 
-					<span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
+					      <span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block" v-if="!is_social_market">
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT'">- aprirà {{ order.data_inizio | formatDate }} </span>
 		              <span v-if="order.order_state_code.code=='OPEN'">- chiuderà {{ order.data_fine | formatDate }}</span>
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">- data chiusura {{ order.data_fine | formatDate }}</span>
