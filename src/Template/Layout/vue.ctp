@@ -38,7 +38,7 @@ $organization = $this->Identity->get('organization');
   <a name="top" id="top"></a>
 
     <?php
-    if($organization->type=='SOCIALMARKET')
+    if(isset($organization->type) && $organization->type=='SOCIALMARKET')
         echo $this->element('fe/menu-socialmarket', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);
     else
         echo $this->element('fe/menu', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity, 'hasGasUsersPromotions' => $hasGasUsersPromotions]);
