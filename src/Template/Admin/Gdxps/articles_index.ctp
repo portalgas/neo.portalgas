@@ -66,8 +66,8 @@ else {
     <table class="table table-striped table-hover table-condensed" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                    <th colspan="2"><?= __('Name') ?></th>
-                    <th><?= __('Codice') ?></th>
+                    <th scope="col" colspan="2"><?= __('Name') ?></th>
+                    <th scope="col"><?= __('Codice') ?></th>
     				<?php
                     /* 
                     <th><?= __('Supplier Organization') ?></th>
@@ -75,12 +75,12 @@ else {
     				<th><?= __('owner_organization_id') ?></th>
     				<th><?= __('owner_organization_name') ?></th>
                     */ ?>
-                    <th colspan="2"><?= __('organization_owner_articles') ?></th>
-                    <th><?= __('Bio') ?></th>
-                    <th><?= __('Prezzo') ?></th>
-                    <th><?= __('Qta') ?></th>
-                    <th><?= __('Conf') ?></th>
-                    <th><?= __('PrezzoUnita') ?></th>
+                    <th scope="col" colspan="2"><?= __('organization_owner_articles') ?></th>
+                    <th scope="col"><?= __('Bio') ?></th>
+                    <th scope="col"><?= __('Prezzo') ?></th>
+                    <th scope="col"><?= __('Qta') ?></th>
+                    <th scope="col"><?= __('Conf') ?></th>
+                    <th scope="col"><?= __('PrezzoUnita') ?></th>
                     <?php 
                     /* 
                     <th><?= __('um_riferimento') ?></th>

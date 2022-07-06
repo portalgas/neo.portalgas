@@ -240,21 +240,27 @@ class CartsTable extends Table
      *  ArticlesOrders.article_id              = Articles.id
      *  ArticlesOrders.article_organization_id = Articles.organization_id
      */
-    public function getByOrder($user, $organization_id, $order_id, $user_id, $where=[], $order=[], $debug=false) {
-                            
-        $where = array_merge(['Carts.organization_id' => $organization_id,
-                              'Carts.order_id' => $order_id,
-                              'Carts.user_id' => $user_id,
-                              'Carts.deleteToReferent' => 'N'], 
-                              $where);
+    public function getByOrder($user, $organization_id, $order_id, $user_id=0, $where=[], $order=[], $debug=false) {
+
+        $contain = ['Articles' => ['conditions' => ['Articles.stato' => 'Y']],
+                    'ArticlesOrders' => ['conditions' => ['ArticlesOrders.stato != ' => 'N']]];
+
+        $where_defaults = ['Carts.organization_id' => $organization_id,
+                            'Carts.order_id' => $order_id,
+                            'Carts.deleteToReferent' => 'N'];
+        if(!empty($user_id)) {
+            $where_defaults = ['Carts.user_id' => $user_id];
+        }
+        else {
+            $contain += ['Users'];
+        }
+
+        $where = array_merge($where_defaults, $where);
         // debug($where);
         $order = ['ArticlesOrders.name'];
 
         $results = $this->find()
-                        ->contain([
-                            'Articles' => ['conditions' => ['Articles.stato' => 'Y']], 
-                            'ArticlesOrders' => ['conditions' => ['ArticlesOrders.stato != ' => 'N']]
-                        ])
+                        ->contain($contain)
                         ->where($where)
                         ->order($order)
                         ->all();
