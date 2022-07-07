@@ -20,7 +20,7 @@ class CartsController extends ApiAppController
         parent::beforeFilter($event);
     }
   
-    public function managementCart($is_social_market=false) {
+    public function managementCart() {
         
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
@@ -29,12 +29,13 @@ class CartsController extends ApiAppController
 
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
-
         $results = [];
-   
+
+        $order_type_id = $this->request->getData('order_type_id');
         $order = $this->request->getData('order');
         $article = $this->request->getData('article');
+
+        ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
         // debug($article);
         $results = $this->Cart->managementCart($user, $organization_id, $order, $article, $debug);
         
@@ -218,7 +219,7 @@ class CartsController extends ApiAppController
      * url: /admin/api/carts/getTotImportByOrderId
      * front-end - estrae il totale importo del carrello di un ordine filtrati per user
      */
-    public function getTotImportByOrderId($is_social_market=false) {
+    public function getTotImportByOrderId() {
 
         $debug = false;
         $continua = true;
@@ -229,10 +230,11 @@ class CartsController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
+        $order_type_id = $this->request->getData('order_type_id');
         $order_id = $this->request->getData('order_id');
-        if(empty($order_id)) {
+        if(empty($order_type_id) || empty($order_id)) {
             $results['code'] = 500;
-            $results['message'] = 'Parametro order_id richiesto';
+            $results['message'] = 'Parametro order_type_id / order_id richiesto';
             $results['errors'] = '';
             $continua = false;
         }
@@ -241,7 +243,7 @@ class CartsController extends ApiAppController
             $cartsTable = TableRegistry::get('Carts');
             $user = $this->Authentication->getIdentity();
 
-            ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
+            ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
             $where = [];
             $where = ['Carts.order_id' => $order_id,

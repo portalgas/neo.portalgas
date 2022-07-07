@@ -27,7 +27,7 @@ const routes = [
     component: Cart
   },
   {
-    path: "/order/:order_type_id/:order_id/:is_social_market",
+    path: "/order/:order_type_id/:order_id",  // se order_type_id = 9 => is_social_market
     name: "Order",
     component: Order
   },

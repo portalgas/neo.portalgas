@@ -85,7 +85,7 @@ export default {
   props: {
     datas: {},
     dataNotFound: true,
-    is_social_market: false /* se true e' SocialMarket */
+    is_social_market: 'gas' /* gas / social-market */
   },
   watch: {
   	datas (newValue, oldValue) { 
@@ -120,7 +120,7 @@ export default {
 
 				this.orders = [];
 
-				let url = "/admin/api/orders/gets";
+				let url = "/admin/api/orders/gets/0";
 				// console.log(url);
 				axios
 					.post(url, params)

@@ -25,7 +25,7 @@ class DeliveriesController extends ApiAppController
     /* 
      * front-end - estrae le consegne anche senza ordine e l'eventuale "da definire" con ordini
      */
-    public function gets($is_social_market=false) {
+    public function gets($order_type_id) {
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -34,7 +34,7 @@ class DeliveriesController extends ApiAppController
         $results = [];
         $user = $this->Authentication->getIdentity();
 
-        ((bool)$is_social_market) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
+        ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         /*
          * elenco consegne
@@ -45,7 +45,7 @@ class DeliveriesController extends ApiAppController
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
                                 'Deliveries.stato_elaborazione' => 'OPEN',
                                 'Deliveries.sys' => 'N',
-                               // 'DATE(Deliveries.data) >= CURDATE()'
+                                'DATE(Deliveries.data) >= CURDATE()'
         ];
         $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
         $deliveries = $deliveriesTable->gets($user, $organization_id, $where);

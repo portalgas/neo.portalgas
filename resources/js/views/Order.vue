@@ -3,13 +3,13 @@
 <main>
 
   <ul class="link-top">
-    <li v-if="!is_social_market">
+    <li v-if="order_type_id!=9">
       <router-link to="/fai-la-spesa" class="btn btn-primary">Torna alla consegne</router-link>
     </li>
-    <li v-if="is_social_market">
+    <li v-if="order_type_id==9">
       <router-link to="/social-market" class="btn btn-primary">Torna all'elenco dei produttori</router-link>
     </li>
-    <li v-if="!is_social_market">
+    <li v-if="order_type_id!=9">
       <a class="btn btn-primary" id="btn-cart-previous" :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/fai-la-spesa-'+j_seo">Passa alla precedente versione per gli acquisti</a>
     </li>
   </ul>
@@ -27,7 +27,7 @@
 
           <template v-for="(order, index) in orders"
               :value="order.id">
-            <a :href="'/order/'+order.order_type_id+'/'+order.id" class="order-change">
+            <a :href="'/order/'+order.order_type_id + '/' + order.id" class="order-change">
               <b-dropdown-item-button block >
 
                 <img style="max-width:75px" v-if="order.suppliers_organization.supplier.img1 != ''" 
@@ -36,10 +36,10 @@
 
                   {{ order.suppliers_organization.name }}&nbsp;
 
-                    <b-badge variant="secondary" v-if="order.delivery.sys=='Y'" style="float:right">
+                    <b-badge variant="secondary" v-if="order.order_type_id!=9 && order.delivery.sys=='Y'" style="float:right">
                         {{ order.delivery.luogo }}
                     </b-badge>
-                    <b-badge variant="secondary" v-if="order.delivery.sys!='Y'" style="float:right">
+                    <b-badge variant="secondary" v-if="order.order_type_id!=9 && order.delivery.sys!='Y'" style="float:right">
                         {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
                     </b-badge>            
               </b-dropdown-item-button>
@@ -146,10 +146,10 @@
                         <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
                       </div>
 
-                      <span v-if="!is_social_market && order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
-                      <span v-if="!is_social_market && order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
-                      <span v-if="!is_social_market && order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
-                      <span v-if="!is_social_market && order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
+                      <span v-if="order.order_type_id!=9 && order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
+                      <span v-if="order.order_type_id!=9 && order.order_state_code.code=='OPEN'">chiuderà {{ order.data_fine | formatDate }}</span>
+                      <span v-if="order.order_type_id!=9 && order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">Data chiusura {{ order.data_fine | formatDate }}</span>
+                      <span v-if="order.order_type_id!=9 && order.order_state_code.code=='RI-OPEN-VALIDATE'">Riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
 
                   <hr style="clear: both;">
 
@@ -159,7 +159,7 @@
                       <!--                         -->
                       <!-- S O C I A L M A R K E T -->
                       <!--                         -->
-                      <div class="quote-wrapper" v-if="is_social_market">
+                      <div class="quote-wrapper" v-if="order.order_type_id==9">
                         <blockquote class="text">
                           <p>Ti piace questo produttore? consigliato al tuo GAS!</p>
                         </blockquote>
@@ -169,14 +169,14 @@
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Escluso dal prepagato</span>
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && !order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Gestito con il prepagato</span>
 
-                    <span v-if="!is_social_market && order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
-                    <span v-if="!is_social_market && order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
+                    <span v-if="order.order_type_id!=9 && order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
+                    <span v-if="order.order_type_id!=9 && order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
 
-                    <span v-if="!is_social_market && order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
-                    <span v-if="!is_social_market && order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>
+                    <span v-if="order.order_type_id!=9 && order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
+                    <span v-if="order.order_type_id!=9 && order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>
                   </p>
 
-                  <p v-if="!is_social_market && order.suppliers_organization.frequenza!=''" class="card-text">
+                  <p v-if="order.order_type_id!=9 && order.suppliers_organization.frequenza!=''" class="card-text">
                       <small class="text-muted"><strong>Frequenza</strong> {{ order.suppliers_organization.frequenza }}</small>
                   </p>
                </div> <!-- card-body -->
@@ -260,7 +260,6 @@
                     v-bind:article="article"
                     v-bind:order="order"
                     v-on:emitCartSave="emitCartSave"
-                    v-bind:is_social_market="is_social_market"
                     >
                     </app-article-order-list>
 
@@ -281,7 +280,6 @@
                     v-bind:article="article"
                     v-bind:order="order"
                     v-on:emitCartSave="emitCartSave"
-                    v-bind:is_social_market="is_social_market"
                     >
                     </app-article-order>
                     
@@ -327,7 +325,6 @@ export default {
       j_seo: '',
       order_type_id: 0,
       order_id: 0,
-      is_social_market: false,
       order: null,
       orders: [],
       articles: [],
@@ -393,8 +390,7 @@ export default {
   mounted() {
     this.order_type_id = this.$route.params.order_type_id;
     this.order_id = this.$route.params.order_id;
-    this.is_social_market = this.$route.params.is_social_market;
-    // console.log('mounted route.params.order_type_id '+this.order_type_id+' route.params.order_id '+this.order_id+' route.params.is_social_market '+this.is_social_market);
+    // console.log('mounted route.params.order_type_id '+this.order_type_id+' route.params.order_id '+this.order_id);
 
     this.viewList = this.getCookie('viewList');
 
@@ -432,7 +428,6 @@ export default {
       this.isRunTotCart = true;
 
       let url = "/admin/api/carts/getTotImportByOrderId";
-      if(this.is_social_market) url += '/socialmarket';
 
       let params = {
         order_type_id: this.order_type_id,
@@ -507,7 +502,6 @@ export default {
       this.isRunOrder = true;
 
       let url = "/admin/api/orders/get";
-      if(this.is_social_market) url += '/socialmarket';
 
       let params = {
         order_type_id: this.order_type_id,
@@ -538,7 +532,6 @@ export default {
       this.isRunArticles = true;
 
       let url = "/admin/api/orders/getArticlesOrdersByOrderId";
-      if(this.is_social_market) url += '/socialmarket';
 
       let params = {
         order_type_id: this.order_type_id,
@@ -596,8 +589,7 @@ export default {
 
         this.orders = [];
 
-        let url = "/admin/api/orders/gets";
-        if(this.is_social_market) url += '/socialmarket';
+        let url = '/admin/api/orders/gets/' + this.order_type_id;
 
       // console.log(url);
         axios

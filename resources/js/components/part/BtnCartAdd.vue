@@ -174,6 +174,7 @@ export default {
       let params = {
         article: this.article,
         order: this.order,
+        order_type_id: this.order.order_type_id,
       };
       // console.log(params);
 

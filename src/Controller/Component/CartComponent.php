@@ -125,7 +125,11 @@ class CartComponent extends CartSuperComponent {
                      * $supplier_organization_id = $results['Article']['supplier_organization_id'];
                      */
                     $supplier_organization_id = $order['supplier_organization_id'];
-                    $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
+
+                    if($organization_id == Configure::read('social_market_organization_id'))
+                        $esito_ctrl_limit_cart = true;
+                    else
+                        $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
 
                     if($esito_ctrl_limit_cart) {
 
@@ -184,9 +188,12 @@ class CartComponent extends CartSuperComponent {
                         /*
                          * lo prendo dall'ordine perche' il listino puo' gestirlo un altro
                          * $supplier_organization_id = $results['Article']['supplier_organization_id'];
-                         */                    
+                         */
                         $supplier_organization_id = $order['supplier_organization_id'];
-                        $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
+                        if($organization_id == Configure::read('social_market_organization_id'))
+                            $esito_ctrl_limit_cart = true;
+                        else
+                            $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
                     }
 
                     if($esito_ctrl_limit_cart) {

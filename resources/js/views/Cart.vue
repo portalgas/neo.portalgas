@@ -1,10 +1,10 @@
 <template>
 
     <tabs>
-      <tab name="Ordini per consegna" url="/admin/api/deliveries/gets" :selected="true">
+      <tab name="Ordini per consegna" url="/admin/api/deliveries/gets/0" :selected="true">
         <h2>Ordini per consegna</h2>
       </tab>
-      <tab name="Ordini per produttore" url="/admin/api/orders/gets">
+      <tab name="Ordini per produttore" url="/admin/api/orders/gets/0">
         <h2>Ordini per produttore</h2>
       </tab>
     </tabs>

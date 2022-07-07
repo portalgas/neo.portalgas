@@ -24,15 +24,15 @@
 					
 					{{ order.suppliers_organization.name }}&nbsp;
 
-                <span v-if="!is_social_market && order.delivery.sys=='Y'">
+                <span v-if="order.order_type!=9 && order.delivery.sys=='Y'">
                     {{ order.delivery.luogo }}
                 </span>
-                <span v-if="!is_social_market && order.delivery.sys!='Y'">
+                <span v-if="order.order_type!=9 && order.delivery.sys!='Y'">
                     {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
                 </span>
 
 
-					      <span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block" v-if="!is_social_market">
+					      <span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block" v-if="order.order_type!=9">
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT'">- aprirà {{ order.data_inizio | formatDate }} </span>
 		              <span v-if="order.order_state_code.code=='OPEN'">- chiuderà {{ order.data_fine | formatDate }}</span>
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">- data chiusura {{ order.data_fine | formatDate }}</span>
@@ -83,8 +83,7 @@ export default {
    */  
   props: {
     datas: {},
-    dataNotFound: true,
-    is_social_market: false /* se true e' SocialMarket */
+    dataNotFound: true
   },  
   watch: {
   	datas (newValue, oldValue) { 
@@ -109,10 +108,7 @@ export default {
 
 
         let params = {}
-        if(this.is_social_market)
-          params = {order_type_id: order.order_type_id, order_id: order.id, is_social_market: 'socialmarket'}
-        else
-          params = {order_type_id: order.order_type_id, order_id: order.id, is_social_market: 'socialmarket'}
+        params = {order_type_id: order.order_type_id, order_id: order.id}
         this.$router.push({ name: 'Order', params: params})
 	    }
   	},
