@@ -541,6 +541,12 @@ msgstr "Riferimenti"
 msgid "List Document Owner Models"
 msgstr "Proprietari"
 
+msgid "Insert"
+msgstr "Inserito"
+
+msgid "Modified"
+msgstr "Modificato"
+
 #
 # Edit
 #
@@ -657,6 +663,12 @@ msgstr "Il comune è stato salvato"
 
 msgid "The {0} has been saved."
 msgstr "Il {0} è stato salvato"
+
+msgid "save-success"
+msgstr "Salvataggio avvenuto con successo"
+
+msgid "delete-success"
+msgstr "Cancellazione avvenuta con successo"
 
 #
 # saved error
@@ -1111,9 +1123,9 @@ msgstr "Accettazione del testo sul trattamento dei dati sulla privacy salvata co
 msgid "msg_user_registration_expire"
 msgstr "Devi rinnovare l'iscrizione al tuo G.A.S."
 
-/* 
- * note
- */
+#
+# note
+#
 msgid "Note-is-system"
 msgstr "Se di sistema non si può eliminare"
 
@@ -1122,3 +1134,18 @@ msgstr "Se attivo sarà visibile a front-end"
 
 msgid "Note-sort"
 msgstr "Gli elementi saranno ordinati in ordine crescente rispetto al numero indicato"
+
+#
+# socialmarket
+#
+msgid "socialmarket-purchase-delivered"
+msgstr "Consegnato"
+
+msgid "socialmarket-purchase-delete"
+msgstr "Acquisto annullato"
+
+msgid "socialmarket-purchase-delivered-all"
+msgstr "Consegnato tutto"
+
+msgid "socialmarket-purchase-delete-all"
+msgstr "Annullo tutto"

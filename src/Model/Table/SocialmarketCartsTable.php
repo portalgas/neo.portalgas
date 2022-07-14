@@ -120,7 +120,7 @@ class SocialmarketCartsTable extends Table
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['user_organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        // $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
 
         return $rules;
     }

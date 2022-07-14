@@ -257,7 +257,11 @@ class CartsTable extends Table
 
         $where = array_merge($where_defaults, $where);
         // debug($where);
-        $order = ['ArticlesOrders.name'];
+        if(empty($user_id)) {
+            $order = ['Users.name', 'ArticlesOrders.name'];
+        }
+        else
+            $order = ['ArticlesOrders.name'];
 
         $results = $this->find()
                         ->contain($contain)

@@ -28,16 +28,27 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
   if($this->Identity->get()->acl['isRoot'] || 
     ($this->Identity->get()->acl['isProdGasSupplierManager'] && isset($this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']) && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
   ?>
-  <li class="treeview"> 
-    <a href="#">
-      <i class="fa fa-share-alt"></i> <span>Interoperabilità</span>
-      <span class="pull-right-container">
+      <li class="treeview">
+          <a href="#">
+              <i class="fa fa-cart-plus"></i> <span>SocialMarket</span>
+              <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
-      <ul class="treeview-menu">
-        <li><a href="<?php echo $this->Url->build('/admin/gdxps/articlesSendIndex'); ?>"><?php echo $icon;?><?php echo __('Article-Send-short');?></a></li>
-      </ul>
-    </a>
-  </li>
+              <ul class="treeview-menu">
+                  <li><a href="<?php echo $this->Url->build('/admin/socialmarket-carts/carts'); ?>"><?php echo $icon;?><?php echo __('Elenco acquisti');?></a></li>
+              </ul>
+          </a>
+      </li>
+      <li class="treeview">
+          <a href="#">
+              <i class="fa fa-share-alt"></i> <span>Interoperabilità</span>
+              <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+              <ul class="treeview-menu">
+                  <li><a href="<?php echo $this->Url->build('/admin/gdxps/articlesSendIndex'); ?>"><?php echo $icon;?><?php echo __('Article-Send-short');?></a></li>
+              </ul>
+          </a>
+      </li>
   <?php
   }

@@ -97,7 +97,7 @@ else {
                 */
                 ?>
                 <td><?= h($article->bio) ?></td>
-                <td><?= $this->Number->format($article->prezzo) ?></td>
+                <td><?= $this->Number->currency($article->prezzo) ?></td>
                 <td><?= $this->Number->format($article->qta) ?></td>
                 <td><?= $this->Number->format($article->pezzi_confezione) ?></td><td><?= h($article->um) ?></td>
                 <?php

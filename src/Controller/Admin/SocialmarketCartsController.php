@@ -53,14 +53,124 @@ class SocialmarketCartsController extends AppController
         $organization_id = Configure::read('social_market_organization_id');
 
         /*
-         * recupero l'unioc ordine che il produttore ha aperto su socialmarket
+         * recupero l'unico ordine che il produttore ha aperto su socialmarket
          */
         $order = $this->SocialmarketCarts->getOrder($user, Configure::read('social_market_organization_id'), $user->organization->id);
         $order_id = $order->id;
 
         $cartsTable = TableRegistry::get('Carts');
         $carts = $cartsTable->getByOrder($user, $organization_id, $order_id);
+        if(!empty($carts)) {
+            $userProfilesTable = TableRegistry::get('UserProfiles');
+            $user_profiles_ids = [];
+            foreach ($carts as $numResult => $cart) {
+
+                if(!isset($user_profiles_ids[$cart->user->id])) {
+                    $user_profiles = $userProfilesTable->getValuesByUserId($cart->user->id);
+                    $user_profiles_ids[$cart->user->id] = $user_profiles; // per evitare di leggere i profili sul medesimo users
+
+                    $cart->user_profiles = $user_profiles;
+                }
+                else
+                    $cart->user_profiles = $user_profiles_ids[$cart->user->id];
+            }
+        }
+
         $this->set(compact('carts', 'order'));
+    }
+
+    public function purchaseDelivered($organization_id, $user_id, $order_id, $article_organization_id=0, $article_id=0)
+    {
+        $debug = false;
+
+        $user = $this->Authentication->getIdentity();
+        $organization_id = Configure::read('social_market_organization_id');
+
+        $results = $this->_purchase($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, 1, $debug);
+
+        if($results===true)
+            $this->Flash->success(__('save-success'), ['escape' => false]);
+        else
+            $this->Flash->error($results, ['escape' => false]);
+
+        return $this->redirect(['action' => 'carts']);
+    }
+
+    public function purchaseDelete($organization_id, $user_id, $order_id, $article_organization_id=0, $article_id=0) {
+
+        $debug = false;
+
+        $user = $this->Authentication->getIdentity();
+        $organization_id = Configure::read('social_market_organization_id');
+
+        $results = $this->_purchase($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, 0, $debug);
+
+        if($results===true)
+            $this->Flash->success(__('delete-success'), ['escape' => false]);
+        else
+            $this->Flash->error($results, ['escape' => false]);
+
+        return $this->redirect(['action' => 'carts']);
+   }
+
+    /*
+     * copio da Carts a SocialMarkets
+     * elimino da Carts
+     *
+     * $is_active = 1 inserisco / 0 eliminato
+     */
+    private function _purchase($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $is_active, $debug=false) {
+
+        $cartTable = TableRegistry::get('Carts');
+
+        $carts = [];
+        if(empty($article_organization_id) || empty($article_id)) {
+            // tutti gli acquisti di un utente
+            $carts = $cartTable->getByOrder($user, $organization_id, $order_id, $user_id);
+        }
+        else {
+            $cart = $cartTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
+            $carts[0] = $cart;
+        }
+
+        $userTable = TableRegistry::get('Users');
+
+        foreach($carts as $cart) {
+
+            $userResult = $userTable->find()
+                ->select(['organization_id'])
+                ->where(['id' => $cart->user_id])
+                ->first();
+
+            $datas = [];
+            $datas['organization_id'] = $organization_id; // Configure::write('social_market_organization_id', 142);
+            $datas['user_id'] = $cart->user_id;
+            $datas['user_organization_id'] = $userResult->organization_id;
+            $datas['order_id'] = $cart->order_id;
+            $datas['article_name'] = $cart->articles_order->name;
+            $datas['article_prezzo'] = $cart->articles_order->prezzo;
+            $datas['cart_qta'] = $cart->qta;
+            $datas['cart_importo_finale'] = ($cart->qta * $cart->articles_order->prezzo);
+            $datas['nota'] = '';
+            $datas['is_active'] = $is_active;
+
+            $socialmarketCart = $this->SocialmarketCarts->newEntity();
+            $socialmarketCart = $this->SocialmarketCarts->patchEntity($socialmarketCart, $datas);
+            // dd($socialmarketCart);
+            if (!$this->SocialmarketCarts->save($socialmarketCart)) {
+                // debug($socialmarketCart);
+                // debug($socialmarketCart->getErrors());
+                return $socialmarketCart->getErrors();
+            }
+
+            /*
+             * elimino da Carts
+             */
+            $cartTable->delete($cart);
+
+        } // end foreach($carts as $cart)
+
+        return true;
     }
 
     /**

@@ -66,4 +66,19 @@ class UserProfilesTable extends Table
 
         return $rules;
     }
+
+    public function getValuesByUserId($user_id) {
+
+        $results = [];
+
+        $where = ['user_id' => $user_id];
+        $user_profiles = $this->find()
+                                ->where($where)
+                                ->all();
+        foreach($user_profiles as $user_profile) {
+            $results[$user_profile['profile_key']] = $user_profile['profile_value'];
+        }
+
+        return $results;
+    }
 }

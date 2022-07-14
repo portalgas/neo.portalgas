@@ -1,14 +1,12 @@
 <?php
 use Cake\Core\Configure;
-
+// debug($carts);
 $config = Configure::read('Config');
 $portalgas_fe_url = $config['Portalgas.fe.url'];
 ?>
 <section class="content-header">
   <h1>
-    <?php echo __('Carts');?>
-
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs']) ?></div>
+    <?php echo __('SocialMarkets');?>
   </h1>
 </section>
 
@@ -21,51 +19,88 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <form action="<?php echo $this->Url->build(); ?>" method="POST">
-              <div class="input-group input-group-sm" style="width: 150px;">
-                <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
-
-                <div class="input-group-btn">
-                  <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </div>
-              </div>
-            </form>
           </div>
         </div>
         <!-- /.box-header -->
+          <?php
+          if($carts->count()>0) {
+          ?>
         <div class="box-body table-responsive no-padding">
           <table class="table table-hover">
             <thead>
               <tr>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('user_id') ?></th>
                   <th scope="col"><?= __('Bio') ?></th>
-                  <th scope="col" colspan="2"><?= __('Name') ?></th>
                   <th scope="col"><?= __('Codice') ?></th>
-                  <th scope="col"><?= __('Prezzo') ?></th>
-                  <th scope="col"><?= __('Qta') ?></th>
-                  <th scope="col"><?= __('Conf') ?></th>
-                  <th scope="col"><?= __('PrezzoUnita') ?></th>
+                  <th scope="col" colspan="2"><?= __('Name') ?></th>
+                  <th class="text-center" scope="col"><?= __('Conf') ?></th>
+                  <th class="text-center"scope="col"><?= __('PrezzoUnita') ?></th>
+                  <th class="text-center" scope="col"><?= __('Qta') ?></th>
+                  <th class="text-center" scope="col"><?= __('Importo') ?></th>
                   <th scope="col"><?= __('Insert') ?></th>
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($carts as $cart) {
+              <?php
+              $user_id_old = 0;
+              $user_qta_totale = 0;
+              $user_importo_totale = 0;
+              foreach ($carts as $cart) {
+
+                  /*
+                   * intestazione user
+                   */
+                  if($user_id_old==0 || $user_id_old!=$cart->user->id) {
+
+                      if($user_importo_totale>0) {
+                          echo '<tr>';
+                          echo '<th colspan="7"></th>';
+                          echo '<th class="text-center">'.$this->Number->format($user_qta_totale).'</th>';
+                          echo '<th class="text-center">'.$this->Number->currency($user_importo_totale).'</th>';
+                          echo '<th></th>';
+                          echo '<tr>';
+                      }
+
+                      echo '<tr>';
+                      echo '<th colspan="2">';
+                      // echo '<input type="checkbox" />&nbsp;';
+                      echo $this->Html->link(__('socialmarket-purchase-delivered-all'), ['action' => 'purchaseDelivered', $cart->organization_id, $cart->user_id, $cart->order_id], ['class'=>'btn btn-success']);
+                      echo $this->Form->postLink(__('socialmarket-purchase-delete-all'), ['action' => 'purchaseDelete', $cart->organization_id, $cart->user_id, $cart->order_id], ['confirm' => "Sei scuro di volere annullare tutto l'ordine dell'utente ".$cart->user->name, 'class'=>'btn btn-danger']);
+                      echo '<th colspan="2">';
+                      echo h($cart->user->name);
+                      echo '</th>';
+                      echo '<th colspan="4">';
+                      if(!empty($cart->user_profiles['profile.address']))
+                          echo $cart->user_profiles['profile.address'].' ';
+                      if(!empty($cart->user_profiles['profile.city']))
+                          echo $cart->user_profiles['profile.city'].' ';
+                      if(!empty($cart->user_profiles['profile.region']))
+                          echo '('.$cart->user_profiles['profile.region'].') ';
+                      echo '</th>';
+                      echo '<th colspan="3">';
+                      if(!empty($cart->user->email))
+                          echo $this->HtmlCustom->mail($cart->user->email).' ';
+                      if(!empty($cart->user_profiles['profile.phone']))
+                          echo $cart->user_profiles['profile.phone'].' ';
+                      echo '</th>';
+                      echo '</tr>';
+
+                      $user_qta_totale = 0;
+                      $user_importo_totale = 0;
+                  }
 
                   $cart->article->bio=='Y' ? $is_bio = '<img src="/is-bio.png" title="bio" width="20" />': $is_bio = '';
                   $conf = ($cart->qta.' '.$cart->article->um);
-                  $importo = ($cart->qta * $cart->prezzo);
+                  $cart_importo = ($cart->articles_order->prezzo * $cart->qta);
 
                   echo '<tr>';
-                  ?>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $cart->organization_id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cart->organization_id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cart->organization_id], ['confirm' => __('Are you sure you want to delete # {0}?', $cart->organization_id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
-                  <?php
-                  echo '<td>'.h($cart->user->name).'</td>';
+                  echo '<td class="actions text-right">';
+                  // echo '<input type="checkbox" />&nbsp;';
+                  echo $this->Html->link(__('socialmarket-purchase-delivered'), ['action' => 'purchaseDelivered', $cart->organization_id, $cart->user_id, $cart->order_id, $cart->article_organization_id, $cart->article_id], ['class'=>'btn btn-success']);
+                  echo $this->Html->link(__('socialmarket-purchase-delete'), ['action' => 'purchaseDelete', $cart->organization_id, $cart->user_id, $cart->order_id, $cart->article_organization_id, $cart->article_id], ['class'=>'btn btn-danger']);
+                  echo '</td>';
                   echo '<td class="text-center">'.$is_bio.'</td>';
+                  echo '<td>'.h($cart->article->codice).'</td>';
                   echo '<td>';
                     if(!empty($cart->article->img1)) {
                     $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
@@ -75,20 +110,33 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                     }
                     echo '</td>';
                     echo '<td>'.h($cart->articles_order->name).'</td>';
-                    ?>
-                  <td><?= h($cart->article->codice) ?></td>
-                    <td><?= $this->Number->format($cart->article->prezzo) ?></td>
-                    <td><?= $this->Number->format($cart->article->qta) ?></td>
-                    <td><?= $this->Number->format($cart->article->pezzi_confezione) ?></td>
-                    <td><?= h($cart->article->um) ?></td>
-                  <td><?= h($cart->created) ?></td>
-                </tr>
-              <?php
+                    echo '<td class="text-center">'.$this->Number->format($cart->article->qta).' '.h($cart->article->um).'</td>';
+                    echo '<td class="text-center">'.$this->Number->currency($cart->article->prezzo).'</td>';
+                    echo '<td class="text-center">'.$this->Number->format($cart->qta).'</td>';
+                    echo '<td class="text-center">'.$this->Number->currency($cart_importo).'</td>';
+                    echo '<td>'.h($cart->created).'</td>';
+                    echo '</tr>';
+
+                  $user_id_old = $cart->user->id;
+                  $user_qta_totale += $cart->qta;
+                  $user_importo_totale += $cart_importo;
               }
-              ?>
-            </tbody>
-          </table>
-        </div>
+
+              echo '<tr>';
+              echo '<th colspan="7"></th>';
+              echo '<th class="text-right">Totale</th>';
+              echo '<th>'.$this->Number->currency($user_importo_totale).'</th>';
+              echo '<th></th>';
+              echo '<tr>';
+
+              echo '</tbody>';
+              echo '</table>';
+              echo '</div>';
+          }
+          else {
+              echo $this->element('msgResults', ['action_add' =>false]);
+          }
+          ?>
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
