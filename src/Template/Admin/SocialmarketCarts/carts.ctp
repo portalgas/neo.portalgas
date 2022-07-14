@@ -89,7 +89,7 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                       $user_importo_totale = 0;
                   }
 
-                  $cart->article->bio=='Y' ? $is_bio = '<img src="/is-bio.png" title="bio" width="20" />': $is_bio = '';
+                  $cart->article->bio=='Y' ? $is_bio = '<img src="/img/is-bio.png" title="bio" width="20" />': $is_bio = '';
                   $conf = ($cart->qta.' '.$cart->article->um);
                   $cart_importo = ($cart->articles_order->prezzo * $cart->qta);
 

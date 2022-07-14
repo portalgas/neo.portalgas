@@ -74,9 +74,11 @@ else {
         </tr>
     </thead>
         <tbody>
-            <?php foreach ($articles as $article): ?>
-            <tr>
-                <?php  
+            <?php foreach ($articles as $article) {
+
+                $article->bio=='Y' ? $is_bio = '<img src="/img/is-bio.png" title="bio" width="20" />': $is_bio = '';
+
+                echo '<tr>';
                 echo '<td>';
                 if(!empty($article->img1)) {
                     $url = $portalgas_fe_url.Configure::read('Article.img.path.full');
@@ -87,6 +89,7 @@ else {
                 echo '</td>';
                 echo '<td>'.h($article->name).'</td>';
                 echo '<td>'.h($article->codice).'</td>';
+                echo '<td>'.$is_bio.'</td>';
 
                 /*
                 echo '<td>'.$article->suppliers_organization->name.'</td>';
@@ -95,12 +98,10 @@ else {
                 echo '<td>'.$article->suppliers_organization->owner_supplier_organization_id.'</td>';
                 echo '<td>'.$article->suppliers_organization->owner_organization->id.'</td>';
                 */
-                ?>
-                <td><?= h($article->bio) ?></td>
-                <td><?= $this->Number->currency($article->prezzo) ?></td>
-                <td><?= $this->Number->format($article->qta) ?></td>
-                <td><?= $this->Number->format($article->pezzi_confezione) ?></td><td><?= h($article->um) ?></td>
-                <?php
+                echo '<td class="text-center">'.$this->Number->currency($article->prezzo).'</td>';
+                echo '<td class="text-center">'.$this->Number->format($article->qta).'</td>';
+                echo '<td class="text-center">'.$this->Number->format($article->pezzi_confezione).'</td>';
+                echo '<td class="text-center">'.h($article->um).'</td>';
                 /*
                 <td><?= h($article->um_riferimento) ?></td>
                 <td><?= $this->Number->format($article->qta_minima) ?></td>
@@ -117,9 +118,8 @@ else {
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $article->id], ['confirm' => __('Are you sure you want to delete # {0}?', $article->id)]) ?>
                 </td>
                 */
-                ?>
-            </tr>
-            <?php endforeach; ?>
+            echo '</tr>';
+            } ?>
         </tbody>
     </table>
 </div>    
