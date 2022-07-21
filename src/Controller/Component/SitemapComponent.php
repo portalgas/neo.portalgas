@@ -152,6 +152,8 @@ class SitemapComponent extends Component {
         $i++;
         $results[$i] = $this->_portalgas_fe_url . '/gestionale-web-gas';
         $i++;
+        $results[$i] = $this->_portalgas_fe_url . '/gestisci-i-tuoi-ordini-con-portalgas-in-4-semplici-punti';
+        $i++;
         $results[$i] = $this->_portalgas_fe_url . '/notizie/360-l-app-di-portalgas-per-iphone-android';
         $i++;
         $results[$i] = $this->_portalgas_fe_url . '/mobile';
