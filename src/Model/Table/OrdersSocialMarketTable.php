@@ -75,6 +75,8 @@ class OrdersSocialMarketTable extends OrdersTable implements OrderTableInterface
     
     /*
      * implement
+     * estraggo gli ordini con organization_id = Configure::read('social_market_organization_id')
+     * escludendo i produttori associati al GAS del gasista
      */      
     public function gets($user, $organization_id, $where=[], $debug=false) {
 
@@ -93,12 +95,44 @@ class OrdersSocialMarketTable extends OrdersTable implements OrderTableInterface
         $where_delivery = ['Deliveries.organization_id' => Configure::read('social_market_organization_id'),
                            'Deliveries.id' => Configure::read('social_market_delivery_id')];
 
+        /*
+         * estraggo i produttori attivi del GAS per escluderli
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $suppliersOrganizations = $suppliersOrganizationsTable->find()
+                                                            ->select(['id'])
+                                                            ->where (['organization_id' => $user->organization->id, 'stato' => 'Y'])
+                                                            ->all();//dd($suppliersOrganizations);
+        $exclude_ids = [];
+        foreach ($suppliersOrganizations as $suppliersOrganization)
+            $exclude_ids[$suppliersOrganization->id] = $suppliersOrganization->id;
+
+        /*
+         * estraggo solo i GAS abilitati
+         */
+        $socialmarketOrganizationsTable = TableRegistry::get('SocialmarketOrganizations');
+        $socialmarketOrganizations = $socialmarketOrganizationsTable->find()
+                                                            ->select(['supplier_organization_id'])
+                                                            ->where (['organization_id' => $user->organization->id])
+                                                            ->all();
+        if($socialmarketOrganizations->count()==0)
+            return $socialmarketOrganizations;
+
+        $include_ids = [];
+        foreach ($socialmarketOrganizations as $socialmarketOrganization)
+            $include_ids[$socialmarketOrganization->supplier_organization_id] = $socialmarketOrganization->supplier_organization_id;
+
         $results = $this->find()
             ->where($where_order)
             ->contain([
                 'OrderTypes' => ['conditions' => ['code' => 'SOCIALMARKET']],
                 'OrderStateCodes',
-                'SuppliersOrganizations' => ['Suppliers'],
+                'SuppliersOrganizations' => [
+                    'Suppliers',
+                    'conditions' => [
+                        'SuppliersOrganizations.id NOT IN ' => $exclude_ids,
+                        'SuppliersOrganizations.id IN ' => $include_ids]
+                ],
                 'Deliveries' => ['conditions' => $where_delivery]
             ])
             ->order([$this->getAlias().'.data_inizio'])
