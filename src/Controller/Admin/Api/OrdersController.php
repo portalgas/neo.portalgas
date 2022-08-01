@@ -14,6 +14,7 @@ class OrdersController extends ApiAppController
         $this->loadComponent('Auths');
         $this->loadComponent('Cart');
         $this->loadComponent('Order');
+        $this->loadComponent('SocialMarket');
         $this->loadComponent('Distance');
     }
 
@@ -100,18 +101,26 @@ class OrdersController extends ApiAppController
      * /admin/api/orders/user-cart-gets
      * elenco ordini con acquisti dell'utente x fe
      */
-    public function userCartGets($order_type_id) {
+    public function userCartGets($order_type_id)
+    {
 
         $debug = false;
         $results = [];
-    
+
         $user = $this->Authentication->getIdentity();
 
-        ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
+        ($order_type_id == Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id') : $organization_id = $user->organization->id;
 
-        $delivery_id = $this->request->getData('delivery_id');
-
-        $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug);
+        switch ($order_type_id) {
+            case Configure::read('Order.type.socialmarket'):
+                $order_id = $this->request->getData('order_id');       // ordini socialmarket
+                $results = $this->SocialMarket->userCartGets($user, $organization_id, $order_id, $debug);
+                break;
+            default:
+                $delivery_id = $this->request->getData('delivery_id'); // ordini GAS
+                $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug);
+            break;
+        }
         // debug($results);
 
         return $this->_response($results);  

@@ -2,7 +2,7 @@
 
   <main id="accordion-orders">
 
-    <h2>
+    <h2 v-if="datas.length>0">
       SocialMarket
     </h2>
 
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     selectOrder(order) {
-      console.log(order, 'selectOrder ');
+      // console.log(order, 'selectOrder ');
 
       let isOpen = $('#collapse-' + order.id).hasClass('show');
 
@@ -92,9 +92,10 @@ export default {
       this.isRun = true;
 
       let params = {
-        delivery_id: order.delivery_id
+        delivery_id: order.delivery_id,
+        order_id: order.id
       };
-console.log(params);
+
       this.orders = [];
 
       let url_orders = "/admin/api/orders/user-cart-gets/9";
@@ -111,7 +112,7 @@ console.log(params);
                 orders: response.data
               }
               this.results = data;
-               console.log(this.results);
+              // console.log(this.results);
             }
           })
           .catch(error => {

@@ -56,28 +56,36 @@ class SocialMarketsController extends ApiAppController
                                     ->group(['Carts.order_id'])
                                  //   ->order(['Deliveries.data' => 'desc'])
                                     ->all();
-        // debug($carts);exit;
-        if(!empty($carts)) {
-            $supplier_organization_ids = [];
-            foreach($carts as $cart) {
-                $supplier_organization_ids[$cart->order->id] = $cart->order->id;
-            }
+
+        if($carts->count()>0) {
 
             $ordersTable = TableRegistry::get('Orders');
 
-            $where = ['Orders.organization_id' => $organization_id,
-                    'Orders.isVisibleBackOffice' => 'Y'];
+            $supplier_organization_ids = [];
+            foreach($carts as $cart) {
 
-            $results = $ordersTable->find()
-                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
-                    'SuppliersOrganizations' => [
-                        'Suppliers',
-                        /* 'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles']]*/
-                    ]
-                ])
-                ->where($where)
-                ->order(['Orders.data_inizio'])
-                ->all();
+                if(!array_key_exists($cart->order->id, $supplier_organization_ids)) {
+
+                    $where = ['Orders.organization_id' => $organization_id,
+                              'Orders.id' => $cart->order->id,
+                              'Orders.isVisibleBackOffice' => 'Y'];
+
+                    $orderResults = $ordersTable->find()
+                        ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
+                            'SuppliersOrganizations' => [
+                                'Suppliers',
+                                /* 'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles']]*/
+                            ]
+                        ])
+                        ->where($where)
+                        ->first();
+
+
+                    $results[] = $orderResults;
+
+                }
+                $supplier_organization_ids[$cart->order->id] = $cart->order->id;
+            }
 
             return $this->_response($results);
         }

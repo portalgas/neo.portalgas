@@ -107,8 +107,8 @@ class DeliveriesController extends ApiAppController
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
                                /*
                                 * imposto + un limite di data al carrello
-                                 'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY ',
                                 */
+                                 'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY ',
                                 ];
         $where['Orders'] = ['Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         // debug($where);
@@ -120,8 +120,8 @@ class DeliveriesController extends ApiAppController
                                     ->group(['Carts.order_id'])
                                     ->order(['Deliveries.data' => 'desc'])
                                     ->all();
-        // debug($carts);exit;
-        if(!empty($carts)) {
+        // dd($carts);
+        if($carts->count()>0) {
             $arr_delivery_ids = [];
             foreach($carts as $cart) {
 
