@@ -26,7 +26,6 @@ class SocialmarketCartsController extends AppController
         parent::beforeFilter($event);
 
         $debug = true;
-
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto
         $supplier_id = $user->organization->suppliers_organization->supplier_id;

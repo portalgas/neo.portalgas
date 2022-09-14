@@ -24,15 +24,15 @@
 					
 					{{ order.suppliers_organization.name }}&nbsp;
 
-                <span v-if="order.order_type!=9 && order.delivery.sys=='Y'">
+                <span v-if="order.order_type.id!=9 && order.delivery.sys=='Y'">
                     {{ order.delivery.luogo }}
                 </span>
-                <span v-if="order.order_type!=9 && order.delivery.sys!='Y'">
+                <span v-if="order.order_type.id!=9 && order.delivery.sys!='Y'">
                     {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
                 </span>
 
 
-					      <span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block" v-if="order.order_type!=9">
+					      <span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block" v-if="order.order_type.id!=9">
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT'">- aprirà {{ order.data_inizio | formatDate }} </span>
 		              <span v-if="order.order_state_code.code=='OPEN'">- chiuderà {{ order.data_fine | formatDate }}</span>
 		              <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">- data chiusura {{ order.data_fine | formatDate }}</span>
