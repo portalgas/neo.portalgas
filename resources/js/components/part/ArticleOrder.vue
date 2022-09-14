@@ -2,7 +2,7 @@
 
   <div v-if="order!=null" class="card" :class="'card-'+order.type_draw">
         <div class="card-header bg-primary" v-html="$options.filters.highlight(article.name)" :class="justInCart"></div>
-        <div class="content-img-article" v-if="order.type_draw=='COMPLETE' || order.type_draw=='PROMOTION'">
+        <div class="content-img-article" v-if="order.type_draw=='SIMPLE' || order.type_draw=='COMPLETE' || order.type_draw=='PROMOTION'">
           <img v-if="article.img1!=''" class="img-article responsive" :src="article.img1" :alt="article.name" />
           <div v-if="article.is_bio" class="box-bio">
               <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
