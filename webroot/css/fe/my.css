@@ -291,7 +291,9 @@ a:hover {
 .menu-star {
     position: absolute;
     top: -1px;
-    color: #1e83c2;
+    /* color: #1e83c2; // blue */
+    /* color: #fa824f; // orange */
+    color: #ffd700; /* yellow */
     font-size: 33px;
     transform: rotate(25deg);
 }
