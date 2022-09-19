@@ -38,13 +38,13 @@ if(!empty($delivery)) {
 
 			$article_order['is_bio'] ? $is_bio = '<img src="'.$img_path.'/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
-			if($result->isOpenToPurchasable) 
-	            $totale_ordine += $article_order['cart']['final_price'];
+			if($result->isOpenToPurchasable)   /* aperto per acquistare */
+                $totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
 	        else {
 	              /* ordine chiuso agli acquisti */
-	              $totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
+                $totale_ordine += $article_order['cart']['final_price'];
 	        }
-			
+            
 			$html .= '<tr>';
 			$html .= '	<td class="text-center">'.$is_bio.'</td>';
 			$html .= '	<td>'.$article_order['name'].'</td>';

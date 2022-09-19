@@ -108,7 +108,8 @@ class LifeCycleSummaryOrdersTable extends Table
 	 */		
 	public function canAddSummaryOrder($user, $order_state_code) {
 		
-		if($order_state_code == 'PROCESSED-POST-DELIVERY' ||  //  In carico al referente dopo la consegna
+		if(// $order_state_code == 'PROCESSED-BEFORE-DELIVERY' || // In carico al referente prima della consegna
+            $order_state_code == 'PROCESSED-POST-DELIVERY' ||  //  In carico al referente dopo la consegna
 			$order_state_code == 'PROCESSED-ON-DELIVERY' ||  //  in carico al cassiere
 			$order_state_code == 'INCOMING-ORDER' ||  // In carico al referente con la merce arrivata
 			$order_state_code == 'WAIT-PROCESSED-TESORIERE' || 

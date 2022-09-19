@@ -1,6 +1,7 @@
 <template>
 
-  <div class="row"> 
+  <div class="row">
+
         <div class="col-img col-sm-2 col-md-2 col-lg-1 col-xs-2 d-none d-sm-block">
           <div class="content-img-article-small">
             <img v-if="article.img1!=''" class="img-article-small responsive" :src="article.img1" :alt="article.name">
@@ -33,8 +34,8 @@
         </div>
         <div class="col-text col-sm-1 col-md-1 col-lg-1 col-xs-1">
             <span class="d-xl-none d-lg-none d-md-none"> 
-              Prezzo 
-             </span>         
+              Prezzo
+             </span>
               {{ article.price | currency }} &euro;
                 <del v-if="article.price_pre_discount != null"
                     >{{ article.price_pre_discount | currency }} &euro;</del

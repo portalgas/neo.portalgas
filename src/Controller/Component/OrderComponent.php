@@ -119,9 +119,9 @@ class OrderComponent extends Component {
                 $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
 
                 if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($user, $result->state_code)) {
-                    
+
                     $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $result, $user->id);
-               
+
                     $newResults[$i]['summary_order'] = $resultsSummaryOrderPlus->summary_order;
                     $newResults[$i]['summary_order_aggregate'] = $resultsSummaryOrderPlus->summary_order_aggregate;
                     $newResults[$i]['summary_order_trasport'] = $resultsSummaryOrderPlus->summary_order_trasport;
