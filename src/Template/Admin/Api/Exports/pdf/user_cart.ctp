@@ -44,7 +44,7 @@ if(!empty($delivery)) {
 	              /* ordine chiuso agli acquisti */
                 $totale_ordine += $article_order['cart']['final_price'];
 	        }
-            
+
 			$html .= '<tr>';
 			$html .= '	<td class="text-center">'.$is_bio.'</td>';
 			$html .= '	<td>'.$article_order['name'].'</td>';
