@@ -69,8 +69,6 @@ class OrdersController extends ApiAppController
         ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
 
         $delivery_id = $this->request->getData('delivery_id');
-        
-        $ordersTable = TableRegistry::get('Orders');
 
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.isVisibleBackOffice' => 'Y',
@@ -83,16 +81,29 @@ class OrdersController extends ApiAppController
             $where += ['Orders.delivery_id' => $delivery_id];
         }
 
-        $results = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
-                                    'SuppliersOrganizations' => [
-                                        'Suppliers', 
-                                       /* 'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles']]*/
-                                       ]
-                                    ])
-                                ->where($where)
-                                ->order(['Orders.data_inizio'])
-                                ->all();
+        $ordersTable = TableRegistry::get('Orders');
+
+        /*
+         * todo per tutte le tipologie di ordini
+         */
+        if($order_type_id==Configure::read('Order.type.socialmarket')) {
+            $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
+
+            $ordersTable->addBehavior('Orders');
+            $results = $ordersTable->gets($user, $organization_id, $where, $debug);
+        }
+        else {
+            $results = $ordersTable->find()
+                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
+                    'SuppliersOrganizations' => [
+                        'Suppliers',
+                        /* 'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles']]*/
+                    ]
+                ])
+                ->where($where)
+                ->order(['Orders.data_inizio'])
+                ->all();
+        }
 
         return $this->_response($results); 
     } 
