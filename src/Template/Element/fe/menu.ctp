@@ -75,7 +75,7 @@ if(!empty($organization)) {
   $menus[$i]['url'] = '/fai-la-spesa';
   $menus[$i]['target'] = '';
 
-  if($hasSocialMarketOrders) {
+  if(isset($hasSocialMarketOrders) && $hasSocialMarketOrders) {
       $i++;
       $menus[$i]['label'] = 'Acquista SocialMarket';
       $menus[$i]['url'] = '/social-market';
