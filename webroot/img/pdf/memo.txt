@@ -1,1 +1,13 @@
-cp /vendor/dompdf/dompdf/
+Configure::write('DOMPDF_IMG_PATH', ROOT.'/vendor/dompdf/dompdf');
+
+$this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
+
+cron che effettua la copia
+cp /var/www/neo.portalgas/webroot/img/pdf/*.png /var/www/neo.portalgas/vendor/dompdf/dompdf/
+chown www-data:www-data /var/www/neo.portalgas/vendor/dompdf/dompdf/*.png
+
+cp /var/www/neotest.portalgas/webroot/img/pdf/*.png /var/www/neotest.portalgas/vendor/dompdf/dompdf/
+chown www-data:www-data /var/www/neotest.portalgas/vendor/dompdf/dompdf/*.png
+
+cp /var/www/neonext.portalgas/webroot/img/pdf/*.png /var/www/neonext.portalgas/vendor/dompdf/dompdf/
+chown www-data:www-data /var/www/neonext.portalgas/vendor/dompdf/dompdf/*.png
