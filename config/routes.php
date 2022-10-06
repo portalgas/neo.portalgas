@@ -255,6 +255,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          * export
          */
         $routes->scope('/exports', ['controller' => 'Exports'], function (RouteBuilder $routes) {
+
+            $routes->setExtensions(['pdf']);
+
             $routes->connect('/user-cart', ['action' => 'userCart', '_method' => 'GET']);
             $routes->connect('/user-promotion-cart', ['action' => 'userPromotionCart', '_method' => 'GET']);
         });

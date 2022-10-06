@@ -37,7 +37,7 @@ use Cake\Core\Configure;
       <div class="title"><?php echo $title;?></div>
     <div>
 
-    <div class="container clearfix">
+    <div class="container clearfix"><?php echo $img_path;?>
 		<?php 
 		echo $this->fetch('content');
 		?>

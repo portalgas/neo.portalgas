@@ -14,7 +14,7 @@ class ExportsController extends AppController {
     /*
      * se true non stampa il pdf ma lo vedo a video
      */ 
-    private $_debug = true; 
+    private $_debug = false;
 
     public function initialize()
     {

@@ -23,6 +23,6 @@ return [
         ],
         'pageSize' => 'Letter',
         'orientation' => 'landscape', // portrait
-        'download' => false
+        'download' => true
     ]
 ];
