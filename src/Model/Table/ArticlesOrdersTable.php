@@ -524,8 +524,11 @@ class ArticlesOrdersTable extends Table
                         ->contain(['Articles' => ['conditions' => ['Articles.stato' => 'Y']]])
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
-                        ->limit($this->_limit)
-                        ->page($this->_page)
+                        /*
+                         * senza limite perche' sotto ritratto i dati
+                         * ->limit($this->_limit)
+                         * ->page($this->_page)
+                         * */
                         ->all()
                         ->toArray();
 
@@ -550,7 +553,7 @@ class ArticlesOrdersTable extends Table
                 }
 
                 $differenza_da_ordinare = ($qta_cart % $resultsArticlesOrder['pezzi_confezione']);
-                
+
                 if($differenza_da_ordinare>0) {
                     $differenza_da_ordinare = ($resultsArticlesOrder['pezzi_confezione'] - $differenza_da_ordinare);
                     $differenza_importo = ($differenza_da_ordinare * $resultsArticlesOrder['prezzo']);
