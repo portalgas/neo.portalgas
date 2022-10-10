@@ -527,8 +527,9 @@ class ArticlesOrdersTable extends Table
                         /*
                          * senza limite perche' sotto ritratto i dati
                          * ->limit($this->_limit)
-                         * ->page($this->_page)
                          * */
+                        ->limit(1000)
+                        ->page($this->_page)
                         ->all()
                         ->toArray();
 

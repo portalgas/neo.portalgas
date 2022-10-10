@@ -468,7 +468,6 @@ export default {
       this.onSearch();
     },    
     scroll() {
-
       // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles+' isScrollFinish '+this.isScrollFinish);
       if(this.isScrollFinish || this.isRunArticles)
         return;
@@ -477,25 +476,25 @@ export default {
          this.getsAjaxArticles();
       }
 
-      window.onscroll = () => {
-        let scrollTop = Math.floor(document.documentElement.scrollTop);
-        let bottomOfWindow = scrollTop + window.innerHeight > (document.documentElement.offsetHeight - 10);
-        // console.log((scrollTop + window.innerHeight)+' '+(document.documentElement.offsetHeight - 10));
+        window.onscroll = () => {
+          let scrollTop = Math.floor(document.documentElement.scrollTop);
+          let bottomOfWindow = scrollTop + window.innerHeight > (document.documentElement.offsetHeight - 10);
+          // console.log((scrollTop + window.innerHeight)+' '+(document.documentElement.offsetHeight - 10));
 
-        /*
-        scrollTop    height to top
-        innerHeight  height windows
-        offsetHeight height page
-        console.log('document.documentElement.scrollTop '+scrollTop);
-        console.log('window.innerHeight '+window.innerHeight);
-        console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
-        console.log('bottomOfWindow '+bottomOfWindow);
-        */
+          /*
+          scrollTop    height to top
+          innerHeight  height windows
+          offsetHeight height page
+          console.log('document.documentElement.scrollTop '+scrollTop);
+          console.log('window.innerHeight '+window.innerHeight);
+          console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
+          console.log('bottomOfWindow '+bottomOfWindow);
+          */
 
-        if (bottomOfWindow && !this.isRunArticles && !this.isScrollFinish) {
-            this.getsAjaxArticles();
-        }
-      };  
+          if (bottomOfWindow && !this.isRunArticles && !this.isScrollFinish) {
+              this.getsAjaxArticles();
+          }
+        };
     },
     getAjaxOrder() {
 
@@ -557,7 +556,7 @@ export default {
                 var data = response.data;
                 for (var i = 0; i < data.length; i++) {
                     this.articles.push(data[i]);
-                }          
+                }
                 this.page++;
                 this.isScrollFinish = false;
               }          
