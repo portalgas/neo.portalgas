@@ -122,16 +122,19 @@ class OrdersSocialMarketTable extends OrdersTable implements OrderTableInterface
         foreach ($socialmarketOrganizations as $socialmarketOrganization)
             $include_ids[$socialmarketOrganization->supplier_organization_id] = $socialmarketOrganization->supplier_organization_id;
 
+        $where_supplier = [];
+        if(!empty($exclude_ids))
+            $where_supplier += ['SuppliersOrganizations.id NOT IN ' => $exclude_ids];
+        if(!empty($include_ids))
+            $where_supplier += ['SuppliersOrganizations.id IN ' => $include_ids];
+
         $results = $this->find()
             ->where($where_order)
             ->contain([
                 'OrderTypes' => ['conditions' => ['code' => 'SOCIALMARKET']],
                 'OrderStateCodes',
                 'SuppliersOrganizations' => [
-                    'Suppliers',
-                    'conditions' => [
-                        'SuppliersOrganizations.id NOT IN ' => $exclude_ids,
-                        'SuppliersOrganizations.id IN ' => $include_ids]
+                    'Suppliers', 'conditions' => $where_supplier
                 ],
                 'Deliveries' => ['conditions' => $where_delivery]
             ])
