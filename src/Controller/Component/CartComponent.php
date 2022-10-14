@@ -28,7 +28,7 @@ class CartComponent extends CartSuperComponent {
         $results['msg'] = '';
         $results['results'] = '';
 
-        if (empty($articles_order)) {
+        if (empty($articles_order) || !isset($articles_order['cart'])) {
             $results['esito'] = false;
             $results['code'] = 500;
             $results['msg'] = 'Login scaduta';
