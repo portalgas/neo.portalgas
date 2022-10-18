@@ -1030,6 +1030,10 @@ msgstr "Non si possiedono i permessi per accedere alla pagina: bisogna essere au
 msgid "msg_error_params"
 msgstr "Errore nel passaggio dei parametri!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
 
+msgid "msg_error_param_order_type_id"
+msgstr "Errore nel passaggio dei parametri, tipologia d'ordine non previsto!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+
 msgid "msg_site_offline"
 msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget="_blank" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
 

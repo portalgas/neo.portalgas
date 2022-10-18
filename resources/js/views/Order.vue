@@ -444,6 +444,9 @@ export default {
             if(typeof response.data !== "undefined") {
                this.tot_cart = response.data.results;
             }
+            else {
+              console.error("Error: " + response.message);
+            }
           })
           .catch(error => {
             this.isRunOrder = false;
@@ -519,7 +522,10 @@ export default {
 
             this.getListOrders();
           }
-
+          else {
+            console.error("Error: " + response.message);
+            this.isRunOrder = false;
+          }
         })
         .catch(error => {
           this.isRunOrder = false;

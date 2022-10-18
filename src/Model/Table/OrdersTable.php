@@ -342,12 +342,17 @@ class OrdersTable extends Table
                             ->where($where)
                             ->first();
 
-            $order_type_id = $orderResults->order_type_id;
+            if(!empty($orderResults))
+                $order_type_id = $orderResults->order_type_id;
+            else
+                $order_type_id = 0;
         }
 
-        if(empty($order_type_id)) 
-            die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
-        
+        if(empty($order_type_id)) {
+            return false;
+            // die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
+        }
+
         switch (strtoupper($order_type_id)) {
             case Configure::read('Order.type.des-titolare'):
             case Configure::read('Order.type.des'):
@@ -368,8 +373,8 @@ class OrdersTable extends Table
             case Configure::read('Order.type.socialmarket'):
                 $table_registry = 'OrdersSocialMarket';
                 break;
-            
             default:
+                return false;
                 die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
                 break;
         }

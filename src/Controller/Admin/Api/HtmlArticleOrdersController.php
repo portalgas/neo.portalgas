@@ -55,6 +55,9 @@ class HtmlArticleOrdersController extends AppController
         $ordersTable = TableRegistry::get('Orders');
         
         $ordersTable = $ordersTable->factory($user, $organization_id, 0, $order_id);
+        if($ordersTable===false) {
+            return false;
+        }
 
         $ordersTable->addBehavior('Orders');
         $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);

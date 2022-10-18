@@ -169,6 +169,13 @@ class OrderComponent extends Component {
 
         $ordersTable = TableRegistry::get('Orders');
         $ordersTable = $ordersTable->factory($user, $organization_id, $order_type_id);
+        if($ordersTable===false) {
+            $results['code'] = 500;
+            $results['message'] = __('msg_error_param_order_type_id');
+            $results['errors'] = '';
+            $continua = false;
+            return $results;
+        }
 
         $ordersTable->addBehavior('Orders');
         $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);

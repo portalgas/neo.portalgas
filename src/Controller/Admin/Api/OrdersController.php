@@ -41,6 +41,13 @@ class OrdersController extends ApiAppController
 
         $ordersTable = TableRegistry::get('Orders');
         $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
+        if($ordersTable===false) {
+            $results['code'] = 500;
+            $results['message'] = __('msg_error_param_order_type_id');
+            $results['errors'] = '';
+            $continua = false;
+            return $this->_response($results);
+        }
 
         $ordersTable->addBehavior('Orders');
         $results = $ordersTable->getById($user, $organization_id, $order_id, $debug);
@@ -88,6 +95,13 @@ class OrdersController extends ApiAppController
          */
         if($order_type_id==Configure::read('Order.type.socialmarket')) {
             $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
+            if($ordersTable===false) {
+                $results['code'] = 500;
+                $results['message'] = __('msg_error_param_order_type_id');
+                $results['errors'] = '';
+                $continua = false;
+                return $this->_response($results);
+            }
 
             $ordersTable->addBehavior('Orders');
             $results = $ordersTable->gets($user, $organization_id, $where, $debug);
