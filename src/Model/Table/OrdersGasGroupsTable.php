@@ -9,7 +9,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 
-class OrdersGasTable extends OrdersTable implements OrderTableInterface 
+class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface 
 {
     /**
      * Initialize method
@@ -77,33 +77,37 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
-        $deliveriesTable = TableRegistry::get('Deliveries');
+        $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
                     
-        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
-                                'Deliveries.stato_elaborazione' => 'OPEN',
-                                'Deliveries.sys' => 'N',
-                                'DATE(Deliveries.data) >= CURDATE()'];
-        $deliveries = $deliveriesTable->getsList($user, $organization_id, $where);
-
-        $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $organization_id);
+        $where['Deliveries'] = ['DATE(GasGroup.data) >= CURDATE()'];
+        $deliveries = $gasGroupDeliveriesTable->getsList($user, $organization_id, $where);
 
         $results = [];
         $results += $deliveries;
-        $results += $sysDeliveries;
 
         return $results;
     }    
 
     /*
      * implement
-     * dati promozione / order des / gas_groups
+     * dati promozione / order des
      */   
     public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
       
        if(empty($parent_id))
         $results = '';
 
-       return $results;
+        $ordersGasTable = TableRegistry::get('OrdersGas');
+
+        $where = ['OrdersGas.organization_id' => $organization_id,
+                  'OrdersGas.id' => $parent_id];
+
+        $results = $ordersGasTable->find()
+                                    ->where($where)
+                                    ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
+                                    ->first();
+
+        return $results;
     }
 
     /*
@@ -145,7 +149,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
         $results = $this->find()
                                 ->where($where)
                                 ->contain([
-                                  'OrderTypes' => ['conditions' => ['code' => 'GAS']],
+                                  'OrderTypes' => ['conditions' => ['code' => 'GASGROUP']],
                                   'OrderStateCodes',
                                   'SuppliersOrganizations' => ['Suppliers'], 
                                   'Deliveries' => ['conditions' => $where_delivery]  

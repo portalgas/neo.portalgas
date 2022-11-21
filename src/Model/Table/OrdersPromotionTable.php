@@ -120,7 +120,7 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
 
     /*
      * implement
-     * dati promozione / order des
+     * dati promozione / order des / gas_groups
      */   
     public function getParent($user, $organization_id, $prod_gas_promotion_id, $where=[], $debug=false) {
 

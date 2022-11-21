@@ -352,7 +352,7 @@ class OrdersTable extends Table
             return false;
             // die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
         }
-
+      
         switch (strtoupper($order_type_id)) {
             case Configure::read('Order.type.des-titolare'):
             case Configure::read('Order.type.des'):
@@ -370,8 +370,11 @@ class OrdersTable extends Table
             case Configure::read('Order.type.pact'):
                 $table_registry = 'OrdersPact';
                 break;
-            case Configure::read('Order.type.socialmarket'):
-                $table_registry = 'OrdersSocialMarket';
+                case Configure::read('Order.type.socialmarket'):
+                    $table_registry = 'OrdersSocialMarket';
+                    break;
+            case Configure::read('Order.type.gas_groups'):
+                $table_registry = 'OrdersGasGroups';
                 break;
             default:
                 return false;

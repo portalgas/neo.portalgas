@@ -14,6 +14,7 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
     private static $PROMOTION = 4;
     private static $PACT_PRE = 5;
     private static $PACT = 6;
+    private static $GAS_GROUPS = 10;
 	private $debug = false;
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
 
@@ -42,6 +43,9 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
                 break;
             case self::$PACT:
                 $helper = 'HtmlCustomSiteOrdersPact';
+                break;
+            case self::$GAS_GROUPS:
+                $helper = 'HtmlCustomSiteOrdersGasGroups';
                 break;
             default:
                 die('HtmlCustomSiteHelper order_type_id ['.$order_type_id.'] non previsto');

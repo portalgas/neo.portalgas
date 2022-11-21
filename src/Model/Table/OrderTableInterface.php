@@ -12,7 +12,7 @@ interface OrderTableInterface {
 	/*
 	 * BO consegne per creare l'ordine
 	 * dati promozione / order des
-	 * $parent_id = prod_gas_promotion_id / des_order_id
+	 * $parent_id = prod_gas_promotion_id / des_order_id / order_id (gas_groups)
 	 */
 	public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false);
 

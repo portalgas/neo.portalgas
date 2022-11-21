@@ -16,6 +16,10 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
 
+    public function hiddenFields($organization_id, $parent) {
+        return parent::hiddenFields($organization_id, $parent);
+    }   
+
     public function supplierOrganizations($suppliersOrganizations) {
         return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
     }

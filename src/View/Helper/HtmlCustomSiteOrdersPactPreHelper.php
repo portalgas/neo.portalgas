@@ -16,6 +16,10 @@ class HtmlCustomSiteOrdersPactPreHelper extends HtmlCustomSiteOrdersPactHelper
         // debug($config);
     }
 
+    public function hiddenFields($organization_id, $parent) {
+        return parent::hiddenFields($organization_id, $parent);
+    }   
+
     public function deliveries($deliveries) {
         return $this->Form->control('delivery_id', ['type' => 'radio' , 'options' => $deliveries]);
     }

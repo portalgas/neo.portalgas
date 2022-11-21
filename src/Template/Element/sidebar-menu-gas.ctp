@@ -122,7 +122,6 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </span>
     </a>
     <ul class="treeview-menu">
-
         <li><a href="<?php echo $this->Url->build('/admin/scopes'); ?>"><?php echo $icon;?>Scope <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
         <li><a href="<?php echo $this->Url->build('/admin/queue-mapping-types'); ?>"><?php echo $icon;?>Type queues <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
         <li><a href="<?php echo $this->Url->build('/admin/queues'); ?>"><?php echo $icon;?>Lists queues <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
@@ -227,6 +226,27 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
     </ul>
     </a>
   </li>
+
+<?php 
+if(1==2) {
+?>
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-users"></i> <span><?php echo __('Gas Groups');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-mail pull-right"></i>
+      </span>
+      <ul class="treeview-menu">
+        <li><a href="<?php echo $this->Url->build('/admin/gas-groups'); ?>"><?php echo $icon;?><?php echo __('Gas Groups');?></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/gas-group-users'); ?>"><?php echo $icon;?><?php echo __('Gas Group Users');?></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/gas-group-deliveries'); ?>"><?php echo $icon;?><?php echo __('Gas Group Deliveries');?></a></li>
+      </ul>
+    </a>
+  </li>
+<?php 
+} // if(1==2) 
+?>
+
   <?php
   }
   ?>  

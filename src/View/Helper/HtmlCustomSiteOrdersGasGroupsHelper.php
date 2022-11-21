@@ -6,7 +6,7 @@ use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
 
-class HtmlCustomSiteOrdersPactHelper extends HtmlCustomSiteOrdersHelper
+class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
 {
 	private $debug = false;
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
@@ -17,9 +17,16 @@ class HtmlCustomSiteOrdersPactHelper extends HtmlCustomSiteOrdersHelper
     }
 
     public function hiddenFields($organization_id, $parent) {
-        return parent::hiddenFields($organization_id, $parent);
-    }   
+
+        $html = '';
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+
+        // prod_gas_promotion_id
+        $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
         
+        return $html;
+    }    
+
     public function supplierOrganizations($suppliersOrganizations) {
         return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
     }

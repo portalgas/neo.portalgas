@@ -10,6 +10,7 @@ use App\Model\Entity\OrderGas;
 use App\Model\Entity\OrderDes;
 use App\Model\Entity\OrderPact;
 use App\Model\Entity\OrderPromotion;
+use App\Form\OrderForm;
 
 /**
  * Orders Controller
@@ -24,6 +25,7 @@ class OrdersController extends AppController
     {
         parent::initialize();
         $this->loadComponent('Auths');
+        $this->loadComponent('Delivery');
         $this->loadComponent('SuppliersOrganization');
         $this->loadComponent('PriceType');
     }
@@ -57,16 +59,17 @@ class OrdersController extends AppController
         }
 
         if ($this->request->is('get')) {
-            $order->setData([
-                'name' => 'John Doe',
-                'email' => 'john.doe@example.com'
-            ]);
-
             $suppliersOrganizationTable = TableRegistry::get('SuppliersOrganizations');
 
             $supplier_organizations = $suppliersOrganizationTable->gets($this->Authentication->getIdentity());
             $supplier_organizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);        
             $this->set('supplier_organizations', $supplier_organizations);
+
+            $order->setData([
+                'name' => 'John Doe',
+                'email' => 'john.doe@example.com',
+            ]);
+
         }
 
         $this->set('order', $order);
@@ -79,6 +82,11 @@ class OrdersController extends AppController
      */
     public function index()
     {
+        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         $this->paginate = [
             'contain' => ['SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'
             /* , 'ProdGasPromotions', 'DesOrders' */
@@ -91,6 +99,11 @@ class OrdersController extends AppController
 
     public function view($id = null)
     {
+        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         $order = $this->Orders->get($id, [
             'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
         ]);
@@ -100,6 +113,11 @@ class OrdersController extends AppController
 
     public function test()
     { 
+        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+                
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto
         // debug($user);
@@ -159,11 +177,12 @@ class OrdersController extends AppController
     }
 
     /*
-    $parent_id = des_order_id / prod_gas_promotion_id
+    $parent_id = des_order_id / prod_gas_promotion_id / order_id (gas_groups)
     $order_type_id = Configure::read('Order.type.pact_pre'); ;
     $order_type_id = Configure::read('Order.type.pact'); ;
     $order_type_id = Configure::read('Order.type.gas');
     $order_type_id = Configure::read('Order.type.promotion');
+    $order_type_id = Configure::read('Order.type.gas_groups');
     */
     public function add($order_type_id=1, $parent_id=0)
     {            
@@ -174,17 +193,39 @@ class OrdersController extends AppController
         // debug($order_type_id);
         
         $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
-
         $ordersTable->addBehavior('Orders');
 
+        /*
+         *
+         * */
+        $suppliersOrganizations = [];
+        $deliveries = [];
         switch ($order_type_id) {
             case Configure::read('Order.type.promotion'):
-                 $ordersTable->addBehavior('OrderPromotions');
-                 $prod_gas_promotion_id = $parent_id;
+                $ordersTable->addBehavior('OrderPromotions');
+                $prod_gas_promotion_id = $parent_id;
+                $parent = $ordersTable->getParent($user, $organization_id, $prod_gas_promotion_id);
+                if(!empty($parent)) {
+                   $where = ['SuppliersOrganizations.supplier_id' => $parent->suppliersOrganization->organizations->supplier_id];
+                   $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $where);    
+                   $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
+                   // debug($suppliersOrganizations);
+                   if(empty($suppliersOrganizations)) {
+                       $this->Flash->error(__("Il produttore della promozione non è presente!"));
+                   }
+                }
                 break;
             case Configure::read('Order.type.des'):
             case Configure::read('Order.type.des_titolare'):
                 $des_order_id = $parent_id;
+                break;
+            case Configure::read('Order.type.gas_groups'):
+                $order_id = $parent_id; // ordine 
+                $parent = $ordersTable->getParent($user, $organization_id, $order_id);
+                if(!empty($parent)) {
+                    $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $parent->suppliers_organization);
+                    $deliveries = $this->Delivery->getListByResults($user, $parent->delivery);
+                }
                 break;
         }
 
@@ -220,19 +261,6 @@ class OrdersController extends AppController
                 $this->Flash->error($order->getErrors());
         }
 
-        /*
-         * dati promozione / order des
-         */
-        $parent = $ordersTable->getParent($user, $organization_id, $parent_id);
-        // debug($parent);
-        $where = ['SuppliersOrganizations.supplier_id' => $parent->suppliersOrganization->organizations->supplier_id];
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $where);
-        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
-        // debug($suppliersOrganizations);
-        if(empty($suppliersOrganizations)) {
-            $this->Flash->error(__("Il produttore della promozione non è presente!"));
-        }
-        
         // $organizations = $ordersTable->Organizations->find('list', ['limit' => 200]);
         // $suppliersOrganizations = $ordersTable->SuppliersOrganizations->find('list', ['limit' => 200]);
         // $ownerOrganizations = $ordersTable->OwnerOrganizations->find('list', ['limit' => 200]);
@@ -242,12 +270,12 @@ class OrdersController extends AppController
          * id => id_organization;id_delivery 
          * $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
          * perche' doppia key
-         */ 
         $where = ['ProdGasPromotionsOrganizationsDeliveries.prod_gas_promotion_id' => $prod_gas_promotion_id];
         $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where);
         if(empty($deliveries)) {
             $this->Flash->error(__("Il Gas non ha consegne disponibili!"));
         }
+         */ 
 
         $this->set(compact('order_type_id', 'order', 'parent', 'suppliersOrganizations', 'deliveries'));
     }
