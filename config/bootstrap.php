@@ -273,6 +273,9 @@ Configure::write('group_id_storeroom',9);
 Configure::write('group_id_user',2);  
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
+Configure::write('group_id_gas_groups_manager_groups', 122);  // gas_groups
+Configure::write('group_id_gas_groups_manager_consegne',120); // gas_groups
+Configure::write('group_id_gas_groups_manager_orders', 121);  // gas_groups
 
 Configure::write('EmailConfig', 'aws');
 Configure::write('SOC.name', 'PortAlGas');
