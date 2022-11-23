@@ -5,11 +5,6 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-
-use App\Model\Entity\OrderGas;
-use App\Model\Entity\OrderDes;
-use App\Model\Entity\OrderPact;
-use App\Model\Entity\OrderPromotion;
 use App\Form\OrderForm;
 
 /**
@@ -34,9 +29,19 @@ class OrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!isset($this->Authentication->getIdentity()->acl) || 
-            !$this->Authentication->getIdentity()->acl['isSuperReferente'] && 
-            !$this->Authentication->getIdentity()->acl['isReferentGeneric']) {
+        $user = $this->Authentication->getIdentity();
+        $organization = $user->organization; // gas scelto
+      
+        if(!isset($user->acl) ||
+            /* per ora solo i sotto-gruppi
+            || (
+            !$user->acl['isSuperReferente'] && 
+            !$user->acl['isReferentGeneric'])) 
+            */ 
+            !isset($organization->paramsConfig['hasGasGroups']) || 
+            $organization->paramsConfig['hasGasGroups']=='N' || 
+             !$user->acl['isGasGropusManagerOrders']
+            ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -75,23 +80,23 @@ class OrdersController extends AppController
         $this->set('order', $order);
     }
 
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null
-     */
-    public function index()
+    public function index($order_type_id=0)
     {
-        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        }
+        // gestisco solo sotto-gruppi
+        $order_type_id = Configure::read('Order.type.gas_groups');
 
+        $user = $this->Authentication->getIdentity();
+        $organization = $user->organization; // gas scelto
+
+        $where = ['Orders.organization_id' => $organization->id,
+                 'Orders.order_type_id' => $order_type_id];
         $this->paginate = [
-            'contain' => ['SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'
-            /* , 'ProdGasPromotions', 'DesOrders' */
-            ],
+            'order' => ['Deliveries.data', 'Orders.data_inizio'],            
+            'contain' => ['SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
+            'conditions' => $where
         ];
+
+        // debug($where);
         $orders = $this->paginate($this->Orders);
 
         $this->set(compact('orders'));
@@ -184,7 +189,7 @@ class OrdersController extends AppController
     $order_type_id = Configure::read('Order.type.promotion');
     $order_type_id = Configure::read('Order.type.gas_groups');
     */
-    public function add($order_type_id=1, $parent_id=0)
+    public function add($order_type_id=10, $parent_id=0)
     {            
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto

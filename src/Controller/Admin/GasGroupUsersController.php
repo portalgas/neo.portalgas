@@ -2,6 +2,9 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
 
 /**
  * GasGroupUsers Controller
@@ -12,6 +15,29 @@ use App\Controller\AppController;
  */
 class GasGroupUsersController extends AppController
 {
+
+    public function initialize()
+    {
+        parent::initialize();
+    }
+
+    public function beforeFilter(Event $event) {
+        
+        parent::beforeFilter($event);
+
+        $user = $this->Authentication->getIdentity();
+        $organization = $user->organization; // gas scelto
+      
+        if(!isset($user->acl) ||
+            !isset($organization->paramsConfig['hasGasGroups']) || 
+            $organization->paramsConfig['hasGasGroups']=='N' || 
+             !$user->acl['isGasGropusManagerGroups']
+            ) { 
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+    }
+        
     /**
      * Index method
      *

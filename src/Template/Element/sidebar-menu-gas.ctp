@@ -228,23 +228,28 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
   </li>
 
 <?php 
-if(1==2) {
+if($this->Identity->get()->organization->paramsConfig['hasGasGroups']=='Y') {
 ?>
   <li class="treeview"> 
     <a href="#">
       <i class="fa fa-users"></i> <span><?php echo __('Gas Groups');?></span>
       <span class="pull-right-container">
-        <i class="fa fa-mail pull-right"></i>
+        <i class="fa fa-angle-left pull-right"></i>
       </span>
-      <ul class="treeview-menu">
-        <li><a href="<?php echo $this->Url->build('/admin/gas-groups'); ?>"><?php echo $icon;?><?php echo __('Gas Groups');?></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/gas-group-users'); ?>"><?php echo $icon;?><?php echo __('Gas Group Users');?></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/gas-group-deliveries'); ?>"><?php echo $icon;?><?php echo __('Gas Group Deliveries');?></a></li>
+    <ul class="treeview-menu">
+        <?php 
+        if($this->Identity->get()->acl['isGasGropusManagerGroups']) 
+          echo '<li><a href="'.$this->Url->build('/admin/gas-groups').'">'.$icon.__('Gas Groups Users').'</a></li>';
+        if($this->Identity->get()->acl['isGasGropusManagerDelivery']) 
+          echo '<li><a href="'.$this->Url->build('/admin/gas-group-deliveries').'">'.$icon.__('Gas Groups Deliveries').'</a></li>';
+        if($this->Identity->get()->acl['isGasGropusManagerOrders']) 
+          echo '<li><a href="'.$this->Url->build('/admin/orders').'">'.$icon.__('Gas Groups Orders').'</a></li>';
+        ?>
       </ul>
     </a>
   </li>
 <?php 
-} // if(1==2) 
+}  
 ?>
 
   <?php

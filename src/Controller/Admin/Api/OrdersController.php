@@ -74,7 +74,7 @@ class OrdersController extends ApiAppController
         $user = $this->Authentication->getIdentity();
 
         ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
-
+        
         $delivery_id = $this->request->getData('delivery_id');
 
         $where = ['Orders.organization_id' => $organization_id,
