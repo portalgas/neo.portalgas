@@ -7,13 +7,13 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
 /**
- * GasGroupDeliveries Controller
+ * GasGroupOrders Controller
  *
- * @property \App\Model\Table\GasGroupDeliveriesTable $GasGroupDeliveries
+ * @property \App\Model\Table\GasGroupOrdersTable $GasGroupOrders
  *
- * @method \App\Model\Entity\GasGroupDelivery[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \App\Model\Entity\GasGroupOrder[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class GasGroupDeliveriesController extends AppController
+class GasGroupOrdersController extends AppController
 {
     public function initialize()
     {
@@ -30,7 +30,7 @@ class GasGroupDeliveriesController extends AppController
         if(!isset($user->acl) ||
             !isset($organization->paramsConfig['hasGasGroups']) || 
             $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGropusManagerDelivery']
+             !$user->acl['isGasGropusManagerDeliveries']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -45,7 +45,7 @@ class GasGroupDeliveriesController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Organizations', 'Deliveries'],
+            'contain' => ['Organizations', 'GasGroups', 'Deliveries'],
         ];
         $gasGroupDeliveries = $this->paginate($this->GasGroupDeliveries);
 
@@ -62,7 +62,7 @@ class GasGroupDeliveriesController extends AppController
     public function view($id = null)
     {
         $gasGroupDelivery = $this->GasGroupDeliveries->get($id, [
-            'contain' => ['Organizations', 'Deliveries'],
+            'contain' => ['Organizations', 'GasGroups', 'Deliveries'],
         ]);
 
         $this->set('gasGroupDelivery', $gasGroupDelivery);
@@ -78,17 +78,23 @@ class GasGroupDeliveriesController extends AppController
     {
         $gasGroupDelivery = $this->GasGroupDeliveries->newEntity();
         if ($this->request->is('post')) {
-            $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $this->request->getData());
-            if ($this->GasGroupDeliveries->save($gasGroupDelivery)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Gas Group Delivery'));
+            $datas = $this->request->getData();
+            // debug($datas);
+            $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
+            if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
+                $this->Flash->error($gasGroupDelivery->getErrors());
+            }
+            else {
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Gas Group Delivery'));
+            
         }
         $organizations = $this->GasGroupDeliveries->Organizations->find('list', ['limit' => 200]);
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->find('list', ['limit' => 200]);
         $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroupDelivery', 'organizations', 'deliveries'));
+        $this->set(compact('gasGroupDelivery', 'organizations', 'gasGroups', 'deliveries'));
     }
 
 
@@ -105,17 +111,22 @@ class GasGroupDeliveriesController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $this->request->getData());
-            if ($this->GasGroupDeliveries->save($gasGroupDelivery)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Gas Group Delivery'));
+            $datas = $this->request->getData();
+            // debug($datas);        
+            $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
+            if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
+                $this->Flash->error($gasGroupDelivery->getErrors());
+            }
+            else {            
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Gas Group Delivery'));
         }
         $organizations = $this->GasGroupDeliveries->Organizations->find('list', ['limit' => 200]);
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->find('list', ['limit' => 200]);
         $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
-       $this->set(compact('gasGroupDelivery', 'organizations', 'deliveries'));
+        $this->set(compact('gasGroupDelivery', 'organizations', 'gasGroups', 'deliveries'));
     }
 
 
@@ -130,10 +141,11 @@ class GasGroupDeliveriesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $gasGroupDelivery = $this->GasGroupDeliveries->get($id);
-        if ($this->GasGroupDeliveries->delete($gasGroupDelivery)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Gas Group Delivery'));
-        } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Gas Group Delivery'));
+        if (!$this->GasGroupDeliveries->delete($gasGroupDelivery)) {
+            $this->Flash->error($gasGroupDelivery->getErrors());
+        }
+        else {
+            $this->Flash->success(__('The record has been deleted.'));
         }
 
         return $this->redirect(['action' => 'index']);

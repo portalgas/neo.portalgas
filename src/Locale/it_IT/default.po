@@ -1163,9 +1163,14 @@ msgstr "Gruppi dei G.A.S."
 msgid "Gas Groups Users"
 msgstr "Gruppi e utenti"
 
+msgid "Gas Group Users"
+msgstr "Gestione utenti"
+
 msgid "Gas Groups Orders"
 msgstr "Sotto ordini"
 
 msgid "Gas Groups Deliveries"
 msgstr "Consegne per i gruppi"
 
+msgid "Management GasGroupUsers"
+msgstr "Gestisci gasisti"

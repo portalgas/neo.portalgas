@@ -7,24 +7,24 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * GasGroupDeliveries Model
+ * GasGroupOrders Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\GasGroupsTable&\Cake\ORM\Association\BelongsTo $GasGroups
- * @property \App\Model\Table\DeliveriesTable&\Cake\ORM\Association\BelongsTo $Deliveries
+ * @property \App\Model\Table\OrdersTable&\Cake\ORM\Association\BelongsTo $Orders
  *
- * @method \App\Model\Entity\GasGroupDelivery get($primaryKey, $options = [])
- * @method \App\Model\Entity\GasGroupDelivery newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\GasGroupDelivery[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\GasGroupDelivery|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\GasGroupDelivery saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\GasGroupDelivery patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\GasGroupDelivery[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\GasGroupDelivery findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\GasGroupOrder get($primaryKey, $options = [])
+ * @method \App\Model\Entity\GasGroupOrder newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\GasGroupOrder[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\GasGroupOrder|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\GasGroupOrder saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\GasGroupOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\GasGroupOrder[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\GasGroupOrder findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class GasGroupDeliveriesTable extends Table
+class GasGroupOrdersTable extends Table
 {
     /**
      * Initialize method
@@ -36,7 +36,7 @@ class GasGroupDeliveriesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('gas_group_deliveries');
+        $this->setTable('gas_group_orders');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
@@ -50,8 +50,8 @@ class GasGroupDeliveriesTable extends Table
             'foreignKey' => 'gas_group_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Deliveries', [
-            'foreignKey' => 'delivery_id',
+        $this->belongsTo('Orders', [
+            'foreignKey' => 'order_id',
             'joinType' => 'INNER',
         ]);
     }
@@ -81,7 +81,7 @@ class GasGroupDeliveriesTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['gas_group_id'], 'GasGroups'));
-        $rules->add($rules->existsIn(['delivery_id'], 'Deliveries'));
+        $rules->add($rules->existsIn(['order_id'], 'Orders'));
 
         return $rules;
     }

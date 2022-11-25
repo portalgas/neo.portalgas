@@ -1,14 +1,14 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\GasGroup $gasGroup
+ * @var \App\Model\Entity\GasGroupOrder $gasGroupOrder
  */
 ?>
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      <?php echo __('Gas Group'); ?>
-      <small><?php echo __('Add'); ?></small>
+      Gas Group Order
+      <small><?php echo __('Edit'); ?></small>
     </h1>
     <ol class="breadcrumb">
       <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
@@ -26,15 +26,12 @@
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($gasGroup, ['role' => 'form']); ?>
+          <?php echo $this->Form->create($gasGroupOrder, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
                 echo $this->Form->control('organization_id', ['options' => $organizations]);
-                echo $this->Form->control('user_id', ['options' => $users]);
-                echo $this->Form->control('name');
-                echo $this->Form->control('descri');
-                echo $this->Form->control('is_system');
-                echo $this->Form->control('is_active');
+                echo $this->Form->control('gas_group_id', ['options' => $gasGroups]);
+                echo $this->Form->control('order_id', ['options' => $orders]);
               ?>
             </div>
             <!-- /.box-body -->

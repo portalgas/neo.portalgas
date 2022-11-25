@@ -15,7 +15,6 @@ use Cake\Core\Configure;
  */
 class GasGroupUsersController extends AppController
 {
-
     public function initialize()
     {
         parent::initialize();
@@ -27,7 +26,7 @@ class GasGroupUsersController extends AppController
 
         $user = $this->Authentication->getIdentity();
         $organization = $user->organization; // gas scelto
-      
+   
         if(!isset($user->acl) ||
             !isset($organization->paramsConfig['hasGasGroups']) || 
             $organization->paramsConfig['hasGasGroups']=='N' || 
@@ -37,7 +36,38 @@ class GasGroupUsersController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
+    
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     */
+    public function management($gas_group_id)
+    {
+        $user = $this->Authentication->getIdentity();
+
+        $gasGroupUser = $this->GasGroupUsers->newEntity();
+        if ($this->request->is('post')) {
+            $datas = $this->request->getData();
+            // debug($datas);
+            $gasGroupUser = $this->GasGroupUsers->patchEntity($gasGroupUser, $datas);
+            if (!$this->GasGroupUsers->save($gasGroupUser)) {
+                $this->Flash->error($gasGroupUser->getErrors());
+            }
+            else {
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group User')));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            
+        }
         
+        $users = $this->GasGroupUsers->getUsersToAssocitateList($user, $user->organization->id, $gas_group_id);
+        $gasGroupUsers = $this->GasGroupUsers->getUsersAssocitateList($user, $user->organization->id, $gas_group_id);
+        $gasGroups = $this->GasGroupUsers->GasGroups->find('list', ['limit' => 200]);
+        $this->set(compact('gasGroupUser', 'users', 'gasGroupUsers', 'gasGroups'));
+    }
+
     /**
      * Index method
      *
@@ -45,6 +75,7 @@ class GasGroupUsersController extends AppController
      */
     public function index()
     {
+        exit;
         $this->paginate = [
             'contain' => ['Organizations', 'Users', 'GasGroups'],
         ];
@@ -62,13 +93,13 @@ class GasGroupUsersController extends AppController
      */
     public function view($id = null)
     {
+        exit;
         $gasGroupUser = $this->GasGroupUsers->get($id, [
             'contain' => ['Organizations', 'Users', 'GasGroups'],
         ]);
 
         $this->set('gasGroupUser', $gasGroupUser);
     }
-
 
     /**
      * Add method
@@ -77,15 +108,21 @@ class GasGroupUsersController extends AppController
      */
     public function add()
     {
+        exit;
         $gasGroupUser = $this->GasGroupUsers->newEntity();
         if ($this->request->is('post')) {
-            $gasGroupUser = $this->GasGroupUsers->patchEntity($gasGroupUser, $this->request->getData());
-            if ($this->GasGroupUsers->save($gasGroupUser)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Gas Group User'));
+            $datas = $this->request->getData();
+            // debug($datas);
+            $gasGroupUser = $this->GasGroupUsers->patchEntity($gasGroupUser, $datas);
+            if (!$this->GasGroupUsers->save($gasGroupUser)) {
+                $this->Flash->error($gasGroupUser->getErrors());
+            }
+            else {
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group User')));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Gas Group User'));
+            
         }
         $organizations = $this->GasGroupUsers->Organizations->find('list', ['limit' => 200]);
         $users = $this->GasGroupUsers->Users->find('list', ['limit' => 200]);
@@ -103,17 +140,22 @@ class GasGroupUsersController extends AppController
      */
     public function edit($id = null)
     {
+        exit;
         $gasGroupUser = $this->GasGroupUsers->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $gasGroupUser = $this->GasGroupUsers->patchEntity($gasGroupUser, $this->request->getData());
-            if ($this->GasGroupUsers->save($gasGroupUser)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Gas Group User'));
+            $datas = $this->request->getData();
+            // debug($datas);        
+            $gasGroupUser = $this->GasGroupUsers->patchEntity($gasGroupUser, $datas);
+            if (!$this->GasGroupUsers->save($gasGroupUser)) {
+                $this->Flash->error($gasGroupUser->getErrors());
+            }
+            else {            
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group User')));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Gas Group User'));
         }
         $organizations = $this->GasGroupUsers->Organizations->find('list', ['limit' => 200]);
         $users = $this->GasGroupUsers->Users->find('list', ['limit' => 200]);
@@ -133,10 +175,11 @@ class GasGroupUsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $gasGroupUser = $this->GasGroupUsers->get($id);
-        if ($this->GasGroupUsers->delete($gasGroupUser)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Gas Group User'));
-        } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Gas Group User'));
+        if (!$this->GasGroupUsers->delete($gasGroupUser)) {
+            $this->Flash->error($gasGroupUser->getErrors());
+        }
+        else {
+            $this->Flash->success(__('The record has been deleted.'));
         }
 
         return $this->redirect(['action' => 'index']);

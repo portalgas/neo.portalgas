@@ -1,9 +1,20 @@
-<!-- Content Header (Page header) -->
+<?php
+use Cake\Core\Configure;
+use Cake\I18n\Time;
+
+$this->start('tb_actions');
+echo '<li class="sidebar-menu-action">';
+echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</span>', ['action' => 'add'], ['title' => __('New'), 'escape' => false]);
+echo '</li>';
+$this->end();
+$this->assign('tb_sidebar', $this->fetch('tb_actions')); 
+?>
+
 <section class="content-header">
   <h1>
-    Gas Group Deliveries
+    <?php echo __('Gas Group Deliveries');?>
 
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs']) ?></div>
+    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?></div>
   </h1>
 </section>
 
@@ -16,6 +27,8 @@
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
+            <?php
+            /*
             <form action="<?php echo $this->Url->build(); ?>" method="POST">
               <div class="input-group input-group-sm" style="width: 150px;">
                 <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
@@ -25,56 +38,63 @@
                 </div>
               </div>
             </form>
+            */
+            ?>
           </div>
         </div>
         <!-- /.box-header -->
-        <div class="box-body table-responsive no-padding">
-          <table class="table table-hover">
+        <div class="box-body table-responsive <?php echo ($gasGroupDeliveries->count()>0) ? 'no-padding': '';?>">
+          <?php
+          if($gasGroupDeliveries->count()>0) {
+          // if(!empty($gasGroupDeliveries)) {
+          ?>
+          <table class="table table-striped table-hover">
             <thead>
               <tr>
-                  <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('delivery_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('luogo') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('data') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('orario_da') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('orario_a') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('nota_evidenza') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('stato_elaborazione') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('gcalendar_event_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
-              </tr>
+<th scope="col" class="actions text-left"><?= __('Actions') ?></th>
+                      <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
+              <th scope="col" class=""><?= $this->Paginator->sort('gas_group_id') ?></th>
+              <th scope="col" class=""><?= $this->Paginator->sort('delivery_id') ?></th>
+              <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
+              <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
+                   </tr>
             </thead>
             <tbody>
-              <?php foreach ($gasGroupDeliveries as $gasGroupDelivery): ?>
-                <tr>
-                  <td><?= $this->Number->format($gasGroupDelivery->id) ?></td>
-                  <td><?= $gasGroupDelivery->has('organization') ? $this->Html->link($gasGroupDelivery->organization->name, ['controller' => 'Organizations', 'action' => 'view', $gasGroupDelivery->organization->id]) : '' ?></td>
-                  <td><?= $gasGroupDelivery->has('delivery') ? $this->Html->link($gasGroupDelivery->delivery->id, ['controller' => 'Deliveries', 'action' => 'view', $gasGroupDelivery->delivery->organization_id]) : '' ?></td>
-                  <td><?= h($gasGroupDelivery->luogo) ?></td>
-                  <td><?= h($gasGroupDelivery->data) ?></td>
-                  <td><?= h($gasGroupDelivery->orario_da) ?></td>
-                  <td><?= h($gasGroupDelivery->orario_a) ?></td>
-                  <td><?= h($gasGroupDelivery->nota_evidenza) ?></td>
-                  <td><?= h($gasGroupDelivery->stato_elaborazione) ?></td>
-                  <td><?= h($gasGroupDelivery->gcalendar_event_id) ?></td>
-                  <td><?= h($gasGroupDelivery->created) ?></td>
-                  <td><?= h($gasGroupDelivery->modified) ?></td>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $gasGroupDelivery->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $gasGroupDelivery->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $gasGroupDelivery->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupDelivery->id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+              <?php 
+              foreach ($gasGroupDeliveries as $gasGroupDelivery) { 
+
+                // debug($gasGroupDelivery);
+              
+  echo '<tr>';
+  echo '<td class="actions text-left">';
+  echo $this->Html->link('', ['action' => 'view', $gasGroupDelivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
+  echo $this->Html->link('', ['action' => 'edit', $gasGroupDelivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+  if(!$gasGroupDelivery->is_system) 
+    echo $this->Form->postLink('', ['action' => 'delete', $gasGroupDelivery->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupDelivery->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+  else
+    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+  echo '</td>';             
+        echo '<td>'.$this->Number->format($gasGroupDelivery->organization_id).'</td>';
+        echo '<td>'.$this->Number->format($gasGroupDelivery->gas_group_id).'</td>';
+        echo '<td>'.$this->Number->format($gasGroupDelivery->delivery_id).'</td>';
+                    echo '<td title="'.h($gasGroupDelivery->created).'">'.$this->Time->nice($gasGroupDelivery->created).'</td>';
+                         echo '<td title="'.h($gasGroupDelivery->modified).'">'.$this->Time->nice($gasGroupDelivery->modified).'</td>';
+                        echo '</tr>';
+              } // end loop
+            echo '</tbody>';
+          echo '</table>';
+          }
+          else {
+            echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);
+          } // end if(!empty($gasGroupDeliveries))
+          ?>
         </div>
-        <!-- /.box-body -->
+        <!-- /.box-body -->        
       </div>
       <!-- /.box -->
+
+      <?php echo $this->element('paginator'); ?>
+
     </div>
   </div>
 </section>

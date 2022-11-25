@@ -7,14 +7,14 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
 /**
- * GasGroups Controller
+ * GasGroupOrders Controller
  *
- * @property \App\Model\Table\GasGroupsTable $GasGroups
+ * @property \App\Model\Table\GasGroupOrdersTable $GasGroupOrders
  *
- * @method \App\Model\Entity\GasGroup[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \App\Model\Entity\GasGroupOrder[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class GasGroupsController extends AppController
-{ 
+class GasGroupOrdersController extends AppController
+{
     public function initialize()
     {
         parent::initialize();
@@ -26,17 +26,17 @@ class GasGroupsController extends AppController
 
         $user = $this->Authentication->getIdentity();
         $organization = $user->organization; // gas scelto
-        
+      
         if(!isset($user->acl) ||
             !isset($organization->paramsConfig['hasGasGroups']) || 
             $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGropusManagerGroups']
+             !$user->acl['isGasGropusManagerOrders']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
-
+    
     /**
      * Index method
      *
@@ -44,35 +44,28 @@ class GasGroupsController extends AppController
      */
     public function index()
     {
-        $user = $this->Authentication->getIdentity();
-        $where = ['GasGroups.user_id' => $user->id, 
-                  'GasGroups.organization_id' => $user->organization_id, 
-                 ];
         $this->paginate = [
-            'contain' => ['GasGroupUsers', 'GasGroupOrders', 'GasGroupDeliveries'],
-            'conditions' => $where,
-            'order' => ['GasGroups.name']
+            'contain' => ['Organizations', 'GasGroups', 'Orders'],
         ];
-        $gasGroups = $this->paginate($this->GasGroups);
+        $gasGroupOrders = $this->paginate($this->GasGroupOrders);
 
-        $this->set(compact('gasGroups'));
+        $this->set(compact('gasGroupOrders'));
     }
 
     /**
      * View method
      *
-     * @param string|null $id Gas Group id.
+     * @param string|null $id Gas Group Order id.
      * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        exit;
-        $gasGroup = $this->GasGroups->get($id, [
-            'contain' => ['Organizations', 'Users', 'GasGroupDeliveries', 'GasGroupOrders', 'GasGroupUsers'],
+        $gasGroupOrder = $this->GasGroupOrders->get($id, [
+            'contain' => ['Organizations', 'GasGroups', 'Orders'],
         ]);
 
-        $this->set('gasGroup', $gasGroup);
+        $this->set('gasGroupOrder', $gasGroupOrder);
     }
 
 
@@ -83,71 +76,73 @@ class GasGroupsController extends AppController
      */
     public function add()
     {
-        $gasGroup = $this->GasGroups->newEntity();
+        $gasGroupOrder = $this->GasGroupOrders->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
             // debug($datas);
-            $gasGroup = $this->GasGroups->patchEntity($gasGroup, $datas);
-            if (!$this->GasGroups->save($gasGroup)) {
-                $this->Flash->error($gasGroup->getErrors());
+            $gasGroupOrder = $this->GasGroupOrders->patchEntity($gasGroupOrder, $datas);
+            if (!$this->GasGroupOrders->save($gasGroupOrder)) {
+                $this->Flash->error($gasGroupOrder->getErrors());
             }
             else {
-                $this->Flash->success(__('The {0} has been saved.', __('Gas Group')));
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Order')));
 
                 return $this->redirect(['action' => 'index']);
             }
             
         }
-        $organizations = $this->GasGroups->Organizations->find('list', ['limit' => 200]);
-        $users = $this->GasGroups->Users->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroup', 'organizations', 'users'));
+        $organizations = $this->GasGroupOrders->Organizations->find('list', ['limit' => 200]);
+        $gasGroups = $this->GasGroupOrders->GasGroups->find('list', ['limit' => 200]);
+        $orders = $this->GasGroupOrders->Orders->find('list', ['limit' => 200]);
+        $this->set(compact('gasGroupOrder', 'organizations', 'gasGroups', 'orders'));
     }
 
 
     /**
      * Edit method
      *
-     * @param string|null $id Gas Group id.
+     * @param string|null $id Gas Group Order id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $gasGroup = $this->GasGroups->get($id, [
+        $gasGroupOrder = $this->GasGroupOrders->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $datas = $this->request->getData();
             // debug($datas);        
-            $gasGroup = $this->GasGroups->patchEntity($gasGroup, $datas);
-            if (!$this->GasGroups->save($gasGroup)) {
-                $this->Flash->error($gasGroup->getErrors());
+            $gasGroupOrder = $this->GasGroupOrders->patchEntity($gasGroupOrder, $datas);
+            if (!$this->GasGroupOrders->save($gasGroupOrder)) {
+                $this->Flash->error($gasGroupOrder->getErrors());
             }
             else {            
-                $this->Flash->success(__('The {0} has been saved.', __('Gas Group')));
+                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Order')));
 
                 return $this->redirect(['action' => 'index']);
             }
         }
-        $organizations = $this->GasGroups->Organizations->find('list', ['limit' => 200]);
-        $users = $this->GasGroups->Users->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroup', 'organizations', 'users'));
+        $organizations = $this->GasGroupOrders->Organizations->find('list', ['limit' => 200]);
+        $gasGroups = $this->GasGroupOrders->GasGroups->find('list', ['limit' => 200]);
+        $orders = $this->GasGroupOrders->Orders->find('list', ['limit' => 200]);
+        $this->set(compact('gasGroupOrder', 'organizations', 'gasGroups', 'orders'));
     }
 
 
     /**
      * Delete method
      *
-     * @param string|null $id Gas Group id.
+     * @param string|null $id Gas Group Order id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $gasGroup = $this->GasGroups->get($id);
-        if (!$this->GasGroups->delete($gasGroup)) {
-            $this->Flash->error($gasGroup->getErrors());
+        $gasGroupOrder = $this->GasGroupOrders->get($id);
+        if (!$this->GasGroupOrders->delete($gasGroupOrder)) {
+            $this->Flash->error($gasGroupOrder->getErrors());
         }
         else {
             $this->Flash->success(__('The record has been deleted.'));

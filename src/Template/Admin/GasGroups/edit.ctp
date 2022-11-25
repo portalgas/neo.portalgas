@@ -7,7 +7,7 @@
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Gas Group
+      <?php echo __('Gas Group'); ?>
       <small><?php echo __('Edit'); ?></small>
     </h1>
     <ol class="breadcrumb">
@@ -30,6 +30,7 @@
             <div class="box-body">
               <?php
                 echo $this->Form->control('organization_id', ['options' => $organizations]);
+                echo $this->Form->control('user_id', ['options' => $users]);
                 echo $this->Form->control('name');
                 echo $this->Form->control('descri');
                 echo $this->Form->control('is_system');

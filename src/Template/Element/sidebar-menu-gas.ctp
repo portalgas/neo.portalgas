@@ -240,7 +240,7 @@ if($this->Identity->get()->organization->paramsConfig['hasGasGroups']=='Y') {
         <?php 
         if($this->Identity->get()->acl['isGasGropusManagerGroups']) 
           echo '<li><a href="'.$this->Url->build('/admin/gas-groups').'">'.$icon.__('Gas Groups Users').'</a></li>';
-        if($this->Identity->get()->acl['isGasGropusManagerDelivery']) 
+        if($this->Identity->get()->acl['isGasGropusManagerDeliveries']) 
           echo '<li><a href="'.$this->Url->build('/admin/gas-group-deliveries').'">'.$icon.__('Gas Groups Deliveries').'</a></li>';
         if($this->Identity->get()->acl['isGasGropusManagerOrders']) 
           echo '<li><a href="'.$this->Url->build('/admin/orders').'">'.$icon.__('Gas Groups Orders').'</a></li>';

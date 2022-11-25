@@ -233,7 +233,7 @@ class UsersTable extends Table
         
         // sotto gruppi 
         $user->acl['isGasGropusManagerGroups'] = $usergroupsTable->isGasGropusManagerGroups($user);
-        $user->acl['isGasGropusManagerDelivery'] = $usergroupsTable->isGasGropusManagerDelivery($user);
+        $user->acl['isGasGropusManagerDeliveries'] = $usergroupsTable->isGasGropusManagerDeliveries($user);
         $user->acl['isGasGropusManagerOrders'] = $usergroupsTable->isGasGropusManagerOrders($user);
  
         // produttore
@@ -451,5 +451,17 @@ class UsersTable extends Table
         } // end if($user->organization->paramsConfig['cashLimit']=='LIMIT-CASH-USER')
 
         return $user;
-    }        
+    } 
+    
+    public function getList($user, $organization_id, $where=[]) {
+
+        $where_user = ['organization_id' => $organization_id,
+                        'block' => 0];
+        if(!empty($where))
+            $where_user = array_merge($where_user, $where);
+
+        $results = $this->find('list', ['conditions' => $where_user, 'order' => ['name']]);
+        return $results;
+    }
+        
 }

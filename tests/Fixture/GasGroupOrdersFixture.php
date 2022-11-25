@@ -4,9 +4,9 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * GasGroupUsersFixture
+ * GasGroupOrdersFixture
  */
-class GasGroupUsersFixture extends TestFixture
+class GasGroupOrdersFixture extends TestFixture
 {
     /**
      * Fields
@@ -17,12 +17,12 @@ class GasGroupUsersFixture extends TestFixture
     public $fields = [
         'id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'organization_id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
-        'user_id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'gas_group_id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'order_id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => 'current_timestamp()', 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => 'current_timestamp()', 'comment' => '', 'precision' => null],
         '_indexes' => [
-            'index_organization_id' => ['type' => 'index', 'columns' => ['organization_id', 'user_id'], 'length' => []],
+            'index_organization_id' => ['type' => 'index', 'columns' => ['organization_id', 'gas_group_id', 'order_id'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
@@ -44,10 +44,10 @@ class GasGroupUsersFixture extends TestFixture
             [
                 'id' => 1,
                 'organization_id' => 1,
-                'user_id' => 1,
                 'gas_group_id' => 1,
-                'created' => '2022-11-25 15:18:42',
-                'modified' => '2022-11-25 15:18:42',
+                'order_id' => 1,
+                'created' => '2022-11-25 15:18:30',
+                'modified' => '2022-11-25 15:18:30',
             ],
         ];
         parent::init();

@@ -4,20 +4,20 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * GasGroupDelivery Entity
+ * GasGroupOrder Entity
  *
  * @property int $id
  * @property int $organization_id
  * @property int $gas_group_id
- * @property int $delivery_id
+ * @property int $order_id
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
  * @property \App\Model\Entity\Organization $organization
  * @property \App\Model\Entity\GasGroup $gas_group
- * @property \App\Model\Entity\Delivery $delivery
+ * @property \App\Model\Entity\Order $order
  */
-class GasGroupDelivery extends Entity
+class GasGroupOrder extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -31,11 +31,11 @@ class GasGroupDelivery extends Entity
     protected $_accessible = [
         'organization_id' => true,
         'gas_group_id' => true,
-        'delivery_id' => true,
+        'order_id' => true,
         'created' => true,
         'modified' => true,
         'organization' => true,
         'gas_group' => true,
-        'delivery' => true,
+        'order' => true,
     ];
 }

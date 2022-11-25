@@ -7,7 +7,7 @@
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Gas Group Delivery
+    <?php echo __('Gas Group Delivery'); ?>
       <small><?php echo __('Edit'); ?></small>
     </h1>
     <ol class="breadcrumb">
@@ -30,15 +30,8 @@
             <div class="box-body">
               <?php
                 echo $this->Form->control('organization_id', ['options' => $organizations]);
+                echo $this->Form->control('gas_group_id', ['options' => $gasGroups]);
                 echo $this->Form->control('delivery_id', ['options' => $deliveries]);
-                echo $this->Form->control('luogo');
-                echo $this->Form->control('data');
-                echo $this->Form->control('orario_da');
-                echo $this->Form->control('orario_a');
-                echo $this->Form->control('nota');
-                echo $this->Form->control('nota_evidenza');
-                echo $this->Form->control('stato_elaborazione');
-                echo $this->Form->control('gcalendar_event_id');
               ?>
             </div>
             <!-- /.box-body -->

@@ -10,6 +10,10 @@ use Cake\Validation\Validator;
  * GasGroups Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
+ * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
+ * @property &\Cake\ORM\Association\HasMany $GasGroupDeliveries
+ * @property &\Cake\ORM\Association\HasMany $GasGroupOrders
+ * @property \App\Model\Table\GasGroupUsersTable&\Cake\ORM\Association\HasMany $GasGroupUsers
  *
  * @method \App\Model\Entity\GasGroup get($primaryKey, $options = [])
  * @method \App\Model\Entity\GasGroup newEntity($data = null, array $options = [])
@@ -43,6 +47,19 @@ class GasGroupsTable extends Table
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->hasMany('GasGroupDeliveries', [
+            'foreignKey' => 'gas_group_id',
+        ]);
+        $this->hasMany('GasGroupOrders', [
+            'foreignKey' => 'gas_group_id',
+        ]);
+        $this->hasMany('GasGroupUsers', [
+            'foreignKey' => 'gas_group_id',
         ]);
     }
 
@@ -88,6 +105,7 @@ class GasGroupsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }

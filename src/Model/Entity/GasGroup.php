@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $organization_id
+ * @property int $user_id
  * @property string $name
  * @property string|null $descri
  * @property bool $is_system
@@ -16,6 +17,8 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $modified
  *
  * @property \App\Model\Entity\Organization $organization
+ * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\GasGroupUser[] $gas_group_users
  */
 class GasGroup extends Entity
 {
@@ -30,6 +33,7 @@ class GasGroup extends Entity
      */
     protected $_accessible = [
         'organization_id' => true,
+        'user_id' => true,
         'name' => true,
         'descri' => true,
         'is_system' => true,
@@ -37,5 +41,7 @@ class GasGroup extends Entity
         'created' => true,
         'modified' => true,
         'organization' => true,
+        'user' => true,
+        'gas_group_users' => true,
     ];
 }

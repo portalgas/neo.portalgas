@@ -1,6 +1,6 @@
 <section class="content-header">
   <h1>
-    Gas Group Delivery
+    Gas Group Order
     <small><?php echo __('View'); ?></small>
   </h1>
   <ol class="breadcrumb">
@@ -21,17 +21,17 @@
         <div class="box-body">
           <dl class="dl-horizontal">
             <dt scope="row"><?= __('Organization') ?></dt>
-            <dd><?= $gasGroupDelivery->has('organization') ? $this->Html->link($gasGroupDelivery->organization->name, ['controller' => 'Organizations', 'action' => 'view', $gasGroupDelivery->organization->id]) : '' ?></dd>
+            <dd><?= $gasGroupOrder->has('organization') ? $this->Html->link($gasGroupOrder->organization->name, ['controller' => 'Organizations', 'action' => 'view', $gasGroupOrder->organization->id]) : '' ?></dd>
             <dt scope="row"><?= __('Gas Group') ?></dt>
-            <dd><?= $gasGroupDelivery->has('gas_group') ? $this->Html->link($gasGroupDelivery->gas_group->name, ['controller' => 'GasGroups', 'action' => 'view', $gasGroupDelivery->gas_group->id]) : '' ?></dd>
-            <dt scope="row"><?= __('Delivery') ?></dt>
-            <dd><?= $gasGroupDelivery->has('delivery') ? $this->Html->link($gasGroupDelivery->delivery->id, ['controller' => 'Deliveries', 'action' => 'view', $gasGroupDelivery->delivery->organization_id]) : '' ?></dd>
+            <dd><?= $gasGroupOrder->has('gas_group') ? $this->Html->link($gasGroupOrder->gas_group->name, ['controller' => 'GasGroups', 'action' => 'view', $gasGroupOrder->gas_group->id]) : '' ?></dd>
+            <dt scope="row"><?= __('Order') ?></dt>
+            <dd><?= $gasGroupOrder->has('order') ? $this->Html->link($gasGroupOrder->order->id, ['controller' => 'Orders', 'action' => 'view', $gasGroupOrder->order->organization_id]) : '' ?></dd>
             <dt scope="row"><?= __('Id') ?></dt>
-            <dd><?= $this->Number->format($gasGroupDelivery->id) ?></dd>
+            <dd><?= $this->Number->format($gasGroupOrder->id) ?></dd>
             <dt scope="row"><?= __('Created') ?></dt>
-            <dd><?= h($gasGroupDelivery->created) ?></dd>
+            <dd><?= h($gasGroupOrder->created) ?></dd>
             <dt scope="row"><?= __('Modified') ?></dt>
-            <dd><?= h($gasGroupDelivery->modified) ?></dd>
+            <dd><?= h($gasGroupOrder->modified) ?></dd>
           </dl>
         </div>
       </div>

@@ -25,6 +25,8 @@ class GasGroupsTableTest extends TestCase
     public $fixtures = [
         'app.GasGroups',
         'app.Organizations',
+        'app.Users',
+        'app.GasGroupUsers',
     ];
 
     /**

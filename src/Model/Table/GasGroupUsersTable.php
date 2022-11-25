@@ -3,8 +3,10 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\TableRegistry;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 /**
  * GasGroupUsers Model
@@ -84,5 +86,62 @@ class GasGroupUsersTable extends Table
         $rules->add($rules->existsIn(['gas_group_id'], 'GasGroups'));
 
         return $rules;
+    }
+
+    public function getUsers($user, $organization_id, $gas_group_id) {
+
+        $results = [];
+
+        $where = ['GasGroupUsers.gas_group_id' => $gas_group_id, 
+                  'GasGroupUsers.organization_id' => $organization_id, 
+                 ];    
+                 
+        $users = $this->find()->where($where)
+                                ->contain(['Users' => [
+                                    'conditions' => ['Users.block' => 0],
+                                    'sort' => ['Users.name' => 0]
+                                ]])
+                                ->all(); 
+        return $users;
+    }
+
+    /* 
+     * utenti da associare al gruppo
+     */
+    public function getUsersToAssocitateList($user, $organization_id, $gas_group_id) {
+
+        $results = []; 
+         
+        $usersTable = TableRegistry::get('Users');
+        
+        $gas_group_users = $this->getUsers($user, $organization_id, $gas_group_id);
+        if($gas_group_users->count()>0) {
+            foreach($gas_group_users as $gas_group_user) {
+                array_push($results, $gas_group_user->user->id);
+            }
+            $where = ['Users.id NOT IN ' => $results];
+            $results = $usersTable->getList($user, $user->organization->id, $where);
+        }
+        else {
+            $results = $usersTable->getList($user, $user->organization->id);
+        }
+
+        return $results;
+    }
+
+    /* 
+     * utenti gia' associati al gruppo
+     */
+    public function getUsersAssocitateList($user, $organization_id, $gas_group_id) {
+
+        $results = []; 
+                 
+        $gas_group_users = $this->getUsers($user, $organization_id, $gas_group_id);
+        if($gas_group_users->count()>0) {
+            foreach($gas_group_users as $gas_group_user) {
+                $results[$gas_group_user->user->id] = $gas_group_user->user->name;
+            }
+        }
+        return $results;
     }
 }

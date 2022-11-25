@@ -1,21 +1,21 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\GasGroupDeliveriesTable;
+use App\Model\Table\GasGroupOdersTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\GasGroupDeliveriesTable Test Case
+ * App\Model\Table\GasGroupOdersTable Test Case
  */
-class GasGroupDeliveriesTableTest extends TestCase
+class GasGroupOdersTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \App\Model\Table\GasGroupDeliveriesTable
+     * @var \App\Model\Table\GasGroupOdersTable
      */
-    public $GasGroupDeliveries;
+    public $GasGroupOders;
 
     /**
      * Fixtures
@@ -23,10 +23,10 @@ class GasGroupDeliveriesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.GasGroupDeliveries',
+        'app.GasGroupOders',
         'app.Organizations',
         'app.GasGroups',
-        'app.Deliveries',
+        'app.Orders',
     ];
 
     /**
@@ -37,8 +37,8 @@ class GasGroupDeliveriesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('GasGroupDeliveries') ? [] : ['className' => GasGroupDeliveriesTable::class];
-        $this->GasGroupDeliveries = TableRegistry::getTableLocator()->get('GasGroupDeliveries', $config);
+        $config = TableRegistry::getTableLocator()->exists('GasGroupOders') ? [] : ['className' => GasGroupOdersTable::class];
+        $this->GasGroupOders = TableRegistry::getTableLocator()->get('GasGroupOders', $config);
     }
 
     /**
@@ -48,7 +48,7 @@ class GasGroupDeliveriesTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->GasGroupDeliveries);
+        unset($this->GasGroupOders);
 
         parent::tearDown();
     }

@@ -12,7 +12,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
 <section class="content-header">
   <h1>
-    <?php echo __('Gas Group Users');?>
+    <?php echo __('Gas Group Orders');?>
 
     <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?></div>
   </h1>
@@ -43,42 +43,42 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           </div>
         </div>
         <!-- /.box-header -->
-        <div class="box-body table-responsive <?php echo ($gasGroupUsers->count()>0) ? 'no-padding': '';?>">
+        <div class="box-body table-responsive <?php echo ($gasGroupOrders->count()>0) ? 'no-padding': '';?>">
           <?php
-          if($gasGroupUsers->count()>0) {
-          // if(!empty($gasGroupUsers)) {
+          if($gasGroupOrders->count()>0) {
+          // if(!empty($gasGroupOrders)) {
           ?>
           <table class="table table-striped table-hover">
             <thead>
               <tr>
 <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
                       <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('user_id') ?></th>
               <th scope="col" class=""><?= $this->Paginator->sort('gas_group_id') ?></th>
+              <th scope="col" class=""><?= $this->Paginator->sort('order_id') ?></th>
               <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
               <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
                    </tr>
             </thead>
             <tbody>
               <?php 
-              foreach ($gasGroupUsers as $gasGroupUser) { 
+              foreach ($gasGroupOrders as $gasGroupOrder) { 
 
-                // debug($gasGroupUser);
+                // debug($gasGroupOrder);
               
   echo '<tr>';
   echo '<td class="actions text-left">';
-  echo $this->Html->link('', ['action' => 'view', $gasGroupUser->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-  echo $this->Html->link('', ['action' => 'edit', $gasGroupUser->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
-  if(!$gasGroupUser->is_system) 
-    echo $this->Form->postLink('', ['action' => 'delete', $gasGroupUser->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupUser->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+  echo $this->Html->link('', ['action' => 'view', $gasGroupOrder->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
+  echo $this->Html->link('', ['action' => 'edit', $gasGroupOrder->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+  if(!$gasGroupOrder->is_system) 
+    echo $this->Form->postLink('', ['action' => 'delete', $gasGroupOrder->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupOrder->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
   else
     echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
   echo '</td>';             
-        echo '<td>'.$this->Number->format($gasGroupUser->organization_id).'</td>';
-        echo '<td>'.$this->Number->format($gasGroupUser->user_id).'</td>';
-        echo '<td>'.$this->Number->format($gasGroupUser->gas_group_id).'</td>';
-                    echo '<td title="'.h($gasGroupUser->created).'">'.$this->Time->nice($gasGroupUser->created).'</td>';
-                         echo '<td title="'.h($gasGroupUser->modified).'">'.$this->Time->nice($gasGroupUser->modified).'</td>';
+        echo '<td>'.$this->Number->format($gasGroupOrder->organization_id).'</td>';
+        echo '<td>'.$this->Number->format($gasGroupOrder->gas_group_id).'</td>';
+        echo '<td>'.$this->Number->format($gasGroupOrder->order_id).'</td>';
+                    echo '<td title="'.h($gasGroupOrder->created).'">'.$this->Time->nice($gasGroupOrder->created).'</td>';
+                         echo '<td title="'.h($gasGroupOrder->modified).'">'.$this->Time->nice($gasGroupOrder->modified).'</td>';
                         echo '</tr>';
               } // end loop
             echo '</tbody>';
@@ -86,7 +86,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           }
           else {
             echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);
-          } // end if(!empty($gasGroupUsers))
+          } // end if(!empty($gasGroupOrders))
           ?>
         </div>
         <!-- /.box-body -->        

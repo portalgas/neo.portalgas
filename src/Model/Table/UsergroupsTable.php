@@ -294,7 +294,7 @@ class UsergroupsTable extends Table
             return false;
     }
 
-    public function isGasGropusManagerDelivery($user) {
+    public function isGasGropusManagerDeliveries($user) {
         if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_gas_groups_manager_consegne'), $user->group_ids))
             return true;
         else

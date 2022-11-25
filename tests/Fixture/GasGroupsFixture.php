@@ -17,6 +17,7 @@ class GasGroupsFixture extends TestFixture
     public $fields = [
         'id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'organization_id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'user_id' => ['type' => 'biginteger', 'length' => 20, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'name' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
         'descri' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'collate' => 'utf8mb4_bin', 'comment' => '', 'precision' => null],
         'is_system' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
@@ -46,12 +47,13 @@ class GasGroupsFixture extends TestFixture
             [
                 'id' => 1,
                 'organization_id' => 1,
+                'user_id' => 1,
                 'name' => 'Lorem ipsum dolor sit amet',
                 'descri' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
                 'is_system' => 1,
                 'is_active' => 1,
-                'created' => '2022-11-21 09:59:14',
-                'modified' => '2022-11-21 09:59:14',
+                'created' => '2022-11-25 15:15:16',
+                'modified' => '2022-11-25 15:15:16',
             ],
         ];
         parent::init();

@@ -22,6 +22,10 @@ class GasGroupsControllerTest extends TestCase
     public $fixtures = [
         'app.GasGroups',
         'app.Organizations',
+        'app.Users',
+        'app.GasGroupDeliveries',
+        'app.GasGroupOrders',
+        'app.GasGroupUsers',
     ];
 
     /**
