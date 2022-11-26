@@ -28,17 +28,18 @@
           <!-- /.box-header -->
           <!-- form start -->
           <?php 
-          echo $this->Form->create($gasGroupUser, ['role' => 'form']); 
-          echo $this->Form->hidden('gas_group_id');
+          echo $this->Form->create($gasGroupUser, ['role' => 'form', 'id' => 'frm']);
+          echo $this->Form->hidden('gas_group_id', ['value' => $gas_group_id]);
           
           echo '<div class="box-body">'; 
 
           echo '<div class="row">';
           echo '<div class="col-md-6">';
-          echo $this->Form->control('to_user_ids', ['id' => 'to_user_ids', 'label' => 'Tutti i gasisti', 'options' => $users, 'multiple' => true, 'size' => 10]);
+          echo $this->Form->control('to_user_id', ['id' => 'to_user_id', 'label' => 'Tutti i gasisti', 'options' => $users, 'multiple' => true, 'size' => 10]);
           echo '</div>';
           echo '<div class="col-md-6">';
-          echo $this->Form->control('user_ids', ['id' => 'user_ids', 'label' => 'Tutti i gasisti del gruppo', 'options' => $gasGroupUsers, 'multiple' => true, 'size' => 10]);
+          echo $this->Form->control('user_id', ['id' => 'user_id', 'label' => 'Tutti i gasisti del gruppo', 'options' => $gasGroupUsers, 'multiple' => true, 'size' => 10]);
+          echo $this->Form->hidden('user_ids', ['id' => 'user_ids', 'value' => '']);
           echo '</div>';
           echo '</div>'; // row
           echo '</div>';
@@ -55,9 +56,9 @@
 <?php 
 $js = "
 $(function () {
-	$('#to_user_ids').click(function() {
-		$('#to_user_ids option:selected').each(function (){			
-			$('#user_ids').append($('<option></option>')
+	$('#to_user_id').click(function() {
+		$('#to_user_id option:selected').each(function (){			
+			$('#user_id').append($('<option></option>')
 	         .attr('value',$(this).val())
 	         .text($(this).text()));
 	         
@@ -65,15 +66,34 @@ $(function () {
 		});
 	});
 	
-	$('#user_ids').click(function() {
-		$('#user_ids option:selected').each(function (){			
-			$('#to_user_ids').append($('<option></option>')
+	$('#user_id').click(function() {
+		$('#user_id option:selected').each(function (){			
+			$('#to_user_id').append($('<option></option>')
 	         .attr('value',$(this).val())
 	         .text($(this).text()));
 	         
 	         $(this).remove();
 		});
 	});
+
+	$('#frm').submit(function() {
+
+      var user_ids = '';
+      $('#user_id option').each(function () {	
+        user_ids +=  $(this).val()+',';
+      });
+      user_ids = user_ids.substring(0,user_ids.length-1);
+      
+      if(user_ids=='') {
+        alert('Devi selezionare almeno un utente da associare al gruppo');
+        return false;
+      }
+      
+      $('#user_ids').val(user_ids);			
+  
+		return true;			
+	});
+
 });
 ";
 

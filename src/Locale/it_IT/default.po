@@ -1160,6 +1160,9 @@ msgstr "Annullo tutto"
 msgid "Gas Groups"
 msgstr "Gruppi dei G.A.S."
 
+msgid "Gas Group"
+msgstr "Gruppo dei G.A.S."
+
 msgid "Gas Groups Users"
 msgstr "Gruppi e utenti"
 
