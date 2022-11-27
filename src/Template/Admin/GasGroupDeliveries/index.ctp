@@ -1,6 +1,7 @@
 <?php
 use Cake\Core\Configure;
 use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 
 $this->start('tb_actions');
 echo '<li class="sidebar-menu-action">';
@@ -12,7 +13,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
 <section class="content-header">
   <h1>
-    <?php echo __('Gas Group Deliveries');?>
+    <?php echo __('Deliveries');?>
 
     <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?></div>
   </h1>
@@ -51,35 +52,62 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-<th scope="col" class="actions text-left"><?= __('Actions') ?></th>
-                      <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('gas_group_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('delivery_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
-                   </tr>
+            <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
+            <th scope="col" class=""><?= $this->Paginator->sort('Gas Group') ?></th>
+            <th scope="col" class="text-center"><?= __('Tot gasisti') ?></th>
+            <th scope="col" class=""><?= $this->Paginator->sort('luogo') ?></th>
+            <th scope="col" class=""><?= $this->Paginator->sort('data') ?></th>
+            <th scope="col" class=""><?= __('Aperto/chiuso') ?></th>
+            <th scope="col" class="text-center"><?= __('Tot Ordini') ?></th>
+            <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
+              </tr>
             </thead>
             <tbody>
               <?php 
               foreach ($gasGroupDeliveries as $gasGroupDelivery) { 
-
+                
                 // debug($gasGroupDelivery);
-              
-  echo '<tr>';
-  echo '<td class="actions text-left">';
-  echo $this->Html->link('', ['action' => 'view', $gasGroupDelivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-  echo $this->Html->link('', ['action' => 'edit', $gasGroupDelivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
-  if(!$gasGroupDelivery->is_system) 
-    echo $this->Form->postLink('', ['action' => 'delete', $gasGroupDelivery->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupDelivery->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
-  else
-    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
-  echo '</td>';             
-        echo '<td>'.$this->Number->format($gasGroupDelivery->organization_id).'</td>';
-        echo '<td>'.$this->Number->format($gasGroupDelivery->gas_group_id).'</td>';
-        echo '<td>'.$this->Number->format($gasGroupDelivery->delivery_id).'</td>';
-                    echo '<td title="'.h($gasGroupDelivery->created).'">'.$this->Time->nice($gasGroupDelivery->created).'</td>';
-                         echo '<td title="'.h($gasGroupDelivery->modified).'">'.$this->Time->nice($gasGroupDelivery->modified).'</td>';
-                        echo '</tr>';
+                
+                $delivery = $gasGroupDelivery->delivery;
+                $now = FrozenTime::parse('now');
+                $interval = $now->diff($delivery->data);
+                $delta = $interval->format('%R');
+                if($delta==='-')
+                  $diff_label = 'Passati ';
+                else
+                  $diff_label = 'Mancano ';
+                $diff = $interval->format('%a giorni');
+                $diff_label = $diff_label.$diff;
+
+                // debug($delivery);
+                                
+                  echo '<tr>';
+                  echo '<td class="actions text-left">';
+                  // echo $this->Html->link('', ['action' => 'view', $delivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
+                  echo $this->Html->link('', ['action' => 'edit', $delivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+                  if(!$delivery->is_system) 
+                    echo $this->Form->postLink('', ['action' => 'delete', $delivery->id], ['confirm' => __('Are you sure you want to delete # {0}?', $delivery->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                  else
+                    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+                  echo '</td>';             
+                  echo '<td>'.h($gasGroupDelivery->gas_group->name).'</td>';
+                  echo '<td class="text-center">'.count($gasGroupDelivery->gas_group->gas_group_users).'</td>';
+                  echo '<td>'.h($delivery->luogo).'</td>';
+                  echo '<td>';
+                  if($delivery->sys=='N')
+                    echo $delivery->data;
+                    // echo $this->Time->nice($delivery->data);
+                  echo '</td>';
+                  echo '<td>';
+                  if($delivery->sys=='N')
+                    echo $diff_label;
+                  echo '</td>';
+                  echo '<td class="text-center">'.count($delivery->orders).'</td>';
+                  if($delivery->sys=='N')
+                    echo '<td title="'.h($delivery->created).'">'.$delivery->created.'</td>';
+                  else 
+                    echo '<td></td>';
+                  echo '</tr>';
               } // end loop
             echo '</tbody>';
           echo '</table>';

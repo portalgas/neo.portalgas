@@ -13,8 +13,10 @@ use Cake\Core\Configure;
  *
  * @method \App\Model\Entity\GasGroupOrder[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class GasGroupOrdersController extends AppController
+class GasGroupDeliveriesController extends AppController
 {
+    private $_type='GAS-GROUP';
+
     public function initialize()
     {
         parent::initialize();
@@ -44,9 +46,18 @@ class GasGroupOrdersController extends AppController
      */
     public function index()
     {
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization_id;
+
+        $where = [// 'Deliveries.type' => $this->_type, 
+                  'Deliveries.organization_id' => $organization_id, 
+                 ];
         $this->paginate = [
-            'contain' => ['Organizations', 'GasGroups', 'Deliveries'],
+            'contain' => ['GasGroups' => ['GasGroupUsers'], 'Deliveries' => ['Orders']],
+            'conditions' => $where,
+            'order' => ['Deliveries.data']
         ];
+        
         $gasGroupDeliveries = $this->paginate($this->GasGroupDeliveries);
 
         $this->set(compact('gasGroupDeliveries'));

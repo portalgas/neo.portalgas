@@ -181,11 +181,32 @@ msgstr "Modifica"
 msgid "Add"
 msgstr "Aggiungi"
 
+msgid "New"
+msgstr "Aggiungi"
+
 msgid "Delete"
 msgstr "Cancella"
 
 msgid "List"
 msgstr "Elenco"
+
+msgid "previous"
+msgstr "precedente"
+
+msgid "next"
+msgstr "successivo"
+
+msgid "first"
+msgstr "primo"
+
+msgid "last"
+msgstr "ultimo"
+
+msgid "before"
+msgstr "prima"
+
+msgid "after"
+msgstr "dopo"
 
 msgid "Data Inizio"
 msgstr "Data inizio"
@@ -668,6 +689,9 @@ msgid "save-success"
 msgstr "Salvataggio avvenuto con successo"
 
 msgid "delete-success"
+msgstr "Cancellazione avvenuta con successo"
+
+msgid "The record has been deleted."
 msgstr "Cancellazione avvenuta con successo"
 
 #

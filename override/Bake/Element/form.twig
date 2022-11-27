@@ -100,7 +100,7 @@ echo '</div>'; // row
     {%- endfor %}
 {% endif %}
           
-          echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary pull-right', 'style' => 'margin-top:25px']); 
+          echo $this->Form->button(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-primary pull-right', 'style' => 'margin-top:25px']); 
           echo '</div>'; /* .box-body */
           echo $this->Form->end(); ?>
         </div>

@@ -20,38 +20,38 @@
         <!-- /.box-header -->
         <div class="box-body">
           <dl class="dl-horizontal">
+            <dt scope="row"><?= __('Organization') ?></dt>
+            <dd><?= $delivery->has('organization') ? $this->Html->link($delivery->organization->name, ['controller' => 'Organizations', 'action' => 'view', $delivery->organization->id]) : '' ?></dd>
             <dt scope="row"><?= __('Luogo') ?></dt>
-            <dd><?= h($kDelivery->luogo) ?></dd>
+            <dd><?= h($delivery->luogo) ?></dd>
             <dt scope="row"><?= __('Nota Evidenza') ?></dt>
-            <dd><?= h($kDelivery->nota_evidenza) ?></dd>
+            <dd><?= h($delivery->nota_evidenza) ?></dd>
             <dt scope="row"><?= __('IsToStoreroom') ?></dt>
-            <dd><?= h($kDelivery->isToStoreroom) ?></dd>
+            <dd><?= h($delivery->isToStoreroom) ?></dd>
             <dt scope="row"><?= __('IsToStoreroomPay') ?></dt>
-            <dd><?= h($kDelivery->isToStoreroomPay) ?></dd>
+            <dd><?= h($delivery->isToStoreroomPay) ?></dd>
             <dt scope="row"><?= __('Stato Elaborazione') ?></dt>
-            <dd><?= h($kDelivery->stato_elaborazione) ?></dd>
+            <dd><?= h($delivery->stato_elaborazione) ?></dd>
             <dt scope="row"><?= __('IsVisibleFrontEnd') ?></dt>
-            <dd><?= h($kDelivery->isVisibleFrontEnd) ?></dd>
+            <dd><?= h($delivery->isVisibleFrontEnd) ?></dd>
             <dt scope="row"><?= __('IsVisibleBackOffice') ?></dt>
-            <dd><?= h($kDelivery->isVisibleBackOffice) ?></dd>
+            <dd><?= h($delivery->isVisibleBackOffice) ?></dd>
             <dt scope="row"><?= __('Sys') ?></dt>
-            <dd><?= h($kDelivery->sys) ?></dd>
+            <dd><?= h($delivery->sys) ?></dd>
             <dt scope="row"><?= __('Gcalendar Event Id') ?></dt>
-            <dd><?= h($kDelivery->gcalendar_event_id) ?></dd>
+            <dd><?= h($delivery->gcalendar_event_id) ?></dd>
             <dt scope="row"><?= __('Id') ?></dt>
-            <dd><?= $this->Number->format($kDelivery->id) ?></dd>
-            <dt scope="row"><?= __('Organization Id') ?></dt>
-            <dd><?= $this->Number->format($kDelivery->organization_id) ?></dd>
+            <dd><?= $this->Number->format($delivery->id) ?></dd>
             <dt scope="row"><?= __('Data') ?></dt>
-            <dd><?= h($kDelivery->data) ?></dd>
+            <dd><?= h($delivery->data) ?></dd>
             <dt scope="row"><?= __('Orario Da') ?></dt>
-            <dd><?= h($kDelivery->orario_da) ?></dd>
+            <dd><?= h($delivery->orario_da) ?></dd>
             <dt scope="row"><?= __('Orario A') ?></dt>
-            <dd><?= h($kDelivery->orario_a) ?></dd>
+            <dd><?= h($delivery->orario_a) ?></dd>
             <dt scope="row"><?= __('Created') ?></dt>
-            <dd><?= h($kDelivery->created) ?></dd>
+            <dd><?= h($delivery->created) ?></dd>
             <dt scope="row"><?= __('Modified') ?></dt>
-            <dd><?= h($kDelivery->modified) ?></dd>
+            <dd><?= h($delivery->modified) ?></dd>
           </dl>
         </div>
       </div>
@@ -67,7 +67,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <?= $this->Text->autoParagraph($kDelivery->nota); ?>
+            <?= $this->Text->autoParagraph($delivery->nota); ?>
         </div>
       </div>
     </div>

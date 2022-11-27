@@ -14,6 +14,8 @@ use Cake\Core\Configure;
  */
 class DeliveriesController extends AppController
 {
+    private $_type='GAS-GROUP';
+
     public function initialize()
     {
         parent::initialize();
@@ -24,7 +26,10 @@ class DeliveriesController extends AppController
         
         parent::beforeFilter($event);
 
-        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
+        /* 
+         * gestisco solo le consegne dei gruppi ($type='GAS-GROUP')
+         */
+        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isGasGropusManagerDeliveries'])) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -34,11 +39,21 @@ class DeliveriesController extends AppController
      * Index method
      *
      * @return \Cake\Http\Response|null
+     *
+     * gestisco solo le consegne dei gruppi ($type='GAS-GROUP')
      */
-    public function index()
+    public function index($type='GAS-GROUP')
     {
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization_id;
+
+        $where = [// 'Deliveries.type' => $this->_type, 
+                  'Deliveries.organization_id' => $organization_id, 
+                 ];
         $this->paginate = [
-            'contain' => ['Organizations', 'GcalendarEvents'],
+            'contain' => ['Orders'],
+            'conditions' => $where,
+            'order' => ['Deliveries.name']
         ];
         $deliveries = $this->paginate($this->Deliveries);
 
@@ -54,6 +69,7 @@ class DeliveriesController extends AppController
      */
     public function view($id = null)
     {
+        exit;
         $delivery = $this->Deliveries->get($id, [
             'contain' => ['Organizations', 'GcalendarEvents'],
         ]);
@@ -67,8 +83,11 @@ class DeliveriesController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($type='GAS-GROUP')
     {
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization_id;
+
         $delivery = $this->Deliveries->newEntity();
         if ($this->request->is('post')) {
             $delivery = $this->Deliveries->patchEntity($delivery, $this->request->getData());
@@ -79,9 +98,7 @@ class DeliveriesController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Delivery'));
         }
-        $organizations = $this->Deliveries->Organizations->find('list', ['limit' => 200]);
-        $gcalendarEvents = $this->Deliveries->GcalendarEvents->find('list', ['limit' => 200]);
-        $this->set(compact('delivery', 'organizations', 'gcalendarEvents'));
+        $this->set(compact('delivery'));
     }
 
 
@@ -92,9 +109,12 @@ class DeliveriesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $type='GAS-GROUP')
     {
-        $delivery = $this->Deliveries->get($id, [
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization_id;
+
+        $delivery = $this->Deliveries->get([$organization_id, $id], [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -106,9 +126,7 @@ class DeliveriesController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'K Delivery'));
         }
-        $organizations = $this->Deliveries->Organizations->find('list', ['limit' => 200]);
-        $gcalendarEvents = $this->Deliveries->GcalendarEvents->find('list', ['limit' => 200]);
-        $this->set(compact('delivery', 'organizations', 'gcalendarEvents'));
+        $this->set(compact('delivery'));
     }
 
 

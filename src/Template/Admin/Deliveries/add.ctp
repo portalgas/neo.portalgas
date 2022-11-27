@@ -1,17 +1,22 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\KDelivery $delivery
+ * @var \Cake\Datasource\EntityInterface $kDelivery
  */
+?>
+<?php
+use Cake\Core\Configure;
 ?>
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Delivery
+      <?php echo __('K Delivery'); ?>
       <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build('/'); ?>"><i class="fa fa-home"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build(['action' => 'view']); ?>"><i class="fa fa-eye"></i> <?php echo __('View'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-list"></i> <?php echo __('List'); ?></a></li>
     </ol>
   </section>
 
@@ -26,30 +31,53 @@
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($delivery, ['role' => 'form']); ?>
-            <div class="box-body">
-              <?php
-                echo $this->Form->control('organization_id', ['options' => $organizations]);
-                echo $this->Form->control('luogo');
-                echo $this->Form->control('data');
-                echo $this->Form->control('orario_da');
-                echo $this->Form->control('orario_a');
-                echo $this->Form->control('nota');
-                echo $this->Form->control('nota_evidenza');
-                echo $this->Form->control('isToStoreroom');
-                echo $this->Form->control('isToStoreroomPay');
-                echo $this->Form->control('stato_elaborazione');
-                echo $this->Form->control('isVisibleFrontEnd');
-                echo $this->Form->control('isVisibleBackOffice');
-                echo $this->Form->control('sys');
-                echo $this->Form->control('gcalendar_event_id');
-              ?>
-            </div>
-            <!-- /.box-body -->
+          <?php 
+          echo $this->Form->create($kDelivery, ['role' => 'form']);
+          echo '<div class="box-body">';
 
-          <?php echo $this->Form->submit(__('Submit')); ?>
 
-          <?php echo $this->Form->end(); ?>
+ 
+echo '<div class="row">';
+echo '<div class="col-md-12">';
+echo '</div>';
+echo '</div>'; // row
+ 
+echo '<div class="row">';
+echo '<div class="col-md-12">';
+echo $this->Form->control('luogo');
+echo '</div>';
+echo '</div>'; // row
+ 
+echo '<div class="row">';
+echo '<div class="col-md-12">';
+echo $this->HtmlCustom->datepicker('data', ['autocomplete' => 'off']);
+echo '</div>';
+echo '</div>'; // row
+ 
+echo '<div class="row">';
+echo '<div class="col-md-6">';
+echo $this->Form->control('orario_da');
+echo '</div>';
+echo '<div class="col-md-6">';
+echo $this->Form->control('orario_a');
+echo '</div>';
+echo '</div>'; // row
+ 
+echo '<div class="row">';
+echo '<div class="col-md-12">';
+echo $this->Form->control('nota');
+echo '</div>';
+echo '</div>'; // row
+ 
+echo '<div class="row">';
+echo '<div class="col-md-12">';
+echo $this->Form->control('nota_evidenza');
+echo '</div>';
+echo '</div>'; // row
+      
+          echo $this->Form->button(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-primary pull-right', 'style' => 'margin-top:25px']); 
+          echo '</div>'; /* .box-body */
+          echo $this->Form->end(); ?>
         </div>
         <!-- /.box -->
       </div>

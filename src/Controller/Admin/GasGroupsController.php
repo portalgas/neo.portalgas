@@ -83,9 +83,16 @@ class GasGroupsController extends AppController
      */
     public function add()
     {
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;        
+        
         $gasGroup = $this->GasGroups->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
+            $datas['organization_id'] = $organization_id;
+            $datas['user_id'] = $user->id;
+            $datas['is_system'] = false;
+            $datas['is_active'] = true;
             // debug($datas);
             $gasGroup = $this->GasGroups->patchEntity($gasGroup, $datas);
             if (!$this->GasGroups->save($gasGroup)) {
@@ -98,9 +105,7 @@ class GasGroupsController extends AppController
             }
             
         }
-        $organizations = $this->GasGroups->Organizations->find('list', ['limit' => 200]);
-        $users = $this->GasGroups->Users->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroup', 'organizations', 'users'));
+        $this->set(compact('gasGroup'));
     }
 
 

@@ -11,7 +11,8 @@
       <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build('/'); ?>"><i class="fa fa-home"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-users"></i> <?php echo __('Gas Groups'); ?></a></li>
     </ol>
   </section>
 
@@ -29,19 +30,16 @@
           <?php echo $this->Form->create($gasGroup, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
-                echo $this->Form->control('organization_id', ['options' => $organizations]);
-                echo $this->Form->control('user_id', ['options' => $users]);
                 echo $this->Form->control('name');
                 echo $this->Form->control('descri');
-                echo $this->Form->control('is_system');
-                echo $this->Form->control('is_active');
               ?>
             </div>
             <!-- /.box-body -->
 
-          <?php echo $this->Form->submit(__('Submit')); ?>
-
-          <?php echo $this->Form->end(); ?>
+          <?php 
+          echo $this->Form->submit(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-primary pull-right', 'style' => 'margin-top:25px']); 
+          echo $this->Form->end(); 
+          ?>
         </div>
         <!-- /.box -->
       </div>

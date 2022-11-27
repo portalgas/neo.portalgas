@@ -70,7 +70,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<td class="actions text-left">';
                   echo $this->Html->link('', ['action' => 'edit', $gasGroup->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
                   if(!$gasGroup->is_system) 
-                    echo $this->Form->postLink('', ['action' => 'delete', $gasGroup->name], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroup->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                    echo $this->Form->postLink('', ['action' => 'delete', $gasGroup->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroup->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
                   else
                     echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
                   echo $this->Html->link(__('Management GasGroupUsers'), ['controller' => 'GasGroupUsers', 'action' => 'management', $gasGroup->id], ['class'=>'btn btn-primary', 'title' => __('Add users')]);
