@@ -4,7 +4,9 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 /**
  * GasGroupDeliveries Model
@@ -92,7 +94,7 @@ class GasGroupDeliveriesTable extends Table
                   'GasGroupDeliveries.gas_group_id' => $gas_group_id
                ];
         // debug($where);
-        $results = $this->find('list', [
+        $deliveries = $this->find('list', [
                         'keyField' => function ($gas_group_delivery) {
                             return $gas_group_delivery->delivery->get('id');
                         },
@@ -100,30 +102,21 @@ class GasGroupDeliveriesTable extends Table
                             return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data');
                         }])
                         ->where($where)
-                        ->contain(['Deliveries'])
+                        ->contain(['Deliveries' => ['conditions' => [
+                            'Deliveries.isVisibleFrontEnd' => 'Y',
+                            'Deliveries.stato_elaborazione' => 'OPEN',
+                            'Deliveries.sys' => 'N',
+                            'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'    
+                        ]]])
                         ->order(['Deliveries.data'])
                         ->all();
 
-        return $results;
-
-        $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
-                        'Deliveries.stato_elaborazione' => 'OPEN',
-                        'Deliveries.sys' => 'N',
-                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
-                      ];
-    
-        if(isset($where['Deliveries']))
-            $where['Deliveries'] += $conditions;
-        else {
-            $where['Deliveries'] = [];
-            $where['Deliveries'] += $conditions;
-        }
-
-        $deliveries = $this->getsList($user, $organization_id, $where, $order, $debug);
-        $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $organization_id);
 
         $results = [];
-        $results += $deliveries;
+        if($deliveries->count()>0)
+           $results += $deliveries->toArray();
         $results += $sysDeliveries;
 
         return $results;
