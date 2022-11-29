@@ -81,8 +81,51 @@ class GasGroupDeliveriesTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['gas_group_id'], 'GasGroups'));
-        $rules->add($rules->existsIn(['delivery_id'], 'Deliveries'));
+        $rules->add($rules->existsIn(['organization_id', 'delivery_id'], 'Deliveries'));
 
         return $rules;
+    }
+
+    public function getsActiveList($user, $organization_id, $gas_group_id, $debug=false) {
+        
+        $where = ['GasGroupDeliveries.organization_id' => $user->organization->id,
+                  'GasGroupDeliveries.gas_group_id' => $gas_group_id
+               ];
+        // debug($where);
+        $results = $this->find('list', [
+                        'keyField' => function ($gas_group_delivery) {
+                            return $gas_group_delivery->delivery->get('id');
+                        },
+                        'valueField' => function ($gas_group_delivery) {
+                            return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data');
+                        }])
+                        ->where($where)
+                        ->contain(['Deliveries'])
+                        ->order(['Deliveries.data'])
+                        ->all();
+
+        return $results;
+
+        $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
+                        'Deliveries.stato_elaborazione' => 'OPEN',
+                        'Deliveries.sys' => 'N',
+                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                      ];
+    
+        if(isset($where['Deliveries']))
+            $where['Deliveries'] += $conditions;
+        else {
+            $where['Deliveries'] = [];
+            $where['Deliveries'] += $conditions;
+        }
+
+        $deliveries = $this->getsList($user, $organization_id, $where, $order, $debug);
+        $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
+
+        $results = [];
+        $results += $deliveries;
+        $results += $sysDeliveries;
+
+        return $results;
     }
 }

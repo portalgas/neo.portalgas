@@ -40,6 +40,7 @@ class Delivery extends Entity
      */
     protected $_accessible = [
         'organization_id' => true,
+        'type' => true,
         'luogo' => true,
         'data' => true,
         'orario_da' => true,

@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-
+use App\Traits;
 /**
  * GasGroupOrders Controller
  *
@@ -15,7 +15,7 @@ use Cake\Core\Configure;
  */
 class GasGroupDeliveriesController extends AppController
 {
-    private $_type='GAS-GROUP';
+    use Traits\SqlTrait;
 
     public function initialize()
     {
@@ -49,11 +49,13 @@ class GasGroupDeliveriesController extends AppController
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization_id;
 
-        $where = [// 'Deliveries.type' => $this->_type, 
-                  'Deliveries.organization_id' => $organization_id, 
-                 ];
+        $where = ['Deliveries.organization_id' => $organization_id];
+
         $this->paginate = [
-            'contain' => ['GasGroups' => ['GasGroupUsers'], 'Deliveries' => ['Orders']],
+            'contain' => ['GasGroups' => ['GasGroupUsers'], 
+                'Deliveries' => [
+                    'conditions' => ['type' => 'GAS-GROUP'],
+                    'Orders']],
             'conditions' => $where,
             'order' => ['Deliveries.data']
         ];
@@ -72,6 +74,7 @@ class GasGroupDeliveriesController extends AppController
      */
     public function view($id = null)
     {
+        exit;
         $gasGroupDelivery = $this->GasGroupDeliveries->get($id, [
             'contain' => ['Organizations', 'GasGroups', 'Deliveries'],
         ]);
@@ -87,25 +90,57 @@ class GasGroupDeliveriesController extends AppController
      */
     public function add()
     {
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization_id;
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+
         $gasGroupDelivery = $this->GasGroupDeliveries->newEntity();
         if ($this->request->is('post')) {
-            $datas = $this->request->getData();
-            // debug($datas);
-            $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
-            if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
-                $this->Flash->error($gasGroupDelivery->getErrors());
-            }
-            else {
-                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            
-        }
-        $organizations = $this->GasGroupDeliveries->Organizations->find('list', ['limit' => 200]);
-        $gasGroups = $this->GasGroupDeliveries->GasGroups->find('list', ['limit' => 200]);
+            $datas = $this->request->getData();
+            $gas_group_id = $datas['gas_group_id'];
+
+            /*
+             * creo la consegna
+             * */
+            $delivery = $deliveriesTable->newEntity();
+            $datas['organization_id'] = $organization_id;
+            $datas['isToStoreroom'] = 'N';
+            $datas['isToStoreroomPay'] = 'N';
+            $datas['stato_elaborazione'] = 'OPEN';
+            $datas['type'] = 'GAS-GROUP';
+            $datas['data'] = $this->convertDate($datas['data']);
+            $delivery = $deliveriesTable->patchEntity($delivery, $datas);
+            if (!$deliveriesTable->save($delivery)) {
+                $this->Flash->error($delivery->getErrors());
+            } 
+            else {
+
+                $datas = [];
+                $datas['delivery_id'] = $delivery->id;
+                $datas['organization_id'] = $organization_id;
+                $datas['gas_group_id'] = $gas_group_id;
+
+                /* 
+                 * l'associo al gruppo
+                 */  
+                $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
+                if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
+                    $this->Flash->error($gasGroupDelivery->getErrors());
+                }
+                else {
+                    $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
+                    return $this->redirect(['action' => 'index']);
+                }
+            }                    
+        } // end post
+
+        $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
+
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($user, $organization_id, $user->id);
         $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroupDelivery', 'organizations', 'gasGroups', 'deliveries'));
+        $this->set(compact('gasGroupDelivery', 'gasGroups', 'deliveries'));
     }
 
 
@@ -118,26 +153,52 @@ class GasGroupDeliveriesController extends AppController
      */
     public function edit($id = null)
     {
-        $gasGroupDelivery = $this->GasGroupDeliveries->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $datas = $this->request->getData();
-            // debug($datas);        
-            $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
-            if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
-                $this->Flash->error($gasGroupDelivery->getErrors());
-            }
-            else {            
-                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization_id;
 
-                return $this->redirect(['action' => 'index']);
-            }
-        }
-        $organizations = $this->GasGroupDeliveries->Organizations->find('list', ['limit' => 200]);
-        $gasGroups = $this->GasGroupDeliveries->GasGroups->find('list', ['limit' => 200]);
+        $deliveriesTable = TableRegistry::get('Deliveries');
+
+        $gasGroupDelivery = $this->GasGroupDeliveries->get($id, [
+            'contain' => ['Deliveries']
+        ]);
+       
+        if ($this->request->is(['patch', 'post', 'put'])) {
+
+            $datas = $this->request->getData();
+            $gas_group_id = $datas['gas_group_id'];
+
+            /*
+             * creo la consegna
+             * */
+            $delivery = $deliveriesTable->newEntity();
+            $datas['organization_id'] = $organization_id;
+            $datas['isToStoreroom'] = 'N';
+            $datas['isToStoreroomPay'] = 'N';
+            $datas['stato_elaborazione'] = 'OPEN';
+            $datas['type'] = 'GAS-GROUP';
+            $datas['data'] = $this->convertDate($datas['data']);
+            $delivery = $deliveriesTable->patchEntity($delivery, $datas);
+            if (!$deliveriesTable->save($delivery)) {
+                $this->Flash->error($delivery->getErrors());
+            } 
+            else {       
+                $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
+                if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
+                    $this->Flash->error($gasGroupDelivery->getErrors());
+                }
+                else {            
+                    $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
+
+                    return $this->redirect(['action' => 'index']);
+                }
+            } 
+        } // end post
+
+        $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
+
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($user, $organization_id, $user->id);
         $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroupDelivery', 'organizations', 'gasGroups', 'deliveries'));
+        $this->set(compact('gasGroupDelivery', 'gasGroups', 'deliveries'));
     }
 
 

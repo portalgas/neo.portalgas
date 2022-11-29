@@ -368,4 +368,23 @@ class HtmlCustomSiteHelper extends FormHelper
 
         return $html;
     }
+
+    public function drawSupplierImage($supplier) {
+
+        $html = '';
+        if(!empty($supplier->img1)) {
+
+            $config = Configure::read('Config');
+            $this->_portalgas_app_root = $config['Portalgas.App.root'];
+            $img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $supplier->img1);
+            $img_path_supplier = $this->_portalgas_app_root . $img_path_supplier;
+    
+            $url = '';
+            if(file_exists($img_path_supplier)) {
+                $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
+                $html .= '<img style="max-width:250px" src="'.$url.'" title="'.$supplier->name.'" alt="'.$supplier->name.'" />';
+            }
+        }
+        return $html;
+    }
 }

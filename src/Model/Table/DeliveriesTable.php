@@ -6,9 +6,15 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\I18n\Date;
+use Cake\Core\Configure;
 
 class DeliveriesTable extends Table
 {
+    const NOTA_EVIDENZA_NO = 'Nessun messaggio';
+    const NOTA_EVIDENZA_MESSAGE = 'Messaggio normale';
+    const NOTA_EVIDENZA_NOTICE = 'Messaggio importante';
+    const NOTA_EVIDENZA_ALERT = 'Messaggio con allerta';
+
     /**
      * Initialize method
      *
@@ -24,6 +30,12 @@ class DeliveriesTable extends Table
         $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('CakeDC/Enum.Enum', ['lists' => [
+            'nota_evidenza' => [
+                'strategy' => 'const',
+                'prefix' => 'NOTA_EVIDENZA'
+            ],
+        ]]);
 
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
@@ -119,30 +131,8 @@ class DeliveriesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['gcalendar_event_id'], 'GcalendarEvents'));
 
         return $rules;
-    }
-
-    public function getsList($user, $organization_id, $where=[], $order=[], $debug=false) {
-
-        $listResults = [];
-
-        $results = $this->gets($user, $organization_id, $where);
-        if(!empty($results)) {
-            foreach($results as $result) {
-                if($result->sys=='Y') 
-                    $listResults[$result->id] = $result->luogo;
-                else {
-                    // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                    $listResults[$result->id] = $result->luogo.' '.$result->data->i18nFormat('d MMMM Y');                    
-                }
-            }
-        }
-
-        // debug($listResults);
-        
-        return $listResults;
     }
 
     public function getById($user, $organization_id, $delivery_id, $debug=false) {
@@ -165,6 +155,52 @@ class DeliveriesTable extends Table
         }
 
         return $results;
+    }
+
+    public function getsActiveList($user, $organization_id, $where=[], $order=[], $debug=false) {
+        
+        $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
+                        'Deliveries.stato_elaborazione' => 'OPEN',
+                        'Deliveries.sys' => 'N',
+                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                      ];
+    
+        if(isset($where['Deliveries']))
+            $where['Deliveries'] += $conditions;
+        else {
+            $where['Deliveries'] = [];
+            $where['Deliveries'] += $conditions;
+        }
+
+        $deliveries = $this->getsList($user, $organization_id, $where, $order, $debug);
+        $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
+
+        $results = [];
+        $results += $deliveries;
+        $results += $sysDeliveries;
+
+        return $results;
+    }
+
+    public function getsList($user, $organization_id, $where=[], $order=[], $debug=false) {
+
+        $listResults = [];
+
+        $results = $this->gets($user, $organization_id, $where);
+        if(!empty($results)) {
+            foreach($results as $result) {
+                if($result->sys=='Y') 
+                    $listResults[$result->id] = $result->luogo;
+                else {
+                    // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                    $listResults[$result->id] = $result->luogo.' - '.$result->data->i18nFormat('d MMMM Y');                    
+                }
+            }
+        }
+
+        // debug($listResults);
+        
+        return $listResults;
     }
 
     public function gets($user, $organization_id, $where=[], $order=[], $debug=false) {

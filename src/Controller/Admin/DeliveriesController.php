@@ -33,6 +33,8 @@ class DeliveriesController extends AppController
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
+
+        exit;
     }
 
     /**

@@ -16,6 +16,8 @@ use App\Form\OrderForm;
  */
 class OrdersController extends AppController
 {
+    private $_order_type_id = 0;
+
     public function initialize()
     {
         parent::initialize();
@@ -23,6 +25,11 @@ class OrdersController extends AppController
         $this->loadComponent('Delivery');
         $this->loadComponent('SuppliersOrganization');
         $this->loadComponent('PriceType');
+
+        /* 
+         * gestisco solo sotto gruppi
+         */
+        $this->_order_type_id = Configure::read('Order.type.gas_groups');
     }
 
     public function beforeFilter(Event $event) {
@@ -83,7 +90,7 @@ class OrdersController extends AppController
     public function index($order_type_id=0)
     {
         // gestisco solo sotto-gruppi
-        $order_type_id = Configure::read('Order.type.gas_groups');
+        $order_type_id = $this->_order_type_id;
 
         $user = $this->Authentication->getIdentity();
         $organization = $user->organization; // gas scelto
@@ -92,18 +99,20 @@ class OrdersController extends AppController
                  'Orders.order_type_id' => $order_type_id];
         $this->paginate = [
             'order' => ['Deliveries.data', 'Orders.data_inizio'],            
-            'contain' => ['SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
+            'contain' => ['SuppliersOrganizations' => ['Suppliers'], 
+                'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
             'conditions' => $where
         ];
 
         // debug($where);
         $orders = $this->paginate($this->Orders);
 
-        $this->set(compact('orders'));
+        $this->set(compact('orders', 'order_type_id'));
     }
 
     public function view($id = null)
     {
+        exit;
         if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -118,6 +127,7 @@ class OrdersController extends AppController
 
     public function test()
     { 
+        exit;
         if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -189,8 +199,11 @@ class OrdersController extends AppController
     $order_type_id = Configure::read('Order.type.promotion');
     $order_type_id = Configure::read('Order.type.gas_groups');
     */
-    public function add($order_type_id=10, $parent_id=0)
+    public function add($order_type_id=0, $parent_id=0)
     {            
+        // gestisco solo sotto-gruppi
+        $order_type_id = $this->_order_type_id;
+        
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id; // gas scelto
         // debug($user);
@@ -203,9 +216,21 @@ class OrdersController extends AppController
         /*
          *
          * */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        
         $suppliersOrganizations = [];
         $deliveries = [];
+        /* 
+         * oggetto padre (ex ordine DES del titolare)
+         * ordine del gas-group-ordine
+         */
+        $parent = null; 
         switch ($order_type_id) {
+            case Configure::read('Order.type.gas'):
+                $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($user, $organization_id, $user->id);                    
+                $deliveries = $deliveriesTable->getsActiveList($user, $organization_id);
+            break;                
             case Configure::read('Order.type.promotion'):
                 $ordersTable->addBehavior('OrderPromotions');
                 $prod_gas_promotion_id = $parent_id;
@@ -226,10 +251,23 @@ class OrdersController extends AppController
                 break;
             case Configure::read('Order.type.gas_groups'):
                 $order_id = $parent_id; // ordine 
-                $parent = $ordersTable->getParent($user, $organization_id, $order_id);
-                if(!empty($parent)) {
-                    $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $parent->suppliers_organization);
-                    $deliveries = $this->Delivery->getListByResults($user, $parent->delivery);
+                if(!empty($order_id)) {
+                    $parent = $ordersTable->getParent($user, $organization_id, $order_id);
+                    if(!empty($parent)) {
+                        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $parent->suppliers_organization);
+                        $deliveries = $this->Delivery->getListByResults($user, $parent->delivery);
+                    }
+                }
+                else {
+                    $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($user, $organization_id, $user->id);                    
+                    
+                    $gasGroupsTable = TableRegistry::get('GasGroups');
+                    $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
+                    $this->set(compact('gasGroups'));
+
+                    $gas_group_id = 1;
+                    $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
+                    $deliveries = $gasGroupDeliveriesTable->getsActiveList($user, $organization_id, $gas_group_id);
                 }
                 break;
         }
@@ -294,6 +332,9 @@ class OrdersController extends AppController
      */
     public function edit($id = null)
     {
+        // gestisco solo sotto-gruppi
+        $order_type_id = $this->_order_type_id;
+
         $order = $this->Orders->get($id, [
             'contain' => []
         ]);

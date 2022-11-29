@@ -21,8 +21,9 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         $html = '';
         $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
 
-        // prod_gas_promotion_id
-        $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
+        // ordine del GAS 
+        if(!empty($parent))
+            $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
         
         return $html;
     }    
@@ -31,9 +32,39 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
     }
 
+    public function gasGroups($gasGroups) {
+        return $this->Form->control('gas_group_id', ['options' => $gasGroups]);
+    }
+        
     public function deliveries($deliveries) {
         return $this->Form->control('delivery_id', ['options' => $deliveries]);
     }
+
+    public function data($parent) {
+
+        $html = '';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-6">'; 
+        $html .= $this->HtmlCustom->datepicker('data_inizio', ['autocomplete' => 'off']);
+        $html .= '</div>'; 
+        $html .= '<div class="col-md-6">'; 
+        $html .= $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
+        $html .= '</div>'; 
+        $html .= '</div>';
+
+        if(!empty($parent)) {
+            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
+
+            $html .= '<div class="row">';
+            $html .= '<div class="col-md-12">'; 
+            $html .= $this->HtmlCustom->alert($msg);
+            $html .= '</div>'; 
+            $html .= '</div>';    
+        }
+
+        return $html;
+    }
+
 
     public function note() {
         return parent::note();     
@@ -41,5 +72,14 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     
     public function mailOpenTesto() {
         return parent::note();     
-    }      
+    }  
+    
+    /*
+     * dettaglio ordine padre
+     */
+    public function infoParent($results) {
+
+        if(empty($results)) 
+            return '';    
+    }
 }

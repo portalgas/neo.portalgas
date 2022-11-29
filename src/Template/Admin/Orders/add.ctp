@@ -33,7 +33,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
                  */
                 echo $this->{$htmlCustomSiteOrders}->hiddenFields($this->Identity->get()->organization->id, $parent);
                 
-                // debug($parents);
                 echo $this->{$htmlCustomSiteOrders}->infoParent($parent);
 
                 /*
@@ -51,6 +50,8 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
                   echo '</div>';
                   echo '</div>';
 
+                  echo $this->{$htmlCustomSiteOrders}->gasGroups($gasGroups);
+
                   echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries);
 
                   echo $this->{$htmlCustomSiteOrders}->data($parent);
@@ -59,7 +60,8 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 
                   echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
 
-                  echo $this->{$htmlCustomSiteOrders}->costs($parent);
+                  if(!empty($parent))
+                    echo $this->{$htmlCustomSiteOrders}->costs($parent);
                
             echo '</div>';  // /.box-body 
 

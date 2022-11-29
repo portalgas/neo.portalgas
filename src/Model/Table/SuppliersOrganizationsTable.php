@@ -245,6 +245,54 @@ class SuppliersOrganizationsTable extends Table
         return $results;
     } 
 
+    public function getsList($user, $where = []) {
+
+        $where = array_merge(['SuppliersOrganizations.organization_id' => $user->organization->id], $where);
+        // debug($where);
+        $results = $this->find('list', ['keyField' => 'id', // perche' ha la doppia key
+                                        'valueField' => 'name'])        
+                        ->where($where)
+                        ->order(['SuppliersOrganizations.name']);
+
+        // debug($results);
+        return $results;
+    } 
+
+    public function ACLgets($user, $organization_id, $user_id, $where=[]) {
+        if(!$user->acl['isSuperReferente']) {
+            return $this->gets($user, $where);
+        }
+        else {
+            $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
+            return $suppliersOrganizationsReferentsTable->gets($user, $where);
+        }
+    }
+   
+    public function ACLgetsList($user, $organization_id, $user_id, $where=[]) {
+        if($user->acl['isSuperReferente']) {
+            return $this->getsList($user, $where);
+        }
+        else {
+            $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
+            return $suppliersOrganizationsReferentsTable->getsList($user, $where);
+        }
+    }
+
+    /*
+    $ACLsuppliersIdsOrganization = 0; // contiene stringa supplier_organization_id 1, 3, 5
+    if($this->Controller->isSuperReferente()) {
+        App::import('Model', 'SuppliersOrganization');
+        $SuppliersOrganization = new SuppliersOrganization;
+
+        $ACLsuppliersIdsOrganization = $SuppliersOrganization->getSuppliersOrganizationIds($user);
+    } else {
+        App::import('Model', 'SuppliersOrganizationsReferent');
+        $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
+
+        $ACLsuppliersIdsOrganization = $SuppliersOrganizationsReferent->getSuppliersOrganizationIdsByReferent($user, $user->get('id'));
+    }
+    $user->set('ACLsuppliersIdsOrganization', $ACLsuppliersIdsOrganization);
+*/
     /*
      *  estraggo il proprietario del listino del produttre  del GAS 
      *  $owner_articles = 'REFERENT', 'SUPPLIER', 'DES'

@@ -7,7 +7,7 @@
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      <?php echo __('Gas Group Users'); ?>
+      <?php echo __('Gas Group Users Management'); ?>
       <small><?php echo __('Management'); ?></small>
     </h1>
     <ol class="breadcrumb">

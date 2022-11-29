@@ -48,7 +48,7 @@ class SuppliersOrganizationsReferentsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('SuppliersOrganizations', [
-            'foreignKey' => 'supplier_organization_id',
+            'foreignKey' => ['organization_id', 'supplier_organization_id'],
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Users', [
@@ -95,13 +95,37 @@ class SuppliersOrganizationsReferentsTable extends Table
 
     public function gets($user, $where = []) {
 
-        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id];
+        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id,
+                  'SuppliersOrganizationsReferents.user_id' => $user->id
+               ];
         // debug($where);
         $results = $this->find()
                                 ->where($where)
                                 ->contain(['Users', 
                                           'SuppliersOrganizations' => ['Suppliers', 'CategoriesSuppliers']])
                                 ->all();
+
+        // debug($results);
+        return $results;
+    }
+
+    public function getsList($user, $where = []) {
+
+        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id,
+                  'SuppliersOrganizationsReferents.user_id' => $user->id
+               ];
+        // debug($where);
+        $results = $this->find('list', [
+                        'keyField' => function ($suppliers_organizations_referents) {
+                            return $suppliers_organizations_referents->suppliers_organization->get('id');
+                        },
+                        'valueField' => function ($suppliers_organizations_referents) {
+                            return $suppliers_organizations_referents->suppliers_organization->get('name');
+                        }])
+                        ->where($where)
+                        ->contain(['SuppliersOrganizations'])
+                        ->order(['Deliveries.data'])
+                        ->all();
 
         // debug($results);
         return $results;

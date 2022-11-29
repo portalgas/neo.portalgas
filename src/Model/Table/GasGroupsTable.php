@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 /**
  * GasGroups Model
@@ -109,4 +110,18 @@ class GasGroupsTable extends Table
 
         return $rules;
     }
+
+    /* 
+     * utenti da associare al gruppo
+     */
+    public function findMyLists($user, $organization_id, $user_id) {
+
+        $results = []; 
+         
+        $where = ['user_id' => $user_id, 
+                  'organization_id' => $organization_id, 
+                    ];
+        $results = $this->find('list', ['conditions' => $where, 'order' => ['name']]);
+        return $results;
+    }    
 }

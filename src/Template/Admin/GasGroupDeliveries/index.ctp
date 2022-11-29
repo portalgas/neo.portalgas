@@ -84,9 +84,9 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<tr>';
                   echo '<td class="actions text-left">';
                   // echo $this->Html->link('', ['action' => 'view', $delivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-                  echo $this->Html->link('', ['action' => 'edit', $delivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+                  echo $this->Html->link('', ['action' => 'edit', $gasGroupDelivery->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
                   if(!$delivery->is_system) 
-                    echo $this->Form->postLink('', ['action' => 'delete', $delivery->id], ['confirm' => __('Are you sure you want to delete # {0}?', $delivery->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                    echo $this->Form->postLink('', ['action' => 'delete', $gasGroupDelivery->id], ['confirm' => __('Are you sure you want to delete # {0}?', $delivery->luogo), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
                   else
                     echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
                   echo '</td>';             
