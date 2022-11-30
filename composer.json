@@ -19,7 +19,7 @@
         "cakephp/plugin-installer": "^1.0",
         "components/jquery": "^3.3",
         "cwbit/cakephp-sluggable": "^1.0",
-        "dompdf/dompdf": "^0.8.3",
+        "dompdf/dompdf": "^2.0.1",
         "firebase/php-jwt": "^5.0",
         "frankfoerster/cakephp-asset": "^3.4",
         "frankfoerster/cakephp-environment": "^3.0",
