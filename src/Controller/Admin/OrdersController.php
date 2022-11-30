@@ -337,8 +337,8 @@ class OrdersController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
+    public function edit($id = null, $order_type_id=0, $parent_id=0)
+    {            
         // gestisco solo sotto-gruppi
         $order_type_id = $this->_order_type_id;
 
