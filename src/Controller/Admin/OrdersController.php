@@ -216,11 +216,11 @@ class OrdersController extends AppController
         /*
          *
          * */
-        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $deliveriesTable = TableRegistry::get('Deliveries');
         
         $suppliersOrganizations = [];
         $deliveries = [];
+        $deliveryOptions = []; // puo' essere gasGroups
         /* 
          * oggetto padre (ex ordine DES del titolare)
          * ordine del gas-group-ordine
@@ -228,8 +228,10 @@ class OrdersController extends AppController
         $parent = null; 
         switch ($order_type_id) {
             case Configure::read('Order.type.gas'):
-                $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($user, $organization_id, $user->id);                    
-                $deliveries = $deliveriesTable->getsActiveList($user, $organization_id);
+                $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $user->id);                      
+                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
+
+                $deliveries = $ordersTable->getDeliveries($user, $organization_id); 
             break;                
             case Configure::read('Order.type.promotion'):
                 $ordersTable->addBehavior('OrderPromotions');
@@ -253,23 +255,17 @@ class OrdersController extends AppController
                 $order_id = $parent_id; // ordine 
                 if(!empty($order_id)) {
                     $parent = $ordersTable->getParent($user, $organization_id, $order_id);
-                    if(!empty($parent)) {
-                        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $parent->suppliers_organization);
-                        $deliveries = $this->Delivery->getListByResults($user, $parent->delivery);
-                    }
                 }
-                else {
-                    $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($user, $organization_id, $user->id);                    
-                    
-                    $gasGroupsTable = TableRegistry::get('GasGroups');
-                    $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
-                    $this->set(compact('gasGroups'));
 
-                    $gas_group_id = 1;
-                    $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
-                    $deliveries = $gasGroupDeliveriesTable->getsActiveList($user, $organization_id, $gas_group_id);
-                }
-                break;
+                $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $user->id);                      
+                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
+
+                $gasGroupsTable = TableRegistry::get('GasGroups');
+                $deliveryOptions = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
+
+                $gas_group_id = 1;
+                $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where=['gas_group_id' => $gas_group_id]);
+            break;
         }
 
         // debug($ordersTable);
@@ -278,6 +274,13 @@ class OrdersController extends AppController
         
         if ($this->request->is('post')) {
             $request = $this->request->getData();
+            $request['order_type_id'] = $order_type_id;
+            $request['gas_group_id'] = $gas_group_id;
+            $request['state_code'] = 'CREATE-INCOMPLETE';
+            $request['hasTrasport'] = 'N';
+            $request['hasCostMore'] = 'N';
+            $request['hasCostLess'] = 'N';            
+            // debug($request);
             $order = $ordersTable->patchEntity($order, $request);
             // debug($order);
 
@@ -293,7 +296,11 @@ class OrdersController extends AppController
                 /*
                  * recirect home ordine
                  */
-                $url = ['controller' => 'joomla25Salts', 'action' => 'index', 
+                if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                    $url = ['controller' => 'Orders', 'action' => 'index']; 
+                }
+                else 
+                    $url = ['controller' => 'joomla25Salts', 'action' => 'index', 
                         '?'=> ['scope' => 'BO', 'c_to' => 'Orders', 'a_to' => 'home', 
                                'delivery_id' => $order->delivery_id, 'order_id' => $order->id]
                         ];
@@ -320,7 +327,7 @@ class OrdersController extends AppController
         }
          */ 
 
-        $this->set(compact('order_type_id', 'order', 'parent', 'suppliersOrganizations', 'deliveries'));
+        $this->set(compact('order_type_id', 'order', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
     }
 
     /**

@@ -54,7 +54,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      */ 
-    public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false) {
+    public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
 
         $results = [];
 
@@ -77,19 +77,10 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
-        $deliveriesTable = TableRegistry::get('Deliveries');
-                    
-        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
-                                'Deliveries.stato_elaborazione' => 'OPEN',
-                                'Deliveries.sys' => 'N',
-                                'DATE(Deliveries.data) >= CURDATE()'];
-        $deliveries = $deliveriesTable->getsList($user, $organization_id, $where);
-
-        $sysDeliveries = $deliveriesTable->getDeliverySysList($user, $organization_id);
-
         $results = [];
-        $results += $deliveries;
-        $results += $sysDeliveries;
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $results = $deliveriesTable->getsActiveList($user, $organization_id, $where);
 
         return $results;
     }    

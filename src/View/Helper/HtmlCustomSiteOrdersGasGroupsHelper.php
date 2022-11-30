@@ -33,11 +33,14 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     }
 
     public function gasGroups($gasGroups) {
-        return $this->Form->control('gas_group_id', ['options' => $gasGroups]);
+        
     }
         
-    public function deliveries($deliveries) {
-        return $this->Form->control('delivery_id', ['options' => $deliveries]);
+    public function deliveries($deliveries, $gasGroups) {
+        $html = '';
+        $html .= $this->Form->control('gas_group_id', ['options' => $gasGroups]);
+        $html .= $this->Form->control('delivery_id', ['options' => $deliveries]);
+        return $html;
     }
 
     public function data($parent) {

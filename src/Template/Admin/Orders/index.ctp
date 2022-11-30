@@ -1,4 +1,6 @@
-<!-- Content Header (Page header) -->
+<?php 
+use Cake\Core\Configure;
+?>
 <section class="content-header">
   <h1>
     <?php echo __('Orders');?>
@@ -33,9 +35,13 @@
               <tr>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                   <th scope="col" colspan="2"><?= $this->Paginator->sort('supplier_organization_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('owner_articles') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('owner_articles', __('OwnerArticles')) ?></th>
+                  <?php 
+                  /*  
                   <th scope="col"><?= $this->Paginator->sort('owner_organization_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('owner_supplier_organization_id') ?></th>
+                  */ 
+                  ?>
                   <th scope="col"><?= $this->Paginator->sort('delivery_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('data_inizio') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('data_fine') ?></th>
@@ -45,33 +51,47 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($orders as $order): 
-                ?>
-                <tr>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $order->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $order->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
-                  <?php 
-                    echo '<td>';
-                    echo $this->HtmlCustomSite->drawSupplierImage($order->suppliers_organization->supplier).'</td>';
-                  ?>
-                  <td><?= h($order->suppliers_organization->name) ?></td>
-                  <td><?= h($order->owner_articles) ?></td>
-                  <td><?= $order->has('owner_organization') ? $this->Html->link($order->owner_organization->name, ['controller' => 'OwnerOrganizations', 'action' => 'view', $order->owner_organization->id]) : '' ?></td>
-                  <td><?= $order->has('owner_supplier_organization') ? $this->Html->link($order->owner_supplier_organization->name, ['controller' => 'OwnerSupplierOrganizations', 'action' => 'view', $order->owner_supplier_organization->id]) : '' ?></td>
-                  <td><?= $order->has('delivery') ? $this->Html->link($order->delivery->luogo, ['controller' => 'Deliveries', 'action' => 'view', $order->delivery->id]) : '' ?></td>
-                  <td><?= h($order->data_inizio) ?></td>
-                  <td>
-                    <?= h($order->data_fine) ?>
-                    <?= h($order->data_fine_validation) ?>
-                  </td>
-                  <td><?= h($order->state_code) ?></td>
-                  <td><?= $this->Number->format($order->tot_importo) ?></td>
-                  <td><?= h($order->created) ?></td>
-                </tr>
-              <?php endforeach; ?>
+              <?php foreach ($orders as $order) { 
+                echo '<tr>';
+                echo '<td class="actions text-right">';
+                echo $this->Html->link(__('View'), ['action' => 'view', $order->id], ['class'=>'btn btn-info btn-xs']);
+                echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->id], ['class'=>'btn btn-warning btn-xs']);
+                echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger btn-xs']);
+                echo '</td>';
+                  echo '<td>';
+                  echo $this->HtmlCustomSite->drawSupplierImage($order->suppliers_organization->supplier);
+                  echo '</td>';
+                  echo '<td>';
+                  echo h($order->suppliers_organization->name);
+                  echo '</td>';
+                  echo '<td>';
+                  echo __('ArticlesOwner'.$order->owner_articles);
+                  echo '</td>';
+                // echo '<td>'.$order->has('owner_organization') ? $this->Html->link($order->owner_organization->name, ['controller' => 'OwnerOrganizations', 'action' => 'view', $order->owner_organization->id]) : ''.'</td>';
+                // echo '<td>'.$order->has('owner_supplier_organization') ? $this->Html->link($order->owner_supplier_organization->name, ['controller' => 'OwnerSupplierOrganizations', 'action' => 'view', $order->owner_supplier_organization->id]) : ''.'</td>';
+                  echo '<td>';
+                  echo $order->has('delivery') ? $this->Html->link($order->delivery->luogo, ['controller' => 'Deliveries', 'action' => 'view', $order->delivery->id]) : '';
+                  echo '</td>';                  
+                  echo '<td>';
+                  echo h($order->data_inizio);
+                  echo '</td>';                  
+                  echo '<td>';
+                  echo h($order->data_fine);
+                  if($order->data_fine_validation!=Configure::read('DB.field.date.empty2'))	
+                    echo '<br />Riaperto fino a '.$this->Time->i18nFormat($order->data_fine_validation, "%A %e %B %Y");
+                  echo '</td>';                    
+                  echo '<td>';
+                  echo __($order->state_code.'-label');
+                  echo '</td>';                  
+                  echo '<td>';
+                  echo $this->Number->format($order->tot_importo);
+                  echo '</td>';                  
+                  echo '<td>';
+                  echo h($order->created);
+                  echo '</td>';  
+                echo '</tr>';              
+              }
+              ?>
             </tbody>
           </table>
         </div>

@@ -325,6 +325,7 @@ Configure::write('DB.portalPrefix', 'j_');  // (cron per il dump delle tabelle)
 Configure::write('DB.tableJoomlaWithPassword', 'jos_users'); // nome della tabella per la migrazione degli utenti, contiente la password
 Configure::write('DB.field.date.error', '0000-00-00');
 Configure::write('DB.field.date.empty', '1970-01-01');
+Configure::write('DB.field.date.empty2', '01/01/1970');
 Configure::write('DB.field.double.empty', '0.00');
 Configure::write('DB.field.datetime.empty', '1970-01-01 00:00:00');
 

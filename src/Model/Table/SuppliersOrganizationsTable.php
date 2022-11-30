@@ -260,21 +260,33 @@ class SuppliersOrganizationsTable extends Table
 
     public function ACLgets($user, $organization_id, $user_id, $where=[]) {
         if(!$user->acl['isSuperReferente']) {
+            $where = array_merge($where, ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']]);
             return $this->gets($user, $where);
         }
         else {
+            $results = [];
             $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
-            return $suppliersOrganizationsReferentsTable->gets($user, $where);
+            $suppliersOrganizationsReferents = $suppliersOrganizationsReferentsTable->gets($user, $where);
+            foreach($suppliersOrganizationsReferents as $suppliersOrganizationsReferent) {
+                $results[] = $suppliersOrganizationsReferent->suppliers_organization;
+            }
+            return $results;
         }
     }
    
     public function ACLgetsList($user, $organization_id, $user_id, $where=[]) {
         if($user->acl['isSuperReferente']) {
+            $where = array_merge($where, ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']]);
             return $this->getsList($user, $where);
         }
         else {
+            $results = [];
             $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
-            return $suppliersOrganizationsReferentsTable->getsList($user, $where);
+            $suppliersOrganizationsReferents = $suppliersOrganizationsReferentsTable->getsList($user, $where);
+            foreach($suppliersOrganizationsReferents as $suppliersOrganizationsReferent) {
+                $results[] = $suppliersOrganizationsReferent->suppliers_organization;
+            }
+            return $results;            
         }
     }
 

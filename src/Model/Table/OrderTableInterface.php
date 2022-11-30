@@ -4,7 +4,7 @@ namespace App\Model\Table;
 interface OrderTableInterface {
 
 	// BO produttori per creare l'ordine
-	public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false);
+	public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false);
 
 	// BO consegne per creare l'ordine
 	public function getDeliveries($user, $organization_id, $where=[], $debug=false);

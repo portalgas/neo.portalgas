@@ -1,7 +1,6 @@
 <?php
 namespace App\Model\Table;
 
-
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -22,20 +21,25 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         parent::initialize($config);
 
         $this->setEntityClass('App\Model\Entity\Order');
+
+        $this->belongsTo('GasGroupOrders', [
+            'foreignKey' => 'order_id',
+            'joinType' => 'INNER',
+        ]);        
     }
 
     public function validationDefault(Validator $validator)
     {
         $validator = parent::validationDefault($validator);
         
-        $validator->setProvider('orderGas', \App\Model\Validation\OrderGasValidation::class);
-
+        $validator->setProvider('orderGasGroups', \App\Model\Validation\OrderGasGroupsValidation::class);
+       
         $validator
             ->notEmpty('supplier_organization_id')
             ->add('supplier_organization_id', [
                 'totArticles' => [
                    'rule' => ['totArticles'],
-                   'provider' => 'order',
+                   'provider' => 'orderGasGroups',
                    'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
                 ]
             ]);
@@ -54,21 +58,12 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      */ 
-    public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false) {
+    public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
 
         $results = [];
-
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-    
-        $where = ['SuppliersOrganizations.organization_id' => $organization_id,
-                  'SuppliersOrganizations.stato' => 'Y',
-                  'SuppliersOrganizations.owner_articles' => 'REFERENT'];
+        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);  
 
-        $results = $suppliersOrganizationsTable->find()
-                                ->where($where)
-                                ->contain(['Suppliers', 'CategoriesSuppliers'])
-                                ->order(['SuppliersOrganizations.name'])
-                                ->all();
         return $results;
     } 
 
@@ -77,13 +72,14 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
-        $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
-                    
-        $where['Deliveries'] = ['DATE(GasGroup.data) >= CURDATE()'];
-        $deliveries = $gasGroupDeliveriesTable->getsList($user, $organization_id, $where);
-
         $results = [];
-        $results += $deliveries;
+
+        if(!isset($where['gas_group_id']))
+            return $results;
+
+        $gas_group_id = $where['gas_group_id'];
+        $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
+        $results = $gasGroupDeliveriesTable->getsActiveList($user, $organization_id, $gas_group_id);
 
         return $results;
     }    
@@ -115,7 +111,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
     public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
-
+        return parent::afterSaveWithRequest($user, $organization_id, $request, $debug);
     }
     
     /*

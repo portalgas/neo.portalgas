@@ -182,7 +182,7 @@ class ArticlesTable extends Table
          * ricerco chi gestisce il listino articoli del produttore del GAS
          */
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-        $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $organization_id, $supplier_organization_id, true);
+        $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $organization_id, $supplier_organization_id, $debug);
 
         $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
                   'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,

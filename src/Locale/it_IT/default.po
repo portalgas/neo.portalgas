@@ -1193,8 +1193,11 @@ msgstr "Gruppi e utenti"
 msgid "Gas Group Users Management"
 msgstr "Gestione gasisti"
 
-msgid "Gas Groups Orders"
+msgid "Gas Group Orders"
 msgstr "Ordini per i gruppi"
+
+msgid "Gas Group Orders"
+msgstr "Ordine per il gruppo"
 
 msgid "Gas Group Delivery"
 msgstr "Consegna per i gruppi"
@@ -1202,3 +1205,365 @@ msgstr "Consegna per i gruppi"
 msgid "Gas Group Deliveries"
 msgstr "Consegne per i gruppi"
 
+#
+# O R D E R - S T A T E S
+#
+msgid "CREATE-INCOMPLETE-label"
+msgstr "Creato ma incompleto"
+
+msgid "OPEN-NEXT-label"
+msgstr "Prossima apertura"
+
+msgid "OPEN-label"
+msgstr "Aperto"
+
+msgid "RI-OPEN-VALIDATE-label"
+msgstr "Riaperto"
+
+msgid "PROCESSED-BEFORE-DELIVERY-label"
+msgstr "In carico al referente prima della consegna"
+
+msgid "BEFORE-TRASMISSION-label"
+msgstr "Da trasmettere al produttore"
+
+msgid "POST-TRASMISSION-label"
+msgstr "Trasmesso al produttore"
+
+msgid "REFERENT-WORKING-label"
+msgstr "In carico ai referenti dei G.A.S."
+
+msgid "INCOMING-ORDER-label"
+msgstr "In carico al referente con la merce arrivata"
+
+msgid "PROCESSED-ON-DELIVERY-label"
+msgstr "In carico al cassiere durante la consegna"
+
+msgid "PROCESSED-POST-DELIVERY-label"
+msgstr "In carico al referente dopo la consegna"
+
+msgid "WAIT-PROCESSED-TESORIERE-label"
+msgstr "In attesa che il tesoriere lo prenda in carico"
+
+msgid "PROCESSED-TESORIERE-label"
+msgstr "In carico al tesoriere"
+
+msgid "TO-REQUEST-PAYMENT-label"
+msgstr "Possibilità di richiederne il pagamento"
+
+msgid "TO-PAYMENT-label"
+msgstr "Associato ad una richiesta di pagamento"
+
+msgid "PRODGASPROMOTION-GAS-WORKING-label"
+msgstr "In lavorazione"
+
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-label"
+msgstr "In lavorazione"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-label"
+msgstr "Trasmesso ai G.A.S."
+
+msgid "PRODGASPROMOTION-GAS-FINISH-label"
+msgstr "Terminata"
+
+msgid "USER-PAID-label"
+msgstr "Da saldare da parte dei gasisti"
+
+msgid "SUPPLIER-PAID-label"
+msgstr "Pagare al produttore"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-label"
+msgstr "In attesa che la richiesta si chiuda" 
+
+msgid "CLOSE-label"
+msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-GAS-OPEN-label"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-label"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-label"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-label"
+msgstr "Promozione chiusa"
+
+#
+# intro
+#
+msgid "CREATE-INCOMPLETE-intro"
+msgstr "Mancano articoli associati all''ordine"
+
+msgid "OPEN-NEXT-intro"
+msgstr "L'ordine creato ma ancora da aprire"
+
+msgid "OPEN-intro"
+msgstr "Ordine aperto, gli utenti possono effettuare acquisti"
+
+msgid "RI-OPEN-VALIDATE-intro"
+msgstr "Ordine riaperto per completare i colli"
+
+msgid "PROCESSED-BEFORE-DELIVERY-intro"
+msgstr "In carico al referente prima della consegna"
+
+msgid "POST-TRASMISSION-intro"
+msgstr "Ordine condiviso trasmesso al produttore: i G.A.S. associati non possono più effettuare modifiche"
+
+msgid "REFERENT-WORKING-intro"
+msgstr "Gli ordini asosciati all'ordine condiviso possono essere modificati dai G.A.S. associati"
+
+msgid "BEFORE-TRASMISSION-intro"
+msgstr "Ordine condiviso da trasmesmettere al produttore"
+
+msgid "INCOMING-ORDER-intro"
+msgstr "In carico al referente con la merce arrivata"
+
+msgid "PROCESSED-ON-DELIVERY-intro"
+msgstr "In carico al cassiere durante la consegna"
+
+msgid "PROCESSED-POST-DELIVERY-intro"
+msgstr "In carico al referente dopo la consegna"
+
+msgid "WAIT-PROCESSED-TESORIERE-intro"
+msgstr "In attesa che il tesoriere lo prenda in carico"
+
+msgid "PROCESSED-TESORIERE-intro"
+msgstr "In carico al tesoriere, il referente non potrà modificarlo"
+
+msgid "TO-REQUEST-PAYMENT-intro"
+msgstr "In carico al tesoriere per associarlo ad una richiesta il pagamento"
+
+msgid "TO-PAYMENT-intro"
+msgstr "Possibilità di richiederne il pagamento"
+
+msgid "PRODGASPROMOTION-GAS-WORKING-intro"
+msgstr "In lavorazione, non visibile ai G.A.S."
+
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-intro"
+msgstr "In lavorazione, non visibile agli utenti"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-intro"
+msgstr "Trasmesso ai gestori dei G.A.S. per valutarla"
+
+msgid "PRODGASPROMOTION-GAS-FINISH-intro"
+msgstr "Data di fine promozione terminata"
+
+msgid "USER-PAID-intro"
+msgstr "Ordine da saldato da parte di tutti i gasisti"
+
+msgid "SUPPLIER-PAID-intro"
+msgstr "Ordine pagato al produttore"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-intro"
+msgstr "In attesa che la richiesta di pagamento si chiuda"
+
+msgid "CLOSE-intro"
+msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-GAS-OPEN-intro"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-intro"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-intro"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-intro"
+msgstr "Promozione chiusa"
+
+#
+# descri
+#
+msgid "CREATE-INCOMPLETE-descri"
+msgstr "L'ordine è stato creato ma non sono stati associati gli articoli"
+
+msgid "OPEN-NEXT-descri"
+msgstr "L'ordine creato ma la data di apertura è antecedente alla data odierna"
+
+msgid "OPEN-descri"
+msgstr "Ordine aperto, gli utenti possono effettuare acquisti"
+
+msgid "RI-OPEN-VALIDATE-descri"
+msgstr "Ordine riaperto per completare i colli"
+
+msgid "PROCESSED-BEFORE-DELIVERY-descri"
+msgstr "In carico al referente prima della consegna: il referente potrà apportare le eventuali modifiche"
+
+msgid "INCOMING-ORDER-descri"
+msgstr "In carico al referente con la merce arrivata: il referente potrà apportare le eventuali modifiche, gestire i pesi, gli importi, il trasporto, i costi aggiuntivi, gli sconti"
+
+msgid "PROCESSED-ON-DELIVERY-descri"
+msgstr "L'ordine è in carico al cassiere per effettuare le modifiche e i pagamenti"
+
+msgid "PROCESSED-POST-DELIVERY-descri"
+msgstr "In carico al referente dopo la consegna: il referente potrà apportare le eventuali modifiche, gestire i pesi, gli importi, il trasporto, i costi aggiuntivi, gli sconti"
+
+msgid "WAIT-PROCESSED-TESORIERE-descri"
+msgstr "L'ordine è in attesa che il tesoriere lo prenda in carico, il referente può riportalo allo stato precedente"
+
+msgid "PROCESSED-TESORIERE-descri"
+msgstr "In carico al tesoriere, il referente non potrà modificarlo"
+
+msgid "TO-REQUEST-PAYMENT-descri"
+msgstr "Possibilità di richiederne il pagamento, il Tesoriere potrà associarlo ad una richiesta di pagamento"
+
+msgid "TO-PAYMENT-descri"
+msgstr "Associato ad una richiesta di pagamento"
+
+msgid "BEFORE-TRASMISSION-descri"
+msgstr "Ordine da trasmettere al produttori: tutti i G.A.S. possono effettuare modifiche"
+
+msgid "POST-TRASMISSION-descri"
+msgstr "Ordine trasmesso al produttori: i G.A.S. non possono più effettuare modifiche. Solo il Titolare può effetuare modifiche"
+
+msgid "REFERENT-WORKING-descri"
+msgstr "L'ordine può nuovamente essere modificato dai referenti dei singoli G.A.S.: potranno vedere e far quadrare le eventuali modifiche comunicate dal Titolare"
+
+msgid "WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di trasmetterlo ai G.A.S."
+
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
+
+msgid "PRODGASPROMOTION-GAS-WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-descri"
+msgstr "Se i gestori dei G.A.S. la riterranno interessante potranno creare un ordine per i loro gasisti"
+
+msgid "PRODGASPROMOTION-GAS-FINISH-descri"
+msgstr "La promozione è terminata e gli eventuali G.A.S. non possono più effettuare acquisti"
+
+msgid "USER-PAID-descri"
+msgstr "Ordine da saldare da parte di tutti i gasisti, il Cassiere / Tesoriere dovrà occuparsi dei pagamenti"
+
+msgid "SUPPLIER-PAID-descri"
+msgstr "Ordine da pagare al produttore, il Tesoriere dovrà occuparsi del pagamento"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-descri"
+msgstr "L'ordine sarà chiuso quando tutti gli ordini associati alla richiesta di pagamento saranno saldati da parte di tutti i gasisti"
+
+msgid "CLOSE-descri"
+msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-GAS-OPEN-descri"
+msgstr "Gli utenti potranno effettuare gli acquisti"
+
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-descri"
+msgstr "Gli utenti potranno effettuare gli acquisti"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-descri"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-descri"
+msgstr "Promozione chiusa"
+
+#
+# target
+#
+msgid "CREATE-INCOMPLETE-target"
+msgstr "Referente"
+
+msgid "OPEN-NEXT-target"
+msgstr "Referente"
+
+msgid "OPEN-target"
+msgstr "Utente"
+
+msgid "RI-OPEN-VALIDATE-target"
+msgstr "Utente"
+
+msgid "PROCESSED-BEFORE-DELIVERY-target"
+msgstr "Referente"
+
+msgid "INCOMING-ORDER-target"
+msgstr "Referente"
+
+msgid "PROCESSED-ON-DELIVERY-target"
+msgstr "Cassiere"
+
+msgid "PROCESSED-POST-DELIVERY-target"
+msgstr "Referente"
+
+msgid "WAIT-PROCESSED-TESORIERE-target"
+msgstr "Tesoriere"
+
+msgid "PROCESSED-TESORIERE-target"
+msgstr "Tesoriere"
+
+msgid "TO-REQUEST-PAYMENT-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "TO-REQUEST-PAYMENT-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "TO-PAYMENT-target"
+msgstr "Tesoriere"
+
+msgid "USER-PAID-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "USER-PAID-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "SUPPLIER-PAID-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "SUPPLIER-PAID-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "USER-PAID-target-PAYON"
+msgstr "Cassiere"
+
+msgid "SUPPLIER-PAID-target-PAYON"
+msgstr "Cassiere"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "CLOSE-target-PAYON"
+msgstr "Cassiere"
+
+msgid "CLOSE-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "CLOSE-target-PAYON-POST"
+msgstr "Cassiere/Tesoriere"
+
+msgid "PROCESSED-POST-DELIVERY-action"
+msgstr "(passalo al tesoriere)"
+
+msgid "WAIT-PROCESSED-TESORIERE-action"
+msgstr "(riportalo allo stato 'in carico al referente')"
+
+msgid "INCOMING-ORDER-action"
+msgstr "(è arrivata la merce)"
+
+msgid "PROCESSED-BEFORE-DELIVERY-action"
+msgstr "(non è arrivata la merce)"
+
+msgid "PROCESSED-ON-DELIVERY-action"
+msgstr "(rimandalo al referente)"
+
+#
+# O W N E R - L I S T I N O
+#
+msgid "OwnerArticles"
+msgstr "Gestore articoli"
+
+msgid "OwnerArticle"
+msgstr "Gestore articolo"
+
+msgid "ArticlesOwnerSUPPLIER"
+msgstr "produttore"
+
+msgid "ArticlesOwnerREFERENT"
+msgstr "referente del produttore"
+
+msgid "ArticlesOwnerDES"
+msgstr "titolare D.E.S. del produttore"

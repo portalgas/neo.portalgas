@@ -100,7 +100,7 @@ class OrdersTable extends Table
                    'message' => 'La data di apertura non può essere posteriore alla data di chiusura'
                 ],
                 'dateComparisonToDelivery' => [
-                    'rule' => ['dateComparisonToDelivery', '<='],
+                    'rule' => ['dateComparisonToDelivery', '<'],
                     'provider' => 'order',
                     'message' => 'La data di apertura non può essere posteriore alla data della consegna'
                 ]
@@ -118,7 +118,7 @@ class OrdersTable extends Table
                    'message' => 'La data di chiusura non può essere antecedente alla data di apertura'
                 ],
                 'dateComparisonToDelivery' => [
-                    'rule' => ['dateComparisonToDelivery', '<='],
+                    'rule' => ['dateComparisonToDelivery', '>='],
                     'provider' => 'order',
                     'message' => 'La data di chiusura non può essere posteriore o uguale alla data della consegna'
                 ]

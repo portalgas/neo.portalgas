@@ -50,9 +50,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
                   echo '</div>';
                   echo '</div>';
 
-                  echo $this->{$htmlCustomSiteOrders}->gasGroups($gasGroups);
-
-                  echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries);
+                  echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
 
                   echo $this->{$htmlCustomSiteOrders}->data($parent);
 

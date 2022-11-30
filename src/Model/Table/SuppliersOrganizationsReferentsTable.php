@@ -102,7 +102,10 @@ class SuppliersOrganizationsReferentsTable extends Table
         $results = $this->find()
                                 ->where($where)
                                 ->contain(['Users', 
-                                          'SuppliersOrganizations' => ['Suppliers', 'CategoriesSuppliers']])
+                                          'SuppliersOrganizations' => [
+                                            'conditions' => ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']],
+                                            'Suppliers', 'CategoriesSuppliers']
+                                            ])
                                 ->all();
 
         // debug($results);
