@@ -17,7 +17,10 @@ use App\Form\OrderForm;
 class OrdersController extends AppController
 {
     private $_order_type_id = 0;
-
+    private $_user = null;
+    private $_organization = null; // gas scelto
+    private $_ordersTable = null;    // istanza del model Orders / OrderGasGroups ...
+   
     public function initialize()
     {
         parent::initialize();
@@ -30,25 +33,25 @@ class OrdersController extends AppController
          * gestisco solo sotto gruppi
          */
         $this->_order_type_id = Configure::read('Order.type.gas_groups');
+        $this->_user = $this->Authentication->getIdentity();
+        if(!isset($this->_user->acl)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }            
+        $this->_organization = $this->_user->organization; // gas scelto
+        // debug($this->_user);
     }
 
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
 
-        $user = $this->Authentication->getIdentity();
-        $organization = $user->organization; // gas scelto
-      
-        if(!isset($user->acl) ||
-            /* per ora solo i sotto-gruppi
-            || (
-            !$user->acl['isSuperReferente'] && 
-            !$user->acl['isReferentGeneric'])) 
-            */ 
-            !isset($organization->paramsConfig['hasGasGroups']) || 
-            $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGropusManagerOrders']
-            ) { 
+        /* per ora solo i sotto-gruppi
+        || (
+        !$user->acl['isSuperReferente'] && 
+        !$user->acl['isReferentGeneric'])) 
+        */ 
+        if($this->_organization->paramsConfig['hasGasGroups']=='N' || !$this->_user->acl['isGasGropusManagerOrders']) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
@@ -92,10 +95,7 @@ class OrdersController extends AppController
         // gestisco solo sotto-gruppi
         $order_type_id = $this->_order_type_id;
 
-        $user = $this->Authentication->getIdentity();
-        $organization = $user->organization; // gas scelto
-
-        $where = ['Orders.organization_id' => $organization->id,
+        $where = ['Orders.organization_id' => $this->_organization->id,
                  'Orders.order_type_id' => $order_type_id];
         $this->paginate = [
             'order' => ['Deliveries.data', 'Orders.data_inizio'],            
@@ -125,72 +125,6 @@ class OrdersController extends AppController
         $this->set('order', $order);
     }
 
-    public function test()
-    { 
-        exit;
-        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        }
-                
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id; // gas scelto
-        // debug($user);
-
-        $order_type_id = Configure::read('Order.type.promotion');
-        $order_type_id = Configure::read('Order.type.pact-pre'); ;
-        $order_type_id = Configure::read('Order.type.pact'); ;
-        $order_type_id = Configure::read('Order.type.gas');
-        debug($order_type_id);
-        $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
-
-        $ordersTable->addBehavior('Orders');
-        // debug($ordersTable);
-        $order = $ordersTable->newEntity();
-                
-        /*
-         * se il form ha degli errori di validazione, recupero i dati della priceTypes e creo una variabile js che vue con il metodo getRows() recupera
-         */ 
-        $json_price_types = '{}';
-        
-        if ($this->request->is('post')) {   
-            
-            //debug($this->request->getData());  
-            $order = $ordersTable->patchEntity($order, $this->request->getData());
-            if (!$ordersTable->save($order)) {
-
-                /*
-                 * se in errore recupero i valori dei priceType inseriti dall'utente
-                 */ 
-                $json_price_types = $this->PriceType->jsonToRequest($user, $this->request->getData());     
-                // debug($json_price_types);  
-                // debug($order); 
-                $this->Flash->error($order->getErrors());
-            }
-            else {
-                $order_id = $order->id;
-                $this->Flash->success(__('The {0} has been saved.', 'Order'));
-                return $this->redirect(['controller' => 'ArticlesOrders', 'action' => 'add', $order_id]);
-            }
-        }
-        
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id);
-        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
-        // debug($suppliersOrganizations);
-        if(empty($suppliersOrganizations)) {
-            $this->Flash->error(__('no suppliersOrganizations'));
-        }
-        else {
-
-        }
-        $deliveries = $ordersTable->getDeliveries($user, $organization_id);
-
-        $priceTypesTable = TableRegistry::get('PriceTypes');
-        $this->set('price_type_enums', $priceTypesTable->enum('type'));
-
-        $this->set(compact('order_type_id', 'order', 'suppliersOrganizations', 'deliveries', 'json_price_types'));
-    }
-
     /*
     $parent_id = des_order_id / prod_gas_promotion_id / order_id (gas_groups)
     $order_type_id = Configure::read('Order.type.pact_pre'); ;
@@ -203,98 +137,36 @@ class OrdersController extends AppController
     {            
         // gestisco solo sotto-gruppi
         $order_type_id = $this->_order_type_id;
+                
+        $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
+        $this->_ordersTable->addBehavior('Orders');
         
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id; // gas scelto
-        // debug($user);
+        $datas = $this->_getData($order_type_id, $parent_id);
+        $suppliersOrganizations = $datas['suppliersOrganizations'];
+        $deliveries = $datas['deliveries'];
+        $deliveryOptions = $datas['deliveryOptions'];
+        $parent = $datas['parent']; 
+        $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
 
-        // debug($order_type_id);
-        
-        $ordersTable = $this->Orders->factory($user, $organization_id, $order_type_id);
-        $ordersTable->addBehavior('Orders');
-
-        /*
-         *
-         * */
-        $deliveriesTable = TableRegistry::get('Deliveries');
-        
-        $suppliersOrganizations = [];
-        $deliveries = [];
-        $deliveryOptions = []; // puo' essere gasGroups
-        /* 
-         * oggetto padre (ex ordine DES del titolare)
-         * ordine del gas-group-ordine
-         */
-        $parent = null; 
-        switch ($order_type_id) {
-            case Configure::read('Order.type.gas'):
-                $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $user->id);                      
-                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
-
-                $deliveries = $ordersTable->getDeliveries($user, $organization_id); 
-            break;                
-            case Configure::read('Order.type.promotion'):
-                $ordersTable->addBehavior('OrderPromotions');
-                $prod_gas_promotion_id = $parent_id;
-                $parent = $ordersTable->getParent($user, $organization_id, $prod_gas_promotion_id);
-                if(!empty($parent)) {
-                   $where = ['SuppliersOrganizations.supplier_id' => $parent->suppliersOrganization->organizations->supplier_id];
-                   $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $where);    
-                   $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
-                   // debug($suppliersOrganizations);
-                   if(empty($suppliersOrganizations)) {
-                       $this->Flash->error(__("Il produttore della promozione non è presente!"));
-                   }
-                }
-                break;
-            case Configure::read('Order.type.des'):
-            case Configure::read('Order.type.des_titolare'):
-                $des_order_id = $parent_id;
-                break;
-            case Configure::read('Order.type.gas_groups'):
-                $order_id = $parent_id; // ordine 
-                if(!empty($order_id)) {
-                    $parent = $ordersTable->getParent($user, $organization_id, $order_id);
-                }
-
-                $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($user, $organization_id, $user->id);                      
-                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($user, $suppliersOrganizations);
-
-                $gasGroupsTable = TableRegistry::get('GasGroups');
-                $deliveryOptions = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
-
-                $gas_group_id = 1;
-                $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where=['gas_group_id' => $gas_group_id]);
-            break;
-        }
-
-        // debug($ordersTable);
-
-        $order = $ordersTable->newEntity();
-        
+        $order = $this->_ordersTable->newEntity(); 
         if ($this->request->is('post')) {
             $request = $this->request->getData();
             $request['order_type_id'] = $order_type_id;
-            $request['gas_group_id'] = $gas_group_id;
             $request['state_code'] = 'CREATE-INCOMPLETE';
             $request['hasTrasport'] = 'N';
             $request['hasCostMore'] = 'N';
             $request['hasCostLess'] = 'N';            
             // debug($request);
-            $order = $ordersTable->patchEntity($order, $request);
+            $order = $this->_ordersTable->patchEntity($order, $request);
             // debug($order);
 
-            /* 
-             * OrderBehavior / OrderPromotionsBehavior
-             */
-            if ($ordersTable->save($order)) {
+            if ($this->_ordersTable->save($order)) {
 
-                $ordersTable->afterSaveWithRequest($user, $organization_id, $request);
-
+                $this->_ordersTable->afterSaveWithRequest($this->_user, $this->_organization->id, $request);
                 $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
                 /*
-                 * recirect home ordine
+                 * redirect home ordine
                  */
                 if($order_type_id==Configure::read('Order.type.gas_groups')) {
                     $url = ['controller' => 'Orders', 'action' => 'index']; 
@@ -309,25 +181,9 @@ class OrdersController extends AppController
             }
             else
                 $this->Flash->error($order->getErrors());
-        }
+        } // end post
 
-        // $organizations = $ordersTable->Organizations->find('list', ['limit' => 200]);
-        // $suppliersOrganizations = $ordersTable->SuppliersOrganizations->find('list', ['limit' => 200]);
-        // $ownerOrganizations = $ordersTable->OwnerOrganizations->find('list', ['limit' => 200]);
-        // $ownerSupplierOrganizations = $ordersTable->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
-        
-        /* 
-         * id => id_organization;id_delivery 
-         * $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
-         * perche' doppia key
-        $where = ['ProdGasPromotionsOrganizationsDeliveries.prod_gas_promotion_id' => $prod_gas_promotion_id];
-        $deliveries = $ordersTable->getDeliveries($user, $organization_id, $where);
-        if(empty($deliveries)) {
-            $this->Flash->error(__("Il Gas non ha consegne disponibili!"));
-        }
-         */ 
-
-        $this->set(compact('order_type_id', 'order', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
+        $this->set(compact('order'));
     }
 
     /**
@@ -341,27 +197,117 @@ class OrdersController extends AppController
     {            
         // gestisco solo sotto-gruppi
         $order_type_id = $this->_order_type_id;
+                
+        $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
+        $this->_ordersTable->addBehavior('Orders');
+        
+        $datas = $this->_getData($order_type_id, $parent_id);
+        $suppliersOrganizations = $datas['suppliersOrganizations'];
+        $deliveries = $datas['deliveries'];
+        $deliveryOptions = $datas['deliveryOptions'];
+        $parent = $datas['parent']; 
+        $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
 
-        $order = $this->Orders->get($id, [
+        $order = $this->_ordersTable->get([$this->_organization->id, $id], [
             'contain' => []
         ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $order = $this->Orders->patchEntity($order, $this->request->getData());
-            if ($this->Orders->save($order)) {
+            $request = $this->request->getData();       
+            // debug($request);
+            $order = $this->_ordersTable->patchEntity($order, $request);
+            // debug($order);
+
+            if ($this->_ordersTable->save($order)) {
+
+                $this->_ordersTable->afterSaveWithRequest($this->_user, $this->_organization->id, $request);
                 $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
-                return $this->redirect(['action' => 'index']);
+                /*
+                 * redirect home ordine
+                 */
+                if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                    $url = ['controller' => 'Orders', 'action' => 'index']; 
+                }
+                else 
+                    $url = ['controller' => 'joomla25Salts', 'action' => 'index', 
+                        '?'=> ['scope' => 'BO', 'c_to' => 'Orders', 'a_to' => 'home', 
+                               'delivery_id' => $order->delivery_id, 'order_id' => $order->id]
+                        ];
+
+                return $this->redirect($url);                
             }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Order'));
+            else
+                $this->Flash->error($order->getErrors());
+        } // end post
+
+        $this->set(compact('order'));
+    }
+
+    /* 
+     * return 
+     *  suppliersOrganizations produttori
+     *  deliveries consegne
+     *  deliveryOptions gruppo GAS che ha le proprie consegne
+     *  parent ordine padre del gruppo GAS / promozione / ordine DES del titolare
+     */
+    private function _getData($order_type_id, $parent_id) {
+
+        $results = [];
+        $results['suppliersOrganizations'] = [];
+        $results['deliveries'] = [];
+        $results['deliveryOptions'] = [];
+        $results['parent'] = [];
+        
+        $suppliersOrganizations = [];
+        $deliveries = [];
+        $deliveryOptions = [];
+        $parent = [];        
+        switch ($order_type_id) {
+            case Configure::read('Order.type.gas'):
+                $suppliersOrganizations = $this->_ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+
+                $deliveries = $this->_ordersTable->getDeliveries($this->_user, $this->_organization->id); 
+            break;                
+            case Configure::read('Order.type.promotion'):
+                $this->_ordersTable->addBehavior('OrderPromotions');
+                $prod_gas_promotion_id = $parent_id;
+                $parent = $this->_ordersTable->getParent($this->_user, $this->_organization->id, $prod_gas_promotion_id);
+                if(!empty($parent)) {
+                $where = ['SuppliersOrganizations.supplier_id' => $parent->suppliersOrganization->organizations->supplier_id];
+                $suppliersOrganizations = $this->_ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $where);    
+                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+                // debug($suppliersOrganizations);
+                }
+                break;
+            case Configure::read('Order.type.des'):
+            case Configure::read('Order.type.des_titolare'):
+                $des_order_id = $parent_id;
+                break;
+            case Configure::read('Order.type.gas_groups'):
+                $order_id = $parent_id; // ordine 
+                if(!empty($order_id)) {
+                    $parent = $this->_ordersTable->getParent($this->_user, $this->_organization->id, $order_id);
+                }
+
+                $suppliersOrganizations = $this->_ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+
+                $gasGroupsTable = TableRegistry::get('GasGroups');
+                $deliveryOptions = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+
+                $gas_group_id = 1;
+                $deliveries = $this->_ordersTable->getDeliveries($this->_user, $this->_organization->id, $where=['gas_group_id' => $gas_group_id]);
+            break;
         }
-        $organizations = $this->Orders->Organizations->find('list', ['limit' => 200]);
-        $suppliersOrganizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $ownerOrganizations = $this->Orders->OwnerOrganizations->find('list', ['limit' => 200]);
-        $ownersSupplierOrganizations = $this->Orders->OwnerSupplierOrganizations->find('list', ['limit' => 200]);
-        $deliveries = $this->Orders->Deliveries->find('list', ['limit' => 200]);
-        $prodGasPromotions = []; // $this->Orders->ProdGasPromotions->find('list', ['limit' => 200]);
-        $desOrders = []; // $this->Orders->DesOrders->find('list', ['limit' => 200]);
-        $this->set(compact('order', 'organizations', 'suppliersOrganizations', 'ownerOrganizations', 'ownerSupplierOrganizations', 'deliveries', 'prodGasPromotions', 'desOrders'));
+
+        $results['suppliersOrganizations'] = $suppliersOrganizations;
+        $results['deliveries'] = $deliveries;
+        $results['deliveryOptions'] = $deliveryOptions;
+        $results['parent'] = $parent;
+
+        return $results;
     }
 
     public function delete($id = null)

@@ -369,10 +369,15 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function drawSupplierImage($supplier) {
+    public function drawSupplierImage($supplier, $options=[]) {
 
         $html = '';
         if(!empty($supplier->img1)) {
+
+            if(isset($options['max-width']))
+                $max_width = $options['max-width'];
+            else 
+                $max_width = '100px';
 
             $config = Configure::read('Config');
             $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
@@ -383,7 +388,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $url = '';
             if(file_exists($img_path_supplier)) {
                 $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
-                $html .= '<img style="max-width:100px" src="'.$url.'" title="'.$supplier->name.'" alt="'.$supplier->name.'" />';
+                $html .= '<img style="'.$max_width.'" src="'.$url.'" title="'.$supplier->name.'" alt="'.$supplier->name.'" />';
             }
         }
         return $html;

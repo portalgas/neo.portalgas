@@ -1,8 +1,6 @@
 <?php
 use Cake\Core\Configure;
-
 // echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'aggiungi']);
 
@@ -12,7 +10,6 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'ag
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 // debug($htmlCustomSiteOrders);
 ?>
-  <!-- Main content -->
   <section class="content">
     <div class="row">
       <div class="col-md-12">
@@ -38,28 +35,17 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
                 /*
                  * produttore
                  */
-                  echo '<div class="row">';
-                  echo '<div class="col-md-8">';
-                  // echo $this->HtmlCustomSite->boxSupplierOrganization($suppliersOrganizations);
-                  echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
-                  echo '</div>';
-                  echo '<div class="col-md-4" id="vue-supplier-organization" style="display: none;">';
-                  echo '<div class="box-img" v-if="supplier_organization.supplier.img1!=\'\'"><img width="'.Configure::read('Supplier.img.preview.width').'" class="img-responsive-disabled userAvatar" v-bind:src="supplier_organization.img1" /></div>';
-                  echo '<div class="box-name">{{supplier_organization.name}}</div>';
-                  echo '<div class="box-owner">'.__('organization_owner_articles').': {{supplier_organization.owner_articles | ownerArticlesLabel}}</div>';
-                  echo '</div>';
-                  echo '</div>';
+                echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
+                
+                echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
 
-                  echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
+                echo $this->{$htmlCustomSiteOrders}->data($parent);
 
-                  echo $this->{$htmlCustomSiteOrders}->data($parent);
+                echo $this->{$htmlCustomSiteOrders}->note();
 
-                  echo $this->{$htmlCustomSiteOrders}->note();
+                echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
 
-                  echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
-
-                  if(!empty($parent))
-                    echo $this->{$htmlCustomSiteOrders}->costs($parent);
+                echo $this->{$htmlCustomSiteOrders}->extra($order, $parent);
                
             echo '</div>';  // /.box-body 
 

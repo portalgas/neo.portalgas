@@ -35,17 +35,6 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
         $validator->setProvider('orderPromotion', \App\Model\Validation\OrderPromotionValidation::class);
 
         $validator
-            ->notEmpty('supplier_organization_id')
-            ->add('supplier_organization_id', [
-                'orderDuplicate' => [
-                    'on' => ['create'], // , 'create', 'update',
-                    'rule' => ['orderDuplicate'],
-                    'provider' => 'orderPromotion',
-                    'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
-                ]
-            ]);
-
-        $validator
             ->notEmpty('data_fine')
             ->add('data_fine', [
                 'dateMaggiore' => [

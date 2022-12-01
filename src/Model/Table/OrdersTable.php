@@ -70,7 +70,8 @@ class OrdersTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->notEmpty('supplier_organization_id')
+            ->requirePresence('supplier_organization_id')
+            ->notEmptyString('supplier_organization_id')
             ->add('supplier_organization_id', [
                 'orderDuplicate' => [
                     'on' => ['create'], // , 'create', 'update',

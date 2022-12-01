@@ -64,7 +64,7 @@ class OrderValidation extends Validation
     }
 
     public static function orderDuplicate($value, $context)
-    {
+    { 
     	// debug($context); 	
     	$organization_id = $context['data']['organization_id'];
     	$delivery_id = $context['data']['delivery_id'];  
@@ -83,10 +83,11 @@ class OrderValidation extends Validation
                   'Orders.type_draw IN ' => $type_draws];
 
         /*
-         * per edit: validator e' definito 'on' => ['create'] 
-        if(isset($context['data']['id']))
-            $where += ['Order.id !=' => $context['data']['id']];
-         */
+        * workaround => per edit: validator e' definito 'on' => ['create'] non va
+        */
+        if(!$context['newRecord']) {
+            $where += ['Orders.id !=' => $context['data']['id']];
+        }
 
         // debug($where);
         $results = $ordersTable->find()

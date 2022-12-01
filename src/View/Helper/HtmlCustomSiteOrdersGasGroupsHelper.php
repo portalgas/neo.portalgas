@@ -29,7 +29,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     }    
 
     public function supplierOrganizations($suppliersOrganizations) {
-        return $this->Form->control('supplier_organization_id', ['options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
+        return parent::supplierOrganizations($suppliersOrganizations);
     }
 
     public function gasGroups($gasGroups) {
@@ -74,7 +74,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     } 
     
     public function mailOpenTesto() {
-        return parent::note();     
+        return parent::mailOpenTesto();     
     }  
     
     /*

@@ -29,7 +29,7 @@ $(function () {
 	  },  
 	  methods: {   	  	
 		  	show: function (e) {
-		      $('#vue-supplier-organization').show('slow');
+		      $('#vue-supplier-organization-img').show('slow');
 		    },
 	        getSuppliersOrganization: function() {
 

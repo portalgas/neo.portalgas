@@ -29,18 +29,7 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
         $validator = parent::validationDefault($validator);
 
         $validator->setProvider('orderPact', \App\Model\Validation\OrderPactValidation::class);
-
-        $validator
-            ->notEmpty('supplier_organization_id')
-            ->add('supplier_organization_id', [
-                'orderDuplicate' => [
-                    'on' => ['create'], // , 'create', 'update',
-                    'rule' => ['orderDuplicate'],
-                    'provider' => 'orderPact',
-                    'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
-                ]
-            ]);  
-
+        
         return $validator;
     }
 

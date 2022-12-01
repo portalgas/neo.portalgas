@@ -27,9 +27,8 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         return $html;
     }
 
-
     public function supplierOrganizations($suppliersOrganizations) {
-       return $this->Form->control('supplier_organization_id', ['label' => __('SupplierOrganization'), 'options' => $suppliersOrganizations, '@change' => 'getSuppliersOrganization']);
+        return parent::supplierOrganizations($suppliersOrganizations);
     }
 
     public function deliveries($deliveries) {
@@ -62,40 +61,8 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
     /*
      * trasport / cost_more / cost_less
      */
-    public function costs($parent) {
-
-        // debug($parent);
-
-        $hasTrasport = $parent->prodGasPromotionsOrganizations->hasTrasport;
-        $trasport = $parent->prodGasPromotionsOrganizations->trasport;
-        $hasCostMore = $parent->prodGasPromotionsOrganizations->hasCostMore;
-        $costMore = $parent->prodGasPromotionsOrganizations->costMore;
-
-        $html = '';
-        $html .= '<div class="row">';
-        $html .= '<div class="col-md-2">';
-        $html .= $this->Form->label('Trasport', ['label' => __('CostTrasport')]);
-        $html .= '</div>';  
-        $html .= '<div class="col-md-2">'; 
-        $html .= $this->Form->radio('hasTrasport', ['Y' => 'Si', 'N' => 'No'], ['default' => $hasTrasport, 'disabled']);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-2">'; 
-        if($hasTrasport=='Y' && $trasport>0)
-            $html .= $this->Form->control('trasport', ['label' => false, 'disabled']);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-2">';
-        $html .= $this->Form->label('CostMore', ['label' => __('CostMore')]);
-        $html .= '</div>';  
-        $html .= '<div class="col-md-2">'; 
-        $html .= $this->Form->radio('hasCostMore', ['Y' => 'Si', 'N' => 'No'], ['default' => $hasCostMore, 'disabled']);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-2">'; 
-        if($hasCostMore=='Y' && $costMore>0)
-            $html .= $this->Form->control('cost_more', ['label' => false, 'disabled']);
-        $html .= '</div>'; 
-        $html .= '</div>'; 
-
-        return $html;
+    public function extra($parent) {
+        return parent::extra($parent);
     }
 
     /*

@@ -23,4 +23,8 @@ class HtmlCustomSiteOrdersPactPreHelper extends HtmlCustomSiteOrdersPactHelper
     public function deliveries($deliveries) {
         return $this->Form->control('delivery_id', ['type' => 'radio' , 'options' => $deliveries]);
     }
+
+    public function supplierOrganizations($suppliersOrganizations) {
+        return parent::supplierOrganizations($suppliersOrganizations);
+    }    
 }
