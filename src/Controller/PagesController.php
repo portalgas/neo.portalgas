@@ -87,7 +87,7 @@ class PagesController extends AppController
      * view src\Template\Pages\vue_guest.ctp => $this->layout = 'vue';
      */
     public function vueGuest() {
-
+       
         $hasGasUsersPromotions = false;
 
         $user = $this->Authentication->getIdentity();

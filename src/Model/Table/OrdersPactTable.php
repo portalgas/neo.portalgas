@@ -45,8 +45,8 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
      * ovveride
      *  estrare il produttor del GAS che ha la gestione el listino al produttore associato ad un organization PACT
      */ 
-    public function getSuppliersOrganizations($user, $organization_id, $user_id, $pact_id=0, $where=[], $debug=false) {
-        
+    public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
+
         $results = [];
 
         /*
@@ -86,7 +86,7 @@ class OrdersPactTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      */ 
-    public function getDeliveries($user, $organization_id, $pact_id=0, $where=[], $debug=false) {
+    public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
         
         $deliveriesTable = TableRegistry::get('Deliveries');
     

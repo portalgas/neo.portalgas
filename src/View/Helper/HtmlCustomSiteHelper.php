@@ -60,7 +60,7 @@ class HtmlCustomSiteHelper extends FormHelper
                    $results = '<span class="label label-danger">dato inconsitente</span>'; 
             break;
             default:
-                $results = ("mapping type [$mapping_type_code] non consentito");
+                $results = ("mapping type [".$mapping->mapping_type->code."] non consentito");
             break;
         }
 
@@ -150,7 +150,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $portalgas_fe_url = $config['Portalgas.fe.url'];
             $url = sprintf($portalgas_fe_url.Configure::read('Article.img.path.full'), $results->article->organization_id, $results->article->img1);
 
-            $html .= '<span class="box-img"><img src="'.$img1_path.'" alt="'.$results->article->name.'" title="'.$results->article->name.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
+            $html .= '<span class="box-img"><img src="'.$url.'" alt="'.$results->article->name.'" title="'.$results->article->name.'" width="'.Configure::read('Article.img.preview.width').'" class="img-article" /></span> ';
         }
         $html .= '<span class="box-name">'.$results->name.'</span>';
         $html .= "</div>";

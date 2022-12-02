@@ -35,7 +35,7 @@ class OrdersSocialMarketTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      */ 
-    public function getSuppliersOrganizations($user, $organization_id, $where=[], $debug=false) {
+    public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
 
     }
 

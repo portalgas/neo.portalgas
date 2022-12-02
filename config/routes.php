@@ -82,7 +82,8 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home-backoffice']);        
     }
     else {
-        $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
+        // $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']); accesso alla pagina della home con autenticazione
+        $routes->connect('/', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);
         $routes->connect('/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
         $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
         $routes->connect('/site', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
