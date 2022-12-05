@@ -63,10 +63,10 @@ echo '</div>'; // row
  
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo $this->Form->control('orario_da', ['type' => 'time', 'class' => 'form-control', 'required' => 'required', 'value' => $gasGroupDelivery->delivery->orario_da]);
+echo $this->Form->control('orario_da', ['type' => 'time', 'interval' => 15, 'class' => 'form-control', 'required' => 'required', 'value' => $gasGroupDelivery->delivery->orario_da]);
 echo '</div>';
 echo '<div class="col-md-6">';
-echo $this->Form->control('orario_a', ['type' => 'time', 'class' => 'form-control', 'required' => 'required', 'value' => $gasGroupDelivery->delivery->orario_a]);
+echo $this->Form->control('orario_a', ['type' => 'time', 'interval' => 15, 'class' => 'form-control', 'required' => 'required', 'value' => $gasGroupDelivery->delivery->orario_a]);
 echo '</div>';
 echo '</div>'; // row
  

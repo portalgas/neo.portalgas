@@ -16,7 +16,7 @@ use App\Form\OrderForm;
  */
 class OrdersController extends AppController
 {
-    private $_order_type_id = 0;
+    private $_order_type_ids = [];  // tipologie d'ordine abilitate
     private $_user = null;
     private $_organization = null; // gas scelto
     private $_ordersTable = null;    // istanza del model Orders / OrderGasGroups ...
@@ -30,29 +30,59 @@ class OrdersController extends AppController
         $this->loadComponent('PriceType');
 
         /* 
-         * gestisco solo sotto gruppi
+         * gestisco solo gruppi
          */
-        $this->_order_type_id = Configure::read('Order.type.gas_groups');
+        $this->_order_type_ids = [
+            Configure::read('Order.type.gas_parent_groups'),
+            Configure::read('Order.type.gas_groups')
+        ];
+
         $this->_user = $this->Authentication->getIdentity();
-        if(!isset($this->_user->acl)) {
+        $this->_organization = $this->_user->organization; // gas scelto
+
+        if(!isset($this->_user->acl)) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
-        }            
-        $this->_organization = $this->_user->organization; // gas scelto
-        // debug($this->_user);
+        }
     }
 
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
 
-        /* per ora solo i sotto-gruppi
-        || (
-        !$user->acl['isSuperReferente'] && 
-        !$user->acl['isReferentGeneric'])) 
-        */ 
-        if($this->_organization->paramsConfig['hasGasGroups']=='N' || !$this->_user->acl['isGasGropusManagerOrders']) { 
+        // per ora solo i gruppi
+        if($this->_organization->paramsConfig['hasGasGroups']=='N' || 
+            !$this->_user->acl['isGasGroupsManagerParentOrders']  || 
+            !$this->_user->acl['isGasGroupsManagerOrders']) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        } 
+
+        /* 
+         * order_type_id 
+         * se Configure::read('Order.type.gas_groups'); 
+         * ctrl che lo user abbia creato un gruppo
+         */
+        $pass = $this->request->pass;
+        if(!empty($pass) && isset($pass[0])) {
+            $order_type_id = $pass[0];
+
+            if(!in_array($order_type_id, $this->_order_type_ids)) {
+                $this->Flash->error(__('msg_error_param_order_type_id'), ['escape' => false]);
+                return $this->redirect(Configure::read('routes_msg_stop'));    
+            }
+           
+            if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                $gasGroupsTable = TableRegistry::get('GasGroups');
+                $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                if($gasGroups->count()==0) {
+                    $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
+                    return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
+                }        
+            }
+        }
+        else {
+            $this->Flash->error(__('msg_error_param_order_type_id'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
@@ -90,11 +120,9 @@ class OrdersController extends AppController
         $this->set('order', $order);
     }
 
+    // gestisco solo gruppi
     public function index($order_type_id=0)
     {
-        // gestisco solo sotto-gruppi
-        $order_type_id = $this->_order_type_id;
-
         $where = ['Orders.organization_id' => $this->_organization->id,
                  'Orders.order_type_id' => $order_type_id];
         $this->paginate = [
@@ -134,10 +162,7 @@ class OrdersController extends AppController
     $order_type_id = Configure::read('Order.type.gas_groups');
     */
     public function add($order_type_id=0, $parent_id=0)
-    {            
-        // gestisco solo sotto-gruppi
-        $order_type_id = $this->_order_type_id;
-                
+    {           
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
         $this->_ordersTable->addBehavior('Orders');
         
@@ -168,7 +193,8 @@ class OrdersController extends AppController
                 /*
                  * redirect home ordine
                  */
-                if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                if($order_type_id==Configure::read('Order.type.gas_parent_groups') || 
+                   $order_type_id==Configure::read('Order.type.gas_groups')) {
                     $url = ['controller' => 'Orders', 'action' => 'index']; 
                 }
                 else 
@@ -195,9 +221,6 @@ class OrdersController extends AppController
      */
     public function edit($id = null, $order_type_id=0, $parent_id=0)
     {            
-        // gestisco solo sotto-gruppi
-        $order_type_id = $this->_order_type_id;
-                
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
         $this->_ordersTable->addBehavior('Orders');
         
@@ -226,7 +249,8 @@ class OrdersController extends AppController
                 /*
                  * redirect home ordine
                  */
-                if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                if($order_type_id==Configure::read('Order.type.gas_parent_groups') || 
+                   $order_type_id==Configure::read('Order.type.gas_groups')) {
                     $url = ['controller' => 'Orders', 'action' => 'index']; 
                 }
                 else 
@@ -265,6 +289,7 @@ class OrdersController extends AppController
         $parent = [];        
         switch ($order_type_id) {
             case Configure::read('Order.type.gas'):
+            case Configure::read('Order.type.gas_parent_groups'):
                 $suppliersOrganizations = $this->_ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
                 $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
 

@@ -285,23 +285,30 @@ class UsergroupsTable extends Table
     }  
 
     /*
-     * sotto gruppi
+     * gruppi
      */    
-    public function isGasGropusManagerGroups($user) {
+    public function isGasGroupsManagerGroups($user) {
         if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_gas_groups_manager_groups'), $user->group_ids))
             return true;
         else
             return false;
     }
 
-    public function isGasGropusManagerDeliveries($user) {
+    public function isGasGroupsManagerDeliveries($user) {
         if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_gas_groups_manager_consegne'), $user->group_ids))
             return true;
         else
             return false;
     }
 
-    public function isGasGropusManagerOrders($user) {
+    public function isGasGroupsManagerParentOrders($user) {
+        if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_gas_groups_manager_parent_orders'), $user->group_ids))
+            return true;
+        else
+            return false;
+    }
+
+    public function isGasGroupsManagerOrders($user) {
         if (isset($user) && $user->id != 0 && array_key_exists(Configure::read('group_id_gas_groups_manager_orders'), $user->group_ids))
             return true;
         else

@@ -1057,12 +1057,14 @@ msgstr "Errore nel passaggio dei parametri!<br /><br />Contatta l'amministratore
 msgid "msg_error_param_order_type_id"
 msgstr "Errore nel passaggio dei parametri, tipologia d'ordine non previsto!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
 
-
 msgid "msg_site_offline"
 msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget="_blank" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
 
 msgid "msg_prodgas_promotion_acl_no"
 msgstr "Non sei abilitato alla gestione delle promozioni.<br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
+msgid "msg_not_gas_groups"
+msgstr "Devi creare prima un gruppo."
 
 msgid "msg_error_org_type"
 msgstr "Errore nella tipologia di organizzazione!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
@@ -1196,8 +1198,14 @@ msgstr "Gestione gasisti"
 msgid "Gas Group Orders"
 msgstr "Ordini per i gruppi"
 
+msgid "Gas Group Parent Orders"
+msgstr "Ordini titolare per i gruppi"
+
 msgid "Gas Group Orders"
 msgstr "Ordine per il gruppo"
+
+msgid "Gas Group Parent Orders"
+msgstr "Ordine titolare per il gruppo"
 
 msgid "Gas Group Delivery"
 msgstr "Consegna per i gruppi"

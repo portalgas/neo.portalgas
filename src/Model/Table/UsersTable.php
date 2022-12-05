@@ -231,10 +231,11 @@ class UsersTable extends Table
         $user->acl['isSuperReferente'] = $usergroupsTable->isSuperReferente($user);
         $user->acl['isReferentGeneric'] = $usergroupsTable->isReferentGeneric($user);
         
-        // sotto gruppi 
-        $user->acl['isGasGropusManagerGroups'] = $usergroupsTable->isGasGropusManagerGroups($user);
-        $user->acl['isGasGropusManagerDeliveries'] = $usergroupsTable->isGasGropusManagerDeliveries($user);
-        $user->acl['isGasGropusManagerOrders'] = $usergroupsTable->isGasGropusManagerOrders($user);
+        // gruppi 
+        $user->acl['isGasGroupsManagerGroups'] = $usergroupsTable->isGasGroupsManagerGroups($user);
+        $user->acl['isGasGroupsManagerDeliveries'] = $usergroupsTable->isGasGroupsManagerDeliveries($user);
+        $user->acl['isGasGroupsManagerParentOrders'] = $usergroupsTable->isGasGroupsManagerParentOrders($user);
+        $user->acl['isGasGroupsManagerOrders'] = $usergroupsTable->isGasGroupsManagerOrders($user);
  
         // produttore
         $user->acl['isProdGasSupplierManager'] = $usergroupsTable->isProdGasSupplierManager($user);

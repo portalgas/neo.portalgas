@@ -17,25 +17,39 @@ class GasGroupDeliveriesController extends AppController
 {
     use Traits\SqlTrait;
 
+    private $_user = null;
+    private $_organization = null; // gas scelto
+
     public function initialize()
     {
         parent::initialize();
+
+        $this->_user = $this->Authentication->getIdentity();
+        $this->_organization = $this->_user->organization; // gas scelto
+
+        if(!isset($this->_user->acl)) { 
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }        
     }
 
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
-
-        $user = $this->Authentication->getIdentity();
-        $organization = $user->organization; // gas scelto
       
-        if(!isset($user->acl) ||
-            !isset($organization->paramsConfig['hasGasGroups']) || 
-            $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGropusManagerDeliveries']
+        if(!isset($this->_organization->paramsConfig['hasGasGroups']) || 
+            $this->_organization->paramsConfig['hasGasGroups']=='N' || 
+             !$this->_user->acl['isGasGroupsManagerDeliveries']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
+        $gasGroupsTable = TableRegistry::get('GasGroups');
+        $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+        if($gasGroups->count()==0) {
+            $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
+            return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
         }
     }
 
@@ -46,10 +60,7 @@ class GasGroupDeliveriesController extends AppController
      */
     public function index()
     {
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization_id;
-
-        $where = ['Deliveries.organization_id' => $organization_id];
+        $where = ['Deliveries.organization_id' => $this->_organization->id];
 
         $this->paginate = [
             'contain' => ['GasGroups' => ['GasGroupUsers'], 
@@ -90,9 +101,6 @@ class GasGroupDeliveriesController extends AppController
      */
     public function add()
     {
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization_id;
-
         $deliveriesTable = TableRegistry::get('Deliveries');
 
         $gasGroupDelivery = $this->GasGroupDeliveries->newEntity();
@@ -105,7 +113,7 @@ class GasGroupDeliveriesController extends AppController
              * creo la consegna
              * */
             $delivery = $deliveriesTable->newEntity();
-            $datas['organization_id'] = $organization_id;
+            $datas['organization_id'] = $this->_organization->id;
             $datas['isToStoreroom'] = 'N';
             $datas['isToStoreroomPay'] = 'N';
             $datas['stato_elaborazione'] = 'OPEN';
@@ -119,7 +127,7 @@ class GasGroupDeliveriesController extends AppController
 
                 $datas = [];
                 $datas['delivery_id'] = $delivery->id;
-                $datas['organization_id'] = $organization_id;
+                $datas['organization_id'] = $this->_organization->id;
                 $datas['gas_group_id'] = $gas_group_id;
 
                 /* 
@@ -138,7 +146,7 @@ class GasGroupDeliveriesController extends AppController
 
         $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
 
-        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($user, $organization_id, $user->id);
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
         $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
         $this->set(compact('gasGroupDelivery', 'gasGroups', 'deliveries'));
     }
@@ -153,9 +161,6 @@ class GasGroupDeliveriesController extends AppController
      */
     public function edit($id = null)
     {
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization_id;
-
         $deliveriesTable = TableRegistry::get('Deliveries');
 
         $gasGroupDelivery = $this->GasGroupDeliveries->get($id, [
@@ -171,7 +176,7 @@ class GasGroupDeliveriesController extends AppController
              * creo la consegna
              * */
             $delivery = $deliveriesTable->newEntity();
-            $datas['organization_id'] = $organization_id;
+            $datas['organization_id'] = $this->_organization->id;
             $datas['isToStoreroom'] = 'N';
             $datas['isToStoreroomPay'] = 'N';
             $datas['stato_elaborazione'] = 'OPEN';
@@ -196,7 +201,7 @@ class GasGroupDeliveriesController extends AppController
 
         $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
 
-        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($user, $organization_id, $user->id);
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
         $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
         $this->set(compact('gasGroupDelivery', 'gasGroups', 'deliveries'));
     }

@@ -374,6 +374,9 @@ class OrdersTable extends Table
             case Configure::read('Order.type.socialmarket'):
                     $table_registry = 'OrdersSocialMarket';
                     break;
+            case Configure::read('Order.type.gas_parent_groups'):
+                $table_registry = 'OrdersGasParentGroups';
+            break;
             case Configure::read('Order.type.gas_groups'):
                 $table_registry = 'OrdersGasGroups';
                 break;

@@ -30,7 +30,7 @@ class GasGroupsController extends AppController
         if(!isset($user->acl) ||
             !isset($organization->paramsConfig['hasGasGroups']) || 
             $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGropusManagerGroups']
+             !$user->acl['isGasGroupsManagerGroups']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));

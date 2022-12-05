@@ -15,6 +15,7 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
     private static $PACT_PRE = 5;
     private static $PACT = 6;
     private static $GAS_GROUPS = 10;
+    private static $GAS_PARENT_GROUPS = 11;
 	private $debug = false;
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
 
@@ -43,6 +44,9 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
                 break;
             case self::$PACT:
                 $helper = 'HtmlCustomSiteOrdersPact';
+                break;
+            case self::$GAS_PARENT_GROUPS:
+                $helper = 'HtmlCustomSiteOrdersGasParentGroups';
                 break;
             case self::$GAS_GROUPS:
                 $helper = 'HtmlCustomSiteOrdersGasGroups';

@@ -238,12 +238,14 @@ if($this->Identity->get()->organization->paramsConfig['hasGasGroups']=='Y') {
       </span>
     <ul class="treeview-menu">
         <?php 
-        if($this->Identity->get()->acl['isGasGropusManagerGroups']) 
+        if($this->Identity->get()->acl['isGasGroupsManagerGroups']) 
           echo '<li><a href="'.$this->Url->build('/admin/gas-groups').'">'.$icon.__('Gas Group Users').'</a></li>';
-        if($this->Identity->get()->acl['isGasGropusManagerDeliveries']) 
+        if($this->Identity->get()->acl['isGasGroupsManagerDeliveries']) 
           echo '<li><a href="'.$this->Url->build('/admin/gas-group-deliveries').'">'.$icon.__('Gas Group Deliveries').'</a></li>';
-        if($this->Identity->get()->acl['isGasGropusManagerOrders']) 
-          echo '<li><a href="'.$this->Url->build('/admin/orders').'">'.$icon.__('Gas Group Orders').'</a></li>';
+        if($this->Identity->get()->acl['isGasGroupsManagerParentOrders']) 
+          echo '<li><a href="'.$this->Url->build('/admin/orders/index/'.Configure::read('Order.type.gas_parent_groups')).'">'.$icon.__('Gas Group Parent Orders').'</a></li>';
+        if($this->Identity->get()->acl['isGasGroupsManagerOrders']) 
+          echo '<li><a href="'.$this->Url->build('/admin/orders/index/'.Configure::read('Order.type.gas_groups')).'">'.$icon.__('Gas Group Orders').'</a></li>';
         ?>
       </ul>
     </a>

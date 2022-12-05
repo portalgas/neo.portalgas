@@ -4,7 +4,7 @@ use Cake\Core\Configure;
 <section class="content-header">
   <h1>
     <?php echo __('Orders');?>
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success btn-xs']) ?></div>
+    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']) ?></div>
   </h1>
 </section>
 
@@ -17,19 +17,22 @@ use Cake\Core\Configure;
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <form action="<?php echo $this->Url->build(); ?>" method="POST">
+            <!-- form action="<?php echo $this->Url->build(); ?>" method="POST">
               <div class="input-group input-group-sm" style="width: 150px;">
                 <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
 
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </div>
+                </div >
               </div>
-            </form>
+            </form -->
           </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
+          <?php 
+          if($orders->count()>0) {
+          ?>
           <table class="table table-hover">
             <thead>
               <tr>
@@ -90,10 +93,15 @@ use Cake\Core\Configure;
                   echo h($order->created);
                   echo '</td>';  
                 echo '</tr>';              
-              }
-              ?>
-            </tbody>
-          </table>
+              } // end loop
+
+            echo '</tbody>';
+            echo '</table>';
+          }
+          else {
+            echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);
+          } // end if(!empty($orders))
+          ?>
         </div>
         <!-- /.box-body -->
       </div>
