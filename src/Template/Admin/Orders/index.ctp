@@ -3,7 +3,7 @@ use Cake\Core\Configure;
 ?>
 <section class="content-header">
   <h1>
-    <?php echo __('Orders');?>
+    <?php echo __('Orders-'.$order_type_id);?>
     <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']) ?></div>
   </h1>
 </section>

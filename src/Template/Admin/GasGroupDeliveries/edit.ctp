@@ -42,12 +42,6 @@ echo '<div class="col-md-12">';
 echo $this->Form->control('gas_group_id', ['options' => $gasGroups, 'required' => 'required']);
 echo '</div>';
 echo '</div>'; // row
-
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('delivery_id', ['options' => $deliveries]);
-echo '</div>';
-echo '</div>'; // row
  
 echo '<div class="row">';
 echo '<div class="col-md-12">';

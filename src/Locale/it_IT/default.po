@@ -946,6 +946,18 @@ msgstr "Ordine"
 msgid "Orders"
 msgstr "Ordini"
 
+msgid "Orders-10"
+msgstr "Ordini per i gruppi"
+
+msgid "Order-10"
+msgstr "Ordine per il gruppi"
+
+msgid "Orders-11"
+msgstr "Ordini titolare per i gruppi"
+
+msgid "Order-11"
+msgstr "Ordine titolare per il gruppi"
+
 #
 # prepagato
 #

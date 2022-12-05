@@ -61,6 +61,45 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         return $helper;
     } 
 
+    public function hiddenFields($organization_id, $parent) {
+
+        $html = '';
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+    
+        return $html;
+    }    
+
+    /*
+     * dettaglio ordine padre
+     */
+    public function infoParent($results) {
+        return '';    
+    }
+
+    public function data($parent) {
+        $html = '';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-6">'; 
+        $html .= $this->HtmlCustom->datepicker('data_inizio', ['autocomplete' => 'off']);
+        $html .= '</div>'; 
+        $html .= '<div class="col-md-6">'; 
+        $html .= $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
+        $html .= '</div>'; 
+        $html .= '</div>';
+
+        if(!empty($parent)) {
+            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
+
+            $html .= '<div class="row">';
+            $html .= '<div class="col-md-12">'; 
+            $html .= $this->HtmlCustom->alert($msg);
+            $html .= '</div>'; 
+            $html .= '</div>';    
+        }
+
+        return $html;
+    }
+
     public function supplierOrganizations($suppliersOrganizations) {
 
         $html = '';

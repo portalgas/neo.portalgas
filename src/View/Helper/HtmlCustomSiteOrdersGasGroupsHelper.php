@@ -68,7 +68,6 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         return $html;
     }
 
-
     public function note() {
         return parent::note();     
     } 

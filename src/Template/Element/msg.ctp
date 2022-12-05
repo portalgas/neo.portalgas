@@ -9,11 +9,9 @@ if(empty($msg_header))
 
 if(empty($msg))
 	$msg = __('MsgResultsNotFound');
-?>
 
-<?php
 if($tmpl==1 || $tmpl=='ALL') {
-	echo '<div class="callout callout-'.$class.'" style="clear: both;">';
+	echo '<div class="callout callout-'.$class.'" style="clear: both;margin: 25px">';
 	echo '<h4 class="msg-header">'.$msg_header.'</h4>';
 	echo '<p class="msg-body">'.$msg.'</p>';
 	echo '</div>';

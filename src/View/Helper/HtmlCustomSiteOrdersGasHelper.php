@@ -20,6 +20,17 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         return parent::hiddenFields($organization_id, $parent);
     }   
 
+    /*
+     * dettaglio ordine padre
+     */
+    public function infoParent($results) {
+        return '';    
+    }
+
+    public function data($parent) {
+        return parent::data($parent);
+    }
+
     public function supplierOrganizations($suppliersOrganizations) {
         return parent::supplierOrganizations($suppliersOrganizations);
     }

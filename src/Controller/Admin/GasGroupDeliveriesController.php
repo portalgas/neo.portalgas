@@ -147,8 +147,7 @@ class GasGroupDeliveriesController extends AppController
         $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
 
         $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-        $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroupDelivery', 'gasGroups', 'deliveries'));
+        $this->set(compact('gasGroupDelivery', 'gasGroups'));
     }
 
 
@@ -188,6 +187,7 @@ class GasGroupDeliveriesController extends AppController
             } 
             else {       
                 $gasGroupDelivery = $this->GasGroupDeliveries->patchEntity($gasGroupDelivery, $datas);
+                // debug($gasGroupDelivery);
                 if (!$this->GasGroupDeliveries->save($gasGroupDelivery)) {
                     $this->Flash->error($gasGroupDelivery->getErrors());
                 }
@@ -202,8 +202,7 @@ class GasGroupDeliveriesController extends AppController
         $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
 
         $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-        $deliveries = $this->GasGroupDeliveries->Deliveries->find('list', ['limit' => 200]);
-        $this->set(compact('gasGroupDelivery', 'gasGroups', 'deliveries'));
+        $this->set(compact('gasGroupDelivery', 'gasGroups'));
     }
 
 
