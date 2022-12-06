@@ -13,6 +13,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
 
     public function initialize(array $config)
     {
+        parent::initialize($config);
         // debug($config);
     }
 
@@ -61,8 +62,8 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
     /*
      * trasport / cost_more / cost_less
      */
-    public function extra($parent) {
-        return parent::extra($parent);
+    public function extra($order, $parent) {
+        return parent::extra($order, $parent);
     }
 
     /*
@@ -197,5 +198,13 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
 
     public function mailOpenTesto() {
         return parent::mailOpenTesto();     
+    }  
+    
+    public function monitoraggio($results) {
+        return parent::monitoraggio($results);
+    }
+
+    public function typeGest($results) {
+        return parent::typeGest($results);
     }    
 }

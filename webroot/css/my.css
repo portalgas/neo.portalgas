@@ -92,3 +92,9 @@
 .info-parent h1 {
    font-size: 24px;
 }
+th {
+	border:0;
+	border-bottom:2px solid #555;
+	padding:4px;
+	background-color: #F5F5F5;
+}

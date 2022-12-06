@@ -13,6 +13,7 @@ class HtmlCustomSiteOrdersPactPreHelper extends HtmlCustomSiteOrdersPactHelper
 
     public function initialize(array $config)
     {
+        parent::initialize($config);
         // debug($config);
     }
 
@@ -26,5 +27,13 @@ class HtmlCustomSiteOrdersPactPreHelper extends HtmlCustomSiteOrdersPactHelper
 
     public function supplierOrganizations($suppliersOrganizations) {
         return parent::supplierOrganizations($suppliersOrganizations);
-    }    
+    }
+    
+    public function monitoraggio($results) {
+        return parent::monitoraggio($results);
+    }
+
+    public function typeGest($results) {
+        return parent::typeGest($results);
+    }      
 }

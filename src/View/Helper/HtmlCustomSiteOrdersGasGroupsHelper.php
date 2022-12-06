@@ -13,6 +13,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
 
     public function initialize(array $config)
     {
+        parent::initialize($config);
         // debug($config);
     }
 
@@ -84,4 +85,12 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         if(empty($results)) 
             return '';    
     }
+
+    public function monitoraggio($results) {
+        return parent::monitoraggio($results);
+    }
+
+    public function typeGest($results) {
+        return parent::typeGest($results);
+    }    
 }

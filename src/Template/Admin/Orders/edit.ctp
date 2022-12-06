@@ -45,6 +45,10 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 
                 echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
 
+                echo $this->{$htmlCustomSiteOrders}->monitoraggio($order);
+
+                echo $this->{$htmlCustomSiteOrders}->typeGest($order);
+                
                 echo $this->{$htmlCustomSiteOrders}->extra($order, $parent);
                
             echo '</div>';  // /.box-body 

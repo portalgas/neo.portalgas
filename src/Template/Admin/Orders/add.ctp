@@ -23,7 +23,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
           <?php 
           if(!empty($suppliersOrganizations) && !empty($deliveries)) {
             echo $this->Form->create($order, ['role' => 'form']);
-            echo '<div class="box-body">';
+            echo '<div class="box-body" style="padding: 25px;">';
 
                 /*
                  * passato per OrderValidation
@@ -45,6 +45,10 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 
                 echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
 
+                echo $this->{$htmlCustomSiteOrders}->monitoraggio($order);
+               
+                echo $this->{$htmlCustomSiteOrders}->typeGest($order);
+               
                 echo $this->{$htmlCustomSiteOrders}->extra($order, $parent);
                
             echo '</div>';  // /.box-body 
