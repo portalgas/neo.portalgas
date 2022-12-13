@@ -1,22 +1,8 @@
 <?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\GasGroup $gasGroup
- */
-?>
-<!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      <?php echo __('Gas Group'); ?>
-      <small><?php echo __('Edit'); ?></small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build('/'); ?>"><i class="fa fa-home"></i> <?php echo __('Home'); ?></a></li>
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-users"></i> <?php echo __('Gas Groups'); ?></a></li>
-    </ol>
-  </section>
+use Cake\Core\Configure;
 
-  <!-- Main content -->
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Gas Group'), 'subtitle' => __('Edit')], ['home', 'list']);
+?>
   <section class="content">
     <div class="row">
       <div class="col-md-12">

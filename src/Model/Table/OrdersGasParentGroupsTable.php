@@ -28,14 +28,14 @@ class OrdersGasParentGroupsTable extends OrdersTable implements OrderTableInterf
     {
         $validator = parent::validationDefault($validator);
         
-        $validator->setProvider('orderGas', \App\Model\Validation\OrderGasValidation::class);
+        $validator->setProvider('orderGasParentGroups', \App\Model\Validation\OrderGasValidation::class);
 
         $validator
             ->notEmpty('supplier_organization_id')
             ->add('supplier_organization_id', [
                 'totArticles' => [
                    'rule' => ['totArticles'],
-                   'provider' => 'order',
+                   'provider' => 'orderGasParentGroups',
                    'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
                 ]
             ]);
@@ -55,20 +55,8 @@ class OrdersGasParentGroupsTable extends OrdersTable implements OrderTableInterf
      * implement
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
-
-        $results = [];
-
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-    
-        $where = ['SuppliersOrganizations.organization_id' => $organization_id,
-                  'SuppliersOrganizations.stato' => 'Y',
-                  'SuppliersOrganizations.owner_articles' => 'REFERENT'];
-
-        $results = $suppliersOrganizationsTable->find()
-                                ->where($where)
-                                ->contain(['Suppliers', 'CategoriesSuppliers'])
-                                ->order(['SuppliersOrganizations.name'])
-                                ->all();
+        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);
         return $results;
     } 
 

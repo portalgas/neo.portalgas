@@ -1,13 +1,18 @@
-<!-- Content Header (Page header) -->
-<section class="content-header">
-  <h1>
-    Articles Orders
+<?php
+use Cake\Core\Configure;
+echo $this->Html->script('vue/articleOrders', ['block' => 'scriptPageInclude']);
 
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs']) ?></div>
-  </h1>
-</section>
+echo $this->HtmlCustomSite->boxTitle(['title' => __('ArticleOrders'), 'subtitle' => __('Management')], ['home']);
 
-<!-- Main content -->
+echo $this->HtmlCustomSite->boxOrder($order);
+?>
+
+<div id="vue-article-orders">
+<form>
+  <input type="hidden" name="organization_id" value="<?php echo $order->organization_id;?>" />
+  <input type="hidden" name="order_type_id" value="<?php echo $order->order_type_id;?>" />
+  <input type="hidden" name="order_id" value="<?php echo $order->id;?>" />
+
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -16,75 +21,149 @@
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <form action="<?php echo $this->Url->build(); ?>" method="POST">
-              <div class="input-group input-group-sm" style="width: 150px;">
-                <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
-
-                <div class="input-group-btn">
-                  <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </div>
-              </div>
-            </form>
           </div>
         </div>
+
+        <div v-if="is_run" class="box-body table-responsive no-padding text-center" style="margin: 150px">
+          <div><i class="fa-lg fa fa-spinner fa-spin"></i></div>
+        </div>
         <!-- /.box-header -->
-        <div class="box-body table-responsive no-padding">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                  <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('order_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('article_organization_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('article_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('qta_cart') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('name') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('prezzo') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('pezzi_confezione') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('qta_minima') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('qta_massima') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('qta_minima_order') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('qta_massima_order') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('qta_multipli') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('alert_to_qta') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('send_mail') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('flag_bookmarks') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('stato') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($articlesOrders as $articlesOrder): ?>
+        <div v-if="!is_run" class="box-body table-responsive no-padding" styledis="display:none">
+          
+          <div class="box-submit">
+            <button v-if="!is_save" class="btn btn-primary" @click="save" >Salva</button>
+            <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>
+          </div>        
+          <?php 
+          /*
+           * articoli gia' associare
+           */ 
+          echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli già associati')]);
+          ?>
+
+          <?php
+          echo '<div v-if="article_orders.length==0">'; 
+          echo $this->element('msg', ['msg' => "Non ci sono ancora articoli associati all'ordine", 'class' => 'warning']);
+          echo '</div>';
+          ?>
+            <table class="table table-hover" 
+              v-if="article_orders.length>0">
+              <thead>
                 <tr>
-                  <td><?= $articlesOrder->has('organization') ? $this->Html->link($articlesOrder->organization->name, ['controller' => 'Organizations', 'action' => 'view', $articlesOrder->organization->id]) : '' ?></td>
-                  <td><?= $articlesOrder->has('order') ? $this->Html->link($articlesOrder->order->id, ['controller' => 'Orders', 'action' => 'view', $articlesOrder->order->id]) : '' ?></td>
-                  <td><?= $articlesOrder->has('article_organization') ? $this->Html->link($articlesOrder->article_organization->name, ['controller' => 'Organizations', 'action' => 'view', $articlesOrder->article_organization->id]) : '' ?></td>
-                  <td><?= $articlesOrder->has('article') ? $this->Html->link($articlesOrder->article->name, ['controller' => 'Articles', 'action' => 'view', $articlesOrder->article->id]) : '' ?></td>
-                  <td><?= $this->Number->format($articlesOrder->qta_cart) ?></td>
-                  <td><?= h($articlesOrder->name) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->prezzo) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->pezzi_confezione) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->qta_minima) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->qta_massima) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->qta_minima_order) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->qta_massima_order) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->qta_multipli) ?></td>
-                  <td><?= $this->Number->format($articlesOrder->alert_to_qta) ?></td>
-                  <td><?= h($articlesOrder->send_mail) ?></td>
-                  <td><?= h($articlesOrder->flag_bookmarks) ?></td>
-                  <td><?= h($articlesOrder->stato) ?></td>
-                  <td><?= h($articlesOrder->created) ?></td>
-                  <td><?= h($articlesOrder->modified) ?></td>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $articlesOrder->organization_id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $articlesOrder->organization_id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $articlesOrder->organization_id], ['confirm' => __('Are you sure you want to delete # {0}?', $articlesOrder->organization_id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
+                    <th scope="col"></th>
+                    <th scope="col" class="actions text-center">
+                      <a class="btn btn-danger" :class="{ 'btn-deactive': select_article_orders_all }" @click="selectArticleOrdersAll">
+                        <i class="fa fa-trash"></i></a>
+                    </th>
+                    <th scope="col" colspan="2"><?= __('Name') ?></th>
+                    <th scope="col"><?= __('Prezzo') ?></th>
+                    <th scope="col"><?= __('pezzi_confezione') ?></th>
+                    <th scope="col"><?= __('qta_multipli') ?></th>
+                    <th scope="col"><?= __('qta_minima') ?></th>
+                    <th scope="col"><?= __('qta_massima') ?></th>
+                    <th scope="col"><?= __('qta_minima_order') ?></th>
+                    <th scope="col"><?= __('qta_massima_order') ?></th>
                 </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(article_order, index) in article_orders"
+                  :key="article_order.article_id"
+                >
+                    <td>{{ (index + 1) }}</td>
+                    <td class="actions text-center">
+                      <a class="btn btn-danger" :class="{ 'btn-deactive': !article_order.is_select }" title="rimuovi l'articolo dall'ordine" @click="article_order.is_select=!article_order.is_select">
+                        <i class="fa fa-trash fa-2xl"></i></a>
+                    </td>
+                    <td>
+                      <img v-if="article_order.img1!=''" :src="article_order.img1" :width="article_order.img1_width" />
+                    </td>	
+                    <td>{{ article_order.name }}</td>
+                    <td>
+                    <div class="input-group">
+                      <input :disabled="!can_edit" type="number" class="form-control" v-model="article_order.prezzo_" />
+                      <span class="input-group-addon"><i class="fa fa-euro"></i></span>
+                    </div>
+                    </td>
+                    <td>
+                      <input :disabled="!can_edit" type="number" min="1" class="form-control" v-model="article_order.pezzi_confezione" />
+                    </td>
+                    <td>
+                      <input type="number" min="1" class="form-control" v-model="article_order.qta_multipli" />
+                    </td>
+                    <td>
+                      <input type="number" min="1" class="form-control" v-model="article_order.qta_minima" />
+                    </td>
+                    <td>
+                      <input type="number" min="0" class="form-control" v-model="article_order.qta_massima" />
+                    </td>
+                    <td>
+                      <input type="number" min="0" class="form-control" v-model="article_order.qta_minima_order" />
+                    </td>
+                    <td>
+                      <input type="number" min="0" class="form-control" v-model="article_order.qta_massima_order" />
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+          <?php 
+          /*
+           * articoli da associare
+           */ 
+          echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli da associare')]);
+
+          echo '<div v-if="articles.length==0">'; 
+          echo $this->element('msg', ['msg' => "Tutti gli articoli sono già associati all'ordine", 'class' => 'warning']);
+          echo '</div>';
+          ?>
+              <table class="table table-hover"
+                v-if="articles.length>0">
+                <thead>
+                  <tr>
+                      <th scope="col"></th>
+                      <th scope="col" class="actions text-center">
+                        <a title="togli l'articolo dall'ordine" class="btn btn-success"  :class="{ 'btn-deactive': select_article_orders_all }" @click="selectArticlesAll">
+                          <i class="fa fa-plus"></i></a>
+                      </th>
+                      <th scope="col" colspan="2"><?= __('Name') ?></th>
+                      <th scope="col"><?= __('Prezzo') ?></th>
+                      <th scope="col"><?= __('pezzi_confezione') ?></th>
+                      <th scope="col"><?= __('qta_multipli') ?></th>
+                      <th scope="col"><?= __('qta_minima') ?></th>
+                      <th scope="col"><?= __('qta_massima') ?></th>
+                      <th scope="col"><?= __('qta_minima_order') ?></th>
+                      <th scope="col"><?= __('qta_massima_order') ?></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(article, index) in articles"
+                    :key="article.id"
+                   >   
+                      <td>{{ (index + 1) }}</td>
+                      <td class="actions text-center">
+                        <a class="btn btn-success" :class="{ 'btn-deactive': !article.is_select }" title="aggiungi articolo all'ordine" @click="article.is_select=!article.is_select">
+                          <i class="fa fa-plus fa-2xl"></i></a>
+                      </td>
+                      <td>
+                        <img v-if="article.img1!=''" :src="article.img1" :width="article.img1_width" />
+                      </td>                                     
+                      <td>{{ article.name }}</td>
+                      <td>{{ article.prezzo | currency }} &euro;</td>
+                      <td>{{ article.pezzi_confezione }}</td>
+                      <td>{{ article.qta_multipli }}</td>
+                      <td>{{ article.qta_minima }}</td>
+                      <td>{{ article.qta_massima }}</td>
+                      <td>{{ article.qta_minima_order }}</td>
+                      <td>{{ article.qta_massima_order }}</td>
+                    </tr>
+                </tbody>
+              </table>
+          
+              <div class="box-submit">
+                <button v-if="!is_save" class="btn btn-primary" @click="save" >Salva</button>
+                <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>                
+              </div>
         </div>
         <!-- /.box-body -->
       </div>
@@ -92,3 +171,15 @@
     </div>
   </div>
 </section>
+</form>
+</div>
+
+<style>
+.box-submit {
+  padding:5px;
+  float: right !important;  
+}
+.btn-deactive {
+  opacity: .45;
+}
+</style>

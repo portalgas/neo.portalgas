@@ -25,6 +25,19 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
         return $validator;
     }    
 
+  /* 
+   * implements
+   * 
+   * gestione associazione articoli all'ordine
+   * return
+   *  proprietario listino: per gestione permessi di modifica
+   *  article_orders: articoli gia' associati
+   *  articles: articoli da associare
+   */    
+    public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
+        parent::getAssociateToOrder($user, $organization_id, $order, $where, $options, $debug);
+    }
+
     /*
      * implement
     */

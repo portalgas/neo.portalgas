@@ -5,6 +5,14 @@ use Cake\Core\Configure;
 
 trait HelperTrait
 {               
+    public function title($title, $options=[]) {    
+        return '
+            <div class="box-header" style="background-color: #3c8dbc;color: #fff;margin: 10px 0;">
+                    <h3 class="box-title">'.$title.'</h3>                  
+            </div>
+            ';
+    }
+
     public function modal($id, $title, $body, $options=[]) {
 
         isset($options['size']) ? $size = $options['size']: $size = '';

@@ -3,18 +3,27 @@ namespace App\Model\Table;
 
 interface ArticlesOrdersTableInterface {
 
+  /* 
+   * gestione associazione articoli all'ordine
+   * return
+   *  proprietario listino: per gestione permessi di modifica
+   *  article_orders: articoli gia' associati
+   *  articles: articoli da associare
+   */
+  public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false);
+
 	/* 
 	 * options: sort, offset, page
      * ricerca articoli di un ordine ed eventuali acquisti di uno user
 	 */ 
-	public function getCartsByUser($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false);
+	public function getCartsByUser($user, $organization_id, $user_id, $order, $where=[], $options=[], $debug=false);
 
     /* 
      * ricerca articoli di un ordine ed eventuali acquisti di tutti gli users
      */ 
-    public function getCartsByArticles($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
+    public function getCartsByArticles($user, $organization_id, $order, $where=[], $options=[], $debug=false);
 
-    public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false);
+    public function gets($user, $organization_id, $order, $where=[], $options=[], $debug=false);
 
    /*
      * ids ['organization_id', 'order_id', 'article_organization_id', 'article_id']

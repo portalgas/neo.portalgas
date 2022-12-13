@@ -3,8 +3,14 @@ use Cake\Core\Configure;
 ?>
 <section class="content-header">
   <h1>
-    <?php echo __('Orders-'.$order_type_id);?>
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']) ?></div>
+    <?php 
+    echo __('Orders-'.$order_type_id);
+    
+    if($order_type_id==Configure::read('Order.type.gas_parent_groups') || 
+       $order_type_id==Configure::read('Order.type.des_titolare')) {
+        echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']).'</div>';
+       }          
+    ?>
   </h1>
 </section>
 
@@ -37,7 +43,7 @@ use Cake\Core\Configure;
             <thead>
               <tr>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
-                  <th scope="col" colspan="2"><?= $this->Paginator->sort('supplier_organization_id') ?></th>
+                  <th scope="col" colspan="2"><?= $this->Paginator->sort('supplier_organization_id', __('supplier_organization_id')) ?></th>
                   <th scope="col"><?= $this->Paginator->sort('owner_articles', __('OwnerArticles')) ?></th>
                   <?php 
                   /*  
@@ -57,9 +63,19 @@ use Cake\Core\Configure;
               <?php foreach ($orders as $order) { 
                 echo '<tr>';
                 echo '<td class="actions text-right">';
-                echo $this->Html->link(__('View'), ['action' => 'view', $order->id], ['class'=>'btn btn-info btn-xs']);
-                echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->id], ['class'=>'btn btn-warning btn-xs']);
-                echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger btn-xs']);
+                // echo $this->Html->link(__('View'), ['action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-info']);
+                echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
+                echo $this->Html->link(__('ArticleOrders'), ['controller' => 'articles-orders', 'action' => 'index', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
+                // echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger']);
+                switch($order->order_type_id) {
+                  case Configure::read('Order.type.gas_parent_groups'):
+                      echo $this->Html->link(__('Order-'.Configure::read('Order.type.gas_groups').'-Add'), ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary']);
+                  break;
+                  // non ancora previsto 
+                  case Configure::read('Order.type.des_titolare'):
+                      echo $this->Html->link(__('Order-'.Configure::read('Order.type.des').'-Add'), ['action' => 'add', Configure::read('Order.type.des'), $order->id], ['class'=>'btn btn-primary']);
+                  break;
+                }
                 echo '</td>';
                   echo '<td>';
                   echo $this->HtmlCustomSite->drawSupplierImage($order->suppliers_organization->supplier);
@@ -86,7 +102,7 @@ use Cake\Core\Configure;
                   echo '<td>';
                   echo __($order->state_code.'-label');
                   echo '</td>';                  
-                  echo '<td>';
+                  echo '<td style="text-align:center">';
                   echo $this->Number->format($order->tot_importo);
                   echo '</td>';                  
                   echo '<td>';

@@ -175,28 +175,45 @@ class ArticlesOrdersTable extends Table
             case Configure::read('Order.type.des-titolare'):
             case Configure::read('Order.type.des'):
                 $table_registry = 'ArticlesOrdersDes';
-                break;
+            break;
             case Configure::read('Order.type.gas'):
             case Configure::read('Order.type.socialmarket'):
-            case Configure::read('Order.type.gas_groups'):
+            case Configure::read('Order.type.gas_parent_groups'):
                 $table_registry = 'ArticlesOrdersGas';
-                break;
+            break;
+            case Configure::read('Order.type.gas_groups'):
+                $table_registry = 'ArticlesOrdersGasGroups';
+            break;
             case Configure::read('Order.type.promotion'):
                 $table_registry = 'ArticlesOrdersPromotion';
-                break;
+            break;
             case Configure::read('Order.type.pact-pre'):
                 $table_registry = 'ArticlesOrdersPactPre';
-                break;
+            break;
             case Configure::read('Order.type.pact'):
                 $table_registry = 'ArticlesOrdersPact';
-                break;
+            break;
             default:
                 die('ArticlesOrdersTable order_type_id ['.$order_type_id.'] non previsto');
-                break;
+            break;
         }
 
         return TableRegistry::get($table_registry);
     } 
+
+
+  /* 
+   * implements
+   * 
+   * gestione associazione articoli all'ordine
+   * return
+   *  proprietario listino: per gestione permessi di modifica
+   *  article_orders: articoli gia' associati
+   *  articles: articoli da associare
+   */    
+    public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
+        return true;
+    }
 
     /*
      * implement
@@ -254,15 +271,13 @@ class ArticlesOrdersTable extends Table
 
         unset($article_order['article']);
         
-        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-
         $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
         if(!empty($articlesOrder)) {
-            $articlesOrder = $articlesOrdersTable->patchEntity($articlesOrder, $article_order);
+            $articlesOrder = $this->patchEntity($articlesOrder, $article_order);
 
             if(Configure::read('Logs.cart')) Log::write('debug', $articlesOrder);
 
-            if (!$articlesOrdersTable->save($articlesOrder)) {
+            if (!$this->save($articlesOrder)) {
                 Log::write('debug', $articlesOrder->getErrors());
                 if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
             }
@@ -515,6 +530,30 @@ class ArticlesOrdersTable extends Table
         return $results;
     }   
 
+    public function deleteByIds($user, $organization_id, $ids, $debug=false) {    
+       
+        $results = false;
+        
+        $organization_id = $ids['organization_id'];
+        $order_id = $ids['order_id'];
+        $article_organization_id = $ids['article_organization_id'];
+        $article_id = $ids['article_id'];
+
+        $where = [$this->getAlias().'.organization_id' => $organization_id, 
+                  $this->getAlias().'.order_id' => $order_id, 
+                  $this->getAlias().'.article_organization_id' => $article_organization_id, 
+                  $this->getAlias().'.article_id' => $article_id];
+        // debug($where);
+
+        $entity = $this->find()
+                        ->where($where)
+                        ->first();
+        if(!empty($entity))
+            $results = $this->delete($entity);                        
+        // debug($results);
+        return $results;
+    }  
+
     public function getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug=false) {
 
         $this->_getOptions($options); // setta sort / limit / page
@@ -572,6 +611,76 @@ class ArticlesOrdersTable extends Table
 
         return $results;
     }    
+
+    /* 
+     * dato una lista di articoli li associa all'ordine 
+     */
+    public function adds($user, $organization_id, $order, $articles, $debug=false) {
+
+        foreach($articles as $article) {
+
+            $datas = [];
+            $datas['organization_id'] = $organization_id;
+            $datas['order_id'] = $order->id;
+            $datas['article_organization_id'] = $order->owner_organization_id; // dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
+            $datas['article_id'] = $article->id;        
+            $datas['name'] = $article->name;        
+            $datas['prezzo'] = $article->prezzo;     
+            $datas['pezzi_confezione'] = $article->pezzi_confezione;     
+            $datas['qta_minima'] = $article->qta_minima;     
+            $datas['qta_massima'] = $article->qta_massima;     
+            $datas['qta_minima_order'] = $article->qta_minima_order;     
+            $datas['qta_massima_order'] = $article->qta_massima_order;     
+            $datas['qta_multipli'] = $article->qta_multipli;     
+            $datas['alert_to_qta'] = $article->alert_to_qta;    
+
+            /* 
+            * key 
+            *
+            * article_organization_id / article_id 
+            *      dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES / PACT
+            */
+            $ids = [];
+            $ids['organization_id'] = $organization_id;
+            $ids['order_id'] = $order->id;
+            $ids['article_organization_id'] = $order->owner_organization_id;
+            $ids['article_id'] = $article->id;
+            
+            $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
+            if(empty($articlesOrder)) {
+
+                $datas['send_mail'] = 'N';
+                $datas['qta_cart'] = "0";
+                $datas['flag_bookmarks'] = 'N';
+                $datas['stato'] = 'Y';
+
+                $articlesOrder = $this->newEntity();
+            }
+            
+            $articlesOrder = $this->patchEntity($articlesOrder, $datas);
+          //  debug($datas);
+            
+            /*
+            * workaround
+            */
+            $articlesOrder->organization_id = $organization_id;
+            $articlesOrder->order_id = $order->id;
+            $articlesOrder->article_organization_id = $order->owner_organization_id;
+            $articlesOrder->article_id = $article->id;
+ 
+            if (!$this->save($articlesOrder)) {
+                $this->Flash->error($articlesOrder->getErrors());
+            }  
+        } // loop articles
+
+        /*
+        * aggiorno stato ordine 'OPEN'; // OPEN-NEXT  
+        */ 
+        $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+        $lifeCycleOrdersTable->stateCodeUpdate($user, $order, 'OPEN');
+                
+        return true;
+    }
 
     protected function _getOptions($options) {        
         isset($options['limit']) && !empty($options['limit']) ? $this->_limit = $options['limit']: $this->_limit = Configure::read('sql.limit');

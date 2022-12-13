@@ -29,7 +29,7 @@ class OrderGasValidation extends Validation
         $user->organization->id = $organization_id;
 
         $articlesTable = TableRegistry::get('Articles');
-        $results = $articlesTable->getTotArticlesPresentiInArticlesOrder($user, $organization_id, $supplier_organization_id);
+        $results = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id);
 
         // debug($results);
         if($results->count()==0)

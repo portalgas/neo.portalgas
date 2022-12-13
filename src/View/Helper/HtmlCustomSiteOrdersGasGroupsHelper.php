@@ -30,7 +30,9 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     }    
 
     public function supplierOrganizations($suppliersOrganizations) {
-        return parent::supplierOrganizations($suppliersOrganizations);
+        $html = '';
+        $html .= parent::supplierOrganizations($suppliersOrganizations);
+        return $html;
     }
 
     public function gasGroups($gasGroups) {
@@ -82,8 +84,44 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
      */
     public function infoParent($results) {
 
-        if(empty($results)) 
-            return '';    
+        if(empty($results))
+            return '';
+
+        if($results->delivery->sys=='N')
+            $delivery_label = $results->delivery->luogo.' '.$results->delivery->luogo;
+        else 
+            $delivery_label = $results->delivery->luogo;
+
+        $html = '<section class="content">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Ordine principale</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
+            </div> <!-- /.box-header -->
+            <div class="box-body no-padding-disabled">
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Delivery').'</label>
+                        <div class="col-sm-4">'.$delivery_label.'</div>
+                        
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
+                        <div class="col-sm-4">Dal '.$results->data_inizio.' al '.$results->data_fine.'</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
+                        <div class="col-sm-10">'.$results->order_state_code->name.': '.$results->order_state_code->descri.'</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </section>';
+
+        return $html;   
     }
 
     public function monitoraggio($results) {

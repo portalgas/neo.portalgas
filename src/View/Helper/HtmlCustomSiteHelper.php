@@ -9,7 +9,7 @@ use Cake\Core\Configure;
 class HtmlCustomSiteHelper extends FormHelper
 {
 	private $debug = false;
-	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
+	public  $helpers = ['Url', 'Html', 'Form', 'HtmlCustom'];
 
     public function initialize(array $config)
     {
@@ -69,39 +69,71 @@ class HtmlCustomSiteHelper extends FormHelper
 
     public function boxOrder($results, $options=[]) {
 
-        $html = '';
-        $html .= '<div class="box-order">';
+        if(empty($results))
+            return '';
 
         if($results->delivery->sys=='N')
             $delivery_label = $results->delivery->luogo.' '.$results->delivery->luogo;
         else 
             $delivery_label = $results->delivery->luogo;
 
-        $html .= '<div class="row">';
-        $html .= '<div class="col-md-6">';  
-        $html .= '<select name="delivery_id" id="delivery_id" class="form-control">';
-        $html .= '<option value="'.$results->delivery_id.'">'.$delivery_label.'</option>';
-        $html .= '</select>';
-        $html .= '</div>';
-        $html .= '<div class="col-md-6">';
-        $html .= '<select name="order_id" id="order_id" class="form-control">';
-        $html .= '<option value="'.$results->id.'">Dal '.$results->data_inizio.' al '.$results->data_fine;
-        $html .= '</option>';
-        $html .= '</select>';
-        $html .= '</div>';
+        $url = '';
+        if(!empty($results->suppliers_organization->supplier->img1)) {
+            $config = Configure::read('Config');
+            $img_path = sprintf(Configure::read('Supplier.img.path.full'), $results->suppliers_organization->supplier->img1);
+            $portalgas_app_root = $config['Portalgas.App.root'];
+            $path = $portalgas_app_root.$img_path;
+    
+            if(file_exists($path)) {
+                $portalgas_fe_url = $config['Portalgas.fe.url'];
+                $url = sprintf($portalgas_fe_url.Configure::read('Supplier.img.path.full'), $results->suppliers_organization->supplier->img1);
+            }   
+        }
 
-        //$html .= '<div class="col-md-6">';
-        //$html .= __('StateOrder');
-        // echo $this->App->utilsCommons->getOrderTime($results['Order']);
-        //$html .= '</div>';
-        $html .= '<div class="col-md-12">';
-        // $html .= __('StatoElaborazione');
-        $html .= $results->order_state_code->name.': '.$results->order_state_code->descri;
-        // $html .= $this->App->drawOrdersStateDiv($results);
-        $html .= '</div>';
-        $html .= '</div>'; // row 
+        $html = '<section class="content">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">'.__('Order-'.$results->order_type_id).'</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
+            </div> <!-- /.box-header -->
+            <div class="box-body no-padding-disabled">
 
-        $html .= "</div>"; // box-order
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Delivery').'</label>
+                        <div class="col-sm-4">'.$delivery_label.'</div>
+                        
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
+                        <div class="col-sm-4">Dal '.$results->data_inizio.' al '.$results->data_fine.'</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('SupplierOrganization').'</label>
+                        <div class="col-sm-4">
+                            <a href="https://neo.portalgas.it/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">'.$results->suppliers_organization->name.'</a></div>
+                        
+                        <label class="col-sm-2 control-label" style="padding-top:0px"></label>
+                        <div class="col-sm-4">';
+            if(!empty($url)) 
+                $html .= '<img src="'.$url.'" alt="'.$results->suppliers_organization->name.'" title="'.$results->suppliers_organization->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" />';
+
+                $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">'.__('ArticlesOwner'.$results->suppliers_organization->owner_articles).'</span>';
+                        
+                $html .= '</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
+                        <div class="col-sm-10">'.$results->order_state_code->name.': '.$results->order_state_code->descri.'</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </section>';
 
         return $html;
     }
@@ -124,11 +156,9 @@ class HtmlCustomSiteHelper extends FormHelper
             $html .= '<span class="box-img"><img src="'.$url.'" alt="'.$results->supplier->name.'" title="'.$results->supplier->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
         $html .= '<span class="box-name">';
-        if(!empty($results->supplier->www)) 
-            $html .= '<a href="'.$results->supplier->www.'" target="_blank" title="vai al sito del produttore">';
+        $html .= '<a href="https://neo.portalgas.it/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">';
         $html .= $results->name;
-        if(!empty($results->supplier->www))
-            $html .= '</a>'; 
+        $html .= '</a>'; 
         $html .= '</span>';
         $html .= "</div>";
 
@@ -256,7 +286,7 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function boxTitle($results, $options=[]) {
+    public function boxTitle($results, $breadcrumbs=[]) {
 
         if(!isset($results['title']))
             $results['title'] = ''; 
@@ -271,6 +301,24 @@ class HtmlCustomSiteHelper extends FormHelper
             $html .= '</small>';
         }            
         $html .= '</h1>';
+
+        if(!empty($breadcrumbs)) {
+            $html .= '<ol class="breadcrumb">';
+            foreach($breadcrumbs as $breadcrumb) {
+                if(is_string($breadcrumb)) {
+                    switch($breadcrumb) {
+                        case 'home':
+                            $html .= '<li><a href="'.$this->Url->build('/').'"><i class="fa fa-home"></i> '.__('Home').'</a></li>';
+                        break;
+                        case 'list':
+                            $html .= '<li><a href="'.$this->Url->build(['action' => 'index']).'"><i class="fa fa-list"></i> '.__('List').'</a></li>';
+                        break;
+                    }
+                }
+            }
+            $html .= '</ol>';
+        }
+
         $html .= "</section>";
 
         return $html;

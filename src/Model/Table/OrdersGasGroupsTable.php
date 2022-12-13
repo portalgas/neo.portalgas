@@ -55,14 +55,54 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         return $rules;
     }
 
+
     /*
-     * implement
+     * implement 
+     * 
+     * il parent (ordine principale) gli passa il supplier_organization_id
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
 
         $results = [];
+
+        // lo eredita dal parent (ordine principale)
+        if(empty($where) && !isset($where['supplier_organization_id']))
+            return $results;
+            
+        $where2 = [];
+        $where2['SuppliersOrganizations'] = ['SuppliersOrganizations.id' => $where['supplier_organization_id']];
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);  
+        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id, $where2);
+
+        return $results;
+
+        /* 
+         * estraggo i produttori con orders.order_type_id' => Configure::read('Order.type.gas_parent_groups')
+         * con consegne ancora aperte
+         * e produttori profilati
+         * 
+         */        
+        $suppliers_organizations_ids = [];
+
+        $ordersTable = TableRegistry::get('Orders');
+        $where = [];
+        $where['Orders'] = ['Orders.order_type_id' => Configure::read('Order.type.gas_parent_groups')];
+        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
+                                'Deliveries.stato_elaborazione' => 'OPEN',
+                                'DATE(Deliveries.data) >= CURDATE()'];
+        $orders = $ordersTable->gets($user, $organization_id, $where);
+        if($orders->count()) {
+            foreach($orders as $order) {
+                array_push($suppliers_organizations_ids, $order->supplier_organization_id);
+            }
+        }
+
+        if(!empty($suppliers_organizations_ids)) {
+            $where = [];
+            $where['SuppliersOrganizations'] = ['SuppliersOrganizations.id IN ' => $suppliers_organizations_ids];
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id, $where);
+        }
 
         return $results;
     } 
@@ -100,7 +140,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
 
         $results = $ordersGasTable->find()
                                     ->where($where)
-                                    ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
+                                    ->contain(['OrderStateCodes', 'Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
                                     ->first();
 
         return $results;

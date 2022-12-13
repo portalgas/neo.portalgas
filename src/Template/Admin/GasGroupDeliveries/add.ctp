@@ -15,7 +15,6 @@ use Cake\Core\Configure;
     </h1>
     <ol class="breadcrumb">
       <li><a href="<?php echo $this->Url->build('/'); ?>"><i class="fa fa-home"></i> <?php echo __('Home'); ?></a></li>
-      <!-- li><a href="<?php echo $this->Url->build(['action' => 'view']); ?>"><i class="fa fa-eye"></i> <?php echo __('View'); ?></a></li -->
       <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-list"></i> <?php echo __('List'); ?></a></li>
     </ol>
   </section>

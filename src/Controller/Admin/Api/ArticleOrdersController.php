@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Decorator\ApiArticleOrderDecorator;
+use App\Decorator\ApiArticleDecorator;
 use App\Decorator\ApiSupplierDecorator;
 
 /*
@@ -23,10 +24,6 @@ class ArticleOrdersController extends ApiAppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-
-        if (!$this->request->is('ajax')) {
-            throw new BadRequestException();
-        }
     }
 
     /* 
@@ -35,12 +32,6 @@ class ArticleOrdersController extends ApiAppController
     public function get() {
 
         $debug = false;
-        if (!$this->Authentication->getResult()->isValid()) {
-            return $this->_respondWithUnauthorized();
-        }
-
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
 
         $continua = true;
 
@@ -64,28 +55,28 @@ class ArticleOrdersController extends ApiAppController
 
         $ordersTable = TableRegistry::get('Orders');
         
-        $ordersTable = $ordersTable->factory($user, $organization_id, 0, $order_id);
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, 0, $order_id);
 
         $ordersTable->addBehavior('Orders');
-        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
+        $orderResults = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
         if(!empty($orderResults)) {
             $supplier = $orderResults['suppliers_organization']['supplier'];
-            $supplier = new ApiSupplierDecorator($user, $supplier);
+            $supplier = new ApiSupplierDecorator($this->_user, $supplier);
             $orderResults['suppliers_organization']['supplier'] = $supplier->results;
         }
 
         $ids = [];
-        $ids['organization_id'] = $organization_id;
+        $ids['organization_id'] = $this->_organization->id;
         $ids['order_id'] = $order_id;
         $ids['article_organization_id'] = $article_organization_id;
         $ids['article_id'] = $article_id;
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderResults);
 
         if($articlesOrdersTable!==false) {
-            $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
+            $articlesOrdersResults = $articlesOrdersTable->getByIds($this->_user, $this->_organization->id, $ids, $debug);
 
-            $articlesOrdersResults2 = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
+            $articlesOrdersResults2 = new ApiArticleOrderDecorator($this->_user, $articlesOrdersResults, $orderResults);
             $articlesOrdersResults = $articlesOrdersResults2->results;
         }
 
@@ -95,16 +86,16 @@ class ArticleOrdersController extends ApiAppController
         /*
          * nota per il referente
          */
-        $hasFieldCartNote = $user->organization->paramsFields['hasFieldCartNote'];
+        $hasFieldCartNote = $this->_organization->paramsFields['hasFieldCartNote'];
         
         if($hasFieldCartNote=='Y') {
             
             $nota = '';
             $cartsTable = TableRegistry::get('Carts');
 
-            $where = ['Carts.organization_id' => $organization_id,
+            $where = ['Carts.organization_id' => $this->_organization->id,
                       'Carts.order_id' => $order_id,
-                      'Carts.user_id' => $user->id,
+                      'Carts.user_id' => $this->_user->id,
                       'Carts.article_organization_id' => $article_organization_id,
                       'Carts.article_id' => $article_id];
             // debug($where);
@@ -130,4 +121,168 @@ class ArticleOrdersController extends ApiAppController
         
         return $this->_response($results); 
     } 
+
+  /* 
+   * gestione associazione articoli all'ordine
+   * return
+   *  proprietario listino: per gestione permessi di modifica
+   *  article_orders: articoli gia' associati
+   *  articles: articoli da associare
+   */    
+    public function getAssociateToOrder() {
+
+        $debug = false;
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $datas = [];
+        $datas['can_edit'] = false;
+        $datas['order'] = [];
+        $datas['article_orders'] = [];
+        $datas['articles'] = [];
+
+        $organization_id = $this->request->getData('organization_id');
+        $order_type_id = $this->request->getData('order_type_id');
+        $order_id = $this->request->getData('order_id');
+
+        /* 
+         * ordine 
+         */
+        $ordersTable = TableRegistry::get('Orders');
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id, $order_id);
+        $ordersTable->addBehavior('Orders');
+        $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
+        
+        $datas['order'] = $order;
+ 
+        /* 
+         * permessi di aggiornamento dei dati degli articoli 
+         */ 
+        $lifeCycleArticlesOrdersTable = TableRegistry::get('LifeCycleArticlesOrders');
+        $datas['can_edit'] = $lifeCycleArticlesOrdersTable->canEditByOrder($this->_user, $this->_organization->id, $order, $debug);
+
+        /* 
+         * articoli gia' associati
+         * articoli da associare
+         */        
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
+        if($articlesOrdersTable===false) {
+            $results['results'] = $datas;
+            return $this->_response($results); 
+        } 
+            
+        $dataAssociateToOrder = $articlesOrdersTable->getAssociateToOrder($this->_user, $this->_organization->id, $order);
+        $article_orders = $dataAssociateToOrder['article_orders'];
+        $article_orders2 = new ApiArticleOrderDecorator($this->_user, $article_orders, $order);
+        $datas['article_orders'] = $article_orders2->results;
+
+        $articles = $dataAssociateToOrder['articles'];
+        $article2 = new ApiArticleDecorator($this->_user, $articles);
+        $datas['articles'] = $article2->results;
+            
+/*
+        if($articles->count()) 
+        foreach($articles as $numResult => $article) {
+            $datas['articles'][$numResult] = $article;
+            $datas['articles'][$numResult]['is_select'] = false;
+        }*/
+        $results['results'] = $datas;
+        
+        return $this->_response($results); 
+    }
+    
+    /* 
+    * salvo articoli in articleOrders
+    *  delete_article_orders: articoli gia' associati da eliminare
+    *  update_article_orders: articoli gia' associati da aggiornare
+    *  articles: articoli da associare (quelli is_select da associare)
+    */    
+    public function setAssociateToOrder() {
+
+        $debug = false;
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $datas = [];
+        $datas['order'] = [];
+        $datas['article_orders'] = [];
+        $datas['articles'] = [];
+
+        $delete_article_orders = $this->request->getData('delete_article_orders');
+        $update_article_orders = $this->request->getData('update_article_orders');
+        $articles = $this->request->getData('articles');
+        $organization_id = $this->request->getData('organization_id');
+        $order_type_id = $this->request->getData('order_type_id');
+        $order_id = $this->request->getData('order_id');
+
+        $ordersTable = TableRegistry::get('Orders');
+        $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
+        
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+
+        /* 
+         * aggiorno article_orders 
+         */
+        if(!empty($update_article_orders)) {
+            foreach($update_article_orders as $update_article_order) {
+
+                $ids = [];
+                $ids['organization_id'] = $update_article_order['organization_id'];
+                $ids['order_id'] = $update_article_order['order_id'];
+                $ids['article_organization_id'] = $update_article_order['article_organization_id'];
+                $ids['article_id'] = $update_article_order['article_id'];
+                
+                $articlesOrder = $articlesOrdersTable->getByIds($this->_user, $this->_organization->id, $ids, $debug);                
+                $articlesOrder = $articlesOrdersTable->patchEntity($articlesOrder, $update_article_order);
+                 //  debug($articlesOrder);
+                
+                /*
+                * workaround
+                */
+                $articlesOrder->organization_id = $organization_id;
+                $articlesOrder->order_id = $update_article_order['order_id'];
+                $articlesOrder->article_organization_id = $update_article_order['article_organization_id'];
+                $articlesOrder->article_id = $update_article_order['article_id'];
+                if (!$articlesOrdersTable->save($articlesOrder)) {
+                    $this->Flash->error($articlesOrder->getErrors());
+                }  
+            }
+        }
+
+        /* 
+         * rimuovo article_orders dall'ordine
+         */
+        if(!empty($delete_article_orders)) {
+            foreach($delete_article_orders as $delete_article_order) {
+
+                $ids = [];
+                $ids['organization_id'] = $delete_article_order['organization_id'];
+                $ids['order_id'] = $delete_article_order['order_id'];
+                $ids['article_organization_id'] = $delete_article_order['article_organization_id'];
+                $ids['article_id'] = $delete_article_order['article_id'];
+                
+                $articlesOrder = $articlesOrdersTable->deleteByIds($this->_user, $this->_organization->id, $ids, $debug);
+            }
+        }
+
+        /*  
+         * associo articolo all'ordine 
+         */
+        if(!empty($articles)) {
+            $articlesOrdersTable->adds($this->user, $this->organization->id, $order, $articles);
+        }
+
+        return $this->_response($results); 
+    }    
 }

@@ -25,6 +25,70 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
         return $validator;
     }
 
+  /* 
+   * implements
+   * 
+   * gestione associazione articoli all'ordine
+   * return
+   *  proprietario listino: per gestione permessi di modifica
+   *  article_orders: articoli gia' associati
+   *  articles: articoli da associare
+   */    
+    public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
+        
+        $results = [];
+        $results['article_orders'] = []; // articoli gia' associati, se empty => prima volta => copia da articles
+        $results['articles'] = []; // articles: articoli da associare
+        
+        /* 
+         * $article_orders => articoli gia' associati 
+         */ 
+        $where = [];
+        $where['ArticlesOrders'] = [$this->getAlias().'.organization_id' => $order->organization_id,
+                                    $this->getAlias().'.order_id' => $order->id,
+                                ]; 
+        
+        $options = [];
+        $options['sort'] = [];
+        $options['limit'] = Configure::read('sql.no.limit');
+        $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options);
+        
+        $where2 = [];
+        $ids = [];
+        if(!empty($results['article_orders'])) {
+            /* 
+             * escludo gli articoli gia' associati
+             * */
+            foreach($results['article_orders'] as $article_order) {
+                array_push($ids, $article_order->article_id);
+            }
+
+            $where2['Articles'] = ['Articles.id NOT IN' => $ids];
+        }
+
+        /* 
+         * $articles => articoli da associare
+         */ 
+        $owner_articles = $order->owner_articles;
+        $supplier_organization_id = $order->supplier_organization_id; 
+
+        $articlesTable = TableRegistry::get('Articles');
+        $results['articles'] = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where2);
+        // debug($results);
+
+        if(empty($results['article_orders'])) {
+            // articoli gia' associati, se empty => prima volta => copia da articles
+            $this->adds($user, $organization_id, $order, $results['articles']);
+            $options = [];
+            $options['sort'] = [];
+            $options['limit'] = Configure::read('sql.no.limit');
+            $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options); 
+            $results['articles'] = [];
+        }
+
+        return $results;
+    }
+
     /*
      * implement
     */

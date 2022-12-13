@@ -87,15 +87,29 @@ class ApiArticleOrderDecorator  extends AppDecorator {
             $results['slug'] = $articles_order->article->slug.'-'.$results['sku'];
         */
 
-        if(empty($articles_order->prezzo))
-            $results['price'] = 0;
-        else
-            $results['price'] = $articles_order->prezzo;
+        $results['is_select'] = false; // per vue js x gestire eventuali checkbox 
 
-        if(empty($articles_order->pezzi_confezione))
+        if(empty($articles_order->prezzo)) {
+            $results['price'] = 0;
+            $results['prezzo'] = 0;
+            $results['prezzo_'] = '0,00';
+            $results['prezzo_e'] = $results['prezzo_'].' &euro';
+        }
+        else {
+            $results['price'] = $articles_order->prezzo;
+            $results['prezzo'] = $articles_order->prezzo;
+            $results['prezzo_'] = number_format($articles_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+            $results['prezzo_e'] = $results['prezzo_'].' &euro';
+        }
+
+        if(empty($articles_order->pezzi_confezione)) {
+            $results['pezzi_confezione'] = 1;
             $results['package'] = 1;
-        else
+        }
+        else {
+            $results['pezzi_confezione'] = $articles_order->pezzi_confezione;
             $results['package'] = $articles_order->pezzi_confezione;
+        }
 
         if(empty($articles_order->qta_minima))
             $results['qta_minima'] = 1;

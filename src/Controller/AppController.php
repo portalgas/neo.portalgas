@@ -35,6 +35,8 @@ class AppController extends Controller
     use Traits\UtilTrait;
 
     protected $application_env; // development
+    protected $_user = null;
+    protected $_organization = null; // gas scelto
     
     public $helpers = [
         'Modal' => [
@@ -76,6 +78,10 @@ class AppController extends Controller
 
         $this->application_env = env('APPLICATION_ENV', 'production');
         $this->set('application_env', $this->application_env);
+
+        $this->_user = $this->Authentication->getIdentity();
+        if(!empty($this->_user) && isset($this->_user->organization))
+            $this->_organization = $this->_user->organization; // gas scelto
     }
 
     public function beforeFilter(Event $event) {

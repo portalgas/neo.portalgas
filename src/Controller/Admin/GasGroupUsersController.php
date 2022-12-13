@@ -24,13 +24,13 @@ class GasGroupUsersController extends AppController
         
         parent::beforeFilter($event);
 
-        $user = $this->Authentication->getIdentity();
-        $organization = $user->organization; // gas scelto
+        $this->_user = $this->Authentication->getIdentity();
+        $this->_organization = $this->_user->organization; // gas scelto
    
-        if(!isset($user->acl) ||
-            !isset($organization->paramsConfig['hasGasGroups']) || 
-            $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGroupsManagerGroups']
+        if(!isset($this->_user->acl) ||
+            !isset($this->_organization->paramsConfig['hasGasGroups']) || 
+            $this->_organization->paramsConfig['hasGasGroups']=='N' || 
+             !$this->_user->acl['isGasGroupsManagerGroups']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -44,9 +44,6 @@ class GasGroupUsersController extends AppController
      */
     public function management($gas_group_id)
     {
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
-
         if ($this->request->is('post')) {
             
             $continua = true;
@@ -63,21 +60,21 @@ class GasGroupUsersController extends AppController
                 * cancello tutti gli utenti associati al gruppo 
                 */
                 $where = ['GasGroupUsers.gas_group_id' => $gas_group_id, 
-                        'GasGroupUsers.organization_id' => $organization_id, 
+                        'GasGroupUsers.organization_id' => $this->_organization->id, 
                 ];    
                 $this->GasGroupUsers->deleteAll($where);
 
                 if(strpos($datas['user_ids'], ',')!==false)
-                    $user_ids = explode(',', $datas['user_ids']);
+                    $this->_user_ids = explode(',', $datas['user_ids']);
                 else 
-                    $user_ids = $datas['user_ids'];
-                // dd($user_ids);
+                    $this->_user_ids = $datas['user_ids'];
+                // dd($this->_user_ids);
 
-                foreach($user_ids as $user_id) {
+                foreach($this->_user_ids as $this->_user_id) {
 
-                    $datas['organization_id'] = $organization_id;
+                    $datas['organization_id'] = $this->_organization->id;
                     $datas['gas_group_id'] = $gas_group_id;
-                    $datas['user_id'] = $user_id;
+                    $datas['user_id'] = $this->_user_id;
 
                     $gasGroupUser = $this->GasGroupUsers->newEntity();
                     $gasGroupUser = $this->GasGroupUsers->patchEntity($gasGroupUser, $datas);
@@ -98,8 +95,8 @@ class GasGroupUsersController extends AppController
 
         $gasGroupUser = $this->GasGroupUsers->newEntity();
 
-        $users = $this->GasGroupUsers->getUsersToAssocitateList($user, $organization_id, $gas_group_id);
-        $gasGroupUsers = $this->GasGroupUsers->getUsersAssocitateList($user, $organization_id, $gas_group_id);;
+        $this->_users = $this->GasGroupUsers->getUsersToAssocitateList($this->_user, $this->_organization->id, $gas_group_id);
+        $gasGroupUsers = $this->GasGroupUsers->getUsersAssocitateList($this->_user, $this->_organization->id, $gas_group_id);;
         $this->set(compact('gasGroupUser', 'users', 'gasGroupUsers', 'gas_group_id'));
     }
 

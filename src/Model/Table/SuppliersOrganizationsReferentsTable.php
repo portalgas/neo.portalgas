@@ -95,18 +95,24 @@ class SuppliersOrganizationsReferentsTable extends Table
 
     public function gets($user, $where = []) {
 
-        $where = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id,
+        if(isset($where['SuppliersOrganizations']))
+            $where['SuppliersOrganizations'] = array_merge($where['SuppliersOrganizations'], ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']]);
+        else 
+            $where['SuppliersOrganizations'] = ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']];
+                
+            
+        $where['SuppliersOrganizationsReferents'] = ['SuppliersOrganizationsReferents.organization_id' => $user->organization->id,
                   'SuppliersOrganizationsReferents.user_id' => $user->id
                ];
-        // debug($where);
+       
         $results = $this->find()
-                                ->where($where)
-                                ->contain(['Users', 
-                                          'SuppliersOrganizations' => [
-                                            'conditions' => ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']],
-                                            'Suppliers', 'CategoriesSuppliers']
-                                            ])
-                                ->all();
+                        ->where($where['SuppliersOrganizationsReferents'])
+                        ->contain(['Users', 
+                                    'SuppliersOrganizations' => [
+                                    'conditions' => $where['SuppliersOrganizations'],
+                                    'Suppliers', 'CategoriesSuppliers']
+                                    ])
+                        ->all();
 
         // debug($results);
         return $results;

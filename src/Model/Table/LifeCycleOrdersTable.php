@@ -933,7 +933,7 @@ class LifeCycleOrdersTable extends Table
     }
 
     /*
-     * Akax::admin_view_orders
+     * Ajax::admin_view_orders
      * in base allo stato dell'ordine
      * setto l'action possibile di un articolo
      */

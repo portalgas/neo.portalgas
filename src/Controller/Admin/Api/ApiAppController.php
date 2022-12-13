@@ -15,6 +15,9 @@ use Cake\Http\Exception\ForbiddenException;
  */
 class ApiAppController extends AppController
 {
+    protected $_user = null;
+    protected $_organization = null;
+    
     /**
      * Initialization hook method.
      *
@@ -55,8 +58,12 @@ class ApiAppController extends AppController
             throw new BadRequestException();
         }
 
-        $user = $this->Authentication->getIdentity();
-        if(empty($user)) {
+        if (!$this->Authentication->getResult()->isValid()) {
+            return $this->_respondWithUnauthorized();
+        }
+                
+        $this->_user = $this->Authentication->getIdentity();
+        if(empty($this->_user)) {
             /*
              * per evitare Error: [Cake\Http\Exception\ForbiddenException] Forbidden Request URL: /admin/api/pings
             throw new ForbiddenException();

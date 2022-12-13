@@ -2,8 +2,7 @@
 use Cake\Core\Configure;
 // echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Orders'), 'subtitle' => 'aggiungi']);
-
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list']);
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
@@ -13,15 +12,16 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
   <section class="content">
     <div class="row">
       <div class="col-md-12">
-        <!-- general form elements -->
+
+        <?php 
+          echo $this->{$htmlCustomSiteOrders}->infoParent($parent);
+        ?>
+        
         <div class="box box-primary">
           <div class="box-header with-border">
-            <h3 class="box-title"><?php echo __('Order-'.$order_type_id); ?></h3>
-          </div>
-          <!-- /.box-header -->
-          <!-- form start -->
+            <h3 class="box-title"><?php echo __('Dati ordine'); ?></h3>
+          </div>          
           <?php 
-          if(!empty($suppliersOrganizations) && !empty($deliveries)) {
             echo $this->Form->create($order, ['role' => 'form']);
             echo '<div class="box-body">';
 
@@ -29,8 +29,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
                  * passato per OrderValidation
                  */
                 echo $this->{$htmlCustomSiteOrders}->hiddenFields($this->Identity->get()->organization->id, $parent);
-                
-                echo $this->{$htmlCustomSiteOrders}->infoParent($parent);
 
                 /*
                  * produttore
@@ -56,7 +54,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
             echo $this->Form->submit(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right']);
 
           echo $this->Form->end(); 
-          } // end if(!empty($suppliersOrganizations) && !empty($deliveries))
 
           echo '</div>';  // /.box -->
       echo '</div>';

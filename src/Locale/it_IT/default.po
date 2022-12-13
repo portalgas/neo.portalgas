@@ -950,13 +950,16 @@ msgid "Orders-10"
 msgstr "Ordini per i gruppi"
 
 msgid "Order-10"
-msgstr "Ordine per il gruppi"
+msgstr "Ordine per il gruppo"
 
 msgid "Orders-11"
 msgstr "Ordini titolare per i gruppi"
 
 msgid "Order-11"
-msgstr "Ordine titolare per il gruppi"
+msgstr "Ordine titolare per il gruppo"
+
+msgid "Order-10-Add"
+msgstr "Crea ordine per il gruppo"
 
 #
 # prepagato
@@ -1036,6 +1039,121 @@ msgstr "Prezzo unità in promozione"
 msgid "ProdGasArticlesPromotions"
 msgstr "Articoli in promozione"
 
+
+msgid "Price"
+msgstr "Prezzo"
+
+msgid "PriceWithVAT"
+msgstr "Prezzo con IVA"
+
+msgid "PriceWithoutVAT"
+msgstr "Prezzo senza IVA"
+
+msgid "PrezzoUnita"
+msgstr "Prezzo unità"
+
+msgid "Prezzo/UM"
+msgstr "Prezzo/UM"
+
+msgid "UnitOfMeasure"
+msgstr "Unità di misura"
+
+msgid "pezzi_confezione"
+msgstr "Num di pezzi in una confezione"
+
+msgid "pezzi_confezione_short"
+msgstr "N. pezzi in conf."
+
+msgid "Conf"
+msgstr "Conf."
+
+msgid "Package"
+msgstr "Confezione"
+
+msgid "Acquistato"
+msgstr "Acquistato"
+
+msgid "order_qta_massima"
+msgstr "Quantità massima"
+
+msgid "order_importo_massimo"
+msgstr "Importo massimo"
+
+msgid "order_qta_massima_help"
+msgstr "Quando il peso totale espresso nell'unità di misura indicata raggiungerà la quantità indicata, verrà inviata una mail ai referenti e chiuso l'ordine"
+
+msgid "order_importo_massimo_help"
+msgstr "Quando il totale degli acquisti raggiungerà l'importo indicato, verrà inviata una mail ai referenti e chiuso l'ordine"
+
+msgid "order_just_pay"
+msgstr "Considero l'ordine già pagato al produttore"
+
+msgid "qta"
+msgstr "Quantità"
+
+msgid "qta_tot"
+msgstr "Quantità totale"
+
+msgid "qta_cart"
+msgstr "Quantità acquistata raggiunta"
+
+msgid "qta_minima"
+msgstr "Quantità minima che un gasista può acquistare"
+
+msgid "qta_massima"
+msgstr "Quantità massima che un gasista può acquistare"
+
+msgid "qta_minima_short"
+msgstr "Quantità minima"
+
+msgid "qta_massima_short"
+msgstr "Quantità massima"
+
+msgid "qta_minima_order"
+msgstr "Qtà minima rispetto a tutti gli acquisti"
+
+msgid "qta_massima_order"
+msgstr "Qtà massima rispetto a tutti gli acquisti"
+
+msgid "qta_minima_order_short"
+msgstr "Qtà minima sul totale"
+
+msgid "qta_massima_order_short"
+msgstr "Qtà massima sul totale"
+
+msgid "qta_multipli"
+msgstr "Multipli di"
+
+msgid "qta_in_promozione"
+msgstr "Qtà in promozione"
+
+msgid "prezzo_unita_in_promozione"
+msgstr "Prezzo unità in promozione"
+
+msgid "alert_to_qta"
+msgstr "Avvisa raggiunta la quantità di"
+
+msgid "alert_to_qta_num"
+msgstr "Avvisa raggiunta la quantità di %s confezioni"
+
+msgid "Trasport"
+msgstr "Trasporto"
+
+msgid "TrasportShort"
+msgstr "Trasp."
+
+msgid "CostMore"
+msgstr "Costo aggiuntivo"
+
+msgid "CostMoreShort"
+msgstr "Costo agg."
+
+msgid "CostLess"
+msgstr "Sconto"
+
+msgid "CostLessShort"
+msgstr "Sconto"
+
 #
 # M S G  system
 #
@@ -1069,6 +1187,9 @@ msgstr "Errore nel passaggio dei parametri!<br /><br />Contatta l'amministratore
 msgid "msg_error_param_order_type_id"
 msgstr "Errore nel passaggio dei parametri, tipologia d'ordine non previsto!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
 
+msgid "msg_error_param_parent_order_id"
+msgstr "Errore nel passaggio dei parametri, ordine titolare obbligatorio!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
+
 msgid "msg_site_offline"
 msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget="_blank" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
 
@@ -1077,6 +1198,12 @@ msgstr "Non sei abilitato alla gestione delle promozioni.<br />Contatta l'ammini
 
 msgid "msg_not_gas_groups"
 msgstr "Devi creare prima un gruppo."
+
+msgid "msg_not_order_not_supplier_organizations"
+msgstr "Non sono stati trovati produttori!"
+
+msgid "msg_not_order_not_deliveries"
+msgstr "Non sono stati trovate consegne!"
 
 msgid "msg_error_org_type"
 msgstr "Errore nella tipologia di organizzazione!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a info@portalgas.it' href='mailto:info@portalgas.it'>info@portalgas.it</a>."
@@ -1593,7 +1720,13 @@ msgid "ArticlesOwnerSUPPLIER"
 msgstr "produttore"
 
 msgid "ArticlesOwnerREFERENT"
-msgstr "referente del produttore"
+msgstr "referente del G.A.S."
 
 msgid "ArticlesOwnerDES"
 msgstr "titolare D.E.S. del produttore"
+
+msgid "ArticlesOwnerPACT"
+msgstr "gestore del patto"
+
+msgid "ArticlesOwnerREFERENT-TMP"
+msgstr "temporaneamente il referente del G.A.S."

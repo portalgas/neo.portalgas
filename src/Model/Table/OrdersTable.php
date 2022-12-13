@@ -348,7 +348,7 @@ class OrdersTable extends Table
             else
                 $order_type_id = 0;
         }
-
+       
         if(empty($order_type_id)) {
             return false;
             // die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
@@ -482,7 +482,7 @@ class OrdersTable extends Table
                           
         if($debug) debug($where_delivery);
         $results = $this->find()
-                                ->where($where)
+                                ->where($where_order)
                                 ->contain([
                                   // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],  
                                   'OrderStateCodes',  

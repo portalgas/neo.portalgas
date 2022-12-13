@@ -55,23 +55,11 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
      * implement
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
-
-        $results = [];
-
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-    
-        $where = ['SuppliersOrganizations.organization_id' => $organization_id,
-                  'SuppliersOrganizations.stato' => 'Y',
-                  'SuppliersOrganizations.owner_articles' => 'REFERENT'];
-
-        $results = $suppliersOrganizationsTable->find()
-                                ->where($where)
-                                ->contain(['Suppliers', 'CategoriesSuppliers'])
-                                ->order(['SuppliersOrganizations.name'])
-                                ->all();
+        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);
         return $results;
     } 
-
+ 
     /*
      * implement
      */ 

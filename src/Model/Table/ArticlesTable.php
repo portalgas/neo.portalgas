@@ -176,7 +176,7 @@ class ArticlesTable extends Table
         return $articles;
     }
 
-    public function getTotArticlesPresentiInArticlesOrder($user, $organization_id, $supplier_organization_id, $debug = false) {
+    public function getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where=[], $debug = false) {
 
         /*
          * ricerco chi gestisce il listino articoli del produttore del GAS
@@ -184,12 +184,18 @@ class ArticlesTable extends Table
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $organization_id, $supplier_organization_id, $debug);
 
-        $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
-                  'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
-                  'Articles.stato' => 'Y',
-                  'Articles.flag_presente_articlesorders' => 'Y'];
+        if(isset($where['Articles']))
+            $where = array_merge(['Articles.organization_id' => $ownArticles->owner_organization_id,
+                                'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
+                                'Articles.stato' => 'Y',
+                                'Articles.flag_presente_articlesorders' => 'Y'], $where['Articles']);
+        else
+            $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
+                    'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
+                    'Articles.stato' => 'Y',
+                    'Articles.flag_presente_articlesorders' => 'Y'];
         if($debug) debug($where);
-
+   
         $results = $this->gets($user, $where);
 
         return $results;

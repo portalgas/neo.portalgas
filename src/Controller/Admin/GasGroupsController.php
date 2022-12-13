@@ -23,14 +23,11 @@ class GasGroupsController extends AppController
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
-
-        $user = $this->Authentication->getIdentity();
-        $organization = $user->organization; // gas scelto
         
-        if(!isset($user->acl) ||
-            !isset($organization->paramsConfig['hasGasGroups']) || 
-            $organization->paramsConfig['hasGasGroups']=='N' || 
-             !$user->acl['isGasGroupsManagerGroups']
+        if(!isset($this->_user->acl) ||
+            !isset($this->_organization->paramsConfig['hasGasGroups']) || 
+            $this->_organization->paramsConfig['hasGasGroups']=='N' || 
+             !$this->_user->acl['isGasGroupsManagerGroups']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -44,9 +41,9 @@ class GasGroupsController extends AppController
      */
     public function index()
     {
-        $user = $this->Authentication->getIdentity();
-        $where = ['GasGroups.user_id' => $user->id, 
-                  'GasGroups.organization_id' => $user->organization_id, 
+        $this->_user = $this->Authentication->getIdentity();
+        $where = ['GasGroups.user_id' => $this->_user->id, 
+                  'GasGroups.organization_id' => $this->_user->organization_id, 
                  ];
         $this->paginate = [
             'contain' => ['GasGroupUsers', 'GasGroupOrders', 'GasGroupDeliveries'],
@@ -83,14 +80,11 @@ class GasGroupsController extends AppController
      */
     public function add()
     {
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;        
-        
         $gasGroup = $this->GasGroups->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
-            $datas['organization_id'] = $organization_id;
-            $datas['user_id'] = $user->id;
+            $datas['organization_id'] = $this->_user->organization->id;
+            $datas['user_id'] = $this->_user->id;
             $datas['is_system'] = false;
             $datas['is_active'] = true;
             // debug($datas);

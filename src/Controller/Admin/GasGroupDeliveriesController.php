@@ -17,9 +17,6 @@ class GasGroupDeliveriesController extends AppController
 {
     use Traits\SqlTrait;
 
-    private $_user = null;
-    private $_organization = null; // gas scelto
-
     public function initialize()
     {
         parent::initialize();

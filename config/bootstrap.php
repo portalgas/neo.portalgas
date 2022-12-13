@@ -233,7 +233,7 @@ $this->addPlugin('CakeDC/Enum');
 
 Configure::write('HtmlOptionEmpty', [null => __('-------')]);
 
-Configure::write('AdminLTEMenu', false);  // a true per avere i menu di demo  
+Configure::write('AdminLTEMenu', true);  // a true per avere i menu di demo  
 
 // table class="dataTables table table-striped table-hover"
 Configure::write('dataTables.active', true);

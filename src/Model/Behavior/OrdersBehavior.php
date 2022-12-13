@@ -42,10 +42,19 @@ class OrdersBehavior extends Behavior
         }
         if (!isset($data['qta_massima']) || empty($data['qta_massima'])) {
             $data['qta_massima'] = 0;
+            $data['qta_massima_um'] = '';
+            $data['send_mail_qta_massima'] = 'N';
         }
+        else 
+            $data['send_mail_qta_massima'] = 'Y';
+
         if (!isset($data['importo_massimo']) || empty($data['importo_massimo'])) {
             $data['importo_massimo'] = 0;
+            $data['send_mail_importo_massimo'] = 'N';  
         }
+        else 
+            $data['send_mail_importo_massimo'] = 'Y'; 
+
         if (!isset($data['tesoriere_fattura_importo']) || empty($data['tesoriere_fattura_importo'])) {
             $data['tesoriere_fattura_importo'] = 0;
         }
