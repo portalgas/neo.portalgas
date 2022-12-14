@@ -48,6 +48,8 @@ class Article extends Entity
      * @var array
      */
     protected $_accessible = [
+        'id' => true,
+        'organization_id' => true,
         'supplier_organization_id' => true,
         'category_article_id' => true,
         'name' => true,

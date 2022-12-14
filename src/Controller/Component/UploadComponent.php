@@ -4,6 +4,8 @@ namespace App\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
 
 /*
 	https://github.com/zankatkalpesh/cakephp-3-file-upload
@@ -264,6 +266,8 @@ class UploadComponent extends Component {
 
 		$mime_types['json'][] = 'text/plain';
 		$this->_mimes = $mime_types;
+        
+		$this->init($config); 		
 	}
 	
 	// --------------------------------------------------------------------
@@ -340,6 +344,12 @@ class UploadComponent extends Component {
 		return $esito;
 	}
 
+	public function uploadToTmp($field = 'file') {
+		$esito = $this->_upload($field);
+
+		return $esito;
+	}
+
 	/*
 	 * return object(SimpleXMLElement)
 	 */
@@ -355,7 +365,12 @@ class UploadComponent extends Component {
 	public function readCsv($field = 'file') {
 		$esito = $this->_upload($field);
 		if($esito) {
-			$esito = fopen($this->file_temp, "r");
+			$file = new File($this->file_temp);
+			dd($file->handle);
+			$esito = $file->read();
+			$file->close(); 
+			// dd($esito);			
+			// $esito = fopen($this->file_temp, "r");
 		}
 
 		return $esito;		
@@ -430,7 +445,7 @@ class UploadComponent extends Component {
 
 			return FALSE;
 		}
-
+		
 		// Set the uploaded data as class variables
 		$this->file_temp = $_file['tmp_name'];
 		$this->file_size = $_file['size'];
@@ -453,7 +468,7 @@ class UploadComponent extends Component {
 			$this->set_error('upload_invalid_filetype', 'debug');
 			return FALSE;
 		}
-
+		
 		// if we're overriding, let's now make sure the new name and type is allowed
 		if ($this->_file_name_override !== '')
 		{
@@ -476,7 +491,7 @@ class UploadComponent extends Component {
 				return FALSE;
 			}
 		}
-
+		
 		// Convert the file size to kilobytes
 		if ($this->file_size > 0)
 		{
@@ -500,7 +515,7 @@ class UploadComponent extends Component {
 
 		// Sanitize the file name for security
 		$this->file_name = $this->sanitize_filename($this->file_name);
-
+		
 		// Truncate the file name if it's too long
 		if ($this->max_filename > 0)
 		{
@@ -518,7 +533,7 @@ class UploadComponent extends Component {
 			// file_ext was previously lower-cased by a get_extension() call
 			$this->file_name = substr($this->file_name, 0, -$ext_length).$this->file_ext;
 		}
-
+		
 		/*
 		 * Validate the file name
 		 * This function appends an number onto the end of
@@ -542,7 +557,7 @@ class UploadComponent extends Component {
 			$this->set_error('upload_unable_to_write_file', 'error');
 			return FALSE;
 		}
-
+		
 		return TRUE;
 	}
 	

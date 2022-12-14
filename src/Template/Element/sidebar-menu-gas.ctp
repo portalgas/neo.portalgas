@@ -33,10 +33,11 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
         <i class="fa fa-mail pull-right"></i>
       </span>
     <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/articles-import-officinanatura/index'); ?>"><?php echo $icon;?><?php echo __('Articles Import OfficinaNatura');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations/settingParams'); ?>"><?php echo $icon;?><?php echo __('Organization Setting Params');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/tests/sitemap'); ?>"><?php echo $icon;?><?php echo __('Tests sitemap');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/tests/ajax_cart'); ?>"><?php echo $icon;?><?php echo __('Tests ajax cart');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/tests/sitemap'); ?>"><?php echo $icon;?><?php echo __('Tests sitemap');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/tests/ajax_cart'); ?>"><?php echo $icon;?><?php echo __('Tests ajax cart');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/tests/searchable'); ?>"><?php echo $icon;?><?php echo __('Tests searchable');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>      
       <li><a href="<?php echo $this->Url->build('/admin/tests/salt'); ?>"><?php echo $icon;?><?php echo __('Tests salt');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>   
       <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Logs Lists');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>

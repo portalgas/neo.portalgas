@@ -7,9 +7,12 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 class ArticlesTable extends Table
 {
+    use Traits\SqlTrait;
+        
     /**
      * Initialize method
      *
@@ -22,7 +25,7 @@ class ArticlesTable extends Table
 
         $this->setTable('k_articles');
         $this->setDisplayField('name');
-        $this->setPrimaryKey(['organization_id', 'id']);
+        $this->setPrimaryKey(['id', 'organization_id']);
 
         $this->addBehavior('Timestamp');
 
