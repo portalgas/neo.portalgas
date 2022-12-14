@@ -177,7 +177,8 @@ class OrdersController extends AppController
         $order = $this->_ordersTable->newEntity(); 
         if ($this->request->is('post')) {
             $request = $this->request->getData();
-            $request['order_type_id'] = $order_type_id;         
+            $request['order_type_id'] = $order_type_id; 
+            $request['parent_id'] = $parent_id;
             // debug($request);
             $order = $this->_ordersTable->patchEntity($order, $request);
             // debug($order);

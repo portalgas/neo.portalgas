@@ -77,8 +77,13 @@ class OrdersController extends ApiAppController
         
         $delivery_id = $this->request->getData('delivery_id');
 
+        /* 
+         * escludo Order.type.gas_parent_groups perche' li non posso fare acquisti
+         * solo Order.type.gas_groups
+         */
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.isVisibleBackOffice' => 'Y',
+                  'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),          
                   'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
 
         if(!empty($delivery_id)) {

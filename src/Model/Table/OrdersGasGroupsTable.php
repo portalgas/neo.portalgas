@@ -25,13 +25,20 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         $this->belongsTo('GasGroupOrders', [
             'foreignKey' => 'order_id',
             'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('GasGroups', [
+            'foreignKey' => 'gas_group_id',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('ParentDeliveries', [
+            'class' => 'Deliveries',
+            'foreignKey' => 'parent_id',
+            'joinType' => 'INNER',
         ]);        
     }
 
     public function validationDefault(Validator $validator)
     {
-        $validator = parent::validationDefault($validator);
-        
         $validator->setProvider('orderGasGroups', \App\Model\Validation\OrderGasGroupsValidation::class);
        
         $validator

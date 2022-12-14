@@ -1039,6 +1039,17 @@ msgstr "Prezzo unità in promozione"
 msgid "ProdGasArticlesPromotions"
 msgstr "Articoli in promozione"
 
+msgid "Orders"
+msgstr "Ordini"
+
+msgid "Order"
+msgstr "Ordine"
+
+msgid "ArticleOrders"
+msgstr "Articoli associati all'ordine"
+
+msgid "Management"
+msgstr "Gestione"
 
 msgid "Price"
 msgstr "Prezzo"

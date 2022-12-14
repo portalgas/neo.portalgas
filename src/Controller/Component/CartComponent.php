@@ -88,7 +88,7 @@ class CartComponent extends CartSuperComponent {
         }
 
         if($results['esito']) {
-
+            
             switch (strtoupper($action)) {
                 case 'DELETE':
                     $where = ['Carts.organization_id' => $organization_id,
@@ -244,7 +244,7 @@ class CartComponent extends CartSuperComponent {
 
         // debug($results);
         if(Configure::read('Logs.cart')) Log::write('debug', $results);
-
+        
         if($results['esito']) {
 
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
@@ -252,11 +252,11 @@ class CartComponent extends CartSuperComponent {
             
             // debug($articlesOrdersTable);
             if(Configure::read('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->getAlias());
-
+            
             if($articlesOrdersTable!==false) 
                 $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $articles_order, $debug);
         }
-
+        
         return $results;
     }
 

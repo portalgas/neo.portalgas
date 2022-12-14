@@ -72,6 +72,7 @@ class OrderValidation extends Validation
         
         /*
          * se e' PROMOTION posso avere il medesimo ordine su una consegna 
+         * se e' ordine GasGroup posso avere il medesimo ordine (GasGroupParent) su una consegna 
          */
         $type_draws = ['SIMPLE', 'COMPLETE'];
 
@@ -80,6 +81,7 @@ class OrderValidation extends Validation
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.delivery_id' => $delivery_id,
                   'Orders.supplier_organization_id' => $supplier_organization_id,
+                  'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
                   'Orders.type_draw IN ' => $type_draws];
 
         /*

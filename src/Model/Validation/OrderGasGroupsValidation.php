@@ -14,26 +14,24 @@ class OrderGasGroupsValidation extends Validation
     }
   
     /*
-     * ctrl che il produttore abbia articoli validi da associare all'ordine
+     * ctrl l'ordine padre abbia articoli associati all'ordine
      */
     public static function totArticles($value, $context)
     {
-       // debug($context);  
+        // debug($context);
         $organization_id = $context['data']['organization_id'];
-        $supplier_organization_id = $context['data']['supplier_organization_id']; 
-        
-        // $user = $this->createObjUser(['organization_id' => $organization_id]);
-        $user = new \stdClass();
-        $user->organization = new \stdClass();
-        $user->organization->id = $organization_id;
+        $parent_id = $context['data']['parent_id']; 
 
-        $articlesTable = TableRegistry::get('Articles');
-        $results = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id);
-
-        // debug($results);
-        if($results->count()==0)
+        $where = ['organization_id' => $organization_id,
+                  'order_id' => $parent_id,
+                  'stato !=' => 'N'];
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $totale = $articlesOrdersTable->find()
+                        ->where($where)
+                        ->count();
+        if($totale==0)
             return false;
         else
-        return true;  
+            return true;  
     }  
 }

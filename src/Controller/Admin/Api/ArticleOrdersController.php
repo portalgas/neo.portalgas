@@ -8,12 +8,16 @@ use Cake\ORM\TableRegistry;
 use App\Decorator\ApiArticleOrderDecorator;
 use App\Decorator\ApiArticleDecorator;
 use App\Decorator\ApiSupplierDecorator;
+use App\Traits;
 
 /*
  * sostituisce htmlArticleOrdersController, l'html nella view non poteva contenere js
  */
 class ArticleOrdersController extends ApiAppController
 {
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
     public function initialize()
     {
         parent::initialize();
@@ -166,32 +170,29 @@ class ArticleOrdersController extends ApiAppController
         $lifeCycleArticlesOrdersTable = TableRegistry::get('LifeCycleArticlesOrders');
         $datas['can_edit'] = $lifeCycleArticlesOrdersTable->canEditByOrder($this->_user, $this->_organization->id, $order, $debug);
 
-        /* 
-         * articoli gia' associati
-         * articoli da associare
-         */        
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
         if($articlesOrdersTable===false) {
             $results['results'] = $datas;
             return $this->_response($results); 
         } 
-            
+
         $dataAssociateToOrder = $articlesOrdersTable->getAssociateToOrder($this->_user, $this->_organization->id, $order);
+        
+        /* 
+         * articoli gia' associati
+         */         
         $article_orders = $dataAssociateToOrder['article_orders'];
         $article_orders2 = new ApiArticleOrderDecorator($this->_user, $article_orders, $order);
         $datas['article_orders'] = $article_orders2->results;
 
+        /* 
+         * articoli da associare
+         */         
         $articles = $dataAssociateToOrder['articles'];
         $article2 = new ApiArticleDecorator($this->_user, $articles);
         $datas['articles'] = $article2->results;
             
-/*
-        if($articles->count()) 
-        foreach($articles as $numResult => $article) {
-            $datas['articles'][$numResult] = $article;
-            $datas['articles'][$numResult]['is_select'] = false;
-        }*/
         $results['results'] = $datas;
         
         return $this->_response($results); 
@@ -243,6 +244,8 @@ class ArticleOrdersController extends ApiAppController
                 $ids['article_organization_id'] = $update_article_order['article_organization_id'];
                 $ids['article_id'] = $update_article_order['article_id'];
                 
+                $update_article_order['prezzo'] = $this->convertImport($update_article_order['prezzo_']);
+                
                 $articlesOrder = $articlesOrdersTable->getByIds($this->_user, $this->_organization->id, $ids, $debug);                
                 $articlesOrder = $articlesOrdersTable->patchEntity($articlesOrder, $update_article_order);
                  //  debug($articlesOrder);
@@ -254,6 +257,7 @@ class ArticleOrdersController extends ApiAppController
                 $articlesOrder->order_id = $update_article_order['order_id'];
                 $articlesOrder->article_organization_id = $update_article_order['article_organization_id'];
                 $articlesOrder->article_id = $update_article_order['article_id'];
+                
                 if (!$articlesOrdersTable->save($articlesOrder)) {
                     $this->Flash->error($articlesOrder->getErrors());
                 }  

@@ -26,6 +26,9 @@ class LifeCycleArticlesOrdersTable extends Table
      */
     public function canEditByOrder($user, $organization_id, $order, $debug=false) {
         
+        if($order->order_type_id===Configure::read('Order.type.gas_groups'))
+            return false;
+
         if($order->owner_articles=='REFERENT' && $order->owner_organization_id==$organization_id)
             return true;
         else 

@@ -48,7 +48,9 @@ class ApiArticleOrderDecorator  extends AppDecorator {
              
         /*
          * setto tag con gli id
-         */
+         */        
+        $results = $articles_order->toArray();
+
         $ids = [];
         $ids['organization_id'] = $articles_order->organization_id;
         $ids['order_id'] = $articles_order->order_id;
@@ -64,17 +66,12 @@ class ApiArticleOrderDecorator  extends AppDecorator {
         $results['type_draw'] = $order->type_draw; // ENUM('SIMPLE', 'COMPLETE', 'PROMOTION')
 
         $results['has_variants'] = false; // e' sempre articolo e la sua variante
-        $results['name'] = $articles_order->name;
-        $results['stato'] = $articles_order->stato;
-        $results['send_mail'] = $articles_order->send_mail;
             
         if(empty($articles_order->codice)) {
             $results['sku'] = '';
-            $results['codice'] = '';
         }
         else {
             $results['sku'] = $articles_order->article->codice;
-            $results['codice'] = $articles_order->article->codice;
         }
 
         $results['img1'] = $this->_getArticleImg1($articles_order);        
@@ -125,11 +122,6 @@ class ApiArticleOrderDecorator  extends AppDecorator {
             $results['qta_multipli'] = 1;
         else
             $results['qta_multipli'] = $articles_order->qta_multipli;
-
-        $results['qta_cart'] = $articles_order->qta_cart; 
-        $results['qta_minima_order'] = $articles_order->qta_minima_order;
-        $results['qta_massima_order'] = $articles_order->qta_massima_order;
-        $results['qta_massima_order'] = $articles_order->qta_massima_order;
 
         /*
          * dati da article

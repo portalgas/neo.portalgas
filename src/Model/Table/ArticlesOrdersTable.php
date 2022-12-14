@@ -8,9 +8,13 @@ use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Log\Log;
 use Cake\Core\Configure;
+use App\Traits;
 
 class ArticlesOrdersTable extends Table
 {
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
     protected $_sort = null;
     protected $_limit = null;
     protected $_page = null;
@@ -273,10 +277,11 @@ class ArticlesOrdersTable extends Table
         
         $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
         if(!empty($articlesOrder)) {
+            unset($article_order['order']); // se no aggiorna anche l'ordine
             $articlesOrder = $this->patchEntity($articlesOrder, $article_order);
 
             if(Configure::read('Logs.cart')) Log::write('debug', $articlesOrder);
-
+            
             if (!$this->save($articlesOrder)) {
                 Log::write('debug', $articlesOrder->getErrors());
                 if(Configure::read('Logs.cart')) Log::write('debug', "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $ids['order_id'] . " article_organization_id " . $ids['article_organization_id'] . " article_id " . $ids['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $article_order['stato']);
@@ -615,7 +620,7 @@ class ArticlesOrdersTable extends Table
     /* 
      * dato una lista di articoli li associa all'ordine 
      */
-    public function adds($user, $organization_id, $order, $articles, $debug=false) {
+    public function addsByArticles($user, $organization_id, $order, $articles, $debug=false) {
 
         foreach($articles as $article) {
 
@@ -624,8 +629,11 @@ class ArticlesOrdersTable extends Table
             $datas['order_id'] = $order->id;
             $datas['article_organization_id'] = $order->owner_organization_id; // dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
             $datas['article_id'] = $article->id;        
-            $datas['name'] = $article->name;        
-            $datas['prezzo'] = $article->prezzo;     
+            $datas['name'] = $article->name;
+            if(isset($article->prezzo_))
+                $datas['prezzo'] = $this->convertImport($article->prezzo_);
+            else
+                $datas['prezzo'] = $article->prezzo;     
             $datas['pezzi_confezione'] = $article->pezzi_confezione;     
             $datas['qta_minima'] = $article->qta_minima;     
             $datas['qta_massima'] = $article->qta_massima;     
@@ -667,11 +675,84 @@ class ArticlesOrdersTable extends Table
             $articlesOrder->order_id = $order->id;
             $articlesOrder->article_organization_id = $order->owner_organization_id;
             $articlesOrder->article_id = $article->id;
- 
+
             if (!$this->save($articlesOrder)) {
-                $this->Flash->error($articlesOrder->getErrors());
+                return $articlesOrder->getErrors();
             }  
         } // loop articles
+
+        /*
+        * aggiorno stato ordine 'OPEN'; // OPEN-NEXT  
+        */ 
+        $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+        $lifeCycleOrdersTable->stateCodeUpdate($user, $order, 'OPEN');
+                
+        return true;
+    }
+
+/* 
+     * dato una lista di ArticlesOrders li associa all'ordine
+     * ordini che ereditano dal parent des / gas_groups) 
+     */
+    public function addsByArticlesOrders($user, $organization_id, $order, $article_orders, $debug=false) {
+
+        foreach($article_orders as $article_order) {
+
+            $datas = [];
+            $datas['organization_id'] = $organization_id;
+            $datas['order_id'] = $order->id;
+            $datas['article_organization_id'] = $article_order->article_organization_id; // dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
+            $datas['article_id'] = $article_order->article_id;        
+            $datas['name'] = $article_order->name;
+            if(isset($article_order->prezzo_))
+                $datas['prezzo'] = $this->convertImport($article_order->prezzo_);
+            else
+                $datas['prezzo'] = $article_order->prezzo;     
+            $datas['pezzi_confezione'] = $article_order->pezzi_confezione;     
+            $datas['qta_minima'] = $article_order->qta_minima;     
+            $datas['qta_massima'] = $article_order->qta_massima;     
+            $datas['qta_minima_order'] = $article_order->qta_minima_order;     
+            $datas['qta_massima_order'] = $article_order->qta_massima_order;     
+            $datas['qta_multipli'] = $article_order->qta_multipli;     
+            $datas['alert_to_qta'] = $article_order->alert_to_qta;    
+
+            /* 
+            * key 
+            *
+            * article_organization_id / article_id 
+            *      dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES / PACT
+            */
+            $ids = [];
+            $ids['organization_id'] = $organization_id;
+            $ids['order_id'] = $order->id;
+            $ids['article_organization_id'] = $article_order->article_organization_id;
+            $ids['article_id'] = $article_order->article_id;
+            
+            $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
+            if(empty($articlesOrder)) {
+
+                $datas['send_mail'] = 'N';
+                $datas['qta_cart'] = "0";
+                $datas['flag_bookmarks'] = 'N';
+                $datas['stato'] = 'Y';
+
+                $articlesOrder = $this->newEntity();
+            }
+            
+            $articlesOrder = $this->patchEntity($articlesOrder, $datas);
+          //  debug($datas);
+            
+            /*
+            * workaround
+            */
+            $articlesOrder->organization_id = $organization_id;
+            $articlesOrder->order_id = $order->id;
+            $articlesOrder->article_organization_id = $article_order->article_organization_id;
+            $articlesOrder->article_id = $article_order->article_id;
+            if (!$this->save($articlesOrder)) {
+                return $articlesOrder->getErrors();
+            }  
+        } // loop article_orders
 
         /*
         * aggiorno stato ordine 'OPEN'; // OPEN-NEXT  

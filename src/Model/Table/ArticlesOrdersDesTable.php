@@ -35,7 +35,7 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
    *  articles: articoli da associare
    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        parent::getAssociateToOrder($user, $organization_id, $order, $where, $options, $debug);
+        return parent::getAssociateToOrder($user, $organization_id, $order, $where, $options, $debug);
     }
 
     /*

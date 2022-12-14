@@ -21,19 +21,18 @@ echo $this->HtmlCustomSite->boxOrder($order);
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
+            <div v-if="!is_run" class="box-submit">
+              <button v-if="!is_save" class="btn btn-primary" @click="save">Salva</button>
+              <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>
+            </div>             
           </div>
         </div>
 
         <div v-if="is_run" class="box-body table-responsive no-padding text-center" style="margin: 150px">
           <div><i class="fa-lg fa fa-spinner fa-spin"></i></div>
-        </div>
-        <!-- /.box-header -->
-        <div v-if="!is_run" class="box-body table-responsive no-padding" styledis="display:none">
-          
-          <div class="box-submit">
-            <button v-if="!is_save" class="btn btn-primary" @click="save" >Salva</button>
-            <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>
-          </div>        
+        </div>        
+        <div v-if="!is_run" class="box-body table-responsive no-padding">
+                 
           <?php 
           /*
            * articoli gia' associare
@@ -81,7 +80,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
                     <td>{{ article_order.name }}</td>
                     <td>
                     <div class="input-group">
-                      <input :disabled="!can_edit" type="number" class="form-control" v-model="article_order.prezzo_" />
+                      <input :disabled="!can_edit" type="text" class="form-control" v-model="article_order.prezzo_" />
                       <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                     </div>
                     </td>
@@ -149,19 +148,36 @@ echo $this->HtmlCustomSite->boxOrder($order);
                         <img v-if="article.img1!=''" :src="article.img1" :width="article.img1_width" />
                       </td>                                     
                       <td>{{ article.name }}</td>
-                      <td>{{ article.prezzo | currency }} &euro;</td>
-                      <td>{{ article.pezzi_confezione }}</td>
-                      <td>{{ article.qta_multipli }}</td>
-                      <td>{{ article.qta_minima }}</td>
-                      <td>{{ article.qta_massima }}</td>
-                      <td>{{ article.qta_minima_order }}</td>
-                      <td>{{ article.qta_massima_order }}</td>
+                      <td>
+                        <div class="input-group">
+                          <input :disabled="!can_edit" type="text" class="form-control" v-model="article.prezzo_" />
+                          <span class="input-group-addon"><i class="fa fa-euro"></i></span>
+                        </div>
+                      </td>
+                      <td>
+                        <input :disabled="!can_edit" type="number" min="1" class="form-control" v-model="article.pezzi_confezione" />
+                      </td>
+                      <td>
+                        <input type="number" min="1" class="form-control" v-model="article.qta_multipli" />
+                      </td>
+                      <td>
+                        <input type="number" min="1" class="form-control" v-model="article.qta_minima" />
+                      </td>
+                      <td>
+                        <input type="number" min="0" class="form-control" v-model="article.qta_massima" />
+                      </td>
+                      <td>
+                        <input type="number" min="0" class="form-control" v-model="article.qta_minima_order" />
+                      </td>
+                      <td>
+                        <input type="number" min="0" class="form-control" v-model="article.qta_massima_order" />
+                      </td>
                     </tr>
                 </tbody>
               </table>
-          
+
               <div class="box-submit">
-                <button v-if="!is_save" class="btn btn-primary" @click="save" >Salva</button>
+                <button v-if="!is_save" class="btn btn-primary" @click="save">Salva</button>
                 <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>                
               </div>
         </div>

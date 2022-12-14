@@ -127,7 +127,9 @@ $(function () {
           axios.post('/admin/api/article-orders/setAssociateToOrder', params)
             .then(response => {
               console.log(response.data); 
-              _this.is_save = false;                 
+              _this.is_save = false;   
+              
+              location.reload();
             })
             .catch(error => {
               _this.is_save = false;
