@@ -43,6 +43,10 @@ class ArticlesOrder extends Entity
      * @var array
      */
     protected $_accessible = [
+        'organization_id' => true,
+        'order_id' => true,
+        'article_organization_id' => true,
+        'article_id' => true,
         'qta_cart' => true,
         'name' => true,
         'prezzo' => true,

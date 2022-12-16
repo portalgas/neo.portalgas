@@ -68,13 +68,19 @@ $(function () {
 
             axios.post('/admin/api/article-orders/getAssociateToOrder', params)
                 .then(response => {
-                  // console.log(response.data); 
+                   console.log(response.data, 'getAssociateToOrder'); 
                   
                   this.is_run = false;
-                  this.can_edit = response.data.results.can_edit;  
-                  this.order = response.data.results.order;        
-                  this.article_orders = response.data.results.article_orders;        
-                  this.articles = response.data.results.articles;                  
+                  if(response.data.esito) {
+                    this.can_edit = response.data.results.can_edit;  
+                    this.order = response.data.results.order;        
+                    this.article_orders = response.data.results.article_orders;        
+                    this.articles = response.data.results.articles;
+                  }
+                  else {
+                    console.error(response.data.errors);
+                  }
+
                 })
             .catch(error => {
                   this.is_run = false;

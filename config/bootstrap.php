@@ -43,6 +43,11 @@ use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
+use App\Event\OrderListener;
+use Cake\Event\EventManager;
+
+$orderListener = new OrderListener();
+EventManager::instance()->attach($orderListener);
 
 /**
  * Uncomment block of code below if you want to use `.env` file during development.
@@ -232,9 +237,7 @@ $this->addPlugin('Bootstrap'); // https://holt59.github.io/cakephp3-bootstrap-he
 $this->addPlugin('CakeDC/Enum');
 
 Configure::write('HtmlOptionEmpty', [null => __('-------')]);
-
-Configure::write('AdminLTEMenu', false);  // a true per avere i menu di demo  
-
+ 
 // table class="dataTables table table-striped table-hover"
 Configure::write('dataTables.active', true);
 if(Configure::read('dataTables.active'))

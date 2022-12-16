@@ -64,7 +64,7 @@ if ($this->Identity->isLoggedIn()) {
 
 
     <?php
-    if(Configure::read('AdminLTEMenu')) {
+      if($application_env=='development') {
     ?>      
       <!-- Messages: style can be found in dropdown.less-->
       <li class="dropdown messages-menu">
@@ -272,7 +272,7 @@ if ($this->Identity->isLoggedIn()) {
         </ul>
       </li>
     <?php
-    } // end if(Configure::read('AdminLTEMenu'))
+    } // end if($application_env=='development')
     ?>
 
       <!-- User Account: style can be found in dropdown.less -->
@@ -342,9 +342,7 @@ if ($this->Identity->isLoggedIn()) {
         echo '</ul>';
       echo '</li>';
 
-
-
-      if(Configure::read('AdminLTEMenu')) {
+      if($application_env=='development') {
           if (!isset($layout)) {
             echo '<li>';
             echo '<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>';

@@ -185,7 +185,7 @@ class OrdersController extends AppController
             if ($this->_ordersTable->save($order)) {
 
                 $this->_ordersTable->afterSaveWithRequest($this->_user, $this->_organization->id, $request);
-                $this->Flash->success(__('The {0} has been saved.', 'Order'));
+                $this->Flash->success(__('The {0} has been saved.', __('Order')));
 
                 $url = ['controller' => 'ArticlesOrders', 'action' => 'index', $order->order_type_id, $order->id]; 
                 return $this->redirect($url);                

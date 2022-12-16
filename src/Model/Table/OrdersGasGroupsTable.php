@@ -22,10 +22,6 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
 
         $this->setEntityClass('App\Model\Entity\Order');
 
-        $this->belongsTo('GasGroupOrders', [
-            'foreignKey' => 'order_id',
-            'joinType' => 'INNER',
-        ]);
         $this->belongsTo('GasGroups', [
             'foreignKey' => 'gas_group_id',
             'joinType' => 'INNER',

@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 use Cake\Log\Log;
 use Cake\Core\Configure;
 use App\Traits;
+use Cake\Event\Event;
 
 class ArticlesOrdersTable extends Table
 {
@@ -49,7 +50,7 @@ class ArticlesOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Articles', [
-            'foreignKey' => ['article_organization_id', 'article_id'],
+            'foreignKey' => ['article_id', 'article_organization_id'],
             'joinType' => 'INNER',
         ]);
         $this->hasMany('Carts', [
@@ -140,7 +141,7 @@ class ArticlesOrdersTable extends Table
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
         $rules->add($rules->existsIn('article_organization_id', 'ArticleOrganizations'));
-        $rules->add($rules->existsIn(['article_organization_id', 'article_id'], 'Articles'));
+        // $rules->add($rules->existsIn(['article_organization_id', 'article_id'], 'Articles'));
 
         return $rules;
     }
@@ -497,8 +498,7 @@ class ArticlesOrdersTable extends Table
         if(!isset($where['Articles']))
            $where['Articles'] = [];
         $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
-        // debug($where);
-
+     
         $results = $this->find()
                         ->contain(['Articles' => ['conditions' => $where['Articles']]])
                         ->where($where['ArticlesOrders'])
@@ -507,7 +507,8 @@ class ArticlesOrdersTable extends Table
                         ->page($this->_page)
                         ->all()
                         ->toArray();
-
+   // debug($where);
+  
         return $results;
     }   
 
@@ -623,7 +624,7 @@ class ArticlesOrdersTable extends Table
     public function addsByArticles($user, $organization_id, $order, $articles, $debug=false) {
 
         foreach($articles as $article) {
-
+         
             $datas = [];
             $datas['organization_id'] = $organization_id;
             $datas['order_id'] = $order->id;
@@ -664,29 +665,27 @@ class ArticlesOrdersTable extends Table
 
                 $articlesOrder = $this->newEntity();
             }
-            
-            $articlesOrder = $this->patchEntity($articlesOrder, $datas);
-          //  debug($datas);
-            
+
             /*
             * workaround
             */
             $articlesOrder->organization_id = $organization_id;
             $articlesOrder->order_id = $order->id;
             $articlesOrder->article_organization_id = $order->owner_organization_id;
-            $articlesOrder->article_id = $article->id;
-
-            if (!$this->save($articlesOrder)) {
+            $articlesOrder->article_id = $article->id;            
+            $articlesOrder = $this->patchEntity($articlesOrder, $datas);
+          //  debug($datas);
+            if (!$this->save($articlesOrder)) { 
                 return $articlesOrder->getErrors();
-            }  
+            } 
         } // loop articles
 
         /*
-        * aggiorno stato ordine 'OPEN'; // OPEN-NEXT  
+        * aggiorno stato ordine 'OPEN' // OPEN-NEXT  
         */ 
-        $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
-        $lifeCycleOrdersTable->stateCodeUpdate($user, $order, 'OPEN');
-                
+        $event = new Event('OrderListener.setStatus', $this, ['user' => $user, 'order' => $order]);
+        $this->eventManager()->dispatch($event);
+                        
         return true;
     }
 
@@ -755,10 +754,10 @@ class ArticlesOrdersTable extends Table
         } // loop article_orders
 
         /*
-        * aggiorno stato ordine 'OPEN'; // OPEN-NEXT  
+        * aggiorno stato ordine 'OPEN' // OPEN-NEXT  
         */ 
-        $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
-        $lifeCycleOrdersTable->stateCodeUpdate($user, $order, 'OPEN');
+        $event = new Event('OrderListener.setStatus', $this, ['user' => $user, 'order' => $order]);
+        $this->eventManager()->dispatch($event);
                 
         return true;
     }

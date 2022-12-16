@@ -6,13 +6,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use App\Traits;
-/**
- * GasGroupOrders Controller
- *
- * @property \App\Model\Table\GasGroupOrdersTable $GasGroupOrders
- *
- * @method \App\Model\Entity\GasGroupOrder[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+
 class GasGroupDeliveriesController extends AppController
 {
     use Traits\SqlTrait;

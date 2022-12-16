@@ -12,7 +12,12 @@ use League\Csv\Statement;
 
 class ArticlesImportOfficinanaturaController extends ArticlesImportSuperController
 {
-	private $_offset = 0; // parte dalla riga 1 a leggere il file
+    /*
+     * produttore Officina Natura
+     */
+	private $_default_organization_id = 152;
+	private $_default_supplier_organization_id = 3178; // Supplier.id 187
+    private $_offset = 0; // parte dalla riga 1 a leggere il file
 	private $_limit = 10000;
 	private $_header = 0; // a quale riga c'e' l'intestazione
 
@@ -55,7 +60,6 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                 $csv->setDelimiter(';');
                 debug("File contiene ".count($csv)." righe");
     
-                //get 25 records starting from the 11th row
                 $stmt = (new Statement())->offset($this->_offset)->limit($this->_limit);
 
                 $i = 0;
@@ -67,8 +71,12 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                      * escludo le intestazioni
                      */
                     if($row[0]!='' && strpos($row[0], 'www.officinadellacqua.com')===false) {
-
+                        
                         $datas[$i]['codice'] = $this->_sanitizeCodice($this->_sanitizeString($row[0]));
+                        if($datas[$i]['codice']=='5580---') {
+                            echo iconv("UTF-8", "ASCII//IGNORE", $row[1]);
+                        dd(iconv("UTF-8", "ASCII//IGNORE", $row[1])); 
+                        }
                         $datas[$i]['name'] = $this->_sanitizeString($row[1]);
                         $datas[$i]['prezzo'] = $this->_sanitizeImporto($row[3]);
                         $confs = $this->_sanitizeConf($row[2]);
@@ -76,12 +84,12 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                         $datas[$i]['um_riferimento'] = $confs['um_riferimento'];
                         $datas[$i]['qta'] = $confs['qta'];
 
-                        /* 
-                        if($datas[$i]['codice']=='ONCS22.026') {
+                        
+                        if($datas[$i]['codice']=='5580---') {
                             debug($numRow.') '.$datas[$i]['codice'].' - '.$datas[$i]['name'].' - '.$datas[$i]['conf'].' - '.$datas[$i]['prezzo']);
                             dd($row);
                         }
-                        */
+                        
                         debug($numRow.') '.$datas[$i]['codice'].' - '.$datas[$i]['name'].' - '.$datas[$i]['qta'].' - '.$datas[$i]['prezzo']);
 
                         $i++;
@@ -103,8 +111,8 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                 $articlesTable = TableRegistry::get('Articles');
                 $articlesTable->addBehavior('Articles'); // id = getMaxIdOrganizationId
 
-                $where = ['organization_id' => 116,
-                          'supplier_organization_id' => 2836];
+                $where = ['organization_id' => $this->_default_organization_id,
+                          'supplier_organization_id' => $this->_default_supplier_organization_id];
 
                /*
                 * setto flag_presente_articlesorders a N
@@ -149,22 +157,22 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                     } 
 
                     $data['flag_presente_articlesorders'] = 'Y';
-                    $data['organization_id'] = 116;
-                    $data['supplier_organization_id'] = 2836;
+                    $data['organization_id'] = $this->_default_organization_id;
+                    $data['supplier_organization_id'] = $this->_default_supplier_organization_id;
 
                    /*
                     * workaround
                     */
-                    $article->organization_id = 116;
+                    $article->organization_id = $this->_default_organization_id;
                     $article = $articlesTable->patchEntity($article, $data);
-                    debug($article);
+                    // debug($article);
                     if (!$articlesTable->save($article)) {
                         debug($article);
                         dd($article->getErrors());
                     }
 
                     // if($article->isNew())
-                    if($action = 'INSERT')
+                    if($action=='INSERT')
                         debug('INSERT '.$article->codice.' '.$article->name);
                     else
                         debug('UPDATE '.$article->codice.' '.$article->name);

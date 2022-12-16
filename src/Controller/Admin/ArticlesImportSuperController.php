@@ -23,11 +23,13 @@ class ArticlesImportSuperController extends AppController
 
     protected function _sanitizeString($value) {
         $value = trim($value);
-        $value = str_replace('–', ' ', $value);
-        $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+        if(strpos(chr(151), $value)!==false)
+            dd($value);
+        $value = iconv("UTF-8", "ASCII//IGNORE", $value);
+        // $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
         return $value;
     }
-   
+
     /*
      * converte da 10.000,00 in 10000.00
      */   

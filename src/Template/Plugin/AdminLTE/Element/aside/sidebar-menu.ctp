@@ -15,7 +15,7 @@ switch($user->organization->type) {
     break;
 }
   
-if(Configure::read('AdminLTEMenu')) {
+if($application_env=='development') {
 ?>
   <li class="treeview">
     <a href="#">
@@ -187,6 +187,6 @@ if(Configure::read('AdminLTEMenu')) {
   <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
   <li><a href="<?php echo $this->Url->build('/pages/debug'); ?>"><i class="fa fa-bug"></i> <span>Debug</span></a></li>
   <?php
-  } // end if(Configure::read('AdminLTEMenu'))
+  } // end if($application_env=='development')
   ?>  
 </ul>

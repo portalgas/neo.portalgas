@@ -46,7 +46,7 @@ class GasGroupsController extends AppController
                   'GasGroups.organization_id' => $this->_user->organization_id, 
                  ];
         $this->paginate = [
-            'contain' => ['GasGroupUsers', 'GasGroupOrders', 'GasGroupDeliveries'],
+            'contain' => ['GasGroupUsers', 'GasGroupDeliveries'],
             'conditions' => $where,
             'order' => ['GasGroups.name']
         ];
@@ -66,7 +66,7 @@ class GasGroupsController extends AppController
     {
         exit;
         $gasGroup = $this->GasGroups->get($id, [
-            'contain' => ['Organizations', 'Users', 'GasGroupDeliveries', 'GasGroupOrders', 'GasGroupUsers'],
+            'contain' => ['Organizations', 'Users', 'GasGroupDeliveries', 'GasGroupUsers'],
         ]);
 
         $this->set('gasGroup', $gasGroup);

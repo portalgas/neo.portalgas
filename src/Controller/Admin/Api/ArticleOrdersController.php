@@ -139,7 +139,7 @@ class ArticleOrdersController extends ApiAppController
         $continua = true;
 
         $results = [];
-        $results['code'] = 200;
+        $results['esito'] = true;
         $results['message'] = 'OK';
         $results['errors'] = '';
         $results['results'] = [];
@@ -173,12 +173,20 @@ class ArticleOrdersController extends ApiAppController
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
         if($articlesOrdersTable===false) {
+            $results['esito'] = false;
             $results['results'] = $datas;
+            $results['errors'] = 'ArticlesOrders factory';
             return $this->_response($results); 
         } 
 
         $dataAssociateToOrder = $articlesOrdersTable->getAssociateToOrder($this->_user, $this->_organization->id, $order);
-        
+        if($dataAssociateToOrder['esito']===false) {
+            $results['esito'] = false;
+            $results['results'] = [];
+            $results['errors'] = $dataAssociateToOrder;
+            return $this->_response($results); 
+        }
+
         /* 
          * articoli gia' associati
          */         
@@ -284,7 +292,7 @@ class ArticleOrdersController extends ApiAppController
          * associo articolo all'ordine 
          */
         if(!empty($articles)) {
-            $articlesOrdersTable->adds($this->user, $this->organization->id, $order, $articles);
+            $articlesOrdersTable->addsByArticles($this->user, $this->organization->id, $order, $articles);
         }
 
         return $this->_response($results); 

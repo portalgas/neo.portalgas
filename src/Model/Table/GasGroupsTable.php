@@ -13,7 +13,6 @@ use Cake\Core\Configure;
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
  * @property &\Cake\ORM\Association\HasMany $GasGroupDeliveries
- * @property &\Cake\ORM\Association\HasMany $GasGroupOrders
  * @property \App\Model\Table\GasGroupUsersTable&\Cake\ORM\Association\HasMany $GasGroupUsers
  *
  * @method \App\Model\Entity\GasGroup get($primaryKey, $options = [])
@@ -54,9 +53,6 @@ class GasGroupsTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->hasMany('GasGroupDeliveries', [
-            'foreignKey' => 'gas_group_id',
-        ]);
-        $this->hasMany('GasGroupOrders', [
             'foreignKey' => 'gas_group_id',
         ]);
         $this->hasMany('GasGroupUsers', [

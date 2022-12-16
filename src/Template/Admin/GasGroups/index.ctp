@@ -55,7 +55,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                 <th scope="col" class=""><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col" class="text-center"><?= __('Totate gasisti') ?></th>
                 <th scope="col" class="text-center"><?= __('Totate consegne') ?></th>
-                <th scope="col" class="text-center"><?= __('Totate ordini') ?></th>
+                <!-- th scope="col" class="text-center"><?= __('Totate ordini') ?></th -->
                 <th scope="col" class="text-center"><?= $this->Paginator->sort('is_active') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
                 </tr>
@@ -78,7 +78,6 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<td>'.h($gasGroup->name).'</td>';           
                   echo '<td class="text-center">'.count($gasGroup->gas_group_users).'</td>';
                   echo '<td class="text-center">'.count($gasGroup->gas_group_deliveries).'</td>';
-                  echo '<td class="text-center">'.count($gasGroup->gas_group_orders).'</td>';
                   echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse($gasGroup, 'is_active').'</td>';
                   echo '<td title="'.h($gasGroup->created).'">'.$this->Time->nice($gasGroup->created).'</td>';
                   echo '</tr>';

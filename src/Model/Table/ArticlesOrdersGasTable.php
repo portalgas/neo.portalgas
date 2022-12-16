@@ -37,6 +37,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
         
         $results = [];
+        $results['esito'] = true;
         $results['article_orders'] = []; // articoli gia' associati, se empty => prima volta => copia da articles
         $results['articles'] = []; // articles: articoli da associare
         
@@ -52,7 +53,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
         $options['sort'] = [];
         $options['limit'] = Configure::read('sql.no.limit');
         $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options);
-        
+
         $where2 = [];
         $ids = [];
         if(!empty($results['article_orders'])) {
@@ -75,10 +76,15 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
         $articlesTable = TableRegistry::get('Articles');
         $results['articles'] = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where2);
         // debug($results);
-
+       
         if(empty($results['article_orders'])) {
             // articoli gia' associati, se empty => prima volta => copia da articles
-            $this->adds($user, $organization_id, $order, $results['articles']);
+            $resultaddsByArticles = $this->addsByArticles($user, $organization_id, $order, $results['articles']);
+            if($resultaddsByArticles!==true) {
+                $results['esito'] = false;
+                $results['errors'] = $resultaddsByArticles;
+            }
+                
             $options = [];
             $options['sort'] = [];
             $options['limit'] = Configure::read('sql.no.limit');
