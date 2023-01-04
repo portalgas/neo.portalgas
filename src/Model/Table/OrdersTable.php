@@ -39,7 +39,7 @@ class OrdersTable extends Table
         $this->belongsTo('OrderTypes', [
             'foreignKey' => 'order_type_id',
             'joinType' => 'INNER',
-        ]);        
+        ]);
         $this->belongsTo('SuppliersOrganizations', [
             'foreignKey' => ['organization_id', 'supplier_organization_id'],
             'joinType' => 'INNER',

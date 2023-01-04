@@ -82,39 +82,6 @@ class OrdersController extends AppController
         }
     }
 
-    public function form() {
-        $order = new OrderForm($this->Authentication->getIdentity());
-        if ($this->request->is('post')) {
-
-            $isValid = $order->validate($this->request->getData());
-            if(!$isValid) {
-                $errors = $order->getErrors();
-                debug($errors);
-            }
-            if ($order->execute($this->request->getData())) {
-                $this->Flash->success('We will get back to you soon.');
-            } else {
-                $this->Flash->error('There was a problem submitting your form.');
-            }
-        }
-
-        if ($this->request->is('get')) {
-            $suppliersOrganizationTable = TableRegistry::get('SuppliersOrganizations');
-
-            $supplier_organizations = $suppliersOrganizationTable->gets($this->Authentication->getIdentity());
-            $supplier_organizations = $this->Orders->SuppliersOrganizations->find('list', ['limit' => 200]);        
-            $this->set('supplier_organizations', $supplier_organizations);
-
-            $order->setData([
-                'name' => 'John Doe',
-                'email' => 'john.doe@example.com',
-            ]);
-
-        }
-
-        $this->set('order', $order);
-    }
-
     // gestisco solo gruppi
     public function index($order_type_id=0)
     {

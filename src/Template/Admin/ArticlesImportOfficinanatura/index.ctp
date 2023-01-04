@@ -1,6 +1,6 @@
   <section class="content-header">
     <h1>
-      Import File
+      Officina Naturae
       <small><?php echo __('CSV'); ?></small>
     </h1>
     <ol class="breadcrumb">

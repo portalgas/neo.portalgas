@@ -49,6 +49,7 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
  
             $file = $this->Upload->uploadToTmp(); 
             if(!$file) {
+                debug($this->Upload->errors());
                 $continua = false;
             }
 
@@ -75,9 +76,12 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                         $datas[$i]['codice'] = $this->_sanitizeCodice($this->_sanitizeString($row[0]));
                         if($datas[$i]['codice']=='5580---') {
                             echo iconv("UTF-8", "ASCII//IGNORE", $row[1]);
-                        dd(iconv("UTF-8", "ASCII//IGNORE", $row[1])); 
+                            dd(iconv("UTF-8", "ASCII//IGNORE", $row[1])); 
                         }
-                        $datas[$i]['name'] = $this->_sanitizeString($row[1]);
+
+                        $name = $this->_sanitizeString($row[1]);
+                        if(!empty($name))
+                            $datas[$i]['name'] = $name;
                         $datas[$i]['prezzo'] = $this->_sanitizeImporto($row[3]);
                         $confs = $this->_sanitizeConf($row[2]);
                         $datas[$i]['um'] = $confs['um'];
