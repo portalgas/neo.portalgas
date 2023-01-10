@@ -80,8 +80,22 @@ class LoopsOrdersTable extends Table
         $validator
             ->nonNegativeInteger('gg_data_fine')
             ->requirePresence('gg_data_fine', 'create')
-            ->notEmptyString('gg_data_fine');
-
+            ->notEmptyString('gg_data_fine')
+            ->add('gg_data_fine', [
+                'ctrlGG' => [
+                    'rule' => function ($value, $context) {
+                        $gg_data_inizio = $context['data']['gg_data_inizio'];
+                        $gg_data_fine = $value; 
+              
+                        if($gg_data_fine>$gg_data_inizio)
+                            return false;
+                        else
+                            return true;                         
+                    },
+                    'message' => "I giorni precedenti alla chiusura non possono essere inferiori ai giorni precedenti all'apertura"
+                ]
+            ]);            
+                    
         $validator
             ->scalar('flag_send_mail')
             ->allowEmptyString('flag_send_mail');
@@ -100,9 +114,9 @@ class LoopsOrdersTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['loops_delivery_id'], 'LoopsDeliveries'));
-        $rules->add($rules->existsIn(['supplier_organization_id'], 'SuppliersOrganizations'));
+        $rules->add($rules->existsIn(['organization_id', 'supplier_organization_id'], 'SuppliersOrganizations'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
-    }
+    }   
 }

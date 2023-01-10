@@ -2,25 +2,13 @@
 use Cake\Core\Configure;
 // echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Add')], ['home', 'list']);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Loops Order'), 'subtitle' => __('Add')], ['home', 'list']);
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 // debug($htmlCustomSiteOrders);
 ?>
-
-  <section class="content-header">
-    <h1>
-      <?php echo __('Loops Order'); ?>
-      <small><?php echo __('Add'); ?></small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build('/'); ?>"><i class="fa fa-home"></i> <?php echo __('Home'); ?></a></li>
-      <li><a href="<?php echo $this->Url->build(['action' => 'view']); ?>"><i class="fa fa-eye"></i> <?php echo __('View'); ?></a></li>
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-list"></i> <?php echo __('List'); ?></a></li>
-    </ol>
-  </section>
 
   <!-- Main content -->
   <section class="content">
@@ -57,16 +45,10 @@ echo '</div>'; // row
   
 echo '<div class="row">';
 echo '<div class="col-md-6">';
-echo $this->Form->control('gg_data_inizio');
+echo $this->Form->control('gg_data_inizio', ['type' => 'number', 'min' => 2, 'default' => 2]);
 echo '</div>';
 echo '<div class="col-md-6">';
-echo $this->Form->control('gg_data_fine');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('flag_send_mail');
+echo $this->Form->control('gg_data_fine', ['type' => 'number', 'min' => 1, 'default' => 1]);
 echo '</div>';
 echo '</div>'; // row
  

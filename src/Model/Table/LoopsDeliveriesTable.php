@@ -132,4 +132,40 @@ class LoopsDeliveriesTable extends Table
 
         return $rules;
     }
+
+    public function gets($user, $organization_id, $where=[]) {
+        
+        $conditions = ['LoopsDeliveries.organization_id' => $organization_id];
+    
+        if(isset($where))
+            $where += $conditions;
+        else 
+            $where += $conditions;
+        
+        $results = $this->find()
+            ->where($where)
+            ->order(['data_master'])
+            ->all();
+
+        return $results;
+    }
+
+    public function getsList($user, $organization_id, $where=[]) {
+        
+        $conditions = ['LoopsDeliveries.organization_id' => $organization_id];
+    
+        if(isset($where))
+            $where += $conditions;
+        else 
+            $where += $conditions;
+
+        $results = $this->find('list', [
+                                'keyField' => 'id',
+                                'valueField' => 'luogo'])
+            ->where($where)
+            ->order(['data_master'])
+            ->all();
+
+        return $results;
+    }    
 }

@@ -51,17 +51,14 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-<th scope="col" class="actions text-left"><?= __('Actions') ?></th>
-                      <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('loops_delivery_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('supplier_organization_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('gg_data_inizio') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('gg_data_fine') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('user_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('flag_send_mail') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
-                   </tr>
+                <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('loops_delivery_id') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('suppliers_organization_id', __('SupplierOrganization')) ?></th>
+                <th scope="col" class="text-center"><?= $this->Paginator->sort('gg_data_inizio') ?></th>
+                <th scope="col" class="text-center"><?= $this->Paginator->sort('gg_data_fine') ?></th>
+                <th scope="col" class=""><?= __('Created by') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
+              </tr>
             </thead>
             <tbody>
               <?php 
@@ -69,27 +66,20 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
                 // debug($loopsOrder);
               
-  echo '<tr>';
-  echo '<td class="actions text-left">';
-  echo $this->Html->link('', ['action' => 'view', $loopsOrder->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-  echo $this->Html->link('', ['action' => 'edit', $loopsOrder->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
-  if(!$loopsOrder->is_system) 
-    echo $this->Form->postLink('', ['action' => 'delete', $loopsOrder->id], ['confirm' => __('Are you sure you want to delete # {0}?', $loopsOrder->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
-  else
-    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
-  echo '</td>';             
-        echo '<td>'.$this->Number->format($loopsOrder->organization_id).'</td>';
-        echo '<td>'.$this->Number->format($loopsOrder->loops_delivery_id).'</td>';
-        echo '<td>'.$this->Number->format($loopsOrder->supplier_organization_id).'</td>';
-        echo '<td>'.$this->Number->format($loopsOrder->gg_data_inizio).'</td>';
-        echo '<td>'.$this->Number->format($loopsOrder->gg_data_fine).'</td>';
-        echo '<td>'.$this->Number->format($loopsOrder->user_id).'</td>';
-                       echo '<td>'.h($loopsOrder->flag_send_mail).'</td>';
-                      echo '<td title="'.h($loopsOrder->created).'">'.$this->Time->nice($loopsOrder->created).'</td>';
-                         echo '<td title="'.h($loopsOrder->modified).'">'.$this->Time->nice($loopsOrder->modified).'</td>';
-                        echo '</tr>';
-              } // end loop
-            echo '</tbody>';
+                echo '<tr>';
+                echo '<td class="actions text-left">';
+                echo $this->Html->link('', ['action' => 'edit', $loopsOrder->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+                echo $this->Form->postLink('', ['action' => 'delete', $loopsOrder->id], ['confirm' => __('Are you sure you want to delete # {0}?', $loopsOrder->loops_delivery->luogo), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                echo '</td>';             
+                echo '<td>'.h($loopsOrder->loops_delivery->luogo).'</td>';
+                echo '<td>'.h($loopsOrder->suppliers_organization->name).'</td>';
+                echo '<td class="text-center">'.$this->Number->format($loopsOrder->gg_data_inizio).'</td>';
+                echo '<td class="text-center">'.$this->Number->format($loopsOrder->gg_data_fine).'</td>';
+                echo '<td>'.h($loopsOrder->user->username).'</td>';
+                echo '<td title="'.h($loopsOrder->created).'">'.$this->Time->nice($loopsOrder->created).'</td>';
+                echo '</tr>';
+            } // end loop
+          echo '</tbody>';
           echo '</table>';
           }
           else {

@@ -163,6 +163,12 @@ msgstr "Creato"
 msgid "Modified"
 msgstr "Modificato"
 
+msgid "Created by"
+msgstr "Creato da"
+
+msgid "Modified by"
+msgstr "Modificato da"
+
 msgid "Actions"
 msgstr "Azioni"
 
@@ -219,6 +225,18 @@ msgstr "Data fine"
 
 msgid "data_fine"
 msgstr "Data fine"
+
+msgid "Gg Data Inizio"
+msgstr "Giorni precedenti all'apertura"
+
+msgid "gg_data_inizio"
+msgstr "Giorni precedenti all'apertura"
+
+msgid "Gg Data Fine"
+msgstr "Giorni precedenti alla chiusura"
+
+msgid "gg_data_fine"
+msgstr "Giorni precedenti alla chiusura"
 
 msgid "Data Range Ini"
 msgstr "Data di inizio"
@@ -1165,6 +1183,18 @@ msgstr "Sconto"
 msgid "CostLessShort"
 msgstr "Sconto"
 
+msgid "Loops Orders"
+msgstr "Ordini ricorsivi"
+
+msgid "Loops Order"
+msgstr "Ordine ricorsivo" 
+
+msgid "Loops Deliveries"
+msgstr "Consegne ricorsive"
+
+msgid "Loops Delivery"
+msgstr "Consegna ricorsiva" 
+
 #
 # M S G  system
 #
@@ -1278,6 +1308,9 @@ msgstr "Il G.A.S. non ha il produttore associato!"
 
 msgid "msg_des_order_not_found"
 msgstr "Ordine non trovato: potrebbe essere stato cancellato"
+
+msgid "msg_loops_orders_not_loops_deliveries"
+msgstr "Non hai ancora creato consegne ricorsive"
 
 msgid "msg_des_order_not_referent"
 msgstr "Non sei referente produttore dell'ordine!"

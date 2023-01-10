@@ -45,29 +45,12 @@ class LoopsOrdersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Organizations', 'LoopsDeliveries', 'SuppliersOrganizations', 'Users'],
+            'contain' => ['LoopsDeliveries', 'SuppliersOrganizations', 'Users'],
         ];
         $loopsOrders = $this->paginate($this->LoopsOrders);
 
         $this->set(compact('loopsOrders'));
     }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Loops Order id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $loopsOrder = $this->LoopsOrders->get($id, [
-            'contain' => ['Organizations', 'LoopsDeliveries', 'SuppliersOrganizations', 'Users'],
-        ]);
-
-        $this->set('loopsOrder', $loopsOrder);
-    }
-
 
     /**
      * Add method
@@ -79,6 +62,10 @@ class LoopsOrdersController extends AppController
         $loopsOrder = $this->LoopsOrders->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
+            
+            $datas['organization_id'] = $this->_organization->id;
+            $datas['user_id'] = $this->_user->id;
+            $datas['flag_send_mail'] = 'N';
             // debug($datas);
             $loopsOrder = $this->LoopsOrders->patchEntity($loopsOrder, $datas);
             if (!$this->LoopsOrders->save($loopsOrder)) {
@@ -89,16 +76,20 @@ class LoopsOrdersController extends AppController
 
                 return $this->redirect(['action' => 'index']);
             }
-            
-        }
+        } // end post
  
+        $loopsDeliveries = $this->LoopsOrders->LoopsDeliveries->getsList($this->_user, $this->_organization->id);
+        if($loopsDeliveries->count()==0) {
+            $this->Flash->error(__('msg_loops_orders_not_loops_deliveries'));
+            return $this->redirect(['action' => 'index']);
+        }
+
         $order_type_id = Configure::read('Order.type.gas');
         
         $ordersTable = TableRegistry::get('Orders');
         $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
         $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-        $loopsDeliveries = $this->LoopsOrders->LoopsDeliveries->find('list', ['limit' => 200]);
         
         $this->set(compact('order_type_id', 'loopsOrder', 'loopsDeliveries', 'suppliersOrganizations'));
     }
@@ -118,22 +109,36 @@ class LoopsOrdersController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $datas = $this->request->getData();
-            // debug($datas);        
+            
+            $datas['organization_id'] = $this->_organization->id;
+            $datas['user_id'] = $this->_user->id;
+            $datas['flag_send_mail'] = 'N';
+            // debug($datas);
             $loopsOrder = $this->LoopsOrders->patchEntity($loopsOrder, $datas);
             if (!$this->LoopsOrders->save($loopsOrder)) {
                 $this->Flash->error($loopsOrder->getErrors());
             }
-            else {            
+            else {
                 $this->Flash->success(__('The {0} has been saved.', __('Loops Order')));
 
                 return $this->redirect(['action' => 'index']);
             }
+        } // end post
+
+        $loopsDeliveries = $this->LoopsOrders->LoopsDeliveries->getsList($this->_user, $this->_organization->id);
+        if($loopsDeliveries->count()==0) {
+            $this->Flash->error(__('msg_loops_orders_not_loops_deliveries'));
+            return $this->redirect(['action' => 'index']);
         }
-        $organizations = $this->LoopsOrders->Organizations->find('list', ['limit' => 200]);
-        $loopsDeliveries = $this->LoopsOrders->LoopsDeliveries->find('list', ['limit' => 200]);
-        $supplierOrganizations = $this->LoopsOrders->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $users = $this->LoopsOrders->Users->find('list', ['limit' => 200]);
-        $this->set(compact('loopsOrder', 'organizations', 'loopsDeliveries', 'supplierOrganizations', 'users'));
+
+        $order_type_id = Configure::read('Order.type.gas');
+        
+        $ordersTable = TableRegistry::get('Orders');
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+    
+        $this->set(compact('order_type_id', 'loopsOrder', 'loopsDeliveries', 'suppliersOrganizations'));
     }
 
 
