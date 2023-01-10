@@ -14,8 +14,11 @@ switch($user->organization->type) {
         echo $this->element('sidebar-menu-prodgas');
     break;
 }
-  
-if($application_env=='development') {
+
+if($this->Identity->get()->acl['isRoot']) 
+  echo $this->element('sidebar-menu-root');
+
+if($application_env!=='development') {
 ?>
   <li class="treeview">
     <a href="#">
