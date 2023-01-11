@@ -30,7 +30,7 @@ class LifeCycleSummaryOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Deliveries', [
-            'foreignKey' => 'delivery_id',
+            'foreignKey' => ['organization_id', 'delivery_id'],
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Orders', [

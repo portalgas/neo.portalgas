@@ -482,15 +482,15 @@ class OrdersTable extends Table
                           
         if($debug) debug($where_delivery);
         $results = $this->find()
-                                ->where($where_order)
-                                ->contain([
-                                  // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],  
-                                  'OrderStateCodes',  
-                                  'SuppliersOrganizations' => ['Suppliers'], 
-                                  'Deliveries' => ['conditions' => $where_delivery]  
-                                ])
-                                ->order([$this->getAlias().'.data_inizio'])
-                                ->all();
+                        ->where($where_order)
+                        ->contain([
+                            // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],  
+                            'OrderStateCodes',  
+                            'SuppliersOrganizations' => ['Suppliers'], 
+                            'Deliveries' => ['conditions' => $where_delivery]  
+                        ])
+                        ->order([$this->getAlias().'.data_inizio'])
+                        ->all();
         // debug($results);
         
         return $results;

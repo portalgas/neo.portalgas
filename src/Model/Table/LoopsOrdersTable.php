@@ -59,6 +59,10 @@ class LoopsOrdersTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Orders', [
+            'foreignKey' => 'order_id',
+            'joinType' => 'LEFT', // la prima volta non e' valorizzata
+        ]);        
     }
 
     /**

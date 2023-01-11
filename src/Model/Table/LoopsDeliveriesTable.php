@@ -49,6 +49,10 @@ class LoopsDeliveriesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Deliveries', [
+            'foreignKey' => ['organization_id', 'delivery_id'],
+            'joinType' => 'LEFT', // la prima volta non e' valorizzata
+        ]);
     }
 
     /**
