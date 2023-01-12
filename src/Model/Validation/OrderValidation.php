@@ -8,6 +8,9 @@ use App\Traits;
 
 class OrderValidation extends Validation
 {
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
     public function __construct()
     {
         parent::__construct();
@@ -17,10 +20,13 @@ class OrderValidation extends Validation
     {
     	// debug($context); 	
     	$value2 = $context['data'][$field2]; 
-    	
+
         if(empty($value2))
             return true;
-            
+
+        $value = self::dateFrozenToArray($value); 
+        $value2 = self::dateFrozenToArray($value2);    
+
         $value = $value['year'].$value['month'].$value['day'];
         $value2 = $value2['year'].$value2['month'].$value2['day'];
         if (!Validation::comparison($value, $operator, $value2))
@@ -51,6 +57,7 @@ class OrderValidation extends Validation
         if($results->sys=='Y') // consegna Da definire
             return true;
 
+        $value = self::dateFrozenToArray($value); 
         $value = $value['year'].$value['month'].$value['day'];
         // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
         // $value2 = $results->data->i18nFormat('Ymd');        

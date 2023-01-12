@@ -59,9 +59,9 @@ class LifeCycleOrdersTable extends Table
 
 		$type = Configure::read('Order.type.gas');
 
-		if(isset($orderResult['Order']['des_order_id']) && !empty($orderResult['Order']['des_order_id']))
+		if(isset($orderResult['des_order_id']) && !empty($orderResult['des_order_id']))
 			$type = Configure::read('Order.type.des');
-        elseif ($user->organization['Organization']['id']==Configure::read('social_market_organization_id'))
+        elseif ($user->organization->id==Configure::read('social_market_organization_id'))
             $type = Configure::read('Order.type.socialmarket');
 
 		return $type;

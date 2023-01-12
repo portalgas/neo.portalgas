@@ -9,9 +9,13 @@ use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use App\Validation\OrderValidator;
 use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
+use App\Traits;
 
 class OrdersTable extends Table
 {
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
     /**
      * Initialize method
      *
@@ -119,7 +123,7 @@ class OrdersTable extends Table
                    'message' => 'La data di chiusura non può essere antecedente alla data di apertura'
                 ],
                 'dateComparisonToDelivery' => [
-                    'rule' => ['dateComparisonToDelivery', '>='],
+                    'rule' => ['dateComparisonToDelivery', '<='],
                     'provider' => 'order',
                     'message' => 'La data di chiusura non può essere posteriore o uguale alla data della consegna'
                 ]
@@ -526,6 +530,7 @@ class OrdersTable extends Table
             $mail_open_send = 'N';  
          else {
             $data_inizio = $request['data_inizio']; 
+            $data_inizio = self::dateFrozenToArray($data_inizio); 
             $data_inizio = $data_inizio['year'].'-'.$data_inizio['month'].'-'.$data_inizio['day']; 
             $data_oggi = date("Y-m-d");
             

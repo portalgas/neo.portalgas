@@ -47,7 +47,7 @@ use App\Event\OrderListener;
 use Cake\Event\EventManager;
 
 $orderListener = new OrderListener();
-EventManager::instance()->attach($orderListener);
+EventManager::instance()->on($orderListener);
 
 /**
  * Uncomment block of code below if you want to use `.env` file during development.

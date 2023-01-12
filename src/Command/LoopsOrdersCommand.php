@@ -84,54 +84,17 @@ class LoopsOrdersCommand extends Command
                     $datas['data_inizio'] = $loopsDelivery->delivery->data->subDays($loopsOrder->gg_data_inizio);
                     $datas['data_fine'] = $loopsDelivery->delivery->data->subDays($loopsOrder->gg_data_fine);
 
-                    dd($datas);
+                    debug($datas);
                     
-                /*  
-    `k_orders`.`order_type_id`, 
-    LifeCycleOrdersTable  
-    $OrderLifeCycle->getType($user, $requestData);
+                    $this->loadModel('Orders');
+                    // $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
+                    $this->Orders->addBehavior('Orders');
 
-
-    `k_orders`.`prod_gas_promotion_id`,
-    `k_orders`.`des_order_id`,
-    `k_orders`.`gas_group_id`,
-    `k_orders`.`parent_id`,
-    `k_orders`.`data_fine_validation`,
-    `k_orders`.`data_incoming_order`,
-    `k_orders`.`data_state_code_close`,
-    `k_orders`.`nota`,
-    `k_orders`.`hasTrasport`,
-    `k_orders`.`trasport_type`,
-    `k_orders`.`trasport`,
-    `k_orders`.`hasCostMore`,
-    `k_orders`.`cost_more_type`,
-    `k_orders`.`cost_more`,
-    `k_orders`.`hasCostLess`,
-    `k_orders`.`cost_less_type`,
-    `k_orders`.`cost_less`,
-    `k_orders`.`typeGest`,
-    `k_orders`.`state_code`,
-    `k_orders`.`mail_open_send`,
-    `k_orders`.`mail_open_data`,
-    `k_orders`.`mail_close_data`,
-    `k_orders`.`mail_open_testo`,
-    `k_orders`.`type_draw`,
-    `k_orders`.`tot_importo`,
-    `k_orders`.`qta_massima`,
-    `k_orders`.`qta_massima_um`,
-    `k_orders`.`send_mail_qta_massima`,
-    `k_orders`.`importo_massimo`,
-    `k_orders`.`send_mail_importo_massimo`,
-    `k_orders`.`tesoriere_nota`,
-    `k_orders`.`tesoriere_fattura_importo`,
-    `k_orders`.`tesoriere_doc1`,
-    `k_orders`.`tesoriere_data_pay`,
-    `k_orders`.`tesoriere_importo_pay`,
-    `k_orders`.`tesoriere_stato_pay`,
-    `k_orders`.`inviato_al_tesoriere_da`,
-    `k_orders`.`isVisibleFrontEnd`,
-    `k_orders`.`isVisibleBackOffice`,
-                */
+                    $order = $this->Orders->newEntity();
+                    $order = $this->Orders->patchEntity($order, $datas);
+                    if (!$this->Orders->save($order)) {
+                        dd($order->getErrors());
+                    }
                 } // end foreach($loopsOrdersResults as $loopsOrder)
             } // end foreach($loopsDeliveriesResults as $loopsDelivery)
         } // end if($loopsDeliveriesResults->count()>0) 

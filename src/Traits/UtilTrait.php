@@ -169,7 +169,11 @@ trait UtilTrait
     public function createObjUser($args = []) {
         
         $user = new \stdClass();
-        $user->organization = new \stdClass();
+        $user->organization = new \stdClass(); 
+        $user->organization->id = 0;
+        $user->organization->paramsConfig['hasTrasport'] = 'N';
+        $user->organization->paramsConfig['hasCostMore'] = 'N';
+        $user->organization->paramsConfig['hasCostLess'] = 'N';
 
         if(!empty($args))
         foreach ($args as $key => $value) {
@@ -237,6 +241,26 @@ trait UtilTrait
         if(!$this->stringStartsWith($value, 'http://') && !$this->stringStartsWith($value, 'https://'))
             $value = 'http://'.$value;
      
+        return $value;
+    }
+
+    /*  
+     * trasformo in array
+        'data_fine' => object(Cake\I18n\FrozenDate) {
+        'time' => '2023-01-16 00:00:00.000000+00:00',
+        'timezone' => 'UTC',
+        'fixedNowTime' => false
+    */    
+    public static function dateFrozenToArray($value)
+    {
+        if(!is_array($value) && get_class($value)=='Cake\\I18n\\FrozenDate') {
+            $new_value = [];
+            $new_value['year'] = $value->format('Y');
+            $new_value['month'] = $value->format('m');
+            $new_value['day'] = $value->format('d');
+            $value = $new_value;
+        }
+
         return $value;
     }     
 }

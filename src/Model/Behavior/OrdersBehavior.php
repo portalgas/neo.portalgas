@@ -10,14 +10,27 @@ use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
+use Authentication\AuthenticationService;
+use App\Traits;
 
 class OrdersBehavior extends Behavior
 {
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
 	private $config = [];
+    private $_user; 
 
     public function initialize(array $config)
     {
         $this->config = $config;
+
+        $service = new AuthenticationService();
+        $identify = $service->getIdentity();
+        if(!empty($identify)) //che chiamato dal cron non e' valorizzato
+            $this->_user = $identify->getIdentifier();
+        else 
+            $this->_user = $this->createObjUser();
     }
 
     /*
@@ -28,12 +41,15 @@ class OrdersBehavior extends Behavior
     {
         // debug('OrdersBehavior beforeMarshal');
 
+        $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+
         /*
          * valore di default
          */
         if (!isset($data['state_code']) || empty($data['state_code'])) {
             $data['state_code'] = 'CREATE-INCOMPLETE';
         }
+
         if (!isset($data['mail_open_testo']) || empty($data['mail_open_testo'])) {
             $data['mail_open_testo'] = '';
         }
@@ -61,20 +77,36 @@ class OrdersBehavior extends Behavior
         if (!isset($data['tesoriere_importo_pay']) || empty($data['tesoriere_importo_pay'])) {
             $data['tesoriere_importo_pay'] = 0;
         }
+
+        if(isset($this->_user) && $this->_user->organization->paramsConfig['hasTrasport']=='N')
+            $data['hasTrasport'] = 'N';
+        else 
         if (!isset($data['hasTrasport']) || empty($data['hasTrasport'])) {
-            $data['hasTrasport'] = 'Y';
+            $data['hasTrasport'] = 'N';
         }
+
+        if(isset($this->_user) && $this->_user->organization->paramsConfig['hasCostMore']=='N')
+            $data['hasCostMore'] = 'N';
+        else         
         if (!isset($data['hasCostMore']) || empty($data['hasCostMore'])) {
-            $data['hasCostMore'] = 'Y';
+            $data['hasCostMore'] = 'N';
         }
+
+        if(isset($this->_user) && $this->_user->organization->paramsConfig['hasCostLess']=='N')
+            $data['hasCostLess'] = 'N';
+        else         
         if (!isset($data['hasCostLess']) || empty($data['hasCostLess'])) {
-            $data['hasCostLess'] = 'Y';
+            $data['hasCostLess'] = 'N';
         }
         
         if (!isset($data['mail_open_send']) || empty($data['mail_open_send'])) {
             $ordersTable = TableRegistry::get('Orders');
             $data['mail_open_send'] = $ordersTable->setOrderMailOpenSend($data);
         }
+
+        if (!isset($data['order_type_id']) || empty($data['order_type_id'])) {
+            $data['order_type_id'] = $lifeCycleOrdersTable->getType($this->_user, $data);
+        }        
         // debug($data);
     }
 
