@@ -17,6 +17,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenDate $data_master_reale
  * @property \Cake\I18n\FrozenDate $data_copy
  * @property \Cake\I18n\FrozenDate $data_copy_reale
+ * @property int $delivery_id
  * @property int $user_id
  * @property string|null $flag_send_mail
  * @property string|null $rules
@@ -48,6 +49,7 @@ class LoopsDelivery extends Entity
         'data_master_reale' => true,
         'data_copy' => true,
         'data_copy_reale' => true,
+        'delivery_id' => true,
         'user_id' => true,
         'flag_send_mail' => true,
         'rules' => true,
@@ -55,5 +57,6 @@ class LoopsDelivery extends Entity
         'modified' => true,
         'organization' => true,
         'user' => true,
+        'delivery' => true,
     ];
 }

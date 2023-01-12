@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property int $gg_data_inizio
  * @property int $gg_data_fine
  * @property int $user_id
+ * @property int $order_id
  * @property string|null $flag_send_mail
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
@@ -40,6 +41,7 @@ class LoopsOrder extends Entity
         'gg_data_inizio' => true,
         'gg_data_fine' => true,
         'user_id' => true,
+        'order_id' => true,
         'flag_send_mail' => true,
         'created' => true,
         'modified' => true,
@@ -47,5 +49,6 @@ class LoopsOrder extends Entity
         'loops_delivery' => true,
         'supplier_organization' => true,
         'user' => true,
+        'order' => true,
     ];
 }

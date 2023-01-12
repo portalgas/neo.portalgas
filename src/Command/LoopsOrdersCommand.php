@@ -66,8 +66,7 @@ class LoopsOrdersCommand extends Command
                 $loopsOrdersResults = $this->LoopsOrders->find()
                                                 ->contain(['SuppliersOrganizations'])
                                                 ->where(['LoopsOrders.organization_id' => $organization_id,
-                                                        'LoopsOrders.loops_delivery_id' => $loopsDelivery->id,
-                                                        'LoopsOrders.order_id' => 0])
+                                                        'LoopsOrders.loops_delivery_id' => $loopsDelivery->id])
                                                 ->all();  
                 if($loopsOrdersResults->count()>0)                 
                 foreach($loopsOrdersResults as $loopsOrder) { 
@@ -94,6 +93,17 @@ class LoopsOrdersCommand extends Command
                     $order = $this->Orders->patchEntity($order, $datas);
                     if (!$this->Orders->save($order)) {
                         dd($order->getErrors());
+                    }
+
+                    $loopsOrder->suppliers_organization=null; 
+
+                    $datas = [];
+                    $datas['order_id'] = $order->id;
+                    $loopsOrder = $this->LoopsOrders->patchEntity($loopsOrder, $datas);
+                    debug($datas);
+                    debug($loopsOrder);
+                    if (!$this->LoopsOrders->save($loopsOrder)) {
+                        dd($loopsOrder->getErrors());
                     }
                 } // end foreach($loopsOrdersResults as $loopsOrder)
             } // end foreach($loopsDeliveriesResults as $loopsDelivery)

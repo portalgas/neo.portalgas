@@ -58,6 +58,8 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                 <th scope="col" class="text-center"><?= $this->Paginator->sort('gg_data_fine') ?></th>
                 <th scope="col" class=""><?= __('Created by') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
+                <th scope="col" class=""><?= __('Order') ?></th>
               </tr>
             </thead>
             <tbody>
@@ -77,6 +79,8 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                 echo '<td class="text-center">'.$this->Number->format($loopsOrder->gg_data_fine).'</td>';
                 echo '<td>'.h($loopsOrder->user->username).'</td>';
                 echo '<td title="'.h($loopsOrder->created).'">'.$this->Time->nice($loopsOrder->created).'</td>';
+                echo '<td title="'.h($loopsOrder->modified).'">'.$this->Time->nice($loopsOrder->modified).'</td>';
+                echo '<td>'.$loopsOrder->order->delivery->luogo.'</td>';
                 echo '</tr>';
             } // end loop
           echo '</tbody>';
