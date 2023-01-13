@@ -964,6 +964,12 @@ msgstr "Ordine"
 msgid "Orders"
 msgstr "Ordini"
 
+msgid "Orders-1"
+msgstr "Ordini per G.A.S."
+
+msgid "Order-1"
+msgstr "Ordine per G.A.S."
+
 msgid "Orders-10"
 msgstr "Ordini per i gruppi"
 

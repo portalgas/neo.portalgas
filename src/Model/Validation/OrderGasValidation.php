@@ -18,7 +18,7 @@ class OrderGasValidation extends Validation
      * ctrl che il produttore abbia articoli validi da associare all'ordine
      */
     public static function totArticles($value, $context)
-    {
+    { 
        // debug($context);  
         $organization_id = $context['data']['organization_id'];
         $supplier_organization_id = $context['data']['supplier_organization_id']; 

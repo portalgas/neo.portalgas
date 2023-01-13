@@ -31,6 +31,7 @@ class OrdersController extends AppController
          * gestisco solo gruppi
          */
         $this->_order_type_ids = [
+            Configure::read('Order.type.gas'),
             Configure::read('Order.type.gas_parent_groups'),
             Configure::read('Order.type.gas_groups')
         ];
@@ -44,14 +45,6 @@ class OrdersController extends AppController
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
-
-        // per ora solo i gruppi
-        if($this->_organization->paramsConfig['hasGasGroups']=='N' || 
-            !$this->_user->acl['isGasGroupsManagerParentOrders']  || 
-            !$this->_user->acl['isGasGroupsManagerOrders']) { 
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        } 
 
         /* 
          * order_type_id 
@@ -67,13 +60,32 @@ class OrdersController extends AppController
                 return $this->redirect(Configure::read('routes_msg_stop'));    
             }
            
-            if($order_type_id==Configure::read('Order.type.gas_groups')) {
-                $gasGroupsTable = TableRegistry::get('GasGroups');
-                $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-                if($gasGroups->count()==0) {
-                    $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
-                    return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
-                }        
+            switch($order_type_id) {
+                case Configure::read('Order.type.gas'):
+                    if(!$this->_user->acl['isReferentGeneric']  &&
+                       !$this->_user->acl['isSuperReferente']) { 
+                        $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+                        return $this->redirect(Configure::read('routes_msg_stop'));
+                    }             
+                break;
+                case Configure::read('Order.type.gas_groups'):
+                case Configure::read('Order.type.gas_parent_groups'):
+                    if($this->_organization->paramsConfig['hasGasGroups']=='N' || (
+                        !$this->_user->acl['isGasGroupsManagerParentOrders']  && 
+                        !$this->_user->acl['isGasGroupsManagerOrders'])) { 
+                        $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+                        return $this->redirect(Configure::read('routes_msg_stop'));
+                    } 
+        
+                    if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                        $gasGroupsTable = TableRegistry::get('GasGroups');
+                        $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                        if($gasGroups->count()==0) {
+                            $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
+                            return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
+                        }    
+                    }
+                break;
             }
         }
         else {

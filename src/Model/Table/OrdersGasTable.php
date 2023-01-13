@@ -35,7 +35,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
             ->add('supplier_organization_id', [
                 'totArticles' => [
                    'rule' => ['totArticles'],
-                   'provider' => 'order',
+                   'provider' => 'orderGas',
                    'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
                 ]
             ]);

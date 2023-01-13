@@ -38,7 +38,8 @@ if($this->Identity->get()->acl['isReferentGeneric'] || $this->Identity->get()->a
         </span>
         <ul class="treeview-menu">
           <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index" target="">Elenco ordini</a></li>
-          <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=add" target="">Aggiungi un nuovo ordine</a></li>
+          <li><a href="<?php echo $this->Url->build('/admin/orders/add/'.Configure::read('Order.type.gas')); ?>"><?php echo $icon;?>Aggiungi un nuovo ordine <label class="label label-success">new</label></a></li>
+          <!-- li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=add" target="">Aggiungi un nuovo ordine</a></li -->
           <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=easy_add" target="">Aggiungi un nuovo ordine (modalità semplificata)</a></li>
           <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index_history" target="">Ordini storici</a></li>
           <li><a href="<?php echo $this->Url->build('/admin/loops-orders/index'); ?>"><?php echo $icon;?><?php echo __('Loops Orders');?> <label class="label label-success">new</label></a></li>

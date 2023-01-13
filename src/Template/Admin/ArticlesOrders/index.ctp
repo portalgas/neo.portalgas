@@ -55,13 +55,13 @@ echo $this->HtmlCustomSite->boxOrder($order);
                         <i class="fa fa-trash"></i></a>
                     </th>
                     <th scope="col" colspan="2"><?= __('Name') ?></th>
-                    <th scope="col"><?= __('Prezzo') ?></th>
-                    <th scope="col"><?= __('pezzi_confezione') ?></th>
-                    <th scope="col"><?= __('qta_multipli') ?></th>
-                    <th scope="col"><?= __('qta_minima') ?></th>
-                    <th scope="col"><?= __('qta_massima') ?></th>
-                    <th scope="col"><?= __('qta_minima_order') ?></th>
-                    <th scope="col"><?= __('qta_massima_order') ?></th>
+                    <th scope="col" class="min-width-price"><?= __('Prezzo') ?></th>
+                    <th scope="col" class="text-vertical min-width"><?= __('pezzi_confezione') ?></th>
+                    <th scope="col" class="text-vertical min-width"><?= __('qta_multipli') ?></th>
+                    <th scope="col" class="text-vertical min-width"><?= __('qta_minima') ?></th>
+                    <th scope="col" class="text-vertical min-width"><?= __('qta_massima') ?></th>
+                    <th scope="col" class="text-vertical min-width"><?= __('qta_minima_order') ?></th>
+                    <th scope="col" class="text-vertical min-width"><?= __('qta_massima_order') ?></th>
                 </tr>
               </thead>
               <tbody>
@@ -125,13 +125,13 @@ echo $this->HtmlCustomSite->boxOrder($order);
                           <i class="fa fa-plus"></i></a>
                       </th>
                       <th scope="col" colspan="2"><?= __('Name') ?></th>
-                      <th scope="col"><?= __('Prezzo') ?></th>
-                      <th scope="col"><?= __('pezzi_confezione') ?></th>
-                      <th scope="col"><?= __('qta_multipli') ?></th>
-                      <th scope="col"><?= __('qta_minima') ?></th>
-                      <th scope="col"><?= __('qta_massima') ?></th>
-                      <th scope="col"><?= __('qta_minima_order') ?></th>
-                      <th scope="col"><?= __('qta_massima_order') ?></th>
+                      <th scope="col" class="min-width-price"><?= __('Prezzo') ?></th>
+                      <th scope="col" class="text-vertical min-width"><?= __('pezzi_confezione') ?></th>
+                      <th scope="col" class="text-vertical min-width"><?= __('qta_multipli') ?></th>
+                      <th scope="col" class="text-vertical min-width"><?= __('qta_minima') ?></th>
+                      <th scope="col" class="text-vertical min-width"><?= __('qta_massima') ?></th>
+                      <th scope="col" class="text-vertical min-width"><?= __('qta_minima_order') ?></th>
+                      <th scope="col" class="text-vertical min-width"><?= __('qta_massima_order') ?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -197,5 +197,18 @@ echo $this->HtmlCustomSite->boxOrder($order);
 }
 .btn-deactive {
   opacity: .45;
+}
+
+@media only screen and (max-width: 900px) {
+  .text-vertical {
+    writing-mode: vertical-rl;
+    /* text-orientation: upright; */
+  }
+}
+.min-width {
+  min-width: 75px
+}
+.min-width-price {
+  min-width: 125px
 }
 </style>
