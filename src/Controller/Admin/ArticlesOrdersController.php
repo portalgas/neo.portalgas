@@ -46,21 +46,8 @@ class ArticlesOrdersController extends AppController
         $ordersTable = TableRegistry::get('Orders');    
         $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
 
-$ArticlesOrders = [];
-$articles = [];        
-        if ($this->request->is('post')) {
-
-            foreach($articles as $article) {
-
-                $data = [];
-                
-
-            } // foreach($articles as $article)
-
-            $this->Flash->success(__('The {0} has been saved.', 'Articles Order'));
-            // return $this->redirect(['action' => 'index']);
-
-        } // end if ($this->request->is('post')) 
+        $ArticlesOrders = [];
+        $articles = [];
           
         $this->set(compact('order_type_id', 'order', 'ArticlesOrders', 'articles'));
     }

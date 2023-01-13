@@ -83,7 +83,7 @@ class OrderComponent extends Component {
                 $options['page'] = 1;
                 $articlesOrdersResults = $articlesOrdersTable->getCartsByUser($user, $organization_id, $user->id, $result, $where, $options);
                 // debug($articlesOrdersResults);
-
+                
                 /*
                  * estraggo solo quelli acquistati dallo user
                  */

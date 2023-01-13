@@ -334,7 +334,7 @@ class OrdersTable extends Table
         return $rules;
     }
 
-    public function factory($user, $organization_id, $order_type_id, $order_id=0) {
+    public function factory($user, $organization_id, $order_type_id, $order_id=0, $debug=false) {
 
         $table_registry = '';
 
@@ -343,9 +343,11 @@ class OrdersTable extends Table
              * recupero order_type_id
              */
             $where = ['Orders.organization_id' => $organization_id, 'Orders.id' => $order_id];
+            if($debug) debug($where);
             $orderResults = $this->find()
                             ->where($where)
                             ->first();
+            if($debug) debug($orderResults);
 
             if(!empty($orderResults))
                 $order_type_id = $orderResults->order_type_id;
@@ -388,6 +390,7 @@ class OrdersTable extends Table
                 die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
             break;
         }
+        if($debug) debug($table_registry);
 
         return TableRegistry::get($table_registry);
     } 

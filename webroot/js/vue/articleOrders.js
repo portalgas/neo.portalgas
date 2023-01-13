@@ -20,7 +20,8 @@ $(function () {
         article_orders: [],
         articles: [],
         is_run: false,
-        is_save: false
+        is_save: false,
+        msgOpen: false
       },  
       methods: {
         selectArticleOrdersAll: function(e) {
@@ -68,13 +69,15 @@ $(function () {
 
             axios.post('/admin/api/article-orders/getAssociateToOrder', params)
                 .then(response => {
-                   console.log(response.data, 'getAssociateToOrder'); 
+                  console.log(response.data, 'getAssociateToOrder'); 
                   
                   this.is_run = false;
                   if(response.data.esito) {
                     this.can_edit = response.data.results.can_edit;  
-                    this.order = response.data.results.order;        
+                    this.order = response.data.results.order;
+                    /* articoli gia' associati */
                     this.article_orders = response.data.results.article_orders;        
+                    /* articoli da associare */
                     this.articles = response.data.results.articles;
                   }
                   else {
@@ -87,17 +90,49 @@ $(function () {
                   console.error("Error: " + error);
             });            
         },
+        /* 
+          * ctrl che gli articoli gia' associati non siamo gia' acquistati
+          */        
+        preSave: function(e) {
+          e.preventDefault();
+
+          let _this = this;
+          let tot_article_order_in_carts = 0;
+
+          if(_this.article_orders.length>0) {
+            /* prendo solo quelli scelti */
+            _this.article_orders.forEach(function (article_order, i) {
+              if(article_order.is_select) {
+                if(article_order.carts.length>0)
+                  tot_article_order_in_carts++;
+              }              
+            });   
+          }  
+
+          if(tot_article_order_in_carts>0) {
+            _this.msgOpen = true;
+         //   $("#myModal").modal();
+         //   $("html, body").animate({ scrollTop: 0 }, 1500);
+          }
+          else 
+            _this.save(e);
+        },        
         save: function(e) {
           e.preventDefault();
           
           let _this = this;
           
           _this.is_save = true;
+          _this.msgOpen = false;
           let _update_article_orders = [];
           let _delete_article_orders = [];
           let _articles = [];
 
+          /* 
+           * articoli gia' associati => update / delete (disassocio)
+           */  
           if(_this.article_orders.length>0) {
+            /* prendo solo quelli scelti */
             _this.article_orders.forEach(function (article_order, i) {
               if(article_order.is_select) 
                 _delete_article_orders.push(article_order);
@@ -106,10 +141,11 @@ $(function () {
             });   
           }  
 
+          /* 
+           * articoli da associare
+           */            
           if(_this.articles.length>0) {
-            /* 
-             * prendo solo quelli scelti 
-             */
+            /* prendo solo quelli scelti */
             _this.articles.forEach(function (article, i) {
               if(article.is_select) 
                  _articles.push(article);

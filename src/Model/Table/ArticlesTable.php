@@ -25,7 +25,7 @@ class ArticlesTable extends Table
 
         $this->setTable('k_articles');
         $this->setDisplayField('name');
-        $this->setPrimaryKey(['id', 'organization_id']);
+        $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
 

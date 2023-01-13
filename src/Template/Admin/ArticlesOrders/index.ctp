@@ -21,10 +21,11 @@ echo $this->HtmlCustomSite->boxOrder($order);
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <div v-if="!is_run" class="box-submit">
-              <button v-if="!is_save" class="btn btn-primary" @click="save">Salva</button>
-              <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>
-            </div>             
+            <!-- solo il tasto salva sotto per la gestione del messaggio 
+            div v-if="!is_run">
+              <button v-if="!is_save" class="btn btn-primary btn-block" @click="preSave">Salva</button>
+              <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>
+            </div -->             
           </div>
         </div>
 
@@ -35,7 +36,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
                  
           <?php 
           /*
-           * articoli gia' associare
+           * articoli gia' associati (con eventuali acquisti)
            */ 
           echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli già associati')]);
           ?>
@@ -54,6 +55,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
                       <a class="btn btn-danger" :class="{ 'btn-deactive': select_article_orders_all }" @click="selectArticleOrdersAll">
                         <i class="fa fa-trash"></i></a>
                     </th>
+                    <th scope="col" style="width:15px"></th>
                     <th scope="col" colspan="2"><?= __('Name') ?></th>
                     <th scope="col" class="min-width-price"><?= __('Prezzo') ?></th>
                     <th scope="col" class="text-vertical min-width"><?= __('pezzi_confezione') ?></th>
@@ -74,6 +76,10 @@ echo $this->HtmlCustomSite->boxOrder($order);
                       <a class="btn btn-danger" :class="{ 'btn-deactive': !article_order.is_select }" title="rimuovi l'articolo dall'ordine" @click="article_order.is_select=!article_order.is_select">
                         <i class="fa fa-trash fa-2xl"></i></a>
                     </td>
+                    <td 
+                      :class="article_order.carts.length>0 ? 'just-carts' : 'no-carts'"
+                      :title="article_order.carts.length>0 ? 'Articolo già acquistato!' : 'Articolo non ancora acquistato'"
+                    ></td>
                     <td>
                       <img v-if="article_order.img1!=''" :src="article_order.img1" :width="article_order.img1_width" />
                     </td>	
@@ -176,9 +182,28 @@ echo $this->HtmlCustomSite->boxOrder($order);
                 </tbody>
               </table>
 
-              <div class="box-submit">
-                <button v-if="!is_save" class="btn btn-primary" @click="save">Salva</button>
-                <button v-if="is_save" class="btn btn-primary disabled">In elaborazione...</button>                
+              <div>
+
+                <!-- messaggio se articoli hanno gia' acquisti -->
+                <div class="modal-dialog">
+                  <div class="modal-content" v-if="msgOpen">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Attenzione</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Alcuni articoli che hai scelto di cancellare sono <b>già stati acquistati</b>:</p>
+                      <p>confermi la cancellazione <b>dall'ordine</b> degli articoli e degli acquisti associati?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-success" @click="msgOpen = !msgOpen">Chiudi e non cancellare gli acquisti</button>
+                      <button type="button" class="btn btn-danger" @click="save">Continua a cancella gli acquisti già fatti</button>
+                    </div>
+                  </div>
+                </div>
+
+                <button v-if="!is_save && !msgOpen" class="btn btn-primary btn-block" @click="preSave">Salva</button>
+                <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>                
               </div>
         </div>
         <!-- /.box-body -->
@@ -190,6 +215,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
 </form>
 </div>
 
+
 <style>
 .box-submit {
   padding:5px;
@@ -198,7 +224,14 @@ echo $this->HtmlCustomSite->boxOrder($order);
 .btn-deactive {
   opacity: .45;
 }
-
+.just-carts {
+   background-color:red;
+   opacity: 0.6;
+}
+.no-carts {
+   background-color:green;
+   opacity: 0.6;
+}
 @media only screen and (max-width: 900px) {
   .text-vertical {
     writing-mode: vertical-rl;

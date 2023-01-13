@@ -50,7 +50,7 @@ class ArticlesOrdersTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Articles', [
-            'foreignKey' => ['article_id', 'article_organization_id'],
+            'foreignKey' => ['article_organization_id', 'article_id'],
             'joinType' => 'INNER',
         ]);
         $this->hasMany('Carts', [
@@ -327,7 +327,7 @@ class ArticlesOrdersTable extends Table
             break;
         }          
         if($debug) debug($results);
-    
+        
         /*
          * estraggo eventuali acquisti
          */ 
@@ -498,9 +498,11 @@ class ArticlesOrdersTable extends Table
         if(!isset($where['Articles']))
            $where['Articles'] = [];
         $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
-     
+        
         $results = $this->find()
-                        ->contain(['Articles' => ['conditions' => $where['Articles']]])
+                        ->contain([
+                            'Articles' => ['conditions' => $where['Articles']], 
+                            'Carts'])
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
                         ->limit($this->_limit)
@@ -629,19 +631,19 @@ class ArticlesOrdersTable extends Table
             $datas['organization_id'] = $organization_id;
             $datas['order_id'] = $order->id;
             $datas['article_organization_id'] = $order->owner_organization_id; // dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
-            $datas['article_id'] = $article->id;        
-            $datas['name'] = $article->name;
-            if(isset($article->prezzo_))
-                $datas['prezzo'] = $this->convertImport($article->prezzo_);
+            $datas['article_id'] = $article['id'];        
+            $datas['name'] = $article['name'];
+            if(isset($article['prezzo_']))
+                $datas['prezzo'] = $this->convertImport($article['prezzo_']);
             else
-                $datas['prezzo'] = $article->prezzo;     
-            $datas['pezzi_confezione'] = $article->pezzi_confezione;     
-            $datas['qta_minima'] = $article->qta_minima;     
-            $datas['qta_massima'] = $article->qta_massima;     
-            $datas['qta_minima_order'] = $article->qta_minima_order;     
-            $datas['qta_massima_order'] = $article->qta_massima_order;     
-            $datas['qta_multipli'] = $article->qta_multipli;     
-            $datas['alert_to_qta'] = $article->alert_to_qta;    
+                $datas['prezzo'] = $article['prezzo'];     
+            $datas['pezzi_confezione'] = $article['pezzi_confezione'];     
+            $datas['qta_minima'] = $article['qta_minima'];     
+            $datas['qta_massima'] = $article['qta_massima'];     
+            $datas['qta_minima_order'] = $article['qta_minima_order'];     
+            $datas['qta_massima_order'] = $article['qta_massima_order'];     
+            $datas['qta_multipli'] = $article['qta_multipli'];     
+            $datas['alert_to_qta'] = $article['alert_to_qta'];    
 
             /* 
             * key 
@@ -653,7 +655,7 @@ class ArticlesOrdersTable extends Table
             $ids['organization_id'] = $organization_id;
             $ids['order_id'] = $order->id;
             $ids['article_organization_id'] = $order->owner_organization_id;
-            $ids['article_id'] = $article->id;
+            $ids['article_id'] = $article['id'];
             
             $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
             if(empty($articlesOrder)) {
@@ -672,7 +674,7 @@ class ArticlesOrdersTable extends Table
             $articlesOrder->organization_id = $organization_id;
             $articlesOrder->order_id = $order->id;
             $articlesOrder->article_organization_id = $order->owner_organization_id;
-            $articlesOrder->article_id = $article->id;            
+            $articlesOrder->article_id = $article['id'];            
             $articlesOrder = $this->patchEntity($articlesOrder, $datas);
           //  debug($datas);
             if (!$this->save($articlesOrder)) { 
@@ -684,7 +686,7 @@ class ArticlesOrdersTable extends Table
         * aggiorno stato ordine 'OPEN' // OPEN-NEXT  
         */ 
         $event = new Event('OrderListener.setStatus', $this, ['user' => $user, 'order' => $order]);
-        $this->eventManager()->dispatch($event);
+        $this->getEventManager()->dispatch($event);
                         
         return true;
     }

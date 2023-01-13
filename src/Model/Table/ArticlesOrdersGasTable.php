@@ -31,7 +31,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
    * gestione associazione articoli all'ordine
    * return
    *  proprietario listino: per gestione permessi di modifica
-   *  article_orders: articoli gia' associati
+   *  article_orders: articoli gia' associati (con eventuali acquisti)
    *  articles: articoli da associare
    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {

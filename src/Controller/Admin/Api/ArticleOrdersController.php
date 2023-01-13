@@ -130,7 +130,7 @@ class ArticleOrdersController extends ApiAppController
    * gestione associazione articoli all'ordine
    * return
    *  proprietario listino: per gestione permessi di modifica
-   *  article_orders: articoli gia' associati
+   *  article_orders: articoli gia' associati (con eventuali acquisti)
    *  articles: articoli da associare
    */    
     public function getAssociateToOrder() {
@@ -292,7 +292,7 @@ class ArticleOrdersController extends ApiAppController
          * associo articolo all'ordine 
          */
         if(!empty($articles)) {
-            $articlesOrdersTable->addsByArticles($this->user, $this->organization->id, $order, $articles);
+            $articlesOrdersTable->addsByArticles($this->_user, $this->_organization->id, $order, $articles);
         }
 
         return $this->_response($results); 
