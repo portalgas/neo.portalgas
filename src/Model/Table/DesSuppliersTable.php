@@ -91,10 +91,21 @@ class DesSuppliersTable extends Table
     /*
      * in base ad un SuppliersOrganization 
      * ricava i ruoli DES dello user 
+     *
+     * produttore
+     * owner_articles				  SUPPLIER / REFERENT / DES / PACT
+     * owner_organization_id          organization_id di chi gestisce il listino
+     * owner_supplier_organization_id supplier_organization_id di chi gestisce il listino
      */
-    public function getDesACL($user, SuppliersOrganization $suppliers_organization ) {
+    public function getDesACL($user, SuppliersOrganization $suppliers_organization, $debug=false) {
         
+        // $debug = true;
+
         $results = [];
+        $results['isDes'] = false;
+
+        if($user->organization->paramsConfig['hasDes']=='N')
+            return false;
 
         /*
         * ctrl se potrebbe essere un ordine DES
@@ -106,10 +117,11 @@ class DesSuppliersTable extends Table
                 
         $des_id = $user->des_id;
         $supplier_id = $suppliers_organization->supplier_id;
+        if($debug) debug('des_id ['.$des_id.'] supplier_id ['.$supplier_id.']');
 
         // Inizio ctrl se produttore DES
         if(empty($des_id)) {
-            // non ho scelto il DES
+            if($debug) debug("Non ho ancora scelto il mio DES");
 
             /*
             * se e' associato ad un solo DES lo ricavo
@@ -119,15 +131,18 @@ class DesSuppliersTable extends Table
                                     ->find()
                                     ->where(['organization_id' => $user->organization->id]) // non ho scelto il DES, ctrl solo se il suo GAS e' titolare
                                     ->all(); 
-            if($desOrganizations->count()>1) {
+            if($debug) debug("GAS associato a ".$desOrganizations->count()." DES");
+            if($desOrganizations->count()==1) {
                 /*
                 * e' associato a 1 solo DES
                 * non capita + perche' in AppController cerco se ne ha solo 1
                 */	
                 foreach($desOrganizations as $desOrganization) {
-                    $this->user->des_id = $desOrganizations->des_id;
+                    $des_id = $desOrganization->des_id;
                     break;
                 }
+
+                if($debug) debug("il GAS e' associato ad un solo DES => ricavo des_id  ".$des_id);
             }
             else {
                 /*
@@ -135,21 +150,24 @@ class DesSuppliersTable extends Table
                  */
                 $where = ['DesSuppliers.supplier_id' => $supplier_id, 
                           'DesSuppliers.own_organization_id' => $user->organization->id];    
-               
+                if($debug) debug($where);
                 $desSuppliers = $this->find()
                                         ->where($where)
                                         ->first();
+                if($debug) debug($desSuppliers);                        
                 if(!empty($desSuppliers)) {
-                    // il GAS e\' associato ad + DES => NON posso ricavare des_id ma il suo GAS e\' titolare del produttore
+                    if($debug) debug("il GAS e' associato a + DES => NON posso ricavare des_id ma il suo GAS e' titolare del produttore");
                     $results['isOwnGasTitolareDes'] = true;
+                    $results['isDes'] = true;
                 }
                 else {
-                    // il GAS e\' associato ad + DES => NON posso ricavare des_id ma il suo GAS NON e\' titolare del produttore
+                    if($debug) debug("il GAS e' associato a + DES => NON posso ricavare des_id ma il suo GAS NON e' titolare del produttore");
                 }                                        
-            }              
-        }
-        else {
-            // Ho già scelto il mio DES, des_id 
+            }  // end if($desOrganizations->count()==1)            
+        } // end if(empty($des_id)) 
+
+        if(!empty($des_id)) {
+            if($debug) debug("Ho già scelto il mio DES, des_id [".$des_id."]"); 
 
             /*
             * ho scelto il DES
@@ -161,7 +179,9 @@ class DesSuppliersTable extends Table
                                     ->where($where)
                                     ->first();
             if(!empty($desSuppliers)) {
-                // Il produttore fa parte dei produttori DES
+                if($debug) debug("Il produttore fa parte dei produttori DES");
+
+                $results['isDes'] = true;
 
                 /*
                 * ctrl se lo user e' associato al produttore come REFERENTE DES o TITOLARE DES 
@@ -173,19 +193,19 @@ class DesSuppliersTable extends Table
                             'DesSuppliersReferents.user_id' => $user->id,
                             'DesSuppliers.des_id' => $des_id,
                             'DesSuppliers.id' => $desSuppliers->id];
-                $desOrganization = $desSuppliersReferentsTable
-                                        ->find()
+                $desOrganization = $desSuppliersReferentsTable->find()
+                                        ->contain(['DesSuppliers'])
                                         ->where($where)
                                         ->first(); 
                 if(!empty($desOrganization)) {
                     if($desOrganization->group_id == Configure::read('group_id_titolare_des_supplier')) {
                         $results['isTitolareDes'] = true;
-                        // sono TITOLARE DES del produttore
+                        if($debug) debug("sono TITOLARE DES del produttore");
                     }
                     else
                     if($desOrganization->group_id == Configure::read('group_id_referent_des')) {
                         $results['isReferenteDes'] = true;
-                        // sono REFERENTE DES del produttore
+                        if($debug) debug("sono REFERENTE DES del produttore");
                     }
                 } 
                 else {
@@ -194,15 +214,54 @@ class DesSuppliersTable extends Table
                      */	
                     if($user->acl['isSuperReferenteDes'])  {
                         $results['isSuperReferenteDes'] = true;
-                        // sono SUPER-REFERENTE DES del produttore
+                        if($debug) debug("sono SUPER-REFERENTE DES del produttore");
                     }
                 }                   
             }
             else {
                 // Il produttore NON fa parte dei produttori DES
+                $results['isDes'] = false;
             }
         } // if(empty($des_id))
 
+        /*
+         * genero msg per modal 
+         */
+        if($results['isDes']) {
+
+            $config = Configure::read('Config');
+            $portalgas_bo_url = $config['Portalgas.bo.url']; 
+
+            $msgOrderDesLink = '<p>Se desideri gestire l\'<b>ordine condiviso</b> (D.E.S.) ';
+            $msgOrderDesLink .= '<a class="btn btn-sm btn-primary" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&amp;controller=DesOrders&amp;action=index">clicca qui</a></p>';
+            $msgOrderDes = '<div class="alert alert-danger" role="alert">Ordine D.E.S. o normale?</div>';
+            
+            if($results['isOwnGasTitolareDes']) {
+                $msgOrderDes .= "<p>Il tuo G.A.S. è titolare degli ordini D.E.S. del produttore</p>";
+                $msgOrderDes .= $msgOrderDesLink;
+            }
+            else
+            if($results['isTitolareDes']) {
+                $msgOrderDes .= "<p>Sei titolare degli ordini D.E.S. del produttore!</p>";
+                $msgOrderDes .= $msgOrderDesLink;
+            }
+            else 
+            if($results['isReferenteDes']) {
+                $msgOrderDes .= "<p>Sei il referente degli ordini D.E.S. del produttore</p>";
+                $msgOrderDes .= $msgOrderDesLink;
+            }
+            else 
+            if($results['isSuperReferenteDes']) {
+                $msgOrderDes .= "<p>Sei super-referente degli ordini D.E.S. del produttore</p>";
+                $msgOrderDes .= $msgOrderDesLink;
+            }
+
+            $results['msg'] = $msgOrderDes;
+        }
+        else 
+            return false; // end if($results['isDes'])
+      
+        
         return $results; 
     }
 }

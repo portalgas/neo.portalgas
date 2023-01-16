@@ -21,8 +21,8 @@ class HtmlCustomSiteOrdersPactHelper extends HtmlCustomSiteOrdersHelper
         return parent::hiddenFields($organization_id, $parent);
     }   
         
-    public function supplierOrganizations($suppliersOrganizations) {
-        return parent::supplierOrganizations($suppliersOrganizations);
+    public function supplierOrganizations($suppliersOrganizations, $ctrlDesACL=false) {
+        return parent::supplierOrganizations($suppliersOrganizations, $ctrlDesACL);
     }
 
     public function deliveries($deliveries) {

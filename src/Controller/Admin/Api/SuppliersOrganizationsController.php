@@ -89,11 +89,13 @@ class SuppliersOrganizationsController extends ApiAppController
         /*
          * eventuali dati DES 
          */ 
+        $is_des = false;
         if($this->_organization->paramsConfig['hasDes']) {
             $desSuppliersTable = TableRegistry::get('DesSuppliers');
-            $des_acls = $desSuppliersTable->getDesACL($this->_user, $suppliersOrganization);    
-            // dd($des_acls);
+            $is_des = $desSuppliersTable->getDesACL($this->_user, $suppliersOrganization);    
+            // dd($is_des);
         }
+        $results['results']['is_des'] = $is_des;
 
         return $this->_response($results);
     } 

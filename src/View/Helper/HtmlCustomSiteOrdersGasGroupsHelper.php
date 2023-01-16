@@ -29,9 +29,9 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         return $html;
     }    
 
-    public function supplierOrganizations($suppliersOrganizations) {
+    public function supplierOrganizations($suppliersOrganizations, $ctrlDesACL=false) {
         $html = '';
-        $html .= parent::supplierOrganizations($suppliersOrganizations);
+        $html .= parent::supplierOrganizations($suppliersOrganizations, $ctrlDesACL);
         return $html;
     }
 

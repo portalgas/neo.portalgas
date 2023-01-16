@@ -28,8 +28,8 @@ class HtmlCustomSiteOrdersGasParentGroupsHelper extends HtmlCustomSiteOrdersHelp
         return '';    
     }
 
-    public function supplierOrganizations($suppliersOrganizations) {
-        return parent::supplierOrganizations($suppliersOrganizations);
+    public function supplierOrganizations($suppliersOrganizations, $ctrlDesACL=false) {
+        return parent::supplierOrganizations($suppliersOrganizations, $ctrlDesACL);
     }
 
     public function deliveries($deliveries) {

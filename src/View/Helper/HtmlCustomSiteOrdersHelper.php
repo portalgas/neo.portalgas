@@ -21,6 +21,8 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
 
     protected $_portalgas_app_root = '';
     protected $_portalgas_fe_url = '';
+    protected $_portalgas_bo_url = '';
+
 	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
 
     public function initialize(array $config)
@@ -28,6 +30,7 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         $config = Configure::read('Config');
         $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
+        $this->_portalgas_bo_url = $config['Portalgas.bo.url'];       
     }
 
     public function factory($order_type_id, $debug=false) {
@@ -106,7 +109,10 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         return $html;
     }
 
-    public function supplierOrganizations($suppliersOrganizations) {
+    /*
+     * $ctrlDesACL nella creazione di un ordine ctrl se il produttore e' DES e l'utente e' titolare
+     */
+    public function supplierOrganizations($suppliersOrganizations, $ctrlDesACL=false) {
 
         $html = '';
         $html .= $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
@@ -121,7 +127,26 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         $html .= '<div class="box-name">{{supplier_organization.name}}</div>';
         $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">{{supplier_organization.owner_articles | ownerArticlesLabel}}</span></div>';
         $html .= '</div>';
-        $html .= '</div>';        
+
+        if($ctrlDesACL) {
+            $html .= '<div id="myModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Attenzione</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p v-html="$options.filters.html(modal_body)"></p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
+                  </div>
+                </div>
+              </div>
+            </div>';
+        }
+        $html .= '</div>';  // vue-supplier-organization      
 
         return $html;
     } 

@@ -25,7 +25,8 @@ $(function () {
             	supplier: {
             		img1: null
             	}
-            }
+            },
+			modal_body: null
 	  },  
 	  methods: {   	  	
 		  	show: function (e) {
@@ -80,7 +81,7 @@ $(function () {
 	                	response = JSON.parse(response);
 	                    console.log(response);
 	                    if (response.code==200) {
-	                    	console.log(response.results.name);
+	                    	console.log(response.results.name, '_getSuppliersOrganization');
 		                    _this.supplier_organization.name = response.results.name;
 		                    _this.supplier_organization.img1 = response.results.img1;
 		                    _this.supplier_organization.supplier.img1 = response.results.supplier.img1;
@@ -88,6 +89,16 @@ $(function () {
 			                    _this.supplier_organization.owner_articles = response.results.owner_articles;
 			                else
 								_this.supplier_organization.owner_articles = response.results.order.owner_articles;
+
+							/* 
+							 * produttore DES, ricava i ruoli DES dello user 
+							 */ 
+							console.log(response.results.is_des, '_getSuppliersOrganization is_des');
+							if(response.results.is_des) {
+								console.log(response.results.is_des.msg, '_getSuppliersOrganization is_des.msg');
+								_this.modal_body = response.results.is_des.msg;
+								$("#myModal").modal();
+							}
 		                }
 	                },
 	                error: function (e) {
@@ -141,10 +152,15 @@ $(function () {
             return moment(String(value)).format('DD MMMM YYYY')
           }
         },
-          counter: function (index) {
+        counter: function (index) {
             return index+1
         },
-              	
+		lowerCase : function(value) {
+			return value.toLowerCase().trim();
+		},
+		html(text) {
+			return text;
+		},		
         ownerArticlesLabel(code) {
           if(code) {
             switch(code) {
