@@ -13,6 +13,9 @@ class SuppliersOrganizationsController extends ApiAppController
         parent::initialize();
         $this->loadComponent('Auths');
         $this->loadComponent('SuppliersOrganization');
+
+        $this->_user = $this->Authentication->getIdentity();
+        $this->_organization = $this->_user->organization;
     }
 
     public function beforeFilter(Event $event) {
@@ -39,7 +42,7 @@ class SuppliersOrganizationsController extends ApiAppController
         
         $ordersTable = TableRegistry::get('Orders');
 
-        $where = ['Orders.organization_id' => $this->Authentication->getIdentity()->organization->id,
+        $where = ['Orders.organization_id' => $this->_organization->id,
                   'Orders.id' => $order_id];
         $ordersResults = $ordersTable->find()->where($where)->first();  
 
@@ -49,10 +52,10 @@ class SuppliersOrganizationsController extends ApiAppController
              */ 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
-            $where = ['SuppliersOrganizations.organization_id' => $this->Authentication->getIdentity()->organization->id,
+            $where = ['SuppliersOrganizations.organization_id' => $this->_organization->id,
                       'SuppliersOrganizations.id' => $ordersResults->supplier_organization_id];
 
-            $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->Authentication->getIdentity(), $where);
+            $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->_user, $where);
             if(!empty($suppliersOrganizationResults)) {
                 $suppliersOrganizationResults->order = $ordersResults;
                 $results['results'] = $suppliersOrganizationResults;
@@ -75,12 +78,21 @@ class SuppliersOrganizationsController extends ApiAppController
         
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
-        $where = ['SuppliersOrganizations.organization_id' => $this->Authentication->getIdentity()->organization->id,
+        $where = ['SuppliersOrganizations.organization_id' => $this->_organization->id,
                   'SuppliersOrganizations.id' => $supplier_organization_id];
 
-        $suppliersOrganizationResults = $suppliersOrganizationsTable->get($this->Authentication->getIdentity(), $where);
-        if(!empty($suppliersOrganizationResults)) {
-            $results['results'] = $suppliersOrganizationResults;
+        $suppliersOrganization = $suppliersOrganizationsTable->get($this->_user, $where);
+        if(!empty($suppliersOrganization)) {
+            $results['results'] = $suppliersOrganization;
+        }
+
+        /*
+         * eventuali dati DES 
+         */ 
+        if($this->_organization->paramsConfig['hasDes']) {
+            $desSuppliersTable = TableRegistry::get('DesSuppliers');
+            $des_acls = $desSuppliersTable->getDesACL($this->_user, $suppliersOrganization);    
+            // dd($des_acls);
         }
 
         return $this->_response($results);
@@ -103,11 +115,10 @@ class SuppliersOrganizationsController extends ApiAppController
         $supplier_id = $this->request->getData('supplier_id');
         // debug($supplier_id);
 
-        $user = $this->Authentication->getIdentity();
-        // $organization_id = $user->organization->id; // gas scelto
+        // $organization_id = this->_user->organization->id; // gas scelto
         // debug($user);
 
-        $this->SuppliersOrganization->import($user, $supplier_id, $debug);
+        $this->SuppliersOrganization->import($this->_user, $supplier_id, $debug);
 
         return $this->_response($results);        
     }

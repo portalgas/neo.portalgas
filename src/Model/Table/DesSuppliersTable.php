@@ -4,8 +4,10 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
-
+use Cake\Core\Configure;
+use \App\Model\Entity\SuppliersOrganization;
 /**
  * DesSuppliers Model
  *
@@ -84,5 +86,123 @@ class DesSuppliersTable extends Table
         $rules->add($rules->existsIn(['own_organization_id'], 'OwnOrganizations'));
 
         return $rules;
+    }
+
+    /*
+     * in base ad un SuppliersOrganization 
+     * ricava i ruoli DES dello user 
+     */
+    public function getDesACL($user, SuppliersOrganization $suppliers_organization ) {
+        
+        $results = [];
+
+        /*
+        * ctrl se potrebbe essere un ordine DES
+        */
+        $results['isOwnGasTitolareDes'] = false;
+        $results['isTitolareDes'] = false;
+        $results['isReferenteDes'] = false;
+        $results['isSuperReferenteDes'] = false;
+                
+        $des_id = $user->des_id;
+        $supplier_id = $suppliers_organization->supplier_id;
+
+        // Inizio ctrl se produttore DES
+        if(empty($des_id)) {
+            // non ho scelto il DES
+
+            /*
+            * se e' associato ad un solo DES lo ricavo
+            */
+            $desOrganizationsTable = TableRegistry::get('DesOrganizations');
+            $desOrganizations = $desOrganizationsTable
+                                    ->find()
+                                    ->where(['organization_id' => $user->organization->id]) // non ho scelto il DES, ctrl solo se il suo GAS e' titolare
+                                    ->all(); 
+            if($desOrganizations->count()>1) {
+                /*
+                * e' associato a 1 solo DES
+                * non capita + perche' in AppController cerco se ne ha solo 1
+                */	
+                foreach($desOrganizations as $desOrganization) {
+                    $this->user->des_id = $desOrganizations->des_id;
+                    break;
+                }
+            }
+            else {
+                /*
+                 * non ho scelto il DES ma e' associato a + DES, ctrl solo se il suo GAS e' titolare
+                 */
+                $where = ['DesSuppliers.supplier_id' => $supplier_id, 
+                          'DesSuppliers.own_organization_id' => $user->organization->id];    
+               
+                $desSuppliers = $this->find()
+                                        ->where($where)
+                                        ->first();
+                if(!empty($desSuppliers)) {
+                    // il GAS e\' associato ad + DES => NON posso ricavare des_id ma il suo GAS e\' titolare del produttore
+                    $results['isOwnGasTitolareDes'] = true;
+                }
+                else {
+                    // il GAS e\' associato ad + DES => NON posso ricavare des_id ma il suo GAS NON e\' titolare del produttore
+                }                                        
+            }              
+        }
+        else {
+            // Ho già scelto il mio DES, des_id 
+
+            /*
+            * ho scelto il DES
+            */ 
+            $where = ['DesSuppliers.supplier_id' => $supplier_id, 
+                      'DesSuppliers.des_id' => $des_id];    
+ 
+            $desSuppliers = $this->find()
+                                    ->where($where)
+                                    ->first();
+            if(!empty($desSuppliers)) {
+                // Il produttore fa parte dei produttori DES
+
+                /*
+                * ctrl se lo user e' associato al produttore come REFERENTE DES o TITOLARE DES 
+                */ 
+                $desSuppliersReferentsTable = TableRegistry::get('DesSuppliersReferents');
+                
+                $where = ['DesSuppliersReferents.des_id' => $des_id,
+                            'DesSuppliersReferents.organization_id' => $user->organization->id,
+                            'DesSuppliersReferents.user_id' => $user->id,
+                            'DesSuppliers.des_id' => $des_id,
+                            'DesSuppliers.id' => $desSuppliers->id];
+                $desOrganization = $desSuppliersReferentsTable
+                                        ->find()
+                                        ->where($where)
+                                        ->first(); 
+                if(!empty($desOrganization)) {
+                    if($desOrganization->group_id == Configure::read('group_id_titolare_des_supplier')) {
+                        $results['isTitolareDes'] = true;
+                        // sono TITOLARE DES del produttore
+                    }
+                    else
+                    if($desOrganization->group_id == Configure::read('group_id_referent_des')) {
+                        $results['isReferenteDes'] = true;
+                        // sono REFERENTE DES del produttore
+                    }
+                } 
+                else {
+                    /*
+                     * ctrl se lo user e' SUPER-REFERENTE DES 
+                     */	
+                    if($user->acl['isSuperReferenteDes'])  {
+                        $results['isSuperReferenteDes'] = true;
+                        // sono SUPER-REFERENTE DES del produttore
+                    }
+                }                   
+            }
+            else {
+                // Il produttore NON fa parte dei produttori DES
+            }
+        } // if(empty($des_id))
+
+        return $results; 
     }
 }

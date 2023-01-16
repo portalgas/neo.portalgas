@@ -21,11 +21,11 @@ echo $this->HtmlCustomSite->boxOrder($order);
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <!-- solo il tasto salva sotto per la gestione del messaggio 
-            div v-if="!is_run">
+            <!-- solo il tasto salva sotto per la gestione del messaggio -->
+            <div v-if="!is_run">
               <button v-if="!is_save" class="btn btn-primary btn-block" @click="preSave">Salva</button>
               <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>
-            </div -->             
+            </div>             
           </div>
         </div>
 
@@ -185,6 +185,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
               <div>
 
                 <!-- messaggio se articoli hanno gia' acquisti -->
+                <!-- 
                 <div class="modal-dialog">
                   <div class="modal-content" v-if="msgOpen">
                     <div class="modal-header">
@@ -201,6 +202,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
                     </div>
                   </div>
                 </div>
+                -->
 
                 <button v-if="!is_save && !msgOpen" class="btn btn-primary btn-block" @click="preSave">Salva</button>
                 <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>                
@@ -213,6 +215,27 @@ echo $this->HtmlCustomSite->boxOrder($order);
   </div>
 </section>
 </form>
+
+<!-- messaggio se articoli hanno gia' acquisti -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Attenzione</h4>
+      </div>
+      <div class="modal-body">
+        <p>Alcuni articoli che hai scelto di cancellare sono <b>già stati acquistati</b>:</p>
+        <p>confermi la cancellazione <b>dall'ordine</b> degli articoli e degli acquisti associati?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Chiudi e non cancellare gli acquisti</button>
+        <button type="button" class="btn btn-danger"  data-dismiss="modal" @click="save">Continua a cancella gli acquisti già fatti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 
 

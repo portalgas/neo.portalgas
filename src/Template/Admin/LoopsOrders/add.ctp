@@ -52,6 +52,12 @@ echo $this->Form->control('gg_data_fine', ['type' => 'number', 'min' => 1, 'defa
 echo '</div>';
 echo '</div>'; // row
  
+echo '<div class="row">';
+echo '<div class="col-md-12">';
+echo $this->Form->control('is_active');
+echo '</div>';
+echo '</div>'; // row
+
 echo $this->Form->button(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-primary pull-right', 'style' => 'margin-top:25px']); 
 echo '</div>'; /* .box-body */
 echo $this->Form->end(); ?>

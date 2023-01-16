@@ -66,7 +66,8 @@ class LoopsOrdersCommand extends Command
                 $loopsOrdersResults = $this->LoopsOrders->find()
                                                 ->contain(['SuppliersOrganizations'])
                                                 ->where(['LoopsOrders.organization_id' => $organization_id,
-                                                        'LoopsOrders.loops_delivery_id' => $loopsDelivery->id])
+                                                        'LoopsOrders.loops_delivery_id' => $loopsDelivery->id,
+                                                        'LoopsOrders.is_active' => true])
                                                 ->all();  
                 if($loopsOrdersResults->count()>0)                 
                 foreach($loopsOrdersResults as $loopsOrder) { 

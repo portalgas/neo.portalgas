@@ -45,7 +45,7 @@ class LoopsOrdersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['LoopsDeliveries', 'SuppliersOrganizations', 'Users', 'Orders' => ['Deliveries']],
+            'contain' => ['LoopsDeliveries', 'SuppliersOrganizations', 'Users', 'Orders'],
         ];
         $loopsOrders = $this->paginate($this->LoopsOrders);
 

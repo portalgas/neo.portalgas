@@ -262,5 +262,24 @@ trait UtilTrait
         }
 
         return $value;
-    }     
+    } 
+    
+    /*
+     * App\Model\Entity\{class}
+     * prefix_post = 's'  l'entity e' singolare
+     */
+    public function getClass($entity, $prefix_post='') {
+
+        $results = '';
+        // debug($entity);
+
+        if(is_object($entity)) {
+            $classname = get_class($entity); 
+            // debug($classname);    
+            if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
+                $results = $matches[1].$prefix_post;
+            }
+        }
+        return $results;
+    }    
 }

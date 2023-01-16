@@ -4,26 +4,23 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * LoopsOrder Entity
+ * DesSuppliersReferent Entity
  *
- * @property int $id
+ * @property int $des_id
+ * @property int $des_supplier_id
  * @property int $organization_id
- * @property int $loops_delivery_id
- * @property int $supplier_organization_id
- * @property int $gg_data_inizio
- * @property int $gg_data_fine
  * @property int $user_id
- * @property int $order_id
- * @property string|null $flag_send_mail
+ * @property int $group_id
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
+ * @property \App\Model\Entity\De $de
+ * @property \App\Model\Entity\DesSupplier $des_supplier
  * @property \App\Model\Entity\Organization $organization
- * @property \App\Model\Entity\LoopsDelivery $loops_delivery
- * @property \App\Model\Entity\SupplierOrganization $supplier_organization
  * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\Group $group
  */
-class LoopsOrder extends Entity
+class DesSuppliersReferent extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -35,21 +32,12 @@ class LoopsOrder extends Entity
      * @var array
      */
     protected $_accessible = [
-        'organization_id' => true,
-        'loops_delivery_id' => true,
-        'supplier_organization_id' => true,
-        'gg_data_inizio' => true,
-        'gg_data_fine' => true,
-        'user_id' => true,
-        'order_id' => true,
-        'flag_send_mail' => true,
-        'is_active' => true,
         'created' => true,
         'modified' => true,
+        'de' => true,
+        'des_supplier' => true,
         'organization' => true,
-        'loops_delivery' => true,
-        'supplier_organization' => true,
         'user' => true,
-        'order' => true,
+        'group' => true,
     ];
 }

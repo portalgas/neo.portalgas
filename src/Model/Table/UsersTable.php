@@ -230,13 +230,27 @@ class UsersTable extends Table
         $user->acl['isCassiere'] = $usergroupsTable->isCassiere($user);
         $user->acl['isSuperReferente'] = $usergroupsTable->isSuperReferente($user);
         $user->acl['isReferentGeneric'] = $usergroupsTable->isReferentGeneric($user);
+        $user->acl['isManagerDelivery'] = $usergroupsTable->isManagerDelivery($user);
+        $user->acl['isTesoriere'] = $usergroupsTable->isTesoriere($user);
+        $user->acl['isStoreroom'] = $usergroupsTable->isStoreroom($user);
+        $user->acl['isManagerEvents'] = $usergroupsTable->isManagerEvents($user);
+        $user->acl['isUserFlagPrivay'] = $usergroupsTable->isUserFlagPrivay($user);
         
+        // DES
+        $user->acl['isDes'] = $usergroupsTable->isDes($user);
+        $user->acl['isManagerDes'] = $usergroupsTable->isManagerDes($user);
+        $user->acl['isSuperReferenteDes'] = $usergroupsTable->isSuperReferenteDes($user);
+        $user->acl['isReferenteDes'] = $usergroupsTable->isReferenteDes($user);
+        $user->acl['isTitolareDesSupplier'] = $usergroupsTable->isTitolareDesSupplier($user);
+        $user->acl['isReferentDesAllGas'] = $usergroupsTable->isReferentDesAllGas($user);
+        $user->acl['isManagerUserDes'] = $usergroupsTable->isManagerUserDes($user);
+
         // gruppi 
         $user->acl['isGasGroupsManagerGroups'] = $usergroupsTable->isGasGroupsManagerGroups($user);
         $user->acl['isGasGroupsManagerDeliveries'] = $usergroupsTable->isGasGroupsManagerDeliveries($user);
         $user->acl['isGasGroupsManagerParentOrders'] = $usergroupsTable->isGasGroupsManagerParentOrders($user);
         $user->acl['isGasGroupsManagerOrders'] = $usergroupsTable->isGasGroupsManagerOrders($user);
- 
+
         // produttore
         $user->acl['isProdGasSupplierManager'] = $usergroupsTable->isProdGasSupplierManager($user);
 

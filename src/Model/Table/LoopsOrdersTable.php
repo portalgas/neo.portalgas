@@ -104,6 +104,10 @@ class LoopsOrdersTable extends Table
             ->scalar('flag_send_mail')
             ->allowEmptyString('flag_send_mail');
 
+        $validator
+            ->boolean('is_active')
+            ->allowEmptyString('is_active');
+
         return $validator;
     }
 

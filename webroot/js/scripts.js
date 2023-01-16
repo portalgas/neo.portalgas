@@ -74,10 +74,10 @@ Script.prototype = {
         /*
          * aggiorna il DB con l'ico true/flase
          */
-        $('.fieldUpdateAjaxClick').click(function (e) {
+        $('.fieldUpdateAjax').click(function (e) {
             console.log('fieldUpdateAjax click()');
             _this.fieldUpdateAjax(this);
-        }); 
+        });
 
         /*
          * aggiorna il DB con il valore del campo
@@ -151,28 +151,23 @@ Script.prototype = {
         var field = $(obj).attr('data-attr-field');
 
         if (typeof id === 'undefined') {
-            console.log('fieldUpdateAjax data-attr-id undefined!');
+            console.error('fieldUpdateAjax data-attr-id undefined!');
             return;
         }
              
         if (typeof entity === 'undefined') {
-            console.log('fieldUpdateAjax data-attr-entity undefined!');
+            console.error('fieldUpdateAjax data-attr-entity undefined!');
             return;
         }
              
         if (typeof field === 'undefined') {
-            console.log('fieldUpdateAjax data-attr-field undefined!');
+            console.error('fieldUpdateAjax data-attr-field undefined!');
             return;                
         }
 
         var value = '';
         var type = $(obj).attr('type');
         // console.log('type '+type);
-        if (typeof type === 'undefined')
-            type = $(obj).prop('nodeName');
-        if (typeof type === 'undefined')
-            type = $(obj).prop('tagName');
-
         if (typeof type === 'undefined') 
             type = 'icon-true-false';
 
@@ -195,7 +190,7 @@ Script.prototype = {
         $(obj).after('<div class="response-ajax" id="'+entity+'-'+id+'"></div>'); 
         var responseHtml = $('#'+entity+'-'+id);
         if (typeof responseHtml === 'undefined') 
-            console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
+            console.error('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
         else
             console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
         responseHtml.addClass(_this.ico_spinner);

@@ -10,13 +10,11 @@ class AppController extends \App\Controller\AppController
     use Traits\SqlTrait;
     use Traits\UtilTrait;
 
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
     }
 
     public function beforeFilter(Event $event) {
-     
         parent::beforeFilter($event);
     }
 }

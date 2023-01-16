@@ -46,4 +46,10 @@ echo '<link href="https://fonts.googleapis.com/css?family=Raleway:500i|Roboto:30
 .datepicker {
   z-index: 1040 !important; /* has to be larger than 1050 => se > conflitto con modal! */
 }
+.fieldUpdateAjax.icon-true, .fieldUpdateAjax-disabled.icon-true {
+	color: #2E8B57;
+}
+.fieldUpdateAjax.icon-false, .fieldUpdateAjax-disabled.icon-false {
+	color: #dd4b39;
+}
 </style>

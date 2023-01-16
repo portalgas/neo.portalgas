@@ -192,12 +192,7 @@ class HtmlCustomHelper extends FormHelper
         /*
          * estraggo da App\Model\Entity\... la classe
          */
-        // debug(get_class($model));
-        $classname = get_class($model);
-        $entity = '';
-        if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
-            $entity = $matches[1].'s';
-        }
+        $entity = $this->getClass($model, 's');
         if(empty($entity))
             return $html;
 
@@ -209,7 +204,7 @@ class HtmlCustomHelper extends FormHelper
             $data_attr_value = '0';
         $data_attrs = '';
         $data_attrs .= 'data-attr-id='.$model->id.' data-attr-entity="'.$entity.'" data-attr-field="'.$field.'" data-attr-value="'.$data_attr_value.'"';
-        $class = 'fieldUpdateAjaxClick';
+        $class = 'fieldUpdateAjax';
 
         if($value===true) {
             if(isset($icons['OK']))
@@ -230,7 +225,7 @@ class HtmlCustomHelper extends FormHelper
             $html .= '';
 
         return $html;
-    }   
+    } 
 
     public function drawTrueFalseReadOnly($value) {
 
@@ -247,7 +242,7 @@ class HtmlCustomHelper extends FormHelper
         }
 
         return $html;
-    } 
+    }   
 
     public function importo($value) {
     	$str = '';

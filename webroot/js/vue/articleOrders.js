@@ -20,8 +20,7 @@ $(function () {
         article_orders: [],
         articles: [],
         is_run: false,
-        is_save: false,
-        msgOpen: false
+        is_save: false
       },  
       methods: {
         selectArticleOrdersAll: function(e) {
@@ -110,9 +109,8 @@ $(function () {
           }  
 
           if(tot_article_order_in_carts>0) {
-            _this.msgOpen = true;
-         //   $("#myModal").modal();
-         //   $("html, body").animate({ scrollTop: 0 }, 1500);
+            $("#myModal").modal();
+            // $("html, body").animate({ scrollTop: 0 }, 1500);
           }
           else 
             _this.save(e);
@@ -123,7 +121,6 @@ $(function () {
           let _this = this;
           
           _this.is_save = true;
-          _this.msgOpen = false;
           let _update_article_orders = [];
           let _delete_article_orders = [];
           let _articles = [];

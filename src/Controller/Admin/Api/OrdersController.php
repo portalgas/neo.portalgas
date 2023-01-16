@@ -19,7 +19,6 @@ class OrdersController extends ApiAppController
     }
 
     public function beforeFilter(Event $event) {
-     
         parent::beforeFilter($event);
     }
   
