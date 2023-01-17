@@ -30,7 +30,8 @@ $(function () {
 	  },  
 	  methods: {   	  	
 		  	show: function (e) {
-		      $('#vue-supplier-organization-img').show('slow');
+		      $('#vue-supplier-organization-box').show('slow');
+			  /* non + utilizzato */
 		    },
 	        getSuppliersOrganization: function() {
 
@@ -67,7 +68,7 @@ $(function () {
 			_getSuppliersOrganization: function(url, data) {
 	        	var _this = this;
 			        
-		        console.log(data);
+		        /* console.log(data); */
 
 		        $.ajax({url: url, 
 	                data: data, 
@@ -79,7 +80,7 @@ $(function () {
 	                },                
 	                success: function (response) {
 	                	response = JSON.parse(response);
-	                    console.log(response);
+	                    /* console.log(response); */
 	                    if (response.code==200) {
 	                    	console.log(response.results.name, '_getSuppliersOrganization');
 		                    _this.supplier_organization.name = response.results.name;
@@ -93,17 +94,17 @@ $(function () {
 							/* 
 							 * produttore DES, ricava i ruoli DES dello user 
 							 */ 
-							console.log(response.results.is_des, '_getSuppliersOrganization is_des');
+							/* console.log(response.results.is_des, '_getSuppliersOrganization is_des'); */
 							if(response.results.is_des) {
-								console.log(response.results.is_des.msg, '_getSuppliersOrganization is_des.msg');
+								/* console.log(response.results.is_des.msg, '_getSuppliersOrganization is_des.msg'); */
 								_this.modal_body = response.results.is_des.msg;
 								$("#myModal").modal();
 							}
 		                }
 	                },
 	                error: function (e) {
-	                    console.error(e);
-	                    console.error(e.responseText.message);
+	                    console.error(e, '_getSuppliersOrganization');
+	                    console.error(e.responseText.message, '_getSuppliersOrganization');
 	                },
 	                complete: function (e) {
 				    	this.spinner_run_supplier_organization = false;
@@ -186,5 +187,11 @@ $(function () {
       } 
 	});
 
-	vueSuppliersOrganization.show();	
+	vueSuppliersOrganization.show();
+
+	$('#supplier-organization-id').on('select2:select', function (e) {
+		var data = e.params.data;
+		/* console.log(data, 'select2'); */
+		vueSuppliersOrganization.getSuppliersOrganization();
+	  });	
 });

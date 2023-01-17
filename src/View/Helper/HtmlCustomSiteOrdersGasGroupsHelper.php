@@ -29,10 +29,11 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         return $html;
     }    
 
-    public function supplierOrganizations($suppliersOrganizations, $ctrlDesACL=false) {
-        $html = '';
-        $html .= parent::supplierOrganizations($suppliersOrganizations, $ctrlDesACL);
-        return $html;
+    public function supplierOrganizations($suppliersOrganizations, $options=[]) {
+        $options['ctrlDesACL'] = false;
+        $options['empty'] = false; 
+        $options['select2'] = false;            
+        return parent::supplierOrganizations($suppliersOrganizations);
     }
 
     public function gasGroups($gasGroups) {

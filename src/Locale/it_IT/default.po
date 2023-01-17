@@ -970,6 +970,18 @@ msgstr "Ordini per G.A.S."
 msgid "Order-1"
 msgstr "Ordine per G.A.S."
 
+msgid "Orders-2"
+msgstr "Ordini per D.E.S."
+
+msgid "Order-2"
+msgstr "Ordine per D.E.S."
+
+msgid "Orders-3"
+msgstr "Ordini dei titolari per D.E.S."
+
+msgid "Order-3"
+msgstr "Ordine del titolare per D.E.S."
+
 msgid "Orders-10"
 msgstr "Ordini per i gruppi"
 

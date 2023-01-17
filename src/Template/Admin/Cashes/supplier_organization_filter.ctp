@@ -82,7 +82,7 @@ if(!empty($results)) {
 	/* 
 	 * ordering in conflitto con i loghi
 	 */
-	echo $this->element('datatables', ['paging' => 'false', 'ordering' => 'false']);
+	echo $this->element('dataTables', ['paging' => 'false', 'ordering' => 'false']);
 }
 else {
 	echo $this->element('msg');

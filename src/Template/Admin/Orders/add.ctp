@@ -33,7 +33,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
                 /*
                  * produttore + ricava i ruoli DES dello user x modal
                  */
-                echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations, true);
+                echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
                 
                 echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
 

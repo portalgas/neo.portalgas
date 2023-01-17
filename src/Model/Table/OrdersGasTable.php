@@ -64,12 +64,9 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
      * implement
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
-
         $results = [];
-
         $deliveriesTable = TableRegistry::get('Deliveries');
         $results = $deliveriesTable->getsActiveList($user, $organization_id, $where);
-
         return $results;
     }    
 

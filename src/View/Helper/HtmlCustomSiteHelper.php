@@ -138,10 +138,10 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function boxSupplierOrganization($results, $options=[]) {
+    public function boxSupplierOrganization($suppliers_organization, $options=[]) {
 
         $config = Configure::read('Config');
-        $img_path = sprintf(Configure::read('Supplier.img.path.full'), $results->supplier->img1);
+        $img_path = sprintf(Configure::read('Supplier.img.path.full'), $suppliers_organization->supplier->img1);
 
         $portalgas_app_root = $config['Portalgas.App.root'];
         $path = $portalgas_app_root.$img_path;
@@ -149,15 +149,15 @@ class HtmlCustomSiteHelper extends FormHelper
         $html = '';
         $html .= '<div class="box-supplier-organization">';
         // $html .= $results->id;
-        if(!empty($results->supplier->img1) && file_exists($path)) {
+        if(!empty($suppliers_organization->supplier->img1) && file_exists($path)) {
             $portalgas_fe_url = $config['Portalgas.fe.url'];
-            $url = sprintf($portalgas_fe_url.Configure::read('Supplier.img.path.full'), $results->supplier->img1);
+            $url = sprintf($portalgas_fe_url.Configure::read('Supplier.img.path.full'), $suppliers_organization->supplier->img1);
 
-            $html .= '<span class="box-img"><img src="'.$url.'" alt="'.$results->supplier->name.'" title="'.$results->supplier->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
+            $html .= '<span class="box-img"><img src="'.$url.'" alt="'.$suppliers_organization->supplier->name.'" title="'.$suppliers_organization->supplier->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
         $html .= '<span class="box-name">';
-        $html .= '<a href="https://neo.portalgas.it/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">';
-        $html .= $results->name;
+        $html .= '<a href="https://neo.portalgas.it/site/produttore/'.$suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">';
+        $html .= $suppliers_organization->name;
         $html .= '</a>'; 
         $html .= '</span>';
         $html .= "</div>";

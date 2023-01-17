@@ -32,6 +32,8 @@ class OrdersController extends AppController
          */
         $this->_order_type_ids = [
             Configure::read('Order.type.gas'),
+            Configure::read('Order.type.des'),
+            Configure::read('Order.type.des_titolare'),
             Configure::read('Order.type.gas_parent_groups'),
             Configure::read('Order.type.gas_groups')
         ];
@@ -85,6 +87,14 @@ class OrdersController extends AppController
                             return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
                         }    
                     }
+                break;
+                case Configure::read('Order.type.des'):
+                case Configure::read('Order.type.des_titolare'):
+                    if($this->_organization->paramsConfig['hasDes']=='N' || 
+                       !$this->_user->acl['isDes']) { 
+                        $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+                        return $this->redirect(Configure::read('routes_msg_stop'));
+                    } 
                 break;
             }
         }
@@ -291,6 +301,22 @@ class OrdersController extends AppController
             case Configure::read('Order.type.des'):
             case Configure::read('Order.type.des_titolare'):
                 $des_order_id = $parent_id;
+                $parent = $this->_ordersTable->getParent($this->_user, $this->_organization->id, $des_order_id);
+           
+                if(!empty($parent) && isset($parent->des_supplier->supplier_id)) {
+                    
+                    $suppliersTable = TableRegistry::get('Suppliers');
+                    $where = [];
+                    $where['SuppliersOrganizations'] = ['organization_id' => $this->_organization->id];
+                    $supplier = $suppliersTable->getById($this->_user, $parent->des_supplier->supplier_id, $where);
+                    
+                    $where = [];
+                    $where['SuppliersOrganizations.id'] = $supplier->suppliers_organizations[0]->id; 
+                    $suppliersOrganizations = $this->_ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id, $where);
+                    $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+
+                    $deliveries = $this->_ordersTable->getDeliveries($this->_user, $this->_organization->id);    
+                }
                 break;
             case Configure::read('Order.type.gas_groups'):
                 $order_id = $parent_id; // ordine 

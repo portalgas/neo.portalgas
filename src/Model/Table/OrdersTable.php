@@ -361,7 +361,7 @@ class OrdersTable extends Table
         }
       
         switch (strtoupper($order_type_id)) {
-            case Configure::read('Order.type.des-titolare'):
+            case Configure::read('Order.type.des_titolare'):
             case Configure::read('Order.type.des'):
                 $table_registry = 'OrdersDes';
                 break;

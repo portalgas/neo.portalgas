@@ -33,6 +33,11 @@ class DesTable extends Table
         $this->setTable('k_des');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+
+        $this->hasMany('DesOrganizations', [
+            'foreignKey' => ['des_id'],
+        ]);         
+        
     }
 
     /**

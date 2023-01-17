@@ -177,7 +177,7 @@ class ArticlesOrdersTable extends Table
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');  
 
         switch (strtoupper($order_type_id)) {
-            case Configure::read('Order.type.des-titolare'):
+            case Configure::read('Order.type.des_titolare'):
             case Configure::read('Order.type.des'):
                 $table_registry = 'ArticlesOrdersDes';
             break;
@@ -591,7 +591,7 @@ class ArticlesOrdersTable extends Table
 
                 // se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS ma lo ricalcolo
                 if($orderResults->order_type_id==Configure::read('Order.type.des') ||
-                   $orderResults->order_type_id==Configure::read('Order.type.des-titolare')) {
+                   $orderResults->order_type_id==Configure::read('Order.type.des_titolare')) {
                     
                     $cartsTable = TableRegistry::get('Carts');
                     $qta_cart = $cartsTable->getQtaCartByArticle($user, $organization_id, $orderResults->id, $resultsArticlesOrder['article_organization_id'], $resultsArticlesOrder['article_id'], $debug);

@@ -34,7 +34,7 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
         $this->belongsTo('DesOrdersOrganizations', [
             'foreignKey' => ['id'],        // fields Orders
             'bindingKey' => ['order_id'],  // fields DesOrdersOrganizations
-            'joinType' => 'INNER',
+            'joinType' => 'LEFT', // puo' non essere stato ancora creato
         ]);
         /*
          * ordini DES di tutti i GAS
@@ -43,7 +43,7 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
             'className' => 'DesOrdersOrganizations',
             'foreignKey' => ['des_order_id'],   // fields Orders
             'bindingKey' => ['des_order_id'],   // fields DesOrdersOrganizations
-            'joinType' => 'INNER',
+            'joinType' => 'LEFT', // puo' non essere stato ancora creato
         ]);        
     }
 
@@ -65,25 +65,37 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
      * implement
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
-
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $results = $suppliersOrganizationsTable->gets($user, $where);
+        return $results;
     }
     
     /*
      * implement
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
-
+        $results = [];
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $results = $deliveriesTable->getsActiveList($user, $organization_id, $where);
+        return $results;
     }
 
     /*
      * implement
      * dati promozione / order des / gas_groups
      */   
-    public function getParent($user, $organization_id, $des_order_id, $where=[], $debug=false) {
+    public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
 
        if(empty($parent_id))
-        $results = '';
+            $results = '';
 
+        $desOrdersTable = TableRegistry::get('DesOrders');
+
+        $results = $desOrdersTable->find()
+                                    ->where(['DesOrders.id' => $parent_id])
+                                    ->contain(['Des' => ['DesOrganizations' => ['Organizations']], 'AllDesOrdersOrganizations', 'DesSuppliers'])
+                                    ->first();
+        
        return $results;
     }
 
@@ -92,7 +104,7 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
     public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
-
+        return parent::afterSaveWithRequest($user, $organization_id, $request, $debug);
     }
     
     /*
