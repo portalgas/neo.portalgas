@@ -62,6 +62,7 @@ $(function () {
                 order_type_id: order_type_id,
                 order_id: order_id
             }; 
+            console.log(params, 'getAssociateToOrder params'); 
 
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  

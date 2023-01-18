@@ -62,6 +62,8 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         if(!empty($parent)) {
             $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
 
+            $html .= $this->Form->control('parent_data_fine', ['type' => 'hidden', 'value' => $parent->data_fine]);
+
             $html .= '<div class="row">';
             $html .= '<div class="col-md-12">'; 
             $html .= $this->HtmlCustom->alert($msg);

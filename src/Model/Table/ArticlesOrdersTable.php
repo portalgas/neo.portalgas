@@ -177,13 +177,13 @@ class ArticlesOrdersTable extends Table
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');  
 
         switch (strtoupper($order_type_id)) {
-            case Configure::read('Order.type.des_titolare'):
             case Configure::read('Order.type.des'):
                 $table_registry = 'ArticlesOrdersDes';
             break;
             case Configure::read('Order.type.gas'):
             case Configure::read('Order.type.socialmarket'):
             case Configure::read('Order.type.gas_parent_groups'):
+            case Configure::read('Order.type.des_titolare'):
                 $table_registry = 'ArticlesOrdersGas';
             break;
             case Configure::read('Order.type.gas_groups'):
@@ -217,7 +217,7 @@ class ArticlesOrdersTable extends Table
    *  articles: articoli da associare
    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        return true;
+        return [];
     }
 
     /*

@@ -7,13 +7,7 @@ use Cake\ORM\TableRegistry;
 use App\Traits;
 
 class OrderGasValidation extends Validation
-{  
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-  
+{    
     /*
      * ctrl che il produttore abbia articoli validi da associare all'ordine
      */

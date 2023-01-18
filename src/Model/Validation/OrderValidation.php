@@ -11,11 +11,6 @@ class OrderValidation extends Validation
     use Traits\SqlTrait;
     use Traits\UtilTrait;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public static function dateComparison($value, $operator, $field2, $context)
     {
     	// debug($context); 	

@@ -27,7 +27,7 @@ class OrdersBehavior extends Behavior
 
         $service = new AuthenticationService();
         $identify = $service->getIdentity();
-        if(!empty($identify)) //che chiamato dal cron non e' valorizzato
+        if(!empty($identify)) //se chiamato dal cron non e' valorizzato
             $this->_user = $identify->getIdentifier();
         else 
             $this->_user = $this->createObjUser();

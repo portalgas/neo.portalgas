@@ -16,7 +16,6 @@ use App\Form\OrderForm;
  */
 class OrdersController extends AppController
 {
-    private $_order_type_ids = [];  // tipologie d'ordine abilitate
     private $_ordersTable = null;    // istanza del model Orders / OrderGasGroups ...
    
     public function initialize()
@@ -26,17 +25,6 @@ class OrdersController extends AppController
         $this->loadComponent('Delivery');
         $this->loadComponent('SuppliersOrganization');
         $this->loadComponent('PriceType');
-
-        /* 
-         * gestisco solo gruppi
-         */
-        $this->_order_type_ids = [
-            Configure::read('Order.type.gas'),
-            Configure::read('Order.type.des'),
-            Configure::read('Order.type.des_titolare'),
-            Configure::read('Order.type.gas_parent_groups'),
-            Configure::read('Order.type.gas_groups')
-        ];
 
         if(!isset($this->_user->acl)) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
@@ -48,63 +36,15 @@ class OrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        /* 
-         * order_type_id 
-         * se Configure::read('Order.type.gas_groups'); 
-         * ctrl che lo user abbia creato un gruppo
-         */
-        $pass = $this->request->pass;
-        if(!empty($pass) && isset($pass[0])) {
-            $order_type_id = $pass[0];
-
-            if(!in_array($order_type_id, $this->_order_type_ids)) {
-                $this->Flash->error(__('msg_error_param_order_type_id'), ['escape' => false]);
-                return $this->redirect(Configure::read('routes_msg_stop'));    
-            }
-           
-            switch($order_type_id) {
-                case Configure::read('Order.type.gas'):
-                    if(!$this->_user->acl['isReferentGeneric']  &&
-                       !$this->_user->acl['isSuperReferente']) { 
-                        $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-                        return $this->redirect(Configure::read('routes_msg_stop'));
-                    }             
-                break;
-                case Configure::read('Order.type.gas_groups'):
-                case Configure::read('Order.type.gas_parent_groups'):
-                    if($this->_organization->paramsConfig['hasGasGroups']=='N' || (
-                        !$this->_user->acl['isGasGroupsManagerParentOrders']  && 
-                        !$this->_user->acl['isGasGroupsManagerOrders'])) { 
-                        $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-                        return $this->redirect(Configure::read('routes_msg_stop'));
-                    } 
-        
-                    if($order_type_id==Configure::read('Order.type.gas_groups')) {
-                        $gasGroupsTable = TableRegistry::get('GasGroups');
-                        $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-                        if($gasGroups->count()==0) {
-                            $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
-                            return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
-                        }    
-                    }
-                break;
-                case Configure::read('Order.type.des'):
-                case Configure::read('Order.type.des_titolare'):
-                    if($this->_organization->paramsConfig['hasDes']=='N' || 
-                       !$this->_user->acl['isDes']) { 
-                        $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-                        return $this->redirect(Configure::read('routes_msg_stop'));
-                    } 
-                break;
-            }
-        }
-        else {
-            $this->Flash->error(__('msg_error_param_order_type_id'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
+        $results = $this->Auths->ctrlRoute($this->_user, $this->request);
+        if(!empty($results)) {
+            $this->Flash->error($results['msg'], ['escape' => false]);
+            if(!isset($results['redirect'])) 
+                $results['redirect'] = Configure::read('routes_msg_stop');
+            return $this->redirect($results['redirect']);
         }
     }
 
-    // gestisco solo gruppi
     public function index($order_type_id=0)
     {
         $where = ['Orders.organization_id' => $this->_organization->id,
@@ -173,8 +113,11 @@ class OrdersController extends AppController
             // debug($order);
             if ($this->_ordersTable->save($order)) {
 
-                $this->_ordersTable->afterSaveWithRequest($this->_user, $this->_organization->id, $request);
-                $this->Flash->success(__('The {0} has been saved.', __('Order')));
+                $afterAddWithRequest = $this->_ordersTable->afterAddWithRequest($this->_user, $this->_organization->id, $order, $request);
+                if($afterAddWithRequest!==true)
+                    $this->Flash->error($afterAddWithRequest);
+                else 
+                    $this->Flash->success(__('The {0} has been saved.', __('Order')));
 
                 $url = ['controller' => 'ArticlesOrders', 'action' => 'index', $order->order_type_id, $order->id]; 
                 return $this->redirect($url);                
@@ -226,7 +169,7 @@ class OrdersController extends AppController
 
             if ($this->_ordersTable->save($order)) {
 
-                $this->_ordersTable->afterSaveWithRequest($this->_user, $this->_organization->id, $request);
+                // todo $this->_ordersTable->afterEditWithRequest($this->_user, $this->_organization->id, $request);
                 $this->Flash->success(__('The {0} has been saved.', 'Order'));
 
                 /*
@@ -302,7 +245,7 @@ class OrdersController extends AppController
             case Configure::read('Order.type.des_titolare'):
                 $des_order_id = $parent_id;
                 $parent = $this->_ordersTable->getParent($this->_user, $this->_organization->id, $des_order_id);
-           
+       
                 if(!empty($parent) && isset($parent->des_supplier->supplier_id)) {
                     
                     $suppliersTable = TableRegistry::get('Suppliers');
@@ -345,6 +288,8 @@ class OrdersController extends AppController
 
     public function delete($id = null)
     {
+        exit;
+
         $this->request->allowMethod(['post', 'delete']);
         $order = $this->Orders->get($id);
         if ($this->Orders->delete($order)) {

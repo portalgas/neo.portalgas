@@ -8,11 +8,6 @@ use App\Traits;
 
 class OrderGasGroupsValidation extends Validation
 {  
-    public function __construct()
-    {
-        parent::__construct();
-    }
-  
     /*
      * ctrl l'ordine padre abbia articoli associati all'ordine
      */

@@ -30,13 +30,13 @@ class ArticlesOrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        // per ora solo i gruppi
-        if($this->_organization->paramsConfig['hasGasGroups']=='N' || 
-            !$this->_user->acl['isGasGroupsManagerParentOrders']  || 
-            !$this->_user->acl['isGasGroupsManagerOrders']) { 
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        } 
+        $results = $this->Auths->ctrlRoute($this->_user, $this->request);
+        if(!empty($results)) {
+            $this->Flash->error($results['msg'], ['escape' => false]);
+            if(!isset($results['redirect'])) 
+                $results['redirect'] = Configure::read('routes_msg_stop');
+            return $this->redirect($results['redirect']);
+        }
     }
 
     public function index($order_type_id, $order_id)
@@ -50,73 +50,5 @@ class ArticlesOrdersController extends AppController
         $articles = [];
           
         $this->set(compact('order_type_id', 'order', 'ArticlesOrders', 'articles'));
-    }
-
-    public function add2($order_type_id, $order_id) {
-        $articlesOrder = $this->ArticlesOrders->newEntity();
-        if ($this->request->is('post')) {
-            $articlesOrder = $this->ArticlesOrders->patchEntity($articlesOrder, $this->request->getData());
-            if ($this->ArticlesOrders->save($articlesOrder)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Articles Order'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Articles Order'));
-        }
-        $orders = $this->ArticlesOrders->Orders->find('list', ['limit' => 200]);
-        $articleOrganizations = $this->ArticlesOrders->ArticleOrganizations->find('list', ['limit' => 200]);
-        $articles = $this->ArticlesOrders->Articles->find('list', ['limit' => 200]);
-        $this->set(compact('articlesOrder', 'orders', 'articleOrganizations', 'articles'));
-        $this->set(compact('order_type_id', 'order'));        
-    }
-
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Articles Order id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $articlesOrder = $this->ArticlesOrders->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $articlesOrder = $this->ArticlesOrders->patchEntity($articlesOrder, $this->request->getData());
-            if ($this->ArticlesOrders->save($articlesOrder)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Articles Order'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Articles Order'));
-        }
-        $organizations = $this->ArticlesOrders->Organizations->find('list', ['limit' => 200]);
-        $orders = $this->ArticlesOrders->Orders->find('list', ['limit' => 200]);
-        $articleOrganizations = $this->ArticlesOrders->ArticleOrganizations->find('list', ['limit' => 200]);
-        $articles = $this->ArticlesOrders->Articles->find('list', ['limit' => 200]);
-        $this->set(compact('articlesOrder', 'organizations', 'orders', 'articleOrganizations', 'articles'));
-    }
-
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Articles Order id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $articlesOrder = $this->ArticlesOrders->get($id);
-        if ($this->ArticlesOrders->delete($articlesOrder)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Articles Order'));
-        } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Articles Order'));
-        }
-
-        return $this->redirect(['action' => 'index']);
     }
 }

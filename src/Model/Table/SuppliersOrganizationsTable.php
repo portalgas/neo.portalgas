@@ -261,6 +261,9 @@ class SuppliersOrganizationsTable extends Table
     public function ACLgets($user, $organization_id, $user_id, $where=[]) {
         
         if($user->acl['isSuperReferente']) {
+            /* 
+             * SUPER-REFERENTE
+             */             
             if(isset($where['SuppliersOrganizations']))
                 $where = array_merge($where['SuppliersOrganizations'], ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']]);
             else 
@@ -268,6 +271,9 @@ class SuppliersOrganizationsTable extends Table
             return $this->gets($user, $where);
         }
         else {
+            /* 
+             * REFERENTE
+             */            
             $results = [];
             $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
             $suppliersOrganizationsReferents = $suppliersOrganizationsReferentsTable->gets($user, $where);

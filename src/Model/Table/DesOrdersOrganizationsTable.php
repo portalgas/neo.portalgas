@@ -75,41 +75,34 @@ class DesOrdersOrganizationsTable extends Table
         $validator
             ->scalar('luogo')
             ->maxLength('luogo', 225)
-            ->requirePresence('luogo', 'create')
-            ->notEmptyString('luogo');
+            ->allowEmptyString('luogo');
 
         $validator
             ->date('data')
-            ->requirePresence('data', 'create')
-            ->notEmptyDate('data');
+            ->allowEmptyString('data');
 
         $validator
             ->time('orario')
-            ->requirePresence('orario', 'create')
-            ->notEmptyTime('orario');
+            ->allowEmptyString('orario');
 
         $validator
             ->scalar('contatto_nominativo')
             ->maxLength('contatto_nominativo', 150)
-            ->requirePresence('contatto_nominativo', 'create')
-            ->notEmptyString('contatto_nominativo');
+            ->allowEmptyString('contatto_nominativo');
 
         $validator
             ->scalar('contatto_telefono')
             ->maxLength('contatto_telefono', 20)
-            ->requirePresence('contatto_telefono', 'create')
-            ->notEmptyString('contatto_telefono');
+            ->allowEmptyString('contatto_telefono');
 
         $validator
             ->scalar('contatto_mail')
             ->maxLength('contatto_mail', 100)
-            ->requirePresence('contatto_mail', 'create')
-            ->notEmptyString('contatto_mail');
+            ->allowEmptyString('contatto_mail');
 
         $validator
             ->scalar('nota')
-            ->requirePresence('nota', 'create')
-            ->notEmptyString('nota');
+            ->allowEmptyString('nota');
 
         return $validator;
     }

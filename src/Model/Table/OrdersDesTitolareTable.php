@@ -10,7 +10,7 @@ use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
 
-class OrdersDesTable extends OrdersTable implements OrderTableInterface
+class OrdersDesTitolareTable extends OrdersTable implements OrderTableInterface
 {
     /**
      * Initialize method
@@ -22,28 +22,38 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
     {
         parent::initialize($config);
 
-        $this->setEntityClass('App\Model\Entity\Order');
+        $this->setEntityClass('App\Model\Entity\Order');  
     }
-    
+
     public function validationDefault(Validator $validator)
     {
         $validator = parent::validationDefault($validator);
         
-        $validator->setProvider('orderGas', \App\Model\Validation\OrderGasValidation::class);
+        $validator->setProvider('orderDesTitolare', \App\Model\Validation\OrderDesTitolareValidation::class);
 
         $validator
             ->notEmpty('supplier_organization_id')
             ->add('supplier_organization_id', [
                 'totArticles' => [
                    'rule' => ['totArticles'],
-                   'provider' => 'orderGas',
+                   'provider' => 'orderDesTitolare',
                    'message' => 'Il produttore scelto non ha articoli che si possono associare ad un ordine'
+                ]
+            ]);
+
+        $validator
+            ->notEmpty('delivery_id')
+            ->add('delivery_id', [
+                'dateDeliverytoDataFineMaxOrderDes' => [
+                    'rule' => ['dateDeliverytoDataFineMaxOrderDes'],
+                    'provider' => 'orderDesTitolare',
+                    'message' => "La data di chiusura non può essere posteriore o uguale alla data di chiusura dell'ordine D.E.S."
                 ]
             ]);
 
         return $validator;
     }
-
+        
     /**
      * Returns a rules checker object that will be used for validating
      * application integrity.
@@ -83,7 +93,7 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
      */   
     public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
 
-       if(empty($parent_id))
+        if(empty($parent_id))
             $results = '';
 
         $desOrdersTable = TableRegistry::get('DesOrders');
@@ -95,7 +105,7 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
                                         'DesOrdersOrganizations' => ['Organizations'], 'DesSuppliers'])
                                     ->first();
 
-       return $results;
+        return $results;
     }
 
     /*
@@ -103,7 +113,41 @@ class OrdersDesTable extends OrdersTable implements OrderTableInterface
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
     public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {
-        return parent::afterAddWithRequest($user, $organization_id, $order, $request, $debug);
+
+        // ottendo il des_id
+        $desOrdersTable = TableRegistry::get('DesOrders');
+
+                
+        $desOrder = $desOrdersTable->find()
+                                ->select(['des_id'])
+                                ->where(['DesOrders.id' => $request['parent_id']])
+                                ->first();
+
+        $desOrdersOrganizationsTable = TableRegistry::get('DesOrdersOrganizations');
+
+        // ctrl se esiste gia' => non dovrebbe mai capitare 
+        $desOrdersOrganization = $desOrdersOrganizationsTable->find()
+                                                    ->where([
+                                                        'organization_id' => $organization_id, 
+                                                        'des_id' => $desOrder->des_id, 
+                                                        'des_order_id' => $request['parent_id'], 
+                                                    ])
+                                                    ->first();
+        if(empty($desOrder))
+            $desOrdersOrganization = $desOrdersOrganizationsTable->newEntity();
+
+        $data = [];
+        $data['organization_id'] = $organization_id;
+        $data['des_id'] = $desOrder->des_id;
+        $data['des_order_id'] = $request['parent_id'];
+        $data['order_id'] = $order->id;
+
+        $desOrdersOrganizations = $desOrdersOrganizationsTable->patchEntity($desOrdersOrganization, $data);
+        if(!$desOrdersOrganizationsTable->save($desOrdersOrganizations)) {
+            return $desOrdersOrganizations->getErrors();
+        }
+
+        return true;
     }
     
     /*

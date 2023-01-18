@@ -62,8 +62,8 @@ class OrdersSocialMarketTable extends OrdersTable implements OrderTableInterface
      * implement
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
-    public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
-
+    public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {
+        return parent::afterAddWithRequest($user, $organization_id, $order, $request, $debug);
     }
     
     /*

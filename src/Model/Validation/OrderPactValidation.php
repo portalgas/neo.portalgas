@@ -8,11 +8,6 @@ use App\Traits;
 
 class OrderPactValidation extends Validation
 {    
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public static function orderDuplicate($value, $context)
     {
     	// debug($context); 	

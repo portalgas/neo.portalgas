@@ -21,8 +21,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <!-- solo il tasto salva sotto per la gestione del messaggio -->
-            <div v-if="!is_run">
+            <div v-if="articles.length>0 || article_orders.length>0"> 
               <button v-if="!is_save" class="btn btn-primary btn-block" @click="preSave">Salva</button>
               <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>
             </div>             
@@ -38,7 +37,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
           /*
            * articoli gia' associati (con eventuali acquisti)
            */ 
-          echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli già associati')]);
+          echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli già associati')." ({{article_orders.length}})"]);
           ?>
 
           <?php
@@ -115,7 +114,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
           /*
            * articoli da associare
            */ 
-          echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli da associare')]);
+          echo $this->HtmlCustomSite->boxTitle(['title' => __('Articoli da associare')." ({{articles.length}})"]);
 
           echo '<div v-if="articles.length==0">'; 
           echo $this->element('msg', ['msg' => "Tutti gli articoli sono già associati all'ordine", 'class' => 'warning']);
@@ -204,8 +203,11 @@ echo $this->HtmlCustomSite->boxOrder($order);
                 </div>
                 -->
 
-                <button v-if="!is_save && !msgOpen" class="btn btn-primary btn-block" @click="preSave">Salva</button>
-                <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>                
+                <div v-if="articles.length>0 || article_orders.length>0"> 
+                  <button v-if="!is_save" class="btn btn-primary btn-block" @click="preSave">Salva</button>
+                  <button v-if="is_save" class="btn btn-primary btn-block disabled">In elaborazione...</button>
+                </div>
+
               </div>
         </div>
         <!-- /.box-body -->

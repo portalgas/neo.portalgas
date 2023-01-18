@@ -7,13 +7,7 @@ use Cake\ORM\TableRegistry;
 use App\Traits;
 
 class OrderPromotionValidation extends Validation
-{  
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-  
+{    
     public static function orderDuplicate($value, $context)
     {
       	// debug($context); 	

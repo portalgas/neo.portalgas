@@ -62,16 +62,18 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
                         $img = '<span class="box-img"><img src="'.$url.'" alt="'.$des_organization->organization->name.'" title="'.$des_organization->organization->name.'" width="'.Configure::read('Organization.img.preview.width').'" class="img-supplier" /></span> ';
                         $html .= '<label class="col-sm-2 control-label" style="padding-top:0px">'.__('G.A.S.').'</label>
                                     <div class="col-sm-10">'.$img.' '.$des_organization->organization->name;
-                        if(count($des_order->all_des_orders_organizations)>0) {
-                            foreach($des_order->all_des_orders_organizations as $organization) {
-                                if($organization->id==$des_organization->organization->id) {
-                                    $html .= ' <span class="label label-success">ordine già creato</span>';  
-                                    break;
+                        if(count($des_order->des_orders_organizations)>0) {  
+                            $found = false;
+                            foreach($des_order->des_orders_organizations as $des_orders_organization) {
+                                if($des_orders_organization->organization_id==$des_organization->organization->id) {
+                                    $found = true; 
+                                    $html .= ' <span class="label label-success">ordine già creato</span>';
                                 }
+                                if(!$found)
+                                    $html .= ' <span class="label label-warning">ordine non ancora creato</span>';
                             }
                         }
-                        else 
-                            $html .= ' <span class="label label-warning">ordine non ancora creato</span>';                                    
+                                
                         $html .= '</div>';
                     }
 
@@ -83,7 +85,7 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
             </div>
         </div>
         </section>';
-// debug($des_order->all_des_orders_organizations);
+
         return $html;    
     }
 
@@ -100,6 +102,8 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
 
         if(!empty($parent)) {
             $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine_max);
+            
+            $html .= $this->Form->control('data_fine_max', ['type' => 'hidden', 'value' => $parent->data_fine_max]);
 
             $html .= '<div class="row">';
             $html .= '<div class="col-md-12">'; 

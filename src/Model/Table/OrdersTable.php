@@ -362,6 +362,8 @@ class OrdersTable extends Table
       
         switch (strtoupper($order_type_id)) {
             case Configure::read('Order.type.des_titolare'):
+                $table_registry = 'OrdersDesTitolare';
+                break;
             case Configure::read('Order.type.des'):
                 $table_registry = 'OrdersDes';
                 break;
@@ -399,8 +401,8 @@ class OrdersTable extends Table
      * implement
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
-    public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
-
+    public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {
+        return true;
     }
 
     /*

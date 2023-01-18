@@ -127,25 +127,27 @@ class OrdersPromotionTable extends OrdersTable implements OrderTableInterface
      * implement
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
-    public function afterSaveWithRequest($user, $organization_id, $request, $debug=false) {
+    public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {
         $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');
 
         $where = ['ProdGasPromotionsOrganizations.prod_gas_promotion_id' => $request['parent_id'],
                   'ProdGasPromotionsOrganizations.organization_id' => $organization_id];
                 
-        $results = $prodGasPromotionsOrganizationsTable->find()
-                                ->where($where)
-                                ->first();
+        $prodGasPromotionsOrganizations = $prodGasPromotionsOrganizationsTable->find()
+                                                                            ->where($where)
+                                                                            ->first();
 
         $data = [];
         if(isset($request['nota_user']))
             $data['nota_user'] = $request['nota_user'];
         $data['user_id'] = $user->id;
 
-        $results = $prodGasPromotionsOrganizationsTable->patchEntity($results, $data);
-        if(!$prodGasPromotionsOrganizationsTable->save($results)) {
-            debug($results->getErrors());
+        $prodGasPromotionsOrganizations = $prodGasPromotionsOrganizationsTable->patchEntity($prodGasPromotionsOrganizations, $data);
+        if(!$prodGasPromotionsOrganizationsTable->save($prodGasPromotionsOrganizations)) {
+            return $prodGasPromotionsOrganizations;
         }
+
+        return true;
     }
 
     /*
