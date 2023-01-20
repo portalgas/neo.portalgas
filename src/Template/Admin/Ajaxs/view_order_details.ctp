@@ -1,3 +1,12 @@
+<?php 
+use Cake\Core\Configure;
+use App\Traits;
+
+$config = Configure::read('Config');
+$portalgas_bo_url = $config['Portalgas.bo.url'];
+$portalgas_fe_url = $config['Portalgas.fe.url']; 
+?>
+
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_0_<?php echo $order_id;?>" data-toggle="tab" aria-expanded="true" data-attr-doc-options="to-articles">Doc. con articoli aggregati</a></li>
@@ -85,12 +94,12 @@ $(function () {
             }
             
             if(doc_options=='to-articles-weight') 
-                ajaxUrlrl = 'http://portalgas.local/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToArticlesWeight&delivery_id=".$delivery_id."&order_id=".$order_id."&doc_options='+doc_options+'&doc_formato=PREVIEW&scope=neo&format=notmpl';
+                ajaxUrlrl = '".$portalgas_bo_url."/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToArticlesWeight&delivery_id=".$delivery_id."&order_id=".$order_id."&doc_options='+doc_options+'&doc_formato=PREVIEW&scope=neo&format=notmpl';
             else
             if(doc_options=='related-articles')
-                ajaxUrl = 'http://portalgas.local/administrator/index.php?option=com_cake&controller=Ajax&action=view_orders&order_id=".$order_id."&scpe=neo&format=notmpl';
+                ajaxUrl = '".$portalgas_bo_url."/administrator/index.php?option=com_cake&controller=Ajax&action=view_orders&order_id=".$order_id."&scpe=neo&format=notmpl';
             else
-                ajaxUrl = 'http://portalgas.local/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id=".$delivery_id."&order_id=".$order_id."&doc_options='+doc_options+'&doc_formato=PREVIEW&a='+a+'&b='+b+'&c='+c+'&d='+d+'&e='+e+'&f='+f+'&g='+g+'&h='+h+'&scope=neo&format=notmpl';          
+                ajaxUrl = '".$portalgas_bo_url."/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id=".$delivery_id."&order_id=".$order_id."&doc_options='+doc_options+'&doc_formato=PREVIEW&a='+a+'&b='+b+'&c='+c+'&d='+d+'&e='+e+'&f='+f+'&g='+g+'&h='+h+'&scope=neo&format=notmpl';          
         } // end if(doc_options!='')
 
         console.log(ajaxUrl, 'ajaxUrl');

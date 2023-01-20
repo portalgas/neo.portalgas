@@ -1,6 +1,10 @@
 <?php 
 use Cake\Core\Configure;
 use App\Traits;
+
+$config = Configure::read('Config');
+$portalgas_bo_url = $config['Portalgas.bo.url'];
+$portalgas_fe_url = $config['Portalgas.fe.url']; 
 ?>
 <section class="content-header">
   <h1>
@@ -103,7 +107,7 @@ use App\Traits;
                   echo '</td>';
                   echo '<td class="actions text-right">';
 
-                  echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="http://portalgas.local/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=sotto_menu&amp;order_id='.$order->id.'&amp;position_img=bgLeft&amp;scope=neo&amp;format=notmpl" data-attr-size="md" data-attr-header="Ordine Azienda agricola RoeroVero"><i class="fa fa-2x fa-navicon"></i></button>';
+                  echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=sotto_menu&amp;order_id='.$order->id.'&amp;position_img=bgLeft&amp;scope=neo&amp;format=notmpl" data-attr-size="md" data-attr-header="Ordine Azienda agricola RoeroVero"><i class="fa fa-2x fa-navicon"></i></button>';
                   // echo $this->Html->link(__('View'), ['action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-info']);
                   echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
                   echo $this->Html->link(__('ArticleOrders'), ['controller' => 'articles-orders', 'action' => 'index', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
