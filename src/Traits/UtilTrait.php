@@ -215,6 +215,15 @@ trait UtilTrait
         return $results;
     } 
 
+    public function getDeliveryLabel($delivery) {
+        if($delivery->sys=='Y')
+            $delivery_label = 'Da definire';
+        else 
+            $delivery_label = $delivery->luogo.' - '.$delivery->data->i18nFormat('eeee d MMMM');
+
+        return $delivery_label;
+    }
+        
     public function getListYears()
     {
         $year = date('Y');

@@ -5,9 +5,12 @@ use Cake\View\Helper;
 use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
+use App\Traits;
 
 class HtmlCustomSiteHelper extends FormHelper
 {
+    use Traits\UtilTrait;
+
 	private $debug = false;
 	public  $helpers = ['Url', 'Html', 'Form', 'HtmlCustom'];
 
@@ -67,15 +70,24 @@ class HtmlCustomSiteHelper extends FormHelper
         return $results;
     }       
 
+    public function drawDeliveryLabel($delivery) {
+        return $this->getDeliveryLabel($delivery);
+    }
+
+    public function drawOrdersStateDiv($order) {
+
+        $str = '';   	
+        $str .= '<div class="action orderStato'.$order->state_code.'" title="'.__($order->state_code.'-intro').'"></div>';
+             
+        return $str;
+    }
+
     public function boxOrder($results, $options=[]) {
 
         if(empty($results))
             return '';
 
-        if($results->delivery->sys=='N')
-            $delivery_label = $results->delivery->luogo.' '.$results->delivery->luogo;
-        else 
-            $delivery_label = $results->delivery->luogo;
+        $delivery_label = $this->getDeliveryLabel($results->delivery);
 
         $url = '';
         if(!empty($results->suppliers_organization->supplier->img1)) {
@@ -436,7 +448,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $url = '';
             if(file_exists($img_path_supplier)) {
                 $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
-                $html .= '<img style="'.$max_width.'" src="'.$url.'" title="'.$supplier->name.'" alt="'.$supplier->name.'" />';
+                $html .= '<img style="max-width:'.$max_width.'" src="'.$url.'" title="'.$supplier->name.'" alt="'.$supplier->name.'" />';
             }
         }
         return $html;

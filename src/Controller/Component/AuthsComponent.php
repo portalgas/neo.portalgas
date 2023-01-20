@@ -58,6 +58,9 @@ class AuthsComponent extends Component {
         $action = strtolower($request->action); 
         $pass = $request->pass;
         
+        if($controller=='orders' && $action=='index')
+            return $results;
+
         switch($controller) {
             case 'orders':
             case 'articles-orders':

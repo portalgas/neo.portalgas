@@ -38,6 +38,10 @@ if($this->Identity->get()->acl['isReferentGeneric'] || $this->Identity->get()->a
         </span>
         <ul class="treeview-menu">
           <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index" target="">Elenco ordini</a></li>
+          <?php 
+          if($application_env==='development')
+            echo '<li><a href="'.$this->Url->build('/admin/orders/index/').'">'.$icon.'Elenco ordini <small class="label pull-right bg-red">root</small></a></li>';
+          ?>
           <li><a href="<?php echo $this->Url->build('/admin/orders/add/'.Configure::read('Order.type.gas')); ?>"><?php echo $icon;?>Aggiungi un nuovo ordine <label class="label label-success">new</label></a></li>
           <!-- li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=add" target="">Aggiungi un nuovo ordine</a></li -->
           <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=easy_add" target="">Aggiungi un nuovo ordine (modalità semplificata)</a></li>

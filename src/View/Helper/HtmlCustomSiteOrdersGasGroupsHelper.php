@@ -95,7 +95,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         else 
             $delivery_label = $results->delivery->luogo;
 
-        $html = '<section class="content">
+        $html = '<div class="box box-solid">
         <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">Ordine principale</h3>
@@ -122,7 +122,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
 
             </div>
         </div>
-        </section>';
+        </div>';
 
         return $html;   
     }

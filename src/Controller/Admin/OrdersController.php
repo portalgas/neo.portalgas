@@ -47,11 +47,13 @@ class OrdersController extends AppController
 
     public function index($order_type_id=0)
     {
-        $where = ['Orders.organization_id' => $this->_organization->id,
-                 'Orders.order_type_id' => $order_type_id];
+        $where = ['Orders.organization_id' => $this->_organization->id];
+        if(!empty($order_type_id))
+            $where += ['Orders.order_type_id' => $order_type_id];
+
         $this->paginate = [
             'order' => ['Deliveries.data', 'Orders.data_inizio'],            
-            'contain' => ['SuppliersOrganizations' => ['Suppliers'], 
+            'contain' => ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
                 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
             'conditions' => $where
         ];
@@ -162,7 +164,9 @@ class OrdersController extends AppController
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $request = $this->request->getData();       
+            $request = $this->request->getData();  
+            // $request['order_type_id'] = $order_type_id; 
+            // $request['parent_id'] = $parent_id;                 
             // debug($request);
             $order = $this->_ordersTable->patchEntity($order, $request);
             // debug($order);

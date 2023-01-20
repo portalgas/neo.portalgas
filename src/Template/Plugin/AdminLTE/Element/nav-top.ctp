@@ -73,7 +73,7 @@ if ($this->Identity->isLoggedIn()) {
           <span class="label label-success">5</span>
         </a>
         <ul class="dropdown-menu">
-          <li class="header">You have 4 messages</li>
+          <li class="header">Hai 4 messaggi</li>
           <li>
             <!-- inner menu: contains the actual data -->
             <ul class="menu">

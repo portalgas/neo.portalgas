@@ -52,4 +52,82 @@ echo '<link href="https://fonts.googleapis.com/css?family=Raleway:500i|Roboto:30
 .fieldUpdateAjax.icon-false, .fieldUpdateAjax-disabled.icon-false {
 	color: #dd4b39;
 }
+
+/*
+ * stati ordine
+ */
+.action {
+    padding-left: 40px;
+    width: auto!important;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
+    float: left;
+    cursor: hand;
+}
+
+.orderStatoCREATE-INCOMPLETE {
+    background: url(/images/cake/actions/32x32/flag.png) no-repeat!important
+}
+.desSupplierStatoOPEN,
+.orderStatoOPEN,
+.orderStatoPRODGASPROMOTION-GAS-OPEN,
+.orderStatoPRODGASPROMOTION-GAS-USERS-OPEN {
+    background: url(/images/cake/cart/32x32/shopping_cart_basket.png) no-repeat!important
+}
+.orderStatoRI-OPEN-VALIDATE {
+    background: url(/images/cake/cart/32x32/shopping_cart.png) no-repeat!important
+}
+.orderStatoPROCESSED-BEFORE-DELIVERY,
+.orderStatoPROCESSED-POST-DELIVERY {
+    background: url(/images/cake/cart/32x32/shopping_cart_accept_basket.png) no-repeat!important
+}
+.orderStatoINCOMING-ORDER {
+    background: url(/images/cake/apps/32x32/ark.png) no-repeat!important
+}
+.orderStatoBEFORE-TRASMISSION,
+.orderStatoTRASMISSION-TO-GAS,
+.orderStatoPRODGASPROMOTION-GAS-TRASMISSION-TO-GAS {
+    background: url(/images/cake/apps/32x32/mailreminder.png) no-repeat!important
+}
+.orderStatoFINISH,
+.orderStatoPRODGASPROMOTION-GAS-FINISH, 
+.orderStatoPOST-TRASMISSION {
+    background: url(/images/cake/actions/32x32/lock.png) no-repeat!important
+}
+.orderStatoREFERENT-WORKING {
+    background: url(/images/cake/actions/32x32/lock-silver.png) no-repeat!important
+}
+.desSupplierStatoWAITING,
+.orderStatoOPEN-NEXT,
+.orderStatoWAIT-PROCESSED-TESORIERE,
+.orderStatoWAIT-REQUEST-PAYMENT-CLOSE {
+    background: url(/images/cake/cart/32x32/shopping_cart_basket_time.png) no-repeat!important
+}
+.desSupplierStatoOPEN-CLOSE,
+.orderStatoPROCESSED-ON-DELIVERY,
+.orderStatoPROCESSED-TESORIERE,
+.orderStatoPROCESSED-TESORIERE-POST-DELIVERY,
+.orderStatoWORKING,
+.orderStatoPRODGASPROMOTION-GAS-WORKING,
+.orderStatoPRODGASPROMOTION-GAS-USERS-WORKING {
+    background: url(/images/cake/cart/32x32/shopping_cart_basket_run.png) no-repeat!important
+}
+.orderStatoTO-REQUEST-PAYMENT, 
+.orderStatoTO-PAYMENT {
+    background: url(/images/cake/cart/32x32/shopping_cart_basket_key.png) no-repeat!important
+}
+.desSupplierStatoCLOSE,
+.orderStatoCLOSE,
+.orderStatoPRODGASPROMOTION-GAS-CLOSE,
+.orderStatoPRODGASPROMOTION-GAS-USERS-CLOSE {
+    background: url(/images/cake/cart/32x32/shopping_cart_delete_basket.png) no-repeat!important
+}
+.orderStatoUSER-PAID {
+    background: url(/images/cake/apps/32x32/kspread.png) no-repeat!important
+}
+.orderStatoSUPPLIER-PAID {
+    background: url(/images/cake/apps/32x32/calc.png) no-repeat!important
+}
 </style>

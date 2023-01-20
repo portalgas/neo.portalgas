@@ -38,13 +38,13 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
 
         $delivery_label = $des_order->luogo;
 
-        $html = '<section class="content">
+        $html = '<div class="box box-solid">
         <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">Ordine principale</h3>
                 <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    <button type="button" class="btn btn-success btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button type="button" class="btn btn btn-danger btn-sm btn-box-tool-disabled" data-widget="remove"><i class="fa fa-times"></i></button>
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body no-padding-disabled">
@@ -84,7 +84,7 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
 
             </div>
         </div>
-        </section>';
+        </div>';
 
         return $html;    
     }

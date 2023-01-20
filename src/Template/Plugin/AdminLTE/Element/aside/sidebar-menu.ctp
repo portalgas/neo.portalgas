@@ -18,7 +18,7 @@ switch($user->organization->type) {
 if($this->Identity->get()->acl['isRoot']) 
   echo $this->element('sidebar-menu-root');
 
-if($application_env!=='development') {
+if($application_env==='development') {
 ?>
   <li class="treeview">
     <a href="#">
@@ -190,6 +190,6 @@ if($application_env!=='development') {
   <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
   <li><a href="<?php echo $this->Url->build('/pages/debug'); ?>"><i class="fa fa-bug"></i> <span>Debug</span></a></li>
   <?php
-  } // end if($application_env=='development')
+  } // end if($application_env==='development')
   ?>  
 </ul>

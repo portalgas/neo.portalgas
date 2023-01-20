@@ -37,6 +37,7 @@ class ArticlesOrdersGasGroupsTable extends ArticlesOrdersTable implements Articl
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
         
         $results = [];
+        $results['esito'] = true;
         $results['article_orders'] = []; // articoli gia' associati, se empty => prima volta => copia da articles
         $results['articles'] = []; // articles: articoli da associare (eredita da gas_parent_groups)
         

@@ -217,7 +217,8 @@ class ArticlesOrdersTable extends Table
    *  articles: articoli da associare
    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        return [];
+        $result['esito'] = false;
+        return $result;
     }
 
     /*
@@ -626,12 +627,15 @@ class ArticlesOrdersTable extends Table
     public function addsByArticles($user, $organization_id, $order, $articles, $debug=false) {
 
         foreach($articles as $article) {
-         
+       
+            $article_id = 0;
+            isset($article['id']) ? $article_id = $article['id']: $article_id = $article['article_id'];
+
             $datas = [];
             $datas['organization_id'] = $organization_id;
             $datas['order_id'] = $order->id;
             $datas['article_organization_id'] = $order->owner_organization_id; // dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
-            $datas['article_id'] = $article['id'];        
+            $datas['article_id'] = $article_id;
             $datas['name'] = $article['name'];
             if(isset($article['prezzo_']))
                 $datas['prezzo'] = $this->convertImport($article['prezzo_']);
@@ -655,7 +659,7 @@ class ArticlesOrdersTable extends Table
             $ids['organization_id'] = $organization_id;
             $ids['order_id'] = $order->id;
             $ids['article_organization_id'] = $order->owner_organization_id;
-            $ids['article_id'] = $article['id'];
+            $ids['article_id'] = $article_id;
             
             $articlesOrder = $this->getByIds($user, $organization_id, $ids, $debug);
             if(empty($articlesOrder)) {
@@ -674,7 +678,7 @@ class ArticlesOrdersTable extends Table
             $articlesOrder->organization_id = $organization_id;
             $articlesOrder->order_id = $order->id;
             $articlesOrder->article_organization_id = $order->owner_organization_id;
-            $articlesOrder->article_id = $article['id'];            
+            $articlesOrder->article_id = $article_id;            
             $articlesOrder = $this->patchEntity($articlesOrder, $datas);
           //  debug($datas);
             if (!$this->save($articlesOrder)) { 

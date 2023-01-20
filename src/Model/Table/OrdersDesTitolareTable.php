@@ -23,6 +23,24 @@ class OrdersDesTitolareTable extends OrdersTable implements OrderTableInterface
         parent::initialize($config);
 
         $this->setEntityClass('App\Model\Entity\Order');  
+
+        /*
+         * ordine DES del proprio GAS
+         */
+        $this->belongsTo('DesOrdersOrganizations', [
+            'foreignKey' => ['id'],        // fields Orders
+            'bindingKey' => ['order_id'],  // fields DesOrdersOrganizations
+            'joinType' => 'INNER', 
+        ]);
+        /*
+         * ordini DES di tutti i GAS
+         */        
+        $this->hasMany('AllDesOrdersOrganizations', [
+            'className' => 'DesOrdersOrganizations',
+            'foreignKey' => ['des_order_id'],   // fields Orders
+            'bindingKey' => ['des_order_id'],   // fields DesOrdersOrganizations
+            'joinType' => 'INNER', 
+        ]);        
     }
 
     public function validationDefault(Validator $validator)

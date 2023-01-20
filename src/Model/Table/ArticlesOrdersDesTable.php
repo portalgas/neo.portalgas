@@ -32,10 +32,77 @@ class ArticlesOrdersDesTable extends ArticlesOrdersTable implements ArticlesOrde
    * return
    *  proprietario listino: per gestione permessi di modifica
    *  article_orders: articoli gia' associati
-   *  articles: articoli da associare
+   *  articles: articoli da associare => quelli del Gas Titolare
    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        return parent::getAssociateToOrder($user, $organization_id, $order, $where, $options, $debug);
+ 
+        $results = [];
+        $results['esito'] = true;
+        $results['article_orders'] = []; // articoli gia' associati, se empty => prima volta => copia da articles
+        $results['articles'] = []; // articles: articoli da associare (eredita da gas_parent_groups)
+        
+        /* 
+         * $article_orders => articoli gia' associati 
+         */ 
+        $where = [];
+        $where['ArticlesOrders'] = [$this->getAlias().'.organization_id' => $order->organization_id,
+                                    $this->getAlias().'.order_id' => $order->id,
+                                ]; 
+        
+        $options = [];
+        $options['sort'] = [];
+        $options['limit'] = Configure::read('sql.no.limit');
+        $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options);
+        
+        $where2 = [];
+        $ids = [];
+        if(!empty($results['article_orders'])) {
+            /* 
+             * escludo gli articoli gia' associati
+             * */
+            foreach($results['article_orders'] as $article_order) {
+                array_push($ids, $article_order->article_id);
+            }
+
+            $where2 = ['article_id NOT IN' => $ids];
+        }
+
+        /* 
+         * $articles => articoli da associare
+        *
+         * se DES non puo' essere titolare, il titolare prende il listino articolo da REFERENT o SUPPLIER
+         * prendo il listino da titolare => Articles / ArticlesOrders
+         *
+         * estraggo ordine del titolare
+         */
+        $desOrdersOrganizationsTable = TableRegistry::get('DesOrdersOrganizations');
+        $whereDes = ['organization_id' => $order->owner_organization->id,
+                  'des_order_id' => $order->des_order_id];        
+        $desOrdersOrganization = $desOrdersOrganizationsTable->find()
+                                    ->select(['order_id'])
+                                    ->where($whereDes)
+                                    ->first();
+        $where = ['organization_id' => $order->owner_organization->id,
+                  'order_id' => $desOrdersOrganization->order_id,
+                  'stato !=' => 'N'];
+        $where = array_merge($where, $where2); 
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $results['articles'] = $articlesOrdersTable->find()
+                                ->where($where)
+                                ->all();
+
+        if(empty($results['article_orders'])) {
+            // articoli gia' associati, se empty => prima volta => copia da articles
+            $this->addsByArticlesOrders($user, $organization_id, $order, $results['articles']);
+            $options = [];
+            $options['sort'] = [];
+            $options['limit'] = Configure::read('sql.no.limit');
+            $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options); 
+            $results['articles'] = [];
+        }
+
+        return $results;        
     }
 
     /*

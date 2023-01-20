@@ -77,6 +77,10 @@ class LoopsOrdersTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->requirePresence('supplier_organization_id')
+            ->notEmptyString('supplier_organization_id'); 
+
+        $validator
             ->nonNegativeInteger('gg_data_inizio')
             ->requirePresence('gg_data_inizio', 'create')
             ->notEmptyString('gg_data_inizio');

@@ -21,8 +21,8 @@ class ArticleOrdersController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Auths');
         $this->loadComponent('Cart');
+        $this->loadComponent('Des');
     }
 
     public function beforeFilter(Event $event)
@@ -211,6 +211,8 @@ class ArticleOrdersController extends ApiAppController
     *  delete_article_orders: articoli gia' associati da eliminare
     *  update_article_orders: articoli gia' associati da aggiornare
     *  articles: articoli da associare (quelli is_select da associare)
+    *
+    * se DES e' il GAS e' titolare propago le modifiche
     */    
     public function setAssociateToOrder() {
 
