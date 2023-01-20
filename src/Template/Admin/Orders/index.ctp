@@ -74,8 +74,8 @@ use App\Traits;
 
                   echo '<tr>';
                   echo '<td>
-                      <a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapseOne-'.$order->id.'" aria-expanded="true" class="order-details">
-                        <i class="fa fa-3x fa-search-plus" aria-hidden="true"></i>
+                      <a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapse-'.$order->id.'" aria-expanded="true" title="Clicca per maggiori informazioni">
+                        <i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>
                       </a>
                     </td>';
                   echo '<td>';
@@ -102,6 +102,8 @@ use App\Traits;
                   echo __($order->state_code.'-label');
                   echo '</td>';
                   echo '<td class="actions text-right">';
+
+                  echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="http://portalgas.local/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=sotto_menu&amp;order_id='.$order->id.'&amp;position_img=bgLeft&amp;scope=neo&amp;format=notmpl" data-attr-size="md" data-attr-header="Ordine Azienda agricola RoeroVero"><i class="fa fa-2x fa-navicon"></i></button>';
                   // echo $this->Html->link(__('View'), ['action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-info']);
                   echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
                   echo $this->Html->link(__('ArticleOrders'), ['controller' => 'articles-orders', 'action' => 'index', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
@@ -117,10 +119,9 @@ use App\Traits;
                   echo '</td>';                  
                 echo '</tr>'; 
                 
-                echo '<tr id="collapseOne-'.$order->id.'" class="panel-collapse collapse" aria-expanded="true">';
+                echo '<tr id="collapse-'.$order->id.'" class="panel-collapse collapse" aria-expanded="true">';
                 echo '<td colspan="2"></td>';
-                echo '<td colspan="'.($colspan-2).'" id="'.$order->id.'">';
-                echo "Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.";
+                echo '<td colspan="'.($colspan-2).'" id="collapseResult-'.$order->id.'">';
                 echo '</td>';
                 echo '</tr>';
 
@@ -145,36 +146,142 @@ use App\Traits;
 <?php 
 $js = "
 $(function () {
-  $('.collapse').on('show.bs.collapse', function() {
-    let ajaxUrl = 'http://portalgas.local/administrator/index.php?option=com_cake&controller=Ajax&action=view_order_details&id=33032&evidenzia=&format=notmpl';
-
-    ajaxUrl = 'http://portalgas.local/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id=10012&order_id=33032&doc_options=to-articles&doc_formato=PREVIEW&a=N&b=Y&c=&d=&e=&f=&g=&h=&format=notmpl';
-    ajaxUrl = 'http://portalgas.local/administrator/index.php?option=com_cake&controller=Orders&action=index&format=notmpl';
+  $('.btn-menu').on('click', function (e) {
+    e.preventDefault();
+    let url = $(this).attr('data-attr-url');
+		
+    let header = $(this).attr('data-attr-header');
+    let size = $(this).attr('data-attr-size');
     
-    ajaxUrl = '/admin/bridges/index/';
-    ajaxUrl = 'http://next.portalgas.it/administrator/index.php?option=com_cake&controller=Orders&action=index&format=notmpl';
-   
-    $.ajax({url: ajaxUrl, 
-      // data: data, 
-       type: 'POST',
-       dataType: 'json',
-       cache: false, 
-       headers: {
-         'X-CSRF-Token': csrfToken
-       },                            
-       success: function (response) {
-           console.log(response);
-           
-           $('#33032').html(response);
-       },
-       error: function (e) {
-           console.log(e);
-       },
-       complete: function (e) {
-       }
-   });    
+    let opts = new Array();
+    opts = {'header': header , 'size': size};
+  
+    if (typeof url == 'undefined' || url == '') 
+      console.error('error - url undefined!');
+    else
+      apriPopUpBootstrap(url, opts);
+      
   });
+
+  $('.collapse').on('show.bs.collapse', function() {
+    
+      let id = $(this).attr('id');
+      let dataElementArray = id.split('-');
+      let order_id = dataElementArray[1];
+
+      let ajaxUrl = '/admin/ajaxs/view-order-details';
+      
+      let htmlResult = $('#collapseResult-'+order_id);
+			htmlResult.html('');
+			htmlResult.css('min-height', '50px');
+			htmlResult.css('background', 'url(\"/images/cake/ajax-loader.gif\") no-repeat scroll center 0 transparent');
+      
+      let params = {
+        order_id: order_id
+      }
+
+      $.ajax({url: ajaxUrl, 
+        data: params, 
+        type: 'POST',
+        dataType: 'html',
+        cache: false,
+        headers: {
+          'X-CSRF-Token': csrfToken
+        },
+        success: function (response) {
+            console.log(response.responseText, 'responseText');
+        },
+        error: function (e) {
+            console.error(e, ajaxUrl);
+        },
+        complete: function (e) {
+            htmlResult.css('background', 'none repeat scroll 0 0 transparent');
+            htmlResult.html(e.responseText);
+        }
+    });    
+  });
+
+  $('.collapse').on('hidden.bs.collapse', function() {
+    
+    let id = $(this).attr('id');
+    let dataElementArray = id.split('-');
+    let order_id = dataElementArray[1];
+
+    let htmlResult = $('collapseResult-'+order_id);
+    htmlResult.html('');
+  }); 
 });
+
+function apriPopUpBootstrap(url, opts) {
+
+	if (typeof url == 'undefined' || url=='') {
+		console.error('error - url undefined!');
+		return;
+	}
+		
+	var modalId = 'tmpModal';
+	var modalSize = 'lg';
+	var modalHeader = '';
+	
+	if(opts!='') {
+		if(opts['size']!='')
+			modalSize = opts['size'];
+		if(opts['header']!='')
+			modalHeader = opts['header'];
+	}
+	
+	var html = '';
+
+	html =  '<div class=\"modal fade\" id=\"'+modalId+'\" role=\"dialog\">';
+	html += '<div class=\"modal-dialog modal-'+modalSize+'\">';
+	html += '<div class=\"modal-content\">';
+	html += '<div class=\"modal-header\">'; 
+	html += '<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>';
+	html += '<h4 class=\"modal-title\">'+modalHeader+'</h4>'; // msg esito
+	html += '</div>';
+	html += '<div class=\"modal-body\">';
+	html += '</div>';
+	html += '<div class=\"modal-footer\">';
+	html += '<button type=\"button\" class=\"btn btn-sm btn-warning\" data-dismiss=\"modal\">Chiudi</button>'; 
+	html += '</div>'; 
+	html += '</div>';
+	html += '</div>';
+	html += '</div>'; 
+	
+	$(html).appendTo('body');  /* no al body se no perdo i css */
+	$('#'+modalId).modal('show');
+	
+	$('#'+modalId).on('shown.bs.modal', function () {
+      $('#'+modalId).find('.modal-body').css('background', 'url(\"/images/cake/ajax-loader.gif\") no-repeat scroll center center transparent');
+
+      $.ajax({
+        type: 'GET',
+        url: url,
+        cache: false,
+        xhrFields: {
+            withCredentials: true
+        },                           
+        success: function (response) {
+          $('#'+modalId).find('.modal-body').css('background', 'none repeat scroll 0 0 transparent');
+          $('#'+modalId).find('.modal-body').html(response);
+        },
+        error: function (e) {
+            console.error(e, ajaxUrl);
+        },
+        complete: function (e) {
+          $('#'+modalId).find('.modal-body').css('background', 'none repeat scroll 0 0 transparent');
+        }
+      });	
+	});
+	
+	$('#'+modalId).on('hide.bs.modal', function () {
+
+		$('#'+modalId).find('.modal-header').html('');            
+		$('#'+modalId).find('.modal-body').html('');
+
+		$('#'+modalId).detach();                   
+	});
+}
 ";
 
 $this->Html->scriptBlock($js, ['block' => true]);
