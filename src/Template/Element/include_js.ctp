@@ -42,7 +42,7 @@ echo $this->Html->script('moment/moment-with-locales.min.js', ['block' => 'scrip
 echo $this->Html->script('ckeditor5/ckeditor.js', ['block' => 'scriptInclude']); 
 
 // istanzio objScript = new Script();
-echo $this->Html->script('scripts.js', ['block' => 'scriptInclude']); 
+echo $this->Html->script('scripts.js?v=20230122', ['block' => 'scriptInclude']); 
 
 /*
 <script type="text/javascript" src='http://maps.google.it/maps/api/js?sensor=false&libraries=places'></script>

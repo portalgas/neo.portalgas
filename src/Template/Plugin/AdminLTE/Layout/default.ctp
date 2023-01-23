@@ -1,4 +1,9 @@
-<?php use Cake\Core\Configure;?>
+<?php
+use Cake\Core\Configure;
+
+$config = Configure::read('Config');
+$portalgas_ping_session = $config['Portalgas.ping.session.BO'];
+?>
 
 <!DOCTYPE html>
 <html>
@@ -95,7 +100,11 @@ $(document).ready(function() {
 
     objScript = new Script(); 
     objScript.ping('<?php echo Configure::read('pingAjaxUrl');?>', <?php echo Configure::read('pingTime');?>);
-
+    /* cors domain 
+     * objScript.ping('<?php echo $portalgas_ping_session;?>', <?php echo Configure::read('pingTime');?>);
+     */
+    window.setInterval(callPingJoomla, <?php echo Configure::read('pingTime');?>, '<?php echo $portalgas_ping_session;?>');
+    
     var anchor = objScript.getUrlAnchor();
     if(anchor!='') {
         $('#'+anchor).css('background-color', 'yellow');
@@ -123,6 +132,23 @@ $(document).ready(function() {
           });      
     }
 });
+
+function callPingJoomla(ajaxUrl) {
+    $.ajax({url: ajaxUrl,  
+      type: 'GET',
+      dataType: 'html',
+      cache: false,
+      xhrFields: {
+          withCredentials: true
+      },                           
+      success: function (response) {
+          console.log(response, 'callPingJoomla');
+      },
+      error: function (e) {
+          console.error(e, ajaxUrl);
+      }
+    });
+} 
 </script>  
   
 <?php echo $this->fetch('script'); ?>

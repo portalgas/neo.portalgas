@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 
 $config = Configure::read('Config');
 $portalgas_fe_url = $config['Portalgas.fe.url'];
+$portalgas_ping_session = $config['Portalgas.ping.session.FE'];
 
 $organization = $this->Identity->get('organization');
 // debug($organization);
@@ -74,6 +75,7 @@ $organization = $this->Identity->get('organization');
     
     $(document).ready(function() {
         window.setInterval(callPing, <?php echo Configure::read('pingTime');?>);
+        /* cors domain window.setInterval(callPingJoomla, <?php echo Configure::read('pingTime');?>); */
 
         var a = $('a[href="<?php echo $this->Url->build() ?>"]');
         // console.log("<?php echo $this->Url->build() ?>");
@@ -89,12 +91,21 @@ $organization = $this->Identity->get('organization');
         /* console.log("Script.callPing "+url);  */
 
         var httpRequest = new XMLHttpRequest();
-        httpRequest.open('GET', url);
+        httpRequest.open('GET', url, true);
         httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         httpRequest.setRequestHeader("Content-type", "application/json");
         httpRequest.setRequestHeader('X-CSRF-Token', csrfToken);
         httpRequest.send(null);
-   }   
+    }   
+    function callPingJoomla() { 
+        var url = '<?php echo $portalgas_ping_session;?>';
+        /* console.log("Script.callPingJoomla "+url);  */
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', url, true);
+        httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        httpRequest.withCredentials = true;
+        httpRequest.send(null);
+    }   
     </script>                           
 </main>
    </body>

@@ -410,10 +410,11 @@ Script.prototype = {
     callPing: function(pingAjaxUrl) {
         /* console.log("Script.callPing "+pingAjaxUrl); */
         var httpRequest = new XMLHttpRequest();
-        httpRequest.open('GET', pingAjaxUrl);
+        httpRequest.open('GET', pingAjaxUrl, true);
         httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         httpRequest.setRequestHeader("Content-type", "application/json");
         httpRequest.setRequestHeader('X-CSRF-Token', csrfToken);
+        httpRequest.withCredentials = true;
         httpRequest.send(null);
     },
     init: function () {
