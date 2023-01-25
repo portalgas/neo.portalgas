@@ -2,6 +2,7 @@
 namespace App\Traits;
 
 use Cake\Core\Configure;
+use Cake\I18n\Date;
 
 trait UtilTrait
 {
@@ -215,15 +216,93 @@ trait UtilTrait
         return $results;
     } 
 
+    // data Cake\I18n\FrozenDate
     public function getDeliveryLabel($delivery) {
         if($delivery->sys=='Y')
-            $delivery_label = 'Da definire';
+            $results = 'Da definire';
         else 
-            $delivery_label = $delivery->luogo.' - '.$delivery->data->i18nFormat('eeee d MMMM');
+            $results = $delivery->luogo.' - '.$delivery->data->i18nFormat('eeee d MMMM');
 
-        return $delivery_label;
+        return $results;
     }
+
+    // data Cake\I18n\FrozenDate
+    public function getDeliveryDateLabel($delivery) {
+                
+        if($delivery->sys=='Y')
+            $results = '';
+        else {
+            $now = new Date();
+            $interval = $now->diff($delivery->data);
+            $interval_gg = $interval->format('%R%a');
+
+            if($interval_gg<0)
+                $results = '<span class="label label-danger">Chiusa</span>';
+            else 
+            if($interval_gg>0)
+                $results = '<span class="label label-success">Aperta (mancano ancora '.(int)$interval_gg.' gg alla consegna)</span>';
+            else 
+                $results = '<span class="label label-warning">Scade oggi</span>';
+        }
+
+        return $results;
+    }
+     
+    // data Cake\I18n\FrozenDate
+    public function getOrderDateLabel($order) {
         
+        $results = '';
+
+        $now = new Date();
+        $interval = $now->diff($order->data_fine);
+        $interval_gg = $interval->format('%R%a');
+
+        switch($order->state_code) {
+            case 'CREATE-INCOMPLETE':
+                $results .= '';
+            break;
+            case 'OPEN-NEXT':
+                $results .= '<span class="label label-primary">Aprira&grave; ' . $order->data_inizio->i18nFormat('eeee d MMMM') . '</span>';
+            break;
+            case 'PRODGASPROMOTION-GAS-OPEN':
+            case 'PRODGASPROMOTION-GAS-USERS-OPEN':
+            case 'OPEN':
+            case 'RI-OPEN-VALIDATE':
+                if ($interval_gg <= (int)Configure::read('GGOrderCloseNext')) {
+                    $results .= '<span class="label label-warning">Si sta chiudendo! ';
+                    if ($interval_gg == 0)
+                        $results .= 'oggi';
+                    else
+                        $results .= 'Tra&nbsp;' . (int)$interval_gg . '&nbsp;gg';
+                    $results .= '</span>';
+                } else
+                    $results .= '<span class="label label-success">Aperto</span>';
+            break;
+            // case ProdGasPromotion
+            case 'PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS': 
+            case 'PRODGASPROMOTION-GAS-WORKING': 
+            case 'PRODGASPROMOTION-GAS-USERS-WORKING':
+                if ($interval_gg < 0) 
+                    $results .= '<span class="label label-primary">Aprira&grave; ' . $this->time->i18nFormat($results['data_inizio'], "%A %e %B") . '</span>';
+                else
+                if ($interval_gg >= Configure::read('GGOrderCloseNext')) {
+                    $results .= '<span class="label label-warning">Si sta chiudendo! ';
+                    if ($interval_gg == 0)
+                        $results .= 'oggi';
+                    else
+                        $results .= 'Tra&nbsp;' . (int)$interval_gg . '&nbsp;gg';
+                    $results .= '</span>';
+                } else
+                    $results .= '<span class="label label-success">Aperto</span>';				
+            break;
+            default:
+                $results .= '<span class="label label-danger">Chiuso</span>';
+            break;
+        }
+ 
+        return $results;
+    }
+
     public function getListYears()
     {
         $year = date('Y');

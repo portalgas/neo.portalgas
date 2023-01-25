@@ -50,7 +50,7 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
           <table class="table table-hover">
             <thead>
               <tr>
-                  <th scope="col"></th>
+                  <th scope="col" class="hidden-xs hidden-sm"></th>
                   <th scope="col" colspan="2"><?= $this->Paginator->sort('supplier_organization_id', __('supplier_organization_id')) ?></th>
                   <?php 
                   /*  
@@ -58,9 +58,11 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                   <th scope="col"><?= $this->Paginator->sort('owner_supplier_organization_id') ?></th>
                   */ 
                   ?>
-                  <th scope="col">Si aprirà<br />Si chiuderà</th>
-                  <th scope="col"><?= $this->Paginator->sort('owner_articles', __('OwnerArticles')) ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('state_code', __('StatoElaborazione')) ?></th>
+                  <th scope="col" class="hidden-xs">Si aprirà<br />Si chiuderà</th>
+                  <th scope="col" class="hidden-xs">Aperto/chiuso</th>
+                  <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('nota') ?></th>
+                  <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('owner_articles', __('OwnerArticles')) ?></th>
+                  <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('state_code', __('StatoElaborazione')) ?></th>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
               </tr>
             </thead>
@@ -74,13 +76,13 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                       echo '<tr>';
                       echo '<th class="trGroup" colspan="'.$colspan.'">';
                       // echo '<b>'.__('Delivery').'</b> '.$this->Html->link($this->HtmlCustomSite->drawDeliveryLabel($order->delivery), ['controller' => 'Deliveries', 'action' => 'view', $order->delivery->id]);
-                      echo '<b>'.__('Delivery').'</b> '.$this->HtmlCustomSite->drawDeliveryLabel($order->delivery);
+                      echo '<b>'.__('Delivery').'</b> '.$this->HtmlCustomSite->drawDeliveryLabel($order->delivery).' '.$this->HtmlCustomSite->drawDeliveryDateLabel($order->delivery);
                       echo '</th>';
                       echo '</tr>';
                   }
 
                   echo '<tr>';
-                  echo '<td>
+                  echo '<td class="hidden-xs hidden-sm">
                       <a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapse-'.$order->id.'" aria-expanded="true" title="Clicca per maggiori informazioni">
                         <i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>
                       </a>
@@ -92,37 +94,70 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                   echo h($order->suppliers_organization->name);
                   echo '<br /><small>Importo totale '.$this->Number->format($order->tot_importo).'&nbsp;&euro;</small>';
                   echo '</td>';
-                  echo '<td>';
+                  echo '<td style="white-space:nowrap;" class="hidden-xs hidden-sm">';
                   echo $order->data_inizio->i18nFormat('eeee d MMMM');
                   echo '<br />';
                   echo $order->data_fine->i18nFormat('eeee d MMMM');
                   if($order->data_fine_validation!=Configure::read('DB.field.date.empty2'))	
                     echo '<br />Riaperto fino a '.$order->data_fine_validation->i18nFormat('eeee d MMMM');
-                  echo '</td>';                    
-                  echo '<td>';
+                  echo '</td>';  
+                  echo '<td style="white-space:nowrap;" class="hidden-xs">';
+                  echo $this->HtmlCustomSite->drawOrderDateLabel($order);
+                  echo '</td>';   
+                  
+                  /*
+                  *  campo nota / pagamento
+                  */
+                  echo '<td class="hidden-xs">';
+                  if(!empty($order->nota)) {
+                    
+                    echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$order->id.'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+                    echo '<div id="order_nota_'.$order->id.'" class="modal fade" role="dialog">';
+                    echo '<div class="modal-dialog">';
+                    echo '<div class="modal-content">';
+                    echo '<div class="modal-header">';
+                    echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                    echo '<h4 class="modal-title">Nota del referente</h4>';
+                    echo '</div>';
+                    echo '<div class="modal-body"><p>'.$order->nota.'</p>';
+                    echo '</div>';
+                    echo '<div class="modal-footer">';
+                    echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';			
+                    
+                  } // end if(!empty($order->nota))	
+                  echo '</td>';
+                                    
+                  echo '<td class="hidden-xs">';
                   echo __('ArticlesOwner'.$order->owner_articles);
                   echo '<br /><small class="label bg-primary">'.$order->order_type->descri.'</small>';
                   echo '</td>';
-                  echo '<td>';
+                  echo '<td style="white-space:nowrap;" class="hidden-xs">';
                   echo $this->HtmlCustomSite->drawOrdersStateDiv($order);
                   echo '&nbsp;';
                   echo __($order->state_code.'-label');
                   echo '</td>';
                   echo '<td class="actions text-right">';
 
-                  echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=sotto_menu&amp;order_id='.$order->id.'&amp;position_img=bgLeft&amp;scope=neo&amp;format=notmpl" data-attr-size="md" data-attr-header="Ordine Azienda agricola RoeroVero"><i class="fa fa-2x fa-navicon"></i></button>';
-                  // echo $this->Html->link(__('View'), ['action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-info']);
-                  echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
-                  echo $this->Html->link(__('ArticleOrders'), ['controller' => 'articles-orders', 'action' => 'index', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
+                 //  if($order->can_state_code_to_close)
+                  echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=close&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
+                
+                  echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
+                  
+                  if($this->Identity->get()->acl['isRoot'] && $order->state_code=='CLOSE')
+                    echo '<a title="'.__('Orders state_code change').'" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=state_code_change&order_id='.$order->id.'&url_bck=index_history" class="action action actionSyncronize">'.__('Orders state_code change').'</a>';
+
+                  $modal_url = $portalgas_bo_url.'/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=sotto_menu&amp;order_id='.$order->id.'&amp;position_img=bgLeft&amp;scope=neo&amp;format=notmpl';
+                  $modal_size = 'md'; // sm md lg
+                  $modal_header = __('Order').' '.$order->suppliers_organization->name;                                    
+                  echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'"><i class="fa fa-2x fa-navicon"></i></button>';
+                  // echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
+                  // echo $this->Html->link(__('ArticleOrders'), ['controller' => 'articles-orders', 'action' => 'index', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
                   // echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger']);
-                  switch($order->order_type_id) {
-                    case Configure::read('Order.type.gas_parent_groups'):
-                        echo $this->Html->link(__('Order-'.Configure::read('Order.type.gas_groups').'-Add'), ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary']);
-                    break;
-                    case Configure::read('Order.type.des_titolare'):
-                        echo $this->Html->link(__('Order-'.Configure::read('Order.type.des').'-Add'), ['action' => 'add', Configure::read('Order.type.des'), $order->id], ['class'=>'btn btn-primary']);
-                    break;
-                  }
+                  
                   echo '</td>';                  
                 echo '</tr>'; 
                 

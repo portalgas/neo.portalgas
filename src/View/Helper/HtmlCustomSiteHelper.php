@@ -74,6 +74,14 @@ class HtmlCustomSiteHelper extends FormHelper
         return $this->getDeliveryLabel($delivery);
     }
 
+    public function drawDeliveryDateLabel($delivery) {
+        return $this->getDeliveryDateLabel($delivery);
+    }
+
+    public function drawOrderDateLabel($delivery) {
+        return $this->getOrderDateLabel($delivery);
+    }
+
     public function drawOrdersStateDiv($order) {
 
         $str = '';   	
