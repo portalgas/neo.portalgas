@@ -55,9 +55,7 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
      * implement
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
-        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);
-        return $results;
+        return parent::getSuppliersOrganizations($user, $organization_id, $user_id, $where, $debug);
     } 
  
     /*

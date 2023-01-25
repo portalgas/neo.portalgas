@@ -10,20 +10,23 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
   <h1>
     <?php 
     echo (!empty($order_type_id)) ? __('Orders-'.$order_type_id): __('Orders');
-    
-    if($order_type_id==Configure::read('Order.type.gas_parent_groups') || 
-       $order_type_id==Configure::read('Order.type.des_titolare')) {
-        echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']).'</div>';
-       }          
+    echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']).'</div>';
     ?>
   </h1>
 </section>
+
+
+
 
 <!-- Main content -->
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
-      <div class="box">
+
+    <?php 
+    echo $this->element('search/orders');
+    ?>
+    <div class="box">
         <div class="box-header">
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 

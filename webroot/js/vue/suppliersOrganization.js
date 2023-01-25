@@ -46,7 +46,7 @@ $(function () {
 		        var order_id = $('#order_id').val();
 		    	if(order_id=='0' || order_id=='' || typeof order_id === 'undefined') {
 					
-					var supplier_organization_id = $('#supplier-organization-id').val();
+					var supplier_organization_id = $('#supplier_organization_id').val();
 			        if(supplier_organization_id=='0' || supplier_organization_id=='' || typeof supplier_organization_id === 'undefined') {
 				    	this.spinner_run_supplier_organization = false;
 			            $('.run-supplier-organization .spinner').removeClass(ico_spinner);
@@ -189,7 +189,7 @@ $(function () {
 
 	vueSuppliersOrganization.show();
 
-	$('#supplier-organization-id').on('select2:select', function (e) {
+	$('#supplier_organization_id').on('select2:select', function (e) {
 		var data = e.params.data;
 		/* console.log(data, 'select2'); */
 		vueSuppliersOrganization.getSuppliersOrganization();

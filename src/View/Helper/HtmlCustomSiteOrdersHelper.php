@@ -114,36 +114,51 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
      * $options=['ctrlDesACL'] nella creazione di un ordine ctrl se il produttore e' DES e l'utente e' titolare
      */
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
+        
+        if(isset($options['id'])) 
+            $id = $options['id'];
+        else 
+            $id = 'supplier_organization_id';
 
         $opts = ['label' => __('SupplierOrganization'), 
-                    'options' => $suppliersOrganizations, 
-                    // @change' => 'getSuppliersOrganization', con select2 non ha + effetto, fatto il bind in supplierOrganization.js
-                    'id' => 'supplier-organization-id',
-                    'class' => 'form-control'];
+                 'options' => $suppliersOrganizations, 
+                 // @change' => 'getSuppliersOrganization', con select2 non ha + effetto, fatto il bind in supplierOrganization.js
+                 'id' => $id,
+                 'class' => 'form-control'];
         if(isset($options['select2'])) {
-            if($options['select2'])
-                $opts += ['class' => 'select2 form-control'];
-        }                     
+            if($options['select2']) 
+                $opts['class'] = 'select2 form-control';                
+        }              
         if(isset($options['empty'])) {
             if($options['empty'])
                 $opts += ['empty' => Configure::read('HtmlOptionEmpty')];
         } 
         else 
             $opts += ['empty' => Configure::read('HtmlOptionEmpty')];
+        
+        if(isset($options['default'])) 
+            $opts['default'] = $options['default'];                
 
         $html = '';
-        $html .= $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
         
-        $html .= '<div class="row" id="vue-supplier-organization">';
-        $html .= '<div class="col-md-8">';
-        // echo $this->HtmlCustomSite->boxSupplierOrganization($suppliersOrganizations);
-        $html .= $this->Form->control('supplier_organization_id', $opts);
-        $html .= '</div>';
-        $html .= '<div v-if="supplier_organization.name!=null" class="col-md-4" id="vue-supplier-organization-box">';
-        $html .= '  <div class="box-img" v-if="supplier_organization.supplier.img1!=\'\'"><img width="'.Configure::read('Supplier.img.preview.width').'" class="img-responsive-disabled userAvatar" v-bind:src="supplier_organization.img1" /></div>';
-        $html .= '  <div class="box-name">{{supplier_organization.name}}</div>';
-        $html .= '  <div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">{{supplier_organization.owner_articles | ownerArticlesLabel}}</span></div>';
-        $html .= '</div>';
+        // nei filtri di ricerca vale search_supplier_organization_id e non e' fatto il bind
+        if($id=='supplier_organization_id') {
+            $html .= $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);
+            $html .= '<div class="row" id="vue-supplier-organization">';
+            $html .= '<div class="col-md-8">';
+            // echo $this->HtmlCustomSite->boxSupplierOrganization($suppliersOrganizations);
+            $html .= $this->Form->control($id, $opts);
+            $html .= '</div>';
+            $html .= '<div v-if="supplier_organization.name!=null" class="col-md-4" id="vue-supplier-organization-box">';
+            $html .= '  <div class="box-img" v-if="supplier_organization.supplier.img1!=\'\'"><img width="'.Configure::read('Supplier.img.preview.width').'" class="img-responsive-disabled userAvatar" v-bind:src="supplier_organization.img1" /></div>';
+            $html .= '  <div class="box-name">{{supplier_organization.name}}</div>';
+            $html .= '  <div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">{{supplier_organization.owner_articles | ownerArticlesLabel}}</span></div>';
+            $html .= '</div>';    
+        }
+        else {
+            $html .= '<div>';
+            $html .= $this->Form->control($id, $opts);
+        }
 
         if(isset($options['ctrlDesACL']) && $options['ctrlDesACL']) {
             $html .= '<div id="myModal" class="modal fade" role="dialog">

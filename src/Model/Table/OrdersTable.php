@@ -399,6 +399,15 @@ class OrdersTable extends Table
     
     /*
      * implement
+     */ 
+    public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);
+        return $results;
+    }
+
+    /*
+     * implement
      * ..behaviour afterSave() ha l'entity ma non la request
      */   
     public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {

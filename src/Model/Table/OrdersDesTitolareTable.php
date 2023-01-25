@@ -90,9 +90,7 @@ class OrdersDesTitolareTable extends OrdersTable implements OrderTableInterface
      * implement
      */ 
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
-        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-        $results = $suppliersOrganizationsTable->gets($user, $where);
-        return $results;
+        return parent::getSuppliersOrganizations($user, $organization_id, $user_id, $where, $debug);
     }
     
     /*

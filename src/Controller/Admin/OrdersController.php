@@ -47,12 +47,33 @@ class OrdersController extends AppController
 
     public function index($order_type_id=0)
     {
-        $where = ['Orders.organization_id' => $this->_organization->id];
+        $where = [];
+        $orders = ['Deliveries.data' => 'asc', 
+                   'Orders.data_inizio' => 'asc'];
+
+        $request = $this->request->getQuery();
+        $search_supplier_organization_id = '';
+        $order_delivery_date = '';
+
+        if(!empty($request['search_supplier_organization_id'])) {
+            $search_supplier_organization_id = $request['search_supplier_organization_id'];
+            $where += ['Orders.supplier_organization_id' => $search_supplier_organization_id];
+        } 
+
+        if(!empty($request['order_delivery_date'])) {
+            $order_delivery_date = $request['order_delivery_date'];
+            list($field, $sort) = explode(' ', $order_delivery_date);
+            $orders[$field] = $sort;
+        } 
+        $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
+
+        $where += ['Orders.organization_id' => $this->_organization->id];
         if(!empty($order_type_id))
             $where += ['Orders.order_type_id' => $order_type_id];
+        // debug($where);
 
         $this->paginate = [
-            'order' => ['Deliveries.data', 'Orders.data_inizio'],            
+            'order' => $orders,            
             'contain' => ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
                 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
             'conditions' => $where
@@ -61,7 +82,18 @@ class OrdersController extends AppController
         // debug($where);
         $orders = $this->paginate($this->Orders);
 
+        $order_type_id  = Configure::read('Order.type.gas');
         $this->set(compact('orders', 'order_type_id'));
+
+        /* 
+         * filters
+         */
+        $suppliersOrganizations = $this->Orders->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+        $order_delivery_dates = ['Deliveries.data asc' => 'Prime consegne',
+                                 'Deliveries.data desc' => 'Ultime consegne'];
+
+        $this->set(compact('suppliersOrganizations', 'order_delivery_dates'));
     }
 
     public function view($id = null)

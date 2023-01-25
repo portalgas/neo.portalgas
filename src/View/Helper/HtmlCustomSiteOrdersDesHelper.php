@@ -116,9 +116,9 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
     }
 
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
-        $options['ctrlDesACL'] = false;
-        $options['empty'] = false; 
-        $options['select2'] = false;    
+        if(!isset($options['ctrlDesACL'])) $options['ctrlDesACL'] = false;
+        if(!isset($options['empty'])) $options['empty'] = false; 
+        if(!isset($options['select2'])) $options['select2'] = false;           
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 

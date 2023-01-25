@@ -29,9 +29,9 @@ class HtmlCustomSiteOrdersGasParentGroupsHelper extends HtmlCustomSiteOrdersHelp
     }
 
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
-        $options['ctrlDesACL'] = false;
-        $options['empty'] = true; 
-        $options['select2'] = true;         
+        if(!isset($options['ctrlDesACL'])) $options['ctrlDesACL'] = false;
+        if(!isset($options['empty'])) $options['empty'] = true; 
+        if(!isset($options['select2'])) $options['select2'] = true;  
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 
