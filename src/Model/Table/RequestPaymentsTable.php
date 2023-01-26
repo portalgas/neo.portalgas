@@ -110,26 +110,34 @@ class RequestPaymentsTable extends Table
         
 		$where = ['RequestPaymentsOrders.organization_id' => $user->organization->id,
 				  'RequestPaymentsOrders.order_id' => $order_id];
+               
 		$requestPaymentsOrderResults = $requestPaymentsOrdersTable->find()
                                         ->contain(['RequestPayments'])
+                                        ->where($where)
                                         ->first();		
-		
+                                    	
 		return $requestPaymentsOrderResults;
 	}
 	
 	public  function getRequestPaymentIdByOrderId($user, $order_id, $debug=false) {
         
+        $request_payment_id = 0;
+
 		$requestPaymentsOrder = $this->getRequestPaymentByOrderId($user, $order_id, $debug);		
-		$request_payment_id = $requestPaymentsOrder->request_payment->id;
+		if(!empty($requestPaymentsOrder))
+            $request_payment_id = $requestPaymentsOrder->request_payment->id;
 
 		return $request_payment_id;
 	}
 	
 	public  function getRequestPaymentNumByOrderId($user, $order_id, $debug=false) {
         
-		$requestPaymentsOrder = $this->getRequestPaymentByOrderId($user, $order_id, $debug);		
-		$request_payment_num = $requestPaymentsOrder->request_payment->num;
+        $request_payment_num = '';
 
+		$requestPaymentsOrder = $this->getRequestPaymentByOrderId($user, $order_id, $debug);
+        if(!empty($requestPaymentsOrder))
+    		$request_payment_num = $requestPaymentsOrder->request_payment->num;
+      
 		return $request_payment_num;
 	}
 }

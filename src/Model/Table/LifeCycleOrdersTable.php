@@ -9,8 +9,13 @@ use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use App\Validation\OrderValidator;
 use Cake\I18n\Time;
+use App\Traits;
+
 class LifeCycleOrdersTable extends Table
 {
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -743,8 +748,10 @@ class LifeCycleOrdersTable extends Table
                 if(!empty($ordersAction)) {
                     $i=0;
                     $results[$i]['label'] = __('GoToOrderState'.$stateCodeAfter); // Merce arrivata
-                    $results[$i]['action'] = ['controller' => $ordersAction->controller, 'action' => $ordersAction->action, null, 'delivery_id='.$orderResult->delivery_id, 'order_id='.$orderResult->id];
-                    $results[$i]['options'] = ['class' => $class_css, 'title' => __('GoToOrderState'.$stateCodeAfter)];
+                    $results[$i]['controller'] = $ordersAction->controller;
+                    $results[$i]['action'] = $ordersAction->action;
+                    $results[$i]['qs'] = ['delivery_id' => $orderResult->delivery_id, 'order_id' => $orderResult->id];
+                    $results[$i]['class'] = $class_css;
                 }
             }
         } // end if($user->organization->template->payToDelivery!='ON-POST')
@@ -1728,7 +1735,7 @@ class LifeCycleOrdersTable extends Table
         if($debug) debug($orderResult->state_code);
         
         if($orderResult->delivery->sys=='Y') {
-            $esito = "Per poter chiudere l'ordine dovrai prima associarlo ad una <b>consegna valida</b>, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id=".$orderResult->delivery_id."&order_id=".$orderResult->id."\"><b>modificare</b> la consegna associata</a>";
+            $esito = "Per poter chiudere l'ordine dovrai prima associarlo ad una <b>consegna valida</b>, clicca qui per <a href=\"".$this->drawJLink('orders', 'edit', ['delivery_id' => $orderResult->delivery_id,'order_id' => $orderResult->id])."\"><b>modificare</b> la consegna associata</a>";
         }
         else {
             if($orderResult->tot_importo>0) {
@@ -1756,7 +1763,7 @@ class LifeCycleOrdersTable extends Table
                 }
             }
             else
-                $esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=delete&delivery_id=".$orderResult->delivery_id."&order_id=".$orderResult->id."\"><b>cancellalo</b></a>";
+                $esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".$this->drawJLink('orders', 'delete', ['delivery_id' => $orderResult->delivery_id, 'order_id' => $orderResult->id])."\"><b>cancellalo</b></a>";
         }
             
         return $esito;

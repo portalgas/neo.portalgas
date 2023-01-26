@@ -1021,6 +1021,9 @@ msgstr "Riportalo 'in carico al referente'"
 msgid "GoToOrderStateCLOSE"
 msgstr "Chiudi l'ordine"
 
+msgid "Close Order"
+msgstr "Chiudi l'ordine"
+
 #
 # prepagato
 #

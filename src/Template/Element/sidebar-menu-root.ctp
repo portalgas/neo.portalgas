@@ -4,8 +4,6 @@ use Cake\Core\Configure;
 $icon = ''; // '<i class="fa fa-circle"></i> ';
 
 $config = Configure::read('Config');
-$portalgas_bo_url = $config['Portalgas.bo.url'];
-$portalgas_bo_home = $config['Portalgas.bo.home'];
 $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
 ?> 
   <li class="treeview"> 
@@ -89,11 +87,11 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=index" target="">Prospetto <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'index');?> target="">Prospetto <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?><?php echo __('Genera pagamenti').' '.date('Y');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('Gestisci pagamenti').' '.date('Y');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsPays&amp;action=invoice_create_form" target="">Genera fattura <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Pages&amp;action=export_docs_root" target="">Stampa documenti <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'invoice_create_form');?>" target="">Genera fattura <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jLink('pages', 'export_docs_root');?> target="">Stampa documenti <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
   </li>  

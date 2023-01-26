@@ -242,7 +242,7 @@ trait UtilTrait
             if($interval_gg>0)
                 $results = '<span class="label label-success">Aperta (mancano ancora '.(int)$interval_gg.' gg alla consegna)</span>';
             else 
-                $results = '<span class="label label-warning">Scade oggi</span>';
+                $results = '<span class="label label-warning">Aperta (scade oggi)</span>';
         }
 
         return $results;
@@ -369,5 +369,17 @@ trait UtilTrait
             }
         }
         return $results;
-    }    
+    }  
+    
+    public function drawjLink($controller, $action, $qs=[]) {
+        $config = Configure::read('Config');
+        $portalgas_bo_url = $config['Portalgas.bo.url'];
+
+        $results = $portalgas_bo_url.'/administrator/index.php?option=com_cake&controller='.ucfirst($controller).'&action='.$action;
+        if(!empty($qs))
+        foreach($qs as $key => $value)
+            $results .= '&'.$key.'='.$value;
+
+        return $results;
+    }
 }

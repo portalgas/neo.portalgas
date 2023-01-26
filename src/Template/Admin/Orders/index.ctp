@@ -2,10 +2,6 @@
 use Cake\Core\Configure;
 use App\Traits;
 
-$config = Configure::read('Config');
-$portalgas_bo_url = $config['Portalgas.bo.url'];
-$portalgas_fe_url = $config['Portalgas.fe.url']; 
-
 $user = $this->Identity->get();
 ?>
 <section class="content-header">
@@ -78,8 +74,13 @@ $user = $this->Identity->get();
                   if($delivery_id_old==0 || $delivery_id_old!=$order->delivery_id) {
                       echo '<tr>';
                       echo '<th class="trGroup" colspan="'.$colspan.'">';
-                      // echo '<b>'.__('Delivery').'</b> '.$this->Html->link($this->HtmlCustomSite->drawDeliveryLabel($order->delivery), ['controller' => 'Deliveries', 'action' => 'view', $order->delivery->id]);
-                      echo '<b>'.__('Delivery').'</b> '.$this->HtmlCustomSite->drawDeliveryLabel($order->delivery).' '.$this->HtmlCustomSite->drawDeliveryDateLabel($order->delivery);
+
+                      echo '<a title="'.__('Visualizza il calendario della consegna').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'calendar_view', ['delivery_id' => $order->delivery->id]).'"><i class="fa fa-2x fa-calendar-check-o" aria-hidden="true"></i></a>';
+                      
+                      $label = $this->HtmlCustomSite->drawDeliveryLabel($order->delivery);
+                      echo ' <b>'.__('Delivery').'</b> ';
+                      echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'view', ['id' => $order->delivery->id]).'">'.$label.'</a>';
+                      echo ' '.$this->HtmlCustomSite->drawDeliveryDateLabel($order->delivery);
                       echo '</th>';
                       echo '</tr>';
                   }
@@ -136,7 +137,16 @@ $user = $this->Identity->get();
                                     
                   echo '<td class="hidden-xs">';
                   echo __('ArticlesOwner'.$order->owner_articles);
-                  echo '<br /><small class="label bg-primary">'.$order->order_type->descri.'</small>';
+                  echo '<br />';
+                  switch ($order->order_type->id) {
+                      case Configure::read('Order.type.des'):
+                      case Configure::read('Order.type.des_titolare'):
+                        echo '<a title="'.__('Order-'.Configure::read('Order.type.des')).'" href="'.$this->HtmlCustomSite->jLink('desOrdersOrganizations', 'index', ['des_order_id' => $order->des_order_id]).'"><small class="label bg-primary">'.$order->order_type->descri.'</small></a>';
+                      break;
+                      default:
+                        echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';
+                      break;
+                  }
                   echo '</td>';
                   echo '<td style="white-space:nowrap;" class="hidden-xs">';
                   echo $this->HtmlCustomSite->drawOrdersStateDiv($order);
@@ -149,8 +159,8 @@ $user = $this->Identity->get();
                   if($user->organization->template->payToDelivery == 'POST' || $user->organization->template->payToDelivery=='ON-POST') {
                     if(!empty($order->request_payment_num)) {
                       echo "<br />";
-                      if($user->organization->acl['isTesoriereGeneric'])
-                        echo $this->Html->link('Rich. pagamento n. '.$order->request_payment_num, ['controller' => 'RequestPayments', 'action' => 'edit', $order->request_payment_id], ['title' => __('Edit RequestPayment')]);
+                      if($user->acl['isTesoriere'])
+                        echo '<a title="'.__('Edit RequestPayment').'" href="'.$this->HtmlCustomSite->jLink('requestPayments', 'edit', ['id' => $order->request_payment_id]).'">Rich. pagamento n. '.$order->request_payment_num.'</a>';
                       else
                         echo "<br />Rich. pagamento n. ".$order->request_payment_num;
                     }
@@ -174,14 +184,14 @@ $user = $this->Identity->get();
                    */
                   echo '<td class="actions text-right">';
                   if($order->can_state_code_to_close)
-                    echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=close&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
+                    echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'close', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
                 
-                  echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
+                  echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   
                   if($this->Identity->get()->acl['isRoot'] && $order->state_code=='CLOSE')
-                    echo '<a title="'.__('Orders state_code change').'" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=state_code_change&order_id='.$order->id.'&url_bck=index_history" class="action action actionSyncronize">'.__('Orders state_code change').'</a>';
+                    echo '<a title="'.__('Orders state_code change').'" href="'.$HtmlCustomSite->jLink('orders', 'state_code_change', ['order_id' => $order->id, 'url_bck' => 'index_history']).'" class="action action actionSyncronize">'.__('Orders state_code change').'</a>';
 
-                  $modal_url = $portalgas_bo_url.'/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=sotto_menu&amp;order_id='.$order->id.'&amp;position_img=bgLeft&amp;scope=neo&amp;format=notmpl';
+                  $modal_url = $this->HtmlCustomSite->jLink('orders', 'sotto_menu', ['order_id' => $order->id, 'position_img' => 'bgLeft', 'scope' => 'neo', 'format' => 'notmpl']);
                   $modal_size = 'md'; // sm md lg
                   $modal_header = __('Order').' '.$order->suppliers_organization->name;                                    
                   echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'"><i class="fa fa-2x fa-navicon"></i></button>';
@@ -203,6 +213,15 @@ $user = $this->Identity->get();
 
             echo '</tbody>';
             echo '</table>';
+
+            /*
+            * legenda profilata
+            */
+            echo '<span class="hidden-xs">';
+            $results = $this->HtmlCustomSite->drawLegenda($user, $orderStatesToLegenda);
+            echo $results['htmlLegenda'];
+            $this->Html->scriptBlock($results['jsLegenda'], ['block' => true]);
+            echo '</span>';            
           }
           else {
             echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);
@@ -339,7 +358,7 @@ function apriPopUpBootstrap(url, opts) {
           $('#'+modalId).find('.modal-body').html(response);
         },
         error: function (e) {
-            console.error(e, ajaxUrl);
+            console.error(e, url);
         },
         complete: function (e) {
           $('#'+modalId).find('.modal-body').css('background', 'none repeat scroll 0 0 transparent');

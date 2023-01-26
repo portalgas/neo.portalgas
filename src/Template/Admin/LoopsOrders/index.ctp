@@ -2,9 +2,6 @@
 use Cake\Core\Configure;
 use Cake\I18n\Time;
 
-$config = Configure::read('Config');
-$portalgas_bo_url = $config['Portalgas.bo.url'];
-
 $this->start('tb_actions');
 echo '<li class="sidebar-menu-action">';
 echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</span>', ['action' => 'add'], ['title' => __('New'), 'escape' => false]);
@@ -88,7 +85,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                 // echo '<td>'.$loopsOrder->order->delivery->luogo.'</td>';
                 echo '<td>';
                 if(!empty($loopsOrder->order))
-                  echo '<a class="btn btn-primary" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=home&order_id='.$loopsOrder->order->id.'">Vai all\'ordine</a>';
+                  echo '<a class="btn btn-primary" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['order_id' => $loopsOrder->order->id]).'">Vai all\'ordine</a>';
                 echo '</td>';
                 echo '</tr>';
             } // end loop

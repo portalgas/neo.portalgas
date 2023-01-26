@@ -64,7 +64,6 @@ h4 {
     margin-bottom: .5em
 }
 h1 {
-    background: #fff;
     color: #003d4c;
     font-size: 18px
 }
@@ -454,4 +453,49 @@ ul.workflow li span.statoCurrent a {
 ul.workflow li span.statoNotCurrent a {
     opacity: .5
 }
+
+/* 
+ * leggenda 
+ */
+.legenda {
+    border: 1px solid #DEDEDE;
+    border-radius: 8px 8px 8px 8px;
+    clear: both;
+    margin: 10px 0;
+    padding: 14px;
+    min-height: 30px;
+}
+.legenda div {
+    margin: 5px 0 5px 0;
+}
+
+.legenda table tr td {
+    border: none
+}
+.legenda table tr td h4 {
+    text-align: center;
+    background-color: #C3D2E5;
+    border-bottom: 3px solid #84A7DB;
+    border-top: 3px solid #84A7DB;
+    color: #FFF
+}
+.legenda-ico-mails {
+    background: url(/images/cake/apps/32x32/xfmail.png) 7px 7px no-repeat #C3D2E5;
+    float: right;
+    padding-left: 55px;
+    width: 75%
+}
+.legenda-ico-info {
+    background: url(/images/cake/actions/32x32/info.png) 7px 7px no-repeat #C3D2E5;
+    float: right;
+    padding-left: 55px;
+    width: 75%
+}
+.legenda-ico-alert {
+    background: url(/images/cake/apps/32x32/error.png) 7px 7px no-repeat #C3D2E5;
+    float: right;
+    padding-left: 55px;
+    width: 75%
+}
+ 
 </style>

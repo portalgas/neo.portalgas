@@ -25,6 +25,7 @@ class OrdersController extends AppController
         $this->loadComponent('Delivery');
         $this->loadComponent('SuppliersOrganization');
         $this->loadComponent('PriceType');
+        $this->loadComponent('ActionsOrder');
 
         if(!isset($this->_user->acl)) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
@@ -48,9 +49,8 @@ class OrdersController extends AppController
     public function index($order_type_id=0)
     {
         $where = [];
-        $orders = ['Deliveries.data' => 'asc', 
-                   'Orders.data_inizio' => 'asc'];
-
+        $orders = ['Deliveries.data desc'];
+                   
         $request = $this->request->getQuery();
         $search_supplier_organization_id = '';
         $order_delivery_date = '';
@@ -60,10 +60,19 @@ class OrdersController extends AppController
             $where += ['Orders.supplier_organization_id' => $search_supplier_organization_id];
         } 
 
+        // order_delivery_date = 'Deliveries.data desc
         if(!empty($request['order_delivery_date'])) {
+            // debug('order_delivery_date '.$request['order_delivery_date']);
             $order_delivery_date = $request['order_delivery_date'];
             list($field, $sort) = explode(' ', $order_delivery_date);
-            $orders[$field] = $sort;
+            ($sort=='asc') ? $sort = 'desc': $sort = 'asc';
+            foreach($orders as $key => $value) {
+                // debug($value.' = '.$field.' '.$sort);
+                if(strtolower($value)==strtolower($field.' '.$sort))
+                    unset($orders[$key]);
+            }
+            if(!in_array($request['order_delivery_date'], $orders))
+                array_push($orders, $request['order_delivery_date']);
         } 
         $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
 
@@ -71,6 +80,8 @@ class OrdersController extends AppController
         if(!empty($order_type_id))
             $where += ['Orders.order_type_id' => $order_type_id];
         // debug($where);
+        array_push($orders, 'Orders.data_inizio asc');
+        // debug($orders);
 
         $this->paginate = [
             'order' => $orders,            
@@ -82,6 +93,7 @@ class OrdersController extends AppController
         // debug($where);
         $orders = new OrderDecorator($this->_user, $this->paginate($this->Orders));
         $orders = $orders->results;
+
         // debug($orders);
         $order_type_id  = Configure::read('Order.type.gas');
         $this->set(compact('orders', 'order_type_id'));
@@ -91,10 +103,17 @@ class OrdersController extends AppController
          */
         $suppliersOrganizations = $this->Orders->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-        $order_delivery_dates = ['Deliveries.data asc' => 'Prime consegne',
-                                 'Deliveries.data desc' => 'Ultime consegne'];
+        $order_delivery_dates = ['Deliveries.data desc' => 'Data di consegna più recente',
+                                 'Deliveries.data asc' => 'Data di consegna più vecchia'];
 
         $this->set(compact('suppliersOrganizations', 'order_delivery_dates'));
+
+		/*
+		 * legenda profilata
+		 */
+		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->_user);
+		$orderStatesToLegenda = $this->ActionsOrder->getOrderStatesToLegenda($this->_user, $group_id);
+		$this->set('orderStatesToLegenda', $orderStatesToLegenda);        
     }
 
     public function view($id = null)

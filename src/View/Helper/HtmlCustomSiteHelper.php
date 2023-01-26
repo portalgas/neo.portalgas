@@ -468,7 +468,7 @@ class HtmlCustomSiteHelper extends FormHelper
 		
 		if(isset($order->orderStateNext) && !empty($order->orderStateNext)) {
 			foreach($order->orderStateNext as $orderStateNext)
-				$str .= $this->Html->link($orderStateNext['label'], $orderStateNext['action'], $orderStateNext['options']);
+				$str .= '<a class="'.$orderStateNext['class'].'" title="'.$orderStateNext['label'].'" href="'.$this->jLink($orderStateNext['controller'], $orderStateNext['action'], $orderStateNext['qs']).'">'.$orderStateNext['label'].'</a>';
 		}
 		
 		return $str;
@@ -486,12 +486,12 @@ class HtmlCustomSiteHelper extends FormHelper
 			if($order->PaidUsers['totalSummaryOrder']>0) {
 				if($order->PaidUsers['totalSummaryOrderNotPaid']==0) {
 					$label = __('Saldato da tutti i gasisti ').' ('.$order->PaidUsers['totalSummaryOrderPaid'].')';
-					$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'summary_order', $order->id], ['class' => 'label label-info','title' => $label]);
+					$str .= '<a class="label label-info" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'summary_order', ['order_id' => $order->id]).'">'.$label.'</a>';
 				}
 				else {
 					if($order->PaidUsers['totalSummaryOrderNotPaid']==$order->PaidUsers['totalSummaryOrder']) {
 						$label = __('Devono saldare tutti i gasisti');
-						$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'summary_order', $results['Order']['id']], ['class' => 'label label-danger','title' => $label]);
+						$str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'summary_order', ['order_id' => $order->id]).'">'.$label.'</a>';                        
 					}	
 					else {
 						if($order->PaidUsers['totalSummaryOrderNotPaid']==1) 
@@ -499,7 +499,7 @@ class HtmlCustomSiteHelper extends FormHelper
 						else 
 							$label = 'Devono saldare ancora '.$order->PaidUsers['totalSummaryOrderNotPaid'].' gasisti';
 						
-						$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'summary_order', $results['Order']['id']], ['class' => 'label label-danger','title' => $label]);
+						$str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'summary_order', ['order_id' => $order->id]).'">'.$label.'</a>';
 					}
 				}
 			}
@@ -520,16 +520,16 @@ class HtmlCustomSiteHelper extends FormHelper
 			if($order->PaidSupplier['isPaid']) {	
 				$label = __('Pagato al produttore');
 				if($isTesoriereGeneric) 
-					$str .= $this->Html->link($label, ['controller' => 'Tesoriere', 'action' => 'pay_suppliers', null, 'delivery_id='.$order->delivery_id, 'order_id='.$order->id], ['class' => 'label label-info','title' => $label]);
+					$str .= '<a class="label label-info" title="'.$label.'" href="'.$this->jLink('tesoriere', 'pay_suppliers', ['delivery_id' => $order->delivery_id,'order_id' => $order->id]).'">'.$label.'</a>';
 				else
-					$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'pay_suppliers', $order->id], ['class' => 'label label-info','title' => $label]);
+					$str .= '<a class="label label-info" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'pay_suppliers', ['order_id' => $order->id]).'">'.$label.'</a>';
 			}
 			else {
 				$label = __('Non pagato al produttore');
 				if($isTesoriereGeneric) 
-					$str .= $this->Html->link($label, ['controller' => 'Tesoriere', 'action' => 'pay_suppliers', null, 'delivery_id='.$order->delivery_id, 'order_id='.$order->id], ['class' => 'label label-danger','title' => $label]);
-				else
-					$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'pay_suppliers', $order->id], ['class' => 'label label-danger','title' => $label]);
+                    $str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('tesoriere', 'pay_suppliers', ['delivery_id' => $order->delivery_id,'order_id' => $order->id]).'">'.$label.'</a>';
+                else
+                    $str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'pay_suppliers', ['order_id' => $order->id]).'">'.$label.'</a>';
 			}
 		}
 		
@@ -551,4 +551,121 @@ class HtmlCustomSiteHelper extends FormHelper
 		
 		return $str;
 	}
+
+    /*
+     * tipologie di legende Orders / DesOrders / ProdGasPromotions
+     */    
+	public function drawLegenda($user, $states, $debug=false) {	
+
+		$htmlLegenda = '';
+
+		if(empty($states))
+			return $htmlLegenda;
+		
+        $isTemplatesOrdersState = false;
+        foreach($states as $state) {
+            if($state instanceof \App\Model\Entity\TemplatesOrdersState) 
+                $isTemplatesOrdersState = true;
+        }            
+		$colsWidth = floor(100/count($states));
+			
+		$htmlLegenda = '<div class="legenda">';
+		$htmlLegenda .= '<div class="table-responsive"><table class="table">';
+		
+		/*
+		 * solo per gli ordini
+ 		 */
+        if($isTemplatesOrdersState) {
+			$htmlLegenda .= "\r\n";
+			$htmlLegenda .= '<tr>';
+			foreach($states as $state) {
+				
+				/*
+				 * differenzio lo stato CLOSE tra Tesoriere e Cassiere passandogli il group_id
+				 */
+				$target = __($state->state_code.'-target');
+				if($target==$state->state_code.'-target')  // e' == perche' non viene trovato
+					$target = __($state->state_code.'-target-PAY'.$user->organization->template->payToDelivery);
+					
+				$htmlLegenda .= "\r\n";
+				$htmlLegenda .= '<td width="'.$colsWidth.'%"><h4>';
+				$htmlLegenda .= $target;
+				$htmlLegenda .= '</h4></td>';
+			}
+			$htmlLegenda .= '</tr>';			
+		}
+	
+		$htmlLegenda .= "\r\n";
+		$htmlLegenda .= '<tr>';
+		foreach($states as $state) {
+			$htmlLegenda .= "\r\n";
+			$htmlLegenda .= '<td id="icoOrder'.$state->state_code.'" class="tdLegendaOrdersStateIco">';
+			$htmlLegenda .= '<div style="padding-left:45px;width:80%;cursor:pointer;height:auto;min-height:48px;" class="action orderStato'.$state->state_code.'" title="'.__($state->state_code.'-intro').'">'.__($state->state_code.'-label').'</div>&nbsp;';
+			$htmlLegenda .= '</td>';
+	
+		}
+		$htmlLegenda .= '</tr>';
+	
+		$htmlLegenda .= '<tr>';
+		$htmlLegenda .= '<td id="tdLegendaOrdersStateTesto" colspan="'.count($states).'" style="border-bottom:none;background-color:#FFFFFF;height:50px;">';
+	
+		$htmlLegenda .= "\r\n";
+		foreach($states as $state) {
+			$htmlLegenda .= "\r\n";
+			$htmlLegenda .= '<div class="alert alert-info testoLegendaTesoriereStato" role="alert" id="testoOrder'.$state->state_code.'" style="display:none;">';
+			$htmlLegenda .= __($state->state_code.'-descri');
+			$htmlLegenda .= '</div>';
+		}
+		$htmlLegenda .= '</td>';
+		$htmlLegenda .= '</tr>';
+	
+		$htmlLegenda .= '</table></div>';
+        $htmlLegenda .= '</div>';
+	
+        $jsLegenda = '';
+		$jsLegenda .= 'function bindLegenda() {';
+		$jsLegenda .= "\r\n";
+		foreach($states as $state) {
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '$( ".orderStato'.$state->state_code.'" ).mouseenter(function () {';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$(".tdLegendaOrdersStateIco").css("background-color","#ffffff").css("border-radius","0px");';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$(".testoLegendaTesoriereStato").hide();';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$("#icoOrder'.$state->state_code.'").css("background-color","yellow").css("border-radius","15px 15px 15px 15px");';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$(".tdLegendaOrdersStateTesto").css("background-color","#F0F0F0");';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$("#testoOrder'.$state->state_code.'").show();';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '});';
+	
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '$( ".orderStato'.$state->state_code.'" ).mouseleave(function () {';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$(".tdLegendaOrdersStateIco").css("background-color","#ffffff");';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '	$(".testoLegendaTesoriereStato").hide();';
+			$jsLegenda .= "\r\n";
+			$jsLegenda .= '});';
+	
+		}
+		$jsLegenda .= "\r\n";
+		$jsLegenda .= '}';
+		
+		$jsLegenda .= "\r\n";
+		$jsLegenda .= '$(document).ready(function() {bindLegenda();});';
+		$jsLegenda .= "\r\n";
+	
+		return ['htmlLegenda' => $htmlLegenda, 'jsLegenda' => $jsLegenda];
+	}
+
+    /*
+     * link a joomla
+     * /administrator/index.php?option=com_cake&controller=Orders&action=close&delivery_id=22&order_id=11
+     */
+    public function jLink($controller, $action, $qs=[]) {
+        return $this->drawjLink($controller, $action, $qs); // in UtilTrait
+    }
 }

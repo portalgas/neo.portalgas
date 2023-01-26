@@ -44,9 +44,6 @@ if(isset($errors)) {
 
 if(!empty($supplier)) {
 
-    $config = Configure::read('Config');
-    $portalgas_bo_url = $config['Portalgas.bo.url'];
-
     $name = '';
     if(isset($supplier->suppliers_organizations[0])) {
         $id = $supplier->suppliers_organizations[0]->id;
@@ -63,7 +60,7 @@ if(!empty($supplier)) {
     echo '<div class="col-md-4">';
     if(isset($id)) {
         echo '<a class="btn btn-info" 
-                href="'.$portalgas_bo_url.'/administrator/index.php?FilterArticleArticleTypeIds_hidden=&FilterArticleCategoryArticleId=&FilterArticleFlagPresenteArticlesorders=ALL&FilterArticleSupplierId='.$id.'&FilterArticleUm=&FilterArticleStato=ALL&FilterArticleName=&option=com_cake&controller=Articles&action=context_articles_index">';
+                href="'.$this->HtmlCustomSite->jLink('articles', 'context_articles_index', ['FilterArticleArticleTypeIds_hidden' => '', 'FilterArticleCategoryArticleId' => '', 'FilterArticleFlagPresenteArticlesorders' => 'ALL', 'FilterArticleSupplierId' => $id, 'FilterArticleUm' => '', 'FilterArticleStato' => 'ALL', 'FilterArticleName' => '']);
         echo 'Visualizza listino articoli importati';
         echo '</a>';        
     }

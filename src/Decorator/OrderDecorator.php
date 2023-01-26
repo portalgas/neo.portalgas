@@ -85,8 +85,8 @@ class OrderDecorator  extends AppDecorator {
 		$results->request_payment_id = '';
 		if($user->organization->template->payToDelivery == 'POST' || $user->organization->template->payToDelivery=='ON-POST') {
 			$requestPaymentsTable = TableRegistry::get('RequestPayments');
-			 $results->request_payment_num = $requestPaymentsTable->getRequestPaymentNumByOrderId($user, $order->id);
-			 $results->request_payment_id = $requestPaymentsTable->getRequestPaymentIdByOrderId($user, $order->id);
+			$results->request_payment_num = $requestPaymentsTable->getRequestPaymentNumByOrderId($user, $order->id);
+			$results->request_payment_id = $requestPaymentsTable->getRequestPaymentIdByOrderId($user, $order->id);
 		}
                     
         return $results;

@@ -37,17 +37,17 @@ if($this->Identity->get()->acl['isReferentGeneric'] || $this->Identity->get()->a
           <i class="fa fa-angle-left pull-right"></i>
         </span>
         <ul class="treeview-menu">
-          <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index" target="">Elenco ordini</a></li>
+          <li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'index');?>" target="">Elenco ordini</a></li>
           <?php 
           if($application_env==='development')
             echo '<li><a href="'.$this->Url->build('/admin/orders/index/').'">'.$icon.'Elenco ordini <small class="label pull-right bg-red">root</small></a></li>';
           ?>
           <li><a href="<?php echo $this->Url->build('/admin/orders/add/'.Configure::read('Order.type.gas')); ?>"><?php echo $icon;?>Aggiungi un nuovo ordine <label class="label label-success">new</label></a></li>
-          <!-- li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=add" target="">Aggiungi un nuovo ordine</a></li -->
-          <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=easy_add" target="">Aggiungi un nuovo ordine (modalità semplificata)</a></li>
-          <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index_history" target="">Ordini storici</a></li>
+          <!-- li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'add');?>" target="">Aggiungi un nuovo ordine</a></li -->
+          <li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'easy_add');?>" target="">Aggiungi un nuovo ordine (modalità semplificata)</a></li>
+          <li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'index_history');?>" target="">Ordini storici</a></li>
           <li><a href="<?php echo $this->Url->build('/admin/loops-orders/index'); ?>"><?php echo $icon;?><?php echo __('Loops Orders');?> <label class="label label-success">new</label></a></li>
-          <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=MonitoringOrders&amp;action=home" target="">Monitoraggio Ordini</a></li>        </ul>
+          <li><a href="<?php echo $this->HtmlCustomSite->jLink('monitoringOrders', 'home');?>" target="">Monitoraggio Ordini</a></li>        </ul>
       </a>
     </li>
   <?php
@@ -97,8 +97,8 @@ if($this->Identity->get()->acl['isSuperReferente'] && isset($this->Identity->get
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsCashs&amp;action=index" target=""><?php echo $icon;?>Configura</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsCashs&amp;action=ctrl" target=""><?php echo $icon;?>Prospetto utenti</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsCashs', 'index');?>" target=""><?php echo $icon;?>Configura</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsCashs', 'ctrl');?>" target=""><?php echo $icon;?>Prospetto utenti</a></li>
       <?php
       if($this->Identity->get('organization')->paramsConfig['hasCashFilterSupplier']=='Y') {
           echo '<li><a href="'.$this->Url->build('/admin/cashes/supplier-organization-filter').'">'.$icon.__('Prepagato per produttori').' <label class="label label-success">new</label></a></li>';
@@ -119,15 +119,15 @@ if($this->Identity->get()->acl['isCassiere']) {
       <i class="fa fa-angle-left pull-right"></i>
     </span>
   <ul class="treeview-menu">
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Cashs&amp;action=index" target=""><?php echo $icon;?>Gestione cassa</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Cashs&amp;action=index_quick" target=""><?php echo $icon;?>Gestione cassa rapida</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jLink('cashs', 'index');?>" target=""><?php echo $icon;?>Gestione cassa</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('cashs', 'index_quick');?>" target=""><?php echo $icon;?>Gestione cassa rapida</a></li>
       <li><a href="<?php echo $this->Url->build('/admin/cashiers/deliveries'); ?>"><?php echo $icon;?><?php echo __("Pagamenti dell'intera consegna");?> <label class="label label-success">new</label></a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Docs&amp;action=cassiere_delivery_docs_export" target=""><?php echo $icon;?>Stampa/Gestisci l'intera consegna</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Docs&amp;action=cassiere_docs_export" target=""><?php echo $icon;?>Stampa i singoli ordini</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Cassiere&amp;action=orders_to_wait_processed_tesoriere" target=""><?php echo $icon;?>Passa gli ordini al tesoriere</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=OrganizationsCashs&amp;action=ctrl" target=""><?php echo $icon;?>Prepagato - prospetto utenti</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Pages&amp;action=export_docs_cassiere" target=""><?php echo $icon;?>Stampe cassiere</a></li>
-      <li><a href="<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&amp;controller=Pages&amp;action=utility_docs_cassiere" target=""><?php echo $icon;?>Utility da scaricare</a></li>      
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('docs', 'cassiere_delivery_docs_export');?>" target=""><?php echo $icon;?>Stampa/Gestisci l'intera consegna</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('docs', 'cassiere_docs_export');?>" target=""><?php echo $icon;?>Stampa i singoli ordini</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('cassiere', 'orders_to_wait_processed_tesoriere');?>" target=""><?php echo $icon;?>Passa gli ordini al tesoriere</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('organizationsCashs', 'ctrl');?>" target=""><?php echo $icon;?>Prepagato - prospetto utenti</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('pages', 'export_docs_cassiere');?>" target=""><?php echo $icon;?>Stampe cassiere</a></li>
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('pages', 'utility_docs_cassiere');?>" target=""><?php echo $icon;?>Utility da scaricare</a></li>      
   </ul>
   </a>
 </li>
