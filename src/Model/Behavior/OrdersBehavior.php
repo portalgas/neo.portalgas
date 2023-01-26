@@ -24,13 +24,9 @@ class OrdersBehavior extends Behavior
     public function initialize(array $config)
     {
         $this->config = $config;
-
-        $service = new AuthenticationService();
-        $identify = $service->getIdentity();
-        if(!empty($identify)) //se chiamato dal cron non e' valorizzato
-            $this->_user = $identify->getIdentifier();
-        else 
-            $this->_user = $this->createObjUser();
+        // lo creo vuoto perche' qui non ho l'oggetto user 
+        // se chiamato dal cron non e' valorizzato
+        $this->_user = $this->createObjUser();
     }
 
     /*
@@ -78,23 +74,14 @@ class OrdersBehavior extends Behavior
             $data['tesoriere_importo_pay'] = 0;
         }
 
-        if(isset($this->_user) && $this->_user->organization->paramsConfig['hasTrasport']=='N')
-            $data['hasTrasport'] = 'N';
-        else 
         if (!isset($data['hasTrasport']) || empty($data['hasTrasport'])) {
             $data['hasTrasport'] = 'N';
         }
 
-        if(isset($this->_user) && $this->_user->organization->paramsConfig['hasCostMore']=='N')
-            $data['hasCostMore'] = 'N';
-        else         
         if (!isset($data['hasCostMore']) || empty($data['hasCostMore'])) {
             $data['hasCostMore'] = 'N';
         }
 
-        if(isset($this->_user) && $this->_user->organization->paramsConfig['hasCostLess']=='N')
-            $data['hasCostLess'] = 'N';
-        else         
         if (!isset($data['hasCostLess']) || empty($data['hasCostLess'])) {
             $data['hasCostLess'] = 'N';
         }

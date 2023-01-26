@@ -8,7 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use App\Validation\OrderValidator;
-
+use Cake\I18n\Time;
 class LifeCycleOrdersTable extends Table
 {
     public function initialize(array $config)
@@ -540,8 +540,7 @@ class LifeCycleOrdersTable extends Table
             $where = [];
             $where = ['SummaryOrders.organization_id' => $user->organization->id,
                       'SummaryOrders.order_id' => $orderResult->id];
-            $where += $lifeCycleSummaryOrdersTable->getConditionIsSaldato($user);          
-            $options['recursive'] =  0;                                 
+            $where += $lifeCycleSummaryOrdersTable->getConditionIsSaldato($user);                                         
             $summaryOrderPaidResults = $summaryOrdersTable->find()
                                                             ->where($where)
                                                             ->all();
@@ -658,8 +657,8 @@ class LifeCycleOrdersTable extends Table
             $ggArchiveStatics = $user->organization->template->ggArchiveStatics;
             $data_statistiche = date('Y-m-d', strtotime($data_state_code_close . ' +'.$ggArchiveStatics.' day'));
             $data_oggi = date('Y-m-d');
-            $datetime1 = new DateTime($data_oggi);
-            $datetime2 = new DateTime($data_statistiche);
+            $datetime1 = new Time($data_oggi);
+            $datetime2 = new Time($data_statistiche);
             $interval = $datetime1->diff($datetime2);
             
             if($interval->invert) {
@@ -739,14 +738,12 @@ class LifeCycleOrdersTable extends Table
                         
                 $ordersActionsTable = TableRegistry::get('OrdersActions');
         
-                $options = [];
-                $options['conditions'] = ['OrdersAction.state_code_next' => $stateCodeAfter];
-                $options['recursive'] = -1;
-                $ordersActionResults = $ordersActionsTable->find('first', $options);
-                if(!empty($ordersActionResults)) {
+                $where = ['OrdersActions.state_code_next' => $stateCodeAfter];
+                $ordersAction = $ordersActionsTable->find()->where($where)->first();
+                if(!empty($ordersAction)) {
                     $i=0;
                     $results[$i]['label'] = __('GoToOrderState'.$stateCodeAfter); // Merce arrivata
-                    $results[$i]['action'] = ['controller' => $ordersActionResults['OrdersAction']['controller'], 'action' => $ordersActionResults['OrdersAction']['action'], null, 'delivery_id='.$orderResult->delivery_id, 'order_id='.$orderResult->id];
+                    $results[$i]['action'] = ['controller' => $ordersAction->controller, 'action' => $ordersAction->action, null, 'delivery_id='.$orderResult->delivery_id, 'order_id='.$orderResult->id];
                     $results[$i]['options'] = ['class' => $class_css, 'title' => __('GoToOrderState'.$stateCodeAfter)];
                 }
             }
@@ -776,21 +773,22 @@ class LifeCycleOrdersTable extends Table
              * in base al template ctrl chi ha abilitato Orders::close
              */
             $templatesOrdersStatesOrdersActionsTable = TableRegistry::get('TemplatesOrdersStatesOrdersActions');
-    
-            $options = [];
-            $options['conditions'] = ['TemplatesOrdersStatesOrdersAction.template_id' =>  $user->organization->template_id,
-                                      'TemplatesOrdersStatesOrdersAction.group_id' => Configure::read('group_id_super_referent'), // prendo quello di un gruppo tanto solo =
-                                      'OrdersAction.controller' => 'Orders',
-                                      'OrdersAction.action' => 'CLOSE'];  
-            $options['fields'] = ['TemplatesOrdersStatesOrdersAction.state_code'];
+
+            $where = ['TemplatesOrdersStatesOrdersActions.template_id' =>  $user->organization->template_id,
+                    'TemplatesOrdersStatesOrdersActions.group_id' => Configure::read('group_id_super_referent'), // prendo quello di un gruppo tanto solo =
+                    'OrdersActions.controller' => 'Orders',
+                    'OrdersActions.action' => 'CLOSE'];  
+            $options['fields'] = ['TemplatesOrdersStatesOrdersActions.state_code'];
             $options['recursive'] = 0;
-            $templatesOrdersStatesOrdersActionResults = $templatesOrdersStatesOrdersActionsTable->find('all', $options);
+            $templatesOrdersStatesOrdersActionResults = $templatesOrdersStatesOrdersActionsTable->find()
+                                    ->contain(['OrdersActions'])
+                                    ->where($where)->all();
             
             if($debug) debug($templatesOrdersStatesOrdersActionResults);
             
             if(!empty($templatesOrdersStatesOrdersActionResults)) {
                 foreach($templatesOrdersStatesOrdersActionResults as $templatesOrdersStatesOrdersActionResult) {
-                    if($templatesOrdersStatesOrdersActionResult['TemplatesOrdersStatesOrdersAction']['state_code']==$orderResult->state_code) {
+                    if($templatesOrdersStatesOrdersActionResult->state_code==$orderResult->state_code) {
                         $results = true;
                         break;
                     }
@@ -1140,7 +1138,7 @@ class LifeCycleOrdersTable extends Table
             /*
              * calcolo il sort precedente o successivo
              */
-            $sort_next = ($results['TemplatesOrdersState']['sort'] + ($rule_sort_next));
+            $sort_next = ($results->sort + ($rule_sort_next));
              
             /*
              * ottengo i successivi e restituisco il primo

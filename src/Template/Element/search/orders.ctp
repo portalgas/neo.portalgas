@@ -12,7 +12,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
       <h3 class="box-title"><?php echo __('Search');?></h3>
 
       <div class="box-tools pull-right">
-      <span data-toggle="tooltip" title="totale ordini <?php echo $orders->count();?>" class="badge bg-light-blue"><?php echo $orders->count();?></span>
+      <span data-toggle="tooltip" title="totale ordini <?php echo count($orders);?>" class="badge bg-light-blue"><?php echo count($orders);?></span>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>

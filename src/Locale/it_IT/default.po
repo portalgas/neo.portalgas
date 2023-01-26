@@ -998,6 +998,30 @@ msgid "Order-10-Add"
 msgstr "Crea ordine per il gruppo"
 
 #
+# msg per passagi di stato Order
+#
+msgid "GoToOrderStatePROCESSED-BEFORE-DELIVERY"
+msgstr "Merce non arrivata"
+
+msgid "GoToOrderStateWAIT-PROCESSED-TESORIERE"
+msgstr "Passa l'ordine al tesoriere"
+
+msgid "GoToOrderStateTO-PAYMENT"
+msgstr "Gestisci il pagamento dell'ordine"
+
+msgid "GoToOrderStateINCOMING-ORDER"
+msgstr "E' arrivata la merce"
+
+msgid "GoToOrderStatePROCESSED-ON-DELIVERY"
+msgstr "Passalo al cassiere"
+
+msgid "GoToOrderStatePROCESSED-POST-DELIVERY"
+msgstr "Riportalo 'in carico al referente'"
+
+msgid "GoToOrderStateCLOSE"
+msgstr "Chiudi l'ordine"
+
+#
 # prepagato
 #
 msgid "Prepaid"

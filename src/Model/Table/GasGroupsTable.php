@@ -119,5 +119,46 @@ class GasGroupsTable extends Table
                     ];
         $results = $this->find('list', ['conditions' => $where, 'order' => ['name']]);
         return $results;
-    }    
+    }  
+    
+	public function getsById($user, $organization_id, $gas_group_id) {
+
+        $options = [];
+        $options['conditions'] = ['GasGroup.organization_id' => $organization_id,
+                                'GasGroup.id' => $gas_group_id];
+        $options['recursive'] = -1;
+
+        $results = $this->find('first', $options);
+  
+      return $results;		
+  }
+
+  public function getsByUser($user, $organization_id, $user_id) {
+
+      if($user->organization->paramsConfig['hasGasGroups']=='N')
+        return [];
+
+      $where = ['GasGroups.organization_id' => $organization_id,
+                'GasGroups.user_id' => $user_id];
+
+      $results = $this->find()->where($where)->all();
+  
+      return $results;		
+  }
+
+  public function getsByIdsUser($user, $organization_id, $user_id) {
+
+      if($user->organization->paramsConfig['hasGasGroups']=='N')
+        return [];
+
+      $ids = [];
+
+      $results = $this->getsByUser($user, $organization_id, $user_id);
+      if(!empty($results))
+      foreach($results as $result) {
+          $ids[$result->id] = $result->id;
+      }
+  
+      return $ids;		
+  }  
 }

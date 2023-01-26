@@ -6,7 +6,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use App\Form\OrderForm;
-
+use App\Decorator\OrderDecorator;
 /**
  * Orders Controller
  *
@@ -80,8 +80,9 @@ class OrdersController extends AppController
         ];
 
         // debug($where);
-        $orders = $this->paginate($this->Orders);
-
+        $orders = new OrderDecorator($this->_user, $this->paginate($this->Orders));
+        $orders = $orders->results;
+        // debug($orders);
         $order_type_id  = Configure::read('Order.type.gas');
         $this->set(compact('orders', 'order_type_id'));
 

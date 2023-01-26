@@ -5,6 +5,8 @@ use App\Traits;
 $config = Configure::read('Config');
 $portalgas_bo_url = $config['Portalgas.bo.url'];
 $portalgas_fe_url = $config['Portalgas.fe.url']; 
+
+$user = $this->Identity->get();
 ?>
 <section class="content-header">
   <h1>
@@ -45,7 +47,7 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
           <?php 
-          if($orders->count()>0) {
+          if(count($orders)>0) {
           ?>
           <table class="table table-hover">
             <thead>
@@ -63,12 +65,13 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                   <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('nota') ?></th>
                   <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('owner_articles', __('OwnerArticles')) ?></th>
                   <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('state_code', __('StatoElaborazione')) ?></th>
+                  <th scope="col" class="hidden-xs hidden-sm"></th>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
               </tr>
             </thead>
             <tbody>
               <?php 
-              $colspan = 9;
+              $colspan = 10;
               $delivery_id_old = 0;
               foreach ($orders as $order) {
                 
@@ -139,11 +142,39 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
                   echo $this->HtmlCustomSite->drawOrdersStateDiv($order);
                   echo '&nbsp;';
                   echo __($order->state_code.'-label');
-                  echo '</td>';
-                  echo '<td class="actions text-right">';
 
-                 //  if($order->can_state_code_to_close)
-                  echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=close&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
+                 /*
+                  * richiesta di pagamento 
+                  */ 
+                  if($user->organization->template->payToDelivery == 'POST' || $user->organization->template->payToDelivery=='ON-POST') {
+                    if(!empty($order->request_payment_num)) {
+                      echo "<br />";
+                      if($user->organization->acl['isTesoriereGeneric'])
+                        echo $this->Html->link('Rich. pagamento n. '.$order->request_payment_num, ['controller' => 'RequestPayments', 'action' => 'edit', $order->request_payment_id], ['title' => __('Edit RequestPayment')]);
+                      else
+                        echo "<br />Rich. pagamento n. ".$order->request_payment_num;
+                    }
+                  }                   
+                  echo '</td>';
+
+                  /*
+                  * btns / msg
+                  */
+                  echo '<td style="white-space: nowrap;" class="hidden-xs hidden-sm">';
+                  $btns = $this->HtmlCustomSite->drawOrderBtnPaid($order, $user->acl['isRoot'], $user->acl['isTesoriere']);
+                  if(!empty($btns))
+                      echo $btns;	
+                  else if(!empty($order->msgGgArchiveStatics))
+                    echo $this->HtmlCustomSite->drawOrderMsgGgArchiveStatics($order);		
+                  echo $this->HtmlCustomSite->drawOrderStateNext($order);
+                  echo '</td>';
+                                    
+                  /* 
+                   * actions 
+                   */
+                  echo '<td class="actions text-right">';
+                  if($order->can_state_code_to_close)
+                    echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=close&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
                 
                   echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$portalgas_bo_url.'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$order->delivery_id.'&order_id='.$order->id.'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   

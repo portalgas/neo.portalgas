@@ -461,4 +461,94 @@ class HtmlCustomSiteHelper extends FormHelper
         }
         return $html;
     }
+
+	public function drawOrderStateNext($order) {
+		
+		$str = '';
+		
+		if(isset($order->orderStateNext) && !empty($order->orderStateNext)) {
+			foreach($order->orderStateNext as $orderStateNext)
+				$str .= $this->Html->link($orderStateNext['label'], $orderStateNext['action'], $orderStateNext['options']);
+		}
+		
+		return $str;
+	}
+
+	public function drawOrderBtnPaid($order, $isRoot=false, $isTesoriereGeneric=false) {
+		
+		$str = '';
+
+		/*
+		 * saldato da gasisti 
+		 * solo per Organization.orderUserPaid = 'Y'
+		 */
+		if(isset($order->PaidUsers['totalSummaryOrder'])) {
+			if($order->PaidUsers['totalSummaryOrder']>0) {
+				if($order->PaidUsers['totalSummaryOrderNotPaid']==0) {
+					$label = __('Saldato da tutti i gasisti ').' ('.$order->PaidUsers['totalSummaryOrderPaid'].')';
+					$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'summary_order', $order->id], ['class' => 'label label-info','title' => $label]);
+				}
+				else {
+					if($order->PaidUsers['totalSummaryOrderNotPaid']==$order->PaidUsers['totalSummaryOrder']) {
+						$label = __('Devono saldare tutti i gasisti');
+						$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'summary_order', $results['Order']['id']], ['class' => 'label label-danger','title' => $label]);
+					}	
+					else {
+						if($order->PaidUsers['totalSummaryOrderNotPaid']==1) 
+							$label = 'Deve saldare ancora '.$order->PaidUsers['totalSummaryOrderNotPaid'].' gasista';
+						else 
+							$label = 'Devono saldare ancora '.$order->PaidUsers['totalSummaryOrderNotPaid'].' gasisti';
+						
+						$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'summary_order', $results['Order']['id']], ['class' => 'label label-danger','title' => $label]);
+					}
+				}
+			}
+			else {
+				$label = __('Non ci sono acquisti');
+				$str .= '<span class="label label-danger" title="'.$label.'">'.$label.'</span>';
+			}
+		}	
+					
+		/*
+		 * pagamento al produttore
+		 * solo per Organization.orderSupplierPaid = 'Y'
+		 */
+		if(isset($order->PaidSupplier['isPaid'])) { 
+		
+			$str .= '<p></p>';
+		
+			if($order->PaidSupplier['isPaid']) {	
+				$label = __('Pagato al produttore');
+				if($isTesoriereGeneric) 
+					$str .= $this->Html->link($label, ['controller' => 'Tesoriere', 'action' => 'pay_suppliers', null, 'delivery_id='.$order->delivery_id, 'order_id='.$order->id], ['class' => 'label label-info','title' => $label]);
+				else
+					$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'pay_suppliers', $order->id], ['class' => 'label label-info','title' => $label]);
+			}
+			else {
+				$label = __('Non pagato al produttore');
+				if($isTesoriereGeneric) 
+					$str .= $this->Html->link($label, ['controller' => 'Tesoriere', 'action' => 'pay_suppliers', null, 'delivery_id='.$order->delivery_id, 'order_id='.$order->id], ['class' => 'label label-danger','title' => $label]);
+				else
+					$str .= $this->Html->link($label, ['controller' => 'OrderLifeCycles', 'action' => 'pay_suppliers', $order->id], ['class' => 'label label-danger','title' => $label]);
+			}
+		}
+		
+		return $str;
+	}
+		
+	public function drawOrderMsgGgArchiveStatics($order) {
+		
+		$str = '';
+		$label = $order->msgGgArchiveStatics['mgs'];
+
+		if(isset($order->msgGgArchiveStatics['mailto']))
+			$str .= '<a href="mailto:'.$order->msgGgArchiveStatics['mailto'].'">';
+		
+		$str .= '<span class="'.$order->msgGgArchiveStatics['class'].'" title="'.$label.'">'.$label.'</span>';
+
+		if(isset($order->msgGgArchiveStatics['mailto']))
+			$str .= '</a>';
+		
+		return $str;
+	}
 }
