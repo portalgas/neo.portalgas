@@ -189,9 +189,10 @@ $user = $this->Identity->get();
                   echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   
                   if($this->Identity->get()->acl['isRoot'] && $order->state_code=='CLOSE')
-                    echo '<a title="'.__('Orders state_code change').'" href="'.$HtmlCustomSite->jLink('orders', 'state_code_change', ['order_id' => $order->id, 'url_bck' => 'index_history']).'" class="action action actionSyncronize">'.__('Orders state_code change').'</a>';
+                    echo '<a title="'.__('Orders state_code change').'" href="'.$this->HtmlCustomSite->jLink('orders', 'state_code_change', ['order_id' => $order->id, 'url_bck' => 'index_history']).'" class="action action actionSyncronize"></a>';
 
-                  $modal_url = $this->HtmlCustomSite->jLink('orders', 'sotto_menu', ['order_id' => $order->id, 'position_img' => 'bgLeft', 'scope' => 'neo', 'format' => 'notmpl']);
+                  // $modal_url = $this->HtmlCustomSite->jLink('orders', 'sotto_menu', ['order_id' => $order->id, 'position_img' => 'bgLeft', 'scope' => 'neo', 'format' => 'notmpl']);
+                  $modal_url = '/admin/api/html-menus/order/'.$order->order_type_id.'/'.$order->id;
                   $modal_size = 'md'; // sm md lg
                   $modal_header = __('Order').' '.$order->suppliers_organization->name;                                    
                   echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'"><i class="fa fa-2x fa-navicon"></i></button>';
@@ -213,25 +214,33 @@ $user = $this->Identity->get();
 
             echo '</tbody>';
             echo '</table>';
-
-            /*
-            * legenda profilata
-            */
-            echo '<span class="hidden-xs">';
-            $results = $this->HtmlCustomSite->drawLegenda($user, $orderStatesToLegenda);
-            echo $results['htmlLegenda'];
-            $this->Html->scriptBlock($results['jsLegenda'], ['block' => true]);
-            echo '</span>';            
           }
           else {
             echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);
           } // end if(!empty($orders))
           ?>
-        </div>
-        <!-- /.box-body -->
-      </div>
-      <!-- /.box -->
+        </div>  <!-- /.box-body -->
+      </div> <!-- /.box -->
+
+      <?php 
+      if(count($orders)>0) {
+        echo $this->element('paginator');
+
+        /*
+        * legenda profilata
+        */
+        echo '<span class="hidden-xs">';
+        $results = $this->HtmlCustomSite->drawLegenda($user, $orderStatesToLegenda);
+        echo $results['htmlLegenda'];
+        $this->Html->scriptBlock($results['jsLegenda'], ['block' => true]);
+        echo '</span>';
+      }
+      ?>       
+      
     </div>
+
+    
+
   </div>
 </section>
 

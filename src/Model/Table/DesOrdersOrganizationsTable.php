@@ -123,4 +123,21 @@ class DesOrdersOrganizationsTable extends Table
 
         return $rules;
     }
+
+  	/*
+  	 * dato un ordine estraggo l'eventuale DesOrder 
+  	 */
+  	function getDesOrdersOrganization($user, $order_id, $debug = false) {
+
+		$where = ['DesOrdersOrganizations.organization_id' => $user->organization->id,
+                  'DesOrdersOrganizations.order_id' => $order_id];
+		if(!empty($user->des_id))
+			$where += ['DesOrdersOrganizations.des_id' => $user->des_id];	    								   	   
+							
+		$desOrdersOrganization = $this->find()
+                                        ->contain(['DesOrders'])
+                                        ->where($where)->first();
+						
+		return $desOrdersOrganization;
+	}
 }

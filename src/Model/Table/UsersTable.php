@@ -236,15 +236,6 @@ class UsersTable extends Table
         $user->acl['isManagerEvents'] = $usergroupsTable->isManagerEvents($user);
         $user->acl['isUserFlagPrivay'] = $usergroupsTable->isUserFlagPrivay($user);
         
-        // DES
-        $user->acl['isDes'] = $usergroupsTable->isDes($user);
-        $user->acl['isManagerDes'] = $usergroupsTable->isManagerDes($user);
-        $user->acl['isSuperReferenteDes'] = $usergroupsTable->isSuperReferenteDes($user);
-        $user->acl['isReferenteDes'] = $usergroupsTable->isReferenteDes($user);
-        $user->acl['isTitolareDesSupplier'] = $usergroupsTable->isTitolareDesSupplier($user);
-        $user->acl['isReferentDesAllGas'] = $usergroupsTable->isReferentDesAllGas($user);
-        $user->acl['isManagerUserDes'] = $usergroupsTable->isManagerUserDes($user);
-
         // gruppi 
         $user->acl['isGasGroupsManagerGroups'] = $usergroupsTable->isGasGroupsManagerGroups($user);
         $user->acl['isGasGroupsManagerDeliveries'] = $usergroupsTable->isGasGroupsManagerDeliveries($user);
@@ -255,6 +246,28 @@ class UsersTable extends Table
         $user->acl['isProdGasSupplierManager'] = $usergroupsTable->isProdGasSupplierManager($user);
 
         $organization = $this->_getOrganization($user, $user_organization_id, $organization_id, $debug); 
+        
+        $user->des_id = 0;
+        if($organization->paramsConfig['hasDes']=='Y') {
+            // DES
+            $user->acl['isDes'] = $usergroupsTable->isDes($user);
+            $user->acl['isManagerDes'] = $usergroupsTable->isManagerDes($user);
+            $user->acl['isSuperReferenteDes'] = $usergroupsTable->isSuperReferenteDes($user);
+            $user->acl['isReferenteDes'] = $usergroupsTable->isReferenteDes($user);
+            $user->acl['isTitolareDesSupplier'] = $usergroupsTable->isTitolareDesSupplier($user);
+            $user->acl['isReferentDesAllGas'] = $usergroupsTable->isReferentDesAllGas($user);
+            $user->acl['isManagerUserDes'] = $usergroupsTable->isManagerUserDes($user);
+
+            /*
+            * DES associo il des_id se sono associato ad un solo DES
+            */
+            $desOrganizationsTable = TableRegistry::get('DesOrganizations');
+            $where = ['organization_id' => $user_organization_id];
+            $desOrganizations = $desOrganizationsTable->find()->select(['des_id'])->where($where)->all();
+            if($desOrganizations->count()==1) {
+                $user->des_id = $desOrganizations[0]->des_id; 
+            }
+        }
 
         if(isset($organization->type))
         switch($organization->type) {

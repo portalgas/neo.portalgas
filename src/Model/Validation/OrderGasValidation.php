@@ -8,6 +8,8 @@ use App\Traits;
 
 class OrderGasValidation extends Validation
 {    
+    use Traits\UtilTrait;
+    
     /*
      * ctrl che il produttore abbia articoli validi da associare all'ordine
      */

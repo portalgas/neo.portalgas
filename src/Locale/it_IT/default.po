@@ -1409,39 +1409,6 @@ msgid "socialmarket-purchase-delete-all"
 msgstr "Annullo tutto"
 
 # 
-# Gas Groups
-# 
-msgid "Gas Groups"
-msgstr "Gruppi dei G.A.S."
-
-msgid "Gas Group"
-msgstr "Gruppo dei G.A.S."
-
-msgid "Gas Group Users"
-msgstr "Gruppi e utenti"
-
-msgid "Gas Group Users Management"
-msgstr "Gestione gasisti"
-
-msgid "Gas Group Orders"
-msgstr "Ordini per i gruppi"
-
-msgid "Gas Group Parent Orders"
-msgstr "Ordini titolare per i gruppi"
-
-msgid "Gas Group Orders"
-msgstr "Ordine per il gruppo"
-
-msgid "Gas Group Parent Orders"
-msgstr "Ordine titolare per il gruppo"
-
-msgid "Gas Group Delivery"
-msgstr "Consegna per i gruppi"
-
-msgid "Gas Group Deliveries"
-msgstr "Consegne per i gruppi"
-
-# 
 # validazione 
 #
 msgid "delivery_id"
@@ -1819,3 +1786,4919 @@ msgstr "gestore del patto"
 
 msgid "ArticlesOwnerREFERENT-TMP"
 msgstr "temporaneamente il referente del G.A.S."
+
+/*
+ * joomla
+ */
+#
+# M O N T H S
+#
+msgid "January"
+msgstr "Gennaio"
+
+msgid "February"
+msgstr "Febbraio"
+
+msgid "March"
+msgstr "Marzo"
+
+msgid "April"
+msgstr "Aprile"
+
+msgid "May"
+msgstr "Maggio"
+
+msgid "June"
+msgstr "Giugno"
+
+msgid "July"
+msgstr "Luglio"
+
+msgid "August"
+msgstr "Agosto"
+
+msgid "September"
+msgstr "Settembre"
+
+msgid "October"
+msgstr "Ottobre"
+
+msgid "November"
+msgstr "Novembre"
+
+msgid "December"
+msgstr "Dicembre"
+
+msgid "OrderAsc"
+msgstr "A-Z"
+
+msgid "OrderDesc"
+msgstr "Z-A"
+
+msgid "OrderNumAsc"
+msgstr "1-9"
+
+msgid "OrderNumDesc"
+msgstr "9-1"
+
+#
+# A C T I O N S
+#
+msgid "Login"
+msgstr "Login"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Exit"
+msgstr "Esci"
+
+msgid "Confirm"
+msgstr "Conferma"
+
+msgid "Submit"
+msgstr "Salva i dati del modulo"
+
+msgid "Submit Post Index"
+msgstr "Salva i dati del modulo"
+
+msgid "Submit Post Add Article"
+msgstr "Salva e inserisci un nuovo articolo"
+
+msgid "Submit Delete"
+msgstr "Cancella definitivamente"
+
+msgid "Send"
+msgstr "Invia la mail"
+
+msgid "Send mail to referents"
+msgstr "Invia una mail ai referenti"
+
+msgid "Send mail to referents to info"
+msgstr "Invia una mail ai referenti per maggior informazioni"
+
+msgid "Send mail to manager to delivery"
+msgstr "Invia una mail al 'gestore delle consegne' per richiedere una nuova consegna"
+
+msgid "Send mail to manager suppliers to change"
+msgstr "Invia una mail ai 'gestori dei produttori' per segnalare le variazioni"
+
+msgid "Invia"
+msgstr "Invia"
+
+msgid "Back"
+msgstr "Torna indietro"
+
+msgid "Delete"
+msgstr "Cancella"
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Close"
+msgstr "Chiudi"
+
+msgid "StateDelivery"
+msgstr "Stato della consegna"
+
+msgid "StateOrder"
+msgstr "Stato dell'ordine"
+
+msgid "Statistics"
+msgstr "Statistiche"
+
+msgid "Export Statistics"
+msgstr "Esporta statitiche"
+
+msgid "UpgradeStateDelivery"
+msgstr "Aggiorno lo stato della consegna"
+
+msgid "ChangeStateOrder"
+msgstr "Cambia lo stato dell'ordine"
+
+msgid "ChangeStateDesOrder"
+msgstr "Cambia lo stato dell'ordine"
+
+msgid "ChangeStateProdGasPromotion"
+msgstr "Cambia lo stato della promozione"
+
+msgid "Edit Stato Elaborazione"
+msgstr "Modifica lo stato di elaborazione"
+
+msgid "Edit Stato Elaborazione Close"
+msgstr "Chiudi la richiesta di pagamento"
+
+msgid "Edit RequestPayment"
+msgstr "Gestisci la richiesta di pagamento"
+
+msgid "Submit Trasport"
+msgstr "Salva l'importo del trasporto"
+
+msgid "Submit Update Trasport"
+msgstr "Aggiorna l'importo del trasporto"
+
+msgid "Submit Delete Trasport"
+msgstr "Cancella il trasporto"
+
+msgid "Submit CostMore"
+msgstr "Salva l'importo del costo aggiuntivo"
+
+msgid "Submit Update CostMore"
+msgstr "Aggiorna l'importo del costo aggiuntivo"
+
+msgid "Submit Delete CostMore"
+msgstr "Cancella il costo aggiuntivo"
+
+msgid "Submit CostLess"
+msgstr "Salva l'importo dello sconto"
+
+msgid "Submit Update CostLess"
+msgstr "Aggiorna l'importo dello sconto"
+
+msgid "Submit Delete CostLess"
+msgstr "Cancella lo sconto"
+
+msgid "SubmitUserFlagPrivacy"
+msgstr "Annulla l'accettazione privacy per tutti i gasisti del G.A.S."
+
+msgid "SubmitUserRegistrationExpire"
+msgstr "Fai scadere il rinnovo per tutti i gasisti del G.A.S."
+
+msgid "Modality"
+msgstr "Modalità"
+
+msgid "Add"
+msgstr "Aggiungi"
+
+msgid "Copy"
+msgstr "Copia"
+
+msgid "Gest"
+msgstr "Gestisci"
+
+msgid "List"
+msgstr "Elenco"
+
+msgid "View"
+msgstr "Dettaglio"
+
+msgid "Created"
+msgstr "Creato"
+
+msgid "Modified"
+msgstr "Modificato"
+
+msgid "Edit JContent Temporary"
+msgstr "Modifica la pagina temporanea"
+
+msgid "Edit JContent Defined"
+msgstr "Modifica la pagina definitiva"
+
+msgid "Read"
+msgstr "Leggi"
+
+msgid "Read Log"
+msgstr "Leggi file di log"
+
+msgid "Filter"
+msgstr "Filtra"
+
+msgid "FilterToOrganizations"
+msgstr "Filtra per organizzazione"
+
+msgid "FilterToSuppliers"
+msgstr "Filtra per produttore"
+
+msgid "FilterToSuppliersOnlyVisible"
+msgstr "Filtra per produttore (solo quelli visibili)"
+
+msgid "FilterToCategories"
+msgstr "Filtra per categoria"
+
+msgid "FilterToGeoRegions"
+msgstr "Filtra per regione"
+
+msgid "FilterToGeoProvinces"
+msgstr "Filtra per provincia"
+
+msgid "FilterArticlesOrdersName"
+msgstr "Cerca tutti gli articoli che <b>contengono</b> la parola"
+
+msgid "Cart of user"
+msgstr "Carrello dell'utente"
+
+msgid "Associate article to user"
+msgstr "Associa gli articoli della dispensa all'utente"
+
+msgid "ValidationCartToStoreroom"
+msgstr "La dispensa acquisterà gli articoli selezionati"
+
+msgid "ValidationCartRiOpen"
+msgstr "Riapri l'ordine per permettere ai gasisti di completare i colli"
+
+msgid "OrderDeliveryChange"
+msgstr "Cambiamento della consegna per l'ordine"
+
+msgid "JustValidationCartRiOpen"
+msgstr "Gestisci la riapertura dell'ordine"
+
+msgid "Edit associate article to user"
+msgstr "Modifica l'associazione degli articoli della dispensa all'utente"
+
+msgid "Management Articles in Storeroom"
+msgstr "Gestisci gli articoli della dispensa"
+
+msgid "Close Order"
+msgstr "Chiudi l'ordine"
+
+msgid "Update Cart"
+msgstr "Aggiorna l'articolo già ordinato"
+
+msgid "Storeroom To User"
+msgstr "Associalo ad un utente"
+
+msgid "Expand menu"
+msgstr "Espandi menù"
+
+msgid "Order home"
+msgstr "Home page dell'ordine"
+
+msgid "Order home DES"
+msgstr "Home page dell'ordine condiviso"
+
+msgid "OrderCreatedGoToHome"
+msgstr "Ordine creato, vai alla home dell'ordine"
+
+msgid "OrderDesCreatedGoToHome"
+msgstr "Ordine D.E.S. creato, vai alla home dell'ordine"
+
+msgid "BackupArticlesOrders"
+msgstr "Ripristino dati dell'ordine"
+
+msgid "Delivery home"
+msgstr "Home page della consegna"
+
+msgid "ProdDelivery home"
+msgstr "Home page della consegna"
+
+msgid "Tesoriere home"
+msgstr "Home page del tesoriere"
+
+msgid "Cassiere home"
+msgstr "Home page del cassiere"
+
+msgid "ProdGasPromotion home"
+msgstr "Home page della promozione"
+
+msgid "ProdGasSupplier home"
+msgstr "Home page del produttore"
+
+msgid "OrderIsDes"
+msgstr "L'ordine è di tipo D.E.S. (in condivisione con altri G.A.S.)"
+
+msgid "OrderIsProdGasPromotion"
+msgstr "L'ordine è associato ad una promozione"
+
+msgid "MailSend"
+msgstr "Invia mail"
+
+msgid "Preview"
+msgstr "Anteprima"
+
+msgid "PrintAll"
+msgstr "Stampa tutti"
+
+msgid "PrintAllDocs"
+msgstr "Stampa tutti i documenti degli utenti"
+
+msgid "ProdGasSuppliersImportCompareListArticles"
+msgstr "Confronta listini articoli"
+
+msgid "ProdGasSupplierDeliveriesBooking"
+msgstr "Consegne disponibili"
+
+msgid "TestLifeCycles"
+msgstr "Monitoraggio ciclo di vita degli ordini"
+
+#
+# A C T I O N S  view
+#
+msgid "View Order"
+msgstr "Visualizza l'ordine"
+
+msgid "View DesOrder"
+msgstr "Visualizza l'ordine condisivo"
+
+msgid "View ProdGasPromotion"
+msgstr "Visualizza la promozione"
+
+msgid "View JContent"
+msgstr "Leggi la pagina"
+
+msgid "View Article"
+msgstr "Visualizza articolo"
+
+msgid "View ArticlesOrder DES"
+msgstr "Visualizza gli articoli associati"
+
+msgid "View ArticlesOrder DES Short"
+msgstr "Visualizza gli articoli associati"
+
+msgid "View ArticlesOrder SUPPLIER Short"
+msgstr "Visualizza gli articoli associati"
+
+msgid "View ProdGasPromotion ArticlesOrder Short"
+msgstr "Visualizza gli articoli associati"
+
+msgid "View DES ArticlesOrder Short"
+msgstr "Visualizza gli articoli associati"
+
+msgid "View Calendar Delivery"
+msgstr "Visualizza il calendario della consegna"
+
+msgid "View Organization"
+msgstr "Dati del proprio G.A.S."
+
+msgid "View Calendar"
+msgstr "Visualizza il calendario"
+
+#
+# A C T I O N S  new
+#
+msgid "New Organization"
+msgstr "Crea una nuova organizzazione"
+
+msgid "New DesOrganization"
+msgstr "Crea un nuovo D.E.S."
+
+msgid "New Category"
+msgstr "Crea una nuova categoria"
+
+msgid "New Category Supplier"
+msgstr "Crea una nuova categoria per i produttori"
+
+msgid "New Category Article"
+msgstr "Crea una nuova categoria per gli articoli"
+
+msgid "New Delivery"
+msgstr "Crea una nuova consegna"
+
+msgid "New DesOrder"
+msgstr "Crea un nuovo ordine condiviso"
+
+msgid "New Order"
+msgstr "Crea un nuovo ordine"
+
+msgid "New ProdGasPromotion"
+msgstr "Crea un nuova promozione"
+
+msgid "New LoopsDelivery"
+msgstr "Crea una nuova ricorsione di una consegna"
+
+msgid "New LoopsOrder"
+msgstr "Crea una nuova ricorsione di un ordine"
+
+msgid "New Article"
+msgstr "Crea un nuovo articolo"
+
+msgid "Gest BookmarksArticles"
+msgstr "Gestisci gli articoli preferiti"
+
+msgid "New Supplier Referent"
+msgstr "Crea un nuovo referente"
+
+msgid "New Suppliers Organizations Referents"
+msgstr "Crea un nuovo referente"
+
+msgid "Gest Suppliers Organizations Referents"
+msgstr "Gestisci i referenti"
+
+msgid "Gest Des Suppliers Referents"
+msgstr "Gestisci i referenti"
+
+msgid "New Supplier"
+msgstr "Crea un nuovo produttore"
+
+msgid "New Supplier Organization"
+msgstr "Crea un nuovo produttore"
+
+msgid "New Suppliers Votes"
+msgstr "Inserisci un nuovo voto"
+
+msgid "New Request Payment"
+msgstr "Crea una nuova richiesta di pagamento"
+
+msgid "New Prod Groups"
+msgstr "Crea un nuovo gruppo di utenti"
+
+msgid "Gest UserGroups"
+msgstr "Gestisci i gruppi"
+
+msgid "Gest DesOrganization"
+msgstr "Gestisci il D.E.S."
+
+msgid "Gest DesSupplier"
+msgstr "Gestisci il produttore del D.E.S."
+
+msgid "Gest DesOrder"
+msgstr "Gestisci l'ordine condiviso"
+
+msgid "New Event"
+msgstr "Crea una nuova attività"
+
+msgid "New Event Type"
+msgstr "Crea una nuova tipologia d'attività"
+
+msgid "New DocsCreate"
+msgstr "Crea un nuovo documento"
+
+#
+# A C T I O N S  edit
+#
+msgid "Edit Organization"
+msgstr "Modifica l'organizzazione"
+
+msgid "Edit DesOrganization"
+msgstr "Modifica il D.E.S."
+
+msgid "Edit DesOrdersOrganizations"
+msgstr "Dati della consegna per il produttore"
+
+msgid "Edit DesOrdersOrganizations Short"
+msgstr "Dati della consegna per il produttore"
+
+msgid "Edit Category"
+msgstr "Modifica la categoria"
+
+msgid "Edit Category Supplier"
+msgstr "Modifica la categoria dei produttori"
+
+msgid "Edit Category Article"
+msgstr "Modifica la categoria degli articoli"
+
+msgid "Edit Supplier"
+msgstr "Modifica il produttore"
+
+msgid "Edit Supplier Organization"
+msgstr "Modifica il produttore"
+
+msgid "Edit SuppliersOrganizationJcontent"
+msgstr "Modifica la pagina del produttore"
+
+msgid "Edit Suppliers Votes"
+msgstr "Gestisci il voto del produttore"
+
+msgid "Edit Delivery"
+msgstr "Modifica la consegna"
+
+msgid "Edit DesOrder"
+msgstr "Modifica l'ordine condiviso"
+
+msgid "Edit DesOrder Short"
+msgstr "Modifica l'ordine"
+
+msgid "Edit Order ProdGasPromotion"
+msgstr "Modifica l'ordine per la promozione"
+
+msgid "Edit LoopsDelivery"
+msgstr "Modifica la consegna ricorsiva"
+
+msgid "Edit LoopsOrder"
+msgstr "Modifica l'ordine ricorsivo"
+
+msgid "Edit Order"
+msgstr "Modifica i dati dell'ordine"
+
+msgid "Edit Order Short"
+msgstr "Modifica l'ordine"
+
+msgid "Edit ProdGasPromotion Order Short"
+msgstr "Modifica l'ordine in promozione"
+
+msgid "Edit Order Delivery Old"
+msgstr "Associa l'ordine ad una consegna scaduta"
+
+msgid "Edit ProdGasPromotion"
+msgstr "Modifica la promozione"
+
+msgid "Edit Single ArticlesOrder"
+msgstr "Modifica i dati dell'articolo associato all'ordine"
+
+msgid "Edit Single ArticlesOrder DES"
+msgstr "Modifica i dati dell'articolo associato all'ordine condiviso"
+
+msgid "Edit ArticlesOrder OPEN-NEXT"
+msgstr "Modifica gli articoli associati all'ordine in attesa dell'apertura"
+
+msgid "Edit ArticlesOrder DES OPEN-NEXT"
+msgstr "Modifica gli articoli associati all'ordine condiviso in attesa dell'apertura"
+
+msgid "Edit ArticlesOrder"
+msgstr "Modifica gli articoli associati all'ordine"
+
+msgid "Edit ArticlesOrder Short"
+msgstr "Modifica gli articoli associati"
+
+msgid "Edit ArticlesOrder DES"
+msgstr "Modifica gli articoli associati dell'ordine condiviso"
+
+msgid "Edit ArticlesOrder DES Short"
+msgstr "Modifica gli articoli associati"
+
+msgid "Edit ArticlesOrder SUPPLIER Short"
+msgstr "Modifica gli articoli associati"
+
+msgid "Edit ProdDeliveriesArticle Short"
+msgstr "Modifica gli articoli associati"
+
+msgid "Edit Single ArticlesOrder OPEN-NEXT"
+msgstr "Modifica l'articolo associato all'ordine in attesa che apra"
+
+msgid "Edit Single ArticlesOrder DES OPEN-NEXT"
+msgstr "Modifica l'articolo associato all'ordine condiviso in attesa che apra"
+
+msgid "Edit Single ArticlesOrder"
+msgstr "Modifica l'articolo associato all'ordine"
+
+msgid "Edit ArticlesOrder"
+msgstr "Modifica i dati dell'articolo associato all'ordine"
+
+msgid "Edit Article"
+msgstr "Modifica l'articolo"
+
+msgid "Articles Quick"
+msgstr "Modifica gli articoli rapidamente"
+
+msgid "Articles Gest Categories"
+msgstr "Gestisci le categorie degli articoli"
+
+msgid "Edit Articles Prices"
+msgstr "Modifica i prezzi degli articoli"
+
+msgid "Edit Articles Prices Rate"
+msgstr "Modifica in percentuale i prezzi degli articoli"
+
+msgid "Edit SummaryOrder"
+msgstr "Modifica gli acquisti aggregati per utente"
+
+msgid "Edit Request Payments"
+msgstr "Gestisci la richiesta di pagamento"
+
+msgid "Edit Request Payments Order"
+msgstr "Gestisci la richieste di pagamento degli ordini"
+
+msgid "Edit Cart"
+msgstr "Modifica il carrello"
+
+msgid "Edit Storeroom to User"
+msgstr "Modifica gli articoli acquistati dalla dispensa"
+
+msgid "Edit ProdGroup"
+msgstr "Modifica il gruppo di utenti"
+
+msgid "Edit ProdDelivery"
+msgstr "Modifica la consegna"
+
+msgid "Edit Cash"
+msgstr "Modifica la voce di cassa"
+
+msgid "Edit Cash History"
+msgstr "Modifica la voce di cassa storica"
+
+msgid "Edit User Cash"
+msgstr "Modifica la voce di cassa"
+
+msgid "Edit Event"
+msgstr "Modifica attività"
+
+msgid "Edit Event Type"
+msgstr "Modifica tipologia d'attività"
+
+msgid "Edit DocsCreate"
+msgstr "Modifica il documento"
+
+#
+# A C T I O N S  add
+#
+msgid "Add Organization"
+msgstr "Aggiungi una nuova organizzazione"
+
+msgid "Add DesOrganization"
+msgstr "Aggiungi un nuovo D.E.S."
+
+msgid "Add Category"
+msgstr "Aggiungi una nuova categoria"
+
+msgid "Add Category Supplier"
+msgstr "Aggiungi una nuova categoria per i produttori"
+
+msgid "Add Category Article"
+msgstr "Aggiungi una nuova categoria per gli articoli"
+
+msgid "Add Supplier"
+msgstr "Aggiungi un nuovo produttore"
+
+msgid "Add DesSupplier"
+msgstr "Aggiungi un nuovo produttore"
+
+msgid "Add Supplier Organization"
+msgstr "Aggiungi un nuovo produttore"
+
+msgid "Add Supplier Organization Id"
+msgstr "Aggiungi il produttore"
+
+msgid "Add Supplier Organization Id And Article"
+msgstr "Aggiungi il produttore con la lista dei suoi articoli"
+
+msgid "Add Supplier Organization fields custom"
+msgstr "Valorizza i campi del nuovo produttore"
+
+msgid "Add Supplier Organization Referent"
+msgstr "Associa un referente ad un produttore"
+
+msgid "Add Tesoriere"
+msgstr "Aggiungi un nuovo tesoriere"
+
+msgid "Add Delivery"
+msgstr "Aggiungi una nuova consegna"
+
+msgid "Add Order"
+msgstr "Aggiungi un nuovo ordine"
+
+msgid "Add DesOrder"
+msgstr "Aggiungi un nuovo ordine condiviso"
+
+msgid "Add DesOrder Short"
+msgstr "Crea l'ordine"
+
+msgid "Add Easy Order"
+msgstr "Aggiungi un nuovo ordine (modalità semplificata)"
+
+msgid "Add Order ProdGasPromotion"
+msgstr "Crea l'ordine per la promozione"
+
+msgid "Add ProdGasPromotion"
+msgstr "Aggiungi una nuova promozione"
+
+msgid "Add LoopsDelivery"
+msgstr "Aggiungi un nuova ricorsione di una consegna"
+
+msgid "Add LoopsOrder"
+msgstr "Aggiungi un nuova ricorsione di un ordine"
+
+msgid "Add Article"
+msgstr "Aggiungi un nuovo articolo"
+
+msgid "Add ArticlesOrder"
+msgstr "Associa gli articoli all'ordine"
+
+msgid "Add ArticlesOrder DES"
+msgstr "Associa gli articoli all'ordine condiviso"
+
+msgid "Add ArticlesOrder Error"
+msgstr "L'ordine non ha ancora articoli associati!"
+
+msgid "Add ProdDeliveriesArticle Error"
+msgstr "La consegna non ha ancora articoli associati!"
+
+msgid "Add Request Payments"
+msgstr "Aggiungi una richiesta pagamento"
+
+msgid "Add Request Payments Orders"
+msgstr "Aggiungi una rich. pagamento di ordini"
+
+msgid "Add Request Payments Storeroom"
+msgstr "Aggiungi una rich. pagamento di dispensa"
+
+msgid "Add Request Payments Generic"
+msgstr "Aggiungi una voce di spesa"
+
+msgid "Add Storeroom"
+msgstr "Aggiungi gli articoli alla dispensa"
+
+msgid "Add Storeroom to User"
+msgstr "Acquista gli articoli dalla dispensa"
+
+msgid "Add ProdGroup"
+msgstr "Aggiungi un gruppo di utenti"
+
+msgid "Add ProdUsersGroups"
+msgstr "Aggiungi gli utenti al gruppo"
+
+msgid "Add ProdDelivery"
+msgstr "Aggiungi una nuova consegna"
+
+msgid "Add Cash"
+msgstr "Aggiungi una nuova voce alla cassa"
+
+msgid "Add Cash User"
+msgstr "Aggiungi una nuova voce di cassa al gasista"
+
+msgid "Add Event"
+msgstr "Aggiungi attività"
+
+msgid "Add Event Type"
+msgstr "Aggiungi tipologia d'attività"
+
+msgid "Add DocsCreate"
+msgstr "Aggiungi un documento"
+
+msgid "Add PromotionOrganizationManager"
+msgstr "Crea un ordine per la promozione"
+
+msgid "Reject PromotionOrganizationManager"
+msgstr "Rifiuta la promozione"
+
+msgid "Contact PromotionOrganizationManager"
+msgstr "Contatta produttore"
+
+#
+# A C T I O N S   delete
+#
+msgid "Delete Organization"
+msgstr "Organizzazione cancellata definitivamente"
+
+msgid "Delete DesOrganization"
+msgstr "D.E.S. cancellato definitivamente"
+
+msgid "Delete User"
+msgstr "Utente cancellato definitivamente"
+
+msgid "Delete Category"
+msgstr "Categoria cancellata definitivamente"
+
+msgid "Delete Category Supplier"
+msgstr "Categoria per i produttori cancellata definitivamente"
+
+msgid "Delete Category Article"
+msgstr "Categoria per gli articoli cancellata definitivamente"
+
+msgid "Delete Supplier"
+msgstr "Produttore cancellato definitivamente"
+
+msgid "Delete DesSupplier"
+msgstr "Produttore cancellato definitivamente"
+
+msgid "Delete Supplier Organization"
+msgstr "Produttore cancellato definitivamente"
+
+msgid "Delete Delivery"
+msgstr "Consegna cancellata definitivamente"
+
+msgid "Delete DesOrder"
+msgstr "Ordine condiviso cancellato definitivamente"
+
+msgid "Delete LoopsDelivery"
+msgstr "Consegna ricorsiva cancellata definitivamente"
+
+msgid "Delete LoopsOrder"
+msgstr "Ordine ricorsivo cancellato definitivamente"
+
+msgid "Delete Order"
+msgstr "Ordine cancellato definitivamente"
+
+msgid "Delete ProdGasPromotion"
+msgstr "Promozione cancellata definitivamente"
+
+msgid "Delete Article"
+msgstr "Articolo cancellato definitivamente"
+
+msgid "Delete Cart"
+msgstr "Articolo nel carrello cancellato definitivamente"
+
+msgid "Delete Supplier organization referent"
+msgstr "Referente cancellato definitivamente"
+
+msgid "Delete UserGroup"
+msgstr "L'utente non fa più parte del gruppo"
+
+msgid "Delete Summary order"
+msgstr "Gli acquisti aggregati per l'utente sono stati cancellati"
+
+msgid "Delete Cash"
+msgstr "La voce di cassa è stata cancellata"
+
+msgid "Delete Request Payments Order"
+msgstr "Elimina l'ordine della richiesta pagamento"
+
+msgid "Delete RequestPaymentsGeneric"
+msgstr "La voce di spesa è stata cancellata"
+
+msgid "Delete RequestPaymentsOrder"
+msgstr "Ordine non più associato alla richiesta di pagamento"
+
+msgid "Insert Trasport"
+msgstr "L'importo del trasporto dell'ordine è stato inserito"
+
+msgid "Insert CostMore"
+msgstr "L'importo del costo aggiuntivo dell'ordine è stato inserito"
+
+msgid "Insert CostLess"
+msgstr "L'importo dello sconto dell'ordine è stato inserito"
+
+msgid "Update Trasport"
+msgstr "L'importo del trasporto dell'ordine è stato aggiornato"
+
+msgid "Update CostMore"
+msgstr "L'importo del costo aggiuntivo dell'ordine è stato aggiornato"
+
+msgid "Update CostLess"
+msgstr "L'importo dello sconto dell'ordine è stato aggiornato"
+
+msgid "Delete Trasport"
+msgstr "L'importo del trasporto è stato cancellato dall'ordine"
+
+msgid "Delete CostMore"
+msgstr "L'importo del costo aggiuntivo è stato cancellato dall'ordine"
+
+msgid "Delete CostLess"
+msgstr "L'importo dello sconto è stato cancellato dall'ordine"
+
+msgid "OrderStateCodeUpdate"
+msgstr "Lo stato dell'ordine è stato aggiornato."
+
+msgid "OrderStateCodeUpdateNowReferentWorking"
+msgstr "Lo stato dell'ordine è stato aggiornato: ora il referente potrà modificarlo."
+
+msgid "OrderStateCodeUpdateNowRequestPayment"
+msgstr "Lo stato dell'ordine è stato aggiornato: ora si potrà richiedere il pagamento."
+
+msgid "Delete Request Payment"
+msgstr "Richiesta di pagamento cancellata definitivamente"
+
+msgid "Delete Mail"
+msgstr "Mail cancellata definitivamente"
+
+msgid "Delete Event"
+msgstr "Attività cancellata definitivamente"
+
+msgid "Delete Event Type"
+msgstr "Tipologia d'attività cancellata definitivamente"
+
+msgid "Delete DocsCreate"
+msgstr "Documento cancellato definitivamente"
+
+#
+# T I T L E
+#
+msgid "Title Delete Organization"
+msgstr "Organizzazione da cancellare"
+
+msgid "Title Delete DesOrganization"
+msgstr "D.E.S. da cancellare"
+
+msgid "Title Delete Delivery"
+msgstr "Consegna da cancellare"
+
+msgid "Title Delete DesOrder"
+msgstr "Ordine condiviso da cancellare"
+
+msgid "Title Delete ProdGasPromotion"
+msgstr "Promozione da cancellare"
+
+msgid "Title Delete Category"
+msgstr "Categoria da cancellare"
+
+msgid "Title Delete Category Supplier"
+msgstr "Categoria per i produttori da cancellare"
+
+msgid "Title Delete Category Article"
+msgstr "Categoria per gli articoli da cancellare"
+
+msgid "Title Delete Supplier"
+msgstr "Produttore da cancellare"
+
+msgid "Title Delete Supplier Organization"
+msgstr "Produttore da cancellare"
+
+msgid "Title Delete Article"
+msgstr "Articolo da cancellare"
+
+msgid "Title Delete Order"
+msgstr "Ordine da cancellare"
+
+msgid "Title Delete Request Payment"
+msgstr "Richiesta di pagamento da cancellare"
+
+msgid "Title Delete Event"
+msgstr "Attività da cancellare"
+
+msgid "Title Delete Event Type"
+msgstr "Tipologia d'attività da cancellare"
+
+msgid "Title ChangeStateCode ProdGasPromotion"
+msgstr "Modifica lo stato della promozione"
+
+#
+# L I S T
+#
+msgid "List Organizations"
+msgstr "Elenco organizzazioni"
+
+msgid "List DesOrganizations"
+msgstr "Elenco D.E.S."
+
+msgid "List DesOrdersOrganizations"
+msgstr "Elenco ordini associati all'ordine condiviso"
+
+msgid "List DesOrdersOrganizations Short"
+msgstr "Elenco ordini associati"
+
+msgid "List DesUserGroupMaps"
+msgstr "Elenco ruoli"
+
+msgid "Ctrl DesUserGroupMaps"
+msgstr "Controllo ruoli"
+
+msgid "List Users"
+msgstr "Elenco utenti"
+
+msgid "List UserGroups"
+msgstr "Elenco gruppi"
+
+msgid "List Users UserGroups"
+msgstr "Elenco utenti associati al gruppo"
+
+msgid "List Categories"
+msgstr "Elenco categorie"
+
+msgid "List Categories Suppliers"
+msgstr "Elenco categorie per i produttori"
+
+msgid "List Categories Articles"
+msgstr "Elenco categorie per gli articoli"
+
+msgid "List Suppliers"
+msgstr "Elenco produttori"
+
+msgid "List Suppliers Organization"
+msgstr "Elenco produttori"
+
+msgid "List Supplier Organization Referents"
+msgstr "Elenco referenti"
+
+msgid "List DesSuppliers"
+msgstr "Elenco produttori"
+
+msgid "List Suppliers Votes"
+msgstr "Elenco voti dei produttori"
+
+msgid "List Tesorieri"
+msgstr "Elenco tesorieri"
+
+msgid "List Deliveries"
+msgstr "Elenco consegne"
+
+msgid "List DesOrders"
+msgstr "Elenco ordini condivisi"
+
+msgid "List DesOrders history"
+msgstr "Elenco ordini storici condivisi"
+
+msgid "List ProdGasPromotions"
+msgstr "Elenco promozioni"
+
+msgid "List ProdGasPromotions HomePage"
+msgstr "Vai all'elenco promozioni!!"
+
+msgid "List ProdGasPromotions New"
+msgstr "Elenco nuove promozioni"
+
+msgid "List ProdGasPromotionsOrders"
+msgstr "Elenco promozioni associate ad un ordine"
+
+msgid "List ProdGasArticlesPromotions"
+msgstr "Elenco articoli in promozioni"
+
+msgid "List Deliveries history"
+msgstr "Elenco consegne storiche"
+
+msgid "List Orders"
+msgstr "Elenco ordini"
+
+msgid "List Orders history"
+msgstr "Elenco ordini storici"
+
+msgid "List MonitoringOrders"
+msgstr "Ordini monitorati"
+
+msgid "List MonitoringSuppliersOrganizations"
+msgstr "Ordini dei produttori monitorati"
+
+msgid "List LoopsDeliveries"
+msgstr "Elenco consegne ricorsive"
+
+msgid "List LoopsOrders"
+msgstr "Elenco ordini ricorsivi"
+
+msgid "List Articles"
+msgstr "Elenco articoli"
+
+msgid "ProdGasListArticlesGas"
+msgstr "Elenco articoli del G.A.S."
+
+msgid "List Articles Orders"
+msgstr "Elenco articoli associati"
+
+msgid "List Storeroom"
+msgstr "Elenco articoli in dispensa"
+
+msgid "List Carts"
+msgstr "Elenco carrelli"
+
+msgid "List SummaryOrder"
+msgstr "Elenco degli acquisti aggregati per utente "
+
+msgid "List Request Payments"
+msgstr "Elenco richieste di pagamento"
+
+msgid "List Cashs"
+msgstr "Elenco voci di cassa"
+
+msgid "List Mails"
+msgstr "Elenco mail"
+
+msgid "List ProdGroups"
+msgstr "Elenco gruppi di utenti"
+
+msgid "List ProdUsersGroups"
+msgstr "Elenco degli utenti del gruppo"
+
+msgid "List ProdDeliveries"
+msgstr "Elenco delle consegne"
+
+msgid "Csv Import"
+msgstr "Importazione dati da file .csv"
+
+msgid "Csv Import Prepare"
+msgstr "Preparazione dati"
+
+msgid "Csv Import Prepare"
+msgstr "Preparazione dati"
+
+msgid "Csv Export-Import"
+msgstr "Esportazione dati in file .csv per successiva importazione"
+
+msgid "Csv Import-Export"
+msgstr "Importazione dati da file .csv precedentemente esportato"
+
+msgid "List Events"
+msgstr "Elenco delle attività"
+
+msgid "List Event Types"
+msgstr "Elenco delle tipologie d'attività"
+
+msgid "List DocsCreate"
+msgstr "Elenco dei documenti creati"
+
+msgid "Request Payments Printer"
+msgstr "Stampe della richiesta di pagamento"
+
+#
+# P A G I N A T I O N
+#
+msgid "Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}"
+msgstr "Pagina {:page} di {:pages}, mostra {:current} records di {:count} totali"
+
+#msgstr "Pagina {:page} di {:pages}, mostra {:current} records di {:count} totali, inizio con il record {:start}, termino con {:end}"
+msgid "previous"
+msgstr "Precedente"
+
+msgid "next"
+msgstr "Successivo"
+
+#
+# M S G   saved
+#
+msgid "The user has been saved"
+msgstr "L'utente è stato salvato"
+
+msgid "The userProfile.FlagPrivacyN has been saved"
+msgstr "A tutti i gasisti del G.A.S. è stata annullata l'accettazione della privacy"
+
+msgid "The userProfile.RegistrationExpireN has been saved"
+msgstr "A tutti i gasisti del G.A.S. è scaduta l'iscrizione"
+
+msgid "The article has been saved"
+msgstr "L'articolo è stato salvato"
+
+msgid "The cart has been saved"
+msgstr "Il carrello è stato aggiornato"
+
+msgid "The category has been saved"
+msgstr "La categoria è stata salvata"
+
+msgid "The delivery has been saved"
+msgstr "La consegna è stata salvata"
+
+msgid "The DesOrder has been saved"
+msgstr "L'ordine condiviso è stato salvato"
+
+msgid "The ProdGasPromotion has been saved"
+msgstr "La promozione è stata salvata"
+
+msgid "The ProdGasPromotionOrganizationsManager has been saved"
+msgstr "L'ordine con gli articoli della promozione è stata salvato"
+
+msgid "The delivery has been copied"
+msgstr "La consegna è stata copiata"
+
+msgid "The loops delivery has been saved"
+msgstr "La consegna ricorsiva è stata salvata"
+
+msgid "The loops order has been saved"
+msgstr "L'ordine ricorsivo è stato salvato"
+
+msgid "The article has been copied"
+msgstr "L'articolo è stato copiato"
+
+msgid "The order has been saved"
+msgstr "L'ordine è stato salvato"
+
+msgid "The order has been saved. Now association Articles"
+msgstr "L'ordine è stato salvato<br />Ora scegli quali articoli associare all'ordine"
+
+msgid "The order has been saved. DES association Articles Titolare"
+msgstr "L'ordine è stato salvato<br />Ora scegli quali articoli associare all'ordine condiviso"
+
+msgid "The order has been saved. DES association Articles NOT Titolare"
+msgstr "L'ordine è stato salvato<br />Ora scegli quali articoli associare all'ordine condiviso tra quelli scelti dal G.A.S. titolare del produttore"
+
+msgid "The order has been saved. Hidden association Articles"
+msgstr "L'ordine è stato salvato<br />Gli articoli sono stati associati all'ordine"
+
+msgid "The order has been saved. ProdGas association Articles"
+msgstr "L'ordine è stato salvato<br />Gli articoli sono gestiti dal produttore"
+
+msgid "The order has been saved. DES association Articles"
+msgstr "L'ordine è stato salvato<br />Gli articoli sono gestiti dal titolare D.E.S. del produttore"
+
+msgid "The OrderDataFineValidation has been saved"
+msgstr "L'ordine è stato riaperto per permettere ai gasiti di completare i colli"
+
+msgid "The OrderDataFineValidation has been saved and Send Mail"
+msgstr "L'ordine è stato riaperto per permettere ai gasiti di completare i colli ed è stata inviata la mail di notifica"
+
+msgid "The OrderDeliveryChange has been saved and Send Mail"
+msgstr "La mail di notifica è stata inviata"
+
+msgid "MonitoringOrders has been saved"
+msgstr "Gli ordini selezionati sono stati aggiunti/eliminati dal monitoraggio"
+
+msgid "MonitoringSuppliersOrganizations has been saved"
+msgstr "Il monitoraggio del produttore selezionati è stato salvato"
+
+msgid "The articles order has been saved"
+msgstr "Gli articoli sono stati associati all'ordine"
+
+msgid "The articles order edit single has been saved"
+msgstr "I dati dell'articolo associato all'ordine sono stati salvati"
+
+msgid "The articles order has been saved to storeroom"
+msgstr "Gli articoli sono stati acquistati dalla dispensa"
+
+msgid "The price to articles order has been saved"
+msgstr "I prezzi degli articoli sono stati salvati"
+
+msgid "The organization has been saved"
+msgstr "L'organizzazione è stata salvata"
+
+msgid "The desOrganization has been saved"
+msgstr "Il D.E.S. è stata salvata"
+
+msgid "The organization has been saved and logout"
+msgstr "L'organizzazione è stata salvata: effetua il logout per rendere effettive la modifiche"
+
+msgid "The organizationsCash has been saved"
+msgstr "La configurazione del prepagato è stata salvata"
+
+msgid "The storeroom has been saved"
+msgstr "La dispensa è stata aggiornata"
+
+msgid "UserToStoreroom has been saved"
+msgstr "Articolo nuovamente in dispensa"
+
+msgid "storeroomToUser has been saved"
+msgstr "L'acquistato dell'articolo dalla dispensa è andato a buon fine"
+
+msgid "The supplier has been saved"
+msgstr "Il produttore è stato salvato"
+
+msgid "The des supplier has been saved"
+msgstr "Il produttore è stato salvato"
+
+msgid "The supplier has been saved and supplierOrganization"
+msgstr "Il produttore è stato salvato e anche gli eventuali produttori associati alle organizzazioni"
+
+msgid "The supplier organization has been saved"
+msgstr "Il produttore è stato aggiunto"
+
+msgid "The supplier organization and articles has been saved"
+msgstr "Il produttore è stato aggiunto e i suoi articoli sono stati importati"
+
+msgid "The supplier organization jcontent has been saved"
+msgstr "La pagina associata al produttore è stato aggiunto"
+
+msgid "The supplier organization referent has been saved"
+msgstr "L'associazione referente/produttore è stata salvata"
+
+msgid "The supplier organization referent just exist"
+msgstr "Il referente è già associato al produttore"
+
+msgid "The suppliers vote has been saved"
+msgstr "Il voto del produttore è stato salvato"
+
+msgid "The role has been saved"
+msgstr "L'utente è stato aggiunto al gruppo"
+
+msgid "The summary order has been saved"
+msgstr "Gli acquisti aggregati per utente sono stati salvati"
+
+msgid "The carts split has been saved"
+msgstr "Gli acquisti suddivisi per quantità sono stati salvati"
+
+msgid "The cash has been saved"
+msgstr "La voce di cassa è stata salvata"
+
+msgid "Trasport has been saved"
+msgstr "L'importo del trasporto è stato salvato"
+
+msgid "CostMore has been saved"
+msgstr "L'importo del costo aggiuntivo è stato salvato"
+
+msgid "CostLess has been saved"
+msgstr "L'importo dello sconto è stato salvato"
+
+msgid "The request payments orders has been saved"
+msgstr "E' stato richiesto il pagamento degli ordini selezionati"
+
+msgid "The request payments storeroom has been saved"
+msgstr "E' stato richiesto il pagamento degli articoli in dispensa"
+
+msgid "The request payments generic has been saved"
+msgstr "E' stato richiesto il pagamento della nuova voce di spesa"
+
+msgid "The request payments note has been saved"
+msgstr "La nota della richiesta di pagamento è stata salvata"
+
+msgid "The summary payments has been saved"
+msgstr "I pagamenti selezionati sono stati salvati"
+
+msgid "Validation Carts Edit has been saved"
+msgstr "Le quantità degli articoli modificati sono stati salvati"
+
+msgid "Validation Carts Edit no change"
+msgstr "Non hai modificato alcun dato"
+
+msgid "The prod group has been saved."
+msgstr "Il gruppo di uente è stato salvato"
+
+msgid "The prod users group has been saved."
+msgstr "Gli utenti sono stati associati al gruppo"
+
+msgid "The prod delivery has been saved."
+msgstr "La consegna è stata salvata"
+
+msgid "Csv Import Articles has been saved"
+msgstr "L'importazione degli articoli è avvenuta con successo"
+
+msgid "Csv Import Users has been saved"
+msgstr "L'importazione degli utenti è avvenuta con successo"
+
+msgid "The UserGroups has been saved"
+msgstr "L'utente è stato aggiunto al gruppo"
+
+msgid "The DesOrdersOrganization has been saved"
+msgstr "I dati della consegna per il produttore sono stati salvati"
+
+msgid "The event has been saved"
+msgstr "L'attività è stata salvata"
+
+msgid "The event type has been saved"
+msgstr "La tipologia d'attività è stata salvata"
+
+msgid "The prodGasArticleSyncronizeUpdate has been saved"
+msgstr "L'articolo è stato aggiornato"
+
+msgid "The prodGasArticleSyncronizeUpdate Ids has been saved"
+msgstr "Gli articoli sono stati aggiornati"
+
+msgid "The prodGasArticleSyncronizeInsert has been saved"
+msgstr "L'articolo è stato inserito"
+
+msgid "The prodGasArticleSyncronizeInsert Ids has been saved"
+msgstr "Gli articoli sono stati inseriti"
+
+msgid "The prodGasArticleSyncronizeFlagPresenteArticlesorders has been saved"
+msgstr "L'articolo ha modificato lo stato nell'elenco di quelli ordinabili"
+
+msgid "The prodGasArticleSyncronizeFlagPresenteArticlesorders Ids has been saved"
+msgstr "Gli articoli hanno modificato lo stato nell'elenco di quelli ordinabili"
+
+msgid "The prodGasArticleSyncronizeDelete has been saved"
+msgstr "L'articolo è stato eliminato"
+
+msgid "The prodGasArticleSyncronizeDelete Ids has been saved"
+msgstr "Gli articoli sono stati eliminati"
+
+msgid "The prodGasArticleSyncronizeDelete has been saved"
+msgstr "L'articolo è stato eliminato"
+
+msgid "The prodGasArticleSyncronizeImportArticleGas has been saved"
+msgstr "L'articolo del G.A.S. è stato associato ad un tuo articolo"
+
+msgid "The prodGasArticleSyncronizeArticlesOrdersInsert has been saved"
+msgstr "L'articolo è stato associato all'ordine"
+
+msgid "The prodGasArticleSyncronizeArticlesOrdersInsert Ids has been saved"
+msgstr "Gli articoli sono stati associati all'ordine"
+
+msgid "The prodGasArticleSyncronizeArticlesOrdersUpdate has been saved"
+msgstr "L'articolo associato all'ordine è stato aggiornato"
+
+msgid "The prodGasArticleSyncronizeArticlesOrdersUpdate Ids has been saved"
+msgstr "Gli articoli associati all'ordine sono stati aggiornati"
+
+msgid "The prodGasArticleSyncronizeArticlesOrdersDelete has been saved"
+msgstr "L'articolo  associato all'ordine è stato eliminato"
+
+msgid "The docsCreates has been saved"
+msgstr "Il documento è stato salvato"
+
+#
+# M S G   saved error
+#
+msgid "The user could not be saved. Please, try again."
+msgstr "L'utente non è stato salvato. Riprova."
+
+msgid "The article could not be saved. Please, try again."
+msgstr "L'articolo non è stato salvato. Riprova."
+
+msgid "The articles order could not be saved. Please, try again."
+msgstr "Gli articoli non sono stati associati all'ordine. Riprova."
+
+msgid "The articles order syncronize could not be saved. Please, try again."
+msgstr "Gli articoli associati all'ordine non sono stati aggiornati. Riprova."
+
+msgid "The cart could not be saved. Please, try again."
+msgstr "Il carrello non è stato salvato. Riprova."
+
+msgid "The category could not be saved. Please, try again."
+msgstr "La categoria non è stata salvata. Riprova."
+
+msgid "The delivery could not be saved. Please, try again."
+msgstr "La consegna non è stata salvata. Riprova."
+
+msgid "The DesOrder could not be saved. Please, try again."
+msgstr "L'ordine condiviso non è stato salvato. Riprova."
+
+msgid "The ProdGasPromotion could not be saved. Please, try again."
+msgstr "La promozione non è stata salvata. Riprova."
+
+msgid "The delivery could not be copied. Please, try again."
+msgstr "La consegna non è stata copiata. Riprova."
+
+msgid "The loops delivery could not be saved. Please, try again."
+msgstr "La consegna ricorsiva non è stata salvata. Riprova."
+
+msgid "The loops order could not be saved. Please, try again."
+msgstr "L'ordine ricorsivo non è stato salvato. Riprova."
+
+msgid "The article could not be copied. Please, try again."
+msgstr "L'articolo non è stato copiato. Riprova."
+
+msgid "The order could not be saved. Please, try again."
+msgstr "L'ordine non è stato salvato. Riprova."
+
+msgid "The des order could not be saved. Please, try again."
+msgstr "L'ordine non è stato associato ai D.E.S. Riprova."
+
+msgid "The organization could not be saved. Please, try again."
+msgstr "L'organizzazione non è stato salvato. Riprova."
+
+msgid "The desOrganization could not be saved. Please, try again."
+msgstr "Il D.E.S. non è stato salvato. Riprova."
+
+msgid "The Storeroom could not be saved. Please, try again."
+msgstr "La dispensa non è stata salvata. Riprova."
+
+msgid "The organizationsCash could not be saved. Please, try again."
+msgstr "La configurazione del prepagato non è stata salvata. Riprova."
+
+msgid "The supplier could not be saved. Please, try again."
+msgstr "Il produttore non è stato salvato. Riprova."
+
+msgid "The des supplier could not be saved. Please, try again."
+msgstr "Il produttore non è stato salvato. Riprova."
+
+msgid "The supplier organization could not be saved. Please, try again."
+msgstr "Il produttore non è stato salvato. Riprova."
+
+msgid "The suppliers organizations jcontent could not be saved. Please, try again."
+msgstr "Il produttore e la pagina a lui associati non sono stati salvati. Riprova."
+
+msgid "The supplier organization referent could not be saved. Please, try again."
+msgstr "Il referente non è stato salvato. Riprova."
+
+msgid "The suppliers vote could not be saved. Please, try again."
+msgstr "Il voto del produttore non è stato salvato. Riprova."
+
+msgid "The summary order could not be saved. Please, try again."
+msgstr "Gli acquisti aggregati per utente non sono stati salvati. Riprova."
+
+msgid "The request payments could not be saved. Please, try again."
+msgstr "La richiesta di pagamento degli ordini non sono stati salvati. Riprova."
+
+msgid "The prod delivery could not be saved. Please, try again."
+msgstr "La consegna non è stata salvata. Riprova."
+
+msgid "The UserGroup could not be saved. Please, try again."
+msgstr "L'utente non è stato aggiunto al gruppo"
+
+msgid "The cash could not be saved. Please, try again."
+msgstr "La voce di cassa non è stata salvata. Riprova."
+
+msgid "The DesOrdersOrganization could not be saved. Please, try again."
+msgstr "I dati della consegna per il produttore non sono stati salvati. Riprova."
+
+msgid "The event could not be saved. Please, try again."
+msgstr "L'attività non è stata salvata. Riprova."
+
+msgid "The event type could not be saved. Please, try again."
+msgstr "La tipologia d'attività non è stata salvata. Riprova."
+
+msgid "The docsCreates could not be saved. Please, try again."
+msgstr "Il documento non è stato salvato. Riprova."
+
+msgid "The prodGasPromotionsOrganizations could not be saved. Please, try again."
+msgstr "Il promozione del G.A.S. non è stato salvato. Riprova."
+
+msgid "The prodGasPromotionsOrganizationsMangers import supplier could not be saved. Please, try again."
+msgstr "L'ordine associata alla promozione non è stato salvato per errore durante l'importazione del produttore. Riprova."
+
+#
+# M S G  delete error
+#
+msgid "Organization was not deleted"
+msgstr "L'organizzazione non è stata cancellata"
+
+msgid "DesOrganization was not deleted"
+msgstr "Il D.E.S. non è stata cancellata"
+
+msgid "Category was not deleted"
+msgstr "La categoria non è stata cancellata"
+
+msgid "Delivery was not deleted"
+msgstr "La consegna non è stata cancellata"
+
+msgid "DesOrder was not deleted"
+msgstr "L'ordine condiviso non è stato cancellato"
+
+msgid "LoopDelivery was not deleted"
+msgstr "La consegna ricorsiva non è stata cancellata"
+
+msgid "LoopOrder was not deleted"
+msgstr "L'ordine ricorsivo non è stato cancellato"
+
+msgid "Order was not deleted"
+msgstr "L'ordine non è stata cancellato"
+
+msgid "ProdGasPromotion was not deleted"
+msgstr "La promozione non è stata cancellata"
+
+msgid "Article was not deleted"
+msgstr "L'articolo non è stata cancellato"
+
+msgid "Supplier was not deleted"
+msgstr "Il produttore non è stata cancellato"
+
+msgid "DesSupplier was not deleted"
+msgstr "Il produttore non è stata cancellato"
+
+msgid "Supplier organization was not deleted"
+msgstr "Il produttore non è stata cancellato"
+
+msgid "Supplier organization referent was not deleted"
+msgstr "Il referente non è stata cancellato"
+
+msgid "Cart was not deleted"
+msgstr "L'articolo dal carrello non è stata cancellato"
+
+msgid "Supplier organization referent was not deleted"
+msgstr "Il referente non è stato cancellato"
+
+msgid "UserGroup was not deleted"
+msgstr "L'associazione dell'utente al gruppo scelto non è stata cancellata"
+
+msgid "Summary order was not deleted"
+msgstr "Gli acquisti aggregati per utente non sono stati cancellati"
+
+msgid "Request payment was not deleted"
+msgstr "La richiesta di pagamento non è stata cancellata"
+
+msgid "Mail was not deleted"
+msgstr "La mail non è stata cancellata"
+
+msgid "Cash was not deleted"
+msgstr "La voce di cassa non è stata cancellata"
+
+msgid "RequestPaymentsGeneric was not deleted"
+msgstr "La voce di spesa non è stata cancellata"
+
+msgid "RequestPaymentsOrder was not deleted"
+msgstr "L'ordine non è stato cancellato dalla richiesta di pagamento"
+
+msgid "Event was not deleted"
+msgstr "L'attività non è stata cancellata"
+
+msgid "Event type was not deleted"
+msgstr "La tipologia d'attività non è stata cancellata"
+
+msgid "DocsCreate was not deleted"
+msgstr "Il documento non è stato cancellato"
+
+#
+# L A B E L S
+#
+msgid "Organization"
+msgstr "Organizzazione"
+
+msgid "Organizations"
+msgstr "Organizzazioni"
+
+msgid "GasOrganization"
+msgstr "G.A.S."
+
+msgid "GasOrganizations"
+msgstr "G.A.S."
+
+msgid "ProdGasOrganization"
+msgstr "Produttore"
+
+msgid "ProdGasOrganizations"
+msgstr "Produttori"
+
+msgid "DesOrganizationLong"
+msgstr "Distretto di Economia Sociale (D.E.S.)"
+
+msgid "DesOrganization"
+msgstr "D.E.S."
+
+msgid "DesOrganizations"
+msgstr "D.E.S."
+
+msgid "DesOrganization"
+msgstr "Produttore"
+
+msgid "DesOrganizations"
+msgstr "Produttori"
+
+msgid "DesSupplier"
+msgstr "Produttore"
+
+msgid "DesSuppliers"
+msgstr "Produttori"
+
+msgid "ArticlesSupplier"
+msgstr "Articoli del produttore"
+
+msgid "Deliveries"
+msgstr "Consegne"
+
+msgid "Delivery"
+msgstr "Consegna"
+
+msgid "DesDeliveries"
+msgstr "Ricevimento merce"
+
+msgid "DesDelivery"
+msgstr "Ricevimento merce"
+
+msgid "DesOrders"
+msgstr "Ordini condivisi"
+
+msgid "DesOrder"
+msgstr "Ordine condiviso"
+
+msgid "ProdGasPromotionName"
+msgstr "Promozione"
+
+msgid "ProdGasPromotionNames"
+msgstr "Promozioni"
+
+msgid "ProdGasPromotion"
+msgstr "Promozione"
+
+msgid "ProdGasPromotions"
+msgstr "Promozioni"
+
+msgid "ProdGasPromotionsGAS"
+msgstr "Promozioni ai G.A.S."
+
+msgid "ProdGasPromotionsGAS-USERS"
+msgstr "Promozioni ai singoli utenti"
+
+msgid "ProdGasPromotionRejectsNotes"
+msgstr "Motivo del rifiuto"
+
+msgid "ProdGasPromotionNotaSupplier"
+msgstr "Nota al G.A.S."
+
+msgid "ProdGasPromotionNotaFromSupplier"
+msgstr "Nota del produttore"
+
+msgid "ProdGasPromotionNotaUser"
+msgstr "Nota del G.A.S."
+
+msgid "ProdGasArticle"
+msgstr "Articolo"
+
+msgid "ProdGasArticles"
+msgstr "Articoli"
+
+msgid "ProdGasArticlesInPromotion"
+msgstr "Articoli della promozione"
+
+msgid "ProdGasOrders"
+msgstr "Ordini del G.A.S."
+
+msgid "ProdGasOrder"
+msgstr "Ordine del G.A.S."
+
+msgid "ProdGasArticlesPromotion"
+msgstr "Articolo in promozione"
+
+msgid "ProdGasArticlesPromotions"
+msgstr "Articoli in promozione"
+
+msgid "ProdGasMonitoringArticles"
+msgstr "Monitoraggio articoli"
+
+msgid "ProdGasArticlesSyncronizes"
+msgstr "Listino articoli da sincronizzare"
+
+msgid "ProdGasArticlesSyncronizesSimple"
+msgstr "Listino articoli da sincronizzare modalità semplificata"
+
+msgid "ProdGasArticlesSyncronizesAdvanced"
+msgstr "Listino articoli da sincronizzare modalità avanzata"
+
+msgid "ProdGasArticlesSyncronizesArticlesOrders"
+msgstr "Listino articoli ordinati da sincronizzare"
+
+msgid "ProdGasPromotionOrganizationsAssociate"
+msgstr "G.A.S. già associati"
+
+msgid "ProdGasPromotionOrganizationsNotAssociate"
+msgstr "G.A.S. non associati"
+
+msgid "DesArticlesSyncronizes"
+msgstr "Listino articoli da sincronizzare"
+
+msgid "DesArticlesSyncronizesIntro"
+msgstr "Scelta G.A.S. per sincronizzare"
+
+msgid "Deliveries current"
+msgstr "Consegne ancora aperte"
+
+msgid "Deliveries history"
+msgstr "Consegne chiuse"
+
+msgid "Orders"
+msgstr "Ordini"
+
+msgid "Order"
+msgstr "Ordine"
+
+msgid "OrdersToDelivery"
+msgstr "Ordini per consegna"
+
+msgid "OrdersToSupplier"
+msgstr "Ordini per produttore"
+
+msgid "OrderDate"
+msgstr "Data dell'ordine"
+
+msgid "OrderDati"
+msgstr "Dati dell'ordine"
+
+msgid "Orders current"
+msgstr "Ordini con consegne ancora aperte"
+
+msgid "Orders state_code change"
+msgstr "Ripristina ordine chiuso"
+
+msgid "Orders history"
+msgstr "Ordini con consegne chiuse"
+
+msgid "DesOrders history"
+msgstr "Ordini storici condivisi "
+
+msgid "Monitoring Orders"
+msgstr "Monitoraggio Ordini"
+
+msgid "Monitoring Suppliers Organizations"
+msgstr "Monitoraggio degli ordini dei produttori"
+
+msgid "Loops Deliveries"
+msgstr "Ricorsione consegne"
+
+msgid "Loops Orders"
+msgstr "Ricorsione ordini"
+
+msgid "Articles"
+msgstr "Articoli"
+
+msgid "Articles quick"
+msgstr "Articoli: gestione rapida"
+
+msgid "Article"
+msgstr "Articolo"
+
+msgid "Articles Orders"
+msgstr "Articoli associati all'ordine"
+
+msgid "BookmarksArticles"
+msgstr "Articoli preferiti"
+
+msgid "ArticleDati"
+msgstr "Dati dell'articolo"
+
+msgid "ConditionsOfPurchase"
+msgstr "Condizioni d'acquisto"
+
+msgid "Suppliers"
+msgstr "Produttori"
+
+msgid "Supplier"
+msgstr "Produttore"
+
+msgid "Des Supplier"
+msgstr "Produttore condiviso"
+
+msgid "Suppliers Generics"
+msgstr "Produttori di PortAlGas"
+
+msgid "Supplier Generic"
+msgstr "Produttore di PortAlGas"
+
+msgid "SuppliersOrganization"
+msgstr "Produttore"
+
+msgid "SuppliersOrganizations"
+msgstr "Produttori del G.A.S."
+
+msgid "Suppliers Organizations Referents"
+msgstr "Referenti"
+
+msgid "Suppliers Organizations Referent"
+msgstr "Referente"
+
+msgid "DesSuppliersReferents"
+msgstr "Referenti"
+
+msgid "DesSuppliersReferent"
+msgstr "Referente"
+
+msgid "SuppliersVotes"
+msgstr "Voto sui produttori"
+
+msgid "Titolare"
+msgstr "Titolare"
+
+msgid "Titolari"
+msgstr "Titolari"
+
+msgid "OwnOrganizationId"
+msgstr "G.A.S. Titolare"
+
+msgid "OwnOrganization"
+msgstr "G.A.S. Titolare"
+
+msgid "Cart"
+msgstr "Carrello"
+
+msgid "Carts"
+msgstr "Carrelli"
+
+msgid "FEShop"
+msgstr "Fai la tua spesa"
+
+msgid "FEOptionProdGasPromotion"
+msgstr "Promozione!!! "
+
+msgid "Calendar"
+msgstr "Calendario"
+
+msgid "Cash"
+msgstr "Cassa"
+
+msgid "Statistics"
+msgstr "Statistiche"
+
+msgid "Permissions"
+msgstr "Permessi"
+
+msgid "SupplierForm"
+msgstr "Scheda descrittiva"
+
+msgid "SupplierFormAndLogo"
+msgstr "Scheda descrittiva e logo"
+
+msgid "Read Carts"
+msgstr "Visualizza gli acquisti dell'ordine"
+
+msgid "Read Carts Short"
+msgstr "Visualizza gli acquisti"
+
+msgid "Gest MonitoringOrders"
+msgstr "Gestisci il monitoraggio degli ordini"
+
+msgid "Gest MonitoringSuppliersOrganizations"
+msgstr "Gestisci il monitoraggio degli ordini dei produttori"
+
+msgid "Management Carts One"
+msgstr "Gestisci gli acquisti dell'ordine nel dettaglio"
+
+msgid "Management Carts One Short"
+msgstr "Gestisci gli acquisti nel dettaglio"
+
+msgid "Management Carts One Short Partial"
+msgstr "Visualizza gli acquisti"
+
+msgid "Management Carts Group By Users"
+msgstr "Gestisci gli acquisti aggregati per l'importo degli utenti"
+
+msgid "Management Carts Group By Users Short"
+msgstr "Gestisci gli acquisti aggregati per importo"
+
+msgid "Management Carts Split"
+msgstr "Gestisci gli acquisti dividendo le quantità di ogni acquisto"
+
+msgid "Management Carts Split Short"
+msgstr "Gestisci gli acquisti dividendo le quantità"
+
+msgid "Management Des Order Group By Gas"
+msgstr "Gestisci gli acquisti aggregati per G.A.S."
+
+msgid "Management Des Order Group By Gas Short"
+msgstr "Gestisci gli acquisti aggregati"
+
+msgid "Validation Carts"
+msgstr "Gestisci i colli"
+
+msgid "Validation Carts Edit"
+msgstr "Gestisci i colli"
+
+msgid "Validation Carts Help On Line"
+msgstr "Gestisci i colli"
+
+msgid "CartsToStoreroom"
+msgstr "Articoli in dispensa"
+
+msgid "Management trasport"
+msgstr "Gestione del trasporto"
+
+msgid "Management cost_more"
+msgstr "Gestione del costo aggiuntivo"
+
+msgid "Management cost_less"
+msgstr "Gestione dello sconto"
+
+msgid "Management Des trasport"
+msgstr "Gestione del trasporto"
+
+msgid "Management Des cost_more"
+msgstr "Gestione del costo aggiuntivo"
+
+msgid "Management Des cost_less"
+msgstr "Gestione dello sconto"
+
+msgid "Management DesUserGroupMap"
+msgstr "Gestione dei ruoli"
+
+msgid "Management UserGroupMap"
+msgstr "Gestione dei ruoli"
+
+msgid "OrderGoToCassiere"
+msgstr "Passa l'ordine al Cassiere"
+
+msgid "OrderGoToTesoriere"
+msgstr "Passa l'ordine al Tesoriere"
+	
+msgid "OrderGoBackReferente"
+msgstr "Rimandalo al referente"
+
+msgid "OrderGoBackStateCodeReferente"
+msgstr "Riportalo allo stato 'in carico al referente'"
+
+msgid "OrderGoBackStateCodeProcessedTesoriere"
+msgstr "Riportalo allo stato 'in carico al tesoriere'"
+
+msgid "OrderGoBackStateCodeProcessedTesoriereNote"
+msgstr "Annulli i pagamenti"
+
+msgid "GdxpOrderExport"
+msgstr "Esporta in GDXP"
+
+msgid "Order end"
+msgstr "Concludi ordine"
+
+msgid "Delivery end"
+msgstr "Chiudi consegna"
+
+msgid "Orders ctrl date aggregate"
+msgstr "Controllo dati aggregati sugli ordini"
+
+msgid "Export Report"
+msgstr "Esporta report"
+
+msgid "Export Docs"
+msgstr "Esporta documenti"
+
+msgid "Export Docs to order"
+msgstr "Esporta documenti dell'ordine"
+
+msgid "Export Docs DesOrder"
+msgstr "Esporta documenti degli ordini condivisi"
+
+msgid "Export Docs to delivery"
+msgstr "Esporta documenti della consegna"
+
+msgid "Export/Gest Docs to delivery"
+msgstr "Esporta/Gestisci documenti della consegna"
+
+msgid "Export RequestPayment"
+msgstr "Esporta la richiesta di pagamento"
+
+msgid "Pays Supplier"
+msgstr "Pagamenti per produttore"
+
+msgid "Pay Suppliers"
+msgstr "Pagamenti per consegna"
+
+msgid "Pay Suppliers History"
+msgstr "Pagamenti storici per consegna"
+
+msgid "OrdersProcessedReferente"
+msgstr "Gestione ordini in carico al referente"
+
+msgid "OrdersWaitProcessedTesoriere"
+msgstr "Prendi in carico gli ordini"
+
+msgid "OrdersWaitProcessedTesoriereShort"
+msgstr "Ordini 'Prendi in carico'"
+
+msgid "ListOrdersToWaitProcessedTesoriere"
+msgstr "Elenco ordini da passare al tesoriere"
+
+msgid "OrdersReferenteInWaitProcessedTesoriere"
+msgstr "Passa l'ordine al tesoriere"
+
+msgid "OrdersProcessedTesoriere"
+msgstr "Gestione ordini 'In carico al tesoriere'"
+
+msgid "OrdersProcessedTesoriereShort"
+msgstr "Ordini 'In carico al tesoriere'"
+
+msgid "OrdersToRequestPayment"
+msgstr "Gestione ordini 'Possibilità di richiederne il pagamento'"
+
+msgid "OrdersToRequestPaymentShort"
+msgstr "Ordini 'Richiedere il pagamento'"
+
+msgid "OrdersReturnProcessedReferentePostDelivery"
+msgstr "Riporta gli ordini al referente"
+
+msgid "OrdersReferenteInProcessedOnDelivery"
+msgstr "Passa l'ordine al cassiere per il pagamento"
+
+msgid "OrdersReferenteInProcessedPostDelivery"
+msgstr "Passa l'ordine al tesoriere per il pagamento"
+
+msgid "OrdersWaitPay"
+msgstr "Metti gli ordini in attesa del pagamento"
+
+msgid "OrdersToPayment"
+msgstr "Gestione del pagamento degli ordini"
+
+msgid "OrdersToPaymentShort"
+msgstr "Pagamento degli ordini"
+
+msgid "Incoming Order"
+msgstr "Merce arrivata"
+
+msgid "Not Incoming Order"
+msgstr "Merce non arrivata"
+
+msgid "Trasmission supplier"
+msgstr "Trasmetti al produttore"
+
+msgid "Delete Trasmission supplier"
+msgstr "Annulla trasmissione al produttore"
+
+msgid "ProdGasPromotionTrasmissionToGas"
+msgstr "Trasmetti ai G.A.S."
+
+msgid "Referent Working"
+msgstr "Permetti ai referenti di lavorarci"
+
+msgid "Print Report"
+msgstr "Stampa il report"
+
+msgid "Print Order"
+msgstr "Stampa l'ordine"
+
+msgid "Print DesOrder"
+msgstr "Stampa l'ordine condiviso"
+
+msgid "Print OwnOrder"
+msgstr "Stampa l'ordine del proprio G.A.S."
+
+msgid "PrintAllGas"
+msgstr "Stampa l'ordine del G.A.S."
+
+msgid "Print Doc"
+msgstr "Stampa l'ordine"
+
+msgid "Print Delivery"
+msgstr "Stampa la consegna"
+
+msgid "Print ProdDelivery"
+msgstr "Stampa la consegna"
+
+msgid "Print Order Partial"
+msgstr "Stampa l'ordine parziale"
+
+msgid "Print Cart Delivery"
+msgstr "Stampa gli articoli della consegna in PDF"
+
+msgid "OrderMailSupplierShort"
+msgstr "Mail al produttore"
+
+msgid "OrderMailSupplier"
+msgstr "Invia mail al produttore"
+
+msgid "Storeroom"
+msgstr "Dispensa"
+
+msgid "StoreroomQta"
+msgstr "Quantità in dispensa"
+
+msgid "StoreroomArticleToBooked"
+msgstr "Da prenotare"
+
+msgid "StoreroomArticleJustBooked"
+msgstr "Già prenotati"
+
+msgid "StoreroomArticleQtaJustBooked"
+msgstr "Quantità prenotata"
+
+msgid "StoreroomArticleDeliveryaJustBooked"
+msgstr "Consegna"
+
+msgid "OrganizationsCash"
+msgstr "Gestione della configurazione del prepagato"
+
+msgid "OrganizationsCashCtrl"
+msgstr "Prospetto utenti per il prepagato"
+
+msgid "ProdGasPromotionDati"
+msgstr "Dati promozione"
+
+#
+# msg per passagi di stato Order
+#
+msgid "GoToOrderStatePROCESSED-BEFORE-DELIVERY"
+msgstr "Merce non arrivata"
+
+msgid "GoToOrderStateWAIT-PROCESSED-TESORIERE"
+msgstr "Passa l'ordine al tesoriere"
+
+msgid "GoToOrderStateTO-PAYMENT"
+msgstr "Gestisci il pagamento dell'ordine"
+
+msgid "GoToOrderStateINCOMING-ORDER"
+msgstr "E' arrivata la merce"
+
+msgid "GoToOrderStatePROCESSED-ON-DELIVERY"
+msgstr "Passalo al cassiere"
+
+msgid "GoToOrderStatePROCESSED-POST-DELIVERY"
+msgstr "Riportalo 'in carico al referente'"
+
+msgid "GoToOrderStateCLOSE"
+msgstr "Chiudi l'ordine"
+
+
+
+msgid "User"
+msgstr "Utente"
+
+msgid "Users"
+msgstr "Utenti"
+
+msgid "Users Date"
+msgstr "Entrata/uscita utenti"
+
+msgid "User Block"
+msgstr "Utente disattivato"
+
+msgid "Users Block"
+msgstr "Utenti disattivati"
+
+msgid "User Can Login"
+msgstr "Login utente"
+
+msgid "Usera Can Login"
+msgstr "Login utenti"
+
+msgid "UsersFlagPrivacyAndRegistrationExpire"
+msgstr "Gestione utenti per accettazione privacy e rinnovo"
+
+msgid "UsersFlagPrivacy"
+msgstr "Gestione utenti per accettazione privacy"
+
+msgid "UsersRegistrationExpire"
+msgstr "Gestione utenti per rinnovo"
+
+msgid "UserConfigure"
+msgstr "Configurazione dell'utente"
+
+msgid "GasConfigure"
+msgstr "Configurazione del G.A.S."
+
+msgid "PortAlGasBilancio"
+msgstr "Bilancio PortAlGas"
+
+msgid "UserGroups"
+msgstr "Gruppi"
+
+msgid "EventUser"
+msgstr "Responsabile"
+
+msgid "Role"
+msgstr "Ruolo"
+
+msgid "Roles"
+msgstr "Ruoli"
+
+msgid "Parent"
+msgstr "Padre"
+
+msgid "Categories"
+msgstr "Categorie"
+
+msgid "Categories Suppliers"
+msgstr "Categorie per i produttori"
+
+msgid "Categories Articles"
+msgstr "Categorie per gli articoli"
+
+msgid "Category"
+msgstr "Categoria"
+
+msgid "JCategory"
+msgstr "Categoria Joomla"
+
+msgid "Category Supplier"
+msgstr "Categoria per i produttori"
+
+msgid "Category Article"
+msgstr "Categoria per gli articoli"
+
+msgid "Supplier Organization"
+msgstr "Produttore"
+
+msgid "StatoElaborazione"
+msgstr "Stato elaborazione"
+
+msgid "Config"
+msgstr "Configura"
+
+msgid "ValidateDates"
+msgstr "Validazione Dati"
+
+msgid "Send Mail"
+msgstr "Invia mail"
+
+msgid "Cron"
+msgstr "Processi batch"
+
+msgid "Related Orders to Delivery"
+msgstr "Ordini associati alla consegna"
+
+msgid "Related Orders to Supplier"
+msgstr "Ordini associati al produttore"
+
+msgid "Related Suppliers Organizations Referents"
+msgstr "Produttori ai quali l'utente è referente"
+
+msgid "Related Suppliers Organizations Referents Suppliers"
+msgstr "Referenti del produttore"
+
+msgid "Related Suppliers"
+msgstr "Questo produttore fornisce i G.A.S."
+
+msgid "Related Suppliers Articles"
+msgstr "Articoli associati al produttore"
+
+msgid "Related Article Carts"
+msgstr "Gasisti che hanno acquistato l'articolo"
+
+msgid "Related ProdGas Article Carts"
+msgstr "Gas che hanno acquistato l'articolo"
+
+msgid "Related ProdGas ArticlesOrder"
+msgstr "Gas che hanno associato l'articolo ad un ordine"
+
+msgid "Related Cash"
+msgstr "Cassa"
+
+msgid "Related Orders Cashs Users"
+msgstr "Ordini con acquisti del gasista che deve ancora pagare"
+
+msgid "Related Requests Payments"
+msgstr "Richieste di pagamento"
+
+msgid "Request Payment"
+msgstr "Richiesta di pagamento"
+
+msgid "Request Payments"
+msgstr "Richieste di pagamento"
+
+msgid "RequestPaymentsOrder"
+msgstr "Richiesta di pagamento di ordini"
+
+msgid "RequestPaymentsStoreroom"
+msgstr "Richiesta di pagamento per dispensa"
+
+msgid "RequestPaymentsGeneric"
+msgstr "Richiesta di pagamento per una voce di spesa"
+
+msgid "Related Articles"
+msgstr "Articoli associati all'ordine"
+
+msgid "Related Des"
+msgstr "G.A.S. con cui condividere gli ordini"
+
+msgid "Related SummaryOrders"
+msgstr "Pagamenti degli utenti (k_summary_orders)"
+
+msgid "Related SummaryPayments"
+msgstr "Pagamenti degli utenti alla richiesta di pagamento (k_summary_payments)" 
+
+msgid "Related RequestPayment Orders"
+msgstr "Ordini associati alla richiesta di pagamento"
+
+msgid "ProdGroup"
+msgstr "Gruppo di utenti"
+
+msgid "ProdGroups"
+msgstr "Gruppi di utenti"
+
+msgid "ProdDeliveries"
+msgstr "Consegne"
+
+msgid "ProdUsersGroups"
+msgstr "Utenti del gruppo"
+
+msgid "Colors"
+msgstr "Colori"
+
+msgid "Color"
+msgstr "Colore"
+
+msgid "Events"
+msgstr "Eventi"
+
+msgid "Evento"
+msgstr "Evento"
+
+msgid "EventsHistory"
+msgstr "Eventi trascorsi"
+
+msgid "EventsTypes"
+msgstr "Tipologia attività"
+
+msgid "EventsType"
+msgstr "Tipologia attività"
+
+msgid "EventsTypesShort"
+msgstr "Tipologia"
+
+msgid "DocsCreates"
+msgstr "Creazione documenti"
+
+msgid "DocsCreate"
+msgstr "Creazione documento"
+
+msgid "OrderLifeCyclesSupplierPaid"
+msgstr "Gestione pagamenti ai produttori gasisti"
+
+msgid "OrderLifeCyclesSummaryOrder"
+msgstr "Gestione pagamenti dei gasisti"
+
+msgid "OrderLifeCyclesSummaryOrderPaid"
+msgstr "Gasisti che hanno già saldato"
+
+msgid "OrderLifeCyclesSummaryOrderNotPaid"
+msgstr "Gasisti che devono ancora saldare"
+
+#
+# N A M E   F I E L D S
+#
+msgid "Payment"
+msgstr "Pagamento"
+
+msgid "Payments"
+msgstr "Pagamenti"
+
+msgid "Business name"
+msgstr "Ragione sociale"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Sort"
+msgstr "Ordinamento"
+
+msgid "UrlRequestPayment"
+msgstr "Indirizzo per le stampe delle richieste di pagamento"
+
+msgid "joomla_seo"
+msgstr "SEO per gli url del Front-end"
+
+msgid "joomla_group_registred"
+msgstr "Id del gruppo REGISTRATI"
+
+msgid "isToStoreroom"
+msgstr "Durante la consegna sarà gestita la <b>dispensa</b>"
+
+msgid "isToStoreroomPay"
+msgstr "Pagamento dispensa"
+
+msgid "um_riferimento"
+msgstr "UM di riferimento"
+
+msgid "Open"
+msgstr "Aperto"
+
+msgid "Close"
+msgstr "Chiuso"
+
+msgid "OpenClose"
+msgstr "Aperto/chiuso"
+
+msgid "DataInizio"
+msgstr "Si aprirà"
+
+msgid "DataFine"
+msgstr "Si chiuderà"
+
+msgid "DataInizioPast"
+msgstr "Si è aperto"
+
+msgid "DataFineValidation"
+msgstr "Riaperto l'ordine fino a"
+
+msgid "DataFinePast"
+msgstr "Si è chiuso"
+
+msgid "DataFineMax"
+msgstr "Per tutti i G.A.S. si chiuderà"
+
+msgid "DataFineMaxPromotion"
+msgstr "La promozione si chiuderà"
+
+msgid "DataFineValidation"
+msgstr "Riaprire l'ordine fino a"
+
+msgid "DataIncomingOrder"
+msgstr "Data di arrivo della merce"
+
+msgid "registerDate"
+msgstr "Registrato il"
+
+msgid "dataRichEnter"
+msgstr "Data domanda di adesione"
+
+msgid "dataEnter"
+msgstr "Data attivazione account"
+
+msgid "numDeliberaEnter"
+msgstr "Num delibera d'accettazione"
+
+msgid "dataDeliberaEnter"
+msgstr "Data delibera accettazione"
+
+msgid "dataRichExit"
+msgstr "Data dimissioni"
+
+msgid "motivoRichExit"
+msgstr "Motivo dimissioni"
+
+msgid "dataExit"
+msgstr "Data chiusura account"
+
+msgid "numDeliberaExit"
+msgstr "Num delibera dimissioni"
+
+msgid "dataDeliberaExit"
+msgstr "Data delibera dimissioni"
+
+msgid "dataRestituzCassa"
+msgstr "Data restituz. contributo suppletivo"
+
+msgid "notaRestituzCassa"
+msgstr "Nota restituz. contributo suppletivo"
+
+msgid "nota"
+msgstr "Nota"
+
+msgid "Mail Open Testo"
+msgstr "Testo da aggiungere alla mail di apertura"
+
+msgid "Importo"
+msgstr "Importo"
+
+msgid "Importo_totale"
+msgstr "Importo totale"
+
+msgid "Importo totale ordine"
+msgstr "Importo totale dell'ordine"
+
+msgid "Importo totale ordine Short"
+msgstr "Imp. ord."
+
+msgid "Importo_forzato"
+msgstr "Importo forzato"
+
+msgid "Importo_aggregato"
+msgstr "Importo aggregato"
+
+msgid "importo_aggregato_user"
+msgstr "Somma degli importi dell'utente"
+
+msgid "importo_calcolato_user_trasport"
+msgstr "Trasporto calcolato sull'importo"
+
+msgid "importo_calcolato_user_cost_more"
+msgstr "Costo aggiuntivo calcolato sull'importo"
+
+msgid "importo_calcolato_user_cost_less"
+msgstr "Sconto calcolato sull'importo"
+
+msgid "importo_originale"
+msgstr "Importo originale"
+
+msgid "importo_previous"
+msgstr "Importo precedente"
+
+msgid "importo_change"
+msgstr "Importo modificato"
+
+msgid "Percentuale"
+msgstr "Percentuale"
+
+msgid "importo_scontato"
+msgstr "Importo scontato"
+
+msgid "importo_totale_scontato"
+msgstr "Totale importo scontato"
+
+msgid "importo_richiesto"
+msgstr "Importo richiesto"
+
+msgid "importo_dovuto"
+msgstr "Importo dovuto"
+
+msgid "importo_pagato"
+msgstr "Importo pagato"
+
+msgid "Importo_originale"
+msgstr "Importo originale"
+
+msgid "Importo_previous"
+msgstr "Importo precedente"
+
+msgid "Importo_change"
+msgstr "Importo modificato"
+
+msgid "Importo_scontato"
+msgstr "Importo scontato"
+
+msgid "Importo_totale_scontato"
+msgstr "Totale importo scontato"
+
+msgid "Importo_richiesto"
+msgstr "Importo richiesto"
+
+msgid "Importo_dovuto"
+msgstr "Importo dovuto"
+
+msgid "Importo_pagato"
+msgstr "Importo pagato"
+
+msgid "CashSaldo"
+msgstr "Saldo"
+
+msgid "CashOperazione"
+msgstr "Operazione"
+
+msgid "Totale"
+msgstr "Totale"
+
+msgid "TotaleUsers"
+msgstr "Totale gasisti"
+
+msgid "TotaleUsersActive"
+msgstr "Totale gasisti attivi"
+
+msgid "TotaleOrders"
+msgstr "Totale ordini"
+
+msgid "TotaleArticles"
+msgstr "Totale articoli"
+
+msgid "TotaleStorerooms"
+msgstr "Totale dispense"
+
+msgid "TotaleSuppliersOrganizationsReferents"
+msgstr "Totale referenti"
+
+msgid "TotaleRequestPaymentGenerics"
+msgstr "Totale voci generiche"
+
+msgid "TotArticlesActives"
+msgstr "Tot. Articoli attivi"
+
+msgid "totImportoUserCash"
+msgstr "Saldo in cassa"
+
+msgid "totImportoUserAcquistato"
+msgstr "Totale acquistato"
+	
+msgid "Nominative"
+msgstr "Nominativo"
+	
+msgid "Username"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Description"
+msgstr "Descrizione"
+
+msgid "stato"
+msgstr "Attivo"
+
+msgid "CanLogin"
+msgstr "Può loggarsi"
+
+msgid "SupplierCanPromotions"
+msgstr "Può creare promozioni"
+
+msgid "FlagPresenteArticlesorders"
+msgstr "Presente tra gli articoli da ordinare"
+
+msgid "FlagPresenteArticlesordersShort"
+msgstr "Da ordinare"
+
+msgid "Bio"
+msgstr "Bio"
+
+msgid "Y"
+msgstr "Si"
+
+msgid "NO"
+msgstr "No"
+
+msgid "N"
+msgstr "Nr"
+
+msgid "ALL"
+msgstr "Tutti"
+
+msgid "StatoY"
+msgstr "Visibile"
+
+msgid "StatoN"
+msgstr "Non visibile"
+
+msgid "Temporary"
+msgstr "Temporaneo"
+
+msgid "isVisibleFrontEnd"
+msgstr "Visibile agli utenti"
+
+msgid "isVisibleBackOffice"
+msgstr "Visibile agli amministratori"
+
+msgid "DAPAGARE"
+msgstr "Da pagare"
+
+msgid "SOLLECITO1"
+msgstr "Primo sollecito"
+
+msgid "SOLLECITO2"
+msgstr "Secondo sollecito"
+
+msgid "PAGATO"
+msgstr "Pagato"
+
+msgid "SOSPESO"
+msgstr "Sospeso"
+
+msgid "Type"
+msgstr "Tipologia"
+
+msgid "OrderTypeGest"
+msgstr "Tipologia di gestione"
+
+msgid "OrderTypeGestShort"
+msgstr "Gestione"
+
+msgid "Price"
+msgstr "Prezzo"
+
+msgid "PriceWithVAT"
+msgstr "Prezzo con IVA"
+
+msgid "PriceWithoutVAT"
+msgstr "Prezzo senza IVA"
+
+msgid "PrezzoUnita"
+msgstr "Prezzo unità"
+
+msgid "Prezzo/UM"
+msgstr "Prezzo/UM"
+
+msgid "UnitOfMeasure"
+msgstr "Unità di misura"
+
+msgid "pezzi_confezione"
+msgstr "Num di pezzi in una confezione"
+
+msgid "pezzi_confezione_short"
+msgstr "N. pezzi in conf."
+
+msgid "Conf"
+msgstr "Conf."
+
+msgid "Package"
+msgstr "Confezione"
+
+msgid "Acquistato"
+msgstr "Acquistato"
+
+msgid "order_qta_massima"
+msgstr "Quantità massima"
+
+msgid "order_importo_massimo"
+msgstr "Importo massimo"
+
+msgid "order_qta_massima_help"
+msgstr "Quando il peso totale espresso nell'unità di misura indicata raggiungerà la quantità indicata, verrà inviata una mail ai referenti e chiuso l'ordine"
+
+msgid "order_importo_massimo_help"
+msgstr "Quando il totale degli acquisti raggiungerà l'importo indicato, verrà inviata una mail ai referenti e chiuso l'ordine"
+
+msgid "order_just_pay"
+msgstr "Considero l'ordine già pagato al produttore"
+
+msgid "qta"
+msgstr "Quantità"
+
+msgid "qta_tot"
+msgstr "Quantità totale"
+
+msgid "qta_cart"
+msgstr "Quantità acquistata raggiunta"
+
+msgid "qta_minima"
+msgstr "Quantità minima che un gasista può acquistare"
+
+msgid "qta_massima"
+msgstr "Quantità massima che un gasista può acquistare"
+
+msgid "qta_minima_short"
+msgstr "Quantità minima"
+
+msgid "qta_massima_short"
+msgstr "Quantità massima"
+
+msgid "qta_minima_order"
+msgstr "Qtà minima rispetto a tutti gli acquisti"
+
+msgid "qta_massima_order"
+msgstr "Qtà massima rispetto a tutti gli acquisti"
+
+msgid "qta_minima_order_short"
+msgstr "Qtà minima sul totale"
+
+msgid "qta_massima_order_short"
+msgstr "Qtà massima sul totale"
+
+msgid "qta_multipli"
+msgstr "Multipli di"
+
+msgid "qta_in_promozione"
+msgstr "Qtà in promozione"
+
+msgid "prezzo_unita_in_promozione"
+msgstr "Prezzo unità in promozione"
+
+msgid "alert_to_qta"
+msgstr "Avvisa raggiunta la quantità di"
+
+msgid "alert_to_qta_num"
+msgstr "Avvisa raggiunta la quantità di %s confezioni"
+
+msgid "Trasport"
+msgstr "Trasporto"
+
+msgid "TrasportShort"
+msgstr "Trasp."
+
+msgid "CostMore"
+msgstr "Costo aggiuntivo"
+
+msgid "CostMoreShort"
+msgstr "Costo agg."
+
+msgid "CostLess"
+msgstr "Sconto"
+
+msgid "CostLessShort"
+msgstr "Sconto"
+
+msgid "ProdGasArticlesSyncronize"
+msgstr "Sincronizzazione"
+
+msgid "options_trasport_qta"
+msgstr "Divido il trasporto in base all'importo di ogni utente"
+
+msgid "options_trasport_weight"
+msgstr "Divido il trasporto in base al peso di ogni acquisto"
+
+msgid "options_trasport_users"
+msgstr "Divido il trasporto per ogni utente"
+
+msgid "options_cost_more_qta"
+msgstr "Divido il costo aggiuntivo in base all'importo di ogni utente"
+
+msgid "options_cost_more_weight"
+msgstr "Divido il costo aggiuntivo in base al peso di ogni acquisto"
+
+msgid "options_cost_more_users"
+msgstr "Divido il costo aggiuntivo per ogni utente"
+
+msgid "options_cost_less_qta"
+msgstr "Applica lo sconto in base all'importo di ogni utente"
+
+msgid "options_cost_less_weight"
+msgstr "Applica lo sconto in base al peso di ogni acquisto"
+
+msgid "options_cost_less_users"
+msgstr "Applica lo sconto per ogni utente"
+
+msgid "UserGroup"
+msgstr "Gruppo"
+
+msgid "UserGroups"
+msgstr "Gruppi"
+
+msgid "Group"
+msgstr "Gruppo"
+
+msgid "Groups"
+msgstr "Gruppi"
+
+msgid "Registered"
+msgstr "Registrati"
+
+msgid "gasReferente"
+msgstr "Referenti"
+
+msgid "gasSuperReferente"
+msgstr "Super-Referenti"
+
+msgid "gasManager"
+msgstr "Gestore del G.A.S."
+
+msgid "gasTesoriere"
+msgstr "Tesoriere del G.A.S."
+
+msgid "gasReferenteDes"
+msgstr "Referente dell'ordine condiviso"
+
+msgid "gasSuperReferenteDes"
+msgstr "Super-Referente degli ordini condivisi"
+
+msgid "gasReferenteTitolareDes"
+msgstr "Titolare dell'ordine condiviso"
+
+msgid "gasReferenteDesAllGas"
+msgstr "Referente D.E.S. sugli ordini"
+
+msgid "gasManagerDes"
+msgstr "Gestore del D.E.S."
+
+msgid "User profile"
+msgstr "Dati anagrafici"
+
+msgid "Payment profile"
+msgstr "Dati per il pagamento di PortAlGas"
+
+msgid "Code"
+msgstr "Codice"
+
+msgid "Address"
+msgstr "Indirizzo"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Place"
+msgstr "Località"
+
+msgid "City"
+msgstr "Città"
+
+msgid "Region"
+msgstr "Regione"
+
+msgid "Country"
+msgstr "Paese"
+
+msgid "Postal_code"
+msgstr "CAP"
+
+msgid "Contacts"
+msgstr "Contatti"
+
+msgid "Others"
+msgstr "Altro"
+
+msgid "Telephone"
+msgstr "Telefono"
+
+msgid "Telephone2"
+msgstr "Telefono Alternativo"
+
+msgid "Conto"
+msgstr "Conto bancario"
+
+msgid "Www"
+msgstr "Sito web"
+
+msgid "Cf"
+msgstr "Codice fiscale"
+
+msgid "Piva"
+msgstr "Partita iva"
+
+msgid "Year"
+msgstr "Anno"
+
+msgid "Years"
+msgstr "Anni"
+
+msgid "full_text"
+msgstr "Testo della pagina per descrivere l'attività del produttore"
+
+msgid "Subject"
+msgstr "Oggetto"
+
+msgid "Body"
+msgstr "Testo"
+
+msgid "Text"
+msgstr "Testo"
+
+msgid "dest_options"
+msgstr "A chi"
+
+msgid "dest_options_qta"
+msgstr "A quanti"
+
+msgid "Title"
+msgstr "Titolo"
+
+msgid "Intro_text"
+msgstr "Testo introduttivo"
+
+msgid "Full_text"
+msgstr "Testo"
+
+msgid "Modality"
+msgstr "Modalità"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "Data Copy Reale"
+msgstr "Data reale"
+
+msgid "Img"
+msgstr "Immagine"
+
+msgid "Img1"
+msgstr "Immagine (1)"
+
+msgid "Img2"
+msgstr "Immagine (2)"
+
+msgid "User Nota"
+msgstr "Nota da associare al gasista"
+
+msgid "Cassiere Nota"
+msgstr "Nota per il cassiere"
+
+msgid "Cassiere Doc1"
+msgstr "Fattura per il cassiere"
+
+msgid "Cassiere fattura importo"
+msgstr "Importo della fattura"
+
+msgid "Cassiere fattura importo Short"
+msgstr "Imp. fatt."
+
+msgid "Tesoriere Nota"
+msgstr "Nota per il tesoriere"
+
+msgid "Tesoriere Doc1"
+msgstr "Fattura per il tesoriere"
+
+msgid "Tesoriere fattura importo"
+msgstr "Importo della fattura"
+
+msgid "Tesoriere fattura importo Short"
+msgstr "Imp. fatt."
+
+msgid "Tesoriere Data Pay"
+msgstr "Data pagamento"
+
+msgid "Tesoriere Importo Pay"
+msgstr "Importo pagamento"
+
+msgid "Tesoriere Stato Pay"
+msgstr "Stato pagamento"
+
+msgid "TrasportAndCost"
+msgstr "Costi/Sconti aggiuntivi"
+
+msgid "RegisterDate"
+msgstr "Registrato il"
+
+msgid "LastvisitDate"
+msgstr "Ultima visita"
+
+msgid "LastCart"
+msgstr "Ultimo acquisto"
+
+msgid "Flag_menu"
+msgstr "E' per il menù"
+
+msgid "Vote"
+msgstr "Voto"
+
+msgid "SuppliersDeliveriesTypes"
+msgstr "Distribuzione"
+
+msgid "DESsendMail"
+msgstr "Invio la mail a tutti i G.A.S."
+
+msgid "DESsendMailTarget"
+msgstr "Destinatari mail"
+
+msgid "ProdGasSupplierArticles"
+msgstr "Articoli del produttore"
+
+msgid "ProdGasSupplierArticlesOrganization"
+msgstr "Articoli del G.A.S."
+
+msgid "ProdGasSupplierArticlesOrdersOrganization"
+msgstr "Articoli associati all'ordine del G.A.S."
+
+msgid "ProdGasSupplierInArticlesOrder"
+msgstr "E' ordinato"
+
+msgid "ProdGasSupplierInCart"
+msgstr "E' acquistato"
+
+msgid "DesSupplierMasterOrganization"
+msgstr "Articoli del G.A.S. scelto"
+
+msgid "DesSupplierMyOrganization"
+msgstr "Articoli del proprio G.A.S."
+
+msgid "DesSupplierInArticlesOrder"
+msgstr "E' ordinato"
+
+msgid "DesSupplierInCart"
+msgstr "E' acquistato"
+			
+msgid "Permission"
+msgstr "Permessi"
+
+msgid "Permission_or"
+msgstr "Permessi alternativi"
+
+msgid "HasTrasport"
+msgstr "Ha le spese di trasporto"
+
+msgid "HasCostMore"
+msgstr "Gestisco un costo aggiuntivo"
+
+msgid "HasCostLess"
+msgstr "Gestisco uno sconto"
+
+msgid "HasValidate"
+msgstr "Ha la gestione degli articoli con i colli"
+
+msgid "HasCashFilterSupplier"
+msgstr "Ha la gestione del prepagato solo per alcuni produttori"
+
+msgid "HasArticlesGdxp"
+msgstr "Ha la gestione del GDXP degli articoli"
+
+msgid "HasOrdersGdxp"
+msgstr "Ha la gestione del GDXP degli ordini"
+
+msgid "HasBookmarsArticles"
+msgstr "Ha la gestione degli articoli preferiti"
+
+msgid "HasDocuments"
+msgstr "Ha la gestione dei documenti"
+
+msgid "HasUsersRegistrationFE"
+msgstr "Permette agli utenti di registrarsi a FE"
+
+msgid "HasArticlesOrder"
+msgstr "Ha la gestione degli articoli associati agli ordini"
+
+msgid "HasVisibility"
+msgstr "Ha la gestione della visibilità delle consegne e degli ordini"
+
+msgid "UserGroupsManager"
+msgstr "Gestore del G.A.S."
+
+msgid "UserGroupsManagerDelivery"
+msgstr "Gestore consegne"
+
+msgid "UserGroupsRootSupplier"
+msgstr "Gestore produttori"
+
+msgid "UserGroupsReferent"
+msgstr "Referente"
+
+msgid "UserGroupsSuperReferent"
+msgstr "Super-Referente"
+
+msgid "UserGroupsReferentTitolareDes"
+msgstr "Referente Titolare"
+       
+msgid "UserGroupsReferentDesAllGas"
+msgstr "Referente degli ordini dei Gas"
+
+msgid "UserGroupsCassiere"
+msgstr "Cassiere"
+
+msgid "UserGroupsReferentCassiere"
+msgstr "Referente Cassiere"
+
+msgid "UserGroupsStoreroom"
+msgstr "Dispensa"
+
+msgid "UserGroupsGeneric"
+msgstr "Gruppo generico"
+
+msgid "UserGroupsEvents"
+msgstr "Gruppo attività calendario"
+
+msgid "UserGroupsTesoriere"
+msgstr "Tesoriere"
+
+msgid "UserGroupsReferentTesoriere"
+msgstr "Referente Tesoriere"
+
+msgid "UserGroupsUser"
+msgstr "Utente registrato"
+
+msgid "UserGroupsManagerDes"
+msgstr "Gestore del D.E.S."
+
+msgid "UserGroupsReferentDes"
+msgstr "Referente ordini condivisi"
+
+msgid "UserGroupsSuperReferentDes"
+msgstr "Super-Referente ordini condivisi"
+
+msgid "UserGroupsReferentTitolareDes"
+msgstr "Titolare ordini condivisi"
+
+msgid "UserGroupsReferentDesAllGas"
+msgstr "Referente D.E.S. degli ordini"
+
+msgid "UserGroupsUserManagerDes"
+msgstr "Gestore gasisti del D.E.S."
+
+msgid "UserGroupsUserFlagPrivacy"
+msgstr "Titolare Trattamento Privacy"
+
+msgid "UserGroupsGasGroupsGroups"
+msgstr "Gestore dei gruppi"
+
+msgid "UserGroupsGasGroupsDeliveries"
+msgstr "Gestore consegne per i gruppi"
+
+msgid "UserGroupsGasGroupsOrders"
+msgstr "Gestore ordini per i gruppi"
+
+msgid "UserGroupsGasGroupsParentOrders"
+msgstr "Gestore ordini per gli ordini i gruppi"
+
+msgid "HasUserGroupsRootSupplier"
+msgstr "Ha la gestione dei produttori"
+
+msgid "HasUserGroupsManager"
+msgstr "Ha la gestione del G.A.S."
+
+msgid "HasStoreroom"
+msgstr "Ha la gestione della dispensa"
+
+msgid "HasStoreroomFrontEnd"
+msgstr "Ha la gestione della dispensa a FE"
+
+msgid "OrderLifeCycleEnd"
+msgstr "Gestione chiusura ordini (passaggio in statistiche)"
+
+msgid "HasUserGroupsManagerDelivery"
+msgstr "Ha la gestione delle consegne"
+
+msgid "HasUserGroupsReferent"
+msgstr "Ha la gestione dei produttori associati"
+
+msgid "HasUserGroupsSuperReferent"
+msgstr "Ha la gestione di tutti i produttori"
+
+msgid "HasUserGroupsCassiere"
+msgstr "Ha la gestione durante la consegna dei pagamenti di tutti i produttori e della cassa"
+
+msgid "HasUserGroupsReferentCassiere"
+msgstr "Ha la gestione durante la consegna dei pagamenti dei produttori associati"
+
+msgid "HasUserGroupsReferentTesoriere"
+msgstr "Ha la gestione dopo la consegna dei pagamenti dei produttori associati"
+
+msgid "HasUserGroupsTesoriere"
+msgstr "Ha la gestione dei pagamenti ai fornitori"
+
+msgid "HasUserGroupsStoreroom"
+msgstr "Ha la gestione della dispensa"
+
+msgid "HasUserGroupsGeneric"
+msgstr "Per raggruppare utenti per uso statistico"
+
+msgid "HasUserGroupsEvents"
+msgstr "Ha la gestione delle attività del calendario"
+
+msgid "HasUserGroupsManagerDes"
+msgstr "Ha la gestione del D.E.S."
+
+msgid "HasUserGroupsReferentDes"
+msgstr "Ha la gestione di tutti gli ordini del proprio G.A.S. associato ad un ordine condiviso"
+
+msgid "HasUserGroupsSuperReferentDes"
+msgstr "Ha la gestione degli ordini del proprio G.A.S. associato ad un ordine condiviso"
+
+msgid "HasUserGroupsReferentTitolareDes"
+msgstr "E' il titolare degli ordini condivisi dei produttori associati: gestisce l'ordine condiviso"
+
+msgid "HasUserGroupsReferentDesAllGas"
+msgstr "Referente D.E.S. abilitato a visualizzare gli ordini dei G.A.S."
+
+msgid "HasUserGroupsUserManagerDes"
+msgstr "Ha la gestione dei gasisti dei G.A.S. facenti parte del D.E.S."
+
+msgid "HasUserGroupsUserFlagPrivacy"
+msgstr "E' il titolare del trattamento dei dati per la privacy"
+
+msgid "HasUserGroupsGasGroupsGroups"
+msgstr "Gestisce i gruppi"
+
+msgid "HasUserGroupsGasGroupsDeliveries"
+msgstr "Gestisce le consegne per i gruppi"
+
+msgid "HasUserGroupsGasGroupsOrders"
+msgstr "Gestisce gli ordini per i gruppi"
+
+msgid "HasUserGroupsGasGroupsParentOrders"
+msgstr "Gestisce gli ordini per gli ordini dei gruppi"
+
+msgid "OrderCycleLife"
+msgstr "Ciclo dell'ordine"
+
+msgid "OrdersCycleLife"
+msgstr "Ciclo degli ordini"
+
+msgid "OrdersCycleLifeToCLOSE"
+msgstr "Ciclo degli ordini per la chiusura"
+
+msgid "PayToDelivery"
+msgstr "Il pagamento della consegna avviene"
+
+msgid "PayToDelivery-ON"
+msgstr "Alla consegna"
+
+msgid "PayToDelivery-POST"
+msgstr "Dopo consegna"
+
+msgid "PayToDelivery-ON-POST"
+msgstr "Misto, dopo e alla consegna"
+
+msgid "orderForceClose"
+msgstr "forzare la chiusura"
+
+msgid "orderUserPaid"
+msgstr "saldo gasisti"
+
+msgid "orderSupplierPaid"
+msgstr "pagamento produttore"
+
+msgid "isPaidSupplier"
+msgstr "pagato il produttore"
+
+msgid "CanOrdersDelete"
+msgstr "Può cancellare gli ordini"
+
+msgid "CanOrdersClose"
+msgstr "Può chiudere gli ordini"
+
+msgid "CashLimit"
+msgstr "Limiti agli acquisti"
+
+msgid "LimitCashAfter"
+msgstr "Importo di quanto un gasita può sforare"
+
+msgid "LimitCashAfterShort"
+msgstr "Può sforare"
+
+msgid "HasDes"
+msgstr "Condividi gli ordini con altre organizzazioni (D.E.S.)"
+
+msgid "HasDesShort"
+msgstr "D.E.S."
+
+msgid "HasDesReferentAllGas"
+msgstr "Ha il referente D.E.S. per tutti i G.A.S."
+
+msgid "HasDesUserManager"
+msgstr "Ha il manager dei gasisti per tutti i G.A.S. del  D.E.S."
+
+msgid "HasGasGroups"
+msgstr "Ha la gestione dei gruppi del G.A.S. per creare ordini"
+
+msgid "HasUserFlagPrivacy"
+msgstr "Flag privacy"
+
+msgid "HasUserRegistrationExpire"
+msgstr "Scadenza iscrizione"
+
+msgid "UserRegistrationExpireDate"
+msgstr "Data scadenza iscrizione"
+
+msgid "HasUserFlagPrivacyQuestion"
+msgstr "Ha accettato il testo sulla privacy"
+
+msgid "HasUserFlagPrivacyQuestionShort"
+msgstr "Accettato privacy"
+
+msgid "HasUserRegistrationExpireQuestion"
+msgstr "Ha rinnovata l'iscrizione"
+
+msgid "HasUserRegistrationExpireQuestionShort"
+msgstr "Rinnovato"
+
+msgid "HasUserFlagPrivacyQuestionN"
+msgstr "Non ha accettato il testo sulla privacy"
+
+msgid "HasUserFlagPrivacyQuestionShortN"
+msgstr "Non ha accettato privacy"
+
+msgid "HasUserRegistrationExpireQuestionN"
+msgstr "Non ha rinnovata l'iscrizione"
+
+msgid "HasUserRegistrationExpireQuestionShortN"
+msgstr "Non ha rinnovato"
+
+msgid "HasUserBlockQuestion"
+msgstr "E' attivo"
+
+msgid "HasUserBlockQuestionShort"
+msgstr "Attivato"
+
+msgid "HasUserCanLoginQuestion"
+msgstr "Può loggarsi"
+
+msgid "HasUserCanLoginQuestionShort"
+msgstr "Accede"
+
+msgid "HasFieldArticleCodice"
+msgstr "Ha il campo CODICE per gli articoli"
+
+msgid "HasFieldArticleIngredienti"
+msgstr "Ha il campo INGREDIENTI per gli articoli"
+
+msgid "HasFieldArticleAlertToQta"
+msgstr "Ha il campo AVVISA RAGGIUNTA LA QTA per gli articoli"
+
+msgid "HasFieldPaymentPos"
+msgstr "Ha il campo importo POS / Satispay"
+
+msgid "Payment Pos"
+msgstr "Importo POS / Satispay"
+
+msgid "payContatto"
+msgstr "Nominativo al quale sarà inviato il documento di pagamento"
+
+msgid "payMail"
+msgstr "Mail al quale sarà inviato il documento di pagamento"
+
+msgid "payIntestatario"
+msgstr "Intestatario del documento di pagamento"
+
+msgid "payIndirizzo"
+msgstr "Indirizzo del documento di pagamento"
+
+msgid "payCap"
+msgstr "Cap"
+
+msgid "payCitta"
+msgstr "Città"
+
+msgid "payProv"
+msgstr "Provincia"
+
+msgid "payCf"
+msgstr "Codice Fiscale indicato nel documento di pagamento"
+
+msgid "payPiva"
+msgstr "Partiva iva indicato nel documento di pagamento"
+
+msgid "HasFieldArticleCategoryId"
+msgstr "Ha il campo CATEGORIA per gli articoli"
+
+msgid "HasFieldSupplierCategoryId"
+msgstr "Ha il campo CATEGORIA per i produttori"
+
+msgid "HasFieldFatturaRequired"
+msgstr "La fattura per il cassiere/tesoriere è obbligatoria"
+
+msgid "HasFieldCartNote"
+msgstr "Il carrello ha il campo note per il referente"
+
+msgid "Prod Supplier Organization Id"
+msgstr "Produttore"
+
+msgid "IsAdminDes"
+msgstr "Promotore"
+
+msgid "HasArticlesOrderShort"
+msgstr "Articoli associati agli ordini"
+
+msgid "HasTrasportShort"
+msgstr "Trasporto"
+
+msgid "HasCostMoreShort"
+msgstr "Costo aggiuntivo"
+
+msgid "HasCostLessShort"
+msgstr "Sconto"
+
+msgid "HasValidateShort"
+msgstr "Colli"
+
+msgid "HasCashFilterSupplierShort"
+msgstr "Prepagato per alcuni produttori"
+
+msgid "HasVisibilityShort"
+msgstr "Visibilità"
+
+msgid "HasStoreroomShort"
+msgstr "Dispensa"
+
+msgid "HasTesoriereShort"
+msgstr "Tesoriere"
+
+msgid "HasProdGasArticleSyncronizeUpdate"
+msgstr "Aggiorno i dati dell'articolo del G.A.S."
+
+msgid "HasProdGasArticleSyncronizeInsert"
+msgstr "Inserisco l'articolo tra quelli del G.A.S."
+
+msgid "HasProdGasArticleSyncronizeDelete"
+msgstr "Elimina l'articolo del G.A.S."
+
+msgid "HasProdGasArticleSyncronizeArticlesOrdersUpdate"
+msgstr "Aggiorno i dati dell'articolo associato all'ordine del G.A.S."
+
+msgid "HasProdGasArticleSyncronizeArticlesOrdersInsert"
+msgstr "Inserisci l'articolo tra quelli associati all'ordine del G.A.S."
+
+msgid "HasProdGasArticleSyncronizeArticlesOrdersDelete"
+msgstr "Elimina l'articolo tra quelli associati all'ordine del G.A.S."
+
+msgid "Ricorrenza"
+msgstr "Ricorrenza"
+
+msgid "Ricorrenza Num"
+msgstr "Ricorrenza num."
+
+msgid "Ricorrenza Type"
+msgstr "Ricorrenza tipologia"
+
+msgid "CashVoceGeneric"
+msgstr "Voce di spesa generica"
+
+msgid "Email send"
+msgstr "Scrivigli una mail"
+
+msgid "MailOrderOpen"
+msgstr "Invia mail all'apertura dell'ordine"
+
+msgid "MailOrderClose"
+msgstr "Invia mail alla chiusura dell'ordine"
+
+msgid "MonitoringMailOrderClose"
+msgstr "Invia mail alla chiusura dell'ordine"
+
+msgid "MonitoringMailOrderDataFine"
+msgstr "Invia mail alla scadenza dell'ordine"
+
+msgid "request_payment_num"
+msgstr "Richiesta di pagamento numero"
+
+msgid "request_payment_num_short"
+msgstr "Num. richiesta"
+
+msgid "prod_gas_supplier_can_view_orders"
+msgstr "Può vedere gli ordini"
+
+msgid "prod_gas_supplier_can_view_orders_short"
+msgstr "Può vedere gli ordini"
+
+msgid "prod_gas_supplier_can_view_orders_users"
+msgstr "Può vedere gli ordini e i nominativi dei gasisti"
+
+msgid "prod_gas_supplier_can_view_orders_users_short"
+msgstr "Può vedere gli acquisti"
+
+msgid "prod_gas_supplier_can_promotions"
+msgstr "Può presentare promozioni al G.A.S."
+
+msgid "prod_gas_supplier_can_promotions_short"
+msgstr "Può presentare promozioni"
+
+msgid "prod_gas_supplier_owner_articles"
+msgstr "Gestore del listino degli articoli"
+
+msgid "prod_gas_supplier_owner_articles_short"
+msgstr "Gestore articoli"
+
+msgid "organization_owner_articles"
+msgstr "Gestore del listino degli articoli"
+ 	
+msgid "organization_owner_articles_short"
+msgstr "Gestore articoli"
+ 	
+msgid "EventNota"
+msgstr "Testo"
+
+msgid "EventStart"
+msgstr "Data inizio attività"
+
+msgid "Eventend"
+msgstr "Data fine attività"
+
+msgid "EventDateAlertMail"
+msgstr "Data invio mail per notifica"
+
+msgid "EventDateAlertFE"
+msgstr "Data notifica a Front-end"
+
+msgid "EventStartShort"
+msgstr "Data inizio"
+
+msgid "EventEndShort"
+msgstr "Data fine"
+
+msgid "EventDateAlertMailShort"
+msgstr "Data per notifica mail"
+
+msgid "EventDateAlertFEShort"
+msgstr "Data per notifica sito"
+
+#
+# T H    T A B L E S
+#
+msgid "DataSend"
+msgstr "Data invio"
+
+msgid "Created"
+msgstr "Inserito"
+
+msgid "Modified"
+msgstr "Modificato"
+
+msgid "Actions"
+msgstr "Azioni"
+
+#
+# E X P O R T - D O C S
+#
+msgid "to_users_all_modify"
+msgstr "Documento con elenco diviso per <b>utente</b> con tutte le <b>modifiche</b><br />(per confrontare i dati dell'utente con le modifiche del referente)"
+
+msgid "to_users"
+msgstr "Documento con elenco diviso per <b>utente</b> (per pagamento dell'utente)"
+
+msgid "to_users_label"
+msgstr "Documento con elenco diviso per utente in formato <b>etichetta</b> (per la consegna)"
+
+msgid "to_users_articles_label"
+msgstr "Documento con elenco diviso per utente e articolo in formato <b>etichetta</b> (per la consegna)"
+
+msgid "to_delivery_cassiere_users_compact_all"
+msgstr "Documento di tutti gli ordini della consegna diviso per utente <b>modalità compatta</b> (per pagamento dell'utente)"
+
+msgid "to_delivery_cassiere_users_all"
+msgstr "Documento di tutti gli ordini della consegna diviso <b>per utente</b> (per pagamento dell'utente)"
+
+msgid "to_delivery_cassiere_users_all_split"
+msgstr "Documenti di tutti gli ordini della consegna diviso per utente (per pagamento dell'utente): per <b>ogni utente</b> sarà creato un <b>documento</b>"
+
+msgid "to_cassiere_pos"
+msgstr "Documento con il prospetto di tutti le <b>commissioni</b> POS / Satispay"
+
+msgid "to_delivery_cassiere_user_one"
+msgstr "Documento di tutti gli ordini della consegna dell'utente (per pagamento dell'utente)"
+
+msgid "to_lists_suppliers_cassiere"
+msgstr "Documento con il prospetto di tutti i <b>produttori</b> della consegna"
+
+msgid "to_lists_orders_cassiere"
+msgstr "Documento con il prospetto di tutti gli <b>ordini</b> della consegna"
+
+msgid "to_list_users_delivery_cassiere"
+msgstr "Documento con il prospetto di tutti <b>utenti</b> della consegna"
+
+msgid "to_supplier"
+msgstr "Documento con elenco diviso per <b>produttore</b> (per fattura al produttore)"
+
+msgid "to_articles_monitoring"
+msgstr "Documento con articoli <b>aggregati</b> (da monitorare)"
+
+msgid "to_articles"
+msgstr "Documento con articoli <b>aggregati</b> (per il produttore)"
+
+msgid "to_articles_details"
+msgstr "Documento con articoli <b>aggregati</b> con il <b>dettaglio</b> degli utenti"
+
+msgid "to_articles_weight"
+msgstr "Documento con articoli aggregati per <b>peso</b>"
+
+msgid "to_users_short"
+msgstr "Doc. con elenco diviso per utente"
+
+msgid "to_articles_short"
+msgstr "Doc. con articoli aggregati"
+
+msgid "to_articles_details_short"
+msgstr "Doc. con articoli aggregati per utenti"
+
+msgid "to_articles_weight_short"
+msgstr "Doc. con articoli aggregati per peso"
+
+msgid "to_prod_users_group"
+msgstr "Doc. con gli acquisti ordinati per utente (per la consegna)"
+
+msgid "des_referent_to_supplier"
+msgstr "Doc. con gli articoli aggregati (per il produttore)"
+
+msgid "des_referent_to_supplier_monitoring"
+msgstr "Doc. con gli articoli aggregati (con controlli per il produttore)"
+
+msgid "des_referent_to_supplier_details"
+msgstr "Doc. con gli articoli aggregati con il dettaglio G.A.S. (per il produttore)"
+
+msgid "des_referent_to_supplier_split_org"
+msgstr "Doc. con gli articoli aggregati divisi per G.A.S."
+
+msgid "des_referent_to_supplier_split_org_monitoring"
+msgstr "Doc. con gli articoli aggregati divisi per G.A.S. (con controlli)"
+
+
+#
+# F I L T E R S
+#
+msgid "Filter Users"
+msgstr "Filtro utenti"
+
+msgid "Filter Suppliers Organizations Referents"
+msgstr "Filtro dei referenti"
+
+msgid "Filter Suppliers"
+msgstr "Filtro dei produttori"
+
+msgid "Filter Articles"
+msgstr "Filtro degli articoli"
+
+msgid "Filter Storeroom"
+msgstr "Filtro degli articoli in dispensa"
+
+#
+# prodGasSuppliers Action
+#
+msgid "ProdGasSyncronizeUpdate"
+msgstr "Copia i dati"
+
+msgid "ProdGasSyncronizeUpdateIds"
+msgstr "Copia i dati dei tuoi articoli su quelli del G.A.S."
+
+msgid "ProdGasSyncronizeInsert"
+msgstr "Inserisci"
+
+msgid "ProdGasSyncronizeFlagPresenteArticlesorders"
+msgstr "Presenza tra gli articoli ordinabili"
+
+msgid "ProdGasSyncronizeFlagPresenteArticlesordersButton"
+msgstr "Eliminalo\\aggiungilo tra gli articoli ordinabili"
+
+msgid "ProdGasSyncronizeFlagPresenteArticlesordersIdsButton"
+msgstr "Eliminali\\aggiungili tra gli articoli ordinabili"
+
+msgid "ProdGasSyncronizeDelete"
+msgstr "Elimina"
+
+msgid "ProdGasSyncronizeUpdate-descri"
+msgstr "Copia i dati del tuo articolo su quelli del G.A.S."
+
+msgid "ProdGasSyncronizeInsert-descri"
+msgstr "Inserisci un nuovo articolo perchè non è presente tra gli articoli del G.A.S."
+
+msgid "ProdGasSyncronizeFlagPresenteArticlesorders-descri"
+msgstr "Rendi l'articolo presente o non più presente tra quelli che il G.A.S. potrà ordinare"
+
+msgid "ProdGasSyncronizeDelete-descri"
+msgstr "Elimina l'articolo definitivamente<br />Non puoi eliminare articoli che risultano <b>acquistati</b> dai gasisti."
+
+
+#
+# prodGasSyncronizeArticlesOrders Action
+#
+msgid "ProdGasSyncronizeArticlesOrdersUpdate"
+msgstr "Copia i dati"
+
+msgid "ProdGasSyncronizeArticlesOrdersUpdateIds"
+msgstr "Copia i dati dei tuoi articoli su quelli associati all'ordine del G.A.S."
+
+msgid "ProdGasSyncronizeArticlesOrdersInsert"
+msgstr "Inserisci"
+
+msgid "ProdGasSyncronizeArticlesOrdersDelete"
+msgstr "Elimina"
+
+msgid "ProdGasSyncronizeArticlesOrdersUpdate-descri"
+msgstr "Copia i dati del tuo articolo su quelli associati all'ordine del G.A.S."
+
+msgid "ProdGasSyncronizeArticlesOrdersInsert-descri"
+msgstr "Inserisci un nuovo articolo perchè non è presente tra gli articoli associati all'ordine del G.A.S."
+
+msgid "ProdGasSyncronizeArticlesOrdersDelete-descri"
+msgstr "Elimina l'articolo e gli eventuli <b>acquisti</b> definitivamente associato all'ordine."
+
+
+msgid "ProdGasImportArticleGas"
+msgstr "Associati gli articoli del G.A.S. non ancora associati ai tuoi articoli"
+
+msgid "StoreroomErrorUsedStoreroomUser"
+msgstr "Non puoi associare l'articolo all'utente dispensa"
+
+#
+# DesSuppliers Action
+#
+msgid "DesArticlesDiffShort"
+msgstr "Confronta"
+
+msgid "DesArticlesDiff"
+msgstr "Confronta articoli"
+
+msgid "DesSyncronizeUpdate"
+msgstr "Copia i dati"
+
+msgid "DesSyncronizeInsert"
+msgstr "Inserisci"
+
+msgid "DesSyncronizeFlagPresenteArticlesorders"
+msgstr "Presenza tra gli articoli ordinabili"
+
+msgid "DesSyncronizeFlagPresenteArticlesordersButton"
+msgstr "Eliminalo\\aggiungilo tra gli articoli ordinabili"
+
+msgid "DesSyncronizeUpdate-descri"
+msgstr "Copia i dati del tuo articolo su quelli del G.A.S."
+
+msgid "DesSyncronizeInsert-descri"
+msgstr "Inserisci un nuovo articolo perchè non è presente tra gli articoli del G.A.S."
+
+msgid "DesSyncronizeFlagPresenteArticlesorders-descri"
+msgstr "Rendi l'articolo presente o non più presente tra quelli che il G.A.S. potrà ordinare"
+
+msgid "DesOrderOrganizationNotOrderCreateClose"
+msgstr "Il G.A.S. non ha creato l'ordine"
+
+msgid "DesOrderOrganizationNotMyOrderCreateClose"
+msgstr "Non hai creato l'ordine"
+
+msgid "DesOrderOrganizationNotOrderCreate"
+msgstr "Il G.A.S. deve ancora creare l'ordine"
+
+msgid "DesOrderOrganizationNotSupplier"
+msgstr "Il G.A.S. non ha il produttore associato"
+
+msgid "DesOrderOrganizationNotIsTitolareDesSupplier"
+msgstr "Non sei titolare dell'ordine per poterlo gestire"
+
+msgid "DesOrderOrganizationSupplierOwnerArticlesError"
+msgstr "La configurazione del produttore è errata"
+
+msgid "DesOrderOrganizationGasTitolareOwnerArticlesError"
+msgstr "Il referente titolare del tuo G.A.S. può aprire l'ordine"
+
+msgid "DesOrderOrganizationSupplierOwnerArticlesMsg"
+msgstr "Per gestire un ordine D.E.S. configura il produttore la \"Gestore del listino degli articoli\"  al \"Titolare D.E.S. del produttore\""
+
+#
+# O R D E R - S T A T E S
+#
+msgid "CREATE-INCOMPLETE-label"
+msgstr "Creato ma incompleto"
+
+msgid "OPEN-NEXT-label"
+msgstr "Prossima apertura"
+
+msgid "OPEN-label"
+msgstr "Aperto"
+
+msgid "RI-OPEN-VALIDATE-label"
+msgstr "Riaperto"
+
+msgid "PROCESSED-BEFORE-DELIVERY-label"
+msgstr "In carico al referente prima della consegna"
+
+msgid "BEFORE-TRASMISSION-label"
+msgstr "Da trasmettere al produttore"
+
+msgid "POST-TRASMISSION-label"
+msgstr "Trasmesso al produttore"
+
+msgid "REFERENT-WORKING-label"
+msgstr "In carico ai referenti dei G.A.S."
+
+msgid "INCOMING-ORDER-label"
+msgstr "In carico al referente con la merce arrivata"
+
+msgid "PROCESSED-ON-DELIVERY-label"
+msgstr "In carico al cassiere durante la consegna"
+
+msgid "PROCESSED-POST-DELIVERY-label"
+msgstr "In carico al referente dopo la consegna"
+
+msgid "WAIT-PROCESSED-TESORIERE-label"
+msgstr "In attesa che il tesoriere lo prenda in carico"
+
+msgid "PROCESSED-TESORIERE-label"
+msgstr "In carico al tesoriere"
+
+msgid "TO-REQUEST-PAYMENT-label"
+msgstr "Possibilità di richiederne il pagamento"
+
+msgid "TO-PAYMENT-label"
+msgstr "Associato ad una richiesta di pagamento"
+
+msgid "PRODGASPROMOTION-GAS-WORKING-label"
+msgstr "In lavorazione"
+
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-label"
+msgstr "In lavorazione"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-label"
+msgstr "Trasmesso ai G.A.S."
+
+msgid "PRODGASPROMOTION-GAS-FINISH-label"
+msgstr "Terminata"
+
+msgid "USER-PAID-label"
+msgstr "Da saldare da parte dei gasisti"
+
+msgid "SUPPLIER-PAID-label"
+msgstr "Pagare al produttore"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-label"
+msgstr "In attesa che la richiesta si chiuda" 
+
+msgid "CLOSE-label"
+msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-GAS-OPEN-label"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-label"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-label"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-label"
+msgstr "Promozione chiusa"
+
+#
+# intro
+#
+msgid "CREATE-INCOMPLETE-intro"
+msgstr "Mancano articoli associati all''ordine"
+
+msgid "OPEN-NEXT-intro"
+msgstr "L'ordine creato ma ancora da aprire"
+
+msgid "OPEN-intro"
+msgstr "Ordine aperto, gli utenti possono effettuare acquisti"
+
+msgid "RI-OPEN-VALIDATE-intro"
+msgstr "Ordine riaperto per completare i colli"
+
+msgid "PROCESSED-BEFORE-DELIVERY-intro"
+msgstr "In carico al referente prima della consegna"
+
+msgid "POST-TRASMISSION-intro"
+msgstr "Ordine condiviso trasmesso al produttore: i G.A.S. associati non possono più effettuare modifiche"
+
+msgid "REFERENT-WORKING-intro"
+msgstr "Gli ordini asosciati all'ordine condiviso possono essere modificati dai G.A.S. associati"
+
+msgid "BEFORE-TRASMISSION-intro"
+msgstr "Ordine condiviso da trasmesmettere al produttore"
+
+msgid "INCOMING-ORDER-intro"
+msgstr "In carico al referente con la merce arrivata"
+
+msgid "PROCESSED-ON-DELIVERY-intro"
+msgstr "In carico al cassiere durante la consegna"
+
+msgid "PROCESSED-POST-DELIVERY-intro"
+msgstr "In carico al referente dopo la consegna"
+
+msgid "WAIT-PROCESSED-TESORIERE-intro"
+msgstr "In attesa che il tesoriere lo prenda in carico"
+
+msgid "PROCESSED-TESORIERE-intro"
+msgstr "In carico al tesoriere, il referente non potrà modificarlo"
+
+msgid "TO-REQUEST-PAYMENT-intro"
+msgstr "In carico al tesoriere per associarlo ad una richiesta il pagamento"
+
+msgid "TO-PAYMENT-intro"
+msgstr "Possibilità di richiederne il pagamento"
+
+msgid "PRODGASPROMOTION-GAS-WORKING-intro"
+msgstr "In lavorazione, non visibile ai G.A.S."
+
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-intro"
+msgstr "In lavorazione, non visibile agli utenti"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-intro"
+msgstr "Trasmesso ai gestori dei G.A.S. per valutarla"
+
+msgid "PRODGASPROMOTION-GAS-FINISH-intro"
+msgstr "Data di fine promozione terminata"
+
+msgid "USER-PAID-intro"
+msgstr "Ordine da saldato da parte di tutti i gasisti"
+
+msgid "SUPPLIER-PAID-intro"
+msgstr "Ordine pagato al produttore"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-intro"
+msgstr "In attesa che la richiesta di pagamento si chiuda"
+
+msgid "CLOSE-intro"
+msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-GAS-OPEN-intro"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-intro"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-intro"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-intro"
+msgstr "Promozione chiusa"
+
+#
+# descri
+#
+msgid "CREATE-INCOMPLETE-descri"
+msgstr "L'ordine è stato creato ma non sono stati associati gli articoli"
+
+msgid "OPEN-NEXT-descri"
+msgstr "L'ordine creato ma la data di apertura è antecedente alla data odierna"
+
+msgid "OPEN-descri"
+msgstr "Ordine aperto, gli utenti possono effettuare acquisti"
+
+msgid "RI-OPEN-VALIDATE-descri"
+msgstr "Ordine riaperto per completare i colli"
+
+msgid "PROCESSED-BEFORE-DELIVERY-descri"
+msgstr "In carico al referente prima della consegna: il referente potrà apportare le eventuali modifiche"
+
+msgid "INCOMING-ORDER-descri"
+msgstr "In carico al referente con la merce arrivata: il referente potrà apportare le eventuali modifiche, gestire i pesi, gli importi, il trasporto, i costi aggiuntivi, gli sconti"
+
+msgid "PROCESSED-ON-DELIVERY-descri"
+msgstr "L'ordine è in carico al cassiere per effettuare le modifiche e i pagamenti"
+
+msgid "PROCESSED-POST-DELIVERY-descri"
+msgstr "In carico al referente dopo la consegna: il referente potrà apportare le eventuali modifiche, gestire i pesi, gli importi, il trasporto, i costi aggiuntivi, gli sconti"
+
+msgid "WAIT-PROCESSED-TESORIERE-descri"
+msgstr "L'ordine è in attesa che il tesoriere lo prenda in carico, il referente può riportalo allo stato precedente"
+
+msgid "PROCESSED-TESORIERE-descri"
+msgstr "In carico al tesoriere, il referente non potrà modificarlo"
+
+msgid "TO-REQUEST-PAYMENT-descri"
+msgstr "Possibilità di richiederne il pagamento, il Tesoriere potrà associarlo ad una richiesta di pagamento"
+
+msgid "TO-PAYMENT-descri"
+msgstr "Associato ad una richiesta di pagamento"
+
+msgid "BEFORE-TRASMISSION-descri"
+msgstr "Ordine da trasmettere al produttori: tutti i G.A.S. possono effettuare modifiche"
+
+msgid "POST-TRASMISSION-descri"
+msgstr "Ordine trasmesso al produttori: i G.A.S. non possono più effettuare modifiche. Solo il Titolare può effetuare modifiche"
+
+msgid "REFERENT-WORKING-descri"
+msgstr "L'ordine può nuovamente essere modificato dai referenti dei singoli G.A.S.: potranno vedere e far quadrare le eventuali modifiche comunicate dal Titolare"
+
+msgid "WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di trasmetterlo ai G.A.S."
+
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
+
+msgid "PRODGASPROMOTION-GAS-WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-descri"
+msgstr "Se i gestori dei G.A.S. la riterranno interessante potranno creare un ordine per i loro gasisti"
+
+msgid "PRODGASPROMOTION-GAS-FINISH-descri"
+msgstr "La promozione è terminata e gli eventuali G.A.S. non possono più effettuare acquisti"
+
+msgid "USER-PAID-descri"
+msgstr "Ordine da saldare da parte di tutti i gasisti, il Cassiere / Tesoriere dovrà occuparsi dei pagamenti"
+
+msgid "SUPPLIER-PAID-descri"
+msgstr "Ordine da pagare al produttore, il Tesoriere dovrà occuparsi del pagamento"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-descri"
+msgstr "L'ordine sarà chiuso quando tutti gli ordini associati alla richiesta di pagamento saranno saldati da parte di tutti i gasisti"
+
+msgid "CLOSE-descri"
+msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-GAS-OPEN-descri"
+msgstr "Gli utenti potranno effettuare gli acquisti"
+
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-descri"
+msgstr "Gli utenti potranno effettuare gli acquisti"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-descri"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-descri"
+msgstr "Promozione chiusa"
+
+#
+# target
+#
+msgid "CREATE-INCOMPLETE-target"
+msgstr "Referente"
+
+msgid "OPEN-NEXT-target"
+msgstr "Referente"
+
+msgid "OPEN-target"
+msgstr "Utente"
+
+msgid "RI-OPEN-VALIDATE-target"
+msgstr "Utente"
+
+msgid "PROCESSED-BEFORE-DELIVERY-target"
+msgstr "Referente"
+
+msgid "INCOMING-ORDER-target"
+msgstr "Referente"
+
+msgid "PROCESSED-ON-DELIVERY-target"
+msgstr "Cassiere"
+
+msgid "PROCESSED-POST-DELIVERY-target"
+msgstr "Referente"
+
+msgid "WAIT-PROCESSED-TESORIERE-target"
+msgstr "Tesoriere"
+
+msgid "PROCESSED-TESORIERE-target"
+msgstr "Tesoriere"
+
+msgid "TO-REQUEST-PAYMENT-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "TO-REQUEST-PAYMENT-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "TO-PAYMENT-target"
+msgstr "Tesoriere"
+
+msgid "USER-PAID-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "USER-PAID-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "SUPPLIER-PAID-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "SUPPLIER-PAID-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "USER-PAID-target-PAYON"
+msgstr "Cassiere"
+
+msgid "SUPPLIER-PAID-target-PAYON"
+msgstr "Cassiere"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "WAIT-REQUEST-PAYMENT-CLOSE-target-PAYON-POST"
+msgstr "Tesoriere"
+
+msgid "CLOSE-target-PAYON"
+msgstr "Cassiere"
+
+msgid "CLOSE-target-PAYPOST"
+msgstr "Tesoriere"
+
+msgid "CLOSE-target-PAYON-POST"
+msgstr "Cassiere/Tesoriere"
+
+msgid "PROCESSED-POST-DELIVERY-action"
+msgstr "(passalo al tesoriere)"
+
+msgid "WAIT-PROCESSED-TESORIERE-action"
+msgstr "(riportalo allo stato 'in carico al referente')"
+
+msgid "INCOMING-ORDER-action"
+msgstr "(è arrivata la merce)"
+
+msgid "PROCESSED-BEFORE-DELIVERY-action"
+msgstr "(non è arrivata la merce)"
+
+msgid "PROCESSED-ON-DELIVERY-action"
+msgstr "(rimandalo al referente)"
+
+#
+#  D.E.S.
+#
+msgid "DES-WAITING-label"
+msgstr "Non tutti gli ordini sono stati creati"
+
+msgid "DES-CLOSE-label"
+msgstr "Tutti gli ordine sono scaduti"
+
+msgid "DES-OPEN-label"
+msgstr "Tutti gli ordine sono aperti"
+
+msgid "DES-OPEN-CLOSE-label"
+msgstr "Non tutti gli ordini sono scaduti"
+
+msgid "DES-SEND-TO-SUPPLIER-label"
+msgstr "Ordine inviato al produttore"
+
+msgid "DES-WAITING-descri"
+msgstr "Alcuni G.A.S. devo creare l'ordine del relativo produttore."
+
+msgid "DES-CLOSE-descri"
+msgstr "Tutti gli ordine del relativo produttore sono scaduti: i gasisti non potranno effettuare gli acquisti"
+
+msgid "DES-OPEN-descri"
+msgstr "Tutti gli ordine del relativo produttore sono aperti: i gasisti potranno effettuare gli acquisti"
+
+msgid "DES-OPEN-CLOSE-descri"
+msgstr "Non tutti gli ordini del relativo produttore sono scaduti, per avere i dati completi bisognerà attendere che scadano tutti"
+
+msgid "DES-SEND-TO-SUPPLIER-descri"
+msgstr "Il titolare ha già inviato l'ordine al produttore: gli altri G.A.S. non potranno più modificare i dati"
+
+msgid "DES-WAITING-intro"
+msgstr "Non tutti gli ordini sono stati creati"
+
+msgid "DES-CLOSE-intro"
+msgstr "Tutti gli ordine sono scaduti"
+
+msgid "DES-OPEN-intro"
+msgstr "Tutti gli ordine sono aperti"
+
+msgid "DES-OPEN-CLOSE-intro"
+msgstr "Non tutti gli ordini sono chiusi"
+
+#
+# O W N E R - L I S T I N O
+#
+msgid "OwnerArticles"
+msgstr "Gestore articoli"
+
+msgid "OwnerArticle"
+msgstr "Gestore articolo"
+
+msgid "ArticlesOwnerSUPPLIER"
+msgstr "produttore"
+
+msgid "ArticlesOwnerREFERENT"
+msgstr "referente del produttore"
+
+msgid "ArticlesOwnerDES"
+msgstr "titolare D.E.S. del produttore"
+
+#
+# V O T E
+#
+msgid "vote_0"
+msgstr "Pessimo"
+
+msgid "vote_1"
+msgstr "Scarso"
+
+msgid "vote_2"
+msgstr "Normale"
+
+msgid "vote_3"
+msgstr "Buono"
+
+msgid "vote_4"
+msgstr "Ottimo"
+
+
+#
+# M S G
+# 
+msgid "TotaleConfirmTesoriere"
+msgstr "Totale presunto della consegna: %s<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)</i>"
+
+msgid "msgProdGasSuppliersNoOrganizationsOwnerSupplier"
+msgstr "Nessun G.A.S. ha la gestione degli articoli a carico del produttore"
+
+msgid "msgProdGasSuppliersNoDeliveryWithOrders"
+msgstr "Nessun consegna aperta"
+
+msgid "TotaleConfirmCassiere"
+msgstr "Totale presunto della consegna: %s<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)</i>"
+
+msgid "CarrelloInPROCESSED-ON-DELIVERY"
+msgstr "Importi confermati dal referente"
+
+msgid "Href_title_expand"
+msgstr "Clicca per maggior dettagli"
+
+msgid "Href_title_expand_config"
+msgstr "Clicca per configurare l'elemento"
+
+msgid "Are you sure you want to delete # %s?"
+msgstr "Sei sicuro di voler cancellare l'elemento selezionato?"
+
+msgid "notempty"
+msgstr "Campo non può essere vuoto"
+
+msgid "OrderNotFoundDeliveries"
+msgstr "Non ci sono consegne disponibili"
+
+msgid "NotFoundDeliveries"
+msgstr "Non si può procedere con l'operazione perchè non ci sono consegne disponibili"
+
+msgid "OrderLifeCyclesSummaryOrderPaidNotFound"
+msgstr "Nessun gasista ha saldato l'ordine"
+
+msgid "OrderLifeCyclesSummaryOrderNotPaidNotFound"
+msgstr "Nessun gasista deve saldare l'ordine"
+
+msgid "OrderLifeCyclesSummaryOrderRequestPayment"
+msgstr "L'ordine è associato ad una richiesta di pagamento, il pagamento dovrà essere gestito dal tesoriere"
+
+msgid "OrderLifeCyclesSummaryOrderSummaryOrderPaid"
+msgstr "L'ordine è stato saldato da tutti i gasisti"
+
+msgid "OrderLifeCyclesSummaryOrderSummaryOrderNotPaid"
+msgstr "L'ordine dev'essere saldato dai gasisti"
+
+msgid "OrderLifeCyclesSupplierPaidTesoriere"
+msgstr "L'ordine dev'essere pagato al produttore, il pagamento dovrà essere gestito dal tesoriere"
+
+msgid "DeliveryIsVisibleBackOfficeN"
+msgstr "Consegna non visibile nel BackOffice agli amministratori"
+
+msgid "DeliveryIsVisibleFrontEndN"
+msgstr "Consegna non visibile nel FrontEnd agli utenti"
+
+msgid "OrderIsVisibleBackOfficeN"
+msgstr "Ordine non visibile nel BackOffice agli amministratori"
+
+msgid "OrderIsVisibleFrontEndN"
+msgstr "Ordine non visibile nel FrontEnd agli amministratori"
+
+msgid "OrderToValidateOkFrontEnd"
+msgstr "Tutti i colli dell'ordine sono completati"
+
+msgid "OrderToValidateOk"
+msgstr "L'ordine non ha articoli da validare<br />(tutti gli articoli associati all'ordine con 'pezzi per confezione' superiori a uno completano i colli)"
+
+msgid "OrderToValidateError"
+msgstr "Ordine non valido: esistono colli che non hanno raggiunto la quantità necessaria"
+
+msgid "The summary order just exist"
+msgstr "Esiste già una aggregazione degli acquisti per utente  con l'utente scelto!"
+
+msgid "Orders State Processed Referente Post Delivery"
+msgstr "Gli ordini selezionati sono stati riportati allo stato 'in carico al referente', il referente potrà modificarli."
+
+msgid "Orders State Processed Tesoriere"
+msgstr "Gli ordini selezionati sono stati presi in carico, ora potrai elaborarli."
+
+msgid "Order State in Wait Processed Tesoriere"
+msgstr "Lo stato dell'ordine è stato aggiornato: ora il tesoriere potrà prenderlo in carico."
+
+msgid "Order State in Wait Processed Tesoriere Error"
+msgstr "Si è verificato un errore, lo stato dell'ordine non è stato aggiornato."
+
+msgid "DesOrder State in POST-TRASMISSION"
+msgstr "Lo stato dell'ordine condiviso è stato aggiornato: i referenti non potranno più modifcare i propri ordini"
+
+msgid "DesOrder State in BEFORE-TRASMISSION"
+msgstr "Lo stato dell'ordine condiviso è stato aggiornato: i referenti potranno ancora modifcare i propri ordini"
+
+msgid "DesOrder State in REFERENT-WORKING"
+msgstr "Lo stato dell'ordine condiviso è stato aggiornato: i referenti potranno modifcare i propri ordini"
+
+msgid "ProdGasPromotion in WORKING"
+msgstr "Promozione in stato di lavorazione per essere modificata: i G.A.S. scelti non potranno effettuare acquisti"
+
+msgid "ProdGasPromotion in OPEN"
+msgstr "Promozione aperta, i gasisti dei G.A.S. che potranno effettuare gli ordini"
+
+msgid "ProdGasPromotion in TRASMISSION-TO-GAS"
+msgstr "Promozione trasmessa ai referenti dei G.A.S. che potranno valutare se creare un ordine per i loro gasisti"
+
+msgid "ProdGasPromotion in FINISH"
+msgstr "Promozione terminata"
+
+msgid "ProdGasPromotion in PRODGASPROMOTION-CLOSE"
+msgstr "Promozione chiusa"
+
+msgid "ProdGasPromotionsOrganization REJECT"
+msgstr "Promozione rifiutata"
+
+msgid "ModelValidationError"
+msgstr "Controlla i campi del modulo, risultano non corretti!"
+
+msgid "StoreroomNotFound"
+msgstr "non è stato associato alcun utente al gruppo dispensa!<br />Contatta l'amministratore."
+
+msgid "StoreroomArticleInRequestPaymentShort"
+msgstr "Articolo in richiesta di pagamento"
+
+msgid "StoreroomArticleInRequestPayment"
+msgstr "Articolo già associato ad una richiesta di pagamento"
+
+msgid "article_msg_edit_values"
+msgstr "Modificando questi valori <b>non</b> si modificheranno i valori dell'articolo associato agli ordini."
+
+msgid "msg_article_edit_propagate_article_order"
+msgstr "La modifica dei dati ha effetto sugli articoli <strong>gi&agrave;</strong> associati agli ordini."
+
+msgid "msg_article_edit_not_propagate_article_order"
+msgstr "La modifica dei dati <strong>non</strong> ha effetto sugli articoli <strong>gi&agrave; associati agli ordini</strong>."
+
+msgid "msg_prodgas_articles_valid"
+msgstr "Gli articoli validi per la promozione devono avere l'<strong>immagine</strong> associata."
+
+msgid "msg_prodgas_promotion_date"
+msgstr "Durante le date di apertura e chiusura,i G.A.S. potranno effettuare gli acquisti"
+
+msgid "msg_prodgaspromotion_gas_user_delivery"
+msgstr "Indica <b>dove</b> e <b>quando</b> il gasista può ritirare gli articoli prenotati e la <b>modalità di pagamento</b>"
+
+msgid "msg_select_multiple"
+msgstr "Per selezionare più elementi, selezionarli tenendo premuto il tasto CTRL"
+
+msgid "msg_prodgas_contact"
+msgstr "Indica i riferimenti per essere contatto dai G.A.S. per avere maggiori informazioni"
+
+msgid "msg_prodgas_contact_to_gas"
+msgstr "Contatta il produttore per avere maggiori informazioni sulla promozione"
+
+msgid "msg_prodgas_organization_manager_no_acl"
+msgstr "Non si possiedono i permessi per gestire la promozione"
+
+msgid "msg_prodgas_organization_manager_found"
+msgstr "Ci sono delle promozioni per il tuo G.A.S.!"
+
+msgid "summary_orders_regenerated"
+msgstr "Dati rigenerati"
+
+msgid "summary_des_orders_regenerated"
+msgstr "Dati rigenerati"
+
+msgid "carts_splits_regenerated"
+msgstr "Dati rigenerati"
+
+msgid "cvs_import_error_rows_max"
+msgstr "Il file contiene troppe righe (%s): sono consenti file .csv con %s righe"
+
+msgid "cvs_import_error_1"
+msgstr "Trovata %s riga che presenta errori: di seguito la struttura corretta del file .csv"
+
+msgid "cvs_import_error_n"
+msgstr "Trovate %s righe che presentano errori: di seguito la struttura corretta del file .csv"
+		
+msgid "IsArticleInCart"
+msgstr "L'articolo non può essere cancellato perchè è stato già <b>acquistato</b>: si dovrà attendere il passaggio degli ordini nel modulo STATISTICHE"
+				
+msgid "IsArticleInOrder"
+msgstr "L'articolo è stato associato ad ordini ma <b>non</b> è stato acquistato, se sicuro di volerlo cancellare?"
+		
+msgid "msg_summary_order_just_saldato_a"
+msgstr "Ordine già saldato al %s"
+		
+msgid "msg_summary_order_just_saldato"
+msgstr "Ordine già saldato"
+
+msgid "msg_fe_user_registration_expire_modal"
+msgstr "Devi rinnovare la tua iscrizione annuale al G.A.S."
+		
+#
+# M S G   system
+#
+msgid "developer.mode"
+msgstr "Modalità di sviluppo"
+
+msgid "msg_not_organization_config"
+msgstr "Il modulo non è abilitato per questo G.A.S.!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_delivery_not_visible_backoffice"
+msgstr "La consegna non è abilitata!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_order_not_visible_backoffice"
+msgstr "L'ordine non è abilitato!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_not_permission"
+msgstr "Non si possiedono i permessi per accedere alla pagina!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_not_permission_guest"
+msgstr "Non si possiedono i permessi per accedere alla pagina: bisogna essere autenticati!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_error_params"
+msgstr "Errore nel passaggio dei parametri!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_site_offline"
+msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget=\"_blank\" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
+
+msgid "msg_prodgas_promotion_acl_no"
+msgstr "<p>Non sei abilitato alla gestione delle promozioni.</p><p>Contattaci all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a> per avere maggior informazioni.</p>"
+
+msgid "msg_error_org_type"
+msgstr "Errore nella tipologia di organizzazione!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_error_http_referer"
+msgstr "Errore nella chiamata della pagina!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_method_not_allowed"
+msgstr "Metodo non permesso!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_not_order_state"
+msgstr "L'ordine ha uno stato di elaborazione che non permette l'operazione scelta!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_not_des_order_state_no_modify_order"
+msgstr "L'ordine non può essere modificato perchè è associato ad un ordine condiviso che ora è in lavorazione."
+
+msgid "msg_not_promotion_state"
+msgstr "La promozione ha uno stato di elaborazione che non permette l'operazione scelta!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_mail_order_open_Y"
+msgstr ""
+
+msgid "msg_mail_order_close_Y"
+msgstr ""
+
+msgid "msg_mail_order_open_N"
+msgstr "Il produttore scelto non permette di inviare la mail ai gasisti per notificare <b>l'apertura</b> dell'ordine"
+
+msgid "msg_mail_order_close_N"
+msgstr "Il produttore scelto non permette di inviare la mail ai gasisti per notificare <b>la chiusura</b> dell'ordine"
+
+msgid "msg_not_request_payment_state"
+msgstr "La richiesta di pagamento ha uno stato di elaborazione che non permette l'operazione scelta!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_not_delivery_visible_backoffice"
+msgstr "La consegna e i suoi ordini associati non sono abilitati agli amministratori del BackOffice<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_not_order_visible_backoffice"
+msgstr "L'ordine non è abilitato agli amministratori del BackOffice<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+
+msgid "msg_search_not_result_users"
+msgstr "Non sono stati trovati gasisti associati al G.A.S.!"
+
+msgid "msg_search_not_result"
+msgstr "La ricerca non ha prodotto risultati."
+
+msgid "msg_search_no_parameter"
+msgstr "Valorizza i parametri della ricerca."
+
+msgid "msg_organization_not_selected"
+msgstr "Organizzazione non valorizzata, scegli quella con cui lavorare."
+
+msgid "msg_des_not_selected"
+msgstr "D.E.S. non valorizzato, scegli quello con cui lavorare."
+
+msgid "msg_des_choice"
+msgstr "Devi scegliere il tuo D.E.S."
+
+msgid "msg_des_supplier_not_associate"
+msgstr "Il G.A.S. non ha il produttore associato!"
+
+msgid "msg_des_order_not_found"
+msgstr "Ordine non trovato: potrebbe essere stato cancellato"
+
+msgid "msg_des_order_not_referent"
+msgstr "Non sei referente produttore dell'ordine!"
+
+msgid "msg_organization_payment_incomplete"
+msgstr "Completa i dati per il pagamento del canone annuo di PortAlGas"
+
+msgid "export_docs_not_found"
+msgstr "Non ci sono acquisti."
+
+msgid "upload_file_required"
+msgstr "Il file da uplodare è obbligatorio."
+
+msgid "msg_user_flag_privacy"
+msgstr "Leggi il testo sulla trattamento dei dati per la privacy"
+
+msgid "msg_user_registration_expire_success"
+msgstr "Accettazione del testo sul trattamento dei dati sulla privacy salvata con successo"
+
+msgid "msg_user_registration_expire"
+msgstr "Devi rinnovare l'iscrizione al tuo G.A.S."
+
+msgid "msg_supplier_owner_articles_stato_T"
+msgstr "Il produttore deve ancora essere vagliato dagli amministratori, se hai subito necessità scrivi a <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>"
+
+#
+# tooltip
+#
+msgid "toolTipStato"
+msgstr "Se è valorizzato a 'No' non sarà visibile"
+
+msgid "toolTipStatoSupplier"
+msgstr "Se 'No' non sarà visibile nel front-end, se 'Temporaneo' è stato inserito dal referente"
+
+msgid "toolTipSupplierMailOrderOpen"
+msgstr "Se 'No' all'apertura dell'ordine non sarà inviata la mail di notifica a tutti i gasisti"
+
+msgid "toolTipSupplierMailOrderClose"
+msgstr "Se 'No' alla chiusura dell'ordine non sarà inviata la mail di notifica a tutti i gasisti"
+
+msgid "toolTipIsVisibleFrontEndDelivery"
+msgstr "Se è valorizzato a 'No' non sarà visibile dagli utenti nel front-end la consegna e gli ordini associati"
+
+msgid "toolTipIsVisibleBackOfficeDelivery"
+msgstr "Se è valorizzato a 'No' non sarà visibile dagli amministratori nel back-office la consegna e gli ordini associati"
+
+msgid "toolTipIsVisibleFrontEnd"
+msgstr "Se è valorizzato a 'No' non sarà visibile dagli utenti nel front-end"
+
+msgid "toolTipIsVisibleBackOffice"
+msgstr "Se è valorizzato a 'No' non sarà visibile dagli amministratori nel back-office"
+
+msgid "toolTipStatoElaborazione"
+msgstr "Se è valorizzato a 'Chiuso' non sarà visibile nel back-office"
+
+msgid "toolTipStatoArticlesOrder"
+msgstr "Se è valorizzato a 'No' non sarà visibile nel front-end<br />Se è valorizzato a 'Bloccato' sarà visibile nel front-end ma non modificabile"
+
+msgid "toolTipHasTrasport"
+msgstr "Se è valorizzato a 'Si' si potrà gestire l'importo del trasporto sull'ordine dopo la chiusura della consegna"
+
+msgid "toolTipHasCostMore"
+msgstr "Se è valorizzato a 'Si' si potrà gestire un costo aggiuntivo sull'ordine dopo la chiusura della consegna"
+
+msgid "toolTipHasCostLess"
+msgstr "Se è valorizzato a 'Si' si potrà gestire uno sconto sull'ordine dopo la chiusura della consegna"
+
+msgid "toolTipHasTrasportDes"
+msgstr "Se è valorizzato a 'Si' sarà comunicato ai G.A.S. associati"
+
+msgid "toolTipHasCostMoreDes"
+msgstr "Se è valorizzato a 'Si' sarà comunicato ai G.A.S. associati"
+
+msgid "toolTipHasCostLessDes"
+msgstr "Se è valorizzato a 'Si' sarà comunicato ai G.A.S. associati"
+
+msgid "toolTipHasValidate"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli con i colli"
+
+msgid "toolTipHasCashFilterSupplier"
+msgstr "Se è valorizzato a 'Si' si potrà gestire il prepagato solo per alcuni produttori"
+
+msgid "toolTipHasArticlesGdxp"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli GDXP"
+
+msgid "toolTipHasOrdersGdxp"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli ordini GDXP"
+
+msgid "toolTipHasBookmarsArticles"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli preferiti"
+
+msgid "toolTipHasDocuments"
+msgstr "Se è valorizzato a 'Si' si potrà gestire i documenti a front-end"
+
+msgid "toolTipHasArticlesOrder"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli associati agli ordini"
+
+msgid "toolTipHasVisibility"
+msgstr "Se è valorizzato a 'Si' si potrà gestire la visibilità delle consegne e degli ordini"
+
+msgid "toolTipHasStoreroom"
+msgstr "Se è valorizzato a 'Si' si potrà gestire la dispensa"
+
+msgid "toolTipHasStoreroomFrontEnd"
+msgstr "Se è valorizzato a 'Si' si potrà gestire la dispensa lato Front-End: i gasisti potranno fare gli acquisti (dev'essere abilitata la gestione della dispensa)"
+
+msgid "toolTipHasUserGroupsCassiere"
+msgstr "Se è valorizzato a 'Si' si potrà gestire durante la consegna i pagamenti dei produttori associati"
+
+msgid "toolTipHasUserGroupsReferentTesoriere"
+msgstr "Se è valorizzato a 'Si' si potrà gestire dopo la consegna le richieste di pagamento dei produttori associati"
+
+msgid "toolTipHasUserGroupsTesoriere"
+msgstr "Se è valorizzato a 'Si' si potrà gestire i pagamenti ai fornitori"
+					
+msgid "toolTipHasUserGroupsStoreroom"
+msgstr "Se è valorizzato a 'Si' si potrà gestire la dispensa"
+						
+msgid "toolTipPayToDelivery"
+msgstr "Quando si gestisce il pagamento alla consegna"
+
+msgid "toolTipCanOrdersClose"
+msgstr "Chiude ordini"
+
+msgid "toolTipCanOrdersDelete"
+msgstr "Cancella ordini"
+
+msgid "toolTipCashLimit"
+msgstr "Limite sugli acquisti"
+
+msgid "toolTipHasUsersRegistrationFE"
+msgstr "Se è valorizzato a 'Si' permette la registrazione degli utenti a Front-End"
+
+msgid "toolTipHasDes"
+msgstr "Se è valorizzato a 'Si' si potranno condividere gli ordini con altre organizzazioni (D.E.S.)"
+
+msgid "toolTipHasDesReferentAllGas"
+msgstr "Se è valorizzato a 'Si' avrà il Referente D.E.S. per tutti i G.A.S."
+
+msgid "toolTipHasDesUserManager"
+msgstr "Se è valorizzato a 'Si' gestirà i gasisti dei G.A.S. facenti parte del D.E.S."
+
+msgid "toolTipHasGasGroups"
+msgstr "Se è valorizzato a 'Si' gestirà la gestione dei gruppi del G.A.S. per creare ordini"
+
+
+msgid "toolTipProdSupplierOrganizationId"
+msgstr "Produttore associato all'organizzazione di tipo PROD"
+
+msgid "toolTipIsAdminDes"
+msgstr "è il G.A.S. che promuove l'ordine e gestisce il produttore"
+
+msgid "toolTipIsToStoreroom"
+msgstr "Se è valorizzato a 'Si' durante la consegna sarà gestita anche la dispensa"
+
+msgid "toolTipUserFlagPrivacy"
+msgstr "Se è valorizzato a 'Si' il gasista dovrà accettare il testo sulla privacy"
+
+msgid "toolTipUserRegistrationExpire"
+msgstr "Se è valorizzato a 'Si' il gasista dovrà saldare il rinnovo dell'iscrizione"
+
+msgid "toolTipUserBlock"
+msgstr "Se disattivato non sarà più visibile (ex stampe, acquisti)"
+
+msgid "toolTipUserCanLogin"
+msgstr "Se disattivato non potrà più accedere a PortAlGas"
+
+msgid "toolTipIsToStoreroomPay"
+msgstr "Se è valorizzato a 'Si', è già stato richiesto agli utenti il pagamento degli articoli in dispensa"
+
+msgid "toolTipStatoTesoriere"
+msgstr "Se lo stato è 'da elaborare', il tesoriere non potrà prenderlo in carico per elaborarlo.<br />Se lo stato è 'in attesa di essere elaborato', il tesoriere potrà prenderlo in carico per elaborarlo. Il referente non può modificalo. <br />Se lo stato è 'in elaborazione', il tesoriere potrà prenderlo in carico per elaborarlo"
+
+msgid "toolTipUmRiferimento"
+msgstr "Scegli l'unità di misura di riferimento più appropriata:<br />comparirà vicino al prezzo dell'articolo"
+
+msgid "toolTipQtaMinOrder"
+msgstr "Indicare la quantità minima che l'articolo deve raggiungere nel totale di tutti gli acquisti"
+
+msgid "toolTipQtaMaxOrder"
+msgstr "Arrivati alla quantità indicata, l'ordine sull'articolo sarà bloccato"
+
+msgid "toolTipQtaMaxOrderDes"
+msgstr "Arrivati alla quantità indicata, l'ordine sull'articolo sarà bloccato. Il calcolo è effettuato sugli acquisti di tutti i G.A.S."
+
+msgid "toolTipPezziConfezione"
+msgstr "Se il numero di pezzi per confezione è maggiore di 1 potrai gestire i colli con la funzione di 'validazione ordine'"
+
+msgid "toolTipQtaDifferenza"
+msgstr "Quantità da ordinare per completare una confezione"
+
+msgid "toolTipQtaMultipli"
+msgstr "Gli utenti potranno acquistare nella quantità multipla indicata, per esempio se indichi 2, potranno acquistarne 2 o 4 o 6 ..."
+
+msgid "toolTipAlertToQta"
+msgstr "Arrivati alla quantità indicata, il sistema invierà una mail ai referenti"
+
+msgid "toolTipImportoForzato"
+msgstr "Se l'importo non è corretto, imposta qui l'importo che andrà a sostituirlo."
+
+msgid "toolTipSummaryOrdersOptions"
+msgstr "Se hai modificato i dati del carrello attraverso la funzione 'gestione degli articoli nel dettaglio' devi rigenerare i dati sottostanti."
+
+msgid "toolTipCartsSplitsOptions"
+msgstr "Se hai modificato i dati del carrello attraverso la funzione 'gestione degli articoli nel dettaglio' devi rigenerare i dati sottostanti."
+
+msgid "toolTipTrasportOptions"
+msgstr "Scegli come suddividere l'importo del trasporto"
+
+msgid "toolTipCostMoreOptions"
+msgstr "Scegli come suddividere l'importo del costo aggiuntivo"
+
+msgid "toolTipCostLessOptions"
+msgstr "Scegli come suddividere l'importo dello sconto"
+
+msgid "toolTipRequestPaymentSendMail"
+msgstr "Verrà inviata una mail agli utenti per avvisarli che è disponibile il resoconto della richiesta di pagamento e che possono effettuare il pagamento"
+
+msgid "toolJoomlaCategory"
+msgstr "Legando la categoria del produttore con la categoria di Joomla, il modulo delle categorie farà apparire la categoria selezionata."
+
+msgid "toolJoomlaContent"
+msgstr "Legando il produttore con un articolo di Joomla, l'articolo sarà visibile da frontend e comparirà il modulo che visualizzerà il dettaglio del fornitore"
+
+msgid "toolJoomlaGroupRegistred"
+msgstr "Id del gruppo del GAS"
+
+msgid "toolJoomlaSeo"
+msgstr "Utilizzato nel Front-End per il redirect quando scelgo un organization dal menù a tendina"
+
+msgid "tooLimitCashAfter"
+msgstr "Impostate di quanto un gasista può acquistare terminato il suo credito in cassa. Solo per la tipologia 'Limite superato credito in cassa di'"
+
+msgid "toolTipSupplierOrganizationFrequenza"
+msgstr "Indica ogni quanto è ricorrente l'ordine del produttore, per esempio: settimanale, mensile, occasionale"
+
+msgid "toolRequestPaymentCash"
+msgstr "I debito verso la cassa sono indicati con segno + e colore rosso, i crediti con segno - e di colore verde"
+
+msgid "toolFlag_presente_articlesorders"
+msgstr "Se valorizzato a Si (e anche il campo Stato è valirizzato a Si), sarà presente nell'elenco degli articoli che si possono associare ad un ordine"
+
+msgid "toolRequestPaymentNota"
+msgstr "Il testo della nota sarà aggiunto al corpo della mail inviata ai gasisti e sarà visualizzato nella loro pagina di richesta di pagamento"
+
+msgid "toolTipProdGasSupplierOwnerArticles"
+msgstr "Definisce chi può gestire il listino degli articoli: contattare contatti@portalgas.it per modificare il valore"
+
+msgid "toolTipProdGasSupplierCanViewOrders"
+msgstr "Se valorizzato a Si, permette al produttore di vedere gli acquisti degli articoli"
+
+msgid "toolTipProdGasSupplierCanViewOrdersUsers"
+msgstr "Se valorizzato a Si, permette al produttore di vedere gli ordini e i nominativi dei gasisti"
+
+msgid "toolTipProdGasSupplierCanPromotions"
+msgstr "Se valorizzato a Si, permette al produttore di presentarti delle offerte"
+
+msgid "toolTipProdGasArticleSyncroNotExist"
+msgstr "Potrai cancellare l'articolo dal listino del GAS quando l'ordine associato sarà portato in statistiche"
+
+msgid "toolTipProdGasArticleSyncronizeUpdate"
+msgstr "Copia i dati dell'articolo su quello del G.A.S."
+
+msgid "toolTipProdGasArticleSyncronizeInsert"
+msgstr "Inserisci l'articolo tra quelli del listino del G.A.S."
+
+msgid "toolTipProdGasArticleSyncronizeDelete"
+msgstr "Elimina l'articolo tra quelli del listino del G.A.S."
+
+msgid "toolTipProdGasArticleSyncronizeArticlesOrdersUpdate"
+msgstr "Copia i dati dell'articolo su quello associato all'ordine del G.A.S."
+
+msgid "toolTipProdGasArticleSyncronizeArticlesOrdersInsert"
+msgstr "Inserisci l'articolo tra quelli associati all'ordine del G.A.S."
+
+msgid "toolTipProdGasArticleSyncronizeArticlesOrdersDelete"
+msgstr "Elimina l'articolo tra quelli associati all'ordine del G.A.S."
+
+#
+# formati file
+#
+msgid "formatFilePdf"
+msgstr "in formato PDF"
+
+msgid "formatFileExcel"
+msgstr "in formato Excel"
+
+msgid "formatFileCsv"
+msgstr "in formato Csv"
+
+#
+# pezzi di frasi
+#
+msgid "piecesToDelivery"
+msgstr "per la consegna"
+
+#
+# js
+#
+msgid "jsAlertNameRequired"
+msgstr "Devi indicare un nome"
+
+msgid "jsAlertDeliveryRequired"
+msgstr "Devi scegliere la consegna"
+
+msgid "jsAlertDeliveryToSupplierRequired"
+msgstr "Indica il luogo di consegna da comunicare al produttore"
+
+msgid "jsAlertOrderRequired"
+msgstr "Devi scegliere un ordine"
+
+msgid "jsAlertOrderAtLeastRequired"
+msgstr "Devi scegliere almeno un ordine"
+
+msgid "jsAlertOrderAtLeastToRequestPaymentRequired"
+msgstr "Devi scegliere almeno un ordine per richiederne il pagamento"
+
+msgid "jsAlertOrderAtLeastToRunRequired"
+msgstr "Devi scegliere almeno un ordine che desideri elaborare"
+
+msgid "jsAlertOrderToRunRequired"
+msgstr "Devi scegliere almeno un ordine da elaborare"
+
+msgid "jsAlertOrderToStatoToRunRequired"
+msgstr "Devi scegliere almeno un ordine che desideri portare allo stato 'in elaborazione'"
+
+msgid "jsAlertPrintFormatRequired"
+msgstr "Devi scegliere l'opzione del formato"
+
+msgid "jsAlertPrintTypeRequired"
+msgstr "Devi sceglierela tipologia di documento da esportare"
+
+msgid "jsAlertPrintWaiting"
+msgstr "La stampa potrebbe richiedere molto tempo per essere eseguita, si prega di attendere"
+
+msgid "jsAlertUserRequired"
+msgstr "Devi scegliere un utente"
+
+msgid "jsAlertUserToRoleRequired"
+msgstr "Devi scegliere l'utente da associare al ruolo"
+
+msgid "jsAlertSupplierRequired"
+msgstr "Devi scegliere il produttore"
+
+msgid "jsAlertImportRequired"
+msgstr "Devi indicare un importo"
+
+msgid "jsAlertQtaRequired"
+msgstr "Devi indicare una quantità"
+
+msgid "jsAlertRequestPaymentRequired"
+msgstr "Devi scegliere la richiesta di pagamento"
+
+msgid "jsAlertMailInvalid"
+msgstr "La mail che hai inserito non è corretta"
+
+msgid "jsAlertConfirmDelete"
+msgstr "Sei sicuro di cancellare definitivamente l'elemento selezionato?"
+
+msgid "jsAlertConfirmUserFlagPrivacy"
+msgstr "Sei sicuro di voler annullare l'accettazione della privacy per tutti i gasisti del G.A.S.?"
+
+msgid "jsAlertConfirmUserRegistrationExpire"
+msgstr "Sei sicuro di voler far scadere il rinnovo per tutti i gasisti del G.A.S.?"
+
+msgid "jsAlertFEConfirmUserFlagPrivacy"
+msgstr "Per poter proseguire devi accettare le condizioni del trattamento dei dati sulla privacy"
+
+msgid "LIMIT-NO"
+msgstr "Nessun limite"
+
+msgid "LIMIT-CASH"
+msgstr "Limite credito in cassa"
+
+msgid "LIMIT-CASH-AFTER"
+msgstr "Limite superato credito in cassa di"
+
+msgid "LIMIT-CASH-USER"
+msgstr "Limite per ogni gasista"
+
+# 
+# Gas Groups
+# 
+msgid "Gas Groups"
+msgstr "Gruppi dei G.A.S."
+
+msgid "Gas Group"
+msgstr "Gruppo dei G.A.S."
+
+msgid "Gas Group Users"
+msgstr "Gruppi e utenti"
+
+msgid "Gas Group Users Management"
+msgstr "Gestione gasisti"
+
+msgid "Gas Group Orders"
+msgstr "Ordini per i gruppi"
+
+msgid "Gas Group Orders"
+msgstr "Ordine per il gruppo"
+
+msgid "Gas Group Delivery"
+msgstr "Consegna per i gruppi"
+
+msgid "Gas Group Deliveries"
+msgstr "Consegne per i gruppi" 

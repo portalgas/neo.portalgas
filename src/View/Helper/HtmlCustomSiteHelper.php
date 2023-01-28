@@ -90,6 +90,14 @@ class HtmlCustomSiteHelper extends FormHelper
         return $str;
     }
 
+    public function drawDesOrdersStateDiv($des_order) {
+
+        $str = '';   	
+        $str .= '<div class="action orderStato'.$des_order->state_code.'" title="'.__($des_order->state_code.'-intro').'"></div>';
+             
+        return $str;
+    }
+
     public function boxOrder($results, $options=[]) {
 
         if(empty($results))
@@ -571,7 +579,7 @@ class HtmlCustomSiteHelper extends FormHelper
 			
 		$htmlLegenda = '<div class="legenda">';
 		$htmlLegenda .= '<div class="table-responsive"><table class="table">';
-		
+	
 		/*
 		 * solo per gli ordini
  		 */
@@ -594,7 +602,7 @@ class HtmlCustomSiteHelper extends FormHelper
 			}
 			$htmlLegenda .= '</tr>';			
 		}
-	
+        
 		$htmlLegenda .= "\r\n";
 		$htmlLegenda .= '<tr>';
 		foreach($states as $state) {

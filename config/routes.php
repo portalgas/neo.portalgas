@@ -331,6 +331,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
         });
 
+        $routes->scope('/html-menus', ['controller' => 'HtmlMenus'], function (RouteBuilder $routes) {
+            $routes->connect('/order', ['action' => 'orders', '_method' => 'GET']);
+        });
+
         $routes->fallbacks(DashedRoute::class);        
     }); 
 });

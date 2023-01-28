@@ -4,8 +4,11 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
 use Cake\Validation\Validator;
-
+use Cake\Log\Log;
+use Cake\Datasource\ConnectionManager;
 /**
  * KStorerooms Model
  *
@@ -158,5 +161,66 @@ class StoreroomsTable extends Table
         // debug($results);
        
         return $results;
-    }    
+    } 
+    
+	/*
+	 * ottieni lo user che gestisce la dispensa
+	 * dev'essere solo 1
+	 * */
+	public function getStoreroomUser($user) {
+
+		$storeroomUser = [];
+		
+		if($user->organization->paramsConfig['hasStoreroom']=='Y') {
+			
+			$sql = "SELECT User.organization_id, User.id, User.name, User.username, User.email 
+					FROM
+						".Configure::read('DB.portalPrefix')."user_usergroup_map m,
+						".Configure::read('DB.portalPrefix')."usergroups g,
+						".Configure::read('DB.portalPrefix')."users User 
+					WHERE
+						m.user_id = User.id
+						and m.group_id = g.id
+						and m.group_id = ".Configure::read('group_id_storeroom')."
+						and User.block = 0
+						and User.organization_id = ".(int)$user->organization->id." LIMIT 0,1";
+			try {
+                $connection = ConnectionManager::get('default');
+                $storeroomUser = $connection->execute($sql)->fetch('assoc');
+			}
+			catch (Exception $e) {
+				Log::error($sql);
+				Log::error($e);
+			}
+		}
+        
+		return $storeroomUser;		
+	}
+
+	/*
+	 * ottengo tutti gli acquisti della dispensa in un ordine
+	 */
+	public function getCartsToStoreroom($user, $order_id, $debug=false) {
+		
+		$results = [];
+		
+		$storeroomUser = $this->getStoreroomUser($user);
+		if(!empty($storeroomUser)) {
+
+            $cartsTable = TableRegistry::get('Carts');
+			
+			$where = ['Carts.user_id' => $storeroomUser['id'],
+                    'Carts.order_id' => $order_id,
+                    'Carts.organization_id' => $user->organization->id,
+                    'ArticlesOrders.stato != ' => 'N',
+                    'Articles.stato' => 'Y'];
+
+			$results = $cartsTable->find()
+                ->contain(['ArticlesOrders', 'Articles'])
+                ->where($where)
+                ->all();
+		}
+				
+		return $results;
+	}    
 }

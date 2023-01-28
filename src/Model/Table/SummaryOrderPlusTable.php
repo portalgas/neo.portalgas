@@ -7,6 +7,8 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use Cake\Log\Log;
+use Cake\Datasource\ConnectionManager; 
 
 class SummaryOrderPlusTable extends Table
 {
@@ -126,7 +128,8 @@ class SummaryOrderPlusTable extends Table
 						  WHERE
 								organization_id = ".(int)$user->organization['Organization']['id']." and id = ".$order_id;
 					if($debug) debug($sql);
-					$this->query($sql);
+					$connection = ConnectionManager::get('default');
+					$connection->execute($sql);
 					
 					return $msg_insert;	   					
 				break;
@@ -146,7 +149,8 @@ class SummaryOrderPlusTable extends Table
 						  WHERE
 								organization_id = ".(int)$user->organization['Organization']['id']." and id = ".$order_id;
 					if($debug) debug($sql);
-					$this->query($sql);
+					$connection = ConnectionManager::get('default');
+					$connection->execute($sql);
 														
 					return $msg_insert;
 				break;
@@ -199,7 +203,8 @@ class SummaryOrderPlusTable extends Table
 							WHERE
 								organization_id = ".(int)$user->organization['Organization']['id']." and id = ".$order_id;
 					if($debug) debug($sql);
-					$this->query($sql);
+					$connection = ConnectionManager::get('default');
+					$connection->execute($sql);
 					
 					if(isset($request['data']['Data']))
 					foreach($request['data']['Data'] as $key => $value) {
@@ -216,7 +221,8 @@ class SummaryOrderPlusTable extends Table
 							and order_id = ".(int)$order_id." 
 							and user_id = ".(int)$user_id;
 						if($debug) debug($sql);
-						$result = $Model->query($sql);
+						$connection = ConnectionManager::get('default');
+						$connection->execute($sql);						
 					}	
 					
 					return $msg_saved;
@@ -225,8 +231,8 @@ class SummaryOrderPlusTable extends Table
 			} // end swicth
 			
 		}catch (Exception $e) {
-			CakeLog::write('error',$sql);
-			CakeLog::write('error',$e);
+			Log::error($sql);
+			Log::error($e->getMessage());
 			if($debug) debug($e);
 		}		
 	}

@@ -49,7 +49,7 @@ class OrdersController extends AppController
     public function index($order_type_id=0)
     {
         $where = [];
-        $orders = ['Deliveries.data desc'];
+        $orders = ['Deliveries.data asc'];
                    
         $request = $this->request->getQuery();
         $search_supplier_organization_id = '';
@@ -76,7 +76,11 @@ class OrdersController extends AppController
         } 
         $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
 
-        $where += ['Orders.organization_id' => $this->_organization->id];
+        $where += ['Orders.organization_id' => $this->_organization->id,
+                    'Deliveries.organization_id' => $this->_organization->id,
+                    'Deliveries.isVisibleBackOffice' => 'Y',
+                    'Deliveries.stato_elaborazione' => 'OPEN',
+                    'SuppliersOrganizations.stato' => 'Y'];
         if(!empty($order_type_id))
             $where += ['Orders.order_type_id' => $order_type_id];
         // debug($where);
@@ -87,7 +91,8 @@ class OrdersController extends AppController
             'order' => $orders,            
             'contain' => ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
                 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
-            'conditions' => $where
+            'conditions' => $where,
+            'limit' => 75
         ];
 
         // debug($where);
@@ -103,8 +108,8 @@ class OrdersController extends AppController
          */
         $suppliersOrganizations = $this->Orders->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-        $order_delivery_dates = ['Deliveries.data desc' => 'Data di consegna più recente',
-                                 'Deliveries.data asc' => 'Data di consegna più vecchia'];
+        $order_delivery_dates = ['Deliveries.data asc' => 'Data di consegna ascendente',
+                                 'Deliveries.data desc' => 'Data di consegna discendente'];
 
         $this->set(compact('suppliersOrganizations', 'order_delivery_dates'));
 
@@ -211,9 +216,7 @@ class OrdersController extends AppController
         $parent = $datas['parent']; 
         $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
 
-        $order = $this->_ordersTable->get([$this->_organization->id, $id], [
-            'contain' => []
-        ]);
+        $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $request = $this->request->getData();  

@@ -458,11 +458,12 @@ ul.workflow li span.statoNotCurrent a {
  * leggenda 
  */
 .legenda {
+    background-color: #fff;
     border: 1px solid #DEDEDE;
     border-radius: 8px 8px 8px 8px;
     clear: both;
     margin: 10px 0;
-    padding: 14px;
+    padding: 10px;
     min-height: 30px;
 }
 .legenda div {

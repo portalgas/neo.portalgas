@@ -9,7 +9,10 @@ use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use App\Validation\OrderValidator;
 use Cake\I18n\Time;
+use Cake\I18n\Date;
 use App\Traits;
+use Cake\Log\Log;
+use Cake\Datasource\ConnectionManager; 
 
 class LifeCycleOrdersTable extends Table
 {
@@ -658,27 +661,26 @@ class LifeCycleOrdersTable extends Table
         
         if($orderResult->state_code=='CLOSE' && $orderResult->data_state_code_close!=Configure::read('DB.field.date.empty')) { 
             
-            $data_state_code_close = $orderResult->data_state_code_close;
-            $ggArchiveStatics = $user->organization->template->ggArchiveStatics;
-            $data_statistiche = date('Y-m-d', strtotime($data_state_code_close . ' +'.$ggArchiveStatics.' day'));
-            $data_oggi = date('Y-m-d');
-            $datetime1 = new Time($data_oggi);
-            $datetime2 = new Time($data_statistiche);
-            $interval = $datetime1->diff($datetime2);
-            
-            if($interval->invert) {
+            $data_state_code_close = $orderResult->data_state_code_close;            
+            $new_data_state_code_close = $data_state_code_close->addDay($user->organization->template->ggArchiveStatics);          
+            $now = new Date();
+            $interval = $now->diff($new_data_state_code_close);
+            $interval_gg = $interval->format('%R%a');
+
+            if($interval_gg<0) {
                 // non visualizzo perche' data maggiore di 
                 $results['mailto'] = Configure::read('SOC.mail');
                 $results['mgs'] = 'Dovrebbe essere in statistiche, segnalalo!';
                 $results['class'] = 'label label-danger';
             }
             else
-            if($interval->days==0) {
+            if($interval_gg==0) {
                 $results['mgs'] = "In statistiche oggi";
                 $results['class'] = 'label label-info';
             }
-            else {
-                $results['mgs'] = "In statistiche tra ".$interval->format('%a gg');
+            else 
+            if($interval_gg>0) {
+                $results['mgs'] = "In statistiche tra ".(int)$interval_gg." gg";
                 $results['class'] = 'label label-info';
             }
                 
@@ -1449,7 +1451,8 @@ class LifeCycleOrdersTable extends Table
                         organization_id = ".(int)$user->organization->id."
                         and order_id = ".(int)$order_id;
             if($debug) debug($sql);
-            $results = $this->query($sql);
+            $connection = ConnectionManager::get('default');
+            $results = $connection->execute($sql);
             
 
             $sql = "UPDATE ".Configure::read('DB.prefix')."request_payments_orders 
@@ -1458,10 +1461,10 @@ class LifeCycleOrdersTable extends Table
                         organization_id = ".(int)$user->organization->id."
                         and order_id = ".(int)$order_id;
             if($debug) debug($sql);
-            $results = $this->query($sql);
+            $results = $connection->execute($sql);
         }
         catch (Exception $e) {
-            CakeLog::write('error',$e);
+            Log::error($e->getMessage());
             return false;
         }
         

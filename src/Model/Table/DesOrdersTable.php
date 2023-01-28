@@ -4,7 +4,9 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Core\Configure;
 
 class DesOrdersTable extends Table
 {
@@ -129,5 +131,61 @@ class DesOrdersTable extends Table
         $rules->add($rules->existsIn(['organization_id', 'order_id'], 'Orders'));
 
         return $rules;
+    }
+
+    /*
+     * dati utilizzati  $this->element('boxDesOrderToOrder', array('results' => $desOrdersResults));    
+     */
+    public function getDesOrder($user, $des_order_id, $debug = false) {
+
+        $suppliersTable = TableRegistry::get('Suppliers');
+        $desOrdersOrganizationsTable = TableRegistry::get('DesOrdersOrganizations');
+        $organizationsTable = TableRegistry::get('Organizations');
+   
+        $where = ['DesOrders.id' => $des_order_id];
+        /*
+         * se arrivo da FO o sono ROOT e' vuoto! 
+         */
+        if(!empty($user->des_id)) 
+            $where += ['DesOrders.des_id' => $user->des_id];
+        
+        $results = $this->find()->contain(['Des', 'DesSuppliers'])
+                                ->where($where)->first();
+        if (empty($results))
+            return;
+
+        /*
+         * estraggo OwnOrganization
+         */
+        $where = ['Organizations.id' => $results->des_supplier->own_organization_id];
+        $ownOrganizationResults = $organizationsTable->find()->where($where)->first();
+
+        /*
+         * estraggo produttore
+         */
+        $where = ['Suppliers.id' => $results->des_supplier->supplier_id];
+        $supplierResults = $suppliersTable->find()->where($where)->first();
+
+        /*
+         * estraggo ordini dei GAS (DesOrdersOrganizations) associati al DesOrders
+         */
+        $where = [];
+        $where = ['DesOrdersOrganizations.des_order_id' => $results->id];
+        /*
+         * se arrivo da FO o sono ROOT e' vuoto! 
+         */
+        if(!empty($user->des_id)) 
+            $where += ['DesOrdersOrganizations.des_id' => $user->des_id];
+
+        $desOrdersOrganizationsResults = $desOrdersOrganizationsTable
+                                                ->find()
+                                                ->contain(['Organizations', 'Orders'])
+                                                ->where($where)->all();
+
+        $results['OwnOrganization'] = $ownOrganizationResults;
+        $results['Supplier'] = $supplierResults;
+        $results['DesOrdersOrganizations'] = $desOrdersOrganizationsResults;
+
+        return $results;
     }
 }

@@ -207,7 +207,7 @@ class QueueComponent extends Component {
                 foreach ($reader->getSheetIterator() as $sheet) {
                     foreach ($sheet->getRowIterator() as $row) {
                         $results[] = $row->getCells();
-                        // debug($$results);
+                        // debug($results);
                     }
                 }
                 $reader->close();

@@ -78,6 +78,10 @@ class OrderDecorator  extends AppDecorator {
 		
 		$results->msgGgArchiveStatics = $lifeCycleOrdersTable->msgGgArchiveStatics($user, $order, $debug);
 		
+		$ordersTable = TableRegistry::get('Orders');
+
+		$results->tot_importo = $ordersTable->getTotImporto($user, $user->organization->id, $order);
+
 		/*
 		 * recupero richiesta di pagamento 
 		 */ 

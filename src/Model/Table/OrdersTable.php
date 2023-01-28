@@ -569,19 +569,20 @@ class OrdersTable extends Table
      *      - totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers
      *      - spese di trasporto  (SummaryOrderTrasport)
      */
-    public function getTotImporto($user, $organization_id, $order_id, $debug=false) {
-        
+    public function getTotImporto($user, $organization_id, $order, $debug=false) {
+
         $importo_totale = 0;
 
-        $order = $this->getById($user, $organization_id, $order_id, $debug);
+        if(!is_object($order))
+            $order = $this->getById($user, $organization_id, $order, $debug);
 
         /*
          * SummaryOrderAggregate: estraggo eventuali dati aggregati 
          */
-         $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
          
-         $summaryOrderAggregateResults = $summaryOrderAggregatesTable->getByOrder($user, $organization_id, $order_id);
-         if($summaryOrderAggregateResults->count()>0) {
+        $summaryOrderAggregateResults = $summaryOrderAggregatesTable->getByOrder($user, $organization_id, $order->id);
+        if($summaryOrderAggregateResults->count()>0) {
             foreach ($summaryOrderAggregateResults as  $summaryOrderAggregateResult) 
                 $importo_totale += $summaryOrderAggregateResult->importo;
                 
@@ -594,7 +595,7 @@ class OrdersTable extends Table
             $CartsTable = TableRegistry::get('Carts');
             
             $where = [];
-            $where = ['Carts.order_id' => $order_id];
+            $where = ['Carts.order_id' => $order->id];
             $importo_totale = $CartsTable->getTotImporto($user, $organization_id, $where);
             
             if($debug) debug("Cart::getTotImporto() ".$importo_totale);
@@ -620,5 +621,28 @@ class OrdersTable extends Table
         if($debug) debug("Order::getTotImporto ".$importo_totale);
 
         return $importo_totale;
-    }      
+    }
+    
+	/*
+	 * ctrl se la validazione del carrello e' abilitata (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
+	*/
+	public function isOrderToValidate($user, $order_id) {
+	
+		$articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+			
+		$where = ['ArticlesOrders.order_id' => (int)$order_id,
+					   'ArticlesOrders.pezzi_confezione >' => '1',
+                       'ArticlesOrders.organization_id' => $user->organization->id,
+                       'ArticlesOrders.stato != ' => 'N', 
+                       'Articles.stato' => 'Y'];
+
+	    $results = $articlesOrdersTable->find()->contain(['Articles'])->where($where)->all();
+        if($results->count()==0)
+            $isToValidate = false;
+        else
+            $isToValidate = true;
+        
+        return $isToValidate;
+            
+	}    
 }

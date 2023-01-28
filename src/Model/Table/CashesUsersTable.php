@@ -130,8 +130,8 @@ class CashesUsersTable extends Table
         if(!empty($sql_supplier_organization_cash_excluded))
             $sql .= $sql_supplier_organization_cash_excluded;
         if($debug) debug($sql); 
-        $conn = ConnectionManager::get('default');
-        $results = $conn->execute($sql);
+        $connection = ConnectionManager::get('default');
+        $results = $connection->execute($sql);
 
         /*
          * memorizzo tutti gli order_id per calcolare eventuali costi di trasporto / costi aggiuntivi / sconti
