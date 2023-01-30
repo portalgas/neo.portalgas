@@ -94,8 +94,9 @@ function callReport(target, doc_options) {
         else
             ajaxUrl = '".$portalgas_bo_url."/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id=".$delivery_id."&order_id=".$order_id."&doc_options='+doc_options+'&doc_formato=PREVIEW&a='+a+'&b='+b+'&c='+c+'&d='+d+'&e='+e+'&f='+f+'&g='+g+'&h='+h+'&scope=neo&format=notmpl';          
     } // end if(doc_options!='')
-
+alert('1');
     console.log(ajaxUrl, 'ajaxUrl');
+    return;
     if(ajaxUrl!='') {
         $.ajax({url: ajaxUrl,  
             type: 'GET',
