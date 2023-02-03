@@ -5,6 +5,7 @@ use Cake\Core\Configure;
  * nome dell'istanza dell'helper della tipologia di order
  */
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
+$this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
 // debug($htmlCustomSiteOrders);
 ?>
 <div class="box box-primary direct-chat direct-chat-primary">

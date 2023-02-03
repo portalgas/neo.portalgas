@@ -7,6 +7,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use App\Form\OrderForm;
 use App\Decorator\OrderDecorator;
+use Cake\Log\Log;
 /**
  * Orders Controller
  *
@@ -29,6 +30,7 @@ class OrdersController extends AppController
 
         if(!isset($this->_user->acl)) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('routes_msg_stop'));
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
@@ -42,6 +44,7 @@ class OrdersController extends AppController
             $this->Flash->error($results['msg'], ['escape' => false]);
             if(!isset($results['redirect'])) 
                 $results['redirect'] = Configure::read('routes_msg_stop');
+            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('routes_msg_stop'));    
             return $this->redirect($results['redirect']);
         }
     }
@@ -157,6 +160,7 @@ class OrdersController extends AppController
         if($order_type_id==Configure::read('Order.type.gas_groups') && 
             empty($parent)) {
             $this->Flash->error(__('msg_error_param_parent_order_id'), ['escape' => false]);
+            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_error_param_parent_order_id'));
             return $this->redirect(Configure::read('routes_msg_stop')); 
         }
 

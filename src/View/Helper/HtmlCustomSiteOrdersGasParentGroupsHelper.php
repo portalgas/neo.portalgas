@@ -17,6 +17,10 @@ class HtmlCustomSiteOrdersGasParentGroupsHelper extends HtmlCustomSiteOrdersHelp
         // debug($config);
     }
 
+    public function setUser($user) {
+        parent::setUser($user);
+    }
+
     public function hiddenFields($organization_id, $parent) {
         return parent::hiddenFields($organization_id, $parent);
     }   

@@ -7,6 +7,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
  * nome dell'istanza dell'helper della tipologia di order
  */
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
+$this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
 // debug($htmlCustomSiteOrders);
 ?>
   <section class="content">

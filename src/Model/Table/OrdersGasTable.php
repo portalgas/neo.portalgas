@@ -60,11 +60,14 @@ class OrdersGasTable extends OrdersTable implements OrderTableInterface
  
     /*
      * implement
+     * deliveriesTable->getsActiveGroup
+     *      array['N'] elenco consegne attive per select
+     *      array['Y'] consegna da definire       
      */ 
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
         $results = [];
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->getsActiveList($user, $organization_id, $where);
+        $results = $deliveriesTable->getsActiveGroup($user, $organization_id, $where);
         return $results;
     }    
 

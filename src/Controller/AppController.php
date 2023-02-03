@@ -20,6 +20,7 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use App\Traits;
 use Authentication\IdentityInterface;
+use Cake\Log\Log;
 
 /**
  * Application Controller

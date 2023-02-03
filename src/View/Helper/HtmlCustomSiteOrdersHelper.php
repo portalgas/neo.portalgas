@@ -2,11 +2,10 @@
 namespace App\View\Helper;
 
 use Cake\View\Helper;
-use Cake\View\Helper\FormHelper;
 use Cake\View\View;
 use Cake\Core\Configure;
 use App\Traits;
-class HtmlCustomSiteOrdersHelper extends FormHelper
+class HtmlCustomSiteOrdersHelper extends Helper
 {
     use Traits\HelperTrait;
 
@@ -23,7 +22,9 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
     protected $_portalgas_fe_url = '';
     protected $_portalgas_bo_url = '';
 
-	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
+    protected $_user = null;
+
+	public $helpers = ['Html', 'Form', 'HtmlCustom'];
 
     public function initialize(array $config)
     {
@@ -31,6 +32,13 @@ class HtmlCustomSiteOrdersHelper extends FormHelper
         $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
         $this->_portalgas_bo_url = $config['Portalgas.bo.url'];       
+    }
+
+    /* 
+     * passo $user = $this->Identity->get() perche' negli altri Helper e' null!
+     */
+    public function setUser($user) {
+        $this->_user = $user;
     }
 
     public function factory($order_type_id, $debug=false) {

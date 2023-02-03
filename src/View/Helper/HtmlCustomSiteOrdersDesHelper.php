@@ -18,6 +18,10 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
 
+    public function setUser($user) {
+        parent::setUser($user);
+    }
+
     public function hiddenFields($organization_id, $parent) {
         $html = '';
         $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);

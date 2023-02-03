@@ -45,6 +45,9 @@ class AppView extends View
         $this->loadHelper('HtmlCustom');
         $this->loadHelper('HtmlCustomSite');
         $this->loadHelper('HtmlCustomSiteOrders');
+        $this->loadHelper('HtmlCustomSiteOrdersGas');
+        $this->loadHelper('HtmlCustomSiteOrdersGasGroups');
+        $this->loadHelper('HtmlCustomSiteOrdersGasParentGroups');
         $this->loadHelper('Enum');  
 
         $this->loadHelper('AssetMix.AssetMix');  

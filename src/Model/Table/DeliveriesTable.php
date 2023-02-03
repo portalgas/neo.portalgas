@@ -157,6 +157,10 @@ class DeliveriesTable extends Table
         return $results;
     }
 
+    /* 
+     * elenco consegne attive + consegna da definire 
+     * in un unico array per select
+     */
     public function getsActiveList($user, $organization_id, $where=[], $order=[], $debug=false) {
         
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
@@ -178,6 +182,36 @@ class DeliveriesTable extends Table
         $results = [];
         $results += $deliveries;
         $results += $sysDeliveries;
+
+        return $results;
+    }
+
+    /* 
+     * return 
+     *      array['N'] elenco consegne attive per select
+     *      array[delivery_id] consegna da definire 
+     */
+    public function getsActiveGroup($user, $organization_id, $where=[], $order=[], $debug=false) {
+        
+        $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
+                        'Deliveries.stato_elaborazione' => 'OPEN',
+                        'Deliveries.sys' => 'N',
+                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                      ];
+    
+        if(isset($where['Deliveries']))
+            $where['Deliveries'] += $conditions;
+        else {
+            $where['Deliveries'] = [];
+            $where['Deliveries'] += $conditions;
+        }
+
+        $deliveries = $this->getsList($user, $organization_id, $where, $order, $debug);
+        $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
+
+        $results = [];
+        $results['N'] = $deliveries;
+        $results['Y'] = $sysDeliveries;
 
         return $results;
     }

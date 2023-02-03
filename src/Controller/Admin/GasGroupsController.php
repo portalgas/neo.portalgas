@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
+use Cake\Log\Log;
 
 /**
  * GasGroups Controller
@@ -41,6 +42,7 @@ class GasGroupsController extends AppController
      */
     public function index()
     {
+        Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_not_permission'));
         $this->_user = $this->Authentication->getIdentity();
         $where = ['GasGroups.user_id' => $this->_user->id, 
                   'GasGroups.organization_id' => $this->_user->organization_id, 

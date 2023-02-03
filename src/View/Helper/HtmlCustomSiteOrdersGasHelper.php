@@ -17,6 +17,10 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
 
+    public function setUser($user) {
+        parent::setUser($user);
+    }
+        
     public function hiddenFields($organization_id, $parent) {
         return parent::hiddenFields($organization_id, $parent);
     }   
@@ -39,8 +43,41 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 
+    /* 
+     * $deliveries 
+     *      array['N'] elenco consegne attive per select
+     *      array['Y] consegna da definire 
+     */
     public function deliveries($deliveries) {
-        return $this->Form->control('delivery_id', ['options' => $deliveries]);
+        
+        // return $this->Form->control('delivery_id', ['options' => $deliveries['N']]);
+        if($this->_user->acl['isManagerDelivery']) {
+
+        }
+        else {
+
+        }
+
+        $html = '<section class="content delivery">';
+        $html .= $this->title(__('Delivery'));
+        $html .= $this->Form->radio(
+            'delivery',
+            [
+                ['value' => 'N', 'text' => $this->Form->control('delivery_id', ['options' => $deliveries['N'], 'label' => false])],
+                ['value' => key($deliveries['Y']), 'text' => $this->Form->control('delivery_Y', ['value' => $deliveries['Y'][key($deliveries['Y'])], 'label' => false, 'disabled' => true])],
+                ['value' => 'MAIL', 'text' => '<div class="form-group input" title="Crea una nuova consegna">Crea una nuova consegna <i class="text-primary fa fa-lg fa-plus-circle"></i></div>'],
+            ],
+            [
+            'escape' => false, 'default' => 'N', 'required' => 'required', 'class' => 'radio-deliveries']
+            );
+        $html .= '</section>';
+        $html .= '<style>
+        .content.delivery .radio > label {width:100%}
+        .content.delivery .radio > label > .form-group.input {margin-left: 25px}
+        </style>'
+        ;
+
+        return $html;
     }
 
     public function note() {
