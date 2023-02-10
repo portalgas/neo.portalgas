@@ -171,8 +171,8 @@ class UsersTable extends Table
                 'Users.registerDate',
                 'Users.lastvisitDate',
             ])
-            ->where($where)
             ->contain(['UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
+            ->where($where)
             ->first();
          if($debug) debug($user);
 

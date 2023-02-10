@@ -1,6 +1,7 @@
 <?php
 use Cake\Core\Configure;
 // echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Add')], ['home', 'list']);
 /*

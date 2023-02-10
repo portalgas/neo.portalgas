@@ -25,7 +25,7 @@ OrganizationsPaysIndex.prototype = {
         /*
          * aggiorna il DB con il valore del campo
          */
-        $('.customFieldUpdateAjax').change(function (e) {
+        $('.customFieldUpdateAjax').on('change', function(e) {
 
             e.preventDefault();
 

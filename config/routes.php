@@ -246,6 +246,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         });
         
         /*
+         * mail
+         */
+        $routes->scope('/mails', ['controller' => 'Mails'], function (RouteBuilder $routes) {
+            $routes->connect('/request-delivery-new', ['action' => 'requestDeliveryNew', '_method' => 'POST']);
+        });
+
+        /*
          * gdxp
          */
         $routes->scope('/gdpx', ['controller' => 'GdxpExports'], function (RouteBuilder $routes) {

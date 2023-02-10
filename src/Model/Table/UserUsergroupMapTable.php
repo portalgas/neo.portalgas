@@ -23,7 +23,7 @@ class UserUsergroupMapTable extends Table
         $this->setPrimaryKey(['user_id', 'group_id']);
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'id',
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('UserGroups', [
@@ -47,4 +47,22 @@ class UserUsergroupMapTable extends Table
 
         return $rules;
     }
+
+    public function getUsersByGroups($user, $organization_id, $groups=[], $where=[])
+    {
+        $where_user = ['Users.organization_id' => $organization_id,
+                       'Users.block' => 0];
+        $where_group = ['UserUsergroupMap.group_id IN' => $groups];
+
+        if(isset($where['Users']))
+            $where_user = array_merge($where_user, $where['Users']);
+        if(isset($where['UserUsergroupMap']))
+            $where_group = array_merge($where_group, $where['UUserUsergroupMapsers']);
+                        
+        $results = $this->find()
+                        ->contain(['Users' => ['conditions' => $where_user]])
+                        ->where($where_group)
+                        ->all();
+        return $results;
+    }    
 }

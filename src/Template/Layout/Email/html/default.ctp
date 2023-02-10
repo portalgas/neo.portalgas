@@ -1,5 +1,11 @@
 <?php
 use Cake\Core\Configure;
+use Cake\Routing\Router;
+
+$fullbaseUrl = Router::fullbaseUrl();
+$logo_url = $fullbaseUrl.'/img/loghi/150h50.png';
+
+(isset($datas['user']->name)) ? $greeting = sprintf(Configure::read('Mail.body_header'), $datas['user']->name) : $greeting = Configure::read('Mail.body_header_no_name');
 
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
@@ -99,12 +105,12 @@ use Cake\Core\Configure;
                         <table width="100%" border="0" cellpadding="5" cellspacing="0">
                             <tr valign="middle" class="bgContenuto" bgcolor="#FFFFFF">
                                 <td align="right">
-                                    <?php echo (isset($body_header['logo'])) ? $body_header['logo']: ''; ?>
+                                    '<a href="https://<?php echo Configure::read('SOC.site');?>" target="_blank"><img border="0" src="<?php echo $logo_url;?>" /></a>
                                 </td>
                             </tr>
                             <tr valign="middle" class="tblHeader" bgcolor="#CCCCCC">
                                 <td height="35" align="left" nowrap="nowrap" bgcolor="#CCCCCC">
-                                    <?php echo (isset($body_header['greeting'])) ? $body_header['greeting']: ''; ?>
+                                    <?php echo $greeting; ?>
                                 </td>
                             </tr>
                         </table>
@@ -120,23 +126,15 @@ use Cake\Core\Configure;
                                 </td>
                             </tr>
                             <tr valign="middle">
-                                <td height="20">
-                                    <?php 
-                                    if(isset($content_info) && !empty($content_info)) {
-                                        echo '<div style="border-radius:5px;border:2px dotted rgb(204, 204, 204); padding: 10px 10px 10px 50px; margin: 0px; background: rgb(255, 255, 255) url(https://www.portalgas.it/images/cake/actions/32x32/info.png) no-repeat scroll 5px center;">'.$content_info.'</div>';                                        
-                                    }
-                                    else
-                                        echo '&nbsp;';
-                                    ?>
-                                </td>
-                            </tr>
+                                <td height="20">&nbsp;</td>
+                            </tr>                            
                         </table>
 
                         <!-- F O O T E R -->
                         <table width="100%" border="0" cellpadding="1" cellspacing="5" class="tblFooter" bgcolor="#F0F0F0">
                             <tr valign="middle">
                                 <td align="left" width="59%">
-                                    <?php echo (isset($body_footer['text'])) ? $body_footer['text']: ''; ?>
+                                    <?php echo Configure::read('Mail.body_footer'); ?>
                                 </td>
                                 <td align="left" width="20%">
                                         <!-- span>

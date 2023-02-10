@@ -23,18 +23,18 @@ Script.prototype = {
 
         console.log("Script bindEvents");
 
-        $(".price-type-id").change(function (e) {
+        $(".price-type-id").on('change', function(e) {
             _this.tooglePriceCollaborator(this);
         });
 
-        $('.importo').change(function (e) {
+        $('.importo').on('change', function(e) {
             _this.formatImport(this);
         });
 
         /*
          * gestione img per helps
          */
-        $('.img-helps').click(function () {
+        $('.img-helps').on('click', function(e) {
             var src = $(this).find('img').attr('src');
             var img = '<img src="'+src+'" />';
             var title = $(this).attr('data-attr-title');
@@ -51,7 +51,7 @@ Script.prototype = {
              $(this).after('<p style="float:right" class="avviso">Hai ancora <strong>'+ (orderNotaMaxLen - value.length) +'</strong> caratteri disponibili</p>');
         });
 
-        $('.ctrl-length').keyup(function() {
+        $('.ctrl-length').on('keyup', function(e) {
             if($(this).val().length > orderNotaMaxLen) {
                 $(this).val($(this).val().substr(0, orderNotaMaxLen));
             }
@@ -74,7 +74,7 @@ Script.prototype = {
         /*
          * aggiorna il DB con l'ico true/flase
          */
-        $('.fieldUpdateAjax').click(function (e) {
+        $('.fieldUpdateAjax').on('click', function(e) {
             console.log('fieldUpdateAjax click()');
             _this.fieldUpdateAjax(this);
         });
@@ -82,7 +82,7 @@ Script.prototype = {
         /*
          * aggiorna il DB con il valore del campo
          */
-        $('.fieldUpdateAjaxChange').change(function (e) {
+        $('.fieldUpdateAjaxChange').on('change', function(e) {
             console.log('fieldUpdateAjax change()');
             e.preventDefault();
             _this.fieldUpdateAjax(this);               
@@ -433,3 +433,33 @@ Script.prototype = {
         });
     }
 };        
+
+
+/*
+ * ridefinisco alert
+ */
+function alert(message) { 
+
+	$("#modalAlertWindow").remove();
+	
+	var html = '';
+	
+	html =  '<div class="modal fade" id="modalAlertWindow" role="dialog">';
+	html += '<div class="modal-dialog">';
+	html += '<div class="modal-content">';
+	html += '<div class="modal-header">';
+	html += '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+//      html += '<h4 class="modal-title">title</h4>';
+	html += '</div>';
+	html += '<div class="modal-body">';
+	html += '<p>';
+	html += message;
+	html += '</div>';
+	html += '<div class="modal-footer">';
+	html += '<button type="button" class="btn btn-warning" data-dismiss="modal">Chiudi</button>'; 
+	html += '</div>'; 
+	html += '</div>'; 
+	
+	$(html).appendTo('body');
+	$("#modalAlertWindow").modal('show');
+}

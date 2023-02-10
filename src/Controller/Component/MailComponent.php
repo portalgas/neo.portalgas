@@ -159,7 +159,7 @@ class MailComponent extends Component {
 	
 	private function _getFooter($user, $options) {
 		$results = [];
-		$results['text'] = sprintf(Configure::read('Mail.body_footer'));
+		$results['text'] = Configure::read('Mail.body_footer');
 		
 		return $results;
 	}						
