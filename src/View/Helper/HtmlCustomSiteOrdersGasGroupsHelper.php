@@ -45,10 +45,11 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     }
         
     public function deliveries($deliveries, $gasGroups) {
-        $html = '';
-        $html .= $this->Form->control('gas_group_id', ['options' => $gasGroups]);
-        $html .= $this->Form->control('delivery_id', ['options' => $deliveries]);
-        return $html;
+        $results = [];
+        $results['html'] = $this->Form->control('gas_group_id', ['options' => $gasGroups]);
+        $results['html'] .= $this->Form->control('delivery_id', ['options' => $deliveries, 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
+        return $results;
+
     }
 
     public function data($parent) {

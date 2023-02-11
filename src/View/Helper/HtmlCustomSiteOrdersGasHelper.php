@@ -47,10 +47,15 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
      * $deliveries 
      *      array['N'] elenco consegne attive per select
      *      array['Y] consegna da definire 
+     * 
+     * $results['html']
+     * $results['bottom'] html inserito nel Layout in fondo, ex modal
      */
     public function deliveries($deliveries) {
         
-        // return $this->Form->control('delivery_id', ['options' => $deliveries['N']]);
+        $results = [];
+
+        // return $this->Form->control('delivery_id', ['options' => $deliveries['N'], 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
         if(empty($deliveries['N'])) {
             $item1 = [
                 'value' => 'N', 
@@ -62,7 +67,7 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
             $item1 = [
                 'value' => 'N', 
                 'text' => '<div id="radio-delivery-type-N" class="radio-delivery-type">'.
-                        $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true]).
+                        $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]).
                         '</div>'];            
         }
         
@@ -91,8 +96,9 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         
         $html = '<section class="content delivery">';
         $html .= $this->title(__('Delivery'));
+        $html .= $this->Form->hidden('delivery_id', ['value' => '']);
         $html .= $this->Form->radio(
-            'delivery_id',
+            'type_delivery',
             [
             $item1,
             ['value' => key($deliveries['Y']), 
@@ -115,11 +121,12 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         .content.delivery .radio-delivery-type {margin-left: 25px}
         </style>'
         ;
+        $results['html'] = $html;
 
         /* 
-         * modal, js in ordersForm.js
-         */
-        $html .= '
+        * modal, js in ordersForm.js
+        */
+        $results['bottom'] = '
         <div class="modal fade" id="dialog-send_mail" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -145,9 +152,9 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
                 </form>
             </div>
         </div>		
-    </div>	    
-        ';
-        return $html;
+        </div>';
+
+        return $results;
     }
 
     public function note() {

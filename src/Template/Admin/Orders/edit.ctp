@@ -24,7 +24,7 @@ $this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
             <h3 class="box-title"><?php echo __('Dati ordine'); ?></h3>
           </div>          
           <?php 
-            echo $this->Form->create($order, ['role' => 'form']);
+            echo $this->Form->create($order, ['role' => 'form', 'id' => 'frm']);
             echo '<div class="box-body">';
 
                 /*
@@ -37,7 +37,13 @@ $this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
                  */
                 echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
                 
-                echo $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
+                $deliveries = $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
+                echo $deliveries['html'];
+                if(isset($deliveries['bottom'])) { // html inserito nel Layout in fondo, ex modal
+                  $this->start('bottom');
+                    echo $deliveries['bottom'];
+                  $this->end();
+                }
 
                 echo $this->{$htmlCustomSiteOrders}->data($parent);
 

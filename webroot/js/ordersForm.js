@@ -83,25 +83,66 @@ OrdersForm.prototype = {
             return false;
         });          
 
+        $('#frm').on('submit', function(e) { 
+            // e.preventDefault();
+
+            let supplier_organization_id = $('select[name="supplier_organization_id"]').val();
+            console.log(supplier_organization_id, 'submit() supplier_organization_id');
+            if(supplier_organization_id=='') {
+                alert("Devi scegliere un produttore");
+                return false;
+            }
+            
+            /* 
+             * valorizzo delivery_id 
+             */
+            let typeDeliverySelect = $('.content.delivery input[type="radio"]:checked').val(); 
+            let delivery_id = '';
+            console.log(typeDeliverySelect, 'submit() typeDeliverySelect');
+
+            $('input[name="delivery_id"]').val('');
+            if(typeDeliverySelect=='N') { // menu a tendina con consegne attive
+                delivery_id = $('#delivery_ids').val();
+                $('input[name="delivery_id"]').val(delivery_id);
+            }
+            else 
+            if(typeDeliverySelect=='TO-CREATE') { // link a richiesta consegna 
+                delivery_id = '';
+            }
+            else { // Data e luogo della consegna ancora da definire
+                delivery_id = $('.content.delivery input[type="radio"]:checked').val(); 
+                $('input[name="delivery_id"]').val(delivery_id);
+            }
+
+            delivery_id = $('input[name="delivery_id"]').val();
+            console.log(delivery_id, 'submit() delivery_id');
+            if(delivery_id=='') {
+                alert("Devi scegliere una consegna");
+                return false;	
+            }
+
+            return true;	
+        });
     },
     gestTypeDelivery: function (typeDeliverySelect) {
         
-        if(typeDeliverySelect=='N') {
+        $('input[name="delivery_id"]').val('');
+
+        if(typeDeliverySelect=='N') { // menu a tendina con consegne attive
             $('#delivery_ids').removeAttr('disabled');
             $('#radio-delivery-type-N').css('opacity', 1);
             $('#radio-delivery-type-TO-CREATE').hide();
             $('#radio-delivery-type-TO-CREATE-disabled').show();
         }
         else 
-        if(typeDeliverySelect=='TO-CREATE') {
+        if(typeDeliverySelect=='TO-CREATE') { // link a richiesta consegna 
             $('#delivery_ids').attr('disabled', true);
             $('#delivery_ids').attr('disabled', 'disabled');
             $('#radio-delivery-type-TO-CREATE').css('opacity', 1);
             $('#radio-delivery-type-TO-CREATE').show();
             $('#radio-delivery-type-TO-CREATE-disabled').hide();
         }
-        else {
-            // (Da definire)
+        else { // Data e luogo della consegna ancora da definire
             $('#delivery_ids').attr('disabled', true);
             $('#delivery_ids').attr('disabled', 'disabled');
             $('#radio-delivery-type-Y').css('opacity', 1);

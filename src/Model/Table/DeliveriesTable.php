@@ -13,7 +13,7 @@ class DeliveriesTable extends Table
     const NOTA_EVIDENZA_NO = 'Nessun messaggio';
     const NOTA_EVIDENZA_MESSAGE = 'Messaggio normale';
     const NOTA_EVIDENZA_NOTICE = 'Messaggio importante';
-    const NOTA_EVIDENZA_ALERT = 'Messaggio con allerta';
+    const NOTA_EVIDENZA_ALERT = 'Messaggio molto importante';
 
     /**
      * Initialize method

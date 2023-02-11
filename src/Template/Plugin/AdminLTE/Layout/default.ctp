@@ -154,6 +154,8 @@ function callPingJoomla(ajaxUrl) {
 <?php echo $this->fetch('script'); ?>
 <?php echo $this->fetch('scriptBottom'); ?>
 
+<?php echo $this->fetch('bottom'); // order::add/edit delivery per modal ?>
+
 <div id="modalHelps" class="modal fade">
  <div class="modal-dialog modal-lg">
   <div class="modal-content">
