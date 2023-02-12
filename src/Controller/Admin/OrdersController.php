@@ -27,12 +27,6 @@ class OrdersController extends AppController
         $this->loadComponent('SuppliersOrganization');
         $this->loadComponent('PriceType');
         $this->loadComponent('ActionsOrder');
-
-        if(!isset($this->_user->acl)) { 
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('routes_msg_stop'));
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        }
     }
 
     public function beforeFilter(Event $event) {
@@ -103,7 +97,7 @@ class OrdersController extends AppController
         $orders = $orders->results;
 
         // debug($orders);
-        $order_type_id  = Configure::read('Order.type.gas');
+        if(empty($order_type_id)) $order_type_id  = Configure::read('Order.type.gas');
         $this->set(compact('orders', 'order_type_id'));
 
         /* 
@@ -122,21 +116,6 @@ class OrdersController extends AppController
 		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->_user);
 		$orderStatesToLegenda = $this->ActionsOrder->getOrderStatesToLegenda($this->_user, $group_id);
 		$this->set('orderStatesToLegenda', $orderStatesToLegenda);        
-    }
-
-    public function view($id = null)
-    {
-        exit;
-        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        }
-
-        $order = $this->Orders->get($id, [
-            'contain' => ['Organizations', 'SuppliersOrganizations', 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries', 'ProdGasPromotions', 'DesOrders'],
-        ]);
-
-        $this->set('order', $order);
     }
 
     /*
@@ -191,14 +170,20 @@ class OrdersController extends AppController
 
         $this->set(compact('order'));
 
+        /*
+         * controllo variabili (produttore / consegne)
+         */
         if(empty($suppliersOrganizations)) {
             $this->Flash->error(__('msg_not_order_not_supplier_organizations'), ['escape' => false]);
             return $this->redirect(['controller' => 'Orders', 'action' => 'index', $order_type_id]);            
         }
-        if(empty($deliveries)) {
-            $this->Flash->error(__('msg_not_order_not_deliveries'), ['escape' => false]);
-            return $this->redirect(['controller' => 'Orders', 'action' => 'index', $order_type_id]);            
-        }
+        if($order_type_id!=Configure::read('Order.type.gas_groups')) {
+            // Configure::read('Order.type.gas_groups') carica le consegne (GasGroupDeliveries) dopo aver selezionato il gruppo (GasGroups)
+            if(empty($deliveries)) {
+                $this->Flash->error(__('msg_not_order_not_deliveries'), ['escape' => false]);
+                return $this->redirect(['controller' => 'Orders', 'action' => 'index', $order_type_id]);            
+            }    
+        }  
     }
 
     /**
@@ -256,14 +241,20 @@ class OrdersController extends AppController
 
         $this->set(compact('order'));
 
+        /*
+         * controllo variabili (produttore / consegne)
+         */
         if(empty($suppliersOrganizations)) {
             $this->Flash->error(__('msg_not_order_not_supplier_organizations'), ['escape' => false]);
             return $this->redirect(['controller' => 'Orders', 'action' => 'index', $order_type_id]);            
         }
-        if(empty($deliveries)) {
-            $this->Flash->error(__('msg_not_order_not_deliveries'), ['escape' => false]);
-            return $this->redirect(['controller' => 'Orders', 'action' => 'index', $order_type_id]);            
-        }        
+        if($order_type_id!=Configure::read('Order.type.gas_groups')) {
+            // Configure::read('Order.type.gas_groups') carica le consegne (GasGroupDeliveries) dopo aver selezionato il gruppo (GasGroups)
+            if(empty($deliveries)) {
+                $this->Flash->error(__('msg_not_order_not_deliveries'), ['escape' => false]);
+                return $this->redirect(['controller' => 'Orders', 'action' => 'index', $order_type_id]);            
+            }    
+        }     
     }
 
     /* 
@@ -334,9 +325,6 @@ class OrdersController extends AppController
 
                     $gasGroupsTable = TableRegistry::get('GasGroups');
                     $deliveryOptions = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-    
-                    $gas_group_id = 1;
-                    $deliveries = $this->_ordersTable->getDeliveries($this->_user, $this->_organization->id, $where=['gas_group_id' => $gas_group_id]);    
                 }
             break;
         }

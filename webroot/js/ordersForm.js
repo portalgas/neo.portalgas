@@ -23,6 +23,15 @@ OrdersForm.prototype = {
         console.log("OrdersForm bindEvents");
 
         /*
+         * Configure::read('Order.type.gas_groups')
+         * consegne caricate in base al gruppo
+         */
+        $('select[name="gas_group_id"]').on('change', function(e) {
+
+            let gas_group_id = $(this).val();
+        });  
+
+        /*
          * gestione tipoligie di consegna (typeDeliverySelect)
          *  Y => select consegne attive
          *  delivery_id => Da definire

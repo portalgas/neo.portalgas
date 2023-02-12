@@ -83,6 +83,12 @@ class AppController extends Controller
         $this->_user = $this->Authentication->getIdentity();
         if(!empty($this->_user) && isset($this->_user->organization))
             $this->_organization = $this->_user->organization; // gas scelto
+
+        if(!isset($this->_user->acl)) { 
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('routes_msg_stop'));
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }           
     }
 
     public function beforeFilter(Event $event) {

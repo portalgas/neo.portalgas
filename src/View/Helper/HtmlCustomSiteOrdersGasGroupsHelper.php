@@ -9,7 +9,7 @@ use Cake\Core\Configure;
 class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
 {
 	private $debug = false;
-	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
+	public $helpers = ['Html', 'Form', 'HtmlCustom', 'HtmlCustomSite'];
 
     public function initialize(array $config)
     {
@@ -37,19 +37,18 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         if(!isset($options['ctrlDesACL'])) $options['ctrlDesACL'] = false;
         if(!isset($options['empty'])) $options['empty'] = false; 
         if(!isset($options['select2'])) $options['select2'] = false;             
-        return parent::supplierOrganizations($suppliersOrganizations);
+        return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 
     public function gasGroups($gasGroups) {
         
     }
         
-    public function deliveries($deliveries, $gasGroups) {
+    public function deliveries($deliveries, $gasGroups=[]) {
         $results = [];
-        $results['html'] = $this->Form->control('gas_group_id', ['options' => $gasGroups]);
+        $results['html'] = $this->Form->control('gas_group_id', ['options' => $gasGroups, 'empty' => Configure::read('HtmlOptionEmpty')]);
         $results['html'] .= $this->Form->control('delivery_id', ['options' => $deliveries, 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
         return $results;
-
     }
 
     public function data($parent) {
@@ -117,7 +116,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
                         <div class="col-sm-4">'.$delivery_label.'</div>
                         
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
-                        <div class="col-sm-4">Dal '.$results->data_inizio.' al '.$results->data_fine.'</div>
+                        <div class="col-sm-4">Da '.$results->data_inizio->i18nFormat('eeee d MMMM').' a '.$results->data_fine->i18nFormat('eeee d MMMM').'</div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>

@@ -35,7 +35,7 @@ class CashierComponent extends Component {
 	public function getDeliveries($user, $debug=false) {
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $results = $deliveriesTable->gets($user, $user->organization->id, $this->_where);
+        $results = $deliveriesTable->withOrdersGets($user, $user->organization->id, $this->_where);
 		
 		if($debug) debug($results);
 		

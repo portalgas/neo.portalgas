@@ -25,14 +25,14 @@ class DeliveryComponent extends Component {
         if(!empty($deliveries)) {
             if(!is_array($deliveries) && !$deliveries instanceof \Cake\ORM\ResultSet) {
                 $label = $deliveries->luogo;
-                $label .= ' ('.$deliveries->data->i18nFormat('eeee d MMMM').')';
+                $label .= ' ('.$deliveries->data->i18nFormat('eeee d MMMM Y').')';
 
                 $results[$deliveries->id] = $label;
             }
             else {
                 foreach ($deliveries as $delivery) {
                     $label = $delivery->luogo;
-                    $label .= ' ('.$delivery->data->i18nFormat('eeee d MMMM').')';
+                    $label .= ' ('.$delivery->data->i18nFormat('eeee d MMMM Y').')';
 
                     $results[$delivery->id] = $label;
                 }                

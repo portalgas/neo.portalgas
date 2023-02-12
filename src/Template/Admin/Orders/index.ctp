@@ -8,12 +8,10 @@ $user = $this->Identity->get();
   <h1>
     <?php 
     echo (!empty($order_type_id)) ? __('Orders-'.$order_type_id): __('Orders');
-    echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success']).'</div>';
+    echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order')]).'</div>';
     ?>
   </h1>
 </section>
-
-
 
 
 <!-- Main content -->
@@ -186,9 +184,20 @@ $user = $this->Identity->get();
                   if($order->can_state_code_to_close)
                     echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'close', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
                 
+                  switch ($order->order_type->id) {
+                      case Configure::read('Order.type.des'):
+                      case Configure::read('Order.type.des_titolare'):
+                        
+                      break;
+                      case Configure::read('Order.type.gas_parent_groups'):
+                        if($user->acl['isGasGroupsManagerOrders'])
+                          echo $this->Html->link('<i class="fa fa-2x fa-plus" aria-hidden="true"></i>', ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
+                      break;
+                  }
+
                   echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   
-                  if($this->Identity->get()->acl['isRoot'] && $order->state_code=='CLOSE')
+                  if($user->acl['isRoot'] && $order->state_code=='CLOSE')
                     echo '<a title="'.__('Orders state_code change').'" href="'.$this->HtmlCustomSite->jLink('orders', 'state_code_change', ['order_id' => $order->id, 'url_bck' => 'index_history']).'" class="action action actionSyncronize"></a>';
 
                   // $modal_url = $this->HtmlCustomSite->jLink('orders', 'sotto_menu', ['order_id' => $order->id, 'position_img' => 'bgLeft', 'scope' => 'neo', 'format' => 'notmpl']);

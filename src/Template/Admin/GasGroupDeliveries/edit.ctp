@@ -28,9 +28,8 @@ echo $this->Html->script('vue/gasGroupsDeliveriesForm', ['block' => 'scriptPageI
           <!-- form start -->
           <?php 
           echo $this->Form->create($gasGroupDelivery, ['role' => 'form']);
+          echo $this->Form->hidden('deliver_id', ['value' => $gasGroupDelivery->delivery->id]);
           echo '<div class="box-body">';
-
-
  
 echo '<div class="row">';
 echo '<div class="col-md-12">';

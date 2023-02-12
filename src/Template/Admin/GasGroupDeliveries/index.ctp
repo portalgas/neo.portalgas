@@ -95,7 +95,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<td>'.h($delivery->luogo).'</td>';
                   echo '<td>';
                   if($delivery->sys=='N')
-                    echo $delivery->data;
+                    echo $delivery->data->i18nFormat('eeee d MMMM');
                     // echo $this->Time->nice($delivery->data);
                   echo '</td>';
                   echo '<td>';
@@ -104,7 +104,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '</td>';
                   echo '<td class="text-center">'.count($delivery->orders).'</td>';
                   if($delivery->sys=='N')
-                    echo '<td title="'.h($delivery->created).'">'.$delivery->created.'</td>';
+                    echo '<td title="'.h($delivery->created).'">'.$delivery->created->i18nFormat('eeee d MMMM').'</td>';
                   else 
                     echo '<td></td>';
                   echo '</tr>';

@@ -2465,6 +2465,9 @@ msgstr "Aggiungi una nuova consegna"
 msgid "Add Order"
 msgstr "Aggiungi un nuovo ordine"
 
+msgid "Add Order-10"
+msgstr "Aggiungi un nuovo ordine di gruppo dall'ordine titolare"
+
 msgid "Add DesOrder"
 msgstr "Aggiungi un nuovo ordine condiviso"
 
@@ -6691,6 +6694,12 @@ msgstr "Gruppi e utenti"
 msgid "Gas Group Users Management"
 msgstr "Gestione gasisti"
 
+msgid "Gas Group Parent Orders"
+msgstr "Ordini titolari per gruppi"
+ 
+msgid "Gas Group Parent Orders"
+msgstr "Ordine titolare per gruppi"
+ 
 msgid "Gas Group Orders"
 msgstr "Ordini per i gruppi"
 

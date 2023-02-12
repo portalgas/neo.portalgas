@@ -19,11 +19,6 @@ class ArticlesOrdersController extends AppController
     {
         parent::initialize();
         $this->loadComponent('Auths');
-
-        if(!isset($this->_user->acl)) { 
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        }
     }
 
     public function beforeFilter(Event $event) {

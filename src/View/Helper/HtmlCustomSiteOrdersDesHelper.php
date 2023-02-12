@@ -9,8 +9,7 @@ use Cake\Core\Configure;
 class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
 {
 	private $debug = false;
-
-	public  $helpers = ['Html', 'Form', 'HtmlCustom'];
+    public $helpers = ['Html', 'Form', 'HtmlCustom', 'HtmlCustomSite'];
 
     public function initialize(array $config)
     {
@@ -126,10 +125,8 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 
-    public function deliveries($deliveries) {
-        $results = [];
-        $results['html'] = $this->Form->control('delivery_id', ['options' => $deliveries, 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
-        return $results;
+    public function deliveries($deliveries, $options=[]) {
+        return parent::deliveries($deliveries, $options);
     }
 
     public function note() {

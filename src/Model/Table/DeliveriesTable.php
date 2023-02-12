@@ -166,7 +166,7 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
-                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                        'DATE(Deliveries.data) >= CURDATE()'
                       ];
     
         if(isset($where['Deliveries']))
@@ -196,7 +196,7 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
-                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                        'DATE(Deliveries.data) >= CURDATE()'
                       ];
     
         if(isset($where['Deliveries']))
@@ -227,7 +227,7 @@ class DeliveriesTable extends Table
                     $listResults[$result->id] = $result->luogo;
                 else {
                     // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                    $listResults[$result->id] = $result->luogo.' - '.$result->data->i18nFormat('d MMMM Y');                    
+                    $listResults[$result->id] = $result->luogo.' - '.$result->data->i18nFormat('eeee d MMMM Y');                    
                 }
             }
         }
@@ -237,6 +237,33 @@ class DeliveriesTable extends Table
         return $listResults;
     }
 
+    /* 
+     * estraggo le consegne con ordini
+     * per FE 
+     */
+    public function withOrdersGets($user, $organization_id, $where=[], $order=[], $debug=false) {
+
+        $results = [];
+        $deliveryResults = $this->gets($user, $organization_id, $where, $order, $debug);
+
+        /*
+         * estraggo le consegne che hanno ordini
+         */
+        $i=0;
+        foreach ($deliveryResults as $deliveryResult) {
+            if(!empty($deliveryResult->orders)) {
+                $results[$i] =  $deliveryResult;
+                $i++; 
+            }
+        }
+        // debug($results);
+        
+        return $results;
+    }
+
+    /* 
+     * estraggo le consegne con ordini e senza ordini 
+     */
     public function gets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
         $results = [];
@@ -253,32 +280,22 @@ class DeliveriesTable extends Table
         if(isset($where['Orders']))
             $where_order = $where['Orders'];
         $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
-
+        
         if(empty($order))
             $order = ['Deliveries.data'];
 
         if($debug) debug($where);
-        $deliveryResults = $this->find()
-                                ->where($where_delivery)
-                                ->contain(['Orders' => [
-                                    'conditions' => $where_order,
-                                    'SuppliersOrganizations' => ['Suppliers']]])
-                                ->order($order)
-                                ->all();
-        // debug($deliveryResults);
-
-        /*
-         * estraggo le consegne che hanno ordini
-         */
-        $i=0;
-        foreach ($deliveryResults as $deliveryResult) {
-            if(!empty($deliveryResult->orders)) {
-                $results[$i] =  $deliveryResult;
-                $i++; 
-            }
+        $results = $this->find()
+                        ->where($where_delivery)
+                        ->contain(['Orders' => [
+                            'conditions' => $where_order,
+                            'SuppliersOrganizations' => ['Suppliers']]])
+                        ->order($order)
+                        ->all();
+        if($results->count()>0) {
+            $results = $results->toArray();
         }
-        // debug($results);
-        
+    
         return $results;
     }
 
