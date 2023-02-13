@@ -8,7 +8,12 @@ $user = $this->Identity->get();
   <h1>
     <?php 
     echo (!empty($order_type_id)) ? __('Orders-'.$order_type_id): __('Orders');
-    echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order')]).'</div>';
+    
+    /* 
+     * l'ordine Configure::read('Order.type.gas_groups') dev'essere creato da un ordine padre (Configure::read('Order.type.gas_parent_groups'))
+     */
+    if($order_type_id!=Configure::read('Order.type.gas_groups'))
+      echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order')]).'</div>';
     ?>
   </h1>
 </section>
@@ -189,11 +194,16 @@ $user = $this->Identity->get();
                       case Configure::read('Order.type.des_titolare'):
                         
                       break;
+                      case Configure::read('Order.type.gas_groups'):
+                      break;
                       case Configure::read('Order.type.gas_parent_groups'):
                         if($user->acl['isGasGroupsManagerOrders'])
-                          echo $this->Html->link('<i class="fa fa-2x fa-plus" aria-hidden="true"></i>', ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
+                            echo $this->Html->link('<i class="fa fa-2x fa-plus" aria-hidden="true"></i>', ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
                       break;
                   }
+                  
+                  // fractis => da togliere
+                  echo $this->Html->link('<i class="fa fa-2x fa-edit" aria-hidden="true"></i>', ['action' => 'edit', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Edit Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
 
                   echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   

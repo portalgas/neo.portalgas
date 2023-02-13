@@ -131,6 +131,7 @@ if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
     (new ErrorHandler(Configure::read('Error')))->register(); 
+    \Sentry\init(['dsn' => 'https://966ebad1c76a469791228b9eb6feb04e@o4504674099789824.ingest.sentry.io/4504674107260928' ]);
     // Sentry\init(['dsn' => 'https://87ba0753c7ca4314a1e85fe9da02a760@o503778.ingest.sentry.io/5589346' ]);
 }
 

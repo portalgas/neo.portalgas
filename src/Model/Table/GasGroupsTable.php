@@ -109,23 +109,55 @@ class GasGroupsTable extends Table
 
     /* 
      * utenti da associare al gruppo
+     * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non vederlo
+     * filtro a GasGroupUsers.user_id quindi chi gestisce il gruppo deve parteciparvi
+     */
+    public function findMy($user, $organization_id, $user_id) {
+
+        $results = []; 
+         
+        $gas_groups = $this->find()->contain(['GasGroupUsers' => [
+                                'conditions' => [
+                                    'GasGroupUsers.user_id' => $user_id,
+                                    'GasGroupUsers.organization_id' => $organization_id]]])
+                        ->where(['GasGroups.organization_id' => $organization_id])
+                        ->order(['GasGroups.name'])
+                        ->all();
+
+        foreach($gas_groups as $gas_group) {
+            /*
+             * escludo i gruppi dove l'utente nno e' associato
+             */
+            if(!empty($gas_group->gas_group_users)) {
+                $results[] = $gas_group;
+            }
+        }
+
+        return $results;
+    }
+
+    /* 
+     * utenti da associare al gruppo
+     * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non vederlo
+     * filtro a GasGroupUsers.user_id quindi chi gestisce il gruppo deve parteciparvi
      */
     public function findMyLists($user, $organization_id, $user_id) {
 
         $results = []; 
-         
-        $where = ['user_id' => $user_id, 
-                  'organization_id' => $organization_id, 
-                    ];
-        $results = $this->find('list', ['conditions' => $where, 'order' => ['name']]);
+        
+        $gas_groups = $this->findMy($user, $organization_id, $user_id);
+        foreach($gas_groups as $gas_group) {
+            $results[$gas_group->id] = $gas_group->name;
+        }
+
         return $results;
     }  
     
 	public function getsById($user, $organization_id, $gas_group_id) {
 
         $options = [];
-        $options['conditions'] = ['GasGroup.organization_id' => $organization_id,
-                                'GasGroup.id' => $gas_group_id];
+        $options['conditions'] = ['GasGroups.organization_id' => $organization_id,
+                                  'GasGroups.id' => $gas_group_id];
         $options['recursive'] = -1;
 
         $results = $this->find('first', $options);

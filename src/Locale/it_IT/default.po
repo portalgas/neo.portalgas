@@ -2312,6 +2312,9 @@ msgstr "Modifica i dati dell'ordine"
 msgid "Edit Order Short"
 msgstr "Modifica l'ordine"
 
+msgid "Edit Order-10"
+msgstr "Modifica l' nuovo ordine del gruppo"
+
 msgid "Edit ProdGasPromotion Order Short"
 msgstr "Modifica l'ordine in promozione"
 

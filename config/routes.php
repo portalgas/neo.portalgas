@@ -294,6 +294,13 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         });     
 
         /*
+         * gas groups
+         */
+        $routes->scope('/gas-group-deliveries', ['controller' => 'GasGroupDeliveries'], function (RouteBuilder $routes) {
+            $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+        }); 
+
+        /*
          * ecommerce vue
          */
         $routes->scope('/deliveries', ['controller' => 'Deliveries'], function (RouteBuilder $routes) {

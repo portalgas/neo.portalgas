@@ -48,7 +48,7 @@ class ArticlesOrdersGasGroupsTable extends ArticlesOrdersTable implements Articl
         $where['ArticlesOrders'] = [$this->getAlias().'.organization_id' => $order->organization_id,
                                     $this->getAlias().'.order_id' => $order->id,
                                 ]; 
-        
+                
         $options = [];
         $options['sort'] = [];
         $options['limit'] = Configure::read('sql.no.limit');
@@ -64,25 +64,33 @@ class ArticlesOrdersGasGroupsTable extends ArticlesOrdersTable implements Articl
                 array_push($ids, $article_order->article_id);
             }
 
-            $where2 = ['article_id NOT IN' => $ids];
+            $where2 = ['ArticlesOrders.article_id NOT IN' => $ids];
         }
 
         /* 
-         * $articles => articoli da associare
+         * $articles => articoli da associare, li prendo dal parent
          */ 
-        $where = ['organization_id' => $order->organization_id,
-                  'order_id' => $order->parent_id,
-                  'stato !=' => 'N'];
-        $where = array_merge($where, $where2); 
+        $where2 += ['ArticlesOrders.organization_id' => $order->organization_id,
+                                    'ArticlesOrders.order_id' => $order->parent_id,
+                                    'ArticlesOrders.stato !=' => 'N'];
       
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $results['articles'] = $articlesOrdersTable->find()
-                                ->where($where)
+                                ->where($where2)
                                 ->all();
 
+        /* 
+         * se non ci sono articoli gia' associati
+         * associo tutti gli articoli ordinabili e rileggo articles_orders
+         */                                
         if(empty($results['article_orders'])) {
             // articoli gia' associati, se empty => prima volta => copia da articles
-            $this->addsByArticlesOrders($user, $organization_id, $order, $results['articles']);
+            $resultAddsByArticles = $this->addsByArticlesOrders($user, $organization_id, $order, $results['articles']);
+            if($resultAddsByArticles!==true) {
+                $results['esito'] = false;
+                $results['errors'] = $resultAddsByArticles;
+            }  
+
             $options = [];
             $options['sort'] = [];
             $options['limit'] = Configure::read('sql.no.limit');

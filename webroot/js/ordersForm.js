@@ -29,6 +29,39 @@ OrdersForm.prototype = {
         $('select[name="gas_group_id"]').on('change', function(e) {
 
             let gas_group_id = $(this).val();
+            // gas-group-deliveries
+            if(gas_group_id=='') {
+                $('#gas-group-deliveries').hide();
+                return;
+            }
+
+            let url = '/admin/api/gas-group-deliveries/gets';
+            let params = {
+                gas_group_id: gas_group_id
+            };
+    
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: params,
+                cache: false,
+                headers: {
+                  'X-CSRF-Token': csrfToken
+                }, 
+                success: function(response) {
+                    $('#gas-group-deliveries').show();
+                    console.log(response);
+
+                    $('#delivery-id').html('');
+                    $.each(response, function(key, value){
+                        $('#delivery-id').append('<option value="'+key+'">'+value+'</option>');
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.error(XMLHttpRequest.responseText, 'responseText');
+                }
+            });
+
         });  
 
         /*
@@ -67,8 +100,7 @@ OrdersForm.prototype = {
             }
             /* console.log(params, 'params'); */
                     
-            var url = '';
-            url = '/admin/api/mails/request-delivery-new';
+            let url = '/admin/api/mails/request-delivery-new';
     
             $.ajax({
                 type: "POST",

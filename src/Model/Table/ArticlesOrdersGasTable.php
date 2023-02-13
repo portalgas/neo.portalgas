@@ -77,12 +77,16 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
         $results['articles'] = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where2);
         // debug($results);
        
+        /* 
+         * se non ci sono articoli gia' associati
+         * associo tutti gli articoli ordinabili e rileggo articles_orders
+         */
         if(empty($results['article_orders'])) {
             // articoli gia' associati, se empty => prima volta => copia da articles
-            $resultaddsByArticles = $this->addsByArticles($user, $organization_id, $order, $results['articles']);
-            if($resultaddsByArticles!==true) {
+            $resultAddsByArticles = $this->addsByArticles($user, $organization_id, $order, $results['articles']);
+            if($resultAddsByArticles!==true) {
                 $results['esito'] = false;
-                $results['errors'] = $resultaddsByArticles;
+                $results['errors'] = $resultAddsByArticles;
             }
                 
             $options = [];

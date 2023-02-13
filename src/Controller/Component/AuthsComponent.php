@@ -101,7 +101,7 @@ class AuthsComponent extends Component {
                         if($order_type_id==Configure::read('Order.type.gas_groups')) {
                             $gasGroupsTable = TableRegistry::get('GasGroups');
                             $gasGroups = $gasGroupsTable->findMyLists($user, $user->organization->id, $user->id);
-                            if($gasGroups->count()==0) {
+                            if(count($gasGroups)==0) {
                                 $results['msg'] = __('msg_not_permission');
                                 $results['redirect'] = ['controller' => 'GasGroups', 'action' => 'index'];
                                 return $results;

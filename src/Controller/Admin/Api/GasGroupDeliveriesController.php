@@ -7,25 +7,29 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
 
-class DeliveriesController extends ApiAppController
+class GasGroupDeliveriesController extends ApiAppController
 {
     use Traits\UtilTrait;
 
     public function initialize(): void 
     {
         parent::initialize();
-        $this->loadComponent('ProdGasPromotion');
+        
+        if(!$this->_user->acl['isGasGroupsManagerParentOrders'] ||
+           !$this->_user->acl['isGasGroupsManagerOrders']) {
+            $this->_respondWithUnauthorized();
+        }         
     }
 
     public function beforeFilter(Event $event): void  {
      
-        parent::beforeFilter($event);
+        parent::beforeFilter($event);       
     }
   
     /* 
-     * front-end - estrae le consegne anche senza ordine e l'eventuale "da definire" con ordini
+     * elenco consegne del gruppo
      */
-    public function gets($order_type_id) {
+    public function gets() {
 
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -33,51 +37,11 @@ class DeliveriesController extends ApiAppController
 
         $results = [];
 
-        ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $this->_organization->id;
+        $gas_group_id = $this->request->getData('gas_group_id');
 
-        /*
-         * elenco consegne
-         */
-        $deliveriesTable = TableRegistry::get('Deliveries');
-
-        $where = [];
-        $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
-                                'Deliveries.stato_elaborazione' => 'OPEN',
-                                'Deliveries.sys' => 'N',
-                                'DATE(Deliveries.data) >= CURDATE()'
-        ];
-        $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
-                           // 'Orders.order_type_id != ' => Configure::read('Order.type.gas_groups')
-                           ];
-        $deliveries = $deliveriesTable->withOrdersGets($//$gas_group_id = 1;
-        $deliveries = $this->_ordersTable->getDeliveries($this->_user, $this->_organization->id, $where=['gas_group_id' => $gas_group_id]);    
-        user, $organization_id, $where);
-        if(!empty($deliveries)) {
-            foreach($deliveries as $delivery) {
-                /*
-                 * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                 * key array non per id, nel json perde l'ordinamento della data
-                 * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
-                 */
-                $results[] = ['id' => $delivery->id, 'label' => $delivery->data->i18nFormat('eeee d MMMM').' - '.$delivery->luogo];
-            }
-        }
-
-        /*
-         * ctrl se ci sono ordini con la consegna ancora da definire (Delivery.sys = Y)
-         */
-        $where = [];
-        $where['Orders'] = ['Orders.organization_id' => $organization_id,
-                            'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
-                           // 'Orders.order_type_id != ' => Configure::read('Order.type.gas_groups')
-                        ];
-        $sysDelivery = $deliveriesTable->getDeliverySys($this->_user, $organization_id, $where);
-        // debug($sysDelivery);
-
-        if($sysDelivery->has('orders') && !empty($sysDelivery->orders)) {
-            $results[] = ['id' => $sysDelivery->id, 'label' => $sysDelivery->luogo];
-        }
-
+        $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
+        $results = $gasGroupDeliveriesTable->getsActiveList($this->_user, $this->_organization->id, $gas_group_id);
+        
         return $this->_response($results);
     } 
 
@@ -96,6 +60,9 @@ class DeliveriesController extends ApiAppController
         }
 
         $results = [];
+        $user = $this->Authentication->getIdentity();
+        $organization_id = $user->organization->id;
+        $user_id = $this->Authentication->getIdentity()->id;
 
         /*
          * elenco consegne partendo dagli acquisti dello user
@@ -103,8 +70,8 @@ class DeliveriesController extends ApiAppController
         $cartsTable = TableRegistry::get('Carts');
 
         $where = [];
-        $where['Carts'] = ['Carts.user_id' => $this->_user->id,
-                            'Carts.organization_id' => $this->_organization->id,
+        $where['Carts'] = ['Carts.user_id' => $user->id,
+                            'Carts.organization_id' => $organization_id,
                             'Carts.deleteToReferent' => 'N'];        
         $where['Deliveries'] = ['Deliveries.isVisibleFrontEnd' => 'Y',
                                /*
@@ -159,7 +126,7 @@ class DeliveriesController extends ApiAppController
         $prod_gas_promotion_state_code = ['PRODGASPROMOTION-GAS-USERS-OPEN', 'PRODGASPROMOTION-GAS-USERS-CLOSE'];
         $prod_gas_promotion_organization_state_code = ['OPEN', 'CLOSE'];
 
-        $prodGasPromotionsResults = $this->ProdGasPromotion->userCartGets($this->_user, $this->_organization->id, $this->_user->id, $prod_gas_promotion_state_code, $prod_gas_promotion_organization_state_code);
+        $prodGasPromotionsResults = $this->ProdGasPromotion->userCartGets($user, $organization_id, $user_id, $prod_gas_promotion_state_code, $prod_gas_promotion_organization_state_code);
         // debug($prodGasPromotionsResults);
         if(!empty($prodGasPromotionsResults))
             $results[] = ['id' => 0, 'label' => __('ProdGasPromotions')];

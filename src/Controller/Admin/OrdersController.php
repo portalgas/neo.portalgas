@@ -325,6 +325,7 @@ class OrdersController extends AppController
 
                     $gasGroupsTable = TableRegistry::get('GasGroups');
                     $deliveryOptions = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                    // le consegne (GasGroupDeliveries) le carico dopo aver scelto il gruppo (GasGroups)
                 }
             break;
         }
