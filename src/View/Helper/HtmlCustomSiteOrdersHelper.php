@@ -23,6 +23,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
     protected $_portalgas_bo_url = '';
 
     protected $_user = null;
+    protected $_order = null;
 
 	public $helpers = ['Html', 'Form', 'HtmlCustom', 'HtmlCustomSite'];
 
@@ -39,6 +40,13 @@ class HtmlCustomSiteOrdersHelper extends Helper
      */
     public function setUser($user) {
         $this->_user = $user;
+    }
+
+    /* 
+     * passo l'ordine per edit
+     */
+    public function setOrder($order) {
+        $this->_order = $order;
     }
 
     public function factory($order_type_id, $debug=false) {
@@ -210,6 +218,24 @@ class HtmlCustomSiteOrdersHelper extends Helper
         
         $results = [];
 
+        /*
+         * default
+         */
+        $default = 'N'; // lista consegne attive
+        if(!empty($this->_order)) { // edit
+            if($this->_order->delivery_id==key($deliveries['Y']))
+                $default = 'Y';  // consegna Da definire
+            else {
+                /* 
+                * ctrl che tra l'elenco delle consegne ci sia la consegna gia' associata all'ordine 
+                * se non c'e' (per esempio consegna chiusa e qui prendo solo DATE(Delivery.data) >= CURDATE() ) 
+                * l'aggiungo 
+                * */
+                if(!array_key_exists($this->_order->delivery_id, $deliveries))
+                    $deliveries['N'][$this->_order->delivery_id] = $this->_order->delivery->luogo.' - '.$this->_order->delivery->data->i18nFormat('eeee d MMMM Y');
+            }           
+        }
+
         // return $this->Form->control('delivery_id', ['options' => $deliveries['N'], 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
         if(empty($deliveries['N'])) {
             $item1 = [
@@ -222,10 +248,17 @@ class HtmlCustomSiteOrdersHelper extends Helper
             $item1 = [
                 'value' => 'N', 
                 'text' => '<div id="radio-delivery-type-N" class="radio-delivery-type">'.
-                        $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]).
+                        $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false, 
+                                                               'default' => $this->_order->delivery_id, 'empty' => Configure::read('HtmlOptionEmpty')]).
                         '</div>'];            
         }
         
+        $item2 = [
+            'value' => key($deliveries['Y']), 
+            'text' => '<div id="radio-delivery-type-Y" class="radio-delivery-type" style="margin-bottom: 10px;">'.
+                    'Data e luogo della consegna ancora da definire'. // $deliveries['Y'][key($deliveries['Y'])].
+                    '</div>'];
+
         if($this->_user->acl['isManagerDelivery']) {
             $item3 = [
                 'value' => 'TO-CREATE', 
@@ -255,15 +288,12 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $html .= $this->Form->radio(
             'type_delivery',
             [
-            $item1,
-            ['value' => key($deliveries['Y']), 
-                'text' => '<div id="radio-delivery-type-Y" class="radio-delivery-type" style="margin-bottom: 10px;">'.
-                            'Data e luogo della consegna ancora da definire'. // $deliveries['Y'][key($deliveries['Y'])].
-                            '</div>'],
-            $item3
+                $item1,
+                $item2,
+                $item3
             ],
             [
-            'escape' => false, 'default' => 'N', 'required' => 'required', 'class' => 'radio-deliveries']
+            'escape' => false, 'default' => $default, 'required' => 'required', 'class' => 'radio-deliveries']
             );
         $html .= '</section>';
 

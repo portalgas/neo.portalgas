@@ -16,11 +16,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         parent::initialize($config);
         // debug($config);
     }
-
-    public function setUser($user) {
-        parent::setUser($user);
-    }
-
+    
     public function hiddenFields($organization_id, $parent) {
 
         $html = '';

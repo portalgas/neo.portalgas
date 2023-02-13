@@ -9,6 +9,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
  */
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
 $this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
+$this->{$htmlCustomSiteOrders}->setOrder($order);
 // debug($htmlCustomSiteOrders);
 ?>
   <section class="content">

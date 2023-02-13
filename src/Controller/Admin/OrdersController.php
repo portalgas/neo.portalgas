@@ -131,7 +131,9 @@ class OrdersController extends AppController
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
         $this->_ordersTable->addBehavior('Orders');
         
-        $datas = $this->_getData($order_type_id, $parent_id);
+        $order = $this->_ordersTable->newEntity();
+
+        $datas = $this->_getData($order, $order_type_id, $parent_id);
         $suppliersOrganizations = $datas['suppliersOrganizations'];
         $deliveries = $datas['deliveries'];
         $deliveryOptions = $datas['deliveryOptions'];
@@ -144,8 +146,7 @@ class OrdersController extends AppController
         }
 
         $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
-
-        $order = $this->_ordersTable->newEntity(); 
+         
         if ($this->request->is('post')) {
             $request = $this->request->getData();
             $request['order_type_id'] = $order_type_id; 
@@ -197,15 +198,15 @@ class OrdersController extends AppController
     {            
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
         $this->_ordersTable->addBehavior('Orders');
-        
-        $datas = $this->_getData($order_type_id, $parent_id);
+
+        $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
+
+        $datas = $this->_getData($order, $order_type_id, $parent_id);
         $suppliersOrganizations = $datas['suppliersOrganizations'];
         $deliveries = $datas['deliveries'];
         $deliveryOptions = $datas['deliveryOptions'];
         $parent = $datas['parent']; 
         $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'deliveries', 'deliveryOptions'));
-
-        $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $request = $this->request->getData();  
@@ -264,7 +265,7 @@ class OrdersController extends AppController
      *  deliveryOptions gruppo GAS che ha le proprie consegne
      *  parent ordine padre del gruppo GAS / promozione / ordine DES del titolare
      */
-    private function _getData($order_type_id, $parent_id) {
+    private function _getData($order, $order_type_id, $parent_id, $debug=false) {
 
         $results = [];
         $results['suppliersOrganizations'] = [];
@@ -325,6 +326,10 @@ class OrdersController extends AppController
 
                     $gasGroupsTable = TableRegistry::get('GasGroups');
                     $deliveryOptions = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                    if(!empty($order) && !empty($order->gas_group_id)) { // edit
+                        $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
+                        $deliveries = $gasGroupDeliveriesTable->getsActiveList($this->_user, $this->_organization->id, $order->gas_group_id);
+                    }
                     // le consegne (GasGroupDeliveries) le carico dopo aver scelto il gruppo (GasGroups)
                 }
             break;

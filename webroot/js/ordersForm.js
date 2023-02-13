@@ -196,6 +196,12 @@ OrdersForm.prototype = {
 
         this.bindEvents();
         this.gestTypeDelivery('N');
+
+        if($('select[name="gas_group_id"]').length>0) {
+            let gas_group_id = $('select[name="gas_group_id"]').val();
+            if(gas_group_id!='') 
+                $('#gas-group-deliveries').show();
+        }
     }
 };        
 

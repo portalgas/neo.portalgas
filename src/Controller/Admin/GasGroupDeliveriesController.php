@@ -30,7 +30,7 @@ class GasGroupDeliveriesController extends AppController
 
         $gasGroupsTable = TableRegistry::get('GasGroups');
         $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-        if($gasGroups->count()==0) {
+        if(empty($gasGroups)) {
             $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
             return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
         }
@@ -125,6 +125,8 @@ class GasGroupDeliveriesController extends AppController
      */
     public function edit($id = null)
     {
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        
         if ($this->request->is(['patch', 'post', 'put'])) {
 
             $datas = $this->request->getData();
@@ -133,7 +135,6 @@ class GasGroupDeliveriesController extends AppController
             /*
              * aggiorno la consegna
              * */
-            $deliveriesTable = TableRegistry::get('Deliveries');
             $delivery = $deliveriesTable->get([$this->_organization->id, $datas['deliver_id']]);
             $datas['data'] = $this->convertDate($datas['data']);
             $delivery = $deliveriesTable->patchEntity($delivery, $datas);
