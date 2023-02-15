@@ -119,16 +119,18 @@ class SocialmarketCartsController extends AppController
      * $is_active = 1 inserisco / 0 eliminato
      */
     private function _purchase($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $is_active, $debug=false) {
+        
+        $cartsTable = TableRegistry::get('Carts');
 
-        $cartTable = TableRegistry::get('Carts');
-
+        if($debug) debug('order_id '.$order_id.' user_id '.$user_id.' article_organization_id '.$article_organization_id.' article_id '.$article_id);
+        
         $carts = [];
         if(empty($article_organization_id) || empty($article_id)) {
             // tutti gli acquisti di un utente
-            $carts = $cartTable->getByOrder($user, $organization_id, $order_id, $user_id);
+            $carts = $cartsTable->getByOrder($user, $organization_id, $order_id, $user_id);
         }
         else {
-            $cart = $cartTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
+            $cart = $cartsTable->getByIds($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id, $debug);
             $carts[0] = $cart;
         }
 
@@ -165,7 +167,7 @@ class SocialmarketCartsController extends AppController
             /*
              * elimino da Carts
              */
-            $cartTable->delete($cart);
+            $cartsTable->delete($cart);
 
         } // end foreach($carts as $cart)
 

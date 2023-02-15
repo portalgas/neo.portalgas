@@ -1,12 +1,11 @@
 <?php 
 use Cake\Core\Configure;
 
+$user = $this->Identity->get();
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
-$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
-$this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
-// debug($htmlCustomSiteOrders);
+$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user);
 ?>
 <div class="box box-primary direct-chat direct-chat-primary">
     <div class="box-header with-border">
@@ -32,7 +31,7 @@ $this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
-    echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations, $options);
+    echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
     echo '<div class="col-md-5">';
     echo $this->Form->control('order_delivery_date', ['label' => __('Sort'), 'options' => $order_delivery_dates, 'default' => $order_delivery_date]);

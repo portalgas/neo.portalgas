@@ -14,17 +14,22 @@ class HtmlCustomSiteOrdersGasParentGroupsHelper extends HtmlCustomSiteOrdersHelp
     public function initialize(array $config)
     {
         parent::initialize($config);
-        // debug($config);
     }
 
-    public function hiddenFields($organization_id, $parent) {
-        return parent::hiddenFields($organization_id, $parent);
+    // eventuale msg in index
+    public function msg() {
+        $msg = "Questi ordini non saranno visibili ai gasisti ma saranno necessari per la creazione degli ordini dei gruppi";
+        return $this->HtmlCustom->alert($msg, 'info');
+    }
+
+    public function hiddenFields() {
+        return parent::hiddenFields();
     }   
 
     /*
      * dettaglio ordine padre
      */
-    public function infoParent($results) {
+    public function infoParent() {
         return '';    
     }
 
@@ -39,8 +44,8 @@ class HtmlCustomSiteOrdersGasParentGroupsHelper extends HtmlCustomSiteOrdersHelp
         return parent::gestTypeDeliveries($deliveries, $options);        
     }
 
-    public function data($parent) {
-        return parent::data($parent);
+    public function data() {
+        return parent::data();
     }
 
     public function note() {
@@ -51,11 +56,11 @@ class HtmlCustomSiteOrdersGasParentGroupsHelper extends HtmlCustomSiteOrdersHelp
         return parent::mailOpenTesto();     
     }
 
-    public function monitoraggio($results) {
-        return parent::monitoraggio($results);
+    public function monitoraggio() {
+        return parent::monitoraggio();
     }
 
-    public function typeGest($results) {
-        return parent::typeGest($results);
+    public function typeGest() {
+        return parent::typeGest();
     } 
 }

@@ -17,13 +17,18 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
     
-    public function hiddenFields($organization_id, $parent) {
+    // eventuale msg in index
+    public function msg() {
+        return '';
+    }
+    
+    public function hiddenFields() {
 
         $html = '';
-        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_user->organization->id, 'required' => 'required']);
 
         // prod_gas_promotion_id
-        $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
+        $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $this->_parent->id, 'required' => 'required']);
         
         return $html;
     }
@@ -39,7 +44,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         return parent::deliveries($deliveries, $options);
     }
 
-    public function data($parent) {
+    public function data() {
 
         $html = '';
         $html .= '<div class="row">';
@@ -51,7 +56,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         $html .= '</div>'; 
         $html .= '</div>';
 
-        $msg = "La promozione si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
+        $msg = "La promozione si chiuderà il ".$this->HtmlCustom->data($this->_parent->data_fine);
 
         $html .= '<div class="row">';
         $html .= '<div class="col-md-12">'; 
@@ -65,16 +70,16 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
     /*
      * trasport / cost_more / cost_less
      */
-    public function extra($order, $parent) {
-        return parent::extra($order, $parent);
+    public function extra() {
+        return parent::extra();
     }
 
     /*
      * dettaglio promotion / order des
      */
-    public function infoParent($results) {
+    public function infoParent() {
 
-        if(empty($results)) 
+        if(empty($this->_parent)) 
             return '';
 
         if(!isset($prodGasArticlesPromotionShow))
@@ -84,8 +89,8 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         $html .= '<div class="info-parent">';
         $html .= '<h1>'.__('ProdGasPromotion').'</h1>';
         
-        if(!empty($results->nota)) 
-            $html .= $this->HtmlCustom->alert($results->nota);
+        if(!empty($this->_parent->nota)) 
+            $html .= $this->HtmlCustom->alert($this->parent->nota);
     
         $html .= '<div class="table-responsive"><table class="table table-hover"><thead>';
         $html .= '<tr>';
@@ -100,31 +105,31 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         $html .= '<tbody><tr>';
             
         $html .= '<td>';
-        if(!empty($results->suppliersOrganization->supplier->img1) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$results->suppliersOrganization->supplier->img1))
-            $html .= '<img width="50" class="img-supplier responsive" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$results->suppliersOrganization->supplier->img1.'" />';    
+        if(!empty($this->_parent->suppliersOrganization->supplier->img1) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$this->_parent->suppliersOrganization->supplier->img1))
+            $html .= '<img width="50" class="img-supplier responsive" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$this->_parent->suppliersOrganization->supplier->img1.'" />';    
         $html .= '</td>';
         $html .= '<td>';
-        $html .= $results->suppliersOrganization->supplier->name;
+        $html .= $this->_parent->suppliersOrganization->supplier->name;
         $html .= '</td>';
         $html .= '<td>';
-        $html .= $results->name;
+        $html .= $this->_parent->name;
         $html .= '</td>';
         $html .= '<td>';
-        $html .= $this->HtmlCustom->data($results->data_fine); 
+        $html .= $this->HtmlCustom->data($this->_parent->data_fine); 
         $html .= '</td>';
         $html .= '<td>';
-        $html .= '<span style="text-decoration: line-through;">'.$results->importo_originale.'&nbsp;&euro;</span>';
-        $html .= '<br />'.$results->importo_scontato.'&nbsp;&euro;';
+        $html .= '<span style="text-decoration: line-through;">'.$this->_parent->importo_originale.'&nbsp;&euro;</span>';
+        $html .= '<br />'.$this->_parent->importo_scontato.'&nbsp;&euro;';
         $html .= '</td>';
         $html .= '<td>';
-        if($results->prodGasPromotionsOrganizations->hasTrasport=='Y')   
-            $html .= $results->prodGasPromotionsOrganizations->trasport.'&nbsp;&euro;';
+        if($this->_parent->prodGasPromotionsOrganizations->hasTrasport=='Y')   
+            $html .= $this->_parent->prodGasPromotionsOrganizations->trasport.'&nbsp;&euro;';
         else
             $html .= "Nessun costo di trasporto";
         $html .= '</td>';
         $html .= '<td>';
-        if($results->prodGasPromotionsOrganizations->hasCostMore=='Y')   
-            $html .= $results->prodGasPromotionsOrganizations->cost_more.'&nbsp;&euro;';
+        if($this->_parent->prodGasPromotionsOrganizations->hasCostMore=='Y')   
+            $html .= $this->_parent->prodGasPromotionsOrganizations->cost_more.'&nbsp;&euro;';
         else
             $html .= "Nessun costo agguntivo";
         $html .= '</td>';   
@@ -134,12 +139,12 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         /* 
          * articoli in promozione
          */
-        if(isset($results->prodGasArticlesPromotions)) {
+        if(isset($this->_parent->prodGasArticlesPromotions)) {
             $html .= '<div class="panel box box-primary">';
             $html .= '<div class="box-header with-border">';
             $html .= '<h4 class="box-title">';
             $html .= '<a data-toggle="collapse" data-parent="#accordion" href="#collapseProdGasArticlesPromotions" aria-expanded="false" class="collapsed">';
-            $html .= __('ProdGasArticlesPromotions').' - dettaglio articoli '.count($results->prodGasArticlesPromotions);
+            $html .= __('ProdGasArticlesPromotions').' - dettaglio articoli '.count($this->_parent->prodGasArticlesPromotions);
             $html .= '</a>';
             $html .= '</h4>';
             $html .= '</div>';
@@ -157,8 +162,8 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
             $html .= '<th scope="col" style="text-align:center;">'.__('ImportoTotaleScontato').'</th>';  
             $html .= '</tr></thead><tbody>';
              
-            (count($results->prodGasArticlesPromotions)) > 5 ? $open = false : $open = true; 
-            foreach ($results->prodGasArticlesPromotions as $numResult => $prodGasArticlesPromotion) {
+            (count($this->_parent->prodGasArticlesPromotions)) > 5 ? $open = false : $open = true; 
+            foreach ($this->_parent->prodGasArticlesPromotions as $numResult => $prodGasArticlesPromotion) {
         
                 $html .= '<tr>';
                 $html .= '<td>';
@@ -181,14 +186,14 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
                 $html .= $prodGasArticlesPromotion['importo_scontato'].'&nbsp;&euro;</td>';
                 $html .= '</tr>';
                             
-            } // end foreach ($results->prodGasArticlesPromotions as $numResult => $prodGasArticlesPromotion)
+            } // end foreach ($this->_parent->prodGasArticlesPromotions as $numResult => $prodGasArticlesPromotion)
             
             $html .= '</tbody></table></div>';
              
             $html .= '</div>';  // box-body
             $html .= '</div>';  // box-header
             $html .= '</div>';  // panel box 
-        } // end isset($results->prodGasArticlesPromotions->)    
+        } // end isset($this->_parent->prodGasArticlesPromotions->)    
          
         $html .= '</div>';
 
@@ -203,11 +208,11 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         return parent::mailOpenTesto();     
     }  
     
-    public function monitoraggio($results) {
-        return parent::monitoraggio($results);
+    public function monitoraggio() {
+        return parent::monitoraggio();
     }
 
-    public function typeGest($results) {
-        return parent::typeGest($results);
+    public function typeGest() {
+        return parent::typeGest();
     }    
 }

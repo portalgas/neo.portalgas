@@ -246,7 +246,7 @@ class UsersTable extends Table
         $user->acl['isProdGasSupplierManager'] = $usergroupsTable->isProdGasSupplierManager($user);
 
         $organization = $this->_getOrganization($user, $user_organization_id, $organization_id, $debug); 
-        
+      
         $user->des_id = 0;
         if($organization->paramsConfig['hasDes']=='Y') {
             // DES

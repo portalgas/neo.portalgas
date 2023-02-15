@@ -143,8 +143,8 @@ class DeliveriesTable extends Table
                   'Deliveries.id' => $delivery_id];
 
         $results = $this->find()
-                                ->where($where)
-                                ->first();
+                        ->where($where)
+                        ->first();
         // debug($results);
 
         if(!empty($results)) {
@@ -166,6 +166,7 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
+                        'Deliveries.type' => 'GAS', // GAS-GROUP
                         'DATE(Deliveries.data) >= CURDATE()'
                       ];
     
@@ -196,6 +197,7 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
+                        'Deliveries.type' => 'GAS', // GAS-GROUP
                         'DATE(Deliveries.data) >= CURDATE()'
                       ];
     
@@ -273,6 +275,7 @@ class DeliveriesTable extends Table
             $where_delivery = $where['Deliveries'];
         $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id,
                               'Deliveries.isVisibleBackOffice' => 'Y',
+                              'Deliveries.type' => 'GAS', // GAS-GROUP
                               'Deliveries.sys' => 'N'], 
                               $where_delivery);
 
@@ -316,7 +319,8 @@ class DeliveriesTable extends Table
         // debug($contain);
 
         $where = ['Deliveries.organization_id' => $organization_id,
-                  'Deliveries.sys' => 'Y'];
+                  'Deliveries.sys' => 'Y',
+                  'Deliveries.type' => 'GAS'];
 
         $results = $this->find()
                         ->contain($contain)

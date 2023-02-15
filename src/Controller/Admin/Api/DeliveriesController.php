@@ -49,9 +49,8 @@ class DeliveriesController extends ApiAppController
         $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
                            // 'Orders.order_type_id != ' => Configure::read('Order.type.gas_groups')
                            ];
-        $deliveries = $deliveriesTable->withOrdersGets($//$gas_group_id = 1;
-        $deliveries = $this->_ordersTable->getDeliveries($this->_user, $this->_organization->id, $where=['gas_group_id' => $gas_group_id]);    
-        user, $organization_id, $where);
+
+        $deliveries = $deliveriesTable->gets($this->_user, $this->_organization->id, $where);
         if(!empty($deliveries)) {
             foreach($deliveries as $delivery) {
                 /*

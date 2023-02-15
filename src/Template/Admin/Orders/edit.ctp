@@ -1,23 +1,23 @@
 <?php
 use Cake\Core\Configure;
-// echo $this->Html->script('vue/orderPriceTypes', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list']);
+$user = $this->Identity->get();
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
-$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
-$this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
-$this->{$htmlCustomSiteOrders}->setOrder($order);
+$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user, $parent, $order);
 // debug($htmlCustomSiteOrders);
+
+echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
+
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list']);
 ?>
   <section class="content">
     <div class="row">
       <div class="col-md-12">
 
         <?php 
-          echo $this->{$htmlCustomSiteOrders}->infoParent($parent);
+          echo $htmlCustomSiteOrders->infoParent();
         ?>
         
         <div class="box box-primary">
@@ -31,14 +31,14 @@ $this->{$htmlCustomSiteOrders}->setOrder($order);
                 /*
                  * passato per OrderValidation
                  */
-                echo $this->{$htmlCustomSiteOrders}->hiddenFields($this->Identity->get()->organization->id, $parent);
+                echo $htmlCustomSiteOrders->hiddenFields();
 
                 /*
                  * produttore
                  */
-                echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
+                echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations);
                 
-                $deliveries = $this->{$htmlCustomSiteOrders}->deliveries($deliveries, $deliveryOptions);
+                $deliveries = $htmlCustomSiteOrders->deliveries($deliveries, $deliveryOptions);
                 echo $deliveries['html'];
                 if(isset($deliveries['bottom'])) { // html inserito nel Layout in fondo, ex modal
                   $this->start('bottom');
@@ -46,17 +46,17 @@ $this->{$htmlCustomSiteOrders}->setOrder($order);
                   $this->end();
                 }
 
-                echo $this->{$htmlCustomSiteOrders}->data($parent);
+                echo $htmlCustomSiteOrders->data();
 
-                echo $this->{$htmlCustomSiteOrders}->note();
+                echo $htmlCustomSiteOrders->note();
 
-                echo $this->{$htmlCustomSiteOrders}->mailOpenTesto();
+                echo $htmlCustomSiteOrders->mailOpenTesto();
 
-                echo $this->{$htmlCustomSiteOrders}->monitoraggio($order);
+                echo $htmlCustomSiteOrders->monitoraggio();
 
-                echo $this->{$htmlCustomSiteOrders}->typeGest($order);
+                echo $htmlCustomSiteOrders->typeGest();
                 
-                echo $this->{$htmlCustomSiteOrders}->extra($order, $parent);
+                echo $htmlCustomSiteOrders->extra();
                
             echo '</div>';  // /.box-body 
 

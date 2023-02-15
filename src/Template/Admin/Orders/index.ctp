@@ -3,6 +3,11 @@ use Cake\Core\Configure;
 use App\Traits;
 
 $user = $this->Identity->get();
+/*
+ * nome dell'istanza dell'helper della tipologia di order
+ */
+$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user);
+// debug($htmlCustomSiteOrders);
 ?>
 <section class="content-header">
   <h1>
@@ -24,6 +29,9 @@ $user = $this->Identity->get();
   <div class="row">
     <div class="col-xs-12">
 
+    <?php 
+      echo $htmlCustomSiteOrders->msg();
+    ?>
     <?php 
     echo $this->element('search/orders');
     ?>

@@ -21,18 +21,19 @@ class CartComponent extends CartSuperComponent {
      * qta_new = qta aggiornata
      */
     public function managementCart($user, $organization_id, $order, $articles_order, $debug=false) {
-
+        
         $results = [];
         $results['esito'] = true;
         $results['code'] = '';
         $results['msg'] = '';
         $results['results'] = '';
-
+       
         if (empty($articles_order) || !isset($articles_order['cart'])) {
             $results['esito'] = false;
             $results['code'] = 500;
             $results['msg'] = 'Login scaduta';
             $results['results'] = 'Login scaduta';
+            return $results;
         }
 
         $organization_id = $organization_id; // $articles_order['cart']['organization_id'];
@@ -99,7 +100,7 @@ class CartComponent extends CartSuperComponent {
                     $cart = $cartsTable->find()
                                     ->where($where)
                                     ->first(); 
-
+                                    
                     if(Configure::read('Logs.cart')) Log::write('debug', 'DELETE CART DATA:');
                     if(Configure::read('Logs.cart')) Log::write('debug', $cart);
 

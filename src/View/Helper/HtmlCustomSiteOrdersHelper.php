@@ -23,9 +23,18 @@ class HtmlCustomSiteOrdersHelper extends Helper
     protected $_portalgas_bo_url = '';
 
     protected $_user = null;
+    protected $_parent = null;
     protected $_order = null;
-
-	public $helpers = ['Html', 'Form', 'HtmlCustom', 'HtmlCustomSite'];
+ 
+	public $helpers = ['Html', 'Form', 
+                       'HtmlCustom', 'HtmlCustomSite',
+                       'HtmlCustomSiteOrdersDesGroups',
+                       'HtmlCustomSiteOrdersGasParentGroups',
+                       'HtmlCustomSiteOrdersGasGroups',
+                       'HtmlCustomSiteOrdersGas',
+                       'HtmlCustomSiteOrdersPact',
+                       'HtmlCustomSiteOrdersPactPre',
+                       'HtmlCustomSiteOrdersPactPromotion'];
 
     public function initialize(array $config)
     {
@@ -36,23 +45,18 @@ class HtmlCustomSiteOrdersHelper extends Helper
     }
 
     /* 
-     * passo $user = $this->Identity->get() perche' negli altri Helper e' null!
+     * $user = $this->Identity->get() perche' negli altri Helper e' null!
+     * $parent: per DES / GAS-GROUP ordine titolare
+     * $order l'ordine per edit
      */
-    public function setUser($user) {
-        $this->_user = $user;
-    }
-
-    /* 
-     * passo l'ordine per edit
-     */
-    public function setOrder($order) {
-        $this->_order = $order;
-    }
-
-    public function factory($order_type_id, $debug=false) {
+    public function factory($order_type_id, $user, $parent=null, $order=null, $debug=false) {
 
         $helper = '';
 
+        $this->_user = $user;
+        $this->_parent = $parent;
+        $this->_order = $order;
+        
         switch (strtoupper($order_type_id)) {
             case self::$GAS:
                 $helper = 'HtmlCustomSiteOrdersGas';
@@ -82,14 +86,18 @@ class HtmlCustomSiteOrdersHelper extends Helper
         }
 
         if($debug) debug($helper);
-        
-        return $helper;
+
+        $this->{$helper}->_user = $user;
+        $this->{$helper}->_parent = $parent;
+        $this->{$helper}->_order = $order;
+
+        return $this->{$helper};
     } 
 
-    public function hiddenFields($organization_id, $parent) {
+    public function hiddenFields() {
 
         $html = '';
-        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_user->organization->id, 'required' => 'required']);
     
         return $html;
     }    
@@ -97,11 +105,11 @@ class HtmlCustomSiteOrdersHelper extends Helper
     /*
      * dettaglio ordine padre
      */
-    public function infoParent($results) {
+    public function infoParent() {
         return '';    
     }
     
-    public function data($parent) {
+    public function data() {
         $html = '';
         $html .= '<div class="row">';
         $html .= '<div class="col-md-6">'; 
@@ -112,8 +120,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $html .= '</div>'; 
         $html .= '</div>';
 
-        if(!empty($parent)) {
-            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
+        if(!empty($this->_parent)) {
+            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($this->_parent->data_fine);
 
             $html .= '<div class="row">';
             $html .= '<div class="col-md-12">'; 
@@ -222,10 +230,12 @@ class HtmlCustomSiteOrdersHelper extends Helper
          * default
          */
         $default = 'N'; // lista consegne attive
-        if(!empty($this->_order)) { // edit
+        if(!$this->_order->isNew()) { // edit
             if($this->_order->delivery_id==key($deliveries['Y']))
                 $default = 'Y';  // consegna Da definire
             else {
+                $default = $this->_order->delivery_id;
+
                 /* 
                 * ctrl che tra l'elenco delle consegne ci sia la consegna gia' associata all'ordine 
                 * se non c'e' (per esempio consegna chiusa e qui prendo solo DATE(Delivery.data) >= CURDATE() ) 
@@ -249,7 +259,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
                 'value' => 'N', 
                 'text' => '<div id="radio-delivery-type-N" class="radio-delivery-type">'.
                         $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false, 
-                                                               'default' => $this->_order->delivery_id, 'empty' => Configure::read('HtmlOptionEmpty')]).
+                                                               'default' => $default, 'empty' => Configure::read('HtmlOptionEmpty')]).
                         '</div>'];            
         }
         
@@ -374,7 +384,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
         return $html;     
     }   
     
-    public function monitoraggio($results) {
+    public function monitoraggio() {
 
         $qta_massima_um_options = ['KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)', 
                                     'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)', 
@@ -424,15 +434,15 @@ class HtmlCustomSiteOrdersHelper extends Helper
         return $html;
     }
     
-    public function typeGest($order) {
+    public function typeGest() {
 
-        if($order->isNew()) {
+        if($this->_order->isNew()) {
             // add 
             $type_gest = '';
         }
         else  {
             // edit 
-            $type_gest = $order->typeGest;
+            $type_gest = $this->_order->typeGest;
         }
 
         $typeGests = [];
@@ -489,9 +499,9 @@ class HtmlCustomSiteOrdersHelper extends Helper
     /*
      * trasport / cost_more / cost_less
      */    
-    public function extra($order, $parent) {
+    public function extra() {
 
-        if($order->isNew()) {
+        if($this->_order->isNew()) {
             // add 
             $hasTrasport = 'N';
             $trasport = 0;
@@ -504,23 +514,23 @@ class HtmlCustomSiteOrdersHelper extends Helper
         }
         else {
             // edit
-            $hasTrasport = $order->hasTrasport;
-            $trasport = $order->trasport;
-            $hasCostMore = $order->hasCostMore;
-            $costMore = $order->costMore;
-            $hasCostLess = $order->hasCostLess;
-            $costLess = $order->costLess;          
+            $hasTrasport = $this->_order->hasTrasport;
+            $trasport = $this->_order->trasport;
+            $hasCostMore = $this->_order->hasCostMore;
+            $costMore = $this->_order->costMore;
+            $hasCostLess = $this->_order->hasCostLess;
+            $costLess = $this->_order->costLess;          
             
             $disabled = false;
         }
    
-        if(!empty($parent)) {
-            $hasTrasport = $parent->hasTrasport;
-            $trasport = $parent->trasport;
-            $hasCostMore = $parent->hasCostMore;
-            $costMore = $parent->costMore;
-            $hasCostLess = $parent->hasCostLess;
-            $costLess = $parent->costLess;
+        if(!empty($this->_parent)) {
+            $hasTrasport = $this->_parent->hasTrasport;
+            $trasport = $this->_parent->trasport;
+            $hasCostMore = $this->_parent->hasCostMore;
+            $costMore = $this->_parent->costMore;
+            $hasCostLess = $this->_parent->hasCostLess;
+            $costLess = $this->_parent->costLess;
 
             $disabled = true;
         }

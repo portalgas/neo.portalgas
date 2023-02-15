@@ -249,14 +249,13 @@ class CartsTable extends Table
                             'Carts.order_id' => $order_id,
                             'Carts.deleteToReferent' => 'N'];
         if(!empty($user_id)) {
-            $where_defaults = ['Carts.user_id' => $user_id];
+            $where_defaults += ['Carts.user_id' => $user_id];
         }
         else {
             $contain += ['Users'];
         }
-
         $where = array_merge($where_defaults, $where);
-        // debug($where);
+        
         if(empty($user_id)) {
             $order = ['Users.name', 'ArticlesOrders.name'];
         }

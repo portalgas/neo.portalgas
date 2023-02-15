@@ -17,13 +17,18 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
 
-    public function hiddenFields($organization_id, $parent) {
+    // eventuale msg in index
+    public function msg() {
+        return '';
+    }
+
+    public function hiddenFields() {
         $html = '';
-        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_parent->organization->id, 'required' => 'required']);
 
         // ordine del DES 
         if(!empty($parent))
-            $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
+            $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $this->_parent->id, 'required' => 'required']);
         
         return $html;
     }   
@@ -31,11 +36,11 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
     /*
      * dettaglio ordine padre
      */
-    public function infoParent($des_order) {
-        if(empty($des_order))
+    public function infoParent() {
+        if(empty($this->_parent))
             return '';
 
-        $delivery_label = $des_order->luogo;
+        $delivery_label = $this->_parent->luogo;
 
         $html = '<div class="box box-solid">
         <div class="box box-danger">
@@ -56,14 +61,14 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
                     <div class="form-group">
                     ';
 
-                    foreach($des_order->de->des_organizations as $des_organization) {                    
+                    foreach($this->_parent->de->des_organizations as $des_organization) {                    
                         $url = sprintf($this->_portalgas_fe_url.Configure::read('Organization.img.path.full'), $des_organization->organization->img1);
                         $img = '<span class="box-img"><img src="'.$url.'" alt="'.$des_organization->organization->name.'" title="'.$des_organization->organization->name.'" width="'.Configure::read('Organization.img.preview.width').'" class="img-supplier" /></span> ';
                         $html .= '<label class="col-sm-2 control-label" style="padding-top:0px">'.__('G.A.S.').'</label>
                                     <div class="col-sm-10">'.$img.' '.$des_organization->organization->name;
-                        if(count($des_order->des_orders_organizations)>0) {  
+                        if(count($this->_parent->des_orders_organizations)>0) {  
                             $found = false;
-                            foreach($des_order->des_orders_organizations as $des_orders_organization) {
+                            foreach($this->_parent->des_orders_organizations as $des_orders_organization) {
                                 if($des_orders_organization->organization_id==$des_organization->organization->id) {
                                     $found = true; 
                                     $html .= ' <span class="label label-success">ordine già creato</span>';
@@ -88,7 +93,7 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         return $html;    
     }
 
-    public function data($parent) {
+    public function data() {
         $html = '';
         $html .= '<div class="row">';
         $html .= '<div class="col-md-6">'; 
@@ -100,9 +105,9 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         $html .= '</div>';
 
         if(!empty($parent)) {
-            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine_max);
+            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($this->_parent->data_fine_max);
             
-            $html .= $this->Form->control('data_fine_max', ['type' => 'hidden', 'value' => $parent->data_fine_max]);
+            $html .= $this->Form->control('data_fine_max', ['type' => 'hidden', 'value' => $this->_parent->data_fine_max]);
 
             $html .= '<div class="row">';
             $html .= '<div class="col-md-12">'; 
@@ -133,11 +138,11 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         return parent::mailOpenTesto();     
     }
     
-    public function monitoraggio($results) {
-        return parent::monitoraggio($results);
+    public function monitoraggio() {
+        return parent::monitoraggio();
     }
 
-    public function typeGest($results) {
-        return parent::typeGest($results);
+    public function typeGest() {
+        return parent::typeGest();
     }    
 }

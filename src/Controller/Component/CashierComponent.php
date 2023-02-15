@@ -18,7 +18,7 @@ class CashierComponent extends Component {
         //$controller->request
 
         $this->_where['Deliveries'] = ['Deliveries.stato_elaborazione' => 'OPEN',
-            							'Deliveries.sys' => 'N'];
+                                        'Deliveries.sys' => 'N'];
         $this->_where['Orders'] = ['Orders.state_code' => 'PROCESSED-ON-DELIVERY'];        
     }
 

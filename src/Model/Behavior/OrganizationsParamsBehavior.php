@@ -28,8 +28,15 @@ class OrganizationsParamsBehavior extends Behavior
 		
         foreach ($results as $key => $result) {
         	if(isset($result->id)) {
-				if(!empty($result->paramsConfig))
+				if(!empty($result->paramsConfig)) {
 					$result->paramsConfig = json_decode($result->paramsConfig, true);
+                    /*
+                     * gestione parametri non valorizzati, ex x GAS SOCILAMARKET non c'e' ['hasDes']
+                     */
+                    if(!isset($result->paramsConfig['hasDes'])) {
+                        $result->paramsConfig['hasDes']='N';
+                    }
+                }
 				
 				if(!empty($result->paramsFields))
 					$result->paramsFields = json_decode($result->paramsFields, true);

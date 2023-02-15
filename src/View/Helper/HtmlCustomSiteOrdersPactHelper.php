@@ -17,8 +17,13 @@ class HtmlCustomSiteOrdersPactHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
 
-    public function hiddenFields($organization_id, $parent) {
-        return parent::hiddenFields($organization_id, $parent);
+    // eventuale msg in index
+    public function msg() {
+        return '';
+    }
+
+    public function hiddenFields() {
+        return parent::hiddenFields();
     }   
         
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
@@ -40,11 +45,11 @@ class HtmlCustomSiteOrdersPactHelper extends HtmlCustomSiteOrdersHelper
         return parent::mailOpenTesto();     
     } 
     
-    public function monitoraggio($results) {
-        return parent::monitoraggio($results);
+    public function monitoraggio() {
+        return parent::monitoraggio();
     }
 
-    public function typeGest($results) {
-        return parent::typeGest($results);
+    public function typeGest() {
+        return parent::typeGest();
     }       
 }

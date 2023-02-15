@@ -17,14 +17,19 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         // debug($config);
     }
 
-    public function hiddenFields($organization_id, $parent) {
+    // eventuale msg in index
+    public function msg() {
+        return '';
+    }
+
+    public function hiddenFields() {
 
         $html = '';
-        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $organization_id, 'required' => 'required']);
+        $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_parent->organization_id, 'required' => 'required']);
 
         // ordine del GAS 
         if(!empty($parent))
-            $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $parent->id, 'required' => 'required']);
+            $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $this->_parent->id, 'required' => 'required']);
         
         return $html;
     }    
@@ -49,7 +54,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         return $results;
     }
 
-    public function data($parent) {
+    public function data() {
 
         $html = '';
         $html .= '<div class="row">';
@@ -61,10 +66,10 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         $html .= '</div>'; 
         $html .= '</div>';
 
-        if(!empty($parent)) {
-            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($parent->data_fine);
+        if(!empty($this->_parent)) {
+            $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($this->_parent->data_fine);
 
-            $html .= $this->Form->control('parent_data_fine', ['type' => 'hidden', 'value' => $parent->data_fine]);
+            $html .= $this->Form->control('parent_data_fine', ['type' => 'hidden', 'value' => $this->_parent->data_fine]);
 
             $html .= '<div class="row">';
             $html .= '<div class="col-md-12">'; 
@@ -87,15 +92,15 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
     /*
      * dettaglio ordine padre
      */
-    public function infoParent($results) {
+    public function infoParent() {
 
-        if(empty($results))
+        if(empty($this->_parent))
             return '';
 
-        if($results->delivery->sys=='N')
-            $delivery_label = $results->delivery->luogo.' '.$results->delivery->luogo;
+        if($this->_parent->delivery->sys=='N')
+            $delivery_label = $this->_parent->delivery->luogo.' '.$this->_parent->delivery->luogo;
         else 
-            $delivery_label = $results->delivery->luogo;
+            $delivery_label = $this->_parent->delivery->luogo;
 
         $html = '<div class="box box-solid">
         <div class="box box-danger">
@@ -114,11 +119,11 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
                         <div class="col-sm-4">'.$delivery_label.'</div>
                         
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
-                        <div class="col-sm-4">Da '.$results->data_inizio->i18nFormat('eeee d MMMM').' a '.$results->data_fine->i18nFormat('eeee d MMMM').'</div>
+                        <div class="col-sm-4">Da '.$this->_parent->data_inizio->i18nFormat('eeee d MMMM').' a '.$this->_parent->data_fine->i18nFormat('eeee d MMMM').'</div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
-                        <div class="col-sm-10">'.$results->order_state_code->name.': '.$results->order_state_code->descri.'</div>
+                        <div class="col-sm-10">'.$this->_parent->order_state_code->name.': '.$this->_parent->order_state_code->descri.'</div>
                     </div>
                 </div>
 
@@ -129,11 +134,11 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         return $html;   
     }
 
-    public function monitoraggio($results) {
-        return parent::monitoraggio($results);
+    public function monitoraggio() {
+        return parent::monitoraggio();
     }
 
-    public function typeGest($results) {
-        return parent::typeGest($results);
+    public function typeGest() {
+        return parent::typeGest();
     }    
 }
