@@ -107,6 +107,16 @@ class GasGroupsTable extends Table
         return $rules;
     }
 
+	public function getsById($user, $organization_id, $gas_group_id) {
+
+        $results = $this->find()
+                        ->where(['GasGroups.organization_id' => $organization_id,
+                                 'GasGroups.id' => $gas_group_id])
+                        ->first();
+  
+        return $results;		
+    } 
+
     /* 
      * utenti da associare al gruppo
      * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non vederlo
@@ -115,7 +125,9 @@ class GasGroupsTable extends Table
     public function findMy($user, $organization_id, $user_id) {
 
         $results = []; 
-         
+        if($user->organization->paramsConfig['hasGasGroups']=='N')
+            return $results;
+
         $gas_groups = $this->find()->contain(['GasGroupUsers' => [
                                 'conditions' => [
                                     'GasGroupUsers.user_id' => $user_id,
@@ -126,7 +138,7 @@ class GasGroupsTable extends Table
 
         foreach($gas_groups as $gas_group) {
             /*
-             * escludo i gruppi dove l'utente nno e' associato
+             * escludo i gruppi dove l'utente non e' associato
              */
             if(!empty($gas_group->gas_group_users)) {
                 $results[] = $gas_group;
@@ -140,57 +152,20 @@ class GasGroupsTable extends Table
      * utenti da associare al gruppo
      * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non vederlo
      * filtro a GasGroupUsers.user_id quindi chi gestisce il gruppo deve parteciparvi
+     * 
+     *  $where += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
      */
     public function findMyLists($user, $organization_id, $user_id) {
 
         $results = []; 
-        
+        if($user->organization->paramsConfig['hasGasGroups']=='N')
+            return $results;
+
         $gas_groups = $this->findMy($user, $organization_id, $user_id);
         foreach($gas_groups as $gas_group) {
             $results[$gas_group->id] = $gas_group->name;
         }
 
         return $results;
-    }  
-    
-	public function getsById($user, $organization_id, $gas_group_id) {
-
-        $options = [];
-        $options['conditions'] = ['GasGroups.organization_id' => $organization_id,
-                                  'GasGroups.id' => $gas_group_id];
-        $options['recursive'] = -1;
-
-        $results = $this->find('first', $options);
-  
-      return $results;		
-  }
-
-  public function getsByUser($user, $organization_id, $user_id) {
-
-      if($user->organization->paramsConfig['hasGasGroups']=='N')
-        return [];
-
-      $where = ['GasGroups.organization_id' => $organization_id,
-                'GasGroups.user_id' => $user_id];
-
-      $results = $this->find()->where($where)->all();
-  
-      return $results;		
-  }
-
-  public function getsByIdsUser($user, $organization_id, $user_id) {
-
-      if($user->organization->paramsConfig['hasGasGroups']=='N')
-        return [];
-
-      $ids = [];
-
-      $results = $this->getsByUser($user, $organization_id, $user_id);
-      if(!empty($results))
-      foreach($results as $result) {
-          $ids[$result->id] = $result->id;
-      }
-  
-      return $ids;		
-  }  
+    }    
 }

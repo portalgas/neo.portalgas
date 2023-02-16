@@ -133,7 +133,7 @@ class SuppliersOrganizationsReferentsTable extends Table
                         }])
                         ->where($where)
                         ->contain(['SuppliersOrganizations'])
-                        ->order(['Deliveries.data'])
+                        ->order(['SuppliersOrganizations.name'])
                         ->all();
 
         // debug($results);

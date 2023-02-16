@@ -39,20 +39,6 @@ class OrderDecorator  extends AppDecorator {
 		$debug = false;
 
 		/* 
-		* ctrl se e' un ordine di gruppo e se appartiene al gruppo del referente 
-		*/   
-		if($user->organization->paramsConfig['hasGasGroups']=='Y') {
-			if(!empty($order->gas_group_id)) {
-				$gasGroupsTable = TableRegistry::get('GasGroups');
-				$gas_groups = $gasGroupsTable->getsByIdsUser($user, $user->organization->id, $user->id);
-				if(!in_array($order->gas_group_id, $gas_groups)) {
-					$order = null; 
-					return $order;
-				}
-			}
-		}
-
-		/* 
 		* DES
 		*/   
 		if($user->organization->paramsConfig['hasDes']=='Y') {		

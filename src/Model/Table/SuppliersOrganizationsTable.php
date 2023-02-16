@@ -284,9 +284,13 @@ class SuppliersOrganizationsTable extends Table
         }
     }
    
+    /* 
+     * lista id => name profilata 
+     * per avere solo gli id array_keys($suppliersOrganizations)
+     */
     public function ACLgetsList($user, $organization_id, $user_id, $where=[]) {
         
-        if($user->acl['isSuperReferente']) {
+        if(!$user->acl['isSuperReferente']) {
             if(isset($where['SuppliersOrganizations']))
                 $where = array_merge($where['SuppliersOrganizations'], ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']]);
             else 
@@ -297,39 +301,11 @@ class SuppliersOrganizationsTable extends Table
             $results = [];
             $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
             $suppliersOrganizationsReferents = $suppliersOrganizationsReferentsTable->getsList($user, $where);
-            foreach($suppliersOrganizationsReferents as $suppliersOrganizationsReferent) {
-                $results[$suppliersOrganizationsReferent->suppliers_organization->id] = $suppliersOrganizationsReferent->suppliers_organization->name;
+            foreach($suppliersOrganizationsReferents as $key => $value) {
+                $results[$key] = $value;
             }
             return $results;            
         }
-    }
-
-    public function ACLgetsIds($user, $organization_id, $user_id, $where=[]) {
-        
-        $ids = [];
-        $results = []; 
-        if($user->acl['isSuperReferente']) {
-            if(isset($where['SuppliersOrganizations']))
-                $where = array_merge($where['SuppliersOrganizations'], ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']]);
-            else 
-                $where = ['SuppliersOrganizations.stato IN ' => ['Y', 'P', 'T']];
-            $results = $this->getsList($user, $where);
-        }
-        else {
-            $suppliersOrganizationsReferentsTable = TableRegistry::get('SuppliersOrganizationsReferents');
-            $suppliersOrganizationsReferents = $suppliersOrganizationsReferentsTable->getsList($user, $where);
-            foreach($suppliersOrganizationsReferents as $suppliersOrganizationsReferent) {
-                $results[$suppliersOrganizationsReferent->suppliers_organization->id] = $suppliersOrganizationsReferent->suppliers_organization->name;
-            }
-        }
-
-        if(!empty($results)) {
-            foreach($results as $result) {
-                array_push($ids, $result->id);
-            }
-        }
-
-        return $ids;
     }
 
     /*

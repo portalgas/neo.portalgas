@@ -209,9 +209,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                             echo $this->Html->link('<i class="fa fa-2x fa-plus" aria-hidden="true"></i>', ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
                       break;
                   }
-                  
-                  // fractis => da togliere
-                  echo $this->Html->link('<i class="fa fa-2x fa-edit" aria-hidden="true"></i>', ['action' => 'edit', $order->order_type_id, $order->id, $order->parent_id], ['class'=>'btn btn-primary', 'title' => __('Edit Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
 
                   echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   

@@ -31,6 +31,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
+    $options['empty'] = true;
     echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
     echo '<div class="col-md-5">';

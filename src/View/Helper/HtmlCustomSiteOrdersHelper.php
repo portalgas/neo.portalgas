@@ -52,10 +52,6 @@ class HtmlCustomSiteOrdersHelper extends Helper
     public function factory($order_type_id, $user, $parent=null, $order=null, $debug=false) {
 
         $helper = '';
-
-        $this->_user = $user;
-        $this->_parent = $parent;
-        $this->_order = $order;
         
         switch (strtoupper($order_type_id)) {
             case self::$GAS:
@@ -87,6 +83,12 @@ class HtmlCustomSiteOrdersHelper extends Helper
 
         if($debug) debug($helper);
 
+        // le classe che ereditano non lo prendono
+        $this->_user = $user;
+        $this->_parent = $parent;
+        $this->_order = $order;
+        
+        // workaround
         $this->{$helper}->_user = $user;
         $this->{$helper}->_parent = $parent;
         $this->{$helper}->_order = $order;

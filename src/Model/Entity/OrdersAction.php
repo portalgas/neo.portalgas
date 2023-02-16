@@ -33,9 +33,11 @@ class OrdersAction extends Entity
     protected $_accessible = [
         'controller' => true,
         'action' => true,
+        'neo_url' => true,
         'state_code_next' => true,
         'permission' => true,
         'permission_or' => true,
+        'permissions' => true,
         'query_string' => true,
         'flag_menu' => true,
         'label' => true,

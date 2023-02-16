@@ -46,8 +46,11 @@ class OrdersController extends AppController
     public function index($order_type_id=0)
     {
         $where = [];
-        $orders = ['Deliveries.data asc'];
+        $sorts = ['Deliveries.data asc'];
                    
+        /* 
+         * filters
+         */
         $request = $this->request->getQuery();
         $search_supplier_organization_id = '';
         $order_delivery_date = '';
@@ -63,13 +66,13 @@ class OrdersController extends AppController
             $order_delivery_date = $request['order_delivery_date'];
             list($field, $sort) = explode(' ', $order_delivery_date);
             ($sort=='asc') ? $sort = 'desc': $sort = 'asc';
-            foreach($orders as $key => $value) {
+            foreach($sorts as $key => $value) {
                 // debug($value.' = '.$field.' '.$sort);
                 if(strtolower($value)==strtolower($field.' '.$sort))
-                    unset($orders[$key]);
+                    unset($sorts[$key]);
             }
-            if(!in_array($request['order_delivery_date'], $orders))
-                array_push($orders, $request['order_delivery_date']);
+            if(!in_array($request['order_delivery_date'], $sorts))
+                array_push($sorts, $request['order_delivery_date']);
         } 
         $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
 
@@ -78,20 +81,43 @@ class OrdersController extends AppController
                     'Deliveries.isVisibleBackOffice' => 'Y',
                     'Deliveries.stato_elaborazione' => 'OPEN',
                     'SuppliersOrganizations.stato' => 'Y'];
-        if(!empty($order_type_id))
+        if(!empty($order_type_id)) {
             $where += ['Orders.order_type_id' => $order_type_id];
+            if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                // ctrl che l'utente appartertenga al gruppo 
+                $gasGroupsTable = TableRegistry::get('GasGroups');
+                $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                if(empty($gasGroups))
+                    $where += ['Orders.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
+                else 
+                    $where += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
+            }
+        }
+        /* 
+         * profilazione $user->acl['isReferentGeneric'] 
+         */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['SuppliersOrganizations.id' => '-1']; // utente senza referenze
+            else
+                $where += ['SuppliersOrganizations.id IN ' => array_keys($suppliersOrganizations)];
+        }
+
         // debug($where);
-        array_push($orders, 'Orders.data_inizio asc');
-        // debug($orders);
+        array_push($sorts, 'Orders.data_inizio asc');
+        // debug($sorts);
 
         $this->paginate = [
-            'order' => $orders,            
+            'order' => $sorts,            
             'contain' => ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
                 'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
             'conditions' => $where,
             'limit' => 75
         ];
-        
+
         // debug($where);
         $orders = new OrderDecorator($this->_user, $this->paginate($this->Orders));
         $orders = $orders->results;

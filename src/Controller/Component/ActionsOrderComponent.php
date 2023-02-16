@@ -120,10 +120,45 @@ class ActionsOrderComponent extends CartSuperComponent {
 
 			$orderActionOk = true;
 			
+			/* 
+			 * [
+			 *  {"orgHasArticlesOrder":"Y","userHasArticlesOrder":"Y"},
+			 *  {"orgHasArticlesOrder":"Y","userHasArticlesOrder":"N"}
+			 * ]
+			 * ogni riga e' in OR => valide le condizioni 1 riga OR valide le condizioni 2 riga
+			 */
+			if(!empty($orders_action->permissions)) {
+				$permissions = json_decode($orders_action->permissions, true);
+
+				$totale_permessi_da_validate = count($permissions); // in OR
+				$orderActionOks = [];
+				foreach($permissions as $numResult => $permission) {
+					$esito = false;
+					$orderActionOks[$numResult] = true;
+					foreach($permission as $method_name => $value_da_verificare) {
+						if($orderActionOks[$numResult]) {
+							$esito = $this->{$method_name}($user, $order, $value_da_verificare);
+						}
+							
+						if(!$esito) {
+							$orderActionOks[$numResult] = false;
+							// break; no perche' mi blocca il foreach superiore
+						}
+					}
+				}
+
+				foreach($orderActionOks as $orderActionOk) { 
+					if($orderActionOk) { // e' sufficiente 1 a true, perche' sono in OR
+						$orderActionOk = true;
+						break;
+					}
+				}
+			}
+
 			/*
+			 * gestione precedente 
 			 * PERMISSION
-			 * 		sono stati soddisfatti tutti i criteri per accedere alla risorsa => faccio vedere l'url
-			 */			
+			 * 		sono stati soddisfatti tutti i criteri per accedere alla risorsa => faccio vedere l'url		
 			if(!empty($orders_action->permission)) {
 				$permission = json_decode($orders_action->permission, true);
 
@@ -141,9 +176,7 @@ class ActionsOrderComponent extends CartSuperComponent {
 				}				
 			} // end if(!empty($result->permission))
 				
-			/*
-			 * PERMISSION_OR
-			 */			
+			// PERMISSION_OR
 			if(!empty($orders_action->permission_or)) {
 				$permission_or = json_decode($orders_action->permission_or, true);
 
@@ -160,13 +193,12 @@ class ActionsOrderComponent extends CartSuperComponent {
 					}
 				}
 
-				/*
-				 * se nel controllo OrdersAction.permission era true, e' valido anche qui perche' sono in OR
-				*/				
+				// se nel controllo OrdersAction.permission era true, e' valido anche qui perche' sono in OR				
 				if($orderActionOk || $orderActionOR_Ok) 
 					$orderActionOk = true;
 				
 			} // if(!empty($result->permission_or))
+			*/
 
 			if($orderActionOk) {
 	
@@ -177,7 +209,15 @@ class ActionsOrderComponent extends CartSuperComponent {
 				$orderActions[$i]['action'] = $orders_action->action;				
 				$orderActions[$i]['qs'] = ['delivery_id' => $order->delivery_id, 'order_id' => $order->id];
 				$orderActions[$i]['url'] = $urlBase.'controller='.$orders_action->controller.'&action='.$orders_action->action.'&delivery_id='.$order->delivery_id.'&order_id='.$order->id;
-	
+				if(!empty($orders_action->neo_url)) {
+					$neo_url = $orders_action->neo_url;
+					$neo_url = str_replace('{order_type_id}', $order->order_type_id, $neo_url);
+					$neo_url = str_replace('{order_id}', $order->id, $neo_url);
+					$neo_url = str_replace('{parent_id}', $order->parent_id, $neo_url);
+					
+					$orderActions[$i]['neo_url'] = $neo_url;
+				}
+
 				if(!empty($orders_action->query_string)) {
 						
 					switch ($orders_action->query_string) {
@@ -495,7 +535,32 @@ class ActionsOrderComponent extends CartSuperComponent {
 		else 
 			return false;
 	}
-	
+
+	/*
+	 * controllo la tipologia di ordine
+		Configure::write('Order.type.gas', 1);
+		Configure::write('Order.type.des', 2);
+		Configure::write('Order.type.des_titolare', 3);
+		Configure::write('Order.type.promotion', 4);
+		Configure::write('Order.type.pact_pre', 5); 
+		Configure::write('Order.type.pact', 6);  
+		Configure::write('Order.type.supplier', 7);
+		Configure::write('Order.type.promotion_gas_users', 8);
+		Configure::write('Order.type.socialmarket', 9);
+		Configure::write('Order.type.gas_groups', 10);
+		Configure::write('Order.type.gas_parent_groups', 11);
+	*/
+	private function isOrderTypes($user, $order, $value_da_verificare) {
+		$esito = false;
+
+		$order_type_ids = explode(',', $value_da_verificare);		
+		if(in_array($order->order_type_id, $order_type_ids))
+			$esito = true;
+		else
+			$esito = false;
+		return $esito;
+	}
+
 	private function isProdGasPromotion($user, $order, $value_da_verificare) {
 		$esito = false;
 		$isProdGasPromotion = "N";

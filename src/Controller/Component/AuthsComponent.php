@@ -58,6 +58,11 @@ class AuthsComponent extends Component {
         $action = strtolower($request->action); 
         $pass = $request->pass;
         
+        if(!$user->acl['isReferentGeneric'] && !$user->acl['isSuperReferente']) { 
+            $results['msg'] = __('msg_not_permission');
+            return $results;
+        } 
+
         if($controller=='orders' && $action=='index')
             return $results;
 
@@ -82,12 +87,7 @@ class AuthsComponent extends Component {
                 * ctrl che lo user abbia creato un gruppo
                 */
                 switch($order_type_id) {
-                    case Configure::read('Order.type.gas'):
-                        if(!$user->acl['isReferentGeneric']  &&
-                        !$user->acl['isSuperReferente']) { 
-                            $results['msg'] = __('msg_not_permission');
-                            return $results;
-                        }             
+                    case Configure::read('Order.type.gas'):            
                     break;
                     case Configure::read('Order.type.gas_groups'):
                     case Configure::read('Order.type.gas_parent_groups'):
