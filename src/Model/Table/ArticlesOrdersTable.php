@@ -182,9 +182,11 @@ class ArticlesOrdersTable extends Table
             break;
             case Configure::read('Order.type.gas'):
             case Configure::read('Order.type.socialmarket'):
-            case Configure::read('Order.type.gas_parent_groups'):
             case Configure::read('Order.type.des_titolare'):
                 $table_registry = 'ArticlesOrdersGas';
+            break;
+            case Configure::read('Order.type.gas_parent_groups'):
+                $table_registry = 'ArticlesOrdersGasParentGroups';
             break;
             case Configure::read('Order.type.gas_groups'):
                 $table_registry = 'ArticlesOrdersGasGroups';
@@ -206,19 +208,78 @@ class ArticlesOrdersTable extends Table
         return TableRegistry::get($table_registry);
     } 
 
-
-  /* 
-   * implements
-   * 
-   * gestione associazione articoli all'ordine
-   * return
-   *  proprietario listino: per gestione permessi di modifica
-   *  article_orders: articoli gia' associati
-   *  articles: articoli da associare
-   */    
+    /* 
+    * implements
+    * 
+    * gestione associazione articoli all'ordine
+    * return
+    *  proprietario listino: per gestione permessi di modifica
+    *  article_orders: articoli gia' associati (con eventuali acquisti)
+    *  articles: articoli da associare
+    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        $result['esito'] = false;
-        return $result;
+            
+        $results = [];
+        $results['esito'] = true;
+        $results['article_orders'] = []; // articoli gia' associati, se empty => prima volta => copia da articles
+        $results['articles'] = []; // articles: articoli da associare
+        
+        /* 
+        * $article_orders => articoli gia' associati 
+        */ 
+        $where = [];
+        $where['ArticlesOrders'] = [$this->getAlias().'.organization_id' => $order->organization_id,
+                                    $this->getAlias().'.order_id' => $order->id,
+                                ]; 
+        
+        $options = [];
+        $options['sort'] = [];
+        $options['limit'] = Configure::read('sql.no.limit');
+        $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options);
+      
+        $where2 = [];
+        $ids = [];
+        if(!empty($results['article_orders'])) {
+            /* 
+            * escludo gli articoli gia' associati
+            * */
+            foreach($results['article_orders'] as $article_order) {
+                array_push($ids, $article_order->article_id);
+            }
+
+            $where2['Articles'] = ['Articles.id NOT IN' => $ids];
+        }
+
+        /* 
+        * $articles => articoli da associare
+        */ 
+        $owner_articles = $order->owner_articles;
+        $supplier_organization_id = $order->supplier_organization_id; 
+
+        $articlesTable = TableRegistry::get('Articles');
+        $results['articles'] = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where2);
+        // debug($results);
+    
+        /* 
+        * se non ci sono articoli gia' associati
+        * associo tutti gli articoli ordinabili e rileggo articles_orders
+        */
+        if(empty($results['article_orders'])) {
+            // articoli gia' associati, se empty => prima volta => copia da articles
+            $resultAddsByArticles = $this->addsByArticles($user, $organization_id, $order, $results['articles']);
+            if($resultAddsByArticles!==true) {
+                $results['esito'] = false;
+                $results['errors'] = $resultAddsByArticles;
+            }
+                
+            $options = [];
+            $options['sort'] = [];
+            $options['limit'] = Configure::read('sql.no.limit');
+            $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options); 
+            $results['articles'] = [];
+        }
+
+        return $results;
     }
 
     /*
@@ -539,7 +600,7 @@ class ArticlesOrdersTable extends Table
         return $results;
     }   
 
-    public function deleteByIds($user, $organization_id, $ids, $debug=false) {    
+    public function deleteByIds($user, $organization_id, $order, $ids, $debug=false) {    
        
         $results = false;
         

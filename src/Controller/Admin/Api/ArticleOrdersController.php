@@ -241,6 +241,13 @@ class ArticleOrdersController extends ApiAppController
         $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
         
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
+        if($articlesOrdersTable===false) {
+            $results['esito'] = false;
+            $results['results'] = $datas;
+            $results['errors'] = 'ArticlesOrders factory';
+            return $this->_response($results); 
+        } 
 
         /* 
          * aggiorno article_orders 
@@ -286,7 +293,7 @@ class ArticleOrdersController extends ApiAppController
                 $ids['article_organization_id'] = $delete_article_order['article_organization_id'];
                 $ids['article_id'] = $delete_article_order['article_id'];
                 
-                $articlesOrder = $articlesOrdersTable->deleteByIds($this->_user, $this->_organization->id, $ids, $debug);
+                $articlesOrder = $articlesOrdersTable->deleteByIds($this->_user, $this->_organization->id, $order, $ids, $debug);
             }
         }
 

@@ -35,68 +35,7 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
    *  articles: articoli da associare
    */    
     public function getAssociateToOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        
-        $results = [];
-        $results['esito'] = true;
-        $results['article_orders'] = []; // articoli gia' associati, se empty => prima volta => copia da articles
-        $results['articles'] = []; // articles: articoli da associare
-        
-        /* 
-         * $article_orders => articoli gia' associati 
-         */ 
-        $where = [];
-        $where['ArticlesOrders'] = [$this->getAlias().'.organization_id' => $order->organization_id,
-                                    $this->getAlias().'.order_id' => $order->id,
-                                ]; 
-        
-        $options = [];
-        $options['sort'] = [];
-        $options['limit'] = Configure::read('sql.no.limit');
-        $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options);
-
-        $where2 = [];
-        $ids = [];
-        if(!empty($results['article_orders'])) {
-            /* 
-             * escludo gli articoli gia' associati
-             * */
-            foreach($results['article_orders'] as $article_order) {
-                array_push($ids, $article_order->article_id);
-            }
-
-            $where2['Articles'] = ['Articles.id NOT IN' => $ids];
-        }
-
-        /* 
-         * $articles => articoli da associare
-         */ 
-        $owner_articles = $order->owner_articles;
-        $supplier_organization_id = $order->supplier_organization_id; 
-
-        $articlesTable = TableRegistry::get('Articles');
-        $results['articles'] = $articlesTable->getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where2);
-        // debug($results);
-       
-        /* 
-         * se non ci sono articoli gia' associati
-         * associo tutti gli articoli ordinabili e rileggo articles_orders
-         */
-        if(empty($results['article_orders'])) {
-            // articoli gia' associati, se empty => prima volta => copia da articles
-            $resultAddsByArticles = $this->addsByArticles($user, $organization_id, $order, $results['articles']);
-            if($resultAddsByArticles!==true) {
-                $results['esito'] = false;
-                $results['errors'] = $resultAddsByArticles;
-            }
-                
-            $options = [];
-            $options['sort'] = [];
-            $options['limit'] = Configure::read('sql.no.limit');
-            $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options); 
-            $results['articles'] = [];
-        }
-
-        return $results;
+        return parent::getAssociateToOrder($user, $organization_id, $order, $where, $options, $debug);
     }
 
     /*
@@ -138,5 +77,12 @@ class ArticlesOrdersGasTable extends ArticlesOrdersTable implements ArticlesOrde
      */
     public function getByIds($user, $organization_id, $ids, $debug=false) {    
        return parent::getByIds($user, $organization_id, $ids, $debug);
+    } 
+
+    /*
+     * implement
+     */    
+    public function deleteByIds($user, $organization_id, $order, $ids, $debug=false) {    
+        return parent::deleteByIds($user, $organization_id, $order, $ids, $debug);
     } 
 }

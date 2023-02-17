@@ -14,6 +14,8 @@ class AuthsComponent extends Component {
     use Traits\SqlTrait;
     use Traits\UtilTrait;
 
+    public $components = ['ActionsOrderComponent'];
+
     private $_order_type_ids = [];  // tipologie d'ordine abilitate
 
     public function __construct(ComponentRegistry $registry, array $config = [])
@@ -119,7 +121,14 @@ class AuthsComponent extends Component {
                 }
             break;
         }
-       
+
+        /*
+         * dalla precedetne versione
+         * $order_id = 0;
+         * $group_id = Configure::read('group_id_referent');
+         * $results = $this->ActionsOrderComponent->isACL($user, $group_id, $order_id, $controller, $action, $debug);
+         */
+        
         return $results;
     }    
 }

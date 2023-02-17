@@ -154,6 +154,12 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                       case Configure::read('Order.type.des_titolare'):
                         echo '<a title="'.__('Order-'.Configure::read('Order.type.des')).'" href="'.$this->HtmlCustomSite->jLink('desOrdersOrganizations', 'index', ['des_order_id' => $order->des_order_id]).'"><small class="label bg-primary">'.$order->order_type->descri.'</small></a>';
                       break;
+                      case Configure::read('Order.type.gas_groups'):
+                      break;
+                      case Configure::read('Order.type.gas_parent_groups'):
+                        if($user->acl['isGasGroupsManagerOrders'])
+                            echo $this->Html->link('<small class="label bg-primary">'.$order->order_type->descri.'</small>', ['controller' => 'GasGroups', 'action' => 'index'], ['title' => '', 'escape' => false]);
+                      break;
                       default:
                         echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';
                       break;
@@ -197,19 +203,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                   if($order->can_state_code_to_close)
                     echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'close', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
                 
-                  switch ($order->order_type->id) {
-                      case Configure::read('Order.type.des'):
-                      case Configure::read('Order.type.des_titolare'):
-                        
-                      break;
-                      case Configure::read('Order.type.gas_groups'):
-                      break;
-                      case Configure::read('Order.type.gas_parent_groups'):
-                        if($user->acl['isGasGroupsManagerOrders'])
-                            echo $this->Html->link('<i class="fa fa-2x fa-plus" aria-hidden="true"></i>', ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add Order-'.Configure::read('Order.type.gas_groups')), 'escape' => false]);
-                      break;
-                  }
-
                   echo '<a title="'.__('Order home').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'home', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
                   
                   if($user->acl['isRoot'] && $order->state_code=='CLOSE')

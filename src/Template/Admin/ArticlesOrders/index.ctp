@@ -75,10 +75,14 @@ echo $this->HtmlCustomSite->boxOrder($order);
                       <a class="btn btn-danger" :class="{ 'btn-deactive': !article_order.is_select }" title="rimuovi l'articolo dall'ordine" @click="article_order.is_select=!article_order.is_select">
                         <i class="fa fa-trash fa-2xl"></i></a>
                     </td>
-                    <td 
+                    <td class="text-center"
                       :class="article_order.carts.length>0 ? 'just-carts' : 'no-carts'"
-                      :title="article_order.carts.length>0 ? 'Articolo già acquistato!' : 'Articolo non ancora acquistato'"
-                    ></td>
+                      :title="article_order.carts.length>0 ? 'Articolo già acquistato da '+article_order.carts.length+' gasisti!' : 'Articolo non ancora acquistato'"
+                    >
+                      <a href="#" @click="previewCarts(article_order)" v-if="article_order.carts.length>0">
+                        <span class="badge">{{ article_order.carts.length }}</span>
+                      </a>
+                    </td>
                     <td>
                       <img v-if="article_order.img1!=''" :src="article_order.img1" :width="article_order.img1_width" />
                     </td>	
@@ -238,6 +242,30 @@ echo $this->HtmlCustomSite->boxOrder($order);
   </div>
 </div>
 
+<!-- dettaglio acquisti (se ordine parent anche i sotto ordini) -->
+<div id="myModalPreviewCarts" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Dettaglio acquisti</h4>
+      </div>
+      <div class="modal-body">
+        <p v-for="(cart, index) in carts"
+                    :key="cart.id"
+                   >   {{ cart.name }}
+
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </div>
 
 
@@ -251,7 +279,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
 }
 .just-carts {
    background-color:red;
-   opacity: 0.6;
+   opacity: 0.6; 
 }
 .no-carts {
    background-color:green;

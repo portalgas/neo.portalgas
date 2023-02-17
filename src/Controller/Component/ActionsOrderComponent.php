@@ -212,6 +212,7 @@ class ActionsOrderComponent extends CartSuperComponent {
 				if(!empty($orders_action->neo_url)) {
 					$neo_url = $orders_action->neo_url;
 					$neo_url = str_replace('{order_type_id}', $order->order_type_id, $neo_url);
+					$neo_url = str_replace('{delivery_id}', $order->delivery_id, $neo_url);
 					$neo_url = str_replace('{order_id}', $order->id, $neo_url);
 					$neo_url = str_replace('{parent_id}', $order->parent_id, $neo_url);
 					
@@ -671,5 +672,5 @@ class ActionsOrderComponent extends CartSuperComponent {
 		}
 
 		return $isCartToStoreroom;
-	}
+	}	
 }

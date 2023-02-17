@@ -53,7 +53,7 @@ class ArticlesOrdersGasGroupsTable extends ArticlesOrdersTable implements Articl
         $options['sort'] = [];
         $options['limit'] = Configure::read('sql.no.limit');
         $results['article_orders'] = $this->gets($user, $organization_id, $order, $where, $options);
-        
+    
         $where2 = [];
         $ids = [];
         if(!empty($results['article_orders'])) {

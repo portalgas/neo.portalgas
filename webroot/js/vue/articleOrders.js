@@ -19,6 +19,7 @@ $(function () {
         order: [],
         article_orders: [],
         articles: [],
+        carts: [],
         is_run: false,
         is_save: false
       },  
@@ -177,7 +178,40 @@ $(function () {
             }); 
                       
           return false;
-        }      
+        },
+        previewCarts: function(article_order) { 
+          console.log(article_order, 'previewCarts');          
+          let _this = this;
+          
+          _this.carts = []; // [{id: 1, name: "test1", id: 2, name: "test2"}]
+          
+          let organization_id = $("input[name='organization_id']").val(); 
+          let order_id = $("input[name='order_id']").val();
+          let order_type_id = $("input[name='order_type_id']").val();
+                    
+          let params = {
+              organization_id: organization_id,
+              order_type_id: order_type_id,
+              order_id: order_id,
+              article_organization_id: article_order.article_organization_id,
+              article_id: article_order.article_id
+          }; 
+          console.log(params, 'params');
+
+          axios.post('/admin/api/article-orders/setAssociateToOrder', params)
+            .then(response => {
+              console.log(response.data); 
+              _this.is_save = false;   
+              
+              location.reload();
+            })
+            .catch(error => {
+              _this.is_save = false;
+              console.error("Error: " + error);
+            }); 
+
+          $("#myModalPreviewCarts").modal();
+        }
       },
       mounted: function(){
         console.log('mounted articleOrders');
