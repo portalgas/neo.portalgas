@@ -20,6 +20,11 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
     private $_offset = 0; // parte dalla riga 1 a leggere il file
 	private $_limit = 10000;
 	private $_header = 0; // a quale riga c'e' l'intestazione
+    // escludo se contiene.. 
+    private $_colonna_da_scartare = [
+        'cod. art.',
+        'www.officinadellacqua.com'
+    ];
 
     public function initialize()
     {
@@ -59,48 +64,68 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
             if($continua) {
                 $csv = Reader::createFromPath($datas['file']['tmp_name'], 'r');
                 $csv->setDelimiter(';');
-                debug("File contiene ".count($csv)." righe");
+                $tot_rows = count($csv);
+                debug("File contiene [".$tot_rows."] righe");
     
                 $stmt = (new Statement())->offset($this->_offset)->limit($this->_limit);
 
                 $i = 0;
+                $row_to_excludes = [];
+                $row_to_includes = [];
                 $datas = [];
                 $rows = $stmt->process($csv);
                 foreach ($rows as $numRow => $row) {
 
-                    /*
-                     * escludo le intestazioni
-                     */
-                    if($row[0]!='' && strpos($row[0], 'www.officinadellacqua.com')===false) {
-                        
-                        $datas[$i]['codice'] = $this->_sanitizeCodice($this->_sanitizeString($row[0]));
-                        if($datas[$i]['codice']=='5580---') {
-                            echo iconv("UTF-8", "ASCII//IGNORE", $row[1]);
-                            dd(iconv("UTF-8", "ASCII//IGNORE", $row[1])); 
+                    $first_column = trim($row[0]);
+
+                    // se la prima colonna contiene una delle stringhe in _colonna_da_scartare la escludo
+                    $is_to_exclude = false; 
+                    foreach($this->_colonna_da_scartare as $colonna_da_scartare) {
+                        if(strpos($first_column, $colonna_da_scartare)!==false) {
+                            $is_to_exclude = true;
+                            break;
                         }
-
-                        $name = $this->_sanitizeString($row[1]);
-                        if(!empty($name))
-                            $datas[$i]['name'] = $name;
-                        $datas[$i]['prezzo'] = $this->_sanitizeImporto($row[3]);
-                        $confs = $this->_sanitizeConf($row[2]);
-                        $datas[$i]['um'] = $confs['um'];
-                        $datas[$i]['um_riferimento'] = $confs['um_riferimento'];
-                        $datas[$i]['qta'] = $confs['qta'];
-
-                        
-                        if($datas[$i]['codice']=='5580---') {
-                            debug($numRow.') '.$datas[$i]['codice'].' - '.$datas[$i]['name'].' - '.$datas[$i]['conf'].' - '.$datas[$i]['prezzo']);
-                            dd($row);
-                        }
-                        
-                        debug($numRow.') '.$datas[$i]['codice'].' - '.$datas[$i]['name'].' - '.$datas[$i]['qta'].' - '.$datas[$i]['prezzo']);
-
-                        $i++;
                     }
+                    
+                    /*
+                     * escludo le intestazioni o righe da scartare
+                     */ 
+                    if($first_column=='' || $is_to_exclude) {
+                        $row_to_excludes[] = $numRow.') ESCLUDO la RIGA ['.$row[1].' - '.$row[2].' - '.$row[3].' - '.$row[4].']';
+                        // debug($numRow.') ESCLUDO la RIGA '.$row[1].' - '.$row[2].' - '.$row[3].' - '.$row[4]);
+                        continue;
+                    }
+                      
+                    $datas[$i]['codice'] = $this->_sanitizeCodice($this->_sanitizeString($row[0]));
+                    if($datas[$i]['codice']=='5580---') {
+                        echo iconv("UTF-8", "ASCII//IGNORE", $row[1]);
+                        dd(iconv("UTF-8", "ASCII//IGNORE", $row[1])); 
+                    }
+
+                    $name = $this->_sanitizeString($row[1]);
+                    if(!empty($name))
+                        $datas[$i]['name'] = $name;
+                    $datas[$i]['prezzo'] = $this->_sanitizeImporto($row[3]);
+                    $confs = $this->_sanitizeConf($row[2]);
+                    $datas[$i]['um'] = $confs['um'];
+                    $datas[$i]['um_riferimento'] = $confs['um_riferimento'];
+                    $datas[$i]['qta'] = $confs['qta'];
+       
+                    if($datas[$i]['codice']=='5580---') {
+                        debug($numRow.') '.$datas[$i]['codice'].' - '.$datas[$i]['name'].' - '.$datas[$i]['conf'].' - '.$datas[$i]['prezzo']);
+                        dd($row);
+                    }
+                    
+                    $row_to_includes[] = $numRow.') TRATTERO\' la RIGA ['.$datas[$i]['codice'].' - ['.$datas[$i]['name'].'] - '.$datas[$i]['qta'].' - '.$datas[$i]['prezzo'].']';
+                    debug($numRow.') TRATTERO\' la RIGA '.$datas[$i]['codice'].' - ['.$datas[$i]['name'].'] - '.$datas[$i]['qta'].' - '.$datas[$i]['prezzo']);
+
+                    $i++;
                 } // loop csv
 
-                debug("Estratte ".$i." righe");
+                debug($row_to_excludes);
+                debug($row_to_includes);
+                debug("----------------------------------------");
+                debug("Estratte ".$i." righe su ".$tot_rows);
 
                 if(empty($datas))
                     $continua = false;
@@ -117,7 +142,6 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
 
                 $where = ['organization_id' => $this->_default_organization_id,
                           'supplier_organization_id' => $this->_default_supplier_organization_id];
-
                /*
                 * setto flag_presente_articlesorders a N
                 */
@@ -199,6 +223,9 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
         $datas['um'] = '';
         $datas['um_riferimento'] = '';
 
+        if(strpos($value, 'PREZZO')!==false) 
+            return $datas;   
+    
         if(empty($value)) {
             $datas['qta'] = 1;
             $datas['um'] = 'PZ';
@@ -261,15 +288,16 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
             case 'LITRI':
                 $um = 'LT';
             break;
-            default: 
-                $um = 'PZ';
-            break;
         }
         
         $datas['qta'] = str_replace(',', '.', $datas['qta']);
         $datas['um'] = $um;
         $datas['um_riferimento'] = $um;
-        
+        /*
+        debug('---------------');
+        debug('value dal CSV '.$value);
+        debug($datas);
+        */
         return $datas;
     }   
 }

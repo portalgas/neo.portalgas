@@ -8,7 +8,16 @@
     </ol>
   </section>
 
-  <!-- Main content -->
+  <?php 
+  $msg = '';
+  $msg .= "Colonne:<br/>CODICE ARTICOLI | DESCRIZIONE | QUANTITA' | IMPORTO FINALE<br />";
+  $msg .= "<ul>";
+  $msg .= "<li>eliminare prime righe intestazione</li>";
+  $msg .= "<li>eliminare ultime righe dati fatturazione</li>";
+  $msg .= "</ul>";
+  
+  echo $this->element('msg', ['msg' => $msg]);
+  ?>
   <section class="content">
     <div class="row">
       <div class="col-md-12">

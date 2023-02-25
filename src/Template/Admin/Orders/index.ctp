@@ -90,18 +90,20 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                       
                       $label = $this->HtmlCustomSite->drawDeliveryLabel($order->delivery);
                       echo ' <b>'.__('Delivery').'</b> ';
-                      echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'view', ['id' => $order->delivery->id]).'">'.$label.'</a>';
+                      echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'edit', ['id' => $order->delivery->id]).'">'.$label.'</a>';
                       echo ' '.$this->HtmlCustomSite->drawDeliveryDateLabel($order->delivery);
                       echo '</th>';
                       echo '</tr>';
                   }
 
                   echo '<tr>';
-                  echo '<td class="hidden-xs hidden-sm">
-                      <a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapse-'.$order->id.'" aria-expanded="true" title="Clicca per maggiori informazioni">
-                        <i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>
-                      </a>
-                    </td>';
+                  echo '<td class="hidden-xs hidden-sm">';
+                  if($order->order_type->id!=Configure::read('Order.type.gas_parent_groups')) {
+                    echo '<a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapse-'.$order->id.'" aria-expanded="true" title="Clicca per maggiori informazioni">';
+                    echo '<i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>';
+                    echo '</a>';
+                  }
+                  echo '</td>';
                   echo '<td>';
                   echo $this->HtmlCustomSite->drawSupplierImage($order->suppliers_organization->supplier);
                   echo '</td>';

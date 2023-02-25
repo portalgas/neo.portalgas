@@ -48,16 +48,23 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
 
                 echo $htmlCustomSiteOrders->data();
 
-                echo $htmlCustomSiteOrders->note();
+                /*
+                 * gli ordini titolari per il gruppo sono ordini che non appaiono a FE
+                 * e non hanno articoli acquistabili ma solo ereditari dagli ordini gruppo
+                 */
+                if($order_type_id!=Configure::read('Order.type.gas_parent_groups')) {
 
-                echo $htmlCustomSiteOrders->mailOpenTesto();
+                  echo $htmlCustomSiteOrders->note();
 
-                echo $htmlCustomSiteOrders->monitoraggio();
+                  echo $htmlCustomSiteOrders->mailOpenTesto();
 
-                echo $htmlCustomSiteOrders->typeGest();
-                
-                echo $htmlCustomSiteOrders->extra();
-               
+                  echo $htmlCustomSiteOrders->monitoraggio();
+
+                  echo $htmlCustomSiteOrders->typeGest();
+                  
+                  echo $htmlCustomSiteOrders->extra();
+                } // if($order_type_id!=Configure::read('Order.type.gas_parent_groups'))
+
             echo '</div>';  // /.box-body 
 
             echo $this->Form->submit(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right']);

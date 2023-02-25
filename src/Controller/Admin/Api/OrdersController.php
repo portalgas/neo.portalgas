@@ -92,6 +92,19 @@ class OrdersController extends ApiAppController
             $where += ['Orders.delivery_id' => $delivery_id];
         }
 
+        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
+            // ctrl che l'utente appartertenga al gruppo 
+            $gasGroupsTable = TableRegistry::get('GasGroups');
+            $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
+            if(empty($gasGroups))
+                $where += ['Orders.gas_group_id' => 0]; // utente non associato in alcun gruppo, prendo ordini non del gruppo 
+            else {
+                $acls = array_keys($gasGroups);
+                $acls = array_merge($acls, [0]);
+                $where += ['Orders.gas_group_id IN ' => $acls];
+            }
+        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
+            
         $ordersTable = TableRegistry::get('Orders');
 
         /*
@@ -122,7 +135,7 @@ class OrdersController extends ApiAppController
                 ->order(['Orders.data_inizio'])
                 ->all();
         }
-
+ 
         return $this->_response($results); 
     } 
 

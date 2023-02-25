@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\I18n\Date;
+use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
 class DeliveriesTable extends Table
@@ -166,10 +167,11 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
-                        'Deliveries.type' => 'GAS', // GAS-GROUP
                         'DATE(Deliveries.data) >= CURDATE()'
                       ];
-    
+        if($user->organization->paramsConfig['hasGasGroups']=='N')
+            $conditions += ['Deliveries.type' => 'GAS']; // GAS-GROUP
+                            
         if(isset($where['Deliveries']))
             $where['Deliveries'] += $conditions;
         else {
@@ -197,10 +199,11 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
-                        'Deliveries.type' => 'GAS', // GAS-GROUP
                         'DATE(Deliveries.data) >= CURDATE()'
                       ];
-    
+        if($user->organization->paramsConfig['hasGasGroups']=='N')
+            $conditions += ['Deliveries.type' => 'GAS']; // GAS-GROUP
+
         if(isset($where['Deliveries']))
             $where['Deliveries'] += $conditions;
         else {
@@ -275,30 +278,58 @@ class DeliveriesTable extends Table
             $where_delivery = $where['Deliveries'];
         $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id,
                               'Deliveries.isVisibleBackOffice' => 'Y',
-                              'Deliveries.type' => 'GAS', // GAS-GROUP
+                              'Deliveries.type' => 'GAS',
                               'Deliveries.sys' => 'N'], 
                               $where_delivery);
-
+        
         $where_order = [];
         if(isset($where['Orders']))
             $where_order = $where['Orders'];
         $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
-        
+    
         if(empty($order))
             $order = ['Deliveries.data'];
 
-        if($debug) debug($where);
         $results = $this->find()
                         ->where($where_delivery)
                         ->contain(['Orders' => [
                             'conditions' => $where_order,
                             'SuppliersOrganizations' => ['Suppliers']]])
                         ->order($order)
-                        ->all();
+                        ->all();   
         if($results->count()>0) {
             $results = $results->toArray();
         }
-    
+
+        /* 
+         * elenco consegne per i GasGroups
+         */
+        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
+            unset($where_delivery['Deliveries.type']);
+            $where_delivery += ['Deliveries.type' => 'GAS-GROUP']; 
+       
+            // ctrl che l'utente appartertenga al gruppo 
+            $gasGroupsTable = TableRegistry::get('GasGroups');
+            $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
+            if(empty($gasGroups))
+                $where_order += ['Orders.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
+            else 
+                $where_order += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
+
+            $gas_groups_results = $this->find()
+                                        ->where($where_delivery)
+                                        ->contain(['Orders' => [
+                                            'conditions' => $where_order,
+                                            'SuppliersOrganizations' => ['Suppliers']]])
+                                        ->order($order)
+                                        ->all();   
+            if($gas_groups_results->count()>0) {
+                $gas_groups_results = $gas_groups_results->toArray();
+            }
+                
+            $results = array_merge($results, $gas_groups_results);
+        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
+
         return $results;
     }
 

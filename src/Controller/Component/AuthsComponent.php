@@ -52,6 +52,8 @@ class AuthsComponent extends Component {
 
     /*
      * ctrl se la rotta e' abilitata
+     * $pass[0] = order_type_id
+     * $pass[1] = order_id
      */
     public function ctrlRoute($user, $request) {
         $results = [];
@@ -59,7 +61,8 @@ class AuthsComponent extends Component {
         $controller = strtolower($request->controller); 
         $action = strtolower($request->action); 
         $pass = $request->pass;
-        
+        // dd($controller.' '.$action);
+
         if(!$user->acl['isReferentGeneric'] && !$user->acl['isSuperReferente']) { 
             $results['msg'] = __('msg_not_permission');
             return $results;
@@ -68,6 +71,15 @@ class AuthsComponent extends Component {
         if($controller=='orders' && $action=='index')
             return $results;
 
+        if($controller=='referentdocsexport' && $action=='index') {
+            $order_type_id = $pass[0];
+            if($order_type_id!=Configure::read('Order.type.gas_parent_groups')) {
+                $results['msg'] = __('msg_not_permission');
+                return $results;                
+            }
+            return $results;
+        }
+        
         switch($controller) {
             case 'orders':
             case 'articles-orders':

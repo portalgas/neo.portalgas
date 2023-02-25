@@ -25,8 +25,9 @@ class ArticlesImportSuperController extends AppController
         $value = trim($value);
         if(strpos(chr(151), $value)!==false)
             dd($value);
-        $value = iconv("UTF-8", "ASCII//IGNORE", $value);
-        // $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+        // $value = iconv("UTF-8", "ASCII//IGNORE", $value);
+        $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+        $value = str_replace('*', '', $value);
         return $value;
     }
 

@@ -118,7 +118,7 @@ class HtmlCustomSiteHelper extends FormHelper
             }   
         }
 
-        $html = '<section class="content">
+        $html = '
         <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">'.__('Order-'.$results->order_type_id).'</h3>
@@ -148,20 +148,21 @@ class HtmlCustomSiteHelper extends FormHelper
             if(!empty($url)) 
                 $html .= '<img src="'.$url.'" alt="'.$results->suppliers_organization->name.'" title="'.$results->suppliers_organization->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" />';
 
-                $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">'.__('ArticlesOwner'.$results->suppliers_organization->owner_articles).'</span>';
+                $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">'.__('ArticlesOwner'.$results->suppliers_organization->owner_articles).'</span></div>';
                         
                 $html .= '</div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
-                        <div class="col-sm-10">'.$results->order_state_code->name.': '.$results->order_state_code->descri.'</div>
+                        <div class="col-sm-10">
+                            <div style="padding-left:45px;min-height:48px;" class="action orderStato'.$results->order_state_code->code.'" title="'.$results->order_state_code->name.'">'.$results->order_state_code->descri.'</div>
+                        </div>
                     </div>
                 </div>
 
             </div>
-        </div>
-        </section>';
+        </div>';
 
         return $html;
     }
@@ -336,7 +337,7 @@ class HtmlCustomSiteHelper extends FormHelper
                 if(is_string($breadcrumb)) {
                     switch($breadcrumb) {
                         case 'home':
-                            $html .= '<li><a href="'.$this->Url->build('/').'"><i class="fa fa-home"></i> '.__('Home').'</a></li>';
+                            $html .= '<li><a href="'.$this->Url->build('/admin').'"><i class="fa fa-home"></i> '.__('Home').'</a></li>';
                         break;
                         case 'list':
                             $html .= '<li><a href="'.$this->Url->build(['action' => 'index']).'"><i class="fa fa-list"></i> '.__('List').'</a></li>';

@@ -13,7 +13,7 @@ echo $this->HtmlCustomSite->boxOrder($order);
   <input type="hidden" name="order_type_id" value="<?php echo $order->order_type_id;?>" />
   <input type="hidden" name="order_id" value="<?php echo $order->id;?>" />
 
-<section class="content">
+<section class="">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">

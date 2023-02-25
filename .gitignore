@@ -3,7 +3,6 @@
 neo-portalgas.txt
 vue.bat
 schema.xlsx
-/_sql/*
 /log/*
 /logs/*
 /src/Command/Sh/MailUsersDelivery-*.sh

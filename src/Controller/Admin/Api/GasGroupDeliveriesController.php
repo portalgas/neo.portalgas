@@ -19,11 +19,16 @@ class GasGroupDeliveriesController extends ApiAppController
            !$this->_user->acl['isGasGroupsManagerOrders']) {
             $this->_respondWithUnauthorized();
         }         
+
+        if($this->_organization->paramsConfig['hasGasGroups']=='N') { 
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->_respondWithUnauthorized();
+        }        
     }
 
     public function beforeFilter(Event $event): void  {
      
-        parent::beforeFilter($event);       
+        parent::beforeFilter($event);        
     }
   
     /* 
