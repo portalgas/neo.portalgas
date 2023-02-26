@@ -22,7 +22,7 @@ class GasGroupDeliveriesController extends ApiAppController
 
         if($this->_organization->paramsConfig['hasGasGroups']=='N') { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->_respondWithUnauthorized();
+            $this->_respondWithUnauthorized();
         }        
     }
 

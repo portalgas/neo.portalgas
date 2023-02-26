@@ -44,6 +44,8 @@ class GasGroupsController extends AppController
     {
         Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_not_permission'));
         $this->_user = $this->Authentication->getIdentity();
+        /*
+         * non filtro per gruppi creati dall'utente, se no altri referenti non potranno vederlo 
         $where = ['GasGroups.user_id' => $this->_user->id, 
                   'GasGroups.organization_id' => $this->_user->organization_id, 
                  ];
@@ -52,28 +54,12 @@ class GasGroupsController extends AppController
             'conditions' => $where,
             'order' => ['GasGroups.name']
         ];
-        $gasGroups = $this->paginate($this->GasGroups);
-
+        $gasGroups = $this->paginate($gasGroups);
+        */
+        $gasGroups = $this->GasGroups->findMy($this->_user, $this->_organization->id, $this->_user->id);
+        
         $this->set(compact('gasGroups'));
     }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Gas Group id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        exit;
-        $gasGroup = $this->GasGroups->get($id, [
-            'contain' => ['Organizations', 'Users', 'GasGroupDeliveries', 'GasGroupUsers'],
-        ]);
-
-        $this->set('gasGroup', $gasGroup);
-    }
-
 
     /**
      * Add method

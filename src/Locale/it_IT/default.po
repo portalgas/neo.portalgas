@@ -469,6 +469,9 @@ msgstr "Logout con diverso account avvenuto con successo"
 msgid "MsgUserImpersonateLogoutKO"
 msgstr "Si è verificato un errore durante il logout con un diverso account"
 
+msgid "Result"
+msgstr "Risultato"
+
 #
 # btn
 #
@@ -495,6 +498,9 @@ msgstr "Torna all'elenco"
 
 msgid "Export"
 msgstr "Esporta"
+
+msgid "Export to PDF"
+msgstr "Esporta in formato PDF"
 
 msgid "Send"
 msgstr "Trasmetti"

@@ -17,6 +17,7 @@ class HtmlCustomSiteHelper extends FormHelper
     public function initialize(array $config)
     {
         // debug($config);
+        $config = Configure::read('Config');
     }
 
     public function translateMappingTypeCode($mapping, $options=[]) {
@@ -141,7 +142,7 @@ class HtmlCustomSiteHelper extends FormHelper
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('SupplierOrganization').'</label>
                         <div class="col-sm-4">
-                            <a href="https://neo.portalgas.it/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">'.$results->suppliers_organization->name.'</a></div>
+                            <a href="/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">'.$results->suppliers_organization->name.'</a></div>
                         
                         <label class="col-sm-2 control-label" style="padding-top:0px"></label>
                         <div class="col-sm-4">';
@@ -185,7 +186,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $html .= '<span class="box-img"><img src="'.$url.'" alt="'.$suppliers_organization->supplier->name.'" title="'.$suppliers_organization->supplier->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" /></span> ';
         }
         $html .= '<span class="box-name">';
-        $html .= '<a href="https://neo.portalgas.it/site/produttore/'.$suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">';
+        $html .= '<a href="/site/produttore/'.$suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">';
         $html .= $suppliers_organization->name;
         $html .= '</a>'; 
         $html .= '</span>';

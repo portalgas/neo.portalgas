@@ -123,7 +123,8 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
-                        <div class="col-sm-10">'.$this->_parent->order_state_code->name.': '.$this->_parent->order_state_code->descri.'</div>
+                        <div class="col-sm-10">
+                            <div style="padding-left:45px;min-height:48px;" class="action orderStato'.$this->_parent->order_state_code->code.'" title="'.$this->_parent->order_state_code->name.'">'.$this->_parent->order_state_code->descri.'</div>
                     </div>
                 </div>
 

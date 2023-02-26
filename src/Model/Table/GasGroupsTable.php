@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 
@@ -48,7 +49,7 @@ class GasGroupsTable extends Table
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Users', [
+        $this->belongsTo('Users', [ // chi l'ha creato
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
@@ -119,7 +120,7 @@ class GasGroupsTable extends Table
 
     /* 
      * utenti da associare al gruppo
-     * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non vederlo
+     * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non potranno vederlo
      * filtro a GasGroupUsers.user_id quindi chi gestisce il gruppo deve parteciparvi
      */
     public function findMy($user, $organization_id, $user_id) {
@@ -128,7 +129,10 @@ class GasGroupsTable extends Table
         if($user->organization->paramsConfig['hasGasGroups']=='N')
             return $results;
 
-        $gas_groups = $this->find()->contain(['GasGroupUsers' => [
+        $gas_groups = $this->find()->contain([
+                            'GasGroupDeliveries', 
+                            'Users', // chi l'ha creato
+                            'GasGroupUsers' => [
                                 'conditions' => [
                                     'GasGroupUsers.user_id' => $user_id,
                                     'GasGroupUsers.organization_id' => $organization_id]]])
@@ -136,12 +140,21 @@ class GasGroupsTable extends Table
                         ->order(['GasGroups.name'])
                         ->all();
 
-        foreach($gas_groups as $gas_group) {
+        foreach($gas_groups as $numResult => $gas_group) {
             /*
              * escludo i gruppi dove l'utente non e' associato
              */
             if(!empty($gas_group->gas_group_users)) {
-                $results[] = $gas_group;
+                /* 
+                 * per ogni gruppo estraggo gli utenti associati
+                 */
+                $where = ['GasGroupUsers.gas_group_id' => $gas_group->id,
+                          'GasGroupUsers.organization_id' => $gas_group->organization_id];
+                $gasGroupUsersTable = TableRegistry::get('GasGroupUsers');
+                $gas_group_users = $gasGroupUsersTable->find()->where($where)->all();
+
+                $results[$numResult] = $gas_group;
+                $results[$numResult]['gas_group_users'] = $gas_group_users;
             }
         }
 

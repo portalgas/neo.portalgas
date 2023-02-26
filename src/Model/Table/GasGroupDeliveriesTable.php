@@ -93,7 +93,7 @@ class GasGroupDeliveriesTable extends Table
         $where = ['GasGroupDeliveries.organization_id' => $user->organization->id,
                   'GasGroupDeliveries.gas_group_id' => $gas_group_id
                ];
-        // debug($where);
+        // dd($where);
         $deliveries = $this->find('list', [
                         'keyField' => function ($gas_group_delivery) {
                             return $gas_group_delivery->delivery->get('id');

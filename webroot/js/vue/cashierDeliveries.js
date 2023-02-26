@@ -162,7 +162,7 @@ $(function () {
             return moment(String(value)).format('DD MMMM YYYY')
           }
         },
-          counter: function (index) {
+        counter: function (index) {
             return index+1
         },
         orderStateCode(state_code) {

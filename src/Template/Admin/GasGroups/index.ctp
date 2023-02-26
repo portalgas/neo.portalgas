@@ -43,28 +43,29 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           </div>
         </div>
         <!-- /.box-header -->
-        <div class="box-body table-responsive <?php echo ($gasGroups->count()>0) ? 'no-padding': '';?>">
+        <div class="box-body table-responsive <?php echo (!empty($gasGroups)) ? 'no-padding': '';?>">
           <?php
-          if($gasGroups->count()>0) {
-          // if(!empty($gasGroups)) {
+          if(!empty($gasGroups)) {
           ?>
           <table class="table table-striped table-hover">
             <thead>
               <tr>
                 <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('name') ?></th>
+                <th scope="col" class=""><?= __('name') ?></th>
+                <th scope="col" class=""><?= __('descri') ?></th>
                 <th scope="col" class="text-center"><?= __('Totate gasisti') ?></th>
                 <th scope="col" class="text-center"><?= __('Totate consegne') ?></th>
                 <!-- th scope="col" class="text-center"><?= __('Totate ordini') ?></th -->
-                <th scope="col" class="text-center"><?= $this->Paginator->sort('is_active') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
+                <th scope="col" class="text-center"><?= __('Is Active') ?></th>
+                <th scope="col" class=""><?= __('Created by') ?></th>
+                <th scope="col" class=""><?= __('Created') ?></th>
                 </tr>
             </thead>
             <tbody>
               <?php 
               foreach ($gasGroups as $gasGroup) { 
 
-                // debug($gasGroup);
+                 // debug($gasGroup);
                 
                   echo '<tr>';
                   echo '<td class="actions text-left">';
@@ -74,11 +75,13 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   else
                     echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
                   echo $this->Html->link(__('Gas Group Users Management'), ['controller' => 'GasGroupUsers', 'action' => 'management', $gasGroup->id], ['class'=>'btn btn-primary', 'title' => __('Add users')]);
-                  echo '</td>';                  
-                  echo '<td>'.h($gasGroup->name).'</td>';           
+                  echo '</td>';
+                  echo '<td>'.h($gasGroup->name).'</td>'; 
+                  echo '<td>'.$this->Text->autoParagraph($gasGroup->descri).'</td>'; 
                   echo '<td class="text-center">'.count($gasGroup->gas_group_users).'</td>';
                   echo '<td class="text-center">'.count($gasGroup->gas_group_deliveries).'</td>';
                   echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse($gasGroup, 'is_active').'</td>';
+                  echo '<td>'.$gasGroup->user->name.'</td>';
                   echo '<td title="'.h($gasGroup->created).'">'.$this->Time->nice($gasGroup->created).'</td>';
                   echo '</tr>';
                 } // end loop
