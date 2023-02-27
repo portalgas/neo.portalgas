@@ -46,14 +46,32 @@ $(function () {
                 order_type_id: order_type_id,
                 order_id: order_id,
                 print_id: this.print_id,
-                format: this.format
+                format: this.format              
             }; 
             console.log(params, 'gets params'); 
 
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
 
-            axios.post('/admin/api/exports-referents/get', params) // 
+            let extra = '';
+            switch(_this.format) {
+              case 'HTML':
+                extra = {headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json'
+                            }}
+              break;
+              case 'PDF':
+                extra = {responseType: 'blob',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/pdf'
+                            }}
+              break;
+            }
+
+
+            axios.post('/admin/api/exports-referents/get', params, extra)
                 .then(response => {
                   console.log(response.data, 'get');
                   switch(_this.format) {
@@ -61,7 +79,7 @@ $(function () {
                       _this.print_results = response.data;
                     break;
                     case 'PDF':
-                      this.downloadBlob(response);
+                      this.downloadBlob(response.data);
                     break;
                   }
                   _this.is_run = false;

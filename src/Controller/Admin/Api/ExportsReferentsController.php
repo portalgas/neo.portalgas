@@ -11,6 +11,9 @@ class ExportsReferentsController extends AppController {
     
     use Traits\UtilTrait;
 
+    private $_user;
+    private $_organization;
+    
     public function initialize(): void
     {
         parent::initialize();
@@ -21,6 +24,8 @@ class ExportsReferentsController extends AppController {
          * settarlo in .env export DEBUG="false" 
          * Configure::write('debug', 0);
          */
+        $this->_user = $this->Authentication->getIdentity();
+        $this->_organization = $this->_user->organization;
     }
 
     public function beforeFilter(Event $event) {
@@ -31,9 +36,17 @@ class ExportsReferentsController extends AppController {
     public function beforeRender(Event $event)
     {
         parent::beforeRender($event);
-        
+    
         // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
-        $this->viewBuilder()->setClassName('CakePdf.Pdf');
+        $format = $this->request->getData('format');
+        switch($format) {
+            case 'HTML':
+                $this->viewBuilder()->setLayout('ajax');
+            break;
+            case 'PDF':
+                $this->viewBuilder()->setClassName('CakePdf.Pdf');
+            break;
+        }
     }
 
     /*
@@ -44,43 +57,24 @@ class ExportsReferentsController extends AppController {
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
-
-        $delivery_id = 10517;
+                
         $debug = false;
         $results = [];
-        $title = '';
-
+        
         $order_type_id = $this->request->getData('order_type_id');
         $order_id = $this->request->getData('order_id');
         $print_id = $this->request->getData('print_id');
         $format = $this->request->getData('format');
 
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
-
-        $deliveriesTable = TableRegistry::get('Deliveries');
-        $delivery = $deliveriesTable->getById($user, $organization_id, $delivery_id);
-        if(!empty($delivery)) {
-            $options = [];
-            $options['sql_limit'] = Configure::read('sql.no.limit');
-
-            $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug); 
-            // debug($results);
-        } // end if(!empty($delivery))
-        
-        $this->set(compact('results', 'delivery', 'title', 'user'));
+        $results = call_user_func_array('_'.$print_id, [$order_type_id, $order_id]);
 
         switch($format) {
             case 'HTML':
                 $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
                 // ordine e' viewBuilder / render
-                $this->viewBuilder()->setLayout('ajax');
                 $this->render('/Admin/Api/ExportsReferents/pdf/get');
             break;
             case 'PDF':
-               // $title = "Carrello della consegna ".$delivery->label.' di '.$user->username;
-               // $filename = $this->setFileName($title.'.pdf');
-    
                 Configure::write('CakePdf', [
                     'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
                     'margin' => [
@@ -91,16 +85,43 @@ class ExportsReferentsController extends AppController {
                     ],
                     'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
                     'download' => false, // This can be omitted if "filename" is specified.
-                    // 'filename' => $filename // This can be omitted if you want file name based on URL.
                 ]);
                 $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
-                
-                // ordine e' render / viewBuilder
-                // $this->layout = 'pdf/default';
-                // $this->render('/Admin/Api/ExportsReferents/pdf/get');
-                // $this->viewBuilder()->setClassName('CakePdf.Pdf');
-                
             break;
         }            
-    }         
+    }   
+    
+    private function _toArticlesDetailsGas($order_type_id, $order_id, $debug=false) {
+        
+        $delivery_id = 10517;
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $delivery = $deliveriesTable->getById($this->_user, $this->_organization, $delivery_id);
+        if(!empty($delivery)) {
+            $options = [];
+            $options['sql_limit'] = Configure::read('sql.no.limit');
+
+            $results = $this->Order->userCartGets($this->_user, $this->_organization, $delivery_id, $debug); 
+            // debug($results);
+        } // end if(!empty($delivery))
+        
+        $this->set(compact('results', 'delivery', 'title', 'user'));
+    }
+
+    private function _toArticles($order_type_id, $order_id, $debug=false) {
+        
+        $delivery_id = 10517;
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $delivery = $deliveriesTable->getById($this->_user, $this->_organization, $delivery_id);
+        if(!empty($delivery)) {
+            $options = [];
+            $options['sql_limit'] = Configure::read('sql.no.limit');
+
+            $results = $this->Order->userCartGets($this->_user, $this->_organization, $delivery_id, $debug); 
+            // debug($results);
+        } // end if(!empty($delivery))
+        
+        $this->set(compact('results', 'delivery', 'title', 'user'));
+    }    
 }
