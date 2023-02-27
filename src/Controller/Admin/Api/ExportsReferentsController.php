@@ -11,9 +11,6 @@ class ExportsReferentsController extends AppController {
     
     use Traits\UtilTrait;
 
-    private $_user;
-    private $_organization;
-    
     public function initialize(): void
     {
         parent::initialize();
@@ -24,8 +21,6 @@ class ExportsReferentsController extends AppController {
          * settarlo in .env export DEBUG="false" 
          * Configure::write('debug', 0);
          */
-        $this->_user = $this->Authentication->getIdentity();
-        $this->_organization = $this->_user->organization;
     }
 
     public function beforeFilter(Event $event) {
@@ -66,7 +61,8 @@ class ExportsReferentsController extends AppController {
         $print_id = $this->request->getData('print_id');
         $format = $this->request->getData('format');
 
-        $results = call_user_func_array('_'.$print_id, [$order_type_id, $order_id]);
+        $method = '_'.$print_id;
+        $results = $this->{$method}($order_type_id, $order_id);
 
         switch($format) {
             case 'HTML':
@@ -96,12 +92,12 @@ class ExportsReferentsController extends AppController {
         $delivery_id = 10517;
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $delivery = $deliveriesTable->getById($this->_user, $this->_organization, $delivery_id);
+        $delivery = $deliveriesTable->getById($this->_user, $this->_organization->id, $delivery_id);
         if(!empty($delivery)) {
             $options = [];
             $options['sql_limit'] = Configure::read('sql.no.limit');
 
-            $results = $this->Order->userCartGets($this->_user, $this->_organization, $delivery_id, $debug); 
+            $results = $this->Order->userCartGets($this->_user, $this->_organization->id, $delivery_id, $debug); 
             // debug($results);
         } // end if(!empty($delivery))
         
@@ -113,12 +109,12 @@ class ExportsReferentsController extends AppController {
         $delivery_id = 10517;
 
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $delivery = $deliveriesTable->getById($this->_user, $this->_organization, $delivery_id);
+        $delivery = $deliveriesTable->getById($this->_user, $this->_organization->id, $delivery_id);
         if(!empty($delivery)) {
             $options = [];
             $options['sql_limit'] = Configure::read('sql.no.limit');
 
-            $results = $this->Order->userCartGets($this->_user, $this->_organization, $delivery_id, $debug); 
+            $results = $this->Order->userCartGets($this->_user, $this->_organization->id, $delivery_id, $debug); 
             // debug($results);
         } // end if(!empty($delivery))
         
