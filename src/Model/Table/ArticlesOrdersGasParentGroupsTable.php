@@ -149,6 +149,66 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
 
     /*
      * implement
+     * elenco articoli acquistiti dagli utenti
+     * l'ordine e' fittizio, ricavo gli ordini (GasGroups) associati
+     */    
+    public function getCartsByOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
+        
+        $results = [];
+
+        /* 
+         * l'ordine e' fittizio, ricavo gli ordini (GasGroups) associati
+         */
+        $ordersTable = TableRegistry::get('Orders');
+        $whereOrder = ['Orders.organization_id' => $organization_id,
+                    'Orders.order_type_id' => Configure::read('Order.type.gas_groups'),
+                    'Orders.parent_id' => $order->id];
+        $orders = $ordersTable->find()
+                ->contain(['GasGroups'])
+                ->where($whereOrder)
+                ->order(['GasGroups.name'])
+                ->all();
+         
+        if($orders->count()==0)
+            return $results;
+
+        foreach($orders as $numResult => $order) {
+
+            if(!isset($where['ArticlesOrders']))
+            $where['ArticlesOrders'] = [];
+            $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $organization_id,
+                                // $this->getAlias().'.article_id' => 142,
+                                $this->getAlias().'.order_id' => $order->id,
+                                $this->getAlias().'.stato != ' => 'N'], 
+                                $where['ArticlesOrders']);
+    
+            $article_orders = $this->gets($user, $organization_id, $order, $where, $options, $debug);
+            if($debug) debug($article_orders);
+         
+            /*
+            * escludo articoli non acquistati
+            */ 
+            if(!empty($article_orders))
+            foreach($article_orders as $numResult2 => $article_order) {
+                if(empty($article_order['carts'])) 
+                    unset($article_orders[$numResult2]);
+            }
+ 
+            if(!empty($article_orders)) {
+                $results[$numResult] = $order;
+                $results[$numResult]['article_orders'] = $article_orders;
+
+            }
+
+        } // end foreach($orders as $numResult => $order) 
+
+        if($debug) debug($results);
+
+        return $results;        
+    }
+
+    /*
+     * implement
      *
      * da Orders chi gestisce listino articoli
      * order_type_id' => (int) 4,

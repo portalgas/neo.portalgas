@@ -21,10 +21,14 @@ $(function () {
       methods: {
         pdfGets: function(e) {
           this.format = 'PDF';
+          // workaround perche' al primo click non lo valorizzava!
+          this.print_id = $("input[name='print_id']:checked").val();
           this.gets();
         },
         htmlGets: function(e) {
           this.format = 'HTML';
+          // workaround perche' al primo click non lo valorizzava!
+          this.print_id = $("input[name='print_id']:checked").val();
           this.print_results = '';
           this.is_run = true;
           this.gets();
@@ -73,7 +77,7 @@ $(function () {
 
             axios.post('/admin/api/exports-referents/get', params, extra)
                 .then(response => {
-                  console.log(response.data, 'get');
+                  // console.log(response.data, 'get');
                   switch(_this.format) {
                     case 'HTML':
                       _this.print_results = response.data;
@@ -91,7 +95,7 @@ $(function () {
         },       
         downloadBlob(res) {
           var blob = new Blob([res], { type: "application/pdf" });
-          console.log(blob, 'blob');
+          // console.log(blob, 'blob');
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;

@@ -134,5 +134,6 @@ class Order extends Entity
         'delivery' => true,
         'prod_gas_promotion' => true,
         'des_order' => true,
+        'gas_group' => true,
     ];
 }

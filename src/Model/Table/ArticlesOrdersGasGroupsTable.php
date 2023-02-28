@@ -125,6 +125,13 @@ class ArticlesOrdersGasGroupsTable extends ArticlesOrdersTable implements Articl
 
     /*
      * implement
+     */    
+    public function getCartsByOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
+        return parent::getCartsByOrder($user, $organization_id, $order, $where, $options, $debug);
+    }
+
+    /*
+     * implement
      */
     public function gets($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {    
        return parent::gets($user, $organization_id, $orderResults, $where, $options, $debug);

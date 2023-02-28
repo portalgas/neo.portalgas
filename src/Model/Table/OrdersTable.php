@@ -62,6 +62,10 @@ class OrdersTable extends Table
         ]);
         $this->hasMany('Carts', [
             'foreignKey' => ['organization_id', 'order_id'],
+        ]);   
+        $this->belongsTo('GasGroups', [
+            'foreignKey' => ['gas_group_id'],
+            'joinType' => 'LEFT',
         ]);        
     }
 

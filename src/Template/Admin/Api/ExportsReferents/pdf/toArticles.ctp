@@ -7,6 +7,7 @@
 // debug($user);
 
 $html = '';
+$html .= '<h3>Consegna</h3>';
 if(!empty($delivery)) {
 
 	$html .= '<h3>Consegna '.$delivery->label.'</h3>';

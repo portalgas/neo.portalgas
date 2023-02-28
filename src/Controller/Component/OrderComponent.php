@@ -48,12 +48,12 @@ class OrderComponent extends Component {
                                     'Suppliers',
                                     'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
                                   ],
-                                          /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
-                                          'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
-                                                                       'Carts.organization_id' => $organization_id,
-                                                                        'Carts.deleteToReferent' => 'N']]
-                                            */
-                                          ])
+                                    /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
+                                    'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
+                                                                'Carts.organization_id' => $organization_id,
+                                                                'Carts.deleteToReferent' => 'N']]
+                                    */
+                                ])
                                 ->where($where)
                                 ->order(['Orders.data_inizio'])
                                 ->toArray();

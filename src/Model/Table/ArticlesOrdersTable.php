@@ -416,14 +416,16 @@ class ArticlesOrdersTable extends Table
                     $where_cart += ['Carts.user_id' => $user_id];
                 }                          
                 $cartResults = $cartsTable->find()
+                            // ->contain(['Users'])
                             ->where($where_cart)
                             ->first();
                 if($debug) debug($where_cart);
                 if($debug) debug($cartResults);
-
+          
                 $results[$numResult]['cart'] = [];
                 if(!empty($cartResults)) {
                     $results[$numResult]['cart'] = $cartResults;
+                    // $results[$numResult]['cart']['user'] = $cartResults->user;
                     $results[$numResult]['cart']['qta'] = $cartResults->qta;
                     $results[$numResult]['cart']['qta_new'] = $cartResults->qta;  // nuovo valore da FE
                 } 
@@ -546,6 +548,13 @@ class ArticlesOrdersTable extends Table
 
     /*
      * implement
+     */    
+    public function getCartsByOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
+        return parent::getCartsByOrder($user, $organization_id, $order, $where, $options, $debug);
+    }
+
+    /*
+     * implement
      *
      * da Orders chi gestisce listino articoli
      * order_type_id' => (int) 4,
@@ -564,7 +573,7 @@ class ArticlesOrdersTable extends Table
         $results = $this->find()
                         ->contain([
                             'Articles' => ['conditions' => $where['Articles']], 
-                            'Carts'])
+                            'Carts' => ['Users']])
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
                         ->limit($this->_limit)

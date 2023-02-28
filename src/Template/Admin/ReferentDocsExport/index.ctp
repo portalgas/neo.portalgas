@@ -21,7 +21,7 @@ echo $this->Form->create(null, ['role' => 'form']);
         <div class="box-header">
             <h3 class="box-title"><?php echo __('List'); ?></h3>
         </div>
-        <div class="box-body"> print_id [{{ print_id }}]  format {{ format }} is_run {{is_run}}
+        <div class="box-body">
 <?php        
 echo '<div class="row">'; 
 echo '<div class="col-md-12">'; 
