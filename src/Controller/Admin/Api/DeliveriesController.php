@@ -47,10 +47,10 @@ class DeliveriesController extends ApiAppController
                                 'DATE(Deliveries.data) >= CURDATE()'
         ];
         $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
-                           // 'Orders.order_type_id != ' => Configure::read('Order.type.gas_groups')
+                             'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')
                            ];
 
-        $deliveries = $deliveriesTable->gets($this->_user, $this->_organization->id, $where);
+        $deliveries = $deliveriesTable->withOrdersGets($this->_user, $this->_organization->id, $where);
         if(!empty($deliveries)) {
             foreach($deliveries as $delivery) {
                 /*
@@ -68,7 +68,7 @@ class DeliveriesController extends ApiAppController
         $where = [];
         $where['Orders'] = ['Orders.organization_id' => $organization_id,
                             'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
-                           // 'Orders.order_type_id != ' => Configure::read('Order.type.gas_groups')
+                            'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')
                         ];
         $sysDelivery = $deliveriesTable->getDeliverySys($this->_user, $organization_id, $where);
         // debug($sysDelivery);

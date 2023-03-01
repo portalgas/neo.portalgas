@@ -104,7 +104,7 @@ class OrdersController extends ApiAppController
                 $where += ['Orders.gas_group_id IN ' => $acls];
             }
         } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
-            
+     
         $ordersTable = TableRegistry::get('Orders');
 
         /*
@@ -135,7 +135,7 @@ class OrdersController extends ApiAppController
                 ->order(['Orders.data_inizio'])
                 ->all();
         }
- 
+
         return $this->_response($results); 
     } 
 

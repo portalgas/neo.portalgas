@@ -167,7 +167,8 @@ class DeliveriesTable extends Table
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
-                        'DATE(Deliveries.data) >= CURDATE()'
+                        'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                        // 'DATE(Deliveries.data) >= CURDATE()'
                       ];
         if($user->organization->paramsConfig['hasGasGroups']=='N')
             $conditions += ['Deliveries.type' => 'GAS']; // GAS-GROUP
@@ -249,15 +250,15 @@ class DeliveriesTable extends Table
     public function withOrdersGets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
         $results = [];
-        $deliveryResults = $this->gets($user, $organization_id, $where, $order, $debug);
+        $deliveries = $this->gets($user, $organization_id, $where, $order, $debug);
 
         /*
          * estraggo le consegne che hanno ordini
          */
         $i=0;
-        foreach ($deliveryResults as $deliveryResult) {
-            if(!empty($deliveryResult->orders)) {
-                $results[$i] =  $deliveryResult;
+        foreach ($deliveries as $delivery) {
+            if(!empty($delivery['orders'])) {
+                $results[$i] =  $delivery;
                 $i++; 
             }
         }
@@ -267,7 +268,7 @@ class DeliveriesTable extends Table
     }
 
     /* 
-     * estraggo le consegne con ordini e senza ordini 
+     * estraggo le consegne con ordini e senza
      */
     public function gets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
@@ -297,9 +298,9 @@ class DeliveriesTable extends Table
                             'SuppliersOrganizations' => ['Suppliers']]])
                         ->order($order)
                         ->all();   
-        if($results->count()>0) {
+
+        if($results->count()>0) 
             $results = $results->toArray();
-        }
 
         /* 
          * elenco consegne per i GasGroups
@@ -316,18 +317,18 @@ class DeliveriesTable extends Table
             else 
                 $where_order += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
 
-            $gas_groups_results = $this->find()
+            $gasGroupDeliveries = $this->find()
                                         ->where($where_delivery)
                                         ->contain(['Orders' => [
                                             'conditions' => $where_order,
                                             'SuppliersOrganizations' => ['Suppliers']]])
                                         ->order($order)
                                         ->all();   
-            if($gas_groups_results->count()>0) {
-                $gas_groups_results = $gas_groups_results->toArray();
+            if($gasGroupDeliveries->count()>0) {
+                $gasGroupDeliveries = $gasGroupDeliveries->toArray();
             }
-                
-            $results = array_merge($results, $gas_groups_results);
+     
+            $results = array_merge($results, $gasGroupDeliveries);
         } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
 
         return $results;

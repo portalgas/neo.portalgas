@@ -82,7 +82,7 @@ select
 40,
 `sort` from k_templates_orders_states_orders_actions where order_action_id = 6;
 
-INSERT INTO `k_orders_actions` (`controller`, `action`, `neo_url`, `permission`, `permissions`, `flag_menu`, `label`, `css_class`, `img`) VALUES ('Orders', 'add', '/admin/orders/add/10/{order_id}', '{\"isOrderTypes\": \"11\"}', '[{\"isOrderTypes\": \"11\"}]', 'Y', 'Add OrderGasGroup', 'actionAdd', 'trenino.jpg');
+INSERT INTO `k_orders_actions` (`controller`, `action`, `neo_url`, `permission`, `permissions`, `flag_menu`, `label`, `css_class`, `img`) VALUES ('Orders', 'neo-add', '/admin/orders/add/10/{order_id}', '{\"isOrderTypes\": \"11\"}', '[{\"isOrderTypes\": \"11\"}]', 'Y', 'Add OrderGasGroup', 'actionAdd', 'trenino.jpg');
 
 
 INSERT INTO `k_templates_orders_states_orders_actions`
@@ -124,3 +124,7 @@ select
 `state_code`,
 42,
 `sort` from k_templates_orders_states_orders_actions where order_action_id = 16;
+
+UPDATE `k_orders_actions` SET `action` = 'neo-index' WHERE (`id` = '40');
+UPDATE `k_orders_actions` SET `action` = 'neo-edit' WHERE (`id` = '39');
+UPDATE `k_orders_actions` SET `action` = 'neo-referentDocsExport' WHERE (`id` = '42');

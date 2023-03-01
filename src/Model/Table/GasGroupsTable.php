@@ -121,7 +121,9 @@ class GasGroupsTable extends Table
     /* 
      * utenti da associare al gruppo
      * GasGroups.user_id e' chi ha creato il gruppo, ma se filtro per user_id altri referenti non potranno vederlo
-     * filtro a GasGroupUsers.user_id quindi chi gestisce il gruppo deve parteciparvi
+     * filtro 
+     *      a GasGroupUsers.user_id quindi chi gestisce il gruppo deve parteciparvi
+     *      GasGroups.user_id (chi ha creato il gruppo) se no appena creato non lo vedo non avendo utenti associati
      */
     public function findMy($user, $organization_id, $user_id) {
 
@@ -129,7 +131,28 @@ class GasGroupsTable extends Table
         if($user->organization->paramsConfig['hasGasGroups']=='N')
             return $results;
 
-        $gas_groups = $this->find()->contain([
+        /*
+         * gruppi creati dall'utente (GasGroups.user_id)
+         * se no appena creato non lo vedo non avendo utenti associati
+         */
+        $gas_groups_1 = $this->find()->contain([
+                                'GasGroupDeliveries', 
+                                'Users', // chi l'ha creato
+                                'GasGroupUsers' => [
+                                    'conditions' => [
+                                        'GasGroupUsers.organization_id' => $organization_id]]])
+                            ->where(['GasGroups.organization_id' => $organization_id,
+                                    'GasGroups.user_id' => $user_id])
+                            ->order(['GasGroups.name'])
+                            ->all();
+        if($gas_groups_1->count()>0)
+        foreach($gas_groups_1 as $gas_group) {
+            $results[$gas_group->id] = $gas_group;
+            if(!empty($gas_group->gas_group_users)) 
+                $results[$gas_group->id]['gas_group_users'] = $gas_group->gas_group_users;
+        }
+
+        $gas_groups_2 = $this->find()->contain([
                             'GasGroupDeliveries', 
                             'Users', // chi l'ha creato
                             'GasGroupUsers' => [
@@ -140,7 +163,12 @@ class GasGroupsTable extends Table
                         ->order(['GasGroups.name'])
                         ->all();
 
-        foreach($gas_groups as $numResult => $gas_group) {
+        if($gas_groups_2->count()>0)
+        foreach($gas_groups_2 as $gas_group) {
+
+            if(isset($results[$gas_group->id]))
+                continue;
+                
             /*
              * escludo i gruppi dove l'utente non e' associato
              */
@@ -153,8 +181,8 @@ class GasGroupsTable extends Table
                 $gasGroupUsersTable = TableRegistry::get('GasGroupUsers');
                 $gas_group_users = $gasGroupUsersTable->find()->where($where)->all();
 
-                $results[$numResult] = $gas_group;
-                $results[$numResult]['gas_group_users'] = $gas_group_users;
+                $results[$gas_group->id] = $gas_group;
+                $results[$gas_group->id]['gas_group_users'] = $gas_group_users;
             }
         }
 
