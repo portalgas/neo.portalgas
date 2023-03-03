@@ -2,6 +2,8 @@
 use Cake\Core\Configure;
 echo $this->Html->script('vue/articleOrders', ['block' => 'scriptPageInclude']);
 
+echo $this->element('menu-order', ['order' => $order]);
+
 echo $this->HtmlCustomSite->boxTitle(['title' => __('ArticleOrders'), 'subtitle' => __('Management')], ['home']);
 
 echo $this->HtmlCustomSite->boxOrder($order);

@@ -6712,7 +6712,7 @@ msgstr "Ordine titolare per gruppi"
 msgid "Gas Group Orders"
 msgstr "Ordini per i gruppi"
 
-msgid "Gas Group Orders"
+msgid "Gas Group Order"
 msgstr "Ordine per il gruppo"
 
 msgid "Gas Group Delivery"

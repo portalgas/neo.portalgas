@@ -32,6 +32,8 @@ else {
  */
 if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
 ?>
+  <li class="treeview" id="box-menu-order"></li>
+
   <li class="treeview"> 
     <a href="#">
       <i class="fa fa-folder-open"></i> <span>Ordini</span>

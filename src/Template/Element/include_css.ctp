@@ -331,24 +331,22 @@ ul.menuLateraleItems {
     list-style: none;
     margin: 0;
     padding: 0;
-    font-size: 12px;
 }
 ul.menuLateraleItems li {
     clear: both;
-    /*height: 32px;*/
+    /* height: 32px;*/
     list-style-type: none;
-    margin: 2px 0;
-    padding: 0 15px;
-    white-space: nowrap
+    margin: 15px 0;
+    padding: 0 10px;
+    white-space: normal; /* nowrap */
 }
 ul.menuLateraleItems li span {
     display: block;
     /* height: 32px; */
     width: 32px;
 }
-ul.menuLateraleItems li a,
+ul.menuLateraleItems li a.menu-item,
 ul.menuLateraleItems li div {
-    font-weight: 400;
     display: block;
     clear: both;
     height: 32px
@@ -430,7 +428,7 @@ ul.menuLateraleItems a.orderStatoPRODGASPROMOTION-GAS-USERS-CLOSE {
     background: url(/images/cake/cart/32x32/shopping_cart_delete_basket.png) no-repeat
 }
 ul.menuLateraleItems .bgLeft {
-    padding: 0 5px 0 40px;
+    padding: 0px 0px 0px 40px;
     background-position: top left!important
 }
 ul.menuLateraleItems .bgRight {
@@ -448,10 +446,16 @@ ul.menuLateraleItems .bgRight {
     border-color: #EFDD11!important;
 }
 ul.workflow li span.statoCurrent a {
-    color: #666
+    color: #666;
+    margin: 15px 0;
+    padding: 0 15px;
+    white-space: normal;
 }
 ul.workflow li span.statoNotCurrent a {
-    opacity: .5
+    opacity: .5;
+    margin: 15px 0;
+    padding: 0 15px;
+    white-space: normal;    
 }
 
 /* 

@@ -304,6 +304,12 @@ class ArticleOrdersController extends ApiAppController
             $articlesOrdersTable->addsByArticles($this->_user, $this->_organization->id, $order, $articles);
         }
 
+        /*
+        * aggiorno stato ordine 'OPEN' // OPEN-NEXT  
+        */ 
+        $event = new Event('OrderListener.setStatus', $this, ['user' => $user, 'order' => $order]);
+        $this->getEventManager()->dispatch($event);
+                
         return $this->_response($results); 
     }    
 }

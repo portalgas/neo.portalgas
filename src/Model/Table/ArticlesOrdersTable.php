@@ -765,7 +765,7 @@ class ArticlesOrdersTable extends Table
         return true;
     }
 
-/* 
+    /* 
      * dato una lista di ArticlesOrders li associa all'ordine
      * ordini che ereditano dal parent des / gas_groups) 
      */

@@ -53,14 +53,14 @@ foreach($orderActions as $orderAction) {
 	$title = strip_tags(__($orderAction['label']));
 
 	echo "\r\n";
-	echo '<li>';
+	echo '<li style="margin: 20px 0;">';
 	if(!empty($orderAction['neo_url']))
-	echo '<a title="'.$title.'" class="'.$position_img.' '.$orderAction['css_class'].'" href="'.$orderAction['neo_url'].'">'.$label.'</a>';
+	echo '<a style="padding:4px 0px 20px 40px" title="'.$title.'" class="'.$position_img.' '.$orderAction['css_class'].'" href="'.$orderAction['neo_url'].'">'.$label.'</a>';
 	else	
 	if(empty($orderAction['url']))
-		echo '<div style="font-weight:bold;color:#003D4C;" title="'.__($orderAction['label']).'" class="'.$position_img.' '.$orderAction['css_class'].'" >'.$label.'</div>';
+		echo '<div style="font-weight:bold;color:#003D4C;padding:4px 0px 20px 40px" title="'.__($orderAction['label']).'" class="'.$position_img.' '.$orderAction['css_class'].'" >'.$label.'</div>';
 	else
-        echo '<a title="'.$title.'" class="'.$position_img.' '.$orderAction['css_class'].'" href="'.$this->HtmlCustomSite->jLink($orderAction['controller'], $orderAction['action'], $orderAction['qs']).'">'.$label.'</a>';
+        echo '<a style="padding:4px 0px 20px 40px" title="'.$title.'" class="'.$position_img.' '.$orderAction['css_class'].'" href="'.$this->HtmlCustomSite->jLink($orderAction['controller'], $orderAction['action'], $orderAction['qs']).'">'.$label.'</a>';
 	echo '</li>';
 } // end for foreach($orderActions as $orderAction)
 
@@ -78,7 +78,7 @@ foreach($templatesOrdersStates as $templatesOrdersState) {
 	echo "\r\n";
 
 	if($order['state_code'] == $templatesOrdersState->state_code) {
-		echo '<li class="statoCurrent">';
+		echo '<li class="statoCurrent" style="margin: 20px 0;">';
 		echo '<a title="'.__($templatesOrdersState->state_code.'-intro').'" ';
 		echo '	 class="'.$position_img.' ';
 		echo '	 orderStato'.$templatesOrdersState->state_code.'" ';
@@ -100,7 +100,7 @@ foreach($templatesOrdersStates as $templatesOrdersState) {
 		echo '</li>';
 	}
 	else {
-		echo '<li class="statoNotCurrent">';
+		echo '<li class="statoNotCurrent" style="margin: 20px 0;">';
 		echo '<a title="'.__($templatesOrdersState->state_code.'-intro').'" ';
 		echo '	 class="'.$position_img.' ';
 		echo '	 orderStato'.$templatesOrdersState->state_code.'" ';

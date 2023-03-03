@@ -64,7 +64,7 @@ class ActionsOrderComponent extends CartSuperComponent {
 	    $orderActions[0]['img'] = '';
 	    $orderActions[0]['qs'] = ['delivery_id' => $order->delivery_id, 'order_id' => $order->id];
 	    $orderActions[0]['url'] = 'controller=Orders&action=home&delivery_id='.$order->delivery_id.'&order_id='.$order->id;
-                		 
+		$orderActions[0]['neo_url'] = '/admin/orders/home/'.$order->order_type_id.'/'.$order->id;
 		 /*
 		  * per i TEST
 		$order->state_code = 'PROCESSED-TESORIERE';
@@ -236,15 +236,22 @@ class ActionsOrderComponent extends CartSuperComponent {
 		return $orderActions;
 	}
 	
+	/*
+	 * gestisco solo referente perche' ha i medesimi permessi
+	 */
     public function getGroupIdToReferente($user, $debug=false) {
 		$group_id = 0;
 
+		/*
         if($user->acl['isReferentGeneric'])
             $group_id = Configure::read('group_id_referent');
         else 
         if($user->acl['isSuperReferente'])
             $group_id = Configure::read('group_id_super_referent');
-	
+		*/
+		if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente'])
+			$group_id = Configure::read('group_id_referent');
+
 		return $group_id;
 	}
 
@@ -672,5 +679,78 @@ class ActionsOrderComponent extends CartSuperComponent {
 		}
 
 		return $isCartToStoreroom;
-	}	
+	}
+	
+	/*
+	 * creo degli OrderActions di raggruppamento per controller (Orders, Carts, etc)
+	 * 
+	 * per Order::home e Order_home_simple
+	*/
+	public function getRaggruppamentoOrderActions($orderActions, $debug=false) {
+		
+		// $debug = true;
+		
+		$raggruppamentoDefault['Orders']['label'] = 'Edit Order';
+		$raggruppamentoDefault['Orders']['img'] = 'modulo.jpg';
+		$raggruppamentoDefault['ArticlesOrders']['label'] = 'Edit ArticlesOrder Short';
+		$raggruppamentoDefault['ArticlesOrders']['img'] = 'legno-frutta-cassetta.jpg';
+		$raggruppamentoDefault['Carts']['label'] = 'Gestisci gli acquisti';
+		$raggruppamentoDefault['Carts']['img'] = 'legno-bancone.jpg';
+		$raggruppamentoDefault['Docs']['label'] = 'Gestisci le stampe';
+		$raggruppamentoDefault['Docs']['img'] = 'lista.jpg';
+		$raggruppamentoDefault['Referente']['label'] = 'Gestisci la merce';
+		$raggruppamentoDefault['Referente']['img'] = 'legno-frutta-cassetta.jpg';
+		
+		$raggruppamentoOrderActions = [];
+
+		if(count($orderActions)==1)
+			return $raggruppamentoOrderActions;
+		
+		$controller_old='';
+		$tot_figli=0;
+		$i=0;
+		foreach($orderActions as $orderAction) {
+		
+			if($debug) debug($controller_old.' '.$orderAction->controller);
+		
+			if(empty($controller_old) || $controller_old==$orderAction->controller) {
+				$tot_figli++;
+		
+				if($debug) debug('A) Per il controller '.$orderAction->controller.' finora trovati '.$tot_figli.' figli');
+			}
+			else {
+				$raggruppamentoOrderActions[$i]['controller'] = $controller_old;
+				$raggruppamentoOrderActions[$i]['tot_figli'] = $tot_figli;
+				if(isset($raggruppamentoDefault[$controller_old])) {
+					$raggruppamentoOrderActions[$i]['label'] = $raggruppamentoDefault[$controller_old]['label'];
+					$raggruppamentoOrderActions[$i]['img'] = $raggruppamentoDefault[$controller_old]['img'];
+				}
+				else {
+					$raggruppamentoOrderActions[$i]['label'] = '';
+					$raggruppamentoOrderActions[$i]['img'] = '';					
+				}
+				
+				$i++;
+				$tot_figli = 1;
+				
+				if($debug) debug('B) Per il controller '.$orderAction->controller.' finora trovati '.$tot_figli.' figli');
+			}
+		
+			$controller_old = $orderAction->controller;
+		} // foreach($orderActions as $orderAction)
+			
+		$raggruppamentoOrderActions[$i]['controller'] = $controller_old;
+		$raggruppamentoOrderActions[$i]['tot_figli'] = $tot_figli;
+		if(isset($raggruppamentoDefault[$controller_old])) {
+			$raggruppamentoOrderActions[$i]['label'] = $raggruppamentoDefault[$controller_old]['label'];
+			$raggruppamentoOrderActions[$i]['img'] = $raggruppamentoDefault[$controller_old]['img'];
+		}
+		else {
+			$raggruppamentoOrderActions[$i]['label'] = '';
+			$raggruppamentoOrderActions[$i]['img'] = '';
+		}
+							
+		return $raggruppamentoOrderActions;
+	}
+	
 }

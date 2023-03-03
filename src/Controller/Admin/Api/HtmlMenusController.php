@@ -24,7 +24,12 @@ class HtmlMenusController extends AppController
         }        
     }
   
-    public function order($order_type_id, $order_id) {
+    /* 
+     * $view
+     *      modal (se visualizzato nel modal del menu' ordini)
+     *      menu (se visualizzato nel menu' di sinistra)
+     */
+    public function order($order_type_id, $order_id, $view='modal') {
 
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
@@ -85,5 +90,15 @@ class HtmlMenusController extends AppController
         $this->set('position_img', 'bgLeft');
 
         $this->viewBuilder()->setLayout('ajax');
+
+        // view di default /Admin/Api/HtmlMenus/order
+        switch($view) {
+            case 'modal':
+                $this->viewBuilder()->setTemplate('/Admin/Api/HtmlMenus/order_modal');
+            break;
+            case 'menu':
+                $this->viewBuilder()->setTemplate('/Admin/Api/HtmlMenus/order_menu');
+            break;    
+        }
     } 
 }

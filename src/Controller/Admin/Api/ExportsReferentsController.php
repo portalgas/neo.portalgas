@@ -68,8 +68,6 @@ class ExportsReferentsController extends AppController {
         $method = '_'.$print_id;
         $results = $this->{$method}($order_type_id, $order_id);
 
-        
-
         switch($format) {
             case 'HTML':
                 $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
@@ -112,6 +110,9 @@ class ExportsReferentsController extends AppController {
 
         $this->set(compact('orders', 'orderParent'));
 
+        $this->response->withHeader('fractis', 'toArticlesDetailsGas.pdf');
+        $this->response->header('filename', 'toArticlesDetailsGas.pdf');
+
         return true;
     }
 
@@ -134,6 +135,8 @@ class ExportsReferentsController extends AppController {
         $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
 
         $this->set(compact('orders', 'orderParent'));
+
+        $this->response->header('filename', 'toArticles.pdf');
 
         return true;
     }    

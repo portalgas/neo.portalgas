@@ -83,7 +83,13 @@ $(function () {
                       _this.print_results = response.data;
                     break;
                     case 'PDF':
-                      this.downloadBlob(response.data);
+                      let headers = response.headers;
+                      // console.log(headers, 'headers');
+                      let filename = 'documento.pdf';
+                      if(typeof headers.filename!=='undefined' && headers.filename!='') 
+                        filename = headers.filename;
+                                            
+                      this.downloadBlob(response.data, filename);
                     break;
                   }
                   _this.is_run = false;
@@ -93,13 +99,13 @@ $(function () {
                   console.error("Error: " + error);
             });            
         },       
-        downloadBlob(res) {
+        downloadBlob(res, filename) {
           var blob = new Blob([res], { type: "application/pdf" });
           // console.log(blob, 'blob');
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', 'pdf-js.pdf');
+          link.setAttribute('download', filename);
           document.body.appendChild(link);
           link.click();
           setTimeout(function () {

@@ -36,7 +36,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
     echo $this->element('search/orders');
     ?>
     <div class="box">
-        <div class="box-header">
+        <div class="box-header with-border">
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
@@ -215,8 +215,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                   $modal_size = 'md'; // sm md lg
                   $modal_header = __('Order').' '.$order->suppliers_organization->name;                                    
                   echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'"><i class="fa fa-2x fa-navicon"></i></button>';
-                  // echo $this->Html->link(__('Edit'), ['action' => 'edit', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
-                  // echo $this->Html->link(__('ArticleOrders'), ['controller' => 'articles-orders', 'action' => 'index', $order->order_type_id, $order->id], ['class'=>'btn btn-primary']);
                   // echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger']);
                   
                   echo '</td>';                  
@@ -294,7 +292,7 @@ $(function () {
       let htmlResult = $('#collapseResult-'+order_id);
 			htmlResult.html('');
 			htmlResult.css('min-height', '50px');
-			htmlResult.css('background', 'url(\"/images/cake/ajax-loader.gif\") no-repeat scroll center 0 transparent');
+			htmlResult.css('background', 'url(\"".Configure::read('App.img.cake')."/ajax-loader.gif\") no-repeat scroll center 0 transparent');
       
       let params = {
         order_id: order_id
@@ -318,7 +316,7 @@ $(function () {
             htmlResult.css('background', 'none repeat scroll 0 0 transparent');
             htmlResult.html(e.responseText);
         }
-    });    
+      });    
   });
 
   $('.collapse').on('hidden.bs.collapse', function() {
@@ -372,7 +370,7 @@ function apriPopUpBootstrap(url, opts) {
 	$('#'+modalId).modal('show');
 	
 	$('#'+modalId).on('shown.bs.modal', function () {
-      $('#'+modalId).find('.modal-body').css('background', 'url(\"/images/cake/ajax-loader.gif\") no-repeat scroll center center transparent');
+      $('#'+modalId).find('.modal-body').css('background', 'url(\"".Configure::read('App.img.cake')."/ajax-loader.gif\") no-repeat scroll center center transparent');
 
       $.ajax({
         type: 'GET',

@@ -128,3 +128,5 @@ select
 UPDATE `k_orders_actions` SET `action` = 'neo-index' WHERE (`id` = '40');
 UPDATE `k_orders_actions` SET `action` = 'neo-edit' WHERE (`id` = '39');
 UPDATE `k_orders_actions` SET `action` = 'neo-referentDocsExport' WHERE (`id` = '42');
+
+delete FROM k_templates_orders_states_orders_actions where group_id = 19;
