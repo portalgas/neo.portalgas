@@ -1,10 +1,13 @@
 <?php
 use Cake\Core\Configure;
+$config = Configure::read('Config');
+$portalgas_bo_url = $config['Portalgas.bo.url'];
+
 echo $this->Html->script('vue/articleOrders', ['block' => 'scriptPageInclude']);
 
 echo $this->element('menu-order', ['order' => $order]);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('ArticleOrders'), 'subtitle' => __('Management')], ['home']);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('ArticleOrders'), 'subtitle' => __('Management')], ['home', 'list'], $order);
 
 echo $this->HtmlCustomSite->boxOrder($order);
 ?>
@@ -94,6 +97,15 @@ echo $this->HtmlCustomSite->boxOrder($order);
                       <input :disabled="!can_edit" type="text" class="form-control" v-model="article_order.prezzo_" />
                       <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                     </div>
+                      
+                      <a v-if="article_order.prezzo!=article_order.article.prezzo" 
+                        title="visualizza l'articolo" 
+                        :href="'<?php echo $portalgas_bo_url;?>/administrator/index.php?option=com_cake&controller=Articles&action=context_articles_view&id='+article_order.article_id+'&article_organization_id='+article_order.article_organization_id">
+                        <div class="label label-warning">
+                          nel listino ora è {{ article_order.article.prezzo | currency }} €
+                        </div>
+                      </a>
+
                     </td>
                     <td>
                       <input :disabled="!can_edit" type="number" min="1" class="form-control" v-model="article_order.pezzi_confezione" />

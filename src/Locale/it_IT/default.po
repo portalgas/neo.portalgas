@@ -970,6 +970,9 @@ msgstr "Ordine"
 msgid "Orders"
 msgstr "Ordini"
 
+msgid "Orders-0"
+msgstr "Ordini"
+
 msgid "Orders-1"
 msgstr "Ordini per G.A.S."
 

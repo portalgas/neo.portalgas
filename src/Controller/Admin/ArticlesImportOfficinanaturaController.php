@@ -39,11 +39,19 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
     }
 
     public function beforeFilter(Event $event) {
-        parent::beforeFilter($event);       
+        parent::beforeFilter($event);  
+
+        // old if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {    
+        if(!$this->_user->acl['isRoot']) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }        
     }
 
     public function index()
     {
+        Configure::write('debug', true);
+
         $debug = true;
         $continua = true;
 
@@ -105,6 +113,9 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                     $name = $this->_sanitizeString($row[1]);
                     if(!empty($name))
                         $datas[$i]['name'] = $name;
+                    // eventuale descrizione inserita nel name
+                    $descri = $this->_getDescri($name);
+                    if(!empty($descri)) $datas[$i]['descri'] = $descri;
                     $datas[$i]['prezzo'] = $this->_sanitizeImporto($row[3]);
                     $confs = $this->_sanitizeConf($row[2]);
                     $datas[$i]['um'] = $confs['um'];
@@ -201,9 +212,9 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
 
                     // if($article->isNew())
                     if($action=='INSERT')
-                        debug('INSERT '.$article->codice.' '.$article->name);
+                        debug('INSERT ['.$article->codice.'] ['.$article->name.'] um ['.$article->um.']');
                     else
-                        debug('UPDATE '.$article->codice.' '.$article->name);
+                        debug('UPDATE ['.$article->codice.'] ['.$article->name.'] um ['.$article->um.']');
                                             
                 } // end foreach($datas as $data) 
             } // end if($continua) 

@@ -54,15 +54,38 @@ class ArticleOrdersController extends ApiAppController
         $articlesOrdersResults = [];
 
         $order_id = $this->request->getData('order_id');
+        $order_type_id = 0;
         $article_organization_id = $this->request->getData('article_organization_id');
         $article_id = trim($this->request->getData('article_id'));
 
         $ordersTable = TableRegistry::get('Orders');
-        
-        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, 0, $order_id);
+
+        /* 
+          * ctrl se l'ordine e' SocialMarket perche' ha un organization_id diverso da quello dell'utente
+          */
+        $where = ['Orders.organization_id' => Configure::read('social_market_organization_id'), 'Orders.id' => $order_id];
+        $orderResults = $ordersTable->find()->where($where)->first();
+        if(!empty($orderResults)) {
+            $order_type_id = $orderResults->order_type_id; 
+            // prendo organization_id del GAS SocialMarket
+            $order_organization_id = Configure::read('social_market_organization_id');
+        }
+        else {
+            // prendo organization_id del GAS dell'utente
+            $order_organization_id = $this->_organization->id;            
+        }
+            
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id, $order_id);
+        if($ordersTable===false) {
+            $results['code'] = 500;
+            $results['message'] = __('msg_error_param_order_type_id');
+            $results['errors'] = '';
+            $continua = false;
+            return $this->_response($results);
+        }
 
         $ordersTable->addBehavior('Orders');
-        $orderResults = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
+        $orderResults = $ordersTable->getById($this->_user, $order_organization_id, $order_id, $debug);
         if(!empty($orderResults)) {
             $supplier = $orderResults['suppliers_organization']['supplier'];
             $supplier = new ApiSupplierDecorator($this->_user, $supplier);
@@ -70,7 +93,7 @@ class ArticleOrdersController extends ApiAppController
         }
 
         $ids = [];
-        $ids['organization_id'] = $this->_organization->id;
+        $ids['organization_id'] = $order_organization_id;
         $ids['order_id'] = $order_id;
         $ids['article_organization_id'] = $article_organization_id;
         $ids['article_id'] = $article_id;
@@ -97,7 +120,7 @@ class ArticleOrdersController extends ApiAppController
             $nota = '';
             $cartsTable = TableRegistry::get('Carts');
 
-            $where = ['Carts.organization_id' => $this->_organization->id,
+            $where = ['Carts.organization_id' => $order_organization_id,
                       'Carts.order_id' => $order_id,
                       'Carts.user_id' => $this->_user->id,
                       'Carts.article_organization_id' => $article_organization_id,

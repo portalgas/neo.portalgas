@@ -316,7 +316,7 @@ class HtmlCustomSiteHelper extends FormHelper
         return $html;
     }
 
-    public function boxTitle($results, $breadcrumbs=[]) {
+    public function boxTitle($results, $breadcrumbs=[], $order=null) {
 
         if(!isset($results['title']))
             $results['title'] = ''; 
@@ -332,20 +332,28 @@ class HtmlCustomSiteHelper extends FormHelper
         }            
         $html .= '</h1>';
 
+        (!empty($order)) ? $order_type_id = $order->order_type_id: $order_type_id = 0;
+
         if(!empty($breadcrumbs)) {
             $html .= '<ol class="breadcrumb">';
             foreach($breadcrumbs as $breadcrumb) {
                 if(is_string($breadcrumb)) {
                     switch($breadcrumb) {
                         case 'home':
-                            $html .= '<li><a href="'.$this->Url->build('/admin').'"><i class="fa fa-home"></i> '.__('Home').'</a></li>';
+                            $html .= '<li><a href="'.$this->Url->build('/admin').'"><i class="fa fa-dashboard"></i> '.__('Home').'</a></li>';
                         break;
                         case 'list':
-                            $html .= '<li><a href="'.$this->Url->build(['action' => 'index']).'"><i class="fa fa-list"></i> '.__('List').'</a></li>';
+                            $label = __('List').' '.__('Orders-'.$order_type_id);
+                            $html .= '<li><a href="'.$this->Url->build(['controller' => 'orders', 'action' => 'index', $order_type_id]).'"><i class="fa fa-list"></i> '.$label.'</a></li>';
                         break;
                     }
                 }
             }
+            
+            if(!empty($order)) {
+                $html .= '<li><a href="'.$this->Url->build(['controller' => 'orders', 'action' => 'home', $order_type_id]).'"><i class="fa fa-home"></i> '.__('Order home').'</a></li>';
+            }
+        
             $html .= '</ol>';
         }
 

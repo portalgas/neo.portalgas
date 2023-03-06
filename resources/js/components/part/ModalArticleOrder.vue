@@ -123,12 +123,12 @@
 
   <div class="row" v-if="modalContent.entity.articlesOrder.descri!=''">
     <div class="col-4 col-label">Nota</div>
-    <div class="col-8">{{ modalContent.entity.articlesOrder.descri }}</div>
+    <div class="col-8"  v-html="$options.filters.html(modalContent.entity.articlesOrder.descri)"></div>
   </div>
 
   <div class="row" v-if="modalContent.entity.articlesOrder.ingredients!=''">
     <div class="col-4 col-label">Ingredienti</div>
-    <div class="col-8">{{ modalContent.entity.articlesOrder.ingredients }}</div>
+    <div class="col-8" v-html="$options.filters.html(modalContent.entity.articlesOrder.ingredients)"></div>
   </div>
            
   <div class="row" v-if="modalContent.entity.order.suppliers_organization.frequenza!=''">

@@ -14,11 +14,6 @@ class ArticlesImportSuperController extends AppController
     public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event);
-
-        if(!$this->_user->acl['isRoot']) {
-            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            return $this->redirect(Configure::read('routes_msg_stop'));
-        }        
     }
 
     protected function _sanitizeString($value) {
@@ -28,6 +23,9 @@ class ArticlesImportSuperController extends AppController
         // $value = iconv("UTF-8", "ASCII//IGNORE", $value);
         $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
         $value = str_replace('*', '', $value);
+        $value = str_replace('\n', ' ', $value);
+        $value = str_replace('\r', ' ', $value);
+        $value = trim($value);
         return $value;
     }
 
@@ -39,4 +37,17 @@ class ArticlesImportSuperController extends AppController
         $value = $this->convertImport($value);
         return $value;
     }    
+    protected function _getDescri($name) {
+
+        $descri = '';
+      
+        if(strpos($name, '-')!==false) {
+            list($name, $descri) = explode('-', $name);
+        }
+        if(strpos($name, ':')!==false) {
+            list($name, $descri) = explode(':', $name);
+        }
+
+        return trim($descri);
+    }
 }
