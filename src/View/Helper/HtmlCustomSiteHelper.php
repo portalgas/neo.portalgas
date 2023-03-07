@@ -351,7 +351,7 @@ class HtmlCustomSiteHelper extends FormHelper
             }
             
             if(!empty($order)) {
-                $html .= '<li><a href="'.$this->Url->build(['controller' => 'orders', 'action' => 'home', $order_type_id]).'"><i class="fa fa-home"></i> '.__('Order home').'</a></li>';
+                $html .= '<li><a href="'.$this->Url->build(['controller' => 'orders', 'action' => 'home', $order_type_id, $order->id]).'"><i class="fa fa-home"></i> '.__('Order home').'</a></li>';
             }
         
             $html .= '</ol>';

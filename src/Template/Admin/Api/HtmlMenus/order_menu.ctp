@@ -51,12 +51,12 @@ foreach($orderActions as $orderAction) {
 	echo "\r\n";
 	echo '<li style="margin:10px 0px;">';
 	if(!empty($orderAction['neo_url']))
-		echo '<a title="'.$title.'" class="menu-item '.$position_img.' '.$orderAction['css_class'].'" href="'.$orderAction['neo_url'].'">'.$label.'</a>';
+		echo '<a title="'.$title.'" class="menu-item '.$position_img.' '.$orderAction['css_class'].'-small" href="'.$orderAction['neo_url'].'">'.$label.'</a>';
 	else	
 	if(empty($orderAction['url']))
-		echo '<div title="'.__($orderAction['label']).'" class="menu-item  '.$position_img.' '.$orderAction['css_class'].'" >'.$label.'</div>';
+		echo '<div title="'.__($orderAction['label']).'" class="menu-item  '.$position_img.' '.$orderAction['css_class'].'-small" >'.$label.'</div>';
 	else
-        echo '<a title="'.$title.'" class="menu-item '.$position_img.' '.$orderAction['css_class'].'" href="'.$this->HtmlCustomSite->jLink($orderAction['controller'], $orderAction['action'], $orderAction['qs']).'">'.$label.'</a>';
+        echo '<a title="'.$title.'" class="menu-item '.$position_img.' '.$orderAction['css_class'].'-small" href="'.$this->HtmlCustomSite->jLink($orderAction['controller'], $orderAction['action'], $orderAction['qs']).'">'.$label.'</a>';
 	echo '</li>';
 } // end for foreach($orderActions as $orderAction)
 
@@ -72,7 +72,7 @@ foreach($templatesOrdersStates as $templatesOrdersState) {
 		echo '<li class="statoCurrent" style="margin:10px 0px;">
 			<a title="'.__($templatesOrdersState->state_code.'-intro').'" 
 			   style="min-height: 40px;color: #fff;"
-			   class="'.$position_img.' orderStato'.$templatesOrdersState->state_code.'" ';
+			   class="'.$position_img.' orderStato'.$templatesOrdersState->state_code.'-small" ';
 
 		/*
 		 * eventuale azione successiva
@@ -93,7 +93,7 @@ foreach($templatesOrdersStates as $templatesOrdersState) {
 		echo '<li class="statoNotCurrent" style="margin:10px 0px;">';
 		echo '<a title="'.__($templatesOrdersState->state_code.'-intro').'" 
 				style="min-height: 40px;"
-			 	class="'.$position_img.' orderStato'.$templatesOrdersState->state_code.'">';
+			 	class="'.$position_img.' orderStato'.$templatesOrdersState->state_code.'-small">';
 		echo __($templatesOrdersState->state_code.'-label');
 		echo '</a>';
 		echo '</li>';

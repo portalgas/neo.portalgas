@@ -32,7 +32,7 @@ class AuthsComponent extends Component {
             Configure::read('Order.type.des_titolare'),
             Configure::read('Order.type.gas_parent_groups'),
             Configure::read('Order.type.gas_groups')
-        ];        
+        ];  
     }
 
     /*
@@ -89,7 +89,7 @@ class AuthsComponent extends Component {
                 }    
 
                 $order_type_id = $pass[0];
-
+                
                 if(!in_array($order_type_id, $this->_order_type_ids)) {
                     $results['msg'] = __('msg_error_param_order_type_id');
                     return $results;   

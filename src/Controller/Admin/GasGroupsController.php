@@ -25,12 +25,11 @@ class GasGroupsController extends AppController
         
         parent::beforeFilter($event);
         
-        if(!isset($this->_user->acl) ||
-            !isset($this->_organization->paramsConfig['hasGasGroups']) || 
-            $this->_organization->paramsConfig['hasGasGroups']=='N' || 
-             !$this->_user->acl['isGasGroupsManagerGroups']
-            ) { 
+        if(!isset($this->_organization->paramsConfig['hasGasGroups']) || 
+           $this->_organization->paramsConfig['hasGasGroups']=='N' || 
+           !$this->_user->acl['isGasGroupsManagerGroups']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_not_permission'));
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
@@ -42,8 +41,6 @@ class GasGroupsController extends AppController
      */
     public function index()
     {
-        Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_not_permission'));
-        $this->_user = $this->Authentication->getIdentity();
         /*
          * non filtro per gruppi creati dall'utente, se no altri referenti non potranno vederlo 
         $where = ['GasGroups.user_id' => $this->_user->id, 

@@ -3,7 +3,7 @@ use Cake\Core\Configure;
 
 echo $this->element('menu-order', ['order' => $order]);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Order'), 'subtitle' => __('home')], ['home']);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Order'), 'subtitle' => __('home')], ['home', 'list'], $order);
 
 echo $this->HtmlCustomSite->boxOrder($order);
 
