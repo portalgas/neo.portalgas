@@ -110,7 +110,6 @@ class ExportsReferentsController extends AppController {
 
         $this->set(compact('orders', 'orderParent'));
 
-        $this->response->withHeader('fractis', 'toArticlesDetailsGas.pdf');
         $this->response->header('filename', 'toArticlesDetailsGas.pdf');
 
         return true;

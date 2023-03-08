@@ -164,7 +164,7 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
                     'Orders.order_type_id' => Configure::read('Order.type.gas_groups'),
                     'Orders.parent_id' => $order->id];
         $orders = $ordersTable->find()
-                ->contain(['GasGroups'])
+                ->contain(['GasGroups', 'Deliveries', 'SuppliersOrganizations'])
                 ->where($whereOrder)
                 ->order(['GasGroups.name'])
                 ->all();

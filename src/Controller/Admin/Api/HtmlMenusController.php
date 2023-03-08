@@ -87,8 +87,6 @@ class HtmlMenusController extends AppController
 
         $this->set(compact('order'));
 
-        $this->set('position_img', 'bgLeft');
-
         $this->viewBuilder()->setLayout('ajax');
 
         // view di default /Admin/Api/HtmlMenus/order

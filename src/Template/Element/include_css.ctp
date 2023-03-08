@@ -439,7 +439,7 @@ h4 {
 }
 .orderStatoPROCESSED-BEFORE-DELIVERY,
 .orderStatoPROCESSED-POST-DELIVERY {
-    background: url(/images/cake/cart/24x24/shopping_cart_accept_basket.png) no-repeat!important
+    background: url(/images/cake/cart/32x32/shopping_cart_accept_basket.png) no-repeat!important
 }
 .orderStatoPROCESSED-BEFORE-DELIVERY-small,
 .orderStatoPROCESSED-POST-DELIVERY-small {
@@ -711,6 +711,10 @@ ul.menuLateraleItems a.orderStatoPRODGASPROMOTION-GAS-USERS-CLOSE-small {
 }
 ul.menuLateraleItems .bgLeft {
     padding: 0px 0px 0px 40px;
+    background-position: top left!important
+}
+ul.menuLateraleItems .bgLeftModal {
+    padding: 16px 0px 16px 40px;
     background-position: top left!important
 }
 ul.menuLateraleItems .bgRight {

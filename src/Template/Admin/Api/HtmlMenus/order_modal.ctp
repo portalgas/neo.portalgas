@@ -24,9 +24,6 @@ if(!empty($order->gas_group_id)) {
 	echo '</h2>';
 }
 
-/*
- * menu Orders::index $position_img=='bgLeft'
- */
 echo "\r\n";
 echo '<ul class="menuLateraleItems">';
 echo "\r\n";
@@ -55,12 +52,12 @@ foreach($orderActions as $orderAction) {
 	echo "\r\n";
 	echo '<li style="margin: 20px 0;">';
 	if(!empty($orderAction['neo_url']))
-	echo '<a style="padding:4px 0px 20px 40px" title="'.$title.'" class="'.$position_img.' '.$orderAction['css_class'].'" href="'.$orderAction['neo_url'].'">'.$label.'</a>';
+	echo '<a style="padding:4px 0px 20px 40px" title="'.$title.'" class="bgLeftModal '.$orderAction['css_class'].'" href="'.$orderAction['neo_url'].'">'.$label.'</a>';
 	else	
 	if(empty($orderAction['url']))
 		echo '<div style="font-weight:bold;color:#003D4C;padding:4px 0px 20px 40px" title="'.__($orderAction['label']).'" class="'.$position_img.' '.$orderAction['css_class'].'" >'.$label.'</div>';
 	else
-        echo '<a style="padding:4px 0px 20px 40px" title="'.$title.'" class="'.$position_img.' '.$orderAction['css_class'].'" href="'.$this->HtmlCustomSite->jLink($orderAction['controller'], $orderAction['action'], $orderAction['qs']).'">'.$label.'</a>';
+        echo '<a style="padding:4px 0px 20px 40px" title="'.$title.'" class="bgLeftModal '.$orderAction['css_class'].'" href="'.$this->HtmlCustomSite->jLink($orderAction['controller'], $orderAction['action'], $orderAction['qs']).'">'.$label.'</a>';
 	echo '</li>';
 } // end for foreach($orderActions as $orderAction)
 
@@ -80,8 +77,7 @@ foreach($templatesOrdersStates as $templatesOrdersState) {
 	if($order['state_code'] == $templatesOrdersState->state_code) {
 		echo '<li class="statoCurrent" style="margin: 20px 0;">';
 		echo '<a title="'.__($templatesOrdersState->state_code.'-intro').'" ';
-		echo '	 class="'.$position_img.' ';
-		echo '	 orderStato'.$templatesOrdersState->state_code.'" ';
+		echo '	 class="bgLeftModal orderStato'.$templatesOrdersState->state_code.'" ';
 		echo '	 style="text-decoration:none;font-weight:bold;cursor:pointer;"';
 
 		/*
@@ -102,8 +98,7 @@ foreach($templatesOrdersStates as $templatesOrdersState) {
 	else {
 		echo '<li class="statoNotCurrent" style="margin: 20px 0;">';
 		echo '<a title="'.__($templatesOrdersState->state_code.'-intro').'" ';
-		echo '	 class="'.$position_img.' ';
-		echo '	 orderStato'.$templatesOrdersState->state_code.'" ';
+		echo '	 class="bgLeftModal orderStato'.$templatesOrdersState->state_code.'" ';
 		echo '	 style="text-decoration:none;font-weight:normal;cursor:default;';
 		echo '">';
 		echo __($templatesOrdersState->state_code.'-label');
