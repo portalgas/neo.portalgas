@@ -7,58 +7,59 @@
 // debug($user);
 
 $html = '';
-$html .= '<h3>Consegna</h3>';
+$html .= '<h3>'.__('Order-'.$order_type_id).'</h3>';
 
-$_headers = [];
-$_article_orders = [];
-$_users = [];
-if(!empty($orders)) {
-	foreach($orders as $numResult => $order) {
-		// debug($order);
-		// debug('delivery '.$order->delivery->luogo.' suppliers_organization '.$order->suppliers_organization->name.' gas_group '.$order->gas_group->name);
-		$_headers[$numResult]->delivery->luogo = $order->delivery->luogo;
-		$_headers[$numResult]->suppliers_organization->name = $order->suppliers_organization->name;
-		$_headers[$numResult]->gas_group->name = $order->gas_group->name;
+if(!empty($article_orders)) {
 
-		foreach($order->article_orders as $article_order) {
-			
-			// debug($article_order->name.' '.$article_order->article->img1);
-			
-			$_article_orders[$numResult][$article_order->article_id]->article_id = $article_order->article_id;
-			$_article_orders[$numResult][$article_order->article_id]->name = $article_order->name;
-			$_article_orders[$numResult][$article_order->article_id]->prezzo = $article_order->prezzo;
-			$_article_orders[$numResult][$article_order->article_id]->qta_cart = $article_order->qta_cart;
-			$_article_orders[$numResult][$article_order->article_id]->article->img1 = $article_order->article->img1;
+	$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">';
+	$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+	$html .= '	<tr>';
+	$html .= '			<th scope="col" width="5%">' . __('Bio') . '</th>';
+	if($format=='HTML')
+		$html .= '			<th scope="col" width="15%" class="text-left"></th>';
+	$html .= '			<th scope="col" width="20%" class="text-left">' . __('Name') . '</th>';
+	$html .= '			<th scope="col" width="10%" class="text-center">' . __('Conf') . '</th>';
+	$html .= '			<th scope="col" width="15%" class="text-center">' . __('Prezzo/UM') . '</th>';
+	$html .= '			<th scope="col" width="15%" class="text-center">&nbsp;' . __('PrezzoUnita') . '</th>';
+	$html .= '			<th scope="col" width="5%" class="text-center">' . __('Qta') . '</th>';
+	$html .= '			<th scope="col" width="15%" class="text-center">' . __('Importo') . '</th>';
+	$html .= '	</tr>';
+	$html .= '	</thead><tbody>';
 
-			foreach($article_order->carts as $cart) {
+	$totale_ordine = 0;
+	foreach($article_orders as $numResult => $article_order) {
 
-				if(!isset($_users[$cart->user_id]->article))
-					$i=0;
-				else 
-					$i = count($_users[$cart->user_id]->article);
+		$totale_ordine += $article_order->cart->final_price;
 
-				// $_users[$cart->user_id]->article[$i] = $_article_orders[$article_order->article_id];
-				$_users[$numResult][$cart->user_id]->article[$i]->name = $article_order->name;
-				$_users[$numResult][$cart->user_id]->article[$i]->prezzo = $article_order->prezzo;
-				$_users[$numResult][$cart->user_id]->article[$i]->qta_cart = $article_order->qta_cart;
-				$_users[$numResult][$cart->user_id]->article[$i]->article->img1 = $article_order->article->img1;
+		$article_order->article->is_bio ? $is_bio = '<img src="/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
-				$_users[$numResult][$cart->user_id]->article[$i]->cart->qta = $cart->qta;
-				$_users[$numResult][$cart->user_id]->article[$i]->cart->qta_forzato = $cart->qta_forzato;
-				$_users[$numResult][$cart->user_id]->article[$i]->cart->importo_forzato = $cart->importo_forzato;
-				$_users[$numResult][$cart->user_id]->article[$i]->cart->user_id = $cart->user_id;
+		$html .= '<tr>';
+		$html .= '	<td class="text-center">'.$is_bio.'</td>';
+		if($format=='HTML')
+			$html .= '	<td><img src="'.$article_order->article->img1.'" /></td>';
+		$html .= '	<td>'.$article_order->name.'</td>';
+		$html .= '	<td class="text-center">'.$article_order->article->conf.'</td>';
+		$html .= '	<td class="text-center">'.$article_order->article->um_rif_label.'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order->prezzo).'</td>';
+		$html .= '	<td class="text-center">';
+		$html .= $article_order->cart->final_qta;
+		$html .= '  </td>';
+		$html .= '	<td class="text-center">';
+		$html .= $this->HtmlCustom->importo($article_order->cart->final_price);
+		$html .= '  </td>';
+		$html .= '</tr>';
+	} // end foreach($article_orders as $numResult => $article_order)
 
-				$_users[$numResult][$cart->user_id]->user->id = $cart->user->id;
-				$_users[$numResult][$cart->user_id]->user->name = $cart->user->name;
-				$_users[$numResult][$cart->user_id]->user->email = $cart->user->email;
+	$html .= '	<tr>';
+	$html .= '		<td colspan="';
+	($format=='HTML')? $html .= '5' : $html .= '4';
+	$html .= '" class="no-border"></td>';
+	$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale ordine') . '</th>';
+	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($totale_ordine). '</th>';
+	$html .= '	</tr>';
 
-				// debug($i.') '.$article_order->name.' cart '.$cart->qta.' user '.$cart->user->email.' '.$cart->user_id);
-			}			
-		}
-	}
+	$html .= '	</tbody>';
+	$html .= '	</table>';			
 }
-debug($_headers);
-debug($_users);
-debug($_article_orders);
 echo $html;
 ?>

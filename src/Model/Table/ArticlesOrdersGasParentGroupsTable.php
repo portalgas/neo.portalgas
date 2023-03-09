@@ -168,20 +168,20 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
                 ->where($whereOrder)
                 ->order(['GasGroups.name'])
                 ->all();
-         
+                
         if($orders->count()==0)
             return $results;
 
+        (isset($where['ArticlesOrders'])) ? $where['ParamsArticlesOrders'] = $where['ArticlesOrders']: $where['ParamsArticlesOrders'] = [];
+                        
         foreach($orders as $numResult => $order) {
-
-            if(!isset($where['ArticlesOrders']))
-            $where['ArticlesOrders'] = [];
+            
             $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $organization_id,
                                 // $this->getAlias().'.article_id' => 142,
                                 $this->getAlias().'.order_id' => $order->id,
                                 $this->getAlias().'.stato != ' => 'N'], 
-                                $where['ArticlesOrders']);
-    
+                                $where['ParamsArticlesOrders']);
+   
             $article_orders = $this->gets($user, $organization_id, $order, $where, $options, $debug);
             if($debug) debug($article_orders);
          

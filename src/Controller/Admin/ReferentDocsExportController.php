@@ -39,7 +39,7 @@ class ReferentDocsExportController extends AppController
         switch($order_type_id) {
             case Configure::read('Order.type.gas_parent_groups'):
                 $exports['toArticles'] = 'Doc. con gli articoli aggregati (per il produttore)';
-                $exports['toArticlesDetailsGas'] = 'Doc. con gli articoli aggregati divisi per G.A.S.';
+                $exports['toArticlesDetailsByGroups'] = 'Doc. con gli articoli aggregati divisi per i Gruppi';
             break;
         }
         

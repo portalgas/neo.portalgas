@@ -71,7 +71,7 @@ if(!empty($delivery)) {
 	    if(!empty($result->summary_order_trasport)) {
 			$html .= '	<tr>';
 			$html .= '		<td colspan="4" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right" class="no-border">' . __('CostTrasport') . '</th>';
+			$html .= '		<th colspan="2" class="text-right no-border">' . __('CostTrasport') . '</th>';
 			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_trasport->importo_trasport). '</th>';
 			$html .= '	</tr>'; 
 
@@ -81,7 +81,7 @@ if(!empty($delivery)) {
 	    if(!empty($result->summary_order_cost_more)) {
 			$html .= '	<tr>';
 			$html .= '		<td colspan="4" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right" class="no-border">' . __('CostMore') . '</th>';
+			$html .= '		<th colspan="2" class="text-right no-border">' . __('CostMore') . '</th>';
 			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_more->importo_cost_more). '</th>';
 			$html .= '	</tr>'; 
 
@@ -91,7 +91,7 @@ if(!empty($delivery)) {
 	    if(!empty($result->summary_order_cost_less)) {
 			$html .= '	<tr>';
 			$html .= '		<td colspan="4" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right" class="no-border">' . __('CostLess') . '</th>';
+			$html .= '		<th colspan="2" class="text-right no-border">' . __('CostLess') . '</th>';
 			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_less->importo_cost_less). '</th>';
 			$html .= '	</tr>';
 
@@ -100,7 +100,7 @@ if(!empty($delivery)) {
 
 		$html .= '	<tr>';
 		$html .= '		<td colspan="4" class="no-border"></td>';
-		$html .= '		<th colspan="2" class="text-right" class="no-border">' . __('Totale ordine') . '</th>';
+		$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale ordine') . '</th>';
 		$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($totale_ordine). '</th>';
 		$html .= '	</tr>';
 
@@ -185,7 +185,7 @@ if(!empty($delivery)) {
 
 			$html .= '	<tr>';
 			$html .= '		<td colspan="3" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right" class="no-border">' . __('Totale dispensa') . '</th>';
+			$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale dispensa') . '</th>';
 			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($totale_dispensa). '</th>';
 			$html .= '	</tr>';
 

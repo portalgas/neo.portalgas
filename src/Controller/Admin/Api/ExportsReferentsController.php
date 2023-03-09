@@ -6,6 +6,8 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
+use App\Decorator\Export\OrdersGasParentGroupsToArticlesDecorator;
+use App\Decorator\Export\OrdersGasParentGroupsToArticlesByGroupsDecorator;
 
 class ExportsReferentsController extends AppController {
     
@@ -68,6 +70,8 @@ class ExportsReferentsController extends AppController {
         $method = '_'.$print_id;
         $results = $this->{$method}($order_type_id, $order_id);
 
+        $this->set(compact('order_type_id', 'format'));
+
         switch($format) {
             case 'HTML':
                 $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
@@ -87,10 +91,11 @@ class ExportsReferentsController extends AppController {
                 ]);
                 $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
             break;
-        }            
+        }    
     }   
     
-    private function _toArticlesDetailsGas($order_type_id, $order_id, $debug=false) {
+    // Doc. con gli articoli aggregati divisi per i Gruppi
+    private function _toArticlesDetailsByGroups($order_type_id, $order_id, $debug=false) {
  
         /* 
         * dati ordine 
@@ -107,6 +112,15 @@ class ExportsReferentsController extends AppController {
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 
         $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        switch($order_type_id) {
+            case Configure::read('Order.type.gas_parent_groups'):
+                $orders = new OrdersGasParentGroupsToArticlesByGroupsDecorator($this->_user, $orders);
+                $orders = $orders->results;
+            break;
+            default:
+                $orders = [];
+            break;
+        }
 
         $this->set(compact('orders', 'orderParent'));
 
@@ -114,7 +128,8 @@ class ExportsReferentsController extends AppController {
 
         return true;
     }
-
+    
+    // Doc. con gli articoli aggregati (per il produttore)
     private function _toArticles($order_type_id, $order_id, $debug=false) {
         
         /* 
@@ -132,8 +147,17 @@ class ExportsReferentsController extends AppController {
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 
         $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        switch($order_type_id) {
+            case Configure::read('Order.type.gas_parent_groups'):
+                $article_orders = new OrdersGasParentGroupsToArticlesDecorator($this->_user, $orders);
+                $article_orders = $article_orders->results;
+            break;
+            default:
+                $article_orders = [];
+            break;
+        }
 
-        $this->set(compact('orders', 'orderParent'));
+        $this->set(compact('article_orders', 'orderParent'));
 
         $this->response->header('filename', 'toArticles.pdf');
 
