@@ -20,7 +20,9 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 
 		foreach($orders as $order) {
 		
+			// header: gruppo e consegna dell'ordine titolare
 			$this->results[$order->id]->delivery->luogo = $order->delivery->luogo;
+			$this->results[$order->id]->suppliers_organization->name = $order->suppliers_organization->name;
 			$this->results[$order->id]->gas_group->name = $order->gas_group->name;
 
 			foreach($order->article_orders as $article_order) {
@@ -47,10 +49,11 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 				$this->results[$order->id]->article_orders[$article_order->article_id]->article->um_rif_label = $this->_getArticlePrezzoUM($article_order->prezzo, $article_order->article->qta, $article_order->article->um, $article_order->article->um_riferimento);          
 				$this->results[$order->id]->article_orders[$article_order->article_id]->article->conf = $article_order->article->qta.' '.$article_order->article->um;
 
-				/*
-				 * calcolo la qta perche' article_order->qta_cart non considera le qta_forzate
-				 */
 				foreach($article_order->carts as $cart) {
+
+					/*
+					* calcolo la qta perche' article_order->qta_cart non considera le qta_forzate
+					*/
 					$final_qta = 0;
 					($cart->qta_forzato > 0 ) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
 					$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_qta += $final_qta;

@@ -8,6 +8,7 @@ use Cake\ORM\TableRegistry;
 use App\Traits;
 use App\Decorator\Export\OrdersGasParentGroupsToArticlesDecorator;
 use App\Decorator\Export\OrdersGasParentGroupsToArticlesByGroupsDecorator;
+use App\Decorator\Export\OrdersGasParentGroupsToUsersArticlesByGroupsDecorator;
 
 class ExportsReferentsController extends AppController {
     
@@ -94,42 +95,7 @@ class ExportsReferentsController extends AppController {
         }    
     }   
     
-    // Doc. con gli articoli aggregati divisi per i Gruppi
-    private function _toArticlesDetailsByGroups($order_type_id, $order_id, $debug=false) {
- 
-        /* 
-        * dati ordine 
-        */
-        $ordersTable = TableRegistry::get('Orders');
-        $where = ['Orders.organization_id' => $this->_organization->id,
-                    'Orders.order_type_id' => $order_type_id,
-                    'Orders.id' => $order_id];
-        $orderParent = $ordersTable->find()
-                                ->where($where)
-                                ->first();
-
-        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
-
-        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
-        switch($order_type_id) {
-            case Configure::read('Order.type.gas_parent_groups'):
-                $orders = new OrdersGasParentGroupsToArticlesByGroupsDecorator($this->_user, $orders);
-                $orders = $orders->results;
-            break;
-            default:
-                $orders = [];
-            break;
-        }
-
-        $this->set(compact('orders', 'orderParent'));
-
-        $this->response->header('filename', 'toArticlesDetailsGas.pdf');
-
-        return true;
-    }
-    
-    // Doc. con gli articoli aggregati (per il produttore)
+    // Doc. con acquisti aggregati per articoli (per il produttore)
     private function _toArticles($order_type_id, $order_id, $debug=false) {
         
         /* 
@@ -140,6 +106,7 @@ class ExportsReferentsController extends AppController {
                     'Orders.order_type_id' => $order_type_id,
                     'Orders.id' => $order_id];
         $orderParent = $ordersTable->find()
+                                ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->first();
 
@@ -159,8 +126,80 @@ class ExportsReferentsController extends AppController {
 
         $this->set(compact('article_orders', 'orderParent'));
 
-        $this->response->header('filename', 'toArticles.pdf');
+        $this->response->header('filename', 'acquisti-aggregati-articoli.pdf');
 
         return true;
-    }    
+    } 
+    
+    // Doc. con acquisti aggregati per articoli divisi per i Gruppi    
+    private function _toArticlesByGroups($order_type_id, $order_id, $debug=false) {
+ 
+        /* 
+        * dati ordine 
+        */
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Orders.organization_id' => $this->_organization->id,
+                    'Orders.order_type_id' => $order_type_id,
+                    'Orders.id' => $order_id];
+        $orderParent = $ordersTable->find()
+                                ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
+                                ->where($where)
+                                ->first();
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
+
+        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        switch($order_type_id) {
+            case Configure::read('Order.type.gas_parent_groups'):
+                $orders = new OrdersGasParentGroupsToArticlesByGroupsDecorator($this->_user, $orders);
+                $orders = $orders->results;
+            break;
+            default:
+                $orders = [];
+            break;
+        }
+
+        $this->set(compact('orders', 'orderParent'));
+
+        $this->response->header('filename', 'acquisti-aggregati-articoli-per-gruppi.pdf');
+
+        return true;
+    }
+
+    // Doc. con acquisti aggregati per gasisti divisi per i Gruppi
+    private function _toUsersArticlesByGroups($order_type_id, $order_id, $debug=false) {
+ 
+        /* 
+        * dati ordine 
+        */
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Orders.organization_id' => $this->_organization->id,
+                    'Orders.order_type_id' => $order_type_id,
+                    'Orders.id' => $order_id];
+        $orderParent = $ordersTable->find()
+                                ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
+                                ->where($where)
+                                ->first();
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
+
+        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        switch($order_type_id) {
+            case Configure::read('Order.type.gas_parent_groups'):
+                $orders = new OrdersGasParentGroupsToUsersArticlesByGroupsDecorator($this->_user, $orders);
+                $orders = $orders->results;
+            break;
+            default:
+                $orders = [];
+            break;
+        }
+
+        $this->set(compact('orders', 'orderParent'));
+
+        $this->response->header('filename', 'acquisti-aggregati-gasisti-per-gruppi.pdf');
+
+        return true;
+    }
 }
