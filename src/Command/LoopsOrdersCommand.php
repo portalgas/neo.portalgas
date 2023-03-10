@@ -13,6 +13,10 @@ use Cake\Controller\ComponentRegistry;
  * creo ordini ricorsivi
  * /var/www/neo.portalgas/src/Command/Sh/loops_orders.sh
  * /var/www/neo.portalgas/bin/cake LoopsOrders {organization_id}
+ * 
+ * cron 
+ * 10 0 * * * /var/portalgas/cron/loopsOrders.sh >> /var/portalgas/cron/log/$(date +\%Y\%m\%d)_loopsOrders.log 2>&1
+ * 45 0 * * * /var/www/neo.portalgas/src/Command/Sh/loops_orders.sh >> /var/portalgas/cron/log/$(date +\%Y\%m\%d)_loopsOrdersNeo.log 2>&1
  */ 
 class LoopsOrdersCommand extends Command
 {

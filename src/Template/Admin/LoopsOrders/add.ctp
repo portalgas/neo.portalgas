@@ -6,8 +6,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Loops Order'), 'subtitle' =
 /*
  * nome dell'istanza dell'helper della tipologia di order
  */
-$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id);
-$this->{$htmlCustomSiteOrders}->setUser($this->Identity->get());
+$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user);
 // debug($htmlCustomSiteOrders);
 ?>
 
@@ -36,7 +35,7 @@ echo '</div>'; // row
 /*
   * produttore
   */
-echo $this->{$htmlCustomSiteOrders}->supplierOrganizations($suppliersOrganizations);
+echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations);
 
 echo '<div class="row">';
 echo '<div class="col-md-12">';
