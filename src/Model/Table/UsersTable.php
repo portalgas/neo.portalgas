@@ -265,7 +265,10 @@ class UsersTable extends Table
             $where = ['organization_id' => $user_organization_id];
             $desOrganizations = $desOrganizationsTable->find()->select(['des_id'])->where($where)->all();
             if($desOrganizations->count()==1) {
-                $user->des_id = $desOrganizations[0]->des_id; 
+                foreach($desOrganizations as $desOrganization) {
+                    $user->des_id = $desOrganization->des_id;
+                    break;
+                }
             }
         }
 

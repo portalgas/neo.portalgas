@@ -326,9 +326,9 @@ class DeliveriesTable extends Table
                                         ->all();   
             if($gasGroupDeliveries->count()>0) {
                 $gasGroupDeliveries = $gasGroupDeliveries->toArray();
+                $results = array_merge($results, $gasGroupDeliveries);
             }
-     
-            $results = array_merge($results, $gasGroupDeliveries);
+
         } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
 
         return $results;
