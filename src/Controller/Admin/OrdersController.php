@@ -223,9 +223,9 @@ class OrdersController extends AppController
     {            
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
         $this->_ordersTable->addBehavior('Orders');
-
+        
         $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
-
+        
         $datas = $this->_getData($order, $order_type_id, $parent_id);
         $suppliersOrganizations = $datas['suppliersOrganizations'];
         $deliveries = $datas['deliveries'];
@@ -235,12 +235,12 @@ class OrdersController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $request = $this->request->getData();  
-            // $request['order_type_id'] = $order_type_id; 
+            $request['order_type_id'] = $order_type_id;
+            $request['state_code'] = $order->state_code; 
             // $request['parent_id'] = $parent_id;                 
             // debug($request);
             $order = $this->_ordersTable->patchEntity($order, $request);
             // debug($order);
-
             if ($this->_ordersTable->save($order)) {
 
                 // todo $this->_ordersTable->afterEditWithRequest($this->_user, $this->_organization->id, $request);
@@ -251,7 +251,7 @@ class OrdersController extends AppController
                  */
                 if($order_type_id==Configure::read('Order.type.gas_parent_groups') || 
                    $order_type_id==Configure::read('Order.type.gas_groups')) {
-                    $url = ['controller' => 'Orders', 'action' => 'index']; 
+                    $url = ['controller' => 'Orders', 'action' => 'index', $order_type_id]; 
                 }
                 else 
                     $url = ['controller' => 'joomla25Salts', 'action' => 'index', 

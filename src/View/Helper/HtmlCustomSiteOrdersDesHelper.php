@@ -27,7 +27,7 @@ class HtmlCustomSiteOrdersDesHelper extends HtmlCustomSiteOrdersHelper
         $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_parent->organization->id, 'required' => 'required']);
 
         // ordine del DES 
-        if(!empty($parent))
+        if(!empty($this->parent))
             $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $this->_parent->id, 'required' => 'required']);
         
         return $html;

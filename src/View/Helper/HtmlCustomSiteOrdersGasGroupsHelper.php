@@ -28,7 +28,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_parent->organization_id, 'required' => 'required']);
 
         // ordine del GAS 
-        if(!empty($parent))
+        if(!empty($this->_parent))
             $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $this->_parent->id, 'required' => 'required']);
         
         return $html;

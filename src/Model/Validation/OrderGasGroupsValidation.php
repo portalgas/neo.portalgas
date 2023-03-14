@@ -20,6 +20,7 @@ class OrderGasGroupsValidation extends Validation
         $where = ['organization_id' => $organization_id,
                   'order_id' => $parent_id,
                   'stato !=' => 'N'];
+             
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $totale = $articlesOrdersTable->find()
                         ->where($where)

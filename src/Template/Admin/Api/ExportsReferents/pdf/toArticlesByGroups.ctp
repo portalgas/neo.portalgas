@@ -41,7 +41,7 @@ if(!empty($orders)) {
 			$html .= '<tr>';
 			$html .= '	<td class="text-center">'.$is_bio.'</td>';
 			if($format=='HTML')
-				$html .= '	<td><img src="'.$article_order->article->img1.'" /></td>';
+				$html .= '	<td><img src="'.$article_order->article->img1.'" width="'.Configure::read('Article.img.preview.width').'" /></td>';
 			$html .= '	<td>'.$article_order->name.'</td>';
 			$html .= '	<td class="text-center">'.$article_order->article->conf.'</td>';
 			$html .= '	<td class="text-center">'.$article_order->article->um_rif_label.'</td>';
