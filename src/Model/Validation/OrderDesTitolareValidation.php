@@ -38,7 +38,7 @@ class OrderDesTitolareValidation extends Validation
 
     public function dateDeliverytoDataFineMaxOrderDes($value, $context)
     { 
-        // dump($context);  
+        // dd($context);  
         $organization_id = $context['data']['organization_id'];
         $delivery_id = $context['data']['delivery_id']; 
         $data_fine_max = $context['data']['data_fine_max']; 

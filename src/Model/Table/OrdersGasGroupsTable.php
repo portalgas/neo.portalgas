@@ -47,6 +47,16 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
                 ]
             ]);
 
+        $validator
+            ->notEmpty('data_fine')
+            ->add('data_fine', [
+                'totArticles' => [
+                   'rule' => ['dateFine'],
+                   'provider' => 'orderGasGroups',
+                   'message' => "La data di chiusura non può essere posteriore o uguale alla data di chiusura dell'ordine titolare"
+                ]
+            ]);
+
         return $validator;
     }
 

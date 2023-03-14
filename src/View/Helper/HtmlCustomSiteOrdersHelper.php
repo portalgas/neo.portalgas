@@ -225,7 +225,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
      * $results['bottom'] html inserito nel Layout in fondo, ex modal
      */
     public function gestTypeDeliveries($deliveries, $options=[]) {
-        
+
         $results = [];
 
         /*
@@ -234,7 +234,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $default = 'N'; // lista consegne attive
         if(!$this->_order->isNew()) { // edit
             if($this->_order->delivery_id==key($deliveries['Y']))
-                $default = 'Y';  // consegna Da definire
+                $default = $this->_order->delivery_id;  // consegna Da definire
             else {
                 $default = $this->_order->delivery_id;
 
@@ -293,7 +293,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
                         __('Send mail to manager to delivery').'  <i class="text-primary fa fa-lg fa-envelope"></i></a>'.
                         '</div>'];
         }
-        
+      
         $html = '<section class="content delivery">';
         $html .= $this->title(__('Delivery'));
         $html .= $this->Form->hidden('delivery_id', ['value' => '']);

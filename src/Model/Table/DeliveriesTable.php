@@ -180,7 +180,13 @@ class DeliveriesTable extends Table
             $where['Deliveries'] += $conditions;
         }
 
-        $deliveries = $this->getsList($user, $organization_id, $where, $order, $debug);
+        $deliveries = $this->gets($user, $organization_id, $where);
+        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
+            $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
+            if(!empty($gasGroupDeliveries))
+                $deliveries = array_merge($deliveries, $gasGroupDeliveries);
+        }
+        $deliveries = $this->getsList($deliveries);
         $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
 
         $results = [];
@@ -194,16 +200,16 @@ class DeliveriesTable extends Table
      * return 
      *      array['N'] elenco consegne attive per select
      *      array[delivery_id] consegna da definire 
+     * 
+     * escludo le consegne di gruppi perche' richiamato da OrderGasGroups e OrderGasParentGroups
      */
     public function getsActiveGroup($user, $organization_id, $where=[], $order=[], $debug=false) {
         
         $conditions = ['Deliveries.isVisibleFrontEnd' => 'Y',
                         'Deliveries.stato_elaborazione' => 'OPEN',
                         'Deliveries.sys' => 'N',
-                        'DATE(Deliveries.data) >= CURDATE()'
-                      ];
-        if($user->organization->paramsConfig['hasGasGroups']=='N')
-            $conditions += ['Deliveries.type' => 'GAS']; // GAS-GROUP
+                        'DATE(Deliveries.data) >= CURDATE()',
+                        'Deliveries.type' => 'GAS']; // GAS-GROUP
 
         if(isset($where['Deliveries']))
             $where['Deliveries'] += $conditions;
@@ -212,7 +218,8 @@ class DeliveriesTable extends Table
             $where['Deliveries'] += $conditions;
         }
 
-        $deliveries = $this->getsList($user, $organization_id, $where, $order, $debug);
+        $deliveries = $this->gets($user, $organization_id, $where);
+        $deliveries = $this->getsList($deliveries);
         $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
 
         $results = [];
@@ -222,11 +229,13 @@ class DeliveriesTable extends Table
         return $results;
     }
 
-    public function getsList($user, $organization_id, $where=[], $order=[], $debug=false) {
+    /*
+     * args elenco consegne
+     */
+    public function getsList($results) {
 
         $listResults = [];
 
-        $results = $this->gets($user, $organization_id, $where);
         if(!empty($results)) {
             foreach($results as $result) {
                 if($result->sys=='Y') 
@@ -250,7 +259,13 @@ class DeliveriesTable extends Table
     public function withOrdersGets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
         $results = [];
+
         $deliveries = $this->gets($user, $organization_id, $where, $order, $debug);
+        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
+            $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
+            if(!empty($gasGroupDeliveries))
+                $deliveries = array_merge($deliveries, $gasGroupDeliveries);    
+        }
 
         /*
          * estraggo le consegne che hanno ordini
@@ -268,7 +283,7 @@ class DeliveriesTable extends Table
     }
 
     /* 
-     * estraggo le consegne con ordini e senza
+     * estraggo le consegne Deliveries.type = 'GAS' con ordini e senza
      */
     public function gets($user, $organization_id, $where=[], $order=[], $debug=false) {
 
@@ -302,34 +317,51 @@ class DeliveriesTable extends Table
         if($results->count()>0) 
             $results = $results->toArray();
 
+        return $results;
+    }
+
         /* 
-         * elenco consegne per i GasGroups
-         */
-        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
-            unset($where_delivery['Deliveries.type']);
-            $where_delivery += ['Deliveries.type' => 'GAS-GROUP']; 
+     * estraggo le consegne Deliveries.type = 'GAS-GROUP' con ordini e senza
+     */
+    public function getsGasGroups($user, $organization_id, $where=[], $order=[], $debug=false) {
+
+        $results = [];
+
+        $where_delivery = [];
+        if(isset($where['Deliveries']))
+            $where_delivery = $where['Deliveries'];
+        $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id,
+                              'Deliveries.isVisibleBackOffice' => 'Y',
+                              'Deliveries.type' => 'GAS-GROUP',
+                              'Deliveries.sys' => 'N'], 
+                              $where_delivery);
+        
+        $where_order = [];
+        if(isset($where['Orders']))
+            $where_order = $where['Orders'];
+        $where_order = array_merge(['Orders.organization_id' => $organization_id,], $where_order);
+    
+        if(empty($order))
+            $order = ['Deliveries.data'];
        
-            // ctrl che l'utente appartertenga al gruppo 
-            $gasGroupsTable = TableRegistry::get('GasGroups');
-            $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
-            if(empty($gasGroups))
-                $where_order += ['Orders.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
-            else 
-                $where_order += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
+        // ctrl che l'utente appartertenga al gruppo 
+        $gasGroupsTable = TableRegistry::get('GasGroups');
+        $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
+        if(empty($gasGroups))
+            $where_order += ['Orders.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
+        else 
+            $where_order += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
 
-            $gasGroupDeliveries = $this->find()
-                                        ->where($where_delivery)
-                                        ->contain(['Orders' => [
-                                            'conditions' => $where_order,
-                                            'SuppliersOrganizations' => ['Suppliers']]])
-                                        ->order($order)
-                                        ->all();   
-            if($gasGroupDeliveries->count()>0) {
-                $gasGroupDeliveries = $gasGroupDeliveries->toArray();
-                $results = array_merge($results, $gasGroupDeliveries);
-            }
-
-        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
+        $results = $this->find()
+                                    ->where($where_delivery)
+                                    ->contain(['Orders' => [
+                                        'conditions' => $where_order,
+                                        'SuppliersOrganizations' => ['Suppliers']]])
+                                    ->order($order)
+                                    ->all();   
+        if($results->count()>0) {
+            $results = $results->toArray();
+        }
 
         return $results;
     }

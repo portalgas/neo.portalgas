@@ -70,6 +70,7 @@ class OrderValidation extends Validation
     	// debug($context); 	
     	$organization_id = $context['data']['organization_id'];
     	$delivery_id = $context['data']['delivery_id'];  
+    	$order_type_id = $context['data']['order_type_id'];  
         $supplier_organization_id = $context['data']['supplier_organization_id']; 
         
         /*
@@ -83,7 +84,7 @@ class OrderValidation extends Validation
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.delivery_id' => $delivery_id,
                   'Orders.supplier_organization_id' => $supplier_organization_id,
-                  'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
+                  'Orders.order_type_id' => $order_type_id,
                   'Orders.type_draw IN ' => $type_draws];
 
         /*
@@ -92,12 +93,12 @@ class OrderValidation extends Validation
         if(!$context['newRecord']) {
             $where += ['Orders.id !=' => $context['data']['id']];
         }
-
+        
         // debug($where);
         $results = $ordersTable->find()
                             ->where($where)
                             ->first();
-
+                          
         // debug($results);
         if(!empty($results))
             return false;

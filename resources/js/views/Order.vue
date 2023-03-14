@@ -302,7 +302,10 @@
 
     </div> <!-- row -->
 
+    <!--
+      TOUR
     <v-tour name="myTour" :steps="steps" :options="tourOptions" :callbacks="tourCallbacks"></v-tour>
+    -->
 
   </main> 
 

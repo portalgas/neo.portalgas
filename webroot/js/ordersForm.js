@@ -168,7 +168,7 @@ OrdersForm.prototype = {
     gestTypeDelivery: function (typeDeliverySelect) {
         
         $('input[name="delivery_id"]').val('');
-
+        
         if(typeDeliverySelect=='N') { // menu a tendina con consegne attive
             $('#delivery_ids').removeAttr('disabled');
             $('#radio-delivery-type-N').css('opacity', 1);
@@ -195,7 +195,10 @@ OrdersForm.prototype = {
         console.log("OrdersForm.init");
 
         this.bindEvents();
-        this.gestTypeDelivery('N');
+
+        let typeDelivery = $('input[name="type_delivery"]:checked').val();
+        if(typeDelivery=='') typeDelivery = 'N';
+        this.gestTypeDelivery(typeDelivery);
 
         if($('select[name="gas_group_id"]').length>0) {
             let gas_group_id = $('select[name="gas_group_id"]').val();

@@ -1,4 +1,6 @@
 <?php
+use Cake\Core\Configure;
+
 /*
  * user passato da Controller perche' IdentityHelper could not be found.
  * $user = $this->Identity->get();
@@ -31,7 +33,7 @@ if(!empty($article_orders)) {
 
 		$totale_ordine += $article_order->cart->final_price;
 
-		$article_order->article->is_bio ? $is_bio = '<img src="/is-bio.png" title="bio" width="20" />': $is_bio = '';
+		$article_order->article->is_bio ? $is_bio = '<img src="/img/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
 		$html .= '<tr>';
 		$html .= '	<td class="text-center">'.$is_bio.'</td>';

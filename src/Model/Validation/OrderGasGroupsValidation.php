@@ -8,6 +8,9 @@ use App\Traits;
 
 class OrderGasGroupsValidation extends Validation
 {  
+    use Traits\SqlTrait;
+    use Traits\UtilTrait;
+
     /*
      * ctrl l'ordine padre abbia articoli associati all'ordine
      */
@@ -29,5 +32,26 @@ class OrderGasGroupsValidation extends Validation
             return false;
         else
             return true;  
-    }  
+    }
+
+    public function dateFine($value, $context)
+    { 
+        // debug($context);  
+
+        $operator = '<=';
+    	$value = $context['data']['data_fine']; 
+        $value2 = $context['data']['parent_data_fine']; // 15/03/2023
+        
+        if(empty($value2))
+            return false;
+
+        list($day, $month, $year) = explode('/', $value2);
+          
+        $value = $value['year'].$value['month'].$value['day'];
+        $value2 = $year.$month.$day;
+        if (!Validation::comparison($value, $operator, $value2))
+            return false;
+    
+        return true;           
+    }    
 }

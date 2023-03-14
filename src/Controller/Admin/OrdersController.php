@@ -185,7 +185,7 @@ class OrdersController extends AppController
                 if($afterAddWithRequest!==true)
                     $this->Flash->error($afterAddWithRequest);
                 else 
-                    $this->Flash->success(__('The {0} has been saved.', __('Order')));
+                    $this->Flash->success("L'ordine è stato salvato correttamente");
 
                 $url = ['controller' => 'ArticlesOrders', 'action' => 'index', $order->order_type_id, $order->id]; 
                 return $this->redirect($url);                
@@ -244,7 +244,7 @@ class OrdersController extends AppController
             if ($this->_ordersTable->save($order)) {
 
                 // todo $this->_ordersTable->afterEditWithRequest($this->_user, $this->_organization->id, $request);
-                $this->Flash->success(__('The {0} has been saved.', 'Order'));
+                $this->Flash->success("L'ordine è stato salvato correttamente");
 
                 /*
                  * redirect home ordine
@@ -415,7 +415,7 @@ class OrdersController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $order = $this->Orders->get($id);
         if ($this->Orders->delete($order)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Order'));
+            $this->Flash->success("L'ordine è stato eliminato definitivamente");
         } else {
             $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Order'));
         }
