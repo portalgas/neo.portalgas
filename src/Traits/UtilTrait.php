@@ -3,6 +3,8 @@ namespace App\Traits;
 
 use Cake\Core\Configure;
 use Cake\I18n\Date;
+use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 
 trait UtilTrait
 {
@@ -300,6 +302,35 @@ trait UtilTrait
             break;
         }
  
+        return $results;
+    }
+
+    /*
+     * calcola i giorni di differenza tra la data passata e oggi
+     */
+    public function getDiffDateLabel($date) {
+
+        $results = '';
+
+        $now = FrozenTime::parse('now');
+        $interval = $now->diff($date);
+        $gg = $interval->format('%a');
+        $delta = $interval->format('%R'); 
+        if($delta==='-') {
+          if($gg==0) {
+            $results = 'Oggi';
+          }
+          else {
+            $diff_label = 'Passati '.$gg;
+            ($gg==1) ? $results .= ' giorno': $results .= ' giorni';  
+          }
+        }
+        else {
+          $gg++;
+          $results = 'Mancano '.$gg;
+          ($gg==1) ? $results .= ' giorno': $results .= ' giorni';                  
+        }
+
         return $results;
     }
 

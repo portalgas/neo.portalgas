@@ -90,7 +90,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                       
                       $label = $this->HtmlCustomSite->drawDeliveryLabel($order->delivery);
                       echo ' <b>'.__('Delivery').'</b> ';
-                      echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'edit', ['id' => $order->delivery->id]).'">'.$label.'</a>';
+                      echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'edit', ['delivery_id' => $order->delivery->id]).'">'.$label.'</a>';
                       echo ' '.$this->HtmlCustomSite->drawDeliveryDateLabel($order->delivery);
                       echo '</th>';
                       echo '</tr>';
@@ -109,7 +109,9 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                   echo '</td>';
                   echo '<td>';
                   echo h($order->suppliers_organization->name);
-                  echo '<br /><small>Importo totale '.$this->Number->format($order->tot_importo).'&nbsp;&euro;</small>';
+                  // Order.type.gas_parent_groups e' un ordine fittizio che fa da titolare per Order.type.gas_parent_groups
+                  if($order->order_type->id!=Configure::read('Order.type.gas_parent_groups'))   
+                    echo '<br /><small>Importo totale '.$this->Number->format($order->tot_importo).'&nbsp;&euro;</small>';
                   echo '</td>';
                   echo '<td style="white-space:nowrap;" class="hidden-xs hidden-sm">';
                   echo $order->data_inizio->i18nFormat('eeee d MMMM');
@@ -156,11 +158,12 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                       case Configure::read('Order.type.des_titolare'):
                         echo '<a title="'.__('Order-'.Configure::read('Order.type.des')).'" href="'.$this->HtmlCustomSite->jLink('desOrdersOrganizations', 'index', ['des_order_id' => $order->des_order_id]).'"><small class="label bg-primary">'.$order->order_type->descri.'</small></a>';
                       break;
-                      case Configure::read('Order.type.gas_groups'):
-                      break;
                       case Configure::read('Order.type.gas_parent_groups'):
                         if($user->acl['isGasGroupsManagerOrders'])
                             echo $this->Html->link('<small class="label bg-primary">'.$order->order_type->descri.'</small>', ['controller' => 'GasGroups', 'action' => 'index'], ['title' => '', 'escape' => false]);
+                      break;
+                      case Configure::read('Order.type.gas_groups'):
+                        echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';
                       break;
                       default:
                         echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';

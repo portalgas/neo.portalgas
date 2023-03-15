@@ -1,7 +1,5 @@
 <?php
 use Cake\Core\Configure;
-use Cake\I18n\Time;
-use Cake\I18n\FrozenTime;
 
 $this->start('tb_actions');
 echo '<li class="sidebar-menu-action">';
@@ -63,17 +61,8 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
             <tbody>
               <?php 
               foreach ($deliveries as $delivery) { 
-                
-                $now = FrozenTime::parse('now');
-                $interval = $now->diff($delivery->data);
-                $delta = $interval->format('%R');
-                if($delta==='-')
-                  $diff_label = 'Passati ';
-                else
-                  $diff_label = 'Mancano ';
-                $diff = $interval->format('%a giorni');
-                $diff_label = $diff_label.$diff;
 
+                $diff_label = $this->HtmlCustomSite->drawDiffDateLabel($delivery->data);
                 // debug($delivery);
                                 
                   echo '<tr>';

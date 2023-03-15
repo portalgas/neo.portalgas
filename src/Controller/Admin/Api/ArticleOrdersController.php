@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Admin\Api;
 
-use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;

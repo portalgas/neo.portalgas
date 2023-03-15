@@ -20,17 +20,17 @@ class OrderListener implements EventListenerInterface
         ];
     }
 
-    public function setStatus($event, $user, $order)
+    public function setStatus($event, $user, $order=null)
     {
-        if(empty($order))
+        if(empty($user))
             return false;
             
         $config = Configure::read('Config');
         $portalgas_app_root = $config['Portalgas.App.root'];
 
-        $organization_id = $order->organization_id;
+        $organization_id = $user->organization->id;
         $debug = 0;
-        $order_id = $order->id;
+        (!empty($order)) ? $order_id = $order->id: $order_id = '';
         $cmd = 'php -f '.$portalgas_app_root.'/components/com_cake/app/Cron/index.php ordersStatoElaborazione %s %s %s';
         $cmd = sprintf($cmd, $organization_id, $debug, $order_id);
         exec($cmd);

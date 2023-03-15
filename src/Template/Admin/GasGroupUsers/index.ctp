@@ -51,13 +51,13 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-<th scope="col" class="actions text-left"><?= __('Actions') ?></th>
-                      <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('user_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('gas_group_id') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
-              <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
-                   </tr>
+                <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('user_id') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('gas_group_id') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
+              </tr>
             </thead>
             <tbody>
               <?php 
@@ -65,21 +65,21 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
                 // debug($gasGroupUser);
               
-  echo '<tr>';
-  echo '<td class="actions text-left">';
-  echo $this->Html->link('', ['action' => 'view', $gasGroupUser->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-  echo $this->Html->link('', ['action' => 'edit', $gasGroupUser->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
-  if(!$gasGroupUser->is_system) 
-    echo $this->Form->postLink('', ['action' => 'delete', $gasGroupUser->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupUser->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
-  else
-    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
-  echo '</td>';             
-        echo '<td>'.$this->Number->format($gasGroupUser->organization_id).'</td>';
-        echo '<td>'.$this->Number->format($gasGroupUser->user_id).'</td>';
-        echo '<td>'.$this->Number->format($gasGroupUser->gas_group_id).'</td>';
-                    echo '<td title="'.h($gasGroupUser->created).'">'.$this->Time->nice($gasGroupUser->created).'</td>';
-                         echo '<td title="'.h($gasGroupUser->modified).'">'.$this->Time->nice($gasGroupUser->modified).'</td>';
-                        echo '</tr>';
+                echo '<tr>';
+                echo '<td class="actions text-left">';
+                echo $this->Html->link('', ['action' => 'view', $gasGroupUser->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
+                echo $this->Html->link('', ['action' => 'edit', $gasGroupUser->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+                if(!$gasGroupUser->is_system) 
+                  echo $this->Form->postLink('', ['action' => 'delete', $gasGroupUser->id], ['confirm' => __('Are you sure you want to delete # {0}?', $gasGroupUser->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                else
+                  echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+                echo '</td>';             
+                echo '<td>'.$this->Number->format($gasGroupUser->organization_id).'</td>';
+                echo '<td>'.$this->Number->format($gasGroupUser->user_id).'</td>';
+                echo '<td>'.$this->Number->format($gasGroupUser->gas_group_id).'</td>';
+                echo '<td title="'.h($gasGroupUser->created).'">'.$this->Time->nice($gasGroupUser->created).'</td>';
+                echo '<td title="'.h($gasGroupUser->modified).'">'.$this->Time->nice($gasGroupUser->modified).'</td>';
+                echo '</tr>';
               } // end loop
             echo '</tbody>';
           echo '</table>';

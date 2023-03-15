@@ -227,6 +227,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
     public function gestTypeDeliveries($deliveries, $options=[]) {
 
         $results = [];
+        
+        // debug($deliveries);
 
         /*
          * default
@@ -236,14 +238,14 @@ class HtmlCustomSiteOrdersHelper extends Helper
             if($this->_order->delivery_id==key($deliveries['Y']))
                 $default = $this->_order->delivery_id;  // consegna Da definire
             else {
-                $default = $this->_order->delivery_id;
+                $default = 'N'; // $this->_order->delivery_id;
 
                 /* 
                 * ctrl che tra l'elenco delle consegne ci sia la consegna gia' associata all'ordine 
                 * se non c'e' (per esempio consegna chiusa e qui prendo solo DATE(Delivery.data) >= CURDATE() ) 
                 * l'aggiungo 
                 * */
-                if(!array_key_exists($this->_order->delivery_id, $deliveries))
+                if(!array_key_exists($this->_order->delivery_id, $deliveries['N']))
                     $deliveries['N'][$this->_order->delivery_id] = $this->_order->delivery->luogo.' - '.$this->_order->delivery->data->i18nFormat('eeee d MMMM Y');
             }           
         }
@@ -293,7 +295,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
                         __('Send mail to manager to delivery').'  <i class="text-primary fa fa-lg fa-envelope"></i></a>'.
                         '</div>'];
         }
-      
+    
         $html = '<section class="content delivery">';
         $html .= $this->title(__('Delivery'));
         $html .= $this->Form->hidden('delivery_id', ['value' => '']);

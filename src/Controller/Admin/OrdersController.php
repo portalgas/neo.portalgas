@@ -44,6 +44,12 @@ class OrdersController extends AppController
 
     public function index($order_type_id=0)
     {
+        /*
+        * aggiorno stato ordine 'OPEN' // OPEN-NEXT  
+        */ 
+        $event = new Event('OrderListener.setStatus', $this, ['user' => $this->_user]);
+        $this->getEventManager()->dispatch($event);
+
         $where = [];
         $sorts = ['Deliveries.data asc'];
                    

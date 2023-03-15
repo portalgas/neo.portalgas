@@ -83,6 +83,10 @@ class HtmlCustomSiteHelper extends FormHelper
         return $this->getOrderDateLabel($delivery);
     }
 
+    public function drawDiffDateLabel($data) {
+        return $this->getDiffDateLabel($data);
+    }
+
     public function drawOrdersStateDiv($order) {
 
         $str = '';   	
