@@ -19,7 +19,6 @@ $(function () {
         order: [],
         article_orders: [],
         articles: [],
-        carts: [],
         is_run: false,
         is_save: false
       },  
@@ -53,9 +52,10 @@ $(function () {
             let order_type_id = $("input[name='order_type_id']").val();
             // console.log(ajaxUrlGetOrdersByDelivery+' delivery_id '+delivery_id);
 
-            if(order_id==0 || order_id=='') {
-                this.is_run = false;
-                return;
+            if(order_id==0 || order_id=='' || order_id=='undefined') {
+              console.error('order_id '+order_id+' non definito', 'gets');
+              this.is_run = false;
+              return;
             }
 
             let params = {
@@ -182,9 +182,7 @@ $(function () {
         previewCarts: function(article_order) { 
           console.log(article_order, 'previewCarts');          
           let _this = this;
-          
-          _this.carts = []; // [{id: 1, name: "test1", id: 2, name: "test2"}]
-          
+                    
           let organization_id = $("input[name='organization_id']").val(); 
           let order_id = $("input[name='order_id']").val();
           let order_type_id = $("input[name='order_type_id']").val();
@@ -197,19 +195,24 @@ $(function () {
               article_id: article_order.article_id
           }; 
           console.log(params, 'params');
-
-          axios.post('/admin/api/article-orders/setAssociateToOrder', params)
+          
+          let htmlResult = $('#contentPreviewCarts');
+          htmlResult.html('');
+          htmlResult.css('min-height', '50px');
+          htmlResult.css('background', 'url("/ajax-loader.gif") no-repeat scroll center 0 transparent');
+                    
+          axios.post('/admin/api/html-article-orders/getCartsByArticles', params)
             .then(response => {
-              console.log(response.data); 
-              _this.is_save = false;   
-              
-              location.reload();
+              console.log(response.data, 'getCartsByArticles'); 
+              htmlResult.css('background', 'none repeat scroll 0 0 transparent');
+              htmlResult.html(response.data);              
             })
             .catch(error => {
-              _this.is_save = false;
               console.error("Error: " + error);
+              htmlResult.css('background', 'none repeat scroll 0 0 transparent');
+              htmlResult.html(e.responseText);              
             }); 
-
+            
           $("#myModalPreviewCarts").modal();
         }
       },

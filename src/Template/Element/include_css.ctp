@@ -789,4 +789,44 @@ ul.workflow li span.statoNotCurrent a {
     width: 75%
 }
  
+
+.stato_si, .stato_0, .stato_y, .stato_open {
+   background: url('/images/cake/icons/16x16/tick.png') no-repeat scroll center center transparent;
+   height: 16px;
+   padding-left: 8px;
+}
+.stato_no, .stato_1, .stato_n, .stato_close {
+   background: url('/images/cake/icons/16x16/cross.png') no-repeat scroll center center transparent;
+   height: 16px;
+   padding-left: 8px;
+}
+.stato_si_int, .stato_0_int, .stato_y_int, .stato_open_int {
+   background: url('/images/cake/icons/16x16/tick.png') no-repeat scroll left center transparent;
+   padding-left: 20px;
+}
+.stato_no_int, .stato_1_int, .stato_n_int, .stato_close_int {
+   background: url('/images/cake/icons/16x16/cross.png') no-repeat scroll left center transparent;
+   padding-left: 20px;
+}
+.stato_wait {
+   background: url('/images/cake/icons/16x16/clock_red.png') no-repeat scroll center center transparent;
+   height: 16px;
+   padding-left: 8px;
+}
+.stato_lock {
+   background: url('/images/cake/icons/16x16/lock.png') no-repeat scroll center center transparent;
+   height: 16px;
+   padding-left: 8px;
+}
+.stato_qtamax {
+   background: url('/images/cake/icons/16x16/basket_delete.png') no-repeat scroll center center transparent;
+   height: 16px;
+   padding-left: 8px;
+}
+.stato_t, .stato_temporaneo {
+   background: url('/images/cake/icons/16x16/eye.png') no-repeat scroll center center transparent;
+   height: 16px;
+   padding-left: 8px;
+}
+
 </style>

@@ -333,5 +333,5 @@ class ArticleOrdersController extends ApiAppController
         $this->getEventManager()->dispatch($event);
                 
         return $this->_response($results); 
-    }    
+    }        
 }

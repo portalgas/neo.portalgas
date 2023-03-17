@@ -5,6 +5,7 @@ namespace App\Decorator;
 
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use App\Decorator\ApiCartDecorator;
 
 class ApiArticleOrderDecorator  extends AppDecorator {
 	
@@ -37,13 +38,6 @@ class ApiArticleOrderDecorator  extends AppDecorator {
 	private function _decorate($user, $articles_order, $order) {
 
         // debug($articles_order);
-        
-        $sold_out = false;	           
-        $qta_max = 0;
-        $store = null; // non gestito
-        $price_pre_discount = 0;
-        $price = 0;
-
         $results = [];
              
         /*
@@ -123,6 +117,21 @@ class ApiArticleOrderDecorator  extends AppDecorator {
         else
             $results['qta_multipli'] = $articles_order->qta_multipli;
 
+        switch($articles_order->stato) {
+            case 'Y':
+                $results['stato_human'] = 'Articolo può essere acquistato';
+            break;
+            case 'N':
+                $results['stato_human'] = 'Articolo può essere acquistato';
+            break;
+            case 'LOCK': 
+                $results['stato_human'] = 'Articolo non più acquistabile perchè è bloccato';
+            break;
+            case 'QTAMAXORDER':
+                $results['stato_human'] = 'Articolo non più acquistabile perchè raggiunta la quantità massima';
+            break;
+        }
+                    
         /*
          * dati da article
          */
@@ -160,29 +169,22 @@ class ApiArticleOrderDecorator  extends AppDecorator {
          * 'qta' => (int) 0,
          * 'qta_new' => (int) 0 
          */
-        $results['cart'] = $articles_order->cart; 
-        if(isset($articles_order->cart) && !empty($articles_order->cart->user_id)) { 
          
-            $final_qta = 0;
-            $final_price = 0;
+        /* 
+         * tutti gli acquisti del gasista sull'articolo
+         * */
+        if(isset($articles_order->cart) && !empty($articles_order->cart->user_id)) { 
 
-            ($articles_order->cart->qta_forzato > 0 ) ? $final_qta = $articles_order->cart->qta_forzato: $final_qta = $articles_order->cart->qta;
-            $results['cart']['final_qta'] = $final_qta;
+            $cartResults = new ApiCartDecorator($user, $articles_order->cart, $articles_order);
+            $results['cart'] = $cartResults->results;
+        }
 
-            if($articles_order->cart->qta_forzato > 0) {
-                $results['cart']['is_qta_mod'] = true;
-            }
-            else {
-                $results['cart']['is_qta_mod'] = false;
-            }
-            if($articles_order->cart->importo_forzato > 0) {
-                $results['cart']['final_price'] = $articles_order->cart->importo_forzato;
-                $results['cart']['is_import_mod'] = true;
-            }
-            else {
-                $results['cart']['final_price'] = ($final_qta * $articles_order->prezzo);
-                $results['cart']['is_import_mod'] = false;
-            }
+        /* 
+         * tutti gli acquisti dei gasisti sull'articolo
+         * */       
+        if(isset($articles_order->carts)) {
+            $cartResults = new ApiCartDecorator($user, $articles_order->carts, $articles_order);
+            $results['carts'] = $cartResults->results;
         }
 
         /*

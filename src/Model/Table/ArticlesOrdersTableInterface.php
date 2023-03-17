@@ -43,9 +43,7 @@ interface ArticlesOrdersTableInterface {
    * ArticlesOrders.article_id              = Articles.id
    * ArticlesOrders.article_organization_id = Articles.organization_id
    *
-   * non utilizzato!!!
-   * App\Model\Table\ArticlesOrdersTable\getCartsByArticles
-   * App\Model\Table\ArticlesOrdersPromotionTable\getCartsByArticles
+   * nell'associazione articoli con ordine articles-orders/index/order_type_id/order_id
    */
   public function getCartsByArticles($user, $organization_id, $order, $where=[], $options=[], $debug=false);
 

@@ -336,6 +336,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          */
         $routes->scope('/html-article-orders', ['controller' => 'HtmlArticleOrders'], function (RouteBuilder $routes) {
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+            $routes->connect('/getCartsByArticles', ['action' => 'getCartsByArticles', '_method' => 'POST']);
         });
         $routes->scope('/article-orders', ['controller' => 'ArticleOrders'], function (RouteBuilder $routes) {
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);

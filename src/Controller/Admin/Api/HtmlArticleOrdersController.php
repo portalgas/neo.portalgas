@@ -38,9 +38,6 @@ class HtmlArticleOrdersController extends AppController
             return $this->_respondWithUnauthorized();
         }
 
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
-
         $orderResults = [];
         $articlesOrdersResults = [];
 
@@ -54,26 +51,26 @@ class HtmlArticleOrdersController extends AppController
 
         $ordersTable = TableRegistry::get('Orders');
         
-        $ordersTable = $ordersTable->factory($user, $organization_id, 0, $order_id);
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, 0, $order_id);
         if($ordersTable===false) {
             return false;
         }
 
         $ordersTable->addBehavior('Orders');
-        $orderResults = $ordersTable->getById($user, $organization_id, $order_id, $debug);
+        $orderResults = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
 
         $ids = [];
-        $ids['organization_id'] = $organization_id;
+        $ids['organization_id'] = $this->_organization->id;
         $ids['order_id'] = $order_id;
         $ids['article_organization_id'] = $article_organization_id;
         $ids['article_id'] = $article_id;
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-        $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $orderResults);
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderResults);
 
         if($articlesOrdersTable!==false) {
-            $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
+            $articlesOrdersResults = $articlesOrdersTable->getByIds($this->_user, $this->_organization->id, $ids, $debug);
 
-            $results = new ApiArticleOrderDecorator($user, $articlesOrdersResults, $orderResults);
+            $results = new ApiArticleOrderDecorator($this->_user, $articlesOrdersResults, $orderResults);
             $articlesOrdersResults = $results->results;
         }
 
@@ -84,7 +81,7 @@ class HtmlArticleOrdersController extends AppController
         /*
          * nota per il referente
          */
-        $hasFieldCartNote = $user->organization->paramsFields['hasFieldCartNote'];
+        $hasFieldCartNote = $this->_user->organization->paramsFields['hasFieldCartNote'];
         $this->set('hasFieldCartNote', $hasFieldCartNote);
         
         if($hasFieldCartNote=='Y') {
@@ -92,9 +89,9 @@ class HtmlArticleOrdersController extends AppController
             $nota = '';
             $cartsTable = TableRegistry::get('Carts');
 
-            $where = ['Carts.organization_id' => $organization_id,
+            $where = ['Carts.organization_id' => $this->_organization->id,
                       'Carts.order_id' => $order_id,
-                      'Carts.user_id' => $user->id,
+                      'Carts.user_id' => $this->_user->id,
                       'Carts.article_organization_id' => $article_organization_id,
                       'Carts.article_id' => $article_id];
             // debug($where);
@@ -111,4 +108,49 @@ class HtmlArticleOrdersController extends AppController
 
         $this->viewBuilder()->setLayout('ajax');
     } 
+
+    /* 
+     * dato un articolo estraggo tutti gli acquisti
+     * associazione articoli a ordine
+     */
+    public function getCartsByArticles() {
+
+        $debug = false;
+
+        $organization_id = $this->request->getData('organization_id');
+        $order_type_id = $this->request->getData('order_type_id');
+        $order_id = $this->request->getData('order_id');        
+        $article_organization_id = $this->request->getData('article_organization_id');
+        $article_id = $this->request->getData('article_id');
+
+        $ordersTable = TableRegistry::get('Orders');
+        $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
+        
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
+        if($articlesOrdersTable===false) {
+            return false;
+        } 
+
+        $where = [];
+        $where['ArticlesOrders'] = ['article_organization_id' => $article_organization_id,
+                                    'article_id' => $article_id];
+        $articlesOrdersResults = $articlesOrdersTable->getCartsByArticles($this->_user, $this->_organization->id, $order, $where, $options=[], $debug);
+        $results = new ApiArticleOrderDecorator($this->_user, $articlesOrdersResults, $order);
+        $results = $results->results;
+
+        $this->set(compact('results'));
+
+        $this->viewBuilder()->setLayout('ajax');
+
+        switch($order_type_id) {
+            case Configure::read('Order.type.gas'):
+            case Configure::read('Order.type.gas_groups'):
+                $this->viewBuilder()->setTemplate('/Admin/Api/HtmlArticleOrders/carts_by_article_order_gas');
+            break;
+            case Configure::read('Order.type.gas_parent_groups'):
+                $this->viewBuilder()->setTemplate('/Admin/Api/HtmlArticleOrders/carts_by_article_order_gas_parent_groups');
+            break;    
+        }    
+    }
 }

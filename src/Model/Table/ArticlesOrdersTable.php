@@ -467,7 +467,7 @@ class ArticlesOrdersTable extends Table
                               $this->getAlias().'.order_id' => $order_id,
                               $this->getAlias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
-
+                            
         switch ($order_state_code) {
             case 'RI-OPEN-VALIDATE':
                 $where['ArticlesOrders'] += [$this->getAlias().'.pezzi_confezione > ' => 1];
@@ -498,7 +498,7 @@ class ArticlesOrdersTable extends Table
                           'Carts.article_id' => $result['article_id'],
                           'Carts.deleteToReferent' => 'N',
                           'Carts.stato' => 'Y'];
-
+                          
                 $cartResults = $cartsTable->find()
                             ->where($where_cart)
                             ->all();
@@ -542,7 +542,7 @@ class ArticlesOrdersTable extends Table
         } // if($results)
 
         if($debug) debug($results);
-
+   
         return $results;
     }  
 
