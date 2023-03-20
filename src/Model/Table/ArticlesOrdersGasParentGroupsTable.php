@@ -8,6 +8,8 @@ use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
+use App\Traits;
+use App\Decorator\ApiArticleOrderDecorator;
 
 class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements ArticlesOrdersTableInterface 
 {
@@ -142,9 +144,112 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
 
     /*
      * implement
+     *
+     *  per ogni gruppo
+     *      estrae gli articoli associati ad un ordine ed evenuuali acquisti di tutti gli users
      */
     public function getCartsByArticles($user, $organization_id, $orderResults, $where=[], $options=[], $debug=false) {
-        return parent::getCartsByArticles($user, $organization_id, $orderResults, $where, $options, $debug);
+
+        $results = [];
+        $headers = [];
+
+        /* 
+         * l'ordine e' fittizio, ricavo gli ordini (GasGroups) associati
+         */
+        $ordersTable = TableRegistry::get('Orders');
+        $whereOrder = ['Orders.organization_id' => $organization_id,
+                    'Orders.order_type_id' => Configure::read('Order.type.gas_groups'),
+                    'Orders.parent_id' => $orderResults->id];
+        $subOrders = $ordersTable->find()
+                ->contain(['GasGroups', 'Deliveries'])
+                ->where($whereOrder)
+                ->order(['GasGroups.name'])
+                ->all();
+                
+        if($subOrders->count()==0)
+            return $results;
+
+        (isset($where['ArticlesOrders'])) ? $where['ParamsArticlesOrders'] = $where['ArticlesOrders']: $where['ParamsArticlesOrders'] = [];
+                       
+        foreach($subOrders as $numHeader => $subOrder) {
+     
+            $headers[$numHeader]['gas_group'] = $subOrder->gas_group;
+            $headers[$numHeader]['delivery'] = $subOrder->delivery;
+            $headers[$numHeader]['order'] = $subOrder;
+
+            $where['ArticlesOrders'] = [];
+            $where['ArticlesOrders'] = array_merge([$this->getAlias().'.organization_id' => $subOrder->organization_id,
+                                // $this->getAlias().'.article_id' => 142,
+                                $this->getAlias().'.order_id' => $subOrder->id,
+                                $this->getAlias().'.stato != ' => 'N'], 
+                                $where['ParamsArticlesOrders']);
+            
+            switch ($subOrder->order_state_code) {
+                case 'RI-OPEN-VALIDATE':
+                    $where['ArticlesOrders'] += [$this->getAlias().'.pezzi_confezione > ' => 1];
+                    $article_orders = $this->getRiOpenValidate($user, $organization_id, $subOrder, $where, $options, $debug); 
+                break;
+                default:
+                    $article_orders = $this->gets($user, $organization_id, $subOrder, $where, $options, $debug);
+                break;
+            }     
+            
+            $headers[$numHeader]['article_orders'] = $article_orders;
+ 
+            /*
+            * estraggo eventuali acquisti
+            */ 
+            if($results) {
+                
+                $cartsTable = TableRegistry::get('Carts');
+                $i = 0;
+                foreach($results as $numResult => $result) {
+
+                    /*
+                    * Carts
+                    */
+                    $where_cart = ['Carts.organization_id' => $result['organization_id'],
+                            'Carts.order_id' => $result['order_id'],
+                            'Carts.article_organization_id' => $result['article_organization_id'],
+                            'Carts.article_id' => $result['article_id'],
+                            'Carts.deleteToReferent' => 'N',
+                            'Carts.stato' => 'Y'];
+                    $cartResults = $cartsTable->find()
+                                ->where($where_cart)
+                                ->all();
+                    if($debug) debug($where_cart);
+                    if($debug) debug($cartResults);
+
+                    if($cartResults->count()==0) {
+                        unset($headers[$numHeader]['article_orders'][$numResult]);
+                        continue;
+                    }
+
+                    $headers[$numHeader]['article_orders'][$i]['cart'] = $cartResults;
+                    $i++;
+                } // foreach($results as $numResult => $result)
+            } // if($results)
+        } // end foreach($orders as $numResult => $order)
+        
+        if($debug) debug($headers);
+        foreach($headers as $numResult => $header) {
+
+            // nessun del gruppo ha effettuato acqusti
+            if(empty($header['article_orders'][0]['carts'])) {
+                unset($headers[$numResult]);
+                continue;
+            }
+
+            foreach($header['article_orders'] as $numResult2 => $article_order) {
+                
+                $results = new ApiArticleOrderDecorator($user, $article_order, $orderResults);
+                $results = $results->results;    
+    
+                $headers[$numResult]['article_orders'][$numResult2] = $results;
+            } // end foreach($header['article_orders'] as $numResult2 => $article_order)
+        }
+        
+        return $headers;        
     }   
 
     /*

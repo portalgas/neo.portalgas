@@ -8,8 +8,9 @@ use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Log\Log;
 use Cake\Core\Configure;
-use App\Traits;
 use Cake\Event\Event;
+use App\Traits;
+use App\Decorator\ApiArticleOrderDecorator;
 
 class ArticlesOrdersTable extends Table
 {
@@ -540,6 +541,9 @@ class ArticlesOrdersTable extends Table
                 }
             }
         } // if($results)
+
+        $results = new ApiArticleOrderDecorator($user, $results, $orderResults);
+        $results = $results->results;
 
         if($debug) debug($results);
    

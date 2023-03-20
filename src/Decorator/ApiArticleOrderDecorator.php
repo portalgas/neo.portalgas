@@ -36,7 +36,7 @@ class ApiArticleOrderDecorator  extends AppDecorator {
     }
 
 	private function _decorate($user, $articles_order, $order) {
-
+        
         // debug($articles_order);
         $results = [];
              

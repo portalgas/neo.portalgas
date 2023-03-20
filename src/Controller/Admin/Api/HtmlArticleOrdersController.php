@@ -135,9 +135,7 @@ class HtmlArticleOrdersController extends AppController
         $where = [];
         $where['ArticlesOrders'] = ['article_organization_id' => $article_organization_id,
                                     'article_id' => $article_id];
-        $articlesOrdersResults = $articlesOrdersTable->getCartsByArticles($this->_user, $this->_organization->id, $order, $where, $options=[], $debug);
-        $results = new ApiArticleOrderDecorator($this->_user, $articlesOrdersResults, $order);
-        $results = $results->results;
+        $results = $articlesOrdersTable->getCartsByArticles($this->_user, $this->_organization->id, $order, $where, $options=[], $debug);
 
         $this->set(compact('results'));
 
