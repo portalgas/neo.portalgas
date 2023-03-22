@@ -162,7 +162,7 @@ class GasGroupsTable extends Table
                         ->where(['GasGroups.organization_id' => $organization_id])
                         ->order(['GasGroups.name'])
                         ->all();
-
+                        
         if($gas_groups_2->count()>0)
         foreach($gas_groups_2 as $gas_group) {
 
@@ -185,7 +185,7 @@ class GasGroupsTable extends Table
                 $results[$gas_group->id]['gas_group_users'] = $gas_group_users;
             }
         }
-
+       
         return $results;
     }
 

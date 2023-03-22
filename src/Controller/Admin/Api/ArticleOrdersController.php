@@ -334,4 +334,52 @@ class ArticleOrdersController extends ApiAppController
                 
         return $this->_response($results); 
     }        
+
+    /* 
+    * salvo articoli in articleOrders presi dall'ordine precedente
+    */    
+    public function setAssociateToPreviousOrder() {
+
+        $debug = false;
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $datas = [];
+
+        $organization_id = $this->request->getData('organization_id');
+        $order_type_id = $this->request->getData('order_type_id');
+        $order_id = $this->request->getData('order_id');
+
+        $ordersTable = TableRegistry::get('Orders');
+        $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id, $debug);
+
+        // dati ordine precedente
+        $previousOrder = $ordersTable->getPrevious($this->_user, $order);
+        
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
+        if($articlesOrdersTable===false) {
+            $results['esito'] = false;
+            $results['results'] = $datas;
+            $results['errors'] = 'ArticlesOrders factory';
+            return $this->_response($results); 
+        } 
+
+        $where = [];
+        $where['organization_id'] = $organization_id;
+        $where['order_id'] = $order_id;
+        $articlesOrder = $articlesOrdersTable->deleteAll($where);
+
+        /*  
+         * associo articoli all'ordine 
+         */
+        $articlesOrdersTable->addsByArticlesOrders($this->_user, $this->_organization->id, $order, $previousOrder->articles_orders, true);
+                
+        return $this->_response($results); 
+    }        
 }

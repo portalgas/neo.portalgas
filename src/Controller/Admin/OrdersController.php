@@ -193,7 +193,7 @@ class OrdersController extends AppController
                 else 
                     $this->Flash->success("L'ordine è stato salvato correttamente");
 
-                $url = ['controller' => 'ArticlesOrders', 'action' => 'index', $order->order_type_id, $order->id]; 
+                $url = ['controller' => 'ArticlesOrders', 'action' => 'index', $order->order_type_id, $order->id, '?' => ['time' => 'first']]; 
                 return $this->redirect($url);                
             }
             else

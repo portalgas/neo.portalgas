@@ -62,11 +62,14 @@ class OrdersTable extends Table
         ]);
         $this->hasMany('Carts', [
             'foreignKey' => ['organization_id', 'order_id'],
+        ]); 
+        $this->hasMany('ArticlesOrders', [
+            'foreignKey' => ['organization_id', 'order_id'],
         ]);   
         $this->belongsTo('GasGroups', [
             'foreignKey' => ['gas_group_id'],
             'joinType' => 'LEFT',
-        ]);        
+        ]);
     }
 
     public function validationDefault(Validator $validator)
@@ -646,7 +649,36 @@ class OrdersTable extends Table
         else
             $isToValidate = true;
         
-        return $isToValidate;
-            
-	}    
+        return $isToValidate;      
+	}  
+
+    /*
+     * estrae ordine precedente escludendo gli ordini che hanno dei parent Configure::read('Order.type.des') / Configure::read('Order.type.gas_groups')
+     */
+	public function getPrevious($user, $order) {
+	
+		$where = ['Deliveries.organization_id' => $user->organization->id,
+                    'Deliveries.isVisibleBackOffice' => 'Y',
+                    'DATE(Deliveries.data) < CURDATE()',
+                    'Orders.isVisibleBackOffice' => 'Y',
+                    'Orders.id != ' => $order->id,
+                    'Orders.supplier_organization_id' => $order->supplier_organization_id,
+                    'Orders.order_type_id NOT IN ' => [Configure::read('Order.type.des'), Configure::read('Order.type.gas_groups')]];
+	    $results = $this->find()
+                        ->contain(['Deliveries',
+                            'ArticlesOrders' => 
+                                ['Articles' => [
+                                    'conditions' => ['Articles.stato' => 'Y', 
+                                                     'Articles.flag_presente_articlesorders' => 'Y']]]])
+                        ->where($where)
+                        ->first();
+
+        if(!empty($results)) {
+            // ordine senza articoli associati
+            if(empty($results->articles_orders))
+            $results = [];
+        }
+
+        return $results;      
+	}       
 }

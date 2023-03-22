@@ -342,6 +342,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
             $routes->connect('/getAssociateToOrder', ['action' => 'getAssociateToOrder', '_method' => 'POST']);
             $routes->connect('/setAssociateToOrder', ['action' => 'setAssociateToOrder', '_method' => 'POST']);
+            $routes->connect('/setAssociateToPreviousOrder', ['action' => 'setAssociateToPreviousOrder', '_method' => 'POST']);
         });
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);

@@ -43,7 +43,18 @@ class ArticlesOrdersController extends AppController
 
         $ArticlesOrders = [];
         $articles = [];
-          
-        $this->set(compact('order_type_id', 'order', 'ArticlesOrders', 'articles'));
+         
+        $time = $this->request->getQuery('time');
+
+        // ordine appena creato, ora associo gli articoli
+        $previousOrder = [];
+        if($time=='first') {
+            // dati ordine precedente
+            if(in_array($order_type_id, [Configure::read('Order.type.gas'), Configure::read('Order.type.gas_parent_groups')]))
+                $previousOrder = $ordersTable->getPrevious($this->_user, $order);
+
+        }
+       
+        $this->set(compact('order_type_id', 'order', 'previousOrder', 'ArticlesOrders', 'articles', 'time'));
     }
 }

@@ -776,7 +776,7 @@ class ArticlesOrdersTable extends Table
     public function addsByArticlesOrders($user, $organization_id, $order, $article_orders, $debug=false) {
 
         foreach($article_orders as $article_order) {
-
+            
             $datas = [];
             $datas['organization_id'] = $organization_id;
             $datas['order_id'] = $order->id;

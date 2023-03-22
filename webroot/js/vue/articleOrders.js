@@ -19,6 +19,7 @@ $(function () {
         order: [],
         article_orders: [],
         articles: [],
+        is_run_loader_global: false,
         is_run: false,
         is_save: false
       },  
@@ -45,6 +46,7 @@ $(function () {
         },
         gets: function(e) {
 
+            this.is_run_loader_global = true;
             this.is_run = true;
 
             let organization_id = $("input[name='organization_id']").val(); 
@@ -54,6 +56,7 @@ $(function () {
 
             if(order_id==0 || order_id=='' || order_id=='undefined') {
               console.error('order_id '+order_id+' non definito', 'gets');
+              this.is_run_loader_global = false;
               this.is_run = false;
               return;
             }
@@ -72,6 +75,7 @@ $(function () {
                 .then(response => {
                   console.log(response.data, 'getAssociateToOrder'); 
                   
+                  this.is_run_loader_global = false;
                   this.is_run = false;
                   if(response.data.esito) {
                     this.can_edit = response.data.results.can_edit;  
@@ -87,8 +91,9 @@ $(function () {
 
                 })
             .catch(error => {
-                  this.is_run = false;
-                  console.error("Error: " + error);
+              this.is_run_loader_global = false;
+              this.is_run = false;
+              console.error("Error: " + error);
             });            
         },
         /* 
@@ -171,6 +176,37 @@ $(function () {
               _this.is_save = false;   
               
               location.reload();
+            })
+            .catch(error => {
+              _this.is_save = false;
+              console.error("Error: " + error);
+            }); 
+                      
+          return false;
+        },        
+        preSavePreviousOrder: function(e) {
+          e.preventDefault();
+          
+          let _this = this;          
+          _this.is_save = true;
+          
+          let organization_id = $("input[name='organization_id']").val(); 
+          let order_id = $("input[name='order_id']").val();
+          let order_type_id = $("input[name='order_type_id']").val();
+          
+          let params = {
+              organization_id: organization_id,
+              order_type_id: order_type_id,
+              order_id: order_id
+          }; 
+          console.log(params, 'params');
+
+          axios.post('/admin/api/article-orders/setAssociateToPreviousOrder', params)
+            .then(response => {
+              console.log(response.data); 
+              _this.is_save = false;   
+              
+             location.reload();
             })
             .catch(error => {
               _this.is_save = false;

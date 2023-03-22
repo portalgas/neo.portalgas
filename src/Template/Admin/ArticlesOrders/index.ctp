@@ -17,9 +17,23 @@ echo $this->HtmlCustomSite->boxOrder($order);
   <input type="hidden" name="organization_id" value="<?php echo $order->organization_id;?>" />
   <input type="hidden" name="order_type_id" value="<?php echo $order->order_type_id;?>" />
   <input type="hidden" name="order_id" value="<?php echo $order->id;?>" />
+  <input type="hidden" name="time" value="<?php echo $time;?>" /> <?php // vale first se la pagina e' richiamata dopo la creazione di un ordine ?>
+ 
+<?php 
+if(!empty($previousOrder)) {
+  $label = "Prendi gli articoli dall'ordine precedente (con consegna ".$this->HtmlCustom->data($previousOrder->delivery->data)."): trovati ".count($previousOrder->articles_orders);
+  echo '<div class="box-tools"><button class="btn btn-primary btn-block" @click="preSavePreviousOrder">'.$label.'</button></div>';
+}
+?>
 
 <section class="">
   <div class="row">
+  
+    <!-- loader globale -->
+    <div class="loader-global" v-if="is_run_loader_global">
+      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    </div>
+
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
