@@ -16,7 +16,7 @@
 
                     <div v-if="order.order_type.code!='PROMOTION_GAS_USERS'" class="">
                       <a @click="clickShowOrHiddenModalArticleOrder()" class="cursor-pointer">
-                        <i class="fas fa-search"></i></a>
+                        <i class="fas fa-info-circle"></i></a>
                     </div>
 
                 </div>

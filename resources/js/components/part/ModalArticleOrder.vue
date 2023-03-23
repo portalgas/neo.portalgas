@@ -96,7 +96,7 @@
       <div class="col-8">{{ modalContent.entity.articlesOrder.qta_massima }}</div>
     </div>
 
-    <div class="row" v-if="modalContent.entity.order.order_type.code=='PROMOTION'">
+    <div v-if="modalContent.entity.order.order_type.code=='PROMOTION'">
         <!-- per la promozione, qta_minima_order = qta_massima_order: qta da raggiungere per la promozione -->
         <div class="row" v-if="modalContent.entity.articlesOrder.qta_massima_order > 0">
           <div class="col-4 col-label">Promozione valida</div>
@@ -104,14 +104,14 @@
         </div>
     </div>   
 
-     <div class="row" v-if="modalContent.entity.order.order_type.code!='PROMOTION'">
+     <div v-if="modalContent.entity.order.order_type.code!='PROMOTION'">
         <div class="row" v-if="modalContent.entity.articlesOrder.qta_minima_order > 0">
           <div class="col-4 col-label">Quantità minima rispetto all'ordine</div>
           <div class="col-8">{{ modalContent.entity.articlesOrder.qta_minima_order }}</div>
         </div>
         <div class="row" v-if="modalContent.entity.articlesOrder.qta_massima_order > 0">
           <div class="col-4 col-label">Quantità massima rispetto all'ordine</div>
-          <div class="col-8">'.modalContent.entity.articlesOrder.qta_massima_order.'</div>
+          <div class="col-8">{{ modalContent.entity.articlesOrder.qta_massima_order }} (acquistati ora {{ modalContent.entity.articlesOrder.qta_cart }})</div>
         </div>
      </div>
   

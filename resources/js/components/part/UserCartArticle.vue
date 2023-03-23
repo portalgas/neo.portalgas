@@ -15,7 +15,7 @@
           {{ article.name }} 
 
           <span>
-            <a class="fas fa-search cursor-pointer" @click="clickShowOrHiddenModal()"></a>
+            <a class="fas fa-info-circle cursor-pointer" @click="clickShowOrHiddenModal()"></a>
 
             <div v-if="isLoading" class="box-spinner"> 
               <div class="spinner-border text-info" role="status">
