@@ -93,8 +93,8 @@ trait SqlTrait
         if(is_string($model))
             $model = TableRegistry::get($model);
         
-        if($debug) debug($model);
-        if($debug) debug($where);
+        // if($debug) debug($model);
+        // if($debug) debug($where);
         
         $query = $model->find()->where($where);
         $query = $query->select(['count' => $query->func()->count('*')]);
@@ -105,7 +105,7 @@ trait SqlTrait
         else
             $results = $results[0]->count;
 
-        if($debug) debug($results);
+        // if($debug) debug($results);
 
         return $results;
     }

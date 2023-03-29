@@ -61,6 +61,7 @@ class Organization extends Entity
      */
     protected $_accessible = [
         'name' => true,
+        'parent_id' => true,
         'descrizione' => true,
         'indirizzo' => true,
         'localita' => true,

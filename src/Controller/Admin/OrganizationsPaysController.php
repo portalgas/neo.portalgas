@@ -54,19 +54,79 @@ class OrganizationsPaysController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
-        // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+        /*
+         * gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
+         *
+         * parent_id: per raggruppare i GAS
+         */
         $organizations = $this->OrganizationsPays->Organizations->find()
-                    ->where(['Organizations.stato' => 'Y', 'Organizations.type' => 'GAS'])
+                    ->where(['Organizations.stato' => 'Y', 
+                            'Organizations.type' => 'GAS', 
+                            // 'Organizations.id' => 28, 
+                            'Organizations.parent_id is null'])
                     ->order(['Organizations.name'])
                     ->all();
-
-        
+             
         foreach($organizations as $organization) {
             
+            $child_tot_users = 0;
+            $child_tot_orders = 0;
+            $child_tot_suppliers_organizations = 0;
+            $child_tot_articles = 0;
+            $child_importo = 0;
+
             if($debug) debug($organization->name.' ('.$organization->id.')');
 
+            /* 
+             * ctrl se ha GAS figli 
+             */
+            $childOrganizations = $this->OrganizationsPays->Organizations->find()
+                                    ->where(['Organizations.stato' => 'Y', 
+                                            'Organizations.type' => 'GAS',
+                                            'Organizations.parent_id' => $organization->id])
+                                    ->order(['Organizations.name'])
+                                    ->all();
+            if($childOrganizations->count()>0) {
+                foreach($childOrganizations as $childOrganization) {
+
+                    if($debug) debug('CHILD '.$childOrganization->name.' ('.$childOrganization->id.')');
+
+                    /*
+                    * totale users
+                    */
+                    $where = ['organization_id' => $childOrganization->id, 'block' => 0];
+                    $_tot_users = $this->Total->totUsers($this->Authentication->getIdentity(), $where, $debug);
+
+                    /*
+                    * tolgo info@nomegas.portalgas.it
+                    * eventuale dispensa@nomegas.portalgas.it
+                    */
+                    if(isset($childOrganization->paramsConfig['hasStoreroom']) && $childOrganization->paramsConfig['hasStoreroom']=='Y') 
+                        $users_default = 2;
+                    else
+                        $users_default = 1;
+                    $_tot_users = ($_tot_users - $users_default);
+                    
+                    /*
+                    * totale ordini
+                    */         
+                    $child_tot_orders += $this->Total->totOrdersByYear($this->Authentication->getIdentity(), $childOrganization->id, $year, [], $debug);
+                    
+                    $child_tot_suppliers_organizations += $this->Total->totSuppliersOrganizations($this->Authentication->getIdentity(), $childOrganization->id, [], $debug);
+                    
+                    $child_tot_articles += $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $childOrganization->id, [], $debug); 
+
+                    /* 
+                     * importo 
+                     */
+                    $child_importo += $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $childOrganization->id, $year, $_tot_users, $debug);                
+           
+                    $child_tot_users += $_tot_users;
+                } // end foreach($childOrganizations as $childOrganization)
+            }
+
             /*
-             * dati anno precedente per  beneficiario_pay / type_pay
+             * dati anno precedente per beneficiario_pay / type_pay
              */
             $beneficiario_pay = '';
             $type_pay = '';
@@ -111,13 +171,22 @@ class OrganizationsPaysController extends AppController
              * totale ordini
              */         
             $tot_orders = $this->Total->totOrdersByYear($this->Authentication->getIdentity(), $organization->id, $year, [], $debug);
-            if($debug) debug($organization->name.' tot_orders '.$tot_users);
+            $tot_orders = ($tot_orders + $child_tot_orders);
+            if($debug) debug($organization->name.' tot_orders '.$tot_orders);
 
             $tot_suppliers_organizations = $this->Total->totSuppliersOrganizations($this->Authentication->getIdentity(), $organization->id, [], $debug);
+            $tot_suppliers_organizations = ($tot_suppliers_organizations + $child_tot_suppliers_organizations);
             if($debug) debug($organization->name.' tot_suppliers_organizations '.$tot_suppliers_organizations);
 
             $tot_articles = $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $organization->id, [], $debug); 
+            $tot_articles = ($tot_articles + $child_tot_articles);
             if($debug) debug($organization->name.' tot_articles '.$tot_articles);           
+
+            /* 
+             * importo 
+             */
+            $importo = $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $organization->id, $year, $tot_users, $debug);
+            $importo = ($importo + $child_importo);
 
             /*
              * insert
@@ -126,11 +195,11 @@ class OrganizationsPaysController extends AppController
             $data = [];
             $data['organization_id'] = $organization->id;
             $data['year'] = $year;
-            $data['tot_users'] = $tot_users;
+            $data['tot_users'] = ($tot_users + $child_tot_users);
             $data['tot_orders'] = $tot_orders;
             $data['tot_suppliers_organizations'] = $tot_suppliers_organizations;
             $data['tot_articles'] = $tot_articles;
-            $data['importo'] = $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $organization->id, $year, $tot_users, $debug);
+            $data['importo'] = $importo;
             $data['import_additional_cost'] = 0;
             
             $data['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
