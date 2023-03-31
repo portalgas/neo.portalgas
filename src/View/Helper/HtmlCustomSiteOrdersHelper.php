@@ -147,11 +147,17 @@ class HtmlCustomSiteOrdersHelper extends Helper
         else 
             $id = 'supplier_organization_id';
 
-        $opts = ['label' => __('SupplierOrganization'), 
-                 'options' => $suppliersOrganizations, 
+        $opts = ['options' => $suppliersOrganizations, 
                  // @change' => 'getSuppliersOrganization', con select2 non ha + effetto, fatto il bind in supplierOrganization.js
                  'id' => $id,
+                 'escape' => false,
                  'class' => 'form-control'];
+        
+        if(isset($options['label'])) 
+            $opts['label'] = $options['label'];        
+        else 
+            $opts['label'] = __('SupplierOrganization');
+
         if(isset($options['select2'])) {
             if($options['select2']) 
                 $opts['class'] = 'select2 form-control';                
@@ -165,6 +171,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
         
         if(isset($options['default'])) 
             $opts['default'] = $options['default'];                
+
+        $opts['style'] = 'width:100%';
 
         $html = '';
         

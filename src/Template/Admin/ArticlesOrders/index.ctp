@@ -7,7 +7,7 @@ echo $this->Html->script('vue/articleOrders', ['block' => 'scriptPageInclude']);
 
 echo $this->element('menu-order', ['order' => $order]);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('ArticleOrders'), 'subtitle' => __('Management')], ['home', 'list'], $order);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('ArticleOrders'), 'subtitle' => __('Management')], ['home', 'list-orders'], $order);
 
 echo $this->HtmlCustomSite->boxOrder($order);
 ?>

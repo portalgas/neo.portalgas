@@ -1,25 +1,15 @@
 <?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\Movement $movement
- */
-?>
-<?php
 use Cake\Core\Configure;
-?>
-<!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      <?php echo __('Movement'); ?>
-      <small><?php echo __('Edit'); ?></small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build('/'); ?>"><i class="fa fa-home"></i> <?php echo __('Home'); ?></a></li>
-      <li><a href="<?php echo $this->Url->build(['action' => 'view']); ?>"><i class="fa fa-eye"></i> <?php echo __('View'); ?></a></li>
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-list"></i> <?php echo __('List'); ?></a></li>
-    </ol>
-  </section>
 
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Movement'), 'subtitle' => __('Edit')], ['home', 'list']);
+/*
+ * nome dell'istanza dell'helper della tipologia di order
+ */
+$htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user);
+// debug($htmlCustomSiteOrders);
+
+echo $this->Html->script('movements', ['block' => 'scriptPageInclude']);
+?>
   <!-- Main content -->
   <section class="content">
     <div class="row">
@@ -32,77 +22,61 @@ use Cake\Core\Configure;
           <!-- /.box-header -->
           <!-- form start -->
           <?php 
-          echo $this->Form->create($movement, ['role' => 'form']);
+          echo $this->Form->create($movement, ['id' => 'frm', 'role' => 'form']);
           echo '<div class="box-body">';
- 
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('movement_type_id', ['options' => $movementTypes]);
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('user_id', ['options' => $users, 'empty' => true]);
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('supplier_organization_id');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('year');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('name');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('descri');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('importo');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('date');
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->radio('type', $types);
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('is_system');
-echo $this->HtmlCustom->note(__('note_is_system'));
-echo '</div>';
-echo '</div>'; // row
- 
-echo '<div class="row">';
-echo '<div class="col-md-12">';
-echo $this->Form->control('is_active');
-echo $this->HtmlCustom->note(__('note_is_active'));
-echo '</div>';
-echo '</div>'; // row         
+          
+          echo '<div class="row">';
+          echo '<div class="col-md-12">';
+          echo $this->Form->control('year');
+          echo '</div>';
+          echo '</div>'; // row
+
+          echo '<div class="row">';
+          echo '<div class="col-md-6">';
+          echo $this->Form->control('movement_type_id', ['options' => $movementTypes]);
+          echo '</div>';
+          echo '<div class="col-md-6">';
+
+          echo '<div id="box-users">';
+          echo $this->Form->control('user_id', ['options' => $users, 'class' => 'select2 form-control']);
+          echo '</div>';
+
+          /*
+          * produttore
+          */
+          echo '<div id="box-suppliers">';
+          $options = [];
+          $options['label'] = '&nbsp;'; 
+          echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
+          echo '</div>';
+
+          echo '</div>';
+          echo '</div>'; // row
+            
+          echo '<div class="row">';
+          echo '<div class="col-md-6">';
+          echo $this->Form->control('name');
+          echo '</div>';
+          echo '<div class="col-md-6">';
+          echo $this->Form->control('importo');
+          echo '</div>';
+          echo '</div>'; // row
+          
+          echo '<div class="row">';
+          echo '<div class="col-md-12">';
+          echo $this->Form->control('descri');
+          echo '</div>';
+          echo '</div>'; // row
+          
+          echo '<div class="row">';
+          echo '<div class="col-md-6">';
+          echo $this->Form->control('date');
+          echo '</div>';
+          echo '<div class="col-md-6">';
+          echo $this->Form->radio('payment_type', $payment_types);
+          echo '</div>';
+          echo '</div>'; // row
+                  
           echo $this->Form->button(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-primary pull-right', 'style' => 'margin-top:25px']); 
           echo '</div>'; /* .box-body */
           echo $this->Form->end(); ?>

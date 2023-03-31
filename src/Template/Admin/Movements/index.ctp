@@ -22,6 +22,9 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
+      <?php 
+      echo $this->element('search/movements');
+      ?>      
       <div class="box">
         <div class="box-header">
           <h3 class="box-title"><?php echo __('List'); ?></h3>
@@ -52,55 +55,63 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
             <thead>
               <tr>
                 <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('organization_id') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('movement_type_id') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('user_id') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('supplier_organization_id') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('year') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('movement_type_id') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('verso chi') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('importo') ?></th>
+                <th scope="col" class=""><?= $this->Paginator->sort('payment_type') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('date') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('type') ?></th>
-                <th scope="col" class="text-center"><?= $this->Paginator->sort('is_system') ?></th>
-                <th scope="col" class="text-center"><?= $this->Paginator->sort('is_active') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('created') ?></th>
-                <th scope="col" class=""><?= $this->Paginator->sort('modified') ?></th>
                </tr>
             </thead>
             <tbody>
               <?php 
+              $totale = 0;
               foreach ($movements as $movement) { 
 
                 // debug($movement);
               
-  echo '<tr>';
-  echo '<td class="actions text-left">';
-  echo $this->Html->link('', ['action' => 'view', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-  echo $this->Html->link('', ['action' => 'edit', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
-  if(!$movement->is_system) 
-    echo $this->Form->postLink('', ['action' => 'delete', $movement->id], ['confirm' => __('Are you sure you want to delete # {0}?', $movement->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
-  else
-    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
-  echo '</td>';
-                  echo '<td>'.$this->Number->format($movement->organization_id).'</td>';
-                  echo '<td>'.$this->Number->format($movement->movement_type_id).'</td>';
-                  echo '<td>'.$this->Number->format($movement->user_id).'</td>';
-                  echo '<td>'.$this->Number->format($movement->supplier_organization_id).'</td>';
-                  echo '<td>'.$this->Number->format($movement->year).'</td>';
-                  echo '<td>'.h($movement->name).'</td>';
-                  echo '<td>'.$this->Number->format($movement->importo).'</td>';
-                  echo '<td>'.h($movement->date).'</td>';
+                  echo '<tr>';
+                  echo '<td class="actions text-left">';
+                  // echo $this->Html->link('', ['action' => 'view', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
+                  echo $this->Html->link('', ['action' => 'edit', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+                  if(!$movement->is_system) 
+                    echo $this->Form->postLink('', ['action' => 'delete', $movement->id], ['confirm' => __('Are you sure you want to delete # {0}?', $movement->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                  else
+                    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+                  echo '</td>';                   
+                  echo '<td>'.$movement->year.'</td>';
+                  echo '<td>'.$movement->movement_type->name.'</td>';
                   echo '<td>';
-                  echo $this->Enum->draw($movement->type, $types);
+                  if(!empty($movement->user_id)) echo 'Gasista: '.$movement->user->name;
+                  if(!empty($movement->supplier_organization_id)) echo 'Produttore: '.$movement->suppliers_organization->name;
+                  echo '</td>';
+                  echo '<td>'.h($movement->name).'</td>';
+                  echo '<td>'.$this->HtmlCustom->importo($movement->importo).'</td>';
+                  echo '<td>';
+                  echo $this->Enum->draw($movement->payment_type, $payment_types);
                   echo '</td>';                  
-                  echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse($movement, 'is_system', Configure::read('icon_is_system')).'</td>';
-                  echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse($movement, 'is_active').'</td>';
-                  echo '<td title="'.h($movement->created).'">'.$this->Time->nice($movement->created).'</td>';
-                  echo '<td title="'.h($movement->modified).'">'.$this->Time->nice($movement->modified).'</td>';
+                  echo '<td>'.$movement->date->i18nFormat('eeee d MMMM').'</td>';               
                   echo '</tr>';
+
+                  $totale += $movement->importo;
               } // end loop
             echo '</tbody>';
-          echo '</table>';
+
+            echo '<tfooter>';
+            echo '<tr>';
+            echo '<th></th>';
+            echo '<th></th>';
+            echo '<th></th>';
+            echo '<th></th>';
+            echo '<th></th>';
+            echo '<th>'.$this->HtmlCustom->importo($totale).'</th>';
+            echo '<th></th>';
+            echo '<th></th>';
+            echo '</tr>';
+            echo '</tfooter>';
+
+            echo '</table>';
           }
           else {
             echo $this->element('msg', ['msg' => __('MsgResultsNotFound'), 'class' => 'warning']);

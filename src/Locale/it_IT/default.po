@@ -6726,3 +6726,24 @@ msgstr "Consegna per i gruppi"
 
 msgid "Gas Group Deliveries"
 msgstr "Consegne per i gruppi" 
+
+#
+# movements
+#
+msgid "Movements"
+msgstr "Movimenti di cassa" 
+
+msgid "Movement"
+msgstr "Movimento di cassa" 
+
+msgid "Movement Types"
+msgstr "Tipologie di movimenti di cassa" 
+
+msgid "Movement Type"
+msgstr "Tipologia di movimenti di cassa" 
+
+msgid "Payment Types"
+msgstr "Tipologie di pagamenti"
+
+msgid "Payment Type"
+msgstr "Tipologia di pagamento"

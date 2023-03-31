@@ -48,7 +48,7 @@ class Movement extends Entity
         'descri' => true,
         'importo' => true,
         'date' => true,
-        'type' => true,
+        'payment_type' => true,
         'is_system' => true,
         'is_active' => true,
         'created' => true,

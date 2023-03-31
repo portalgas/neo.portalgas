@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
+use App\Traits;
 
 /**
  * Movements Model
@@ -28,10 +29,13 @@ use Cake\Core\Configure;
  */
 class MovementsTable extends Table
 {
-    const TYPE_CONTANTI = 'Contanti';
-    const TYPE_BONIFICO = 'Bonifico';
-    const TYPE_SATISPAY = 'Satispay';
-    const TYPE_ALTRO = 'Altro';
+    const PAYMENT_TYPE_CONTANTI = 'Contanti';
+    const PAYMENT_TYPE_BONIFICO = 'Bonifico';
+    const PAYMENT_TYPE_SATISPAY = 'Satispay';
+    const PAYMENT_TYPE_CASSA = 'Cassa';
+    const PAYMENT_TYPE_ALTRO = 'Altro';
+
+    use Traits\SqlTrait;
 
     /**
      * Initialize method
@@ -49,9 +53,9 @@ class MovementsTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('CakeDC/Enum.Enum', ['lists' => [
-            'type' => [
+            'payment_type' => [
                 'strategy' => 'const',
-                'prefix' => 'TYPE'
+                'prefix' => 'PAYMENT_TYPE'
             ],
         ]]);
 
@@ -102,13 +106,13 @@ class MovementsTable extends Table
             ->notEmptyString('importo');
 
         $validator
-            ->date('date')
+            // ->date('date')
             ->requirePresence('date', 'create')
             ->notEmptyDate('date');
 
         $validator
-            ->scalar('type')
-            ->allowEmptyString('type');
+            ->scalar('payment_type')
+            ->allowEmptyString('payment_type');
 
         $validator
             ->boolean('is_system')
@@ -132,9 +136,48 @@ class MovementsTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['movement_type_id'], 'MovementTypes'));
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['supplier_organization_id'], 'SupplierOrganizations'));
+        // $rules->add($rules->existsIn(['user_id'], 'Users'));
+        // $rules->add($rules->existsIn(['supplier_organization_id'], 'SupplierOrganizations'));
 
         return $rules;
+    }
+
+    public function getYears($user, $organization_id) {
+        $where = ['organization_id' => $organization_id];
+        $min = $this->getMin($this, 'year', $where);        
+        if($min==0 || $min==date('Y'))
+            $years[date('Y')] = date('Y');
+        else {
+            $years = [];
+            for($min; $min<=date('Y'); $min++) {
+                $years[$min] = $min;
+            }
+        }
+        return $years;
+    }
+
+    /* 
+     * $datas= request daform add / edit 
+     * */
+    public function decorateMovementType($datas) {
+
+        switch($datas['movement_type_id']) {
+            case '1': // Spesa del G.A.S.
+            case '2': // Entrata del G.A.S.
+            case '5': // Pagamento fattura a fornitore
+                $datas['user_id'] = null;
+                $datas['supplier_organization_id'] = null;
+            break;
+            case '3': // Sconto al fornitore
+            case '4': // Accredito dal fornitore
+                $datas['user_id'] = null;
+            break;
+            case '6': // Rimborso Gasista
+            case '7': // Movimento di cassa
+                $datas['supplier_organization_id'] = null;
+            break;
+        }
+
+        return $datas;
     }
 }

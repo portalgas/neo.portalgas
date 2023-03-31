@@ -18,6 +18,8 @@ class MovementsController extends AppController
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Movement');
+        $this->loadComponent('SuppliersOrganization');
     }
 
     public function beforeFilter(Event $event) {
@@ -37,11 +39,45 @@ class MovementsController extends AppController
      */
     public function index()
     {
+        $where = [];
+        $sorts = ['Movements.date desc'];
+                  
+        /* 
+         * filters
+         */
+        $request = $this->request->getQuery();
+        $search_movement_type_id = '';
+        $search_year = '';
+
+        if(!empty($request['search_year'])) 
+            $search_year = $request['search_year'];
+        else 
+            $search_year = date('Y');
+        $where += ['Movements.year' => $search_year];
+
+        if(!empty($request['search_movement_type_id'])) {
+            $search_movement_type_id = $request['search_movement_type_id'];
+            $where += ['Movements.movement_type_id' => $search_movement_type_id];
+        } 
+        $this->set(compact('search_movement_type_id', 'search_year'));
+
+        /* 
+         * popola i movimenti con l'importo di cassa dell'anno passato
+         */
+        $this->Movement->populateByCashes($this->_user, $this->_organization->id, $search_year);
+
         $this->paginate = [
             'contain' => ['MovementTypes', 'Users', 'SuppliersOrganizations'],
+            'order' => $sorts,
+            'conditions' => $where,
         ];
+
+        $movement_types = $this->Movements->MovementTypes->getList();
+        $years = $this->Movements->getYears($this->_user, $this->_organization->id);
+        $this->set(compact('movement_types', 'years'));
+
         $movements = $this->paginate($this->Movements);
-        $this->set('types', $this->Movements->enum('type'));
+        $this->set('payment_types', $this->Movements->enum('payment_type'));
         $this->set(compact('movements'));
     }
 
@@ -55,6 +91,8 @@ class MovementsController extends AppController
         $movement = $this->Movements->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
+            $datas['organization_id'] = $this->_organization->id;
+            $datas = $this->Movements->decorateMovementType($datas); 
             // debug($datas);
             $movement = $this->Movements->patchEntity($movement, $datas);
             if (!$this->Movements->save($movement)) {
@@ -67,12 +105,21 @@ class MovementsController extends AppController
             }
             
         }
-        $this->set('types', $this->Movements->enum('type'));
+        $this->set('payment_types', $this->Movements->enum('payment_type'));
         
-        $movementTypes = $this->Movements->MovementTypes->find('list', ['limit' => 200]);
-        $users = $this->Movements->Users->find('list', ['limit' => 200]);
-        $suppliersOrganizations = $this->Movements->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $this->set(compact('movement', 'movementTypes', 'users', 'suppliersOrganizations'));
+        $movementTypes = $this->Movements->MovementTypes->getList();
+        
+        $usersTable = TableRegistry::get('Users');
+        $users = $usersTable->getList($this->_user, $this->_organization->id);
+
+        $order_type_id = Configure::read('Order.type.gas');
+        
+        $ordersTable = TableRegistry::get('Orders');
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+
+        $this->set(compact('movement', 'movementTypes', 'users', 'suppliersOrganizations', 'order_type_id'));
     }
 
 
@@ -90,7 +137,8 @@ class MovementsController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $datas = $this->request->getData();
-            // debug($datas);        
+            $datas = $this->Movements->decorateMovementType($datas); 
+            // debug($datas); 
             $movement = $this->Movements->patchEntity($movement, $datas);
             if (!$this->Movements->save($movement)) {
                 $this->Flash->error($movement->getErrors());
@@ -101,11 +149,20 @@ class MovementsController extends AppController
                 return $this->redirect(['action' => 'index']);
             }
         }
-        $this->set('types', $this->Movements->enum('type'));
-        $movementTypes = $this->Movements->MovementTypes->find('list', ['limit' => 200]);
-        $users = $this->Movements->Users->find('list', ['limit' => 200]);
-        $suppliersOrganizations = $this->Movements->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $this->set(compact('movement', 'movementTypes', 'users', 'suppliersOrganizations'));
+        $this->set('payment_types', $this->Movements->enum('payment_type'));
+        $movementTypes = $this->Movements->MovementTypes->getList();
+
+        $usersTable = TableRegistry::get('Users');
+        $users = $usersTable->getList($this->_user, $this->_organization->id);
+
+        $order_type_id = Configure::read('Order.type.gas');
+        
+        $ordersTable = TableRegistry::get('Orders');
+        $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+
+        $this->set(compact('movement', 'movementTypes', 'users', 'suppliersOrganizations', 'order_type_id'));
     }
 
 

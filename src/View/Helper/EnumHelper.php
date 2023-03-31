@@ -21,7 +21,7 @@ class EnumHelper extends Helper
             if($key==$value)
                 $html = $enum;
         }
-        dd($enums);
+   
 		return $html;
     }           
 }

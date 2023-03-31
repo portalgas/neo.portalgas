@@ -346,9 +346,12 @@ class HtmlCustomSiteHelper extends FormHelper
                         case 'home':
                             $html .= '<li><a href="'.$this->Url->build('/admin').'"><i class="fa fa-dashboard"></i> '.__('Home').'</a></li>';
                         break;
-                        case 'list':
+                        case 'list-orders':
                             $label = __('List').' '.__('Orders-'.$order_type_id);
                             $html .= '<li><a href="'.$this->Url->build(['controller' => 'orders', 'action' => 'index', $order_type_id]).'"><i class="fa fa-list"></i> '.$label.'</a></li>';
+                        break;
+                        case 'list':
+                            $html .= '<li><a href="'.$this->Url->build(['action' => 'index']).'"><i class="fa fa-list"></i> '.__('List').'</a></li>';
                         break;
                     }
                 }

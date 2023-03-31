@@ -86,4 +86,15 @@ class MovementTypesTable extends Table
 
         return $validator;
     }
+
+    public function getList() {
+        return $this->find('list', [
+                'conditions' => ['is_active' => true], 
+                'order' => ['sort', 'name'], 
+                'limit' => 200, 
+                'keyField' => 'id', 
+                'valueField' => 'name'
+            ]);   
+    }
+
 }

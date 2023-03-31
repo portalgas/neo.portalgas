@@ -12,7 +12,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 
 echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list'], $order);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list-orders'], $order);
 ?>
 
 <!-- Main content -->

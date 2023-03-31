@@ -85,6 +85,28 @@ trait SqlTrait
         return $results;
     }
 
+    public function getMin($model, $field, $where = [], $debug=false) {
+
+        if(is_string($model))
+            $model = TableRegistry::get($model);
+        
+        if($debug) debug($model);
+        if($debug) debug($where);
+
+        $query = $model->find()->where($where);
+        $query = $query->select(['min' => $query->func()->min($field)]);
+        $results = $query->toList();
+
+        if (!isset($results[0]->min))
+            $results = 0;
+        else
+            $results = $results[0]->min;
+
+        if($debug) debug($results);
+
+        return $results;
+    }
+
     /*
      * conta gli elementi estratti e li incrementa (ex nome dettaglio offerta)
      */
