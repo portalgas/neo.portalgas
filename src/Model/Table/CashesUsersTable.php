@@ -249,7 +249,9 @@ class CashesUsersTable extends Table
 
         $results = [];
 
-        if(!isset($user->organization->paramsConfig) || $user->organization->paramsConfig['hasCashFilterSupplier']=='N')
+        if(!isset($user->organization->paramsConfig) || 
+            !isset($user->organization->paramsConfig['hasCashFilterSupplier']) ||
+            $user->organization->paramsConfig['hasCashFilterSupplier']=='N')
             return $results;
 
         $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
