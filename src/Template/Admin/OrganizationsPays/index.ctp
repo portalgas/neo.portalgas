@@ -208,7 +208,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
               } // end loop 
               ?>
             </tbody>
-            <tfooter>
+            <tfoot>
               <tr>
                   <th scope="col"></th>
                   <?php
@@ -229,7 +229,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <th scope="col"></th>
                   <th scope="col"></th>
               </tr>
-            </tfooter>            
+            </tfoot>            
           </table>
         </div>
         <!-- /.box-body -->

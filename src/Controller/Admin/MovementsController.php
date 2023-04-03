@@ -26,9 +26,19 @@ class MovementsController extends AppController
         
         parent::beforeFilter($event);
 
-        if(!$this->_user->acl['isRoot']) {
+        if(!$this->_user->acl['isCassiere']) {        
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+    }
+
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);
+
+        // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
+        if($this->request->getParam('action')=='print') {
+            $this->viewBuilder()->setClassName('CakePdf.Pdf');             
         }
     }
 
@@ -68,8 +78,8 @@ class MovementsController extends AppController
 
         $this->paginate = [
             'contain' => ['MovementTypes', 'Users', 'SuppliersOrganizations'],
-            'order' => $sorts,
             'conditions' => $where,
+            'order' => $sorts
         ];
 
         $movement_types = $this->Movements->MovementTypes->getList();
@@ -186,4 +196,63 @@ class MovementsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+
+    /*
+     * https://dompdf.net/examples.php
+     */
+    public function print($debug=false) { 
+
+        $results = [];
+        $title = '';
+
+        $where = [];
+        $sorts = ['Movements.date desc'];
+        
+        /* 
+         * filters
+         */
+        $request = $this->request->getQuery();
+        $search_movement_type_id = '';
+        $search_year = '';
+
+        if(!empty($request['search_year'])) 
+            $search_year = $request['search_year'];
+        else 
+            $search_year = date('Y');
+        $where += ['Movements.year' => $search_year];
+
+        if(!empty($request['search_movement_type_id'])) {
+            $search_movement_type_id = $request['search_movement_type_id'];
+            $where += ['Movements.movement_type_id' => $search_movement_type_id];
+        } 
+        $this->set(compact('search_movement_type_id', 'search_year'));
+
+        $movements = $this->Movements->find()
+                        ->contain(['MovementTypes', 'Users', 'SuppliersOrganizations'])
+                        ->where($where)
+                        ->order($sorts)
+                        ->all();
+
+        $this->set('payment_types', $this->Movements->enum('payment_type'));
+        $this->set(compact('movements'));
+
+        $title = "Movimenti anno ".$search_year;
+        $filename = $this->setFileName($title.'.pdf');
+
+        Configure::write('CakePdf', [
+            'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
+            'margin' => [
+                'bottom' => 15,
+                'left' => 50,
+                'right' => 30,
+                'top' => 45
+            ],
+            'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
+            'download' => true,
+            'filename' => $filename
+        ]);
+
+        $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
+    }    
 }

@@ -490,6 +490,9 @@ msgstr "Chiudi"
 msgid "Open"
 msgstr "Apri"
 
+msgid "Print"
+msgstr "Stampa"
+
 msgid "ReAddY"
 msgstr "Aggiungi nuovo record"
 

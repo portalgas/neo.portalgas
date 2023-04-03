@@ -12,9 +12,15 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
 <section class="content-header">
   <h1>
-    <?php echo __('Movements');?>
+  <?php echo __('Movements').' '.$search_year;?>
 
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?></div>
+    <div class="pull-right">
+    <?php
+    if($movements->count()>0) 
+      echo $this->Html->link(__('Print'), ['action' => 'print', '?' => ['search_year' => $search_year, 'search_movement_type_id' => $search_movement_type_id]], ['class'=>'btn btn-info btn-xs-disabled', 'id' => 'print', 'title' => __('Print'), 'target' => '_blank']);
+    ?>
+    <?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?>
+    </div>
   </h1>
 </section>
 
@@ -49,7 +55,6 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
         <div class="box-body table-responsive <?php echo ($movements->count()>0) ? 'no-padding': '';?>">
           <?php
           if($movements->count()>0) {
-          // if(!empty($movements)) {
           ?>
           <table class="table table-striped table-hover">
             <thead>

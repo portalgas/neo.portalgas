@@ -61,7 +61,7 @@ use Cake\Core\Configure;
             }
             ?>            
         </tbody>
-        </tfooter>
+        <tfoot>
         <tr>
             <th></th>
             <th></th>
@@ -73,6 +73,7 @@ use Cake\Core\Configure;
             <th></th>
             <th></th>
         </tr>
+        </tfoot>
     </table>
     </div>
     <?php 
