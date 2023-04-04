@@ -34,8 +34,11 @@
             echo '<td>';
             if(!empty($movement->user_id)) echo 'Gasista: '.$movement->user->name;
             if(!empty($movement->supplier_organization_id)) echo 'Produttore: '.$movement->suppliers_organization->name;
+            if(!empty($movement->order_id) || !empty($movement->stat_order_id)) echo 'Ordine del produttore <br /><small>'.h($movement->descri).'</small>';
             echo '</td>';
-            echo '<td>'.h($movement->name).'</td>';
+            echo '<td>';
+            echo h($movement->name);
+            echo '</td>';
             echo '<td class="text-center">'.$this->HtmlCustom->importo($movement->importo).'</td>';
             echo '<td class="text-center">';
             echo $this->Enum->draw($movement->payment_type, $payment_types);

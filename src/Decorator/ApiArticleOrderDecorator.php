@@ -44,7 +44,7 @@ class ApiArticleOrderDecorator  extends AppDecorator {
          * setto tag con gli id
          */        
         $results = $articles_order->toArray();
-
+       
         $ids = [];
         $ids['organization_id'] = $articles_order->organization_id;
         $ids['order_id'] = $articles_order->order_id;

@@ -33,7 +33,13 @@ echo $this->Html->script('movements', ['block' => 'scriptPageInclude']);
 
           echo '<div class="row">';
           echo '<div class="col-md-6">';
-          echo $this->Form->control('movement_type_id', ['options' => $movementTypes]);
+          /*
+           * se importato a CASSA o PAGAMENTO FATTURA non e' modificabile
+           */
+          $opts = [];
+          if(!$movement->movement_type_edit)
+              $opts = ['disabled' => 'disabled'];
+          echo $this->Form->control('movement_type_id', ['options' => $movementTypes, $opts]);
           echo '</div>';
           echo '<div class="col-md-6">';
 

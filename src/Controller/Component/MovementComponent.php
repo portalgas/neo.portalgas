@@ -24,7 +24,9 @@ class MovementComponent extends CartSuperComponent {
      * ribalta gli importi da k_cashes a movements
      */
     public function populateByCashes($user, $organization_id, $year, $debug=false) {
-        
+       
+        // $debug = true;
+
         // id_user inseriti in Movements, quelli esclusi saranno eliminati
         $id_users = []; 
 
@@ -34,11 +36,12 @@ class MovementComponent extends CartSuperComponent {
         $where = ['Cashes.organization_id' => $organization_id,
                 'Cashes.importo != ' => 0,
                 'YEAR(Cashes.created)' => $year];
+        if($debug) debug($where);        
         $cashes = $cashesTable->find()
                             ->contain(['Users' => ['conditions' => ['Users.block' => 0]]])
                             ->where($where)
                             ->all();
-        // debug($cashes->count());
+        if($debug) debug($cashes->count());
         if($cashes->count()>0)
         foreach($cashes as $cash) {
             /*

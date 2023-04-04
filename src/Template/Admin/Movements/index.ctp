@@ -2,6 +2,8 @@
 use Cake\Core\Configure;
 use Cake\I18n\Time;
 
+$user = $this->Identity->get();
+
 $this->start('tb_actions');
 echo '<li class="sidebar-menu-action">';
 echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</span>', ['action' => 'add'], ['title' => __('New'), 'escape' => false]);
@@ -16,7 +18,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
     <div class="pull-right">
     <?php
-    if($movements->count()>0) 
+    if(count($movements)>0) 
       echo $this->Html->link(__('Print'), ['action' => 'print', '?' => ['search_year' => $search_year, 'search_movement_type_id' => $search_movement_type_id]], ['class'=>'btn btn-info btn-xs-disabled', 'id' => 'print', 'title' => __('Print'), 'target' => '_blank']);
     ?>
     <?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?>
@@ -52,9 +54,9 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
           </div>
         </div>
         <!-- /.box-header -->
-        <div class="box-body table-responsive <?php echo ($movements->count()>0) ? 'no-padding': '';?>">
+        <div class="box-body table-responsive <?php echo (count($movements)>0) ? 'no-padding': '';?>">
           <?php
-          if($movements->count()>0) {
+          if(count($movements)>0) {
           ?>
           <table class="table table-striped table-hover">
             <thead>
@@ -63,6 +65,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                 <th scope="col" class=""><?= $this->Paginator->sort('year') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('movement_type_id') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('verso chi') ?></th>
+                <th scope="col" class=""></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('importo') ?></th>
                 <th scope="col" class=""><?= $this->Paginator->sort('payment_type') ?></th>
@@ -90,8 +93,17 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<td>';
                   if(!empty($movement->user_id)) echo 'Gasista: '.$movement->user->name;
                   if(!empty($movement->supplier_organization_id)) echo 'Produttore: '.$movement->suppliers_organization->name;
+                  if(!empty($movement->order_id) || !empty($movement->stat_order_id)) echo 'Ordine del produttore <br /><small>'.h($movement->descri).'</small>';
                   echo '</td>';
-                  echo '<td>'.h($movement->name).'</td>';
+                  echo '<td>';
+                  if(!empty($movement->doc_url)) {
+                    $ico = $this->HtmlCustom->drawDocumentIco($movement->order->tesoriere_doc1);
+                    echo '<a alt="Scarica il documento" title="Scarica il documento" href="' . $movement->doc_url . '" target="_blank"><img src="'.$ico.'" /></a>';
+                  }
+                  echo '</td>';                  
+                  echo '<td>';
+                  echo h($movement->name);
+                  echo '</td>';
                   echo '<td>'.$this->HtmlCustom->importo($movement->importo).'</td>';
                   echo '<td>';
                   echo $this->Enum->draw($movement->payment_type, $payment_types);
@@ -105,6 +117,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
             echo '<tfooter>';
             echo '<tr>';
+            echo '<th></th>';
             echo '<th></th>';
             echo '<th></th>';
             echo '<th></th>';

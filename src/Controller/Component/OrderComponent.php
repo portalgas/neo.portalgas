@@ -39,7 +39,7 @@ class OrderComponent extends Component {
              * per gli ordini per produttore non ho la consegna
              */
             $where += ['Orders.delivery_id' => $delivery_id, 
-                    // 'Orders.id' => 20240
+                      // 'Orders.id' => 36091,
                       ];
         }
 

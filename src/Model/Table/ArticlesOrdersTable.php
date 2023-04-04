@@ -390,7 +390,7 @@ class ArticlesOrdersTable extends Table
             break;
         }          
         if($debug) debug($results);
-        
+
         /*
          * estraggo eventuali acquisti
          */ 
@@ -399,7 +399,11 @@ class ArticlesOrdersTable extends Table
             $cartsTable = TableRegistry::get('Carts');
             foreach($results as $numResult => $result) {
 
-                $results[$numResult]['order'] = $orderResults;
+                /*
+                 * per evitare json troppo pesante
+                 * Error: Allowed memory size of 268435456 bytes exhausted (tried to allocate 199233536 bytes)
+                   $results[$numResult]['order'] = $orderResults->toArray();
+                 */
 
                 /*
                  * Carts

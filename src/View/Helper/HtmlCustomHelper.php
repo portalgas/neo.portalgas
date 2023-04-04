@@ -421,4 +421,45 @@ class HtmlCustomHelper extends FormHelper
 
         return $html;
     }
+
+	/*
+	 * crea un icona dall'estensione di un file
+	 */
+	public function drawDocumentIco($file_name, $dim='32x32') {
+
+		$estensione = '';
+
+		if(strpos($file_name,'.')!==false)
+			$estensione = substr($file_name, strpos($file_name,'.')+1, strlen($file_name));
+		
+		switch ($estensione) {
+			case "pdf":
+				$ico = 'pdf.png';
+			break;
+			case "jpg":
+			case "jpeg":
+			case "png":
+			case "gif":
+				$ico = 'image.png';		
+			break;
+			case "txt":
+				$ico = 'txt.png';
+			break;
+			case "zip":
+				$ico = 'tar.png';
+			break;
+			case "csv":
+			case "xsl":
+			case "xlsx":
+				$ico = 'spreadsheet.png';
+			break;
+			default :
+				$ico = 'misc.png';
+			break;
+		}
+
+		$tmp = Configure::read('App.img.cake').'/minetypes/'.$dim.'/'.$ico;
+				
+		return $tmp;
+	}    
 }

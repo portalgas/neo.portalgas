@@ -384,6 +384,7 @@ Configure::write('Organization.img.path.fulljs', '/images/organizations/contents
 Configure::write('Organization.img.preview.width', '50px');
 
 Configure::write('App.img.cake', '/images/cake');
+
 /*
  * https://github.com/madbob/gdxp
  */

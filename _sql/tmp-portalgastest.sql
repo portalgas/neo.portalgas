@@ -1,3 +1,5 @@
+update k_organizations set paramsConfig = CONCAT(SUBSTRING(paramsConfig, 1, LENGTH(paramsConfig)-1), ',"ggArchiveStatics":"35"}') where type = 'GAS';
+
 DROP TABLE IF EXISTS `movements`;
 CREATE TABLE `movements` (
   `id` bigint(20) UNSIGNED NOT NULL,
@@ -16,6 +18,13 @@ CREATE TABLE `movements` (
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   `modified` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+ALTER TABLE `movements` 
+ADD COLUMN `order_id` BIGINT(20) NULL DEFAULT NULL AFTER `year`,
+ADD COLUMN `stat_order_id` BIGINT(20) NULL DEFAULT NULL AFTER `order_id`;
+
+ALTER TABLE `movements` 
+CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL ;
 
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";

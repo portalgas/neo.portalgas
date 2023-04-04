@@ -73,6 +73,12 @@ class MovementsTable extends Table
         $this->belongsTo('SuppliersOrganizations', [
             'foreignKey' => ['organization_id', 'supplier_organization_id'],
         ]);
+        $this->belongsTo('Orders', [
+            'foreignKey' => ['organization_id', 'order_id'],
+        ]);
+        $this->belongsTo('StatOrders', [
+            'foreignKey' => 'stat_order_id',
+        ]);
     }
 
     /**
@@ -93,7 +99,7 @@ class MovementsTable extends Table
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 75)
+            ->maxLength('name', 255)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 

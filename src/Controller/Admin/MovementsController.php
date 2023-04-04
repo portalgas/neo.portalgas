@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
+use App\Decorator\MovementDecorator;
 
 /**
  * Movements Controller
@@ -50,6 +51,7 @@ class MovementsController extends AppController
     public function index()
     {
         $where = [];
+        $where += ['Movements.organization_id' => $this->_organization->id];
         $sorts = ['Movements.date desc'];
                   
         /* 
@@ -75,9 +77,10 @@ class MovementsController extends AppController
          * popola i movimenti con l'importo di cassa dell'anno passato
          */
         $this->Movement->populateByCashes($this->_user, $this->_organization->id, $search_year);
-
+        
         $this->paginate = [
-            'contain' => ['MovementTypes', 'Users', 'SuppliersOrganizations'],
+            'contain' => ['MovementTypes', 'Users', 'SuppliersOrganizations', 
+                    'Orders', 'StatOrders'],
             'conditions' => $where,
             'order' => $sorts
         ];
@@ -87,6 +90,9 @@ class MovementsController extends AppController
         $this->set(compact('movement_types', 'years'));
 
         $movements = $this->paginate($this->Movements);
+        $movements = new MovementDecorator($this->_user, $movements);
+        $movements = $movements->results;
+
         $this->set('payment_types', $this->Movements->enum('payment_type'));
         $this->set(compact('movements'));
     }
@@ -145,6 +151,7 @@ class MovementsController extends AppController
         $movement = $this->Movements->get($id, [
             'contain' => []
         ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $datas = $this->request->getData();
             $datas = $this->Movements->decorateMovementType($datas); 
@@ -171,6 +178,9 @@ class MovementsController extends AppController
         $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
         $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+
+        $movement = new MovementDecorator($this->_user, $movement);
+        $movement = $movement->results;
 
         $this->set(compact('movement', 'movementTypes', 'users', 'suppliersOrganizations', 'order_type_id'));
     }
@@ -229,7 +239,8 @@ class MovementsController extends AppController
         $this->set(compact('search_movement_type_id', 'search_year'));
 
         $movements = $this->Movements->find()
-                        ->contain(['MovementTypes', 'Users', 'SuppliersOrganizations'])
+                        ->contain(['MovementTypes', 'Users', 'SuppliersOrganizations', 
+                            'Orders', 'StatOrders'])
                         ->where($where)
                         ->order($sorts)
                         ->all();
