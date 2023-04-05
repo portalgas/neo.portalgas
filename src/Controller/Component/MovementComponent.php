@@ -10,8 +10,9 @@ use Cake\I18n\FrozenTime;
 
 class MovementComponent extends CartSuperComponent {
 
-    private $_movimento_di_cassa = 7; // Movimento di cassa;
-    private $_name_default = 'Movimento di cassa';
+	private $_movement_type_invoice = 5;    // INVOICE Pagamento fattura a fornitore
+	private $_movement_type_userimport = 8; // USERSIMPORT Saldo movimento di cassa
+    private $_name_default = 'Saldo movimento di cassa';
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -35,7 +36,7 @@ class MovementComponent extends CartSuperComponent {
 
         $where = ['Cashes.organization_id' => $organization_id,
                 'Cashes.importo != ' => 0,
-                'YEAR(Cashes.created)' => $year];
+                'YEAR(Cashes.modified)' => $year];
         if($debug) debug($where);        
         $cashes = $cashesTable->find()
                             ->contain(['Users' => ['conditions' => ['Users.block' => 0]]])
@@ -50,7 +51,7 @@ class MovementComponent extends CartSuperComponent {
             $where = ['Movements.organization_id' => $organization_id,
                       'Movements.year' => $year,
                       'Movements.user_id' => $cash->user_id,
-                      'Movements.movement_type_id' => $this->_movimento_di_cassa];
+                      'Movements.movement_type_id' => $this->_movement_type_userimport];
             $movement = $movementsTable->find()
                                         ->where($where)
                                         ->first();
@@ -64,7 +65,7 @@ class MovementComponent extends CartSuperComponent {
             $datas['date'] = $cash->created;
             $datas['name'] = $this->_name_default;
             $datas['payment_type'] = 'CASSA';
-            $datas['movement_type_id'] = $this->_movimento_di_cassa; 
+            $datas['movement_type_id'] = $this->_movement_type_userimport; 
             $datas['importo'] = $cash->importo;
             $datas['is_system'] = 0;
             $datas['is_active'] = 1;
@@ -82,7 +83,7 @@ class MovementComponent extends CartSuperComponent {
         if(!empty($id_users)) {
             $where = ['organization_id' => $organization_id, 
             'year' => $year, 
-            'movement_type_id' => $this->_movimento_di_cassa,
+            'movement_type_id' => $this->_movement_type_userimport,
             'user_id NOT IN' => $id_users];
             $movementsTable->deleteAll($where);
         }

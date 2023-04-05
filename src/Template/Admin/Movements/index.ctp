@@ -10,6 +10,9 @@ echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</s
 echo '</li>';
 $this->end();
 $this->assign('tb_sidebar', $this->fetch('tb_actions')); 
+
+$msg = "Dalla cassa vengono riportati i saldi dei gasisti dell'anno selezionato<br>con tipologia 'Saldo movimento di cassa'";
+echo $this->element('msg', ['msg' => $msg, 'class' => 'info']); 
 ?>
 
 <section class="content-header">
@@ -82,11 +85,13 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<tr>';
                   echo '<td class="actions text-left">';
                   // echo $this->Html->link('', ['action' => 'view', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-eye-open', 'title' => __('View')]);
-                  echo $this->Html->link('', ['action' => 'edit', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
-                  if(!$movement->is_system) 
-                    echo $this->Form->postLink('', ['action' => 'delete', $movement->id], ['confirm' => __('Are you sure you want to delete # {0}?', $movement->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
-                  else
-                    echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+                  if($movement->edit) {
+                    echo $this->Html->link('', ['action' => 'edit', $movement->id], ['class'=>'btn btn-primary glyphicon glyphicon-pencil', 'title' => __('Edit')]);
+                    if(!$movement->is_system) 
+                      echo $this->Form->postLink('', ['action' => 'delete', $movement->id], ['confirm' => __('Are you sure you want to delete # {0}?', $movement->name), 'title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash']);
+                    else
+                      echo $this->Html->link('', [], ['title' => __('Delete'), 'class' => 'btn btn-danger glyphicon glyphicon-trash disabled']);
+                  }
                   echo '</td>';                   
                   echo '<td>'.$movement->year.'</td>';
                   echo '<td>'.$movement->movement_type->name.'</td>';
@@ -97,7 +102,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '</td>';
                   echo '<td>';
                   if(!empty($movement->doc_url)) {
-                    $ico = $this->HtmlCustom->drawDocumentIco($movement->order->tesoriere_doc1);
+                    $ico = $this->HtmlCustom->drawDocumentIco($movement->doc_url);
                     echo '<a alt="Scarica il documento" title="Scarica il documento" href="' . $movement->doc_url . '" target="_blank"><img src="'.$ico.'" /></a>';
                   }
                   echo '</td>';                  

@@ -404,8 +404,10 @@ export default {
 
     var found = this.checkCookieTour(this.scope);
     console.log('checkCookieTour found '+found+' per lo scope '+this.scope);
+    /*
     if(!found)
       this.$tours['myTour'].start()
+    */
   },
   methods: {
     getGlobals() {

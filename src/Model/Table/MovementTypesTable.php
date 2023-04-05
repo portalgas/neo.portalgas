@@ -87,9 +87,18 @@ class MovementTypesTable extends Table
         return $validator;
     }
 
-    public function getList() {
+    /* 
+     * USERSIMPORT Saldo movimento di cassa e' is_active = false
+     * perche' non presente alla creazione/modifica di un movimento
+     * utilizzato per ribaltare i dati da cassa a movimenti
+     */
+    public function getList($where=[]) {
+
+        if(empty($where))
+            $where = ['is_active' => true];
+
         return $this->find('list', [
-                'conditions' => ['is_active' => true], 
+                'conditions' => $where, 
                 'order' => ['sort', 'name'], 
                 'limit' => 200, 
                 'keyField' => 'id', 

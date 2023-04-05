@@ -85,7 +85,7 @@ class MovementsController extends AppController
             'order' => $sorts
         ];
 
-        $movement_types = $this->Movements->MovementTypes->getList();
+        $movement_types = $this->Movements->MovementTypes->getList(['is_active in ' => [0, 1]]);
         $years = $this->Movements->getYears($this->_user, $this->_organization->id);
         $this->set(compact('movement_types', 'years'));
 

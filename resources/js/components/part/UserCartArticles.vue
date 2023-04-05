@@ -60,8 +60,8 @@ export default {
       var totale = 0;
       this.article_orders.forEach(function (article_order, index2) { 
         // console.log(article_order); 
-        console.log(article_order.isOpenToPurchasable, 'article_order.isOpenToPurchasable');
-        console.log(article_order.cart.final_price, 'article_order.cart.final_price');
+        // console.log(article_order.isOpenToPurchasable, 'article_order.isOpenToPurchasable');
+        // console.log(article_order.cart.final_price, 'article_order.cart.final_price');
 
         if(article_order.isOpenToPurchasable)  /* aperto per acquistare */
           totale += (article_order.cart.qta_new * article_order.price);

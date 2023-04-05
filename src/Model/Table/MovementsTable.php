@@ -171,6 +171,7 @@ class MovementsTable extends Table
             case '1': // Spesa del G.A.S.
             case '2': // Entrata del G.A.S.
             case '5': // Pagamento fattura a fornitore
+            case '8': // Saldo movimento di cassa
                 $datas['user_id'] = null;
                 $datas['supplier_organization_id'] = null;
             break;

@@ -13,6 +13,9 @@ class MovementDecorator  extends AppDecorator {
     private $_path = '';
     private $_url = '';
 
+    private $_movement_type_invoice = 5;    // INVOICE Pagamento fattura a fornitore
+    private $_movement_type_userimport = 8; // USERSIMPORT Saldo movimento di cassa
+
     public function __construct($user, $movements)
     {
         $config = Configure::read('Config');
@@ -48,20 +51,30 @@ class MovementDecorator  extends AppDecorator {
            file_exists($this->_path . $movement->order->tesoriere_doc1)) {
             $movement->doc_url = $this->_url . $movement->order->tesoriere_doc1;
            }
-             
+
+        if($movement->has('stat_order') && 
+           !empty($movement->stat_order->tesoriere_doc1) && 
+           file_exists($this->_path . $movement->stat_order->tesoriere_doc1)) {
+            $movement->doc_url = $this->_url . $movement->stat_order->tesoriere_doc1;
+           }
+           
         /*
-        * se importato da CASSA o PAGAMENTO FATTURA non e' modificabile movement_type_id
-        */
+        * se importato PAGAMENTO FATTURA non e' modificabile movement_type_id
+        */        
         $movement->movement_type_edit = true;
-        if($movement->movement_type_id==5 // Pagamento fattura a fornitore INVOICE
-           || 
-           $movement->movement_type_id==7 // Movimento di cassa	USERS 
-        )
-        $movement->movement_type_edit = false;
+        if($movement->movement_type_id==$this->_movement_type_invoice) // INVOICE Pagamento fattura a fornitore
+          $movement->movement_type_edit = false;
+
+        /*
+        * se importato da CASSA non e' modificabile, ogni volta viene ricreato
+        */         
+        $movement->edit = true; 
+        if($movement->movement_type_id==$this->_movement_type_userimport) // USERSIMPORT Saldo movimento di cassa 
+          $movement->edit = false;
 
         return $movement;
     }
-
+ 
 	function name() {
 		return $this->results;
 	}    
