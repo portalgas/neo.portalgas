@@ -251,6 +251,7 @@ class MovementsController extends AppController
         $this->set(compact('movements'));
 
         $title = "Movimenti anno ".$search_year;
+        $this->set(compact('title')); // va in layout/pdf/default.ctp
         $filename = $this->setFileName($title.'.pdf');
 
         Configure::write('CakePdf', [
