@@ -244,7 +244,9 @@ class MovementsController extends AppController
                         ->where($where)
                         ->order($sorts)
                         ->all();
-
+        $movements = new MovementDecorator($this->_user, $movements);
+        $movements = $movements->results;
+        
         $this->set('payment_types', $this->Movements->enum('payment_type'));
         $this->set(compact('movements'));
 

@@ -4,9 +4,9 @@
   </h1>
 </section>
 
-<div class="box-body table-responsive <?php echo ($movements->count()>0) ? 'no-padding': '';?>">
+<div class="box-body table-responsive <?php echo (count($movements)>0) ? 'no-padding': '';?>">
   <?php
-  if($movements->count()>0) {
+  if(count($movements)>0) {
   // if(!empty($movements)) {
   ?>
     <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -31,10 +31,8 @@
             echo '<tr>';
             echo '<td>'.$movement->year.'</td>';
             echo '<td>'.$movement->movement_type->name.'</td>';
-            echo '<td>';
-            if(!empty($movement->user_id)) echo 'Gasista: '.$movement->user->name;
-            if(!empty($movement->supplier_organization_id)) echo 'Produttore: '.$movement->suppliers_organization->name;
-            if(!empty($movement->order_id) || !empty($movement->stat_order_id)) echo 'Ordine del produttore <br /><small>'.h($movement->descri).'</small>';
+            echo '<td>';            
+            echo $movement->verso_chi;
             echo '</td>';
             echo '<td>';
             echo h($movement->name);

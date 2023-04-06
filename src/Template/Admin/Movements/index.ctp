@@ -96,9 +96,7 @@ echo $this->element('msg', ['msg' => $msg, 'class' => 'info']);
                   echo '<td>'.$movement->year.'</td>';
                   echo '<td>'.$movement->movement_type->name.'</td>';
                   echo '<td>';
-                  if(!empty($movement->user_id)) echo 'Gasista: '.$movement->user->name;
-                  if(!empty($movement->supplier_organization_id)) echo 'Produttore: '.$movement->suppliers_organization->name;
-                  if(!empty($movement->order_id) || !empty($movement->stat_order_id)) echo 'Ordine del produttore <br /><small>'.h($movement->descri).'</small>';
+                  echo $movement->verso_chi;
                   echo '</td>';
                   echo '<td>';
                   if(!empty($movement->doc_url)) {

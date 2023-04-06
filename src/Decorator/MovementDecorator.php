@@ -45,6 +45,9 @@ class MovementDecorator  extends AppDecorator {
 
 	private function _decorate($movement) {
 
+        /*
+         * fattura
+         */
         $movement->doc_url = '';
         if($movement->has('order') && 
            !empty($movement->order->tesoriere_doc1) && 
@@ -57,7 +60,15 @@ class MovementDecorator  extends AppDecorator {
            file_exists($this->_path . $movement->stat_order->tesoriere_doc1)) {
             $movement->doc_url = $this->_url . $movement->stat_order->tesoriere_doc1;
            }
-           
+
+        /*
+         * verso chi
+         */
+        $movement->verso_chi = '';
+        if(!empty($movement->user_id)) $movement->verso_chi = 'Gasista: '.$movement->user->name;
+        if(!empty($movement->supplier_organization_id)) $movement->verso_chi = 'Produttore: '.$movement->suppliers_organization->name;
+        if(!empty($movement->order_id) || !empty($movement->stat_order_id)) $movement->verso_chi = 'Ordine del produttore <br /><small>'.h($movement->descri).'</small>';
+
         /*
         * se importato PAGAMENTO FATTURA non e' modificabile movement_type_id
         */        
