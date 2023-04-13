@@ -29,7 +29,7 @@ class OrganizationsPayComponent extends Component {
 	}
 
 	/*
-	 * get physical path 
+	 * get physical path /images/pays/{year} 
 	 */
 	public function getDocPath($user, $organizationsPay, $debug=false) {
 
