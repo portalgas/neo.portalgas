@@ -113,16 +113,28 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     echo h($organizationsPay->lastVisitDate->username);
                     echo '</td>';
                     echo '<td>';
-                    echo $this->Number->format($organizationsPay->tot_users);
+                    if($organizationsPay->tot_users==0)
+                      echo '<span class="label label-danger">'.$this->Number->format($organizationsPay->tot_users).'</span>';
+                    else
+                      echo $this->Number->format($organizationsPay->tot_users);
                     echo '</td>';
                     echo '<td>';
-                    echo $this->Number->format($organizationsPay->tot_orders);
+                    if($organizationsPay->tot_orders==0)
+                      echo '<span class="label label-danger">'.$this->Number->format($organizationsPay->tot_orders).'</span>';
+                    else
+                      echo $this->Number->format($organizationsPay->tot_orders);
                     echo '</td>';
                     echo '<td>';
-                    echo $this->Number->format($organizationsPay->tot_suppliers_organizations);
+                    if($organizationsPay->tot_suppliers_organizations==0)
+                      echo '<span class="label label-danger">'.$this->Number->format($organizationsPay->tot_suppliers_organizations).'</span>';
+                    else
+                      echo $this->Number->format($organizationsPay->tot_suppliers_organizations);
                     echo '</td>';
                     echo '<td>';
-                    echo $this->Number->format($organizationsPay->tot_articles);
+                    if($organizationsPay->tot_articles==0)
+                      echo '<span class="label label-danger">'.$this->Number->format($organizationsPay->tot_articles).'</span>';
+                    else
+                      echo $this->Number->format($organizationsPay->tot_articles);
                     echo '</td>';
                     echo '<td>';
                     echo $this->Form->control('beneficiario_pay', ['label' => false, 
