@@ -92,7 +92,7 @@ class OrdersController extends ApiAppController
             $where += ['Orders.delivery_id' => $delivery_id];
         }
 
-        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
+        if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
             // ctrl che l'utente appartertenga al gruppo 
             $gasGroupsTable = TableRegistry::get('GasGroups');
             $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
