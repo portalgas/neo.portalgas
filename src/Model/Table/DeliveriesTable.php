@@ -261,7 +261,7 @@ class DeliveriesTable extends Table
         $results = [];
 
         $deliveries = $this->gets($user, $organization_id, $where, $order, $debug);
-        if($user->organization->paramsConfig['hasGasGroups']=='Y') {
+        if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
             $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
             if($gasGroupDeliveries->count()>0)
                 $deliveries = array_merge($deliveries, $gasGroupDeliveries);    
