@@ -487,7 +487,8 @@ class UsersTable extends Table
     public function getList($user, $organization_id, $where=[]) {
 
         $where_user = ['organization_id' => $organization_id,
-                        'block' => 0];
+                        'block' => 0,
+                        'username NOT LIKE' => 'dispensa@%'];
         if(!empty($where))
             $where_user = array_merge($where_user, $where);
 

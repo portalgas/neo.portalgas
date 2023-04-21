@@ -67,9 +67,8 @@ class GasGroupUsersController extends AppController
                 if(strpos($datas['user_ids'], ',')!==false)
                     $this->_user_ids = explode(',', $datas['user_ids']);
                 else 
-                    $this->_user_ids = $datas['user_ids'];
-                // dd($this->_user_ids);
-
+                    $this->_user_ids = [$datas['user_ids']];
+             
                 foreach($this->_user_ids as $this->_user_id) {
 
                     $datas['organization_id'] = $this->_organization->id;

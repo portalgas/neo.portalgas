@@ -69,6 +69,9 @@ class OrdersGasParentGroupsTable extends OrdersTable implements OrderTableInterf
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
         $results = [];
         $deliveriesTable = TableRegistry::get('Deliveries');
+
+        $where = [];
+        $where['Deliveries'] = ['Deliveries.type' => 'GAS-GROUP']; // sovrascrivo 'Deliveries.type' => 'GAS'
         $results = $deliveriesTable->getsActiveGroup($user, $organization_id, $where);
         return $results;
     }    

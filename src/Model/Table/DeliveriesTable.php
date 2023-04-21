@@ -201,7 +201,7 @@ class DeliveriesTable extends Table
      *      array['N'] elenco consegne attive per select
      *      array[delivery_id] consegna da definire 
      * 
-     * escludo le consegne di gruppi perche' richiamato da OrderGasGroups e OrderGasParentGroups
+     * escludo le consegne di gruppi, se richiamato da OrderGasParentGroups sovrascrivo con 'Deliveries.type' = GAS-GROUP
      */
     public function getsActiveGroup($user, $organization_id, $where=[], $order=[], $debug=false) {
         
@@ -320,7 +320,7 @@ class DeliveriesTable extends Table
         return $results;
     }
 
-        /* 
+    /* 
      * estraggo le consegne Deliveries.type = 'GAS-GROUP' con ordini e senza
      */
     public function getsGasGroups($user, $organization_id, $where=[], $order=[], $debug=false) {

@@ -95,13 +95,17 @@ class GasGroupUsersTable extends Table
         $where = ['GasGroupUsers.gas_group_id' => $gas_group_id, 
                   'GasGroupUsers.organization_id' => $organization_id, 
                  ];    
-                 
+         
+        // escludo dispensa@gas.portalgas.it	                 
+        $where_user = ['Users.block' => 0, 
+                        'Users.username NOT LIKE' => 'dispensa@%'];                   
+		 
         $users = $this->find()->where($where)
                                 ->contain(['Users' => [
-                                    'conditions' => ['Users.block' => 0],
+                                    'conditions' => [$where_user],
                                     'sort' => ['Users.name' => 0]
                                 ]])
-                                ->all(); 
+                                ->all();
         return $users;
     }
 
