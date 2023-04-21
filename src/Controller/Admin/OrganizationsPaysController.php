@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use App\Traits;
 
 /**
  * OrganizationsPays Controller
@@ -15,6 +16,8 @@ use Cake\ORM\TableRegistry;
  */
 class OrganizationsPaysController extends AppController
 {
+    use Traits\UtilTrait;
+
     public function initialize()
     {
         parent::initialize();
@@ -235,30 +238,36 @@ class OrganizationsPaysController extends AppController
          */
         $where = [];
         $request = $this->request->getData();
+        $q = $this->getStringToRequest($request, 'search_'); // se utilizzati i filtri sono in POST
+        if(empty($q)) // dopo edit soon in querystring
+            $q = $this->getStringToRequest($this->request->getQuery(), 'search_');
+        $this->set(compact('q'));
+
         // debug($request);  
-        if(!empty($request['search_beneficiario_pay']))  
-            $search_beneficiario_pay = $request['search_beneficiario_pay'];
+        if(!empty($request['search_beneficiario_pay']) || !empty($this->request->getQuery('search_beneficiario_pay'))) {
+            !empty($request['search_beneficiario_pay']) ? $search_beneficiario_pay = $request['search_beneficiario_pay']: $search_beneficiario_pay = $this->request->getQuery('search_beneficiario_pay');
+        } 
         else
             $search_beneficiario_pay = '';
-        if(!empty($request['search_hasMsg']))  
-            $search_hasMsg = $request['search_hasMsg'];
+        if(!empty($request['search_hasMsg']) || !empty($this->request->getQuery('search_hasMsg'))) 
+            !empty($request['search_hasMsg']) ? $search_hasMsg = $request['search_hasMsg']: $search_hasMsg = $this->request->getQuery('search_hasMsg');
         else
             $search_hasMsg = '';
-        if(!empty($request['search_hasPdf']))  
-            $search_hasPdf = $request['search_hasPdf'];
+        if(!empty($request['search_hasPdf']) || !empty($this->request->getQuery('search_hasPdf')))   
+            !empty($request['search_hasPdf']) ? $search_hasPdf = $request['search_hasPdf']: $search_hasPdf = $this->request->getQuery('search_hasPdf');
         else
             $search_hasPdf = '';
-        if(!empty($request['search_type_pay']))  
-            $search_type_pay = $request['search_type_pay']; 
+        if(!empty($request['search_type_pay']) || !empty($this->request->getQuery('search_type_pay')))  
+            !empty($request['search_type_pay']) ? $search_type_pay = $request['search_type_pay']: $search_type_pay = $this->request->getQuery('search_type_pay');
         else
             $search_type_pay = '';
-        if(!empty($request['search_organization_id']))  
-            $search_organization_id = $request['search_organization_id'];
+        if(!empty($request['search_organization_id']) || !empty($this->request->getQuery('search_organization_id'))) 
+            !empty($request['search_organization_id']) ? $search_organization_id = $request['search_organization_id']: $search_organization_id = $this->request->getQuery('search_organization_id');
         else
             $search_organization_id = '';
         
-        if(!empty($request['search_year']))
-            $search_year = $request['search_year'];
+        if(!empty($request['search_year']) || !empty($this->request->getQuery('search_year'))) 
+            !empty($request['search_year']) ? $search_year = $request['search_year']: $search_year = $this->request->getQuery('search_year');
         else
             $search_year = date('Y');
         array_push($where, ['OrganizationsPays.year' => $search_year]);
@@ -404,7 +413,9 @@ class OrganizationsPaysController extends AppController
     public function edit($id = null)
     {
         // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
-        
+
+        $this->set('request', $this->request->getQuery());
+
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => []
         ]);
@@ -418,7 +429,9 @@ class OrganizationsPaysController extends AppController
             if ($this->OrganizationsPays->save($organizationsPay)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Organizations Pay'));
 
-                return $this->redirect(['action' => 'index']);
+                $request = $this->request->getData();
+                $q = $this->getStringToRequest($request, 'search_');
+                return $this->redirect(['action' => 'index', '?' => $q]);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Organizations Pay'));
         }

@@ -26,19 +26,19 @@
 
     echo '<div class="row-">';
     echo '<div class="col-md-3">';    
-    echo $this->Form->control('search_beneficiario_pay', ['options' => $beneficiario_pays, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_beneficiario_pay', ['options' => $beneficiario_pays, 'default' => $search_beneficiario_pay, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-2">';    
-    echo $this->Form->control('search_hasMsg', ['options' => $hasMsgs, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Msg attivato')]);
+    echo $this->Form->control('search_hasMsg', ['options' => $hasMsgs, 'default' => $search_hasMsg, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Msg attivato')]);
     echo '</div>';
     echo '<div class="col-md-3">';    
-    echo $this->Form->control('search_organization_id', ['options' => $organizations, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_organization_id', ['options' => $organizations, 'default' => $search_organization_id, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-2">';    
-    echo $this->Form->control('search_type_pay', ['options' => $type_pays, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_type_pay', ['options' => $type_pays, 'default' => $search_type_pay, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
     echo '</div>';
     echo '<div class="col-md-2">';    
-    echo $this->Form->control('search_hasPdf', ['options' => $hasPdfs, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Pdf')]);
+    echo $this->Form->control('search_hasPdf', ['options' => $hasPdfs, 'default' => $search_hasPdf, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Pdf')]);
     echo '</div>';
     echo '</div>';
     ?>

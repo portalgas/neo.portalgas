@@ -461,5 +461,32 @@ class HtmlCustomHelper extends FormHelper
 		$tmp = Configure::read('App.img.cake').'/minetypes/'.$dim.'/'.$ico;
 				
 		return $tmp;
-	}    
+	}  
+    
+    /*
+     * per ogni campo passato crea campi hidden
+     * ex parametri di ricerca passati da index a edit per il ritorno con imedesimi valori
+     * 
+     * $prefix tratta solo le chiavi della request che iniziano per $prefix (ex search_)
+     */
+    public function drawHiddenToSearch($request, $prefix='') {
+        
+        $results = '';
+        foreach($request as $key => $value) {
+
+            if(empty($value))
+                continue;
+
+            $continue = true;
+            if(!empty($prefix)) {
+                if(!$this->stringStartsWith($key, $prefix))
+                    $continue = false;
+            }
+
+            if($continue)
+                $results .= '<input type="hidden" name="'.$key.'" value="'.$value.'" />';
+        }
+
+        return $results;
+    }
 }

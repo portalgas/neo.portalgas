@@ -93,7 +93,6 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     ($search_hasPdf=='Y' && !empty($organizationsPay->doc_url)) || 
                     ($search_hasPdf=='N' && empty($organizationsPay->doc_url))) {
 
-
                     $tot_importo += $organizationsPay->importo;
 
                     echo '<tr>';
@@ -211,8 +210,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     echo '<td id="OrganizationsPays-'.$organizationsPay->id.'"></td>';
 
                     echo '<td class="actions text-right">';
-                    echo $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id], ['class'=>'btn btn-warning btn-xs']);
-                    echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $organizationsPay->id], ['confirm' => __('Are you sure you want to delete # {0}?', $organizationsPay->organization->name), 'class'=>'btn btn-danger btn-xs']);
+                    echo $this->Html->link(__('Edit'), ['action' => 'edit', $organizationsPay->id, '?' => $q], ['class'=>'btn btn-warning btn-xs']);
+                    echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $organizationsPay->id, '?' => $q], ['confirm' => __('Are you sure you want to delete # {0}?', $organizationsPay->organization->name), 'class'=>'btn btn-danger btn-xs']);
 
                     echo '</td>';
                     echo '</tr>';

@@ -26,7 +26,9 @@
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($organizationsPay, ['role' => 'form']); ?>
+          <?php echo $this->Form->create($organizationsPay, ['role' => 'form']);
+              echo $this->HtmlCustom->drawHiddenToSearch($request, 'search_'); 
+          ?>
             <div class="box-body">
               <?php
                 echo '<div class="row">';

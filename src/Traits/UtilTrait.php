@@ -413,4 +413,34 @@ trait UtilTrait
 
         return $results;
     }
+
+    /*
+     * trasforma una request in string key=value 
+     * ex nai tasti edit per ritorno
+     * 
+     * $prefix tratta solo le chiavi della request che iniziano per $prefix (ex search_)
+     */
+    public function getStringToRequest($request, $prefix='') {
+
+        $results = [];
+        foreach($request as $key => $value) {
+
+            if(empty($value))
+                continue;
+
+            // dd($key .' - '. $value);
+
+            $continue = true;
+
+            if(!empty($prefix)) {
+                if(!$this->stringStartsWith($key, $prefix))
+                    $continue = false;
+            }
+
+            if($continue)
+                $results[$key] = $value;
+        }
+
+        return $results;
+    }
 }
