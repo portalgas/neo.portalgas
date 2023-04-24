@@ -48,7 +48,7 @@ class LoopsOrdersCommand extends Command
             $this->io->out('LoopsOrders start');
         }
 
-        $organization_id = $args->getArgument('organization_id');        
+        $organization_id = $args->getArgument('organization_id');
         
         /* 
          * estraggo le consegne ricorsive create oggi 

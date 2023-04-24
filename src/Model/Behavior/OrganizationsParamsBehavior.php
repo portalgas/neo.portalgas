@@ -38,6 +38,20 @@ class OrganizationsParamsBehavior extends Behavior
                     }
                 }
 				
+                /*
+                * configurazione preso dal template
+                */
+                if(!empty($result->template)) {
+                    $result->paramsConfig['payToDelivery'] = $result->template['payToDelivery'];
+                    $result->paramsConfig['orderForceClose'] = $result->template['orderForceClose'];
+                    $result->paramsConfig['orderUserPaid'] = $result->template['orderUserPaid'];
+                    $result->paramsConfig['orderSupplierPaid'] = $result->template['orderSupplierPaid'];
+                    // non + ora dall'organization $paramsConfig['ggArchiveStatics'] = $organization->template['ggArchiveStatics'];
+                    if(!isset($result->paramsConfig['ggArchiveStatics']))
+                        $result->paramsConfig['ggArchiveStatics'] = $result->template['ggArchiveStatics'];
+        
+                } // end if(!empty($result->template))
+
 				if(!empty($result->paramsFields))
 					$result->paramsFields = json_decode($result->paramsFields, true);
 				

@@ -8,23 +8,27 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Log\Log;
 use Cake\Core\Configure;
 use Cake\Controller\ComponentRegistry;
-use App\Controller\Component\SitemapComponent;
+use App\Controller\Component\CronMailsComponent;
 
 /*
- * creo sitemap.xml
- * /var/www/neo.portalgas/src/Command/Sh/sitemap.sh
- * /var/www/neo.portalgas/bin/cake Sitemap
+ * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersOpen.sh
+ * /var/www/neo.portalgas/bin/cake MailUsersOrdersOpen {organization_id}
  */ 
-class SitemapCommand extends Command
+class MailUsersOrdersOpenCommand extends Command
 {
-    private $_Sitemap;
-
+    private $_CronMails;
+    
     public function initialize() {
-        $this->_Sitemap = new SitemapComponent(new ComponentRegistry());
+        $this->_CronMails = new CronMailsComponent(new ComponentRegistry());
     }
     
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
+        $parser
+            ->addArgument('organization_id', [
+                'help' => 'organization_id'
+            ]);
+
         return $parser;
     }
 
@@ -40,14 +44,17 @@ class SitemapCommand extends Command
 
         if($debug) {
             $this->io = $io;
-            $this->io->out('Sitemap start');
+            $this->io->out('CronMails start');
         }
 
-        $this->_Sitemap->create();
+        $organization_id = $args->getArgument('organization_id');
+        if(empty($organization_id)) dd('organization_id required!');
+
+        $this->_CronMails->mailUsersOrdersOpen($organization_id);
 
         if($debug) {
             $this->io = $io;
-            $this->io->out('Sitemap end');
+            $this->io->out('CronMails end');
         }
     }
 }
