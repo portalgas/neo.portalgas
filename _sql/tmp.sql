@@ -1,4 +1,5 @@
 -- x gestire CREATE-INCOMPLETE degli ordini GasGroup
+-- su next gia' portato
 INSERT INTO `k_templates_orders_states_orders_actions` (`template_id`, `group_id`, `state_code`, `order_action_id`, `sort`) VALUES ('1', '18', 'CREATE-INCOMPLETE', '43', '8');
 INSERT INTO `k_templates_orders_states_orders_actions` (`template_id`, `group_id`, `state_code`, `order_action_id`, `sort`) VALUES ('2', '18', 'CREATE-INCOMPLETE', '43', '8');
 INSERT INTO `k_templates_orders_states_orders_actions` (`template_id`, `group_id`, `state_code`, `order_action_id`, `sort`) VALUES ('3', '18', 'CREATE-INCOMPLETE', '43', '8');

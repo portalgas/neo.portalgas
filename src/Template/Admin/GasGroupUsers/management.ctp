@@ -23,11 +23,12 @@
         <!-- general form elements -->
         <div class="box box-primary">
           <div class="box-header with-border">
-            <h3 class="box-title"><?php echo __('Associa gasisti al gruppo del G.A.S.'); ?></h3>
+            <h3 class="box-title"><?php echo 'Associa gasisti al gruppo '.$gasGroup->name; ?></h3>
           </div>
           <!-- /.box-header -->
           <!-- form start -->
           <?php 
+          
           echo $this->Form->create($gasGroupUser, ['role' => 'form', 'id' => 'frm']);
           echo $this->Form->hidden('gas_group_id', ['value' => $gas_group_id]);
           
@@ -45,9 +46,11 @@
           echo '</div>';
           echo $this->Form->submit(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right']);
           echo $this->Form->end();
-          ?>
-        </div>
-        <!-- /.box -->
+          
+        echo '</div>';
+
+        echo $this->element('msg', ['class' => 'info', 'msg' => 'Gruppo creato da '.$gasGroup->user->name.': farà parte di default al gruppo']);
+        ?>
       </div>
   </div>
   <!-- /.row -->

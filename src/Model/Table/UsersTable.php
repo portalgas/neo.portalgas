@@ -162,6 +162,7 @@ class UsersTable extends Table
                   'id' => $user_id];
         if($debug) debug($where);
         
+        $this->addBehavior('Users');
         $user = $this->find()
             ->select([
                 'Users.id',
@@ -174,7 +175,7 @@ class UsersTable extends Table
             ->contain(['UserProfiles', 'UserUsergroupMap' => ['UserGroups']])
             ->where($where)
             ->first();
-         if($debug) debug($user);
+        if($debug) debug($user);
 
         if (!$user) {
             return null;
@@ -194,29 +195,6 @@ class UsersTable extends Table
         }
         // debug($group_ids);
         $user->group_ids = $group_ids;
-        
-        /*
-         * rimappo array user.profiles
-         * user->user_profiles['profile.address'] = value
-         */
-        $user_profiles = [];
-        if($user->has('user_profiles')) {
-            foreach($user->user_profiles as $user_profile) {
-                $profile_key = str_replace('profile.', '', $user_profile->profile_key);
-                /*
-                 * elimino primo e ultimo carattere se sono "
-                 */
-                if(!empty($user_profile->profile_value) && strpos(substr($user_profile->profile_value, 0, 1), '"')!==false) {
-                    $user_profile->profile_value = substr($user_profile->profile_value, 1, strlen($user_profile->profile_value)-2);
-                }
-
-                $user_profiles[$profile_key] = $user_profile->profile_value;
-            }
-            
-            unset($user->user_profiles);
-        }
-        // debug($user_profiles);
-        $user->user_profiles = $user_profiles;           
         
         /*
          *
@@ -495,5 +473,22 @@ class UsersTable extends Table
         $results = $this->find('list', ['conditions' => $where_user, 'order' => ['name']]);
         return $results;
     }
-        
+      
+    public function gets($user, $organization_id, $where=[]) {
+
+        $where_user = ['organization_id' => $organization_id,
+                        'block' => 0,
+                        'username NOT LIKE' => 'dispensa@%'];
+        if(!empty($where))
+            $where_user = array_merge($where_user, $where);
+
+        $this->addBehavior('Users');
+        $results = $this->find()
+                        ->contain(['UserProfiles'])
+                        ->where($where_user)
+                        ->order(['name'])
+                        ->all();
+
+        return $results;
+    }
 }
