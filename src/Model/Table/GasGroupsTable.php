@@ -152,6 +152,9 @@ class GasGroupsTable extends Table
                 $results[$gas_group->id]['gas_group_users'] = $gas_group->gas_group_users;
         }
 
+        /* 
+         * gruppi al quale l'utente appartiene
+         */
         $gas_groups_2 = $this->find()->contain([
                             'GasGroupDeliveries', 
                             'Users', // chi l'ha creato
@@ -162,10 +165,10 @@ class GasGroupsTable extends Table
                         ->where(['GasGroups.organization_id' => $organization_id])
                         ->order(['GasGroups.name'])
                         ->all();
-                        
+                                       
         if($gas_groups_2->count()>0)
         foreach($gas_groups_2 as $gas_group) {
-
+             
             if(isset($results[$gas_group->id]))
                 continue;
                 
@@ -185,7 +188,7 @@ class GasGroupsTable extends Table
                 $results[$gas_group->id]['gas_group_users'] = $gas_group_users;
             }
         }
-       
+    
         return $results;
     }
 
@@ -206,7 +209,7 @@ class GasGroupsTable extends Table
         foreach($gas_groups as $gas_group) {
             $results[$gas_group->id] = $gas_group->name;
         }
-
+      
         return $results;
     }    
 }

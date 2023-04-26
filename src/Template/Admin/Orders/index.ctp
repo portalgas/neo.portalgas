@@ -81,7 +81,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
               $colspan = 10;
               $delivery_id_old = 0;
               foreach ($orders as $order) {
-                
+           
                   if($delivery_id_old==0 || $delivery_id_old!=$order->delivery_id) {
                       echo '<tr>';
                       echo '<th class="trGroup" colspan="'.$colspan.'">';
@@ -163,7 +163,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                             echo $this->Html->link('<small class="label bg-primary">'.$order->order_type->descri.'</small>', ['controller' => 'GasGroups', 'action' => 'index'], ['title' => '', 'escape' => false]);
                       break;
                       case Configure::read('Order.type.gas_groups'):
-                        echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';
+                        echo '<small class="label bg-primary">'.$order->order_type->descri.': '.$order->gas_group->name.'</small>';
                       break;
                       default:
                         echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';

@@ -114,11 +114,15 @@ class OrdersController extends AppController
         // debug($where);
         array_push($sorts, 'Orders.data_inizio asc');
         // debug($sorts);
+        
+        $contains = ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
+                     'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'];
+        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y')
+            $contains = array_merge($contains, ['GasGroups']);
 
         $this->paginate = [
             'order' => $sorts,            
-            'contain' => ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
-                'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'],
+            'contain' => $contains,
             'conditions' => $where,
             'limit' => 75
         ];
