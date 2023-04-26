@@ -1,6 +1,8 @@
 <?php
 use Cake\Core\Configure;
 
+$urlBase = Configure::read('App.server').'/administrator/index.php?option=com_cake&';
+
 echo $this->element('menu-order', ['order' => $order]);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Order'), 'subtitle' => __('home')], ['home', 'list'], $order);

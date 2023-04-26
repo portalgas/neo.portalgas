@@ -329,7 +329,7 @@ class ArticleOrdersController extends ApiAppController
         /*
         * aggiorno stato ordine 'OPEN' // OPEN-NEXT  
         */ 
-        $event = new Event('OrderListener.setStatus', $this, ['user' => $user, 'order' => $order]);
+        $event = new Event('OrderListener.setStatus', $this, ['user' => $this->_user, 'order' => $order]);
         $this->getEventManager()->dispatch($event);
                 
         return $this->_response($results); 

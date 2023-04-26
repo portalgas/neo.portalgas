@@ -308,11 +308,11 @@ class OrdersController extends AppController
 
 		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->_user);	
 		$orderActions = $this->ActionsOrder->getOrderActionsToMenu($this->_user, $group_id, $order, $debug);
-	    
+
 		/* 
 		 * elimino l'item Order home (id=0) perche' sono già in home
 		 */
-		if($orderActions[0]['OrdersAction']['id']==0) 
+		if($orderActions[0]['id']==0) 
 			unset($orderActions[0]);
 		$this->set('orderActions', $orderActions);
 	
