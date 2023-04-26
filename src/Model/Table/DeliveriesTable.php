@@ -183,8 +183,12 @@ class DeliveriesTable extends Table
         $deliveries = $this->gets($user, $organization_id, $where);
         if($user->organization->paramsConfig['hasGasGroups']=='Y') {
             $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
-            if(!empty($gasGroupDeliveries))
-                $deliveries = array_merge($deliveries, $gasGroupDeliveries);
+            if(!empty($gasGroupDeliveries)) {
+                if($deliveries->count()>0)
+                    $deliveries = array_merge($deliveries->toArray(), $gasGroupDeliveries);
+                else 
+                    $deliveries = $gasGroupDeliveries;    
+            }
         }
         $deliveries = $this->getsList($deliveries);
         $sysDeliveries = $this->getDeliverySysList($user, $organization_id);
@@ -263,8 +267,12 @@ class DeliveriesTable extends Table
         $deliveries = $this->gets($user, $organization_id, $where, $order, $debug);
         if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
             $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
-            if($gasGroupDeliveries->count()>0)
-                $deliveries = array_merge($deliveries, $gasGroupDeliveries);    
+            if(!empty($gasGroupDeliveries)) {
+                if($deliveries->count()>0)
+                    $deliveries = array_merge($deliveries->toArray(), $gasGroupDeliveries);
+                else 
+                    $deliveries = $gasGroupDeliveries;    
+            }
         }
 
         /*

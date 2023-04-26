@@ -49,7 +49,7 @@
           
         echo '</div>';
 
-        echo $this->element('msg', ['class' => 'info', 'msg' => 'Gruppo creato da '.$gasGroup->user->name.': farà parte di default al gruppo']);
+        echo $this->element('msg', ['class' => 'info', 'msg' => 'Gruppo creato da "<b>'.$gasGroup->user->name.'</b>": l\'utente farà parte di default del gruppo']);
         ?>
       </div>
   </div>
