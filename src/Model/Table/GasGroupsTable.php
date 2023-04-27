@@ -202,7 +202,7 @@ class GasGroupsTable extends Table
     public function findMyLists($user, $organization_id, $user_id) {
 
         $results = []; 
-        if($user->organization->paramsConfig['hasGasGroups']=='N')
+        if(!isset($user->organization->paramsConfig['hasGasGroups']) || $user->organization->paramsConfig['hasGasGroups']=='N')
             return $results;
 
         $gas_groups = $this->findMy($user, $organization_id, $user_id);

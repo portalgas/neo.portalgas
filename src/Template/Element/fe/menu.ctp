@@ -52,11 +52,13 @@ if(!empty($organization)) {
 
     if(!empty($organization->j_seo)) {
 
+      if(!isset($user->organization->paramsConfig['hasGasGroups']) || $user->organization->paramsConfig['hasGasGroups']=='N') {
         $i++;
-      $menus[$i]['label'] = __('Deliveries');
-      // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
-      $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
-      $menus[$i]['target'] = '';
+        $menus[$i]['label'] = __('Deliveries');
+        // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+        $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+        $menus[$i]['target'] = '';  
+      }
 
       if (isset($user->organization->paramsConfig['hasStoreroom']) && $user->organization->paramsConfig['hasStoreroom'] == 'Y' &&
           isset($user->organization->paramsConfig['hasStoreroomFrontEnd']) && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
