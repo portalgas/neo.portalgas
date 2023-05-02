@@ -7,12 +7,15 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
 use App\Traits;
-use Cake\Network\Email\Email;
+// use Cake\Network\Email\Email;
+Use Cake\Mailer\Email;
 
 class CronMailsComponent extends Component {
 
     use Traits\SqlTrait;
     use Traits\UtilTrait;
+
+    private $_from;
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -20,6 +23,7 @@ class CronMailsComponent extends Component {
         $controller = $registry->getController();
 
         date_default_timezone_set('Europe/Rome');
+        $this->_from = Configure::read('SOC.mail');
     }
 
     /*
@@ -125,29 +129,33 @@ class CronMailsComponent extends Component {
                 } // switch($order->order_type_id)
             } // end foreach($orders as $order)
 
-            if(!empty($user_orders)) {
-                $email = new Email();
-                $email->transport('default');
-        
-                $email->setViewVars(['verbal' => $verbal, 
-                                    'offer' => $offer,
-                                    'site_url' => $site_url]);
-                                    
-                $email->helpers(['Html', 'Text']);
-        
-                try {
-                    $results = $email
-                        ->emailFormat('html')
-                        ->template('verbal-state', 'default') // template / layout
-                        ->from($from)
-                        ->to($to)
-                        // ->addTo($to)
-                        ->subject($subject)                   
-                        ->send($msg);
-                } catch (Exception $e) {
-                    echo 'Exception : ',  $e->getMessage(), "\n";
-                }        
-            }
+            if(empty($user_orders)) 
+                continue;
+
+            $email = new Email();
+            $email->setTransport('aws');
+            $email->viewBuilder()->setHelpers(['Html', 'Text'])
+                                   ->setTemplate('users_orders_open', 'default'); // template / layout
+                    
+                    $email->setEmailFormat('html')
+                    ->setFrom($this->_from);
+
+            $subject = 'test';
+            $email->setViewVars(['orders' => $user_orders,
+                                    'user' => $user]);
+                       
+            $to = 'francesco.actis@gmail.com';
+            try {
+                $results = $email
+                    ->setTo($to)
+                    // ->addTo($to)
+                    ->setSubject($subject)                   
+                    ->send('');
+            } catch (Exception $e) {
+                echo 'Exception : ',  $e->getMessage(), "\n";
+            }  
+
+            exit;
         } // foreach($users as $user)
     }    
 

@@ -23,7 +23,8 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 			// header: gruppo e consegna dell'ordine titolare
 			$this->results[$order->id]->delivery->luogo = $order->delivery->luogo;
 			$this->results[$order->id]->suppliers_organization->name = $order->suppliers_organization->name;
-			$this->results[$order->id]->gas_group->name = $order->gas_group->name;
+			if(!empty($order->gas_group))
+				$this->results[$order->id]->gas_group->name = $order->gas_group->name;
 
 			foreach($order->article_orders as $article_order) {
 				

@@ -3,9 +3,10 @@ use Cake\Core\Configure;
 use Cake\Routing\Router;
 
 $fullbaseUrl = Router::fullbaseUrl();
-$logo_url = $fullbaseUrl.'/img/loghi/150h50.png';
+$logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.png';
 
 (isset($datas['user']->name)) ? $greeting = sprintf(Configure::read('Mail.body_header'), $datas['user']->name) : $greeting = Configure::read('Mail.body_header_no_name');
+(isset($user->name)) ? $greeting = sprintf(Configure::read('Mail.body_header'), $user->name) : $greeting = Configure::read('Mail.body_header_no_name');
 
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
@@ -105,7 +106,7 @@ $logo_url = $fullbaseUrl.'/img/loghi/150h50.png';
                         <table width="100%" border="0" cellpadding="5" cellspacing="0">
                             <tr valign="middle" class="bgContenuto" bgcolor="#FFFFFF">
                                 <td align="right">
-                                    '<a href="https://<?php echo Configure::read('SOC.site');?>" target="_blank"><img border="0" src="<?php echo $logo_url;?>" /></a>
+                                    <a href="https://<?php echo Configure::read('SOC.site');?>" target="_blank"><img border="0" src="<?php echo $logo_url;?>" /></a>
                                 </td>
                             </tr>
                             <tr valign="middle" class="tblHeader" bgcolor="#CCCCCC">
