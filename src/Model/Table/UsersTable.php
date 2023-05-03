@@ -7,11 +7,13 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
+use Cake\Log\Log;
 use App\Traits;
 
 class UsersTable extends Table
 {
     use Traits\SqlTrait;
+    use Traits\UtilTrait;
 
     /**
      * Initialize method
@@ -491,4 +493,59 @@ class UsersTable extends Table
 
         return $results;
     }
+
+    /*
+    * da portalgas per cart previews
+    * crea stringa cifrata ma non leggibile
+    * php 7.4 non supportato
+    *   $encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt, $username, MCRYPT_MODE_ECB);
+    *
+    * converte stringa cifrata in modo leggibile (MGCP+iQL/0qPiL2H62c+WXrnY856xfided9FJhjarEU=)
+    *   $encrypted_base64 = base64_encode($encrypted);	
+    */
+    public function getUsernameCrypted($value) {
+	 	
+		if(!empty($value)) {
+			try {
+				$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(Configure::read('crypt_method')));
+				$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
+				$results = base64_encode($results.'::'.$iv);
+	        } catch (Exception $e) {
+	            Log::error('_encoding '.$value);
+	            Log::error('_encoding '.$iv);
+	            Log::error($e);
+	        }
+		}
+
+        return $results;
+    }
+
+	 /*
+	  * creo url senza lo username, 
+	  * in Cron::mailUsersOrdersOpen, quando ciclo per utenti ho gia' creato il messaggio per consegna
+	  */
+      public function getUrlCartPreviewNoUsername($user, $delivery_id) {
+	 	 
+        $tmp = "";
+    
+        $E = '';
+        $O = '';
+        $R = '';
+        $D = '';
+        $org_id = '';
+         
+        $E = $this->randomString($length=5);
+         
+        $O = rand (10, 99).$user->organization->id;
+         
+        $R = "{u}";
+         
+        $D = rand (10, 99).$delivery_id;
+         
+        $org_id = $user->organization->id;
+    
+        $tmp = 'E='.$E.'&O='.$O.'&R='.$R.'&D='.$D.'&org_id='.$org_id;
+         
+        return $tmp;
+    }    
 }

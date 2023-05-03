@@ -323,6 +323,12 @@ Configure::write('Order.type.gas_groups', 10);
 Configure::write('Order.type.gas_parent_groups', 11);
 
 /*
+ * decoding() per getUsernameCrypted
+ */
+Configure::write('crypt_method', 'AES-256-CBC');  
+Configure::write('crypt_key', 'PortAlGas--k1');
+
+/*
  * altre tipologie di organization GAS PRODGAS PACT
  */
 Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
@@ -424,6 +430,12 @@ Configure::write('DeliveryToDefinedLabel', 'Da definire');
 
 Configure::write('OrderNotaMaxLen', 150);
 Configure::write('NoteMoreLen', 150);
+
+/*
+ * path portalgas 
+ */
+Configure::write('App.img.upload.content', DS.'images'.DS.'organizations'.DS.'contents');  // articoli e produttori
+Configure::write('App.web.img.upload.content', '/images/organizations/contents');
 
 /*
  * pagamenti

@@ -7,7 +7,6 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
 use App\Traits;
-// use Cake\Network\Email\Email;
 Use Cake\Mailer\Email;
 
 class CronMailsComponent extends Component {
@@ -15,7 +14,8 @@ class CronMailsComponent extends Component {
     use Traits\SqlTrait;
     use Traits\UtilTrait;
 
-    private $_from;
+    private $_from; // info@portalgas.it
+    private $_debug = true; // se true invio 1 email a francesco.actis@gmail.com
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -35,8 +35,8 @@ class CronMailsComponent extends Component {
      */    
     public function mailUsersOrdersOpen($organization_id, $debug=false) {
 
-        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-        if(empty($user)) 
+        $_user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        if(empty($_user)) 
             return; 
 
         if($debug) echo "Estraggo gli ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderOpen')+1)." giorni o con mail_open_send = Y \n";
@@ -46,7 +46,7 @@ class CronMailsComponent extends Component {
         */
         $ordersTable = TableRegistry::get('Orders');
 
-        $where = ['Orders.organization_id' => $user->organization->id,
+        $where = ['Orders.organization_id' => $_user->organization->id,
                   'Orders.isVisibleFrontEnd' => 'Y',     
                   'Orders.order_type_id NOT IN ' => [Configure::read('Order.type.gas_parent_groups')],     
                   'Orders.state_code NOT IN ' => ['CREATE-INCOMPLETE', 'CLOSE'],
@@ -81,7 +81,7 @@ class CronMailsComponent extends Component {
         */
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];        
-        $users = $usersTable->gets($user, $organization_id, $where);
+        $users = $usersTable->gets($_user, $organization_id, $where);
         if($users->count()==0) {
             if($debug) echo "non ci sono utenti! \n";
             return false;
@@ -89,11 +89,26 @@ class CronMailsComponent extends Component {
 
         $bookmarksMailsTable = TableRegistry::get('BookmarksMails');
         $gasGroupUsersTable = TableRegistry::get('GasGroupUsers');
-            
+
         foreach($users as $user) {
             
+            if(empty($user->email))
+                continue;
+
+            $to = $user->email;
+            if(isset($user->user_profiles['email']) && !empty($user->user_profiles['email'])) 
+                $addTo = $user->user_profiles['email'];
+
+            if($this->_debug) {
+                $to = 'francesco.actis@gmail.com';
+                $addTo = 'francesco.actis@gmail.com';    
+            }
+
+            $username_crypted = $usersTable->getUsernameCrypted($user->username);
+
             $user_orders = []; // array con gli ordine dell'utente
             foreach($orders as $order) {
+        
                 /* 
                  * ctrl se l'ordine e' escluso dallo user 
                  */
@@ -105,6 +120,7 @@ class CronMailsComponent extends Component {
                                     ->first(); 
                 if(empty($bookmarksMail)) {
                     $user_orders[$order->id] = $order;
+                    $user_orders[$order->id]->urlCartPreviewNoUsername = str_replace("{u}", urlencode($username_crypted), $usersTable->getUrlCartPreviewNoUsername($_user, $order->delivery_id));
                 }
                 else 
                     continue;
@@ -112,6 +128,7 @@ class CronMailsComponent extends Component {
                 /* 
                  * ctrl se l'ordine e' GasGroups, s si ctrl se l'utente appartiene al gruppo
                  */
+                $salta_loop = false; 
                 switch($order->order_type_id) {
                     case Configure::read('Order.type.gas_groups'):
                         $gasGroupUser = $gasGroupUsersTable->find()
@@ -121,43 +138,77 @@ class CronMailsComponent extends Component {
                         if(empty($gasGroupUser)) {
                             if(isset($user_orders[$order->id]))
                                 unset($user_orders[$order->id]);
-                            continue;
+                            $salta_loop = true; 
                         }
-                        else 
-                            $user_orders[$order->id] = $order;
+                        else {
+                            if(!isset($user_orders[$order->id])) {
+                                $user_orders[$order->id] = $order;  
+                                $user_orders[$order->id]->urlCartPreviewNoUsername = str_replace("{u}", urlencode($username_crypted), $usersTable->getUrlCartPreviewNoUsername($_user, $order->delivery_id));    
+                            }
+                        }
                     break;
                 } // switch($order->order_type_id)
+
+                if($salta_loop)
+                    continue;
             } // end foreach($orders as $order)
 
             if(empty($user_orders)) 
                 continue;
 
+            /*
+             * subject
+             */
+            if(count($user_orders)==1) 
+                $subject = $user_orders[0]->suppliers_organization->name.", ordine che si apre oggi";
+            else 
+                $subject = $_user->organization->name.", ordini che si aprono oggi";												
+
             $email = new Email();
             $email->setTransport('aws');
             $email->viewBuilder()->setHelpers(['Html', 'Text'])
                                    ->setTemplate('users_orders_open', 'default'); // template / layout
-                    
-                    $email->setEmailFormat('html')
+            $email->setEmailFormat('html')
                     ->setFrom($this->_from);
-
-            $subject = 'test';
             $email->setViewVars(['orders' => $user_orders,
-                                    'user' => $user]);
+                                 'user' => $user,
+                                'organization' => $_user->organization]);
                        
-            $to = 'francesco.actis@gmail.com';
             try {
                 $results = $email
-                    ->setTo($to)
-                    // ->addTo($to)
-                    ->setSubject($subject)                   
-                    ->send('');
+                                ->setSubject($subject) 
+                                ->setTo($to);
+                if(!empty($addTo)) 
+                    $email->addTo($addTo);
+                $email->send('');
             } catch (Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
+                Log::error('Exception : ',  $e->getMessage());
             }  
 
-            exit;
+            if($this->_debug) exit;
         } // foreach($users as $user)
-    }    
+
+        /*
+        * per gli ordini trovati 
+        * UPDATE Order.mail_open_send, Order.mail_open_data
+        */        
+        foreach($orders as $order) {
+            
+            $order = $ordersTable->find()
+                        ->where(['organization_id' => $order->organization_id,
+                                 'id' => $order->id])
+                        ->first();
+            $datas = [];
+            $datas['mail_open_send'] = 'N';
+            $datas['mail_open_data'] = date('Y-m-d H:i:s');
+            $order = $ordersTable->patchEntity($order, $datas);
+            if(!$ordersTable->save($order)) {
+                debug($order->getErrors());
+                Log::error($order->getErrors());
+            }            
+        } // end foreach($orders as $order) 
+    }
 
     public function mailUsersOrdersClose($organization_id, $debug=false) {
 
