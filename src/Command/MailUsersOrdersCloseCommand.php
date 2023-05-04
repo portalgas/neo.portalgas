@@ -11,10 +11,10 @@ use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\CronMailsComponent;
 
 /*
- * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersOpen.sh
- * /var/www/neo.portalgas/bin/cake MailUsersOrdersOpen {organization_id}
+ * /var/www/neo.portalgas/src/Command/Sh/mailUsersOrdersClose.sh
+ * /var/www/neo.portalgas/bin/cake MailUsersOrdersClose {organization_id}
  */ 
-class MailUsersOrdersOpenCommand extends Command
+class MailUsersOrdersCloseCommand extends Command
 {
     private $_CronMails;
     
@@ -34,7 +34,7 @@ class MailUsersOrdersOpenCommand extends Command
 
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $debug = false;
+        $debug = true;
 
         /*
          * cancello file di log
@@ -44,17 +44,17 @@ class MailUsersOrdersOpenCommand extends Command
 
         if($debug) {
             $this->io = $io;
-            $this->io->out('CronMails mailUsersOrdersOpen start');
+            $this->io->out('CronMails mailUsersOrdersClose start');
         }
 
         $organization_id = $args->getArgument('organization_id');
         if(empty($organization_id)) dd('organization_id required!');
 
-        $this->_CronMails->mailUsersOrdersOpen($organization_id, $debug);
+        $this->_CronMails->mailUsersOrdersClose($organization_id, $debug);
 
         if($debug) {
             $this->io = $io;
-            $this->io->out('CronMails mailUsersOrdersOpen end');
+            $this->io->out('CronMails mailUsersOrdersClose end');
         }
     }
 }
