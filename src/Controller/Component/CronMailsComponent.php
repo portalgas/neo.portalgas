@@ -40,7 +40,7 @@ class CronMailsComponent extends Component {
             return; 
 
         if($debug) echo "Estraggo gli ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderOpen')+1)." giorni o con mail_open_send = Y \n";
-
+ 
         /*
         * estraggo ordini
         */
@@ -81,7 +81,7 @@ class CronMailsComponent extends Component {
         */
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];        
-        $users = $usersTable->gets($_user, $organization_id, $where);
+        $users = $usersTable->gets($_user, $_user->organization->id, $where);
         if($users->count()==0) {
             if($debug) echo "non ci sono utenti! \n";
             return false;
@@ -204,7 +204,7 @@ class CronMailsComponent extends Component {
         */
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];        
-        $users = $usersTable->gets($_user, $organization_id, $where);
+        $users = $usersTable->gets($_user, $_user->organization->id, $where);
         if($users->count()==0) {
             if($debug) echo "non ci sono utenti! \n";
             return false;
@@ -286,10 +286,171 @@ class CronMailsComponent extends Component {
      */    
     public function mailUsersDelivery($organization_id, $debug=false) {
 
-        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-        if(empty($user)) 
+        $_user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        if(empty($_user)) 
             return; 
-    }  
+
+        if($debug) echo "Estraggo le consegne che si apriranno domani \n";
+
+        if(isset($_user->organization->paramsConfig['hasGasGroups']) && 
+        $_user->organization->paramsConfig['hasGasGroups']=='Y') 
+            $this->_mailUsersDeliveryGasGroups($_user, $debug);
+        else 
+            $this->_mailUsersDeliveryGas($_user, $debug);
+    }
+
+    /*
+    * estraggo consegne per GAS
+    */
+    private function _mailUsersDeliveryGas($_user, $debug=false) {
+        
+        $deliveriesTable = TableRegistry::get('Deliveries');
+
+        $where = ['Deliveries.organization_id' => $_user->organization->id,
+                  'Deliveries.isVisibleFrontEnd' => 'Y',     
+                  'Deliveries.stato_elaborazione' => 'OPEN',
+                  'Deliveries.type' => 'GAS', // GAS-GROUP
+                  'Deliveries.data = CURDATE() + INTERVAL '.Configure::read('GGMailToAlertDeliveryOn').' DAY',
+                   // 'Deliveries.data' => 'CURDATE() + INTERVAL '.Configure::read('GGMailToAlertDeliveryOn').' DAY',
+                   'Orders.organization_id' => $_user->organization->id,
+                   'Orders.isVisibleBackOffice' => 'Y',
+                   'Orders.state_code !=' => 'CREATE-INCOMPLETE'
+                  ];
+        // debug($where);          
+        $deliveries = $deliveriesTable->find()
+                            ->contain(['Orders' => ['SuppliersOrganizations' => 
+                                            ['conditions' => ['SuppliersOrganizations.stato' => 'Y',
+                                                              'SuppliersOrganizations.mail_order_close' => 'Y'],
+                                              'Suppliers']]])
+                            ->where($where)
+                            ->all();
+
+        if($deliveries->count()==0) {
+            if($debug) echo "non ci sono consegne che apriranno tra ".Configure::read('GGMailToAlertDeliveryOn')." giorni \n";
+            return false;
+        }
+
+        if($debug) echo "Trovati ".$deliveries->count()." consegne \n";
+        
+        /*
+        * estraggo tutti gli UTENTI che hanno effettuato acquisti
+        * TODO in portalgas e' $User->getUserWithCartByDelivery
+        */
+        $usersTable = TableRegistry::get('Users');
+        $where = ['username NOT LIKE' => '%portalgas.it'];        
+        $users = $usersTable->gets($_user, $_user->organization->id, $where);
+        if($users->count()==0) {
+            if($debug) echo "non ci sono utenti! \n";
+            return false;
+        }
+        
+        foreach($deliveries as $delivery) {
+            
+            if(count($delivery->orders)==0) 
+                continue;
+
+            foreach($users as $user) {
+                $this->_mailUsersDeliverySend($_user, $user, $delivery, $debug);
+            } // foreach($users as $user)
+        } // foreach($gasGroupDeliveries as $gasGroupDelivery)        
+    }
+
+    /*
+    * consegne per GasGroups
+    */
+    private function _mailUsersDeliveryGasGroups($_user, $debug=false) {
+
+        $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
+
+        $where = ['GasGroupDeliveries.organization_id' => $_user->organization->id,
+                    'Deliveries.organization_id' => $_user->organization->id,
+                    'Deliveries.isVisibleFrontEnd' => 'Y',     
+                    'Deliveries.stato_elaborazione' => 'OPEN',
+                    'Deliveries.type' => 'GAS-GROUP',
+                    'Deliveries.data = CURDATE() + INTERVAL '.Configure::read('GGMailToAlertDeliveryOn').' DAY',
+                    // 'Deliveries.data' => 'CURDATE() + INTERVAL '.Configure::read('GGMailToAlertDeliveryOn').' DAY',
+                    ];
+        // debug($where);  
+        $gasGroupDeliveries = $gasGroupDeliveriesTable->find()
+                            ->contain(['Deliveries' => 
+                                ['Orders' => ['conditions' => 
+                                    ['Orders.organization_id' => $_user->organization->id,
+                                        'Orders.isVisibleBackOffice' => 'Y',
+                                        'Orders.state_code !=' => 'CREATE-INCOMPLETE'],
+                                    'SuppliersOrganizations' => 
+                                            ['conditions' => ['SuppliersOrganizations.stato' => 'Y',
+                                                'SuppliersOrganizations.mail_order_close' => 'Y'],
+                                'Suppliers']]], 
+                                'GasGroups' => ['GasGroupUsers' => ['Users']]])
+                            ->where($where)
+                            ->all();
+                
+        if($gasGroupDeliveries->count()==0) {
+            if($debug) echo "non ci sono consegne che apriranno tra ".Configure::read('GGMailToAlertDeliveryOn')." giorni \n";
+            return false;
+        }
+
+        if($debug) echo "Trovati ".$gasGroupDeliveries->count()." consegne \n";  
+        
+        foreach($gasGroupDeliveries as $gasGroupDelivery) {
+
+            $delivery = $gasGroupDelivery->delivery;
+
+            if(count($delivery->orders)==0) 
+                continue;
+
+            if(!empty($gasGroupDelivery->gas_group->gas_group_users))
+            foreach($gasGroupDelivery->gas_group->gas_group_users as $gas_group_user) {
+                $user = $gas_group_user->user;
+                $this->_mailUsersDeliverySend($_user, $user, $delivery, $debug);
+            } // foreach($users as $user)
+        } // foreach($gasGroupDeliveries as $gasGroupDelivery)
+
+    }
+
+    private function _mailUsersDeliverySend($_user, $user, $delivery, $debug=false) {
+            
+        if(empty($user->email))
+            return;
+
+        $to = $user->email;
+        if(isset($user->user_profiles['email']) && !empty($user->user_profiles['email'])) 
+            $addTo = $user->user_profiles['email'];
+
+        if($this->_debug) {
+            $to = 'francesco.actis@gmail.com';
+            $addTo = 'francesco.actis@gmail.com';    
+        }
+
+        /*
+        * subject
+        */
+        $subject = trim($_user->organization->name).", consegna di ".$delivery->data->i18nFormat('eeee d MMMM');												
+
+        $email = new Email();
+        $email->setTransport('aws');
+        $email->viewBuilder()->setHelpers(['Html', 'Text'])
+                            ->setTemplate('users_delivery', 'default'); // template / layout
+        $email->setEmailFormat('html')
+                ->setFrom($this->_from);
+        $email->setViewVars(['delivery' => $delivery,
+                            'user' => $user,
+                            'organization' => $_user->organization]);
+
+        try {
+            $results = $email
+                            ->setSubject($subject) 
+                            ->setTo($to);
+            if(!empty($addTo)) 
+                $email->addTo($addTo);
+            $email->send('');
+        } catch (Exception $e) {
+            echo 'Exception : ',  $e->getMessage(), "\n";
+            Log::error('Exception : ',  $e->getMessage());
+        }  
+
+        if($this->_debug) exit;
+    } 
     
     /*
      * $user = new UserLocal() e non new User() se no override App::import('Model', 'User');
