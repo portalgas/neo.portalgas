@@ -333,8 +333,7 @@ class CronMailsComponent extends Component {
         if($debug) echo "Trovati ".$deliveries->count()." consegne \n";
         
         /*
-        * estraggo tutti gli UTENTI che hanno effettuato acquisti
-        * TODO in portalgas e' $User->getUserWithCartByDelivery
+        * estraggo tutti gli UTENTI, dopp ctrl se hanno effettuato acquisti
         */
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];        
@@ -350,7 +349,8 @@ class CronMailsComponent extends Component {
                 continue;
 
             foreach($users as $user) {
-                $this->_mailUsersDeliverySend($_user, $user, $delivery, $debug);
+                if($this->_hasUserCartToDelivery($_user, $user, $delivery, $debug));
+                    $this->_mailUsersDeliverySend($_user, $user, $delivery, $debug);
             } // foreach($users as $user)
         } // foreach($gasGroupDeliveries as $gasGroupDelivery)        
     }
@@ -376,6 +376,7 @@ class CronMailsComponent extends Component {
                                 ['Orders' => ['conditions' => 
                                     ['Orders.organization_id' => $_user->organization->id,
                                         'Orders.isVisibleBackOffice' => 'Y',
+                                        'Orders.order_type_id' => Configure::read('Order.type.gas_groups'),
                                         'Orders.state_code !=' => 'CREATE-INCOMPLETE'],
                                     'SuppliersOrganizations' => 
                                             ['conditions' => ['SuppliersOrganizations.stato' => 'Y',
@@ -384,7 +385,7 @@ class CronMailsComponent extends Component {
                                 'GasGroups' => ['GasGroupUsers' => ['Users']]])
                             ->where($where)
                             ->all();
-                
+
         if($gasGroupDeliveries->count()==0) {
             if($debug) echo "non ci sono consegne che apriranno tra ".Configure::read('GGMailToAlertDeliveryOn')." giorni \n";
             return false;
@@ -402,16 +403,43 @@ class CronMailsComponent extends Component {
             if(!empty($gasGroupDelivery->gas_group->gas_group_users))
             foreach($gasGroupDelivery->gas_group->gas_group_users as $gas_group_user) {
                 $user = $gas_group_user->user;
-                $this->_mailUsersDeliverySend($_user, $user, $delivery, $debug);
+                if($this->_hasUserCartToDelivery($_user, $user, $delivery, $debug));
+                    $this->_mailUsersDeliverySend($_user, $user, $delivery, $debug);
             } // foreach($users as $user)
         } // foreach($gasGroupDeliveries as $gasGroupDelivery)
 
+    }
+
+    private function _hasUserCartToDelivery($_user, $user, $delivery, $debug) {
+        
+        $cartsTable = TableRegistry::get('Carts');
+
+        $where = ['Carts.organization_id' => $_user->organization->id,
+                'Carts.user_id' => $user->id,
+                'Carts.stato' => 'Y',
+                'deleteToReferent' => 'N',
+                  'Orders.organization_id' => $_user->organization->id,
+                  'Orders.delivery_id' => $delivery->id];
+        // debug($where); 
+        $carts = $cartsTable->find()
+                            ->contain(['Orders'])
+                            ->where($where)
+                            ->first();
+        if(empty($carts))
+            return false;
+        else 
+            return true;
     }
 
     private function _mailUsersDeliverySend($_user, $user, $delivery, $debug=false) {
             
         if(empty($user->email))
             return;
+
+        $usersTable = TableRegistry::get('Users');
+
+        $username_crypted = $usersTable->getUsernameCrypted($user->username);
+        $urlCartPreviewNoUsername = str_replace("{u}", urlencode($username_crypted), $usersTable->getUrlCartPreviewNoUsername($_user, $delivery->id));
 
         $to = $user->email;
         if(isset($user->user_profiles['email']) && !empty($user->user_profiles['email'])) 
@@ -435,7 +463,8 @@ class CronMailsComponent extends Component {
                 ->setFrom($this->_from);
         $email->setViewVars(['delivery' => $delivery,
                             'user' => $user,
-                            'organization' => $_user->organization]);
+                            'organization' => $_user->organization,
+                            'urlCartPreviewNoUsername' => $urlCartPreviewNoUsername]);
 
         try {
             $results = $email
@@ -520,7 +549,7 @@ class CronMailsComponent extends Component {
                     continue;
 
                 /* 
-                * ctrl se l'ordine e' GasGroups, s si ctrl se l'utente appartiene al gruppo
+                * ctrl se l'ordine e' GasGroups, se si ctrl se l'utente appartiene al gruppo
                 */
                 $salta_loop = false; 
                 switch($order->order_type_id) {
