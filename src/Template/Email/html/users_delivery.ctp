@@ -8,6 +8,7 @@ if (!empty($delivery->nota)) {
     echo '<span style="color:red;">Nota</span> ';
     echo $delivery->nota;
     echo '</p>';
+    echo '<div style="clear:both;"></div>';
 }
 
 if(count($delivery->orders)==1)

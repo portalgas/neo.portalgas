@@ -10,7 +10,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 
 echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Add')], ['home', 'list-orders']);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Add')], ['home', 'list-orders'], $order);
 ?>
   <section class="content">
     <div class="row">

@@ -167,7 +167,8 @@ class OrdersController extends AppController
         $this->_ordersTable->addBehavior('Orders');
         
         $order = $this->_ordersTable->newEntity();
-
+        $order->order_type_id = $order_type_id;
+        
         $datas = $this->_getData($order, $order_type_id, $parent_id);
         $suppliersOrganizations = $datas['suppliersOrganizations'];
         $deliveries = $datas['deliveries'];
