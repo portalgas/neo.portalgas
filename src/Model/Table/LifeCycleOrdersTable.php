@@ -1525,13 +1525,13 @@ class LifeCycleOrdersTable extends Table
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                     $esito['actions'][1]['msg'] = "L'ordine gestisce i <b>dati aggregati</b> ma il referente non li ha gestiti, clicca qui rimandare l'ordine al referente";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
                 else {
                     $esito['actions'][1]['msg'] = "L'ordine gestisce i <b>dati aggregati</b> ma non li hai gestiti, clicca qui gestirli";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=SummaryOrderAggregates&action=managementCartsGroupByUsers&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=SummaryOrderAggregates&action=managementCartsGroupByUsers&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionEditDbGroupByUsers';
                     $esito['actions'][1]['action_label']= __('Management Carts Group By Users Short');
                 }
@@ -1557,13 +1557,13 @@ class LifeCycleOrdersTable extends Table
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                     $esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma il referente l'hai suddiviso per i gasisti, clicca qui rimandare l'ordine al referente";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
                 else {                  
                     $esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionTrasport';
                     $esito['actions'][1]['action_label']= __('Management trasport');
                 }
@@ -1581,13 +1581,13 @@ class LifeCycleOrdersTable extends Table
                 if(isset($results['results']) && !empty($results['results'])) {
                     if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                         $esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui rimandare l'ordine al referente";
-                        $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                         $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                     }
                     else {                  
                         $esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui correggere quelli evidenziati in <b>rosso</b>";
-                        $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id; 
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id; 
                         $esito['actions'][1]['action_class'] = 'actionTrasport';
                         $esito['actions'][1]['action_label']= __('Management trasport');
                     }
@@ -1611,13 +1611,13 @@ class LifeCycleOrdersTable extends Table
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                     $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma il referente non l'ha suddiviso per i gasisti, clicca qui rimandare l'ordine al referente";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
                 else {              
                     $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionCostMore';
                     $esito['actions'][1]['action_label'] = __('Management cost_more');
                 }
@@ -1635,13 +1635,13 @@ class LifeCycleOrdersTable extends Table
                 if(isset($results['results']) && !empty($results['results'])) {
                     if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                         $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui rimandare l'ordine al referente";
-                        $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                         $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                     }
                     else {                          
                         $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui correggere quelli evidenziati in <b>rosso</b>";
-                        $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionCostMore';
                         $esito['actions'][1]['action_label'] = __('Management cost_more');
                     }
@@ -1665,13 +1665,13 @@ class LifeCycleOrdersTable extends Table
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                     $esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma il referente non l'ha suddiviso per i gasisti, clicca qui rimandare l'ordine al referente";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
                 else {              
                     $esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
-                    $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                    $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionCostLess';
                     $esito['actions'][1]['action_label'] = __('Management cost_less');
                 }
@@ -1689,13 +1689,13 @@ class LifeCycleOrdersTable extends Table
                 if(isset($results['results']) && !empty($results['results'])) {
                     if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                         $esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui rimandare l'ordine al referente";
-                        $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Referente&action=order_state_in_INCOMING_ORDER&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                         $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                     }
                     else {                      
                         $esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui correggere quelli evidenziati in <b>rosso</b>";
-                        $esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionCostLess';
                         $esito['actions'][1]['action_label'] = __('Management cost_less');
                     }
@@ -1711,7 +1711,7 @@ class LifeCycleOrdersTable extends Table
             
             if($orderResult->state_code!='PROCESSED-ON-DELIVERY') {
                 $esito['actions'][0]['msg'] = "Oppure non desideri più gestirlo, clicca qui per modificare l'anagrafica dell'ordine";
-                $esito['actions'][0]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
+                $esito['actions'][0]['url'] = '/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                 $esito['actions'][0]['action_class'] = 'actionEdit';
                 $esito['actions'][0]['action_label'] = __('Edit Order');
             }

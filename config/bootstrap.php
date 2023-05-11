@@ -433,6 +433,8 @@ Configure::write('NoteMoreLen', 150);
 
 /*
  * path portalgas 
+ * $config = Configure::read('Config');
+ * $portalgas_fe_url = $config['Portalgas.fe.url'];
  */
 Configure::write('App.img.upload.content', DS.'images'.DS.'organizations'.DS.'contents');  // articoli e produttori
 Configure::write('App.web.img.upload.content', '/images/organizations/contents');

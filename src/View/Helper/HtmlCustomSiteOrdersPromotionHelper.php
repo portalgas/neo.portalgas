@@ -85,6 +85,9 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
         if(!isset($prodGasArticlesPromotionShow))
             $prodGasArticlesPromotionShow = false;
 
+        $config = Configure::read('Config');
+        $portalgas_fe_url = $config['Portalgas.fe.url'];
+                    
         $html = '';
         $html .= '<div class="info-parent">';
         $html .= '<h1>'.__('ProdGasPromotion').'</h1>';
@@ -106,7 +109,7 @@ class HtmlCustomSiteOrdersPromotionHelper extends HtmlCustomSiteOrdersHelper
             
         $html .= '<td>';
         if(!empty($this->_parent->suppliersOrganization->supplier->img1) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$this->_parent->suppliersOrganization->supplier->img1))
-            $html .= '<img width="50" class="img-supplier responsive" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$this->_parent->suppliersOrganization->supplier->img1.'" />';    
+            $html .= '<img width="50" class="img-supplier responsive" src="'.$portalgas_fe_url.Configure::read('App.web.img.upload.content').'/'.$this->_parent->suppliersOrganization->supplier->img1.'" />';    
         $html .= '</td>';
         $html .= '<td>';
         $html .= $this->_parent->suppliersOrganization->supplier->name;
