@@ -40,7 +40,7 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 					$this->results[$order->id]->article_orders[$article_order->article_id]->article = new \stdClass();
 					$this->results[$order->id]->article_orders[$article_order->article_id]->cart = new \stdClass();
 				}
-				
+
 				// debug($order->id.' '.$article_order->name.' '.$article_order->article->img1);
 				
 				$this->results[$order->id]->article_orders[$article_order->article_id]->article_id = $article_order->article_id;
@@ -48,7 +48,10 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 				$this->results[$order->id]->article_orders[$article_order->article_id]->prezzo = $article_order->prezzo;
 				$this->results[$order->id]->article_orders[$article_order->article_id]->prezzo_ = number_format($article_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 				$this->results[$order->id]->article_orders[$article_order->article_id]->prezzo_e = number_format($article_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro';		
-				$this->results[$order->id]->article_orders[$article_order->article_id]->qta_cart += $article_order->qta_cart;
+				if(!isset($this->results[$order->id]->article_orders[$article_order->article_id]->qta_cart))
+					$this->results[$order->id]->article_orders[$article_order->article_id]->qta_cart = $article_order->qta_cart;
+				else
+					$this->results[$order->id]->article_orders[$article_order->article_id]->qta_cart += $article_order->qta_cart;
 				
 				if(empty($article_order->article->bio))
 					$this->results[$order->id]->article_orders[$article_order->article_id]->article->is_bio = '';
@@ -70,7 +73,10 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 					*/
 					$final_qta = 0;
 					($cart->qta_forzato > 0 ) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
-					$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_qta += $final_qta;
+					if(!isset($this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_qta))
+						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_qta= $final_qta;
+					else
+						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_qta += $final_qta;
 
 					if($cart->qta_forzato > 0) {
 						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->is_qta_mod = true;
@@ -79,11 +85,17 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->is_qta_mod = false;
 					}
 					if($cart->importo_forzato > 0) {
-						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price += $cart->importo_forzato;
+						if(!isset($this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price))
+							$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price = $cart->importo_forzato;
+						else
+							$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price += $cart->importo_forzato;
 						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->is_import_mod = true;
 					}
 					else {
-						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price += ($final_qta * $article_order->prezzo);
+						if(!isset($this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price))
+							$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price =  ($final_qta * $article_order->prezzo);
+						else
+							$this->results[$order->id]->article_orders[$article_order->article_id]->cart->final_price += ($final_qta * $article_order->prezzo);
 						$this->results[$order->id]->article_orders[$article_order->article_id]->cart->is_import_mod = false;
 					}
 				}

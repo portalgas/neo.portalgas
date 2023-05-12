@@ -60,7 +60,10 @@ class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 					*/
 					$final_qta = 0;
 					($cart->qta_forzato > 0 ) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
-					$this->results[$article_order->article_id]->cart->final_qta += $final_qta;
+					if(!isset($this->results[$article_order->article_id]->cart->final_qta))
+						$this->results[$article_order->article_id]->cart->final_qta = $final_qta;
+					else
+						$this->results[$article_order->article_id]->cart->final_qta += $final_qta;
 
 					if($cart->qta_forzato > 0) {
 						$this->results[$article_order->article_id]->cart->is_qta_mod = true;
@@ -73,7 +76,10 @@ class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 						$this->results[$article_order->article_id]->cart->is_import_mod = true;
 					}
 					else {
-						$this->results[$article_order->article_id]->cart->final_price += ($final_qta * $article_order->prezzo);
+						if(!isset($this->results[$article_order->article_id]->cart->final_price))
+							$this->results[$article_order->article_id]->cart->final_price = ($final_qta * $article_order->prezzo);
+						else
+							$this->results[$article_order->article_id]->cart->final_price += ($final_qta * $article_order->prezzo);
 						$this->results[$article_order->article_id]->cart->is_import_mod = false;
 					}
 				}

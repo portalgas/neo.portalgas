@@ -61,7 +61,10 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->prezzo = $article_order->prezzo;
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->prezzo_ = number_format($article_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->prezzo_e = number_format($article_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->qta_cart += $article_order->qta_cart;
+					if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->qta_cart))
+						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->qta_cart = $article_order->qta_cart;
+					else 
+						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->qta_cart += $article_order->qta_cart;
 	
 					if(empty($article_order->article->bio))
 						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article->is_bio = '';
@@ -100,11 +103,17 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->is_qta_mod = false;
 					}
 					if($cart->importo_forzato > 0) {
-						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price += $cart->importo_forzato;
+						if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price))
+							$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price = $cart->importo_forzato;
+						else 
+							$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price += $cart->importo_forzato;
 						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->is_import_mod = true;
 					}
 					else {
-						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price += ($final_qta * $article_order->prezzo);
+						if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price))
+							$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price = ($final_qta * $article_order->prezzo);
+						else 
+							$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_price += ($final_qta * $article_order->prezzo);
 						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->is_import_mod = false;
 					}
 				}
