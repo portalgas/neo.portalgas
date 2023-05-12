@@ -42,6 +42,7 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 
 					if(!isset($this->results[$order->id]->users[$cart->user_id])) {
 						$this->results[$order->id]->users[$cart->user_id] = new \stdClass(); 
+						$this->results[$order->id]->users[$cart->user_id]->user = new \stdClass(); 
 						$this->results[$order->id]->users[$cart->user_id]->article = []; 
 						$this->results[$order->id]->users[$cart->user_id]->article_orders = []; 
 					}
@@ -92,7 +93,10 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 											
 					$final_qta = 0;
 					($cart->qta_forzato > 0 ) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
-					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_qta += $final_qta;
+					if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_qta))
+						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_qta = $final_qta;
+					else 
+						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->final_qta += $final_qta;
 
 					if($cart->qta_forzato > 0) {
 						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart->is_qta_mod = true;
