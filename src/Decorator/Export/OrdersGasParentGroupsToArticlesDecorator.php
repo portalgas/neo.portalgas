@@ -10,7 +10,7 @@ use App\Decorator\AppDecorator;
 
 class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 	
-	public $serializableAttributes = array('id', 'name');
+	public $serializableAttributes = ['id', 'name'];
 	public $results; 
 
     public function __construct($user, $orders)

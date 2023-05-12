@@ -10,7 +10,7 @@ use App\Decorator\AppDecorator;
 
 class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 	
-	public $serializableAttributes = array('id', 'name');
+	public $serializableAttributes = ['id', 'name'];
 	public $results; 
 
     public function __construct($user, $orders)
@@ -30,6 +30,7 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 			
 			// header: gruppo e consegna dell'ordine titolare
 			$this->results[$order->id]->delivery->luogo = $order->delivery->luogo;
+			$this->results[$order->id]->delivery->data = $order->delivery->data;
 			$this->results[$order->id]->suppliers_organization->name = $order->suppliers_organization->name;
 			$this->results[$order->id]->gas_group->name = $order->gas_group->name;
 

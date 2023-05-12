@@ -45,8 +45,9 @@ class ApiSupplierDecorator  extends AppDecorator {
 	            $supplier->content->fulltext = str_replace('{flike}', '', $supplier->content->fulltext);
         }
 
-        $supplier->img1 = $this->_getImg1($supplier);
-        
+        $supplier->img1 = $this->_getSupplierImg1($supplier);
+        $supplier->address_full = $this->_getSupplierAddressFull($supplier);
+
         $html = '';
         if($supplier->voto>0) {
             
@@ -81,27 +82,6 @@ class ApiSupplierDecorator  extends AppDecorator {
         // debug($supplier);
         return $supplier;
     }
-
-    private function _getImg1($row) {
-        
-        // debug($row);
-        
-        $img1 = $row->img1;  
-
-        $config = Configure::read('Config');
-        $img_path = sprintf(Configure::read('Supplier.img.path.full'),$img1);
-
-        $portalgas_app_root = $config['Portalgas.App.root'];
-        $path = $portalgas_app_root.$img_path;
-
-        $results = '';
-        if(!empty($img1) && file_exists($path)) {
-            $portalgas_fe_url = $config['Portalgas.fe.url'];
-            $results = $portalgas_fe_url . $img_path;
-        } 
-        
-        return $results; 
-    } 
 
 	function name() {
 		return $this->results;

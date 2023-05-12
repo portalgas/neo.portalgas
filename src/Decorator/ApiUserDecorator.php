@@ -7,7 +7,7 @@ use Cake\Core\Configure;
 
 class ApiUserDecorator  extends AppDecorator {
 	
-	public $serializableAttributes = array('id', 'name');
+	public $serializableAttributes = ['id', 'name'];
 	public $results; 
 
     public function __construct($users)

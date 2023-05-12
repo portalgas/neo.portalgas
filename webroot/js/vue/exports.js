@@ -38,8 +38,11 @@ $(function () {
             let _this = this; 
 
             console.log('print_id '+this.print_id+' format '+this.format, 'gets');
-            if(this.print_id==null)
+            if(typeof this.print_id === 'undefined' || this.print_id==null) {
+              alert("Scegli la tipologia di stampa");
+              this.is_run = false;
               return; 
+            }
 
             let organization_id = $("input[name='organization_id']").val(); 
             let order_id = $("input[name='order_id']").val();
@@ -52,6 +55,22 @@ $(function () {
                 print_id: this.print_id,
                 format: this.format              
             }; 
+            /*
+             * estraggo tutte le opzioni di stampa
+             */
+            let options = {}
+            options['opts'] = {}
+            let type = null;
+            let name = null
+            $.each($('.options'),function(i){
+              type = $(this).attr('type');
+              name = $(this).attr('name');
+              console.log(name + ' ' + $(this).is(':checked') + ' => ' + $(this).val());
+              if(type=='radio' && $(this).is(':checked')) {
+                  options['opts'][name] = $(this).val()
+              }
+            });      
+            params = Object.assign({}, params, options);
             console.log(params, 'gets params'); 
 
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

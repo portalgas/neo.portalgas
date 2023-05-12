@@ -9,7 +9,7 @@ use Cake\Log\Log;
 
 class OrderDecorator  extends AppDecorator {
 	
-	public $serializableAttributes = array('id', 'name');
+	public $serializableAttributes = ['id', 'name'];
 	public $results; 
 
     public function __construct($user, $orders)

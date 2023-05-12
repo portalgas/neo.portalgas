@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
+use App\Decorator\Export\OrdersGasParentDecorator;
 use App\Decorator\Export\OrdersGasParentGroupsToArticlesDecorator;
 use App\Decorator\Export\OrdersGasParentGroupsToArticlesByGroupsDecorator;
 use App\Decorator\Export\OrdersGasParentGroupsToUsersArticlesByGroupsDecorator;
@@ -62,11 +63,16 @@ class ExportsReferentsController extends AppController {
         }
                 
         $debug = false;
-        
         $order_type_id = $this->request->getData('order_type_id');
         $order_id = $this->request->getData('order_id');
         $print_id = $this->request->getData('print_id');
         $format = $this->request->getData('format');
+
+        /*
+         * opzioni di stampa
+         */
+        $opts = $this->request->getData('opts');
+        $this->set(compact('opts'));
 
         $method = '_'.$print_id;
         $results = $this->{$method}($order_type_id, $order_id);
@@ -135,7 +141,7 @@ class ExportsReferentsController extends AppController {
     private function _toArticlesByGroups($order_type_id, $order_id, $debug=false) {
  
         /* 
-        * dati ordine 
+        * dati ordine titolare
         */
         $ordersTable = TableRegistry::get('Orders');
         $where = ['Orders.organization_id' => $this->_organization->id,
@@ -145,7 +151,12 @@ class ExportsReferentsController extends AppController {
                                 ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->first();
-
+        $orderParent = new OrdersGasParentDecorator($orderParent);   
+        $orderParent = $orderParent->results;
+   
+        /* 
+        * dati ordini del gruppo
+        */        
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 
@@ -171,7 +182,7 @@ class ExportsReferentsController extends AppController {
     private function _toUsersArticlesByGroups($order_type_id, $order_id, $debug=false) {
  
         /* 
-        * dati ordine 
+        * dati ordine titolare
         */
         $ordersTable = TableRegistry::get('Orders');
         $where = ['Orders.organization_id' => $this->_organization->id,
@@ -181,7 +192,12 @@ class ExportsReferentsController extends AppController {
                                 ->contain(['Deliveries', 'SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
                                 ->first();
-
+        $orderParent = new OrdersGasParentDecorator($orderParent);   
+        $orderParent = $orderParent->results;
+        
+        /* 
+        * dati ordini del gruppo
+        */           
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 

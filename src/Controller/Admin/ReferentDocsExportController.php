@@ -44,6 +44,8 @@ class ReferentDocsExportController extends AppController
             break;
         }
         
-        $this->set(compact('order', 'exports'));
+        $options = [];
+        
+        $this->set(compact('order', 'exports', 'options'));
     }
 }

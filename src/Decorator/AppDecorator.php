@@ -420,6 +420,36 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
         return $results;
     }    
 
+    protected function _getSupplierAddressFull($supplier) {
+
+        $results = '';
+        if(!empty($supplier->indirizzo)) $results .= $supplier->indirizzo.' ';
+        if(!empty($supplier->localita)) $results .= $supplier->localita.' ';
+        if(!empty($supplier->provincia)) $results .= '('.$supplier->provincia.') ';
+
+        return $results;
+    } 
+    
+    protected function _getSupplierImg1($supplier) {
+        // debug($row);
+        
+        $img1 = $supplier->img1;  
+
+        $config = Configure::read('Config');
+        $img_path = sprintf(Configure::read('Supplier.img.path.full'),$img1);
+
+        $portalgas_app_root = $config['Portalgas.App.root'];
+        $path = $portalgas_app_root.$img_path;
+
+        $results = '';
+        if(!empty($img1) && file_exists($path)) {
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
+            $results = $portalgas_fe_url . $img_path;
+        } 
+ 
+        return $results; 
+    }
+
     protected function _getArticleImg1($row) {
         
         // debug($row);

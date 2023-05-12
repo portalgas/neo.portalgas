@@ -13,12 +13,31 @@ $html .= '<h3>'.__('Order-'.$order_type_id).'</h3>';
 
 if(!empty($orders)) {
 
+	/*
+		* ordine titolare
+		*/
+	$html .= '<h3><b>'.__('Supplier').'</b> ';
+	if(!empty($orderParent->suppliers_organization->supplier->img1))
+		$html .= '<img src="'.$orderParent->suppliers_organization->supplier->img1.'" width="'.Configure::read('Supplier.img.preview.width').'" />';
+	$html .= ' '.$orderParent->suppliers_organization->name;
+	$html .= ' <small>';
+	if(!empty($orderParent->suppliers_organization->supplier->address_full))
+		$html .= $orderParent->suppliers_organization->supplier->address_full.' ';
+	if(!empty($orderParent->suppliers_organization->supplier->telefono))
+		$html .= $orderParent->suppliers_organization->supplier->telefono.' ';
+	if(!empty($orderParent->suppliers_organization->supplier->mail))
+		$html .= $orderParent->suppliers_organization->supplier->mail.' ';
+	$html .= '</small>';	
+	if(isset($opts['delivery_order_parent']) && $opts['delivery_order_parent']=='Y')
+		$html .= '<h4><b>'.__('Delivery').'</b>: '.$orderParent->delivery->luogo.' '.$orderParent->delivery->data->i18nFormat('eeee d MMMM').'</h4>';
+	$html .='</h3>';
+
 	$totale = 0;
 	foreach($orders as $order) {
-		$html .= '<h3>'.$order->gas_group->name.'</h3>';
-		$html .= '<h4>'.__('Delivery').' '.$order->delivery->luogo.'</h4>';
-		// $html .= '<h4>'.__('Supplier').' '.$order->suppliers_organization->name.'</h4>';
-
+		$html .= '<h3><b>'.__('GasGroup').'</b>: '.$order->gas_group->name.'</h3>';
+		if(isset($opts['deliveries_orders']) && $opts['deliveries_orders']=='Y')
+			$html .= '<h4><b>'.__('Delivery').'</b>: '.$order->delivery->luogo.' '.$order->delivery->data->i18nFormat('eeee d MMMM').'</h4>';
+		
 		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">';
 
 		foreach($order->users as $numResult => $user) {
