@@ -20,12 +20,26 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 
 		foreach($orders as $order) {
 		
+			if(!isset($this->results[$order->id])) {
+				$this->results[$order->id] = new \stdClass();
+				$this->results[$order->id]->delivery  = new \stdClass();
+				$this->results[$order->id]->suppliers_organization = new \stdClass();
+				$this->results[$order->id]->gas_group = new \stdClass();
+				$this->results[$order->id]->article_orders = [];
+			}
+			
 			// header: gruppo e consegna dell'ordine titolare
 			$this->results[$order->id]->delivery->luogo = $order->delivery->luogo;
 			$this->results[$order->id]->suppliers_organization->name = $order->suppliers_organization->name;
 			$this->results[$order->id]->gas_group->name = $order->gas_group->name;
 
 			foreach($order->article_orders as $article_order) {
+				
+				if(!isset($this->results[$order->id]->article_orders[$article_order->article_id])) {
+					$this->results[$order->id]->article_orders[$article_order->article_id] = new \stdClass();
+					$this->results[$order->id]->article_orders[$article_order->article_id]->article = new \stdClass();
+					$this->results[$order->id]->article_orders[$article_order->article_id]->cart = new \stdClass();
+				}
 				
 				// debug($order->id.' '.$article_order->name.' '.$article_order->article->img1);
 				

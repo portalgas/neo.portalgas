@@ -22,7 +22,11 @@ class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 		
 			foreach($order->article_orders as $article_order) {
 				
-				$this->results[$article_order->article_id] = new \stdClass();
+				if(!isset($this->results[$article_order->article_id])) {
+					$this->results[$article_order->article_id] = new \stdClass();
+					$this->results[$article_order->article_id]->article = new \stdClass();
+					$this->results[$article_order->article_id]->cart = new \stdClass();	
+				}
 
 				// debug($order->id.' '.$article_order->name.' '.$article_order->article->img1);
 				
@@ -31,7 +35,10 @@ class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 				$this->results[$article_order->article_id]->prezzo = $article_order->prezzo;
 				$this->results[$article_order->article_id]->prezzo_ = number_format($article_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 				$this->results[$article_order->article_id]->prezzo_e = number_format($article_order->prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro';		
-				$this->results[$article_order->article_id]->qta_cart += $article_order->qta_cart;
+				if(!isset($this->results[$article_order->article_id]->qta_cart))
+					$this->results[$article_order->article_id]->qta_cart = $article_order->qta_cart;
+				else
+					$this->results[$article_order->article_id]->qta_cart += $article_order->qta_cart;
 				
 				if(empty($article_order->article->bio))
 					$this->results[$article_order->article_id]->article->is_bio = '';

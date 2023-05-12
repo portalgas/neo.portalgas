@@ -20,6 +20,14 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 
 		foreach($orders as $order) {
 		
+			if(!isset($this->results[$order->id])) {
+				$this->results[$order->id] = new \stdClass();
+				$this->results[$order->id]->delivery = new \stdClass();
+				$this->results[$order->id]->suppliers_organization = new \stdClass();
+				$this->results[$order->id]->gas_group = new \stdClass();
+				$this->results[$order->id]->users = [];
+			}
+
 			// header: gruppo e consegna dell'ordine titolare
 			$this->results[$order->id]->delivery->luogo = $order->delivery->luogo;
 			$this->results[$order->id]->suppliers_organization->name = $order->suppliers_organization->name;
@@ -32,11 +40,22 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 
 				foreach($article_order->carts as $cart) {
 
-					if(!isset($this->results[$order->id]->users[$cart->user_id]->article))
+					if(!isset($this->results[$order->id]->users[$cart->user_id])) {
+						$this->results[$order->id]->users[$cart->user_id] = new \stdClass(); 
+						$this->results[$order->id]->users[$cart->user_id]->article = new \stdClass(); 
+						$this->results[$order->id]->users[$cart->user_id]->article_orders = []; 
+					}
+
+					if(empty($this->results[$order->id]->users[$cart->user_id]->article))
 						$i=0;
 					else 
 						$i = count($this->results[$order->id]->users[$cart->user_id]->article);
 						
+					if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article)) 
+						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article = new \stdClass(); 
+					if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart)) 
+						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->cart = new \stdClass();  
+					
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article_id = $article_order->article_id;
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->name = $article_order->name;
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->prezzo = $article_order->prezzo;
