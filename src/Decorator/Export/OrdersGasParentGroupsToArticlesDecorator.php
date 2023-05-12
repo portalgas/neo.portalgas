@@ -22,6 +22,8 @@ class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 		
 			foreach($order->article_orders as $article_order) {
 				
+				$this->results[$article_order->article_id] = new \stdClass();
+
 				// debug($order->id.' '.$article_order->name.' '.$article_order->article->img1);
 				
 				$this->results[$article_order->article_id]->article_id = $article_order->article_id;
