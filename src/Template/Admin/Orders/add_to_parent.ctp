@@ -12,17 +12,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 <section class="content-header">
   <h1>
     <?php 
-    echo (!empty($order_type_id)) ? __('Orders-'.$order_type_id): __('Orders');
-    
-    /* 
-     * l'ordine Configure::read('Order.type.gas_groups') dev'essere creato da un ordine padre (Configure::read('Order.type.gas_parent_groups'))
-     */
-    if($order_type_id!=Configure::read('Order.type.gas_groups'))
-      echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order')]).'</div>';
-    else {
-      // aggiungi un ordine partendo da un ordine parent (GasGroup / DES)
-      // echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add-to-parent', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order to parent')]).'</div>';
-    }
+    echo __('Add Order to parent');
     ?>
   </h1>
 </section>

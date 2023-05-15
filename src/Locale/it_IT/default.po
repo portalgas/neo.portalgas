@@ -2480,6 +2480,9 @@ msgstr "Aggiungi una nuova consegna"
 msgid "Add Order"
 msgstr "Aggiungi un nuovo ordine"
 
+msgid "Add Order to parent"
+msgstr "Aggiungi un nuovo ordine da un ordine titolare"
+
 msgid "Add Order-10"
 msgstr "Aggiungi un nuovo ordine di gruppo dall'ordine titolare"
 

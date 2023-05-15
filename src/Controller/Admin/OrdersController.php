@@ -104,7 +104,7 @@ class OrdersController extends AppController
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
-            debug($suppliersOrganizations);
+            // debug($suppliersOrganizations);
             if(empty($suppliersOrganizations))
                 $where += ['SuppliersOrganizations.id' => '-1']; // utente senza referenze
             else
@@ -138,7 +138,118 @@ class OrdersController extends AppController
         /* 
          * filters
          */
-        $suppliersOrganizations = $this->Orders->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $this->Orders->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+        $order_delivery_dates = ['Deliveries.data asc' => 'Data di consegna ascendente',
+                                 'Deliveries.data desc' => 'Data di consegna discendente'];
+
+        $this->set(compact('suppliersOrganizations', 'order_delivery_dates'));
+
+		/*
+		 * legenda profilata
+		 */
+		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->_user);
+		$orderStatesToLegenda = $this->ActionsOrder->getOrderStatesToLegenda($this->_user, $group_id);
+		$this->set('orderStatesToLegenda', $orderStatesToLegenda);        
+    }
+
+    /*
+     * aggiungi un ordine partendo da un ordine parent (GasGroup / DES)
+     */
+    public function addToParent($order_type_id=0)
+    {
+        if($order_type_id!=Configure::read('Order.type.gas_groups'))
+            $order_type_id==Configure::read('Order.type.gas_parent_groups');
+
+        $where = [];
+        $sorts = ['Deliveries.data asc'];
+                   
+        /* 
+         * filters
+         */
+        $request = $this->request->getQuery();
+        $search_supplier_organization_id = '';
+        $order_delivery_date = '';
+
+        if(!empty($request['search_supplier_organization_id'])) {
+            $search_supplier_organization_id = $request['search_supplier_organization_id'];
+            $where += ['Orders.supplier_organization_id' => $search_supplier_organization_id];
+        } 
+
+        // order_delivery_date = 'Deliveries.data desc
+        if(!empty($request['order_delivery_date'])) {
+            // debug('order_delivery_date '.$request['order_delivery_date']);
+            $order_delivery_date = $request['order_delivery_date'];
+            list($field, $sort) = explode(' ', $order_delivery_date);
+            ($sort=='asc') ? $sort = 'desc': $sort = 'asc';
+            foreach($sorts as $key => $value) {
+                // debug($value.' = '.$field.' '.$sort);
+                if(strtolower($value)==strtolower($field.' '.$sort))
+                    unset($sorts[$key]);
+            }
+            if(!in_array($request['order_delivery_date'], $sorts))
+                array_push($sorts, $request['order_delivery_date']);
+        } 
+        $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
+
+        $where += ['Orders.organization_id' => $this->_organization->id,
+                    'Deliveries.organization_id' => $this->_organization->id,
+                    'Deliveries.isVisibleBackOffice' => 'Y',
+                    'Deliveries.stato_elaborazione' => 'OPEN',
+                    'SuppliersOrganizations.stato' => 'Y'];
+        if(!empty($order_type_id)) {
+            $where += ['Orders.order_type_id' => $order_type_id];
+            if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                // ctrl che l'utente appartertenga al gruppo 
+                $gasGroupsTable = TableRegistry::get('GasGroups');
+                $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                if(empty($gasGroups))
+                    $where += ['Orders.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
+                else 
+                    $where += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
+            }
+        }
+        /* 
+         * profilazione $user->acl['isReferentGeneric'] 
+         */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            // debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['SuppliersOrganizations.id' => '-1']; // utente senza referenze
+            else
+                $where += ['SuppliersOrganizations.id IN ' => array_keys($suppliersOrganizations)];
+        }
+
+        // debug($where);
+        array_push($sorts, 'Orders.data_inizio asc');
+        // debug($sorts);
+        
+        $contains = ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
+                     'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'];
+        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y')
+            $contains = array_merge($contains, ['GasGroups']);
+
+        $this->paginate = [
+            'order' => $sorts,            
+            'contain' => $contains,
+            'conditions' => $where,
+            'limit' => 75
+        ];
+
+        // debug($where);
+        $orders = new OrderDecorator($this->_user, $this->paginate($this->Orders));
+        $orders = $orders->results;
+
+        // debug($orders);
+        if(empty($order_type_id)) $order_type_id  = Configure::read('Order.type.gas');
+        $this->set(compact('orders', 'order_type_id'));
+
+        /* 
+         * filters
+         */
+        $suppliersOrganizations = $this->Orders->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
         $order_delivery_dates = ['Deliveries.data asc' => 'Data di consegna ascendente',
                                  'Deliveries.data desc' => 'Data di consegna discendente'];
