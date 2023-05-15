@@ -12,7 +12,7 @@ echo $this->Form->create(null, ['role' => 'form', 'id' => 'frm']);
   <input type="hidden" name="organization_id" value="<?php echo $order->organization_id;?>" />
   <input type="hidden" name="order_type_id" value="<?php echo $order->order_type_id;?>" />
   <input type="hidden" name="order_id" value="<?php echo $order->id;?>" />
-
+  <input type="hidden" name="_csrfToken" autocomplete="off" value=<?php echo json_encode($this->request->getParam('_csrfToken')) ?> />
   
 <section class="">
   <div class="row">
@@ -24,7 +24,7 @@ echo $this->Form->create(null, ['role' => 'form', 'id' => 'frm']);
         <div class="box-body">
 <?php        
 echo '<div class="row">'; 
-echo '<div class="col-md-6">'; 
+echo '<div class="col-md-4">'; 
 echo $this->Form->control('print_id', ['type' => 'radio', 'label' => 'Tipologie di stampe', 
             'options' => $exports, 
             'default' => '',
@@ -37,25 +37,40 @@ echo '</div>';
  * opzioni di stampa 
  * devono avere la classe options, in exports.js li passo alla chiamata ajax
  */
-echo '<div class="col-md-6">'; 
+echo '<div class="col-md-5">'; 
 $this->Form->setTemplates([
   'nestingLabel' => '{{hidden}}<label{{attrs}} class="radio-inline">{{input}}{{text}}</label>',
   'radioWrapper' => '{{label}}',
 ]);
 echo '<div>';
-echo '<label class="radio-label">Visualizza la consegna dell\'ordine titolare</label>'; 
+echo '<label class="radio-label">Visualizza la consegna dell\'ordine titolare</label><br />'; 
 echo $this->Form->radio('delivery_order_parent', ['Y' => 'Si', 'N' => 'No'], 
                                                   ['class' => 'options', 'default' => 'N', 
                                                   '@click' => 'htmlGets']);
 echo '</div>';
 echo '<div>';
-echo '<label class="radio-label">Visualizza le consegne degli ordini dei gruppi</label>'; 
+echo '<label class="radio-label">Visualizza le consegne degli ordini dei gruppi</label><br />'; 
 echo $this->Form->radio('deliveries_orders', ['Y' => 'Si', 'N' => 'No'], 
                                              ['class' => 'options', 'default' => 'Y', 
                                               '@click' => 'htmlGets']);
 echo '</div>';
+echo '</div>'; // row
 
+/* 
+ * formato di stampa 
+ */
+echo '<div class="col-md-2">'; 
+$this->Form->setTemplates([
+  'nestingLabel' => '{{hidden}}<label{{attrs}} class="radio">{{input}}{{text}}</label>',
+  'radioWrapper' => '{{label}}',
+]);
+echo '<div>';
+echo '<label class="radio-label">Formato di stampa</label>'; 
+echo $this->Form->radio('format', ['PDF' => 'Pdf', 'XLSX' => 'Excel'], 
+                                  ['default' => 'PDF']);
 echo '</div>';
+echo '</div>'; // row
+
 echo '</div>';
 
 
@@ -65,7 +80,7 @@ echo '</div>';
 echo '</div>';
 echo '</section>';
 
-echo $this->Form->button('<i class="fa fa-file-pdf-o"></i> '.__('Export to PDF'), ['type' => 'button', 'class' => 'btn btn-success pull-right btn-block', 'style' => 'margin-bottom:25px', '@click' => 'pdfGets']);
+echo $this->Form->button('<i class="fa fa-file"></i> '.__('Export'), ['type' => 'button', 'class' => 'btn btn-success pull-right btn-block', 'style' => 'margin-bottom:25px', '@click' => 'exportGets']);
 ?>
 
 <div v-if="is_run" class="box-body table-responsive no-padding text-center" style="margin: 150px">
@@ -89,10 +104,6 @@ echo $this->Form->end();
 </div> <!-- #vue-exports -->
 
 <style>
-.radio-label {
-  min-width: 400px;
-  word-wrap: break-word;
-}
 .radio-inline {
   min-width: 100px;
   padding: 5px 0

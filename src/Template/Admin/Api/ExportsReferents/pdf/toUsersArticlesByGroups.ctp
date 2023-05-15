@@ -40,7 +40,7 @@ if(!empty($orders)) {
 		
 		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">';
 
-		foreach($order->users as $numResult => $user) {
+		foreach($order->users as $user) {
 
 			/* 
 			 * header user
@@ -101,7 +101,7 @@ if(!empty($orders)) {
 			$html .= '	</tr>';
 		
 			$totale += $totale_user;
-		} // foreach($order->users as $numResult => $user)
+		} // foreach($order->users as $user)
 
 		$html .= '	</tbody>';
 		$html .= '	</table>';	

@@ -7,6 +7,10 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet; 
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Cake\Http\CallbackStream;
+
 class TestsController extends AppController
 {
     public function initialize()
@@ -26,6 +30,21 @@ class TestsController extends AppController
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
+    }
+
+    public function excel()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Hello World !');
+        $writer = new Xlsx($spreadsheet);
+        $stream = new CallbackStream(function () use ($writer) {
+            $writer->save('php://output');
+        });        $filename = 'sample_'.date('ymd_His');
+        $response = $this->response; 
+        return $response->withType('xlsx')
+            ->withHeader('Content-Disposition', "attachment;filename=\"{$filename}.xlsx\"")
+            ->withBody($stream);
     }
 
     public function sitemap()

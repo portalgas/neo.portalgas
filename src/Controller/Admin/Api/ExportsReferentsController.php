@@ -11,9 +11,16 @@ use App\Decorator\Export\OrdersGasParentGroupsToArticlesDecorator;
 use App\Decorator\Export\OrdersGasParentGroupsToArticlesByGroupsDecorator;
 use App\Decorator\Export\OrdersGasParentGroupsToUsersArticlesByGroupsDecorator;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet; 
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Cake\Http\CallbackStream; 
+
+
 class ExportsReferentsController extends AppController {
     
     use Traits\UtilTrait;
+
+    private $_filename = '';
 
     public function initialize(): void
     {
@@ -28,7 +35,6 @@ class ExportsReferentsController extends AppController {
     }
 
     public function beforeFilter(Event $event) {
-     
         parent::beforeFilter($event);
     }
 
@@ -39,13 +45,17 @@ class ExportsReferentsController extends AppController {
         // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
         $print_id = $this->request->getData('print_id');
         $format = $this->request->getData('format');
-        
+   
         switch($format) {
             case 'HTML':
                 $this->viewBuilder()->setLayout('ajax');
             break;
+            case 'XLSX':
+                $this->viewBuilder()->disableAutoLayout();
+                $this->response = $this->response->withDownload($this->_filename);            
+            break;
             case 'PDF':
-             $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
+                $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
                     ->setTemplate('/Admin/Api/ExportsReferents/pdf/'.$print_id) 
                     ->setLayout('../../Layout/pdf/default') 
                     ->setClassName('CakePdf.Pdf');             
@@ -57,7 +67,7 @@ class ExportsReferentsController extends AppController {
      * https://dompdf.net/examples.php
      */
     public function get($debug=false) { 
-
+        
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
@@ -75,14 +85,17 @@ class ExportsReferentsController extends AppController {
         $this->set(compact('opts'));
 
         $method = '_'.$print_id;
-        $results = $this->{$method}($order_type_id, $order_id);
+        $results = $this->{$method}($format, $order_type_id, $order_id);
 
         $this->set(compact('order_type_id', 'format'));
-
+        
         switch($format) {
             case 'HTML':
                 $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
                 $this->render('/Admin/Api/ExportsReferents/pdf/'.$print_id);
+            break;
+            case 'XLSX':
+                $this->render('/Admin/Api/ExportsReferents/xlsx/'.$print_id);
             break;
             case 'PDF':
                 Configure::write('CakePdf', [
@@ -102,7 +115,7 @@ class ExportsReferentsController extends AppController {
     }   
     
     // Doc. con acquisti aggregati per articoli (per il produttore)
-    private function _toArticles($order_type_id, $order_id, $debug=false) {
+    private function _toArticles($format, $order_type_id, $order_id, $debug=false) {
         
         /* 
         * dati ordine 
@@ -132,13 +145,21 @@ class ExportsReferentsController extends AppController {
 
         $this->set(compact('article_orders', 'orderParent'));
 
-        $this->response->header('filename', 'acquisti-aggregati-articoli.pdf');
+        $this->_filename = 'acquisti-aggregati-articoli';
+        switch($format) {
+            case 'XLSX':
+                $this->_filename .= '.xlsx';
+            break;
+            case 'PDF':
+                $this->response->header('filename', $this->_filename.'.pdf');
+            break;
+        }
 
         return true;
     } 
     
     // Doc. con acquisti aggregati per articoli divisi per i Gruppi    
-    private function _toArticlesByGroups($order_type_id, $order_id, $debug=false) {
+    private function _toArticlesByGroups($format, $order_type_id, $order_id, $debug=false) {
  
         /* 
         * dati ordine titolare
@@ -173,13 +194,21 @@ class ExportsReferentsController extends AppController {
 
         $this->set(compact('orders', 'orderParent'));
 
-        $this->response->header('filename', 'acquisti-aggregati-articoli-per-gruppi.pdf');
-
+        $this->_filename = 'acquisti-aggregati-articoli-per-gruppi';
+        switch($format) {
+            case 'XLSX':
+                $this->_filename .= '.xlsx';
+            break;
+            case 'PDF':
+                $this->response->header('filename', $this->_filename.'.pdf');
+            break;
+        }
+       
         return true;
     }
 
     // Doc. con acquisti aggregati per gasisti divisi per i Gruppi
-    private function _toUsersArticlesByGroups($order_type_id, $order_id, $debug=false) {
+    private function _toUsersArticlesByGroups($format, $order_type_id, $order_id, $debug=false) {
  
         /* 
         * dati ordine titolare
@@ -214,7 +243,15 @@ class ExportsReferentsController extends AppController {
 
         $this->set(compact('orders', 'orderParent'));
 
-        $this->response->header('filename', 'acquisti-aggregati-gasisti-per-gruppi.pdf');
+        $this->_filename = 'acquisti-aggregati-gasisti-per-gruppi';
+        switch($format) {
+            case 'XLSX':
+                $this->_filename .= '.xlsx';
+            break;
+            case 'PDF':
+                $this->response->header('filename', $this->_filename.'.pdf');
+            break;
+        }
 
         return true;
     }

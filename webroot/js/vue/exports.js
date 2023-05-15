@@ -19,8 +19,8 @@ $(function () {
         format: 'HTML'
       },  
       methods: {
-        pdfGets: function(e) {
-          this.format = 'PDF';
+        exportGets: function(e) {
+          this.format = $("input[name='format']:checked").val();
           // workaround perche' al primo click non lo valorizzava!
           this.print_id = $("input[name='print_id']:checked").val();
           this.gets();
@@ -42,6 +42,23 @@ $(function () {
               alert("Scegli la tipologia di stampa");
               this.is_run = false;
               return; 
+            }
+
+            let $frm = $('#frm');
+            switch(this.format) {
+              case 'XLSX':
+                $frm.attr('target', "_blank");
+                $frm.attr('method', "POST");
+                $frm.attr('action', "/admin/exports-xlsx-referents/get");
+                $frm.attr('action', "/admin/api/exports-referents/get");   
+               // $frm.attr('action', "/admin/tests/excel");          
+                $frm.submit();
+              break;
+              default:
+                $frm.attr('target', "");
+                $frm.attr('method', "POST");
+                $frm.attr('action', ""); 
+              break;
             }
 
             let organization_id = $("input[name='organization_id']").val(); 
@@ -92,7 +109,6 @@ $(function () {
                             }}
               break;
             }
-
 
             axios.post('/admin/api/exports-referents/get', params, extra)
                 .then(response => {
