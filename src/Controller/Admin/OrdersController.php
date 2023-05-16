@@ -201,6 +201,7 @@ class OrdersController extends AppController
         $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
 
         $where += ['Orders.organization_id' => $this->_organization->id,
+                   'Orders.state_code IN ' => ['OPEN', 'OPEN-NEXT', ],
                     'Deliveries.organization_id' => $this->_organization->id,
                     'Deliveries.isVisibleBackOffice' => 'Y',
                     'Deliveries.stato_elaborazione' => 'OPEN',
