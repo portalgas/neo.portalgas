@@ -48,8 +48,10 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
         if($user->organization->paramsConfig['hasGasGroups']=='Y') {
           if($user->acl['isGasGroupsManagerParentOrders']) 
             echo '<li><a href="'.$this->Url->build('/admin/orders/index/'.Configure::read('Order.type.gas_parent_groups')).'">'.$icon.__('Gas Group Parent Orders').' <label class="label label-success">new</label></a></li>';
-          if($user->acl['isGasGroupsManagerOrders']) 
+          if($user->acl['isGasGroupsManagerOrders']) {
             echo '<li><a href="'.$this->Url->build('/admin/orders/index/'.Configure::read('Order.type.gas_groups')).'">'.$icon.__('Gas Group Orders').' <label class="label label-success">new</label></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/orders/add/'.Configure::read('Order.type.gas_groups')).'">'.$icon.__('Add Order').' <label class="label label-success">new</label></a></li>';
+          }
         }
         else {
         /* 

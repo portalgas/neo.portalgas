@@ -21,7 +21,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
       echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order')]).'</div>';
     else {
       // aggiungi un ordine partendo da un ordine parent (GasGroup / DES)
-      // echo '<div class="pull-right">'.$this->Html->link(__('Add'), ['action' => 'add-to-parent', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order to parent')]).'</div>';
+      echo '<div class="pull-right">'.$this->Html->link(__('Add Order to parent'), ['action' => 'add-to-parent', $order_type_id], ['class'=>'btn btn-success', 'title' => __('Add Order to parent')]).'</div>';
     }
     ?>
   </h1>

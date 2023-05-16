@@ -158,9 +158,17 @@ class OrdersController extends AppController
      */
     public function addToParent($order_type_id=0)
     {
-        if($order_type_id!=Configure::read('Order.type.gas_groups'))
-            $order_type_id==Configure::read('Order.type.gas_parent_groups');
-
+        /* 
+         * cambio all'ordine parent
+         */
+        if($order_type_id==Configure::read('Order.type.gas_groups'))
+            $order_type_id=Configure::read('Order.type.gas_parent_groups');
+        else {
+            // gestito solo GasGroup
+            $this->Flash->error(__('msg_error_param_order_type_id'), ['escape' => false]);
+            return $this->redirect(['action' => 'index', $order_type_id]);
+        }
+        
         $where = [];
         $sorts = ['Deliveries.data asc'];
                    
@@ -255,13 +263,6 @@ class OrdersController extends AppController
                                  'Deliveries.data desc' => 'Data di consegna discendente'];
 
         $this->set(compact('suppliersOrganizations', 'order_delivery_dates'));
-
-		/*
-		 * legenda profilata
-		 */
-		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->_user);
-		$orderStatesToLegenda = $this->ActionsOrder->getOrderStatesToLegenda($this->_user, $group_id);
-		$this->set('orderStatesToLegenda', $orderStatesToLegenda);        
     }
 
     /*

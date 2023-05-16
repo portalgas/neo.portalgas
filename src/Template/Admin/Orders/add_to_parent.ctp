@@ -22,10 +22,6 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
-
-    <?php 
-      echo $htmlCustomSiteOrders->msg();
-    ?>
     <?php 
     echo $this->element('search/orders');
     ?>
@@ -64,9 +60,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                   <th scope="col" class="hidden-xs">Si aprirà<br />Si chiuderà</th>
                   <th scope="col" class="hidden-xs">Aperto/chiuso</th>
                   <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('nota') ?></th>
-                  <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('owner_articles', __('OwnerArticles')) ?></th>
                   <th scope="col" class="hidden-xs"><?= $this->Paginator->sort('state_code', __('StatoElaborazione')) ?></th>
-                  <th scope="col" class="hidden-xs hidden-sm"></th>
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
               </tr>
             </thead>
@@ -142,87 +136,21 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                     echo '</div>';			
                     
                   } // end if(!empty($order->nota))	
-                  echo '</td>';
-                                    
-                  echo '<td class="hidden-xs">';
-                  echo __('ArticlesOwner'.$order->owner_articles);
-                  echo '<br />';
-                  switch ($order->order_type->id) {
-                      case Configure::read('Order.type.des'):
-                      case Configure::read('Order.type.des_titolare'):
-                        echo '<a title="'.__('Order-'.Configure::read('Order.type.des')).'" href="'.$this->HtmlCustomSite->jLink('desOrdersOrganizations', 'index', ['des_order_id' => $order->des_order_id]).'"><small class="label bg-primary">'.$order->order_type->descri.'</small></a>';
-                      break;
-                      case Configure::read('Order.type.gas_parent_groups'):
-                        if($user->acl['isGasGroupsManagerOrders'])
-                            echo $this->Html->link('<small class="label bg-primary">'.$order->order_type->descri.'</small>', ['controller' => 'GasGroups', 'action' => 'index'], ['title' => '', 'escape' => false]);
-                      break;
-                      case Configure::read('Order.type.gas_groups'):
-                        echo '<small class="label bg-primary">'.$order->order_type->descri.': '.$order->gas_group->name.'</small>';
-                      break;
-                      default:
-                        echo '<small class="label bg-primary">'.$order->order_type->descri.'</small>';
-                      break;
-                  }
-                  echo '</td>';
+                  echo '</td>';                                   
                   echo '<td style="white-space:nowrap;" class="hidden-xs">';
                   echo $this->HtmlCustomSite->drawOrdersStateDiv($order);
                   echo '&nbsp;';
                   echo __($order->state_code.'-label');
-
-                 /*
-                  * richiesta di pagamento 
-                  */ 
-                  if($user->organization->template->payToDelivery == 'POST' || $user->organization->template->payToDelivery=='ON-POST') {
-                    if(!empty($order->request_payment_num)) {
-                      echo "<br />";
-                      if($user->acl['isTesoriere'])
-                        echo '<a title="'.__('Edit RequestPayment').'" href="'.$this->HtmlCustomSite->jLink('requestPayments', 'edit', ['id' => $order->request_payment_id]).'">Rich. pagamento n. '.$order->request_payment_num.'</a>';
-                      else
-                        echo "<br />Rich. pagamento n. ".$order->request_payment_num;
-                    }
-                  }                   
                   echo '</td>';
 
-                  /*
-                  * btns / msg
-                  */
-                  echo '<td style="white-space: nowrap;" class="hidden-xs hidden-sm">';
-                  $btns = $this->HtmlCustomSite->drawOrderBtnPaid($order, $user->acl['isRoot'], $user->acl['isTesoriere']);
-                  if(!empty($btns))
-                      echo $btns;	
-                  else if(!empty($order->msgGgArchiveStatics))
-                    echo $this->HtmlCustomSite->drawOrderMsgGgArchiveStatics($order);		
-                  echo $this->HtmlCustomSite->drawOrderStateNext($order);
-                  echo '</td>';
-                                    
                   /* 
                    * actions 
                    */
                   echo '<td class="actions text-right">';
-                  if($order->can_state_code_to_close)
-                    echo '<a title="'.__('Close Order').'" class="hidden-xs" href="'.$this->HtmlCustomSite->jLink('orders', 'close', ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]).'"><button type="button" class="btn btn-danger"><i class="fa fa-2x fa-power-off" aria-hidden="true"></i></button></a>';
-                
-                  echo '<a title="'.__('Order home').'" class="hidden-xs" href="/admin/orders/home/'.$order->order_type_id.'/'.$order->id.'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
-                  
-                  if($user->acl['isRoot'] && $order->state_code=='CLOSE')
-                    echo '<a title="'.__('Orders state_code change').'" href="'.$this->HtmlCustomSite->jLink('orders', 'state_code_change', ['order_id' => $order->id, 'url_bck' => 'index_history']).'" class="action action actionSyncronize"></a>';
-
-                  // $modal_url = $this->HtmlCustomSite->jLink('orders', 'sotto_menu', ['order_id' => $order->id, 'position_img' => 'bgLeft', 'scope' => 'neo', 'format' => 'notmpl']);
-                  $modal_url = '/admin/api/html-menus/order/'.$order->order_type_id.'/'.$order->id;
-                  $modal_size = 'md'; // sm md lg
-                  $modal_header = __('Order').' '.$order->suppliers_organization->name;                                    
-                  echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'"><i class="fa fa-2x fa-navicon"></i></button>';
-                  // echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $order->id], ['confirm' => __('Are you sure you want to delete # {0}?', $order->id), 'class'=>'btn btn-danger']);
-                  
+                  echo $this->Html->link(__('Add OrderGasGroup'), ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add OrderGasGroup')]);
                   echo '</td>';                  
                 echo '</tr>'; 
                 
-                echo '<tr id="collapse-'.$order->id.'" class="panel-collapse collapse" aria-expanded="true">';
-                echo '<td colspan="2"></td>';
-                echo '<td colspan="'.($colspan-2).'" id="collapseResult-'.$order->id.'">';
-                echo '</td>';
-                echo '</tr>';
-
                 $delivery_id_old=$order->delivery_id;
               } // end loop
 
