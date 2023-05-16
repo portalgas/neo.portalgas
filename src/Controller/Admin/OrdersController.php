@@ -204,19 +204,9 @@ class OrdersController extends AppController
                     'Deliveries.organization_id' => $this->_organization->id,
                     'Deliveries.isVisibleBackOffice' => 'Y',
                     'Deliveries.stato_elaborazione' => 'OPEN',
-                    'SuppliersOrganizations.stato' => 'Y'];
-        if(!empty($order_type_id)) {
-            $where += ['Orders.order_type_id' => $order_type_id];
-            if($order_type_id==Configure::read('Order.type.gas_groups')) {
-                // ctrl che l'utente appartertenga al gruppo 
-                $gasGroupsTable = TableRegistry::get('GasGroups');
-                $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-                if(empty($gasGroups))
-                    $where += ['Orders.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
-                else 
-                    $where += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
-            }
-        }
+                    'SuppliersOrganizations.stato' => 'Y',
+                    'Orders.order_type_id' => $order_type_id];
+                    
         /* 
          * profilazione $user->acl['isReferentGeneric'] 
          */
@@ -230,15 +220,25 @@ class OrdersController extends AppController
                 $where += ['SuppliersOrganizations.id IN ' => array_keys($suppliersOrganizations)];
         }
 
-        // debug($where);
         array_push($sorts, 'Orders.data_inizio asc');
         // debug($sorts);
         
         $contains = ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'], 
-                     'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'];
-        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y')
-            $contains = array_merge($contains, ['GasGroups']);
+                     'Deliveries'];
+        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y') {
+            if($order_type_id==Configure::read('Order.type.gas_parent_groups')) {
+                // ctrl che l'utente appartertenga al gruppo 
+                $gasGroupsTable = TableRegistry::get('GasGroups');
+                $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+                if(empty($gasGroups))
+                    $gasGroupsCondition = ['GasGroupsChilds.gas_group_id' => '-1']; // utente non associato in alcun gruppo 
+                else 
+                    $gasGroupsCondition = ['GasGroupsChilds.gas_group_id IN ' => array_keys($gasGroups)];
 
+                $contains = array_merge($contains, ['GasGroupsChilds' => ['conditions' => $gasGroupsCondition]]);
+            }            
+        }
+            
         $this->paginate = [
             'order' => $sorts,            
             'contain' => $contains,
@@ -249,7 +249,7 @@ class OrdersController extends AppController
         // debug($where);
         $orders = new OrderDecorator($this->_user, $this->paginate($this->Orders));
         $orders = $orders->results;
-
+        
         // debug($orders);
         if(empty($order_type_id)) $order_type_id  = Configure::read('Order.type.gas');
         $this->set(compact('orders', 'order_type_id'));
@@ -297,6 +297,7 @@ class OrdersController extends AppController
          
         if ($this->request->is('post')) {
             $request = $this->request->getData();
+            $request['organization_id'] = $this->_organization->id; 
             $request['order_type_id'] = $order_type_id; 
             $request['parent_id'] = $parent_id;
             // debug($request);
@@ -358,6 +359,7 @@ class OrdersController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $request = $this->request->getData();  
+            $request['organization_id'] = $this->_organization->id;
             $request['order_type_id'] = $order_type_id;
             $request['state_code'] = $order->state_code; 
             // $request['parent_id'] = $parent_id;                 

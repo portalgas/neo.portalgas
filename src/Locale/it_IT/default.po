@@ -2078,6 +2078,9 @@ msgstr "Home page dell'ordine"
 msgid "Order home DES"
 msgstr "Home page dell'ordine condiviso"
 
+msgid "OrderGasGroup Home"
+msgstr "Home page dell'ordine del gruppo"
+
 msgid "OrderCreatedGoToHome"
 msgstr "Ordine creato, vai alla home dell'ordine"
 

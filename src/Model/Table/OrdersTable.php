@@ -70,6 +70,11 @@ class OrdersTable extends Table
             'foreignKey' => ['gas_group_id'],
             'joinType' => 'LEFT',
         ]);
+        // ordini associati all'ordine parent 
+        $this->hasMany('GasGroupsChilds', [
+            'className' => 'Orders',
+            'foreignKey' => ['organization_id', 'parent_id'],
+        ]);         
     }
 
     public function validationDefault(Validator $validator)

@@ -147,7 +147,10 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                    * actions 
                    */
                   echo '<td class="actions text-right">';
-                  echo $this->Html->link(__('Add OrderGasGroup'), ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add OrderGasGroup')]);
+                  if(empty($order->gas_groups_childs))
+                    echo $this->Html->link(__('Add OrderGasGroup'), ['action' => 'add', Configure::read('Order.type.gas_groups'), $order->id], ['class'=>'btn btn-primary', 'title' => __('Add OrderGasGroup')]);
+                  else 
+                    echo $this->Html->link(__('OrderGasGroup Home'), ['action' => 'home', Configure::read('Order.type.gas_groups'), $order->gas_groups_childs[0]->id], ['class'=>'btn btn-primary', 'title' => __('OrderGasGroup Home')]);
                   echo '</td>';                  
                 echo '</tr>'; 
                 

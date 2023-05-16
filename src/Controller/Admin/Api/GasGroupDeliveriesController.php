@@ -14,8 +14,8 @@ class GasGroupDeliveriesController extends ApiAppController
     public function initialize(): void 
     {
         parent::initialize();
-        
-        if(!$this->_user->acl['isGasGroupsManagerParentOrders'] ||
+       
+        if(!$this->_user->acl['isGasGroupsManagerParentOrders'] &&
            !$this->_user->acl['isGasGroupsManagerOrders']) {
             $this->_respondWithUnauthorized();
         }         
@@ -46,7 +46,7 @@ class GasGroupDeliveriesController extends ApiAppController
 
         $gasGroupDeliveriesTable = TableRegistry::get('GasGroupDeliveries');
         $results = $gasGroupDeliveriesTable->getsActiveList($this->_user, $this->_organization->id, $gas_group_id);
-        
+       
         return $this->_response($results);
     }     
 }
