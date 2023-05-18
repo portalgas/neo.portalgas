@@ -112,7 +112,8 @@ class GasGroupsTable extends Table
 
         $results = $this->find()
                         ->where(['GasGroups.organization_id' => $organization_id,
-                                 'GasGroups.id' => $gas_group_id])
+                                 'GasGroups.id' => $gas_group_id,
+                                 'GasGroups.is_active' => true])
                         ->first();
   
         return $results;		
@@ -142,7 +143,8 @@ class GasGroupsTable extends Table
                                     'conditions' => [
                                         'GasGroupUsers.organization_id' => $organization_id]]])
                             ->where(['GasGroups.organization_id' => $organization_id,
-                                    'GasGroups.user_id' => $user_id])
+                                    'GasGroups.user_id' => $user_id,
+                                    'GasGroups.is_active' => true])
                             ->order(['GasGroups.name'])
                             ->all();
         if($gas_groups_1->count()>0)
