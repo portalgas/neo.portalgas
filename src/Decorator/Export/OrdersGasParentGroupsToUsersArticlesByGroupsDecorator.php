@@ -72,7 +72,7 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 						if($article_order->article->bio=='Y')
 							$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article->is_bio = true;
 						else
-							$this->results[$order->id]->users[$cart->user_id]->article[$i]->article->is_bio = false;
+							$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article->is_bio = false;
 					}
 
 					$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]->article->img1 = $this->_getArticleImg1($article_order);
