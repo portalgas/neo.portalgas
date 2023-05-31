@@ -35,8 +35,22 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
 
     public function validationDefault(Validator $validator)
     {
+        $validator = parent::validationDefault($validator);
+
         $validator->setProvider('orderGasGroups', \App\Model\Validation\OrderGasGroupsValidation::class);
        
+        $validator
+            ->requirePresence('supplier_organization_id')
+            ->notEmptyString('supplier_organization_id')
+            ->add('supplier_organization_id', [
+                'orderDuplicate' => [
+                    'on' => ['create'], // , 'create', 'update',
+                    'rule' => ['orderDuplicate'],
+                    'provider' => 'orderGasGroups',
+                    'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
+                ]
+            ]); 
+                    
         $validator
             ->notEmpty('supplier_organization_id')
             ->add('supplier_organization_id', [

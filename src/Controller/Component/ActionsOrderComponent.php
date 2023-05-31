@@ -406,6 +406,19 @@ class ActionsOrderComponent extends CartSuperComponent {
 		
 		return $esito;
 	}
+	
+	/*
+	 * controllo che l'utente appartenga ala gruppo GasGroups
+	 */
+	private function userIsGasGroupsManagerOrders($user, $results, $value_da_verificare) {
+		$esito = false;
+		if($user->acl['isGasGroupsManagerOrders'] && $value_da_verificare=='Y')
+			$esito = true;
+		else
+			$esito = false;
+		
+		return $esito;
+	}
 
 	/*
 	 * Controlli su User
