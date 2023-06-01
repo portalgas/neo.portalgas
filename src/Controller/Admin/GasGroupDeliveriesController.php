@@ -43,7 +43,12 @@ class GasGroupDeliveriesController extends AppController
      */
     public function index()
     {
-        $where = ['Deliveries.organization_id' => $this->_organization->id];
+        /*
+         * estraggo quelle create dall'utente 'GasGroups.user_id' => $this->_user->id
+         */
+        $where = ['Deliveries.organization_id' => $this->_organization->id,
+                    'GasGroupDeliveries.organization_id' => $this->_organization->id,
+                    'GasGroups.user_id' => $this->_user->id];
 
         $this->paginate = [
             'contain' => ['GasGroups' => ['GasGroupUsers'], 
@@ -55,7 +60,6 @@ class GasGroupDeliveriesController extends AppController
         ];
         
         $gasGroupDeliveries = $this->paginate($this->GasGroupDeliveries);
-
         $this->set(compact('gasGroupDeliveries'));
     }
 
@@ -103,7 +107,7 @@ class GasGroupDeliveriesController extends AppController
                     $this->Flash->error($gasGroupDelivery->getErrors());
                 }
                 else {
-                    $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
+                    $this->Flash->success("La consegna per il gruppo è stata salvata");
                     return $this->redirect(['action' => 'index']);
                 }
             }                    
@@ -142,7 +146,7 @@ class GasGroupDeliveriesController extends AppController
                 $this->Flash->error($delivery->getErrors());
             } 
             else {       
-                $this->Flash->success(__('The {0} has been saved.', __('Gas Group Delivery')));
+                $this->Flash->success("La consegna per il gruppo è stata salvata");
                 return $this->redirect(['action' => 'index']);
             } 
         } // end post

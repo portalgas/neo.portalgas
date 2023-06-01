@@ -34,7 +34,7 @@ class DeliveriesController extends ApiAppController
         $results = [];
 
         ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $this->_organization->id;
-
+        
         /*
          * elenco consegne
          */
@@ -49,7 +49,7 @@ class DeliveriesController extends ApiAppController
         $where['Orders'] = ['Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
                              'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')
                            ];
-
+                           
         $deliveries = $deliveriesTable->withOrdersGets($this->_user, $this->_organization->id, $where);
         if(!empty($deliveries)) {
             foreach($deliveries as $delivery) {

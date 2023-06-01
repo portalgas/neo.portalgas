@@ -44,11 +44,10 @@ class OrdersGasParentGroupsToUsersArticlesByGroupsDecorator extends AppDecorator
 					if(!isset($this->results[$order->id]->users[$cart->user_id])) {
 						$this->results[$order->id]->users[$cart->user_id] = new \stdClass(); 
 						$this->results[$order->id]->users[$cart->user_id]->user = new \stdClass(); 
-						$this->results[$order->id]->users[$cart->user_id]->article = []; 
 						$this->results[$order->id]->users[$cart->user_id]->article_orders = []; 
 					}
 
-					$i = count($this->results[$order->id]->users[$cart->user_id]->article);
+					$i = count($this->results[$order->id]->users[$cart->user_id]->article_orders);
 						
 					if(!isset($this->results[$order->id]->users[$cart->user_id]->article_orders[$i])) {
 						$this->results[$order->id]->users[$cart->user_id]->article_orders[$i]= new \stdClass();
