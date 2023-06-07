@@ -22,17 +22,20 @@ class GasGroupDeliveriesController extends AppController
       
         if(!isset($this->_organization->paramsConfig['hasGasGroups']) || 
             $this->_organization->paramsConfig['hasGasGroups']=='N' || 
-             !$this->_user->acl['isGasGroupsManagerDeliveries']
+             !$this->_user->acl['isGasGroupsManagerDeliveries'] ||
+             !$this->_user->acl['isManager']
             ) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
-        $gasGroupsTable = TableRegistry::get('GasGroups');
-        $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
-        if(empty($gasGroups)) {
-            $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
-            return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
+        if(!$this->_user->acl['isManager']) {
+            $gasGroupsTable = TableRegistry::get('GasGroups');
+            $gasGroups = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+            if(empty($gasGroups)) {
+                $this->Flash->error(__('msg_not_gas_groups'), ['escape' => false]);
+                return $this->redirect(['controller' => 'GasGroups', 'action' => 'index']);
+            }
         }
     }
 
@@ -47,8 +50,9 @@ class GasGroupDeliveriesController extends AppController
          * estraggo quelle create dall'utente 'GasGroups.user_id' => $this->_user->id
          */
         $where = ['Deliveries.organization_id' => $this->_organization->id,
-                    'GasGroupDeliveries.organization_id' => $this->_organization->id,
-                    'GasGroups.user_id' => $this->_user->id];
+                    'GasGroupDeliveries.organization_id' => $this->_organization->id];
+        if(!$this->_user->acl['isManager']) 
+            $where = ['GasGroups.user_id' => $this->_user->id];
 
         $this->paginate = [
             'contain' => ['GasGroups' => ['GasGroupUsers'], 

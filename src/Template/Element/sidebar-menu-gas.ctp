@@ -78,7 +78,9 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
 } // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
 
 if($user->organization->paramsConfig['hasGasGroups']=='Y') {
-  if($user->acl['isGasGroupsManagerGroups'] || $user->acl['isGasGroupsManagerDeliveries']) {
+  if($user->acl['isGasGroupsManagerGroups'] || 
+     $user->acl['isGasGroupsManagerDeliveries'] || 
+     $user->acl['isManager']) {
 ?>
   <li class="treeview"> 
     <a href="#">

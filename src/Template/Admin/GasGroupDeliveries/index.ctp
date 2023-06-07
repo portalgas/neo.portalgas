@@ -11,9 +11,12 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 
 <section class="content-header">
   <h1>
-    <?php echo __('Deliveries');?>
+    <?php echo __('Deliveries');
+    
+    if($this->_user->acl['isGasGroupsManagerDeliveries'])
+      echo '<div class="pull-right">'.$this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]).'</div>';
+    ?>
 
-    <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]) ?></div>
   </h1>
 </section>
 

@@ -27,7 +27,9 @@ class GasGroupsController extends AppController
         
         if(!isset($this->_organization->paramsConfig['hasGasGroups']) || 
            $this->_organization->paramsConfig['hasGasGroups']=='N' || 
-           !$this->_user->acl['isGasGroupsManagerGroups']) {
+           !$this->_user->acl['isGasGroupsManagerGroups'] || 
+           !$this->_user->acl['isGasGroupsManagerGroups'] ||
+           !$this->_user->acl['isManager']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_not_permission'));
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -53,7 +55,20 @@ class GasGroupsController extends AppController
         ];
         $gasGroups = $this->paginate($gasGroups);
         */
-        $gasGroups = $this->GasGroups->findMy($this->_user, $this->_organization->id, $this->_user->id);
+        if($this->_user->acl['isManager']) {
+            $gasGroups = $this->GasGroups->find()->contain([
+                'GasGroupDeliveries', 
+                'Users', // chi l'ha creato
+                'GasGroupUsers' => [
+                    'conditions' => [
+                        'GasGroupUsers.organization_id' => $this->_organization->id]]])
+            ->where(['GasGroups.organization_id' => $this->_organization->id,
+                    'GasGroups.is_active' => true])
+            ->order(['GasGroups.name'])
+            ->all();            
+        }
+        else
+            $gasGroups = $this->GasGroups->findMy($this->_user, $this->_organization->id, $this->_user->id);
         
         $this->set(compact('gasGroups'));
     }
