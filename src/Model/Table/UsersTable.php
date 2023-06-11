@@ -228,7 +228,7 @@ class UsersTable extends Table
         $organization = $this->_getOrganization($user, $user_organization_id, $organization_id, $debug); 
       
         $user->des_id = 0;
-        if($organization->paramsConfig['hasDes']=='Y') {
+        if(isset($organization->paramsConfig['hasDes']) && $organization->paramsConfig['hasDes']=='Y') {
             // DES
             $user->acl['isDes'] = $usergroupsTable->isDes($user);
             $user->acl['isManagerDes'] = $usergroupsTable->isManagerDes($user);

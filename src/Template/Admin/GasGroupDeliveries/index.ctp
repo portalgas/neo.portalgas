@@ -1,6 +1,8 @@
 <?php
 use Cake\Core\Configure;
 
+$user = $this->Identity->get();
+
 $this->start('tb_actions');
 echo '<li class="sidebar-menu-action">';
 echo $this->Html->link('<i class="fa fa-plus-circle"></i> <span>'.__('New').'</span>', ['action' => 'add'], ['title' => __('New'), 'escape' => false]);
@@ -13,7 +15,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
   <h1>
     <?php echo __('Deliveries');
     
-    if($this->_user->acl['isGasGroupsManagerDeliveries'])
+    if($user->acl['isGasGroupsManagerDeliveries'])
       echo '<div class="pull-right">'.$this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs-disabled', 'title' => __('New')]).'</div>';
     ?>
 

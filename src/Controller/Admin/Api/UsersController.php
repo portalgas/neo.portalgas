@@ -29,6 +29,7 @@ class UsersController extends ApiAppController
      */
     public function cashCtrlLimit() {
 
+        $results = [];
         $debug = false;
 
         if (!$this->Authentication->getResult()->isValid()) {
@@ -36,9 +37,10 @@ class UsersController extends ApiAppController
         }
 
         $user = $this->Authentication->getIdentity();
+        if($user===null) {
+            return $this->_response($results);
+        }
         $organization_id = $user->organization->id;
-
-        $results = [];
 
         $cashesUsersTable = TableRegistry::get('CashesUsers');
         
