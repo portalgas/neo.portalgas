@@ -145,7 +145,6 @@ class OrdersController extends ApiAppController
      */
     public function userCartGets($order_type_id)
     {
-
         $debug = false;
         $results = [];
 

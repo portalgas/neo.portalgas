@@ -365,6 +365,10 @@ class ArticlesOrdersTable extends Table
      * front-end - estrae gli articoli associati ad un ordine ed evenuuali acquisti per user  
      * ArticlesOrders.article_id              = Articles.id
      * ArticlesOrders.article_organization_id = Articles.organization_id
+     * 
+     * $options['refer']
+     *  CART se RI-OPEN-VALIDATE, prendo tutti gli articoli non solo quelli con pezzi_confezione > 1 per riapertura    
+     *  ACQUISTA se RI-OPEN-VALIDATE, prendo solo gli articoli con pezzi_confezione > 1 per riapertura    
      */
     public function getCartsByUser($user, $organization_id, $user_id, $orderResults, $where=[], $options=[], $debug=false) {
 
@@ -379,16 +383,23 @@ class ArticlesOrdersTable extends Table
                               $this->getAlias().'.order_id' => $order_id,
                               $this->getAlias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
+        
+        if($options['refer']=='CART') {
+            $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
+        } 
+        else {
+            // $options['refer']=='ACQUISTA'
 
-        switch ($order_state_code) {
-            case 'RI-OPEN-VALIDATE':
-                $where['ArticlesOrders'] += [$this->getAlias().'.pezzi_confezione > ' => 1];
-                $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug); 
-            break;
-            default:
-                $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
-            break;
-        }          
+            switch ($order_state_code) {
+                case 'RI-OPEN-VALIDATE':
+                    $where['ArticlesOrders'] += [$this->getAlias().'.pezzi_confezione > ' => 1];
+                    $results = $this->getRiOpenValidate($user, $organization_id, $orderResults, $where, $options, $debug); 
+                break;
+                default:
+                    $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
+                break;
+            } 
+        }       
         if($debug) debug($results);
 
         /*
