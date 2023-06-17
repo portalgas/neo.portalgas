@@ -34,7 +34,8 @@ echo $this->element('msg', ['msg' => $msg, 'class' => 'info']);
   <div class="row">
     <div class="col-xs-12">
       <?php 
-      echo $this->element('search/movements');
+      if($user->acl['isManager']) 
+        echo $this->element('search/movements');
       ?>      
       <div class="box">
         <div class="box-header">

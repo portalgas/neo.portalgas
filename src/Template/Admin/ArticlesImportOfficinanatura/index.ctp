@@ -14,6 +14,7 @@
   $msg .= "<ul>";
   $msg .= "<li>eliminare prime righe intestazione</li>";
   $msg .= "<li>eliminare ultime righe dati fatturazione</li>";
+  $msg .= "<li>eliminare eventuali *</li>";
   $msg .= "</ul>";
   
   echo $this->element('msg', ['msg' => $msg]);

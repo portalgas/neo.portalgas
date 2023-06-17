@@ -56,16 +56,46 @@ class GasGroupsController extends AppController
         $gasGroups = $this->paginate($gasGroups);
         */
         if($this->_user->acl['isManager']) {
+
+            $where_gas_groups_user = [];
+            $where_gas_groups_user = ['GasGroupUsers.organization_id' => $this->_organization->id];
+
+            /* 
+            * filters
+            */
+            $request = $this->request->getQuery();
+            $search_user_id = '';
+              
+            if(!empty($request['search_user_id'])) {
+                $search_user_id = $request['search_user_id'];
+                $where_gas_groups_user += ['GasGroupUsers.user_id' => $search_user_id];
+            } 
+            $this->set(compact('search_user_id'));
+
+            $usersTable = TableRegistry::get('Users');
+            $users = $usersTable->getList($this->_user, $this->_organization->id);   
+            $this->set(compact('users')); 
+
             $gasGroups = $this->GasGroups->find()->contain([
                 'GasGroupDeliveries', 
                 'Users', // chi l'ha creato
                 'GasGroupUsers' => [
-                    'conditions' => [
-                        'GasGroupUsers.organization_id' => $this->_organization->id]]])
-            ->where(['GasGroups.organization_id' => $this->_organization->id,
-                    'GasGroups.is_active' => true])
-            ->order(['GasGroups.name'])
-            ->all();            
+                    'conditions' => $where_gas_groups_user]])
+                ->where(['GasGroups.organization_id' => $this->_organization->id,
+                        'GasGroups.is_active' => true])
+                ->order(['GasGroups.name'])
+                ->all();
+                
+            if($gasGroups->count()>0)
+                $gasGroups = $gasGroups->toArray();
+
+            if(!empty($request['search_user_id'])) {
+                // escludo i gruppi che non hanno l'utente filtrato
+                foreach($gasGroups as $numResult => $gasGroup) {
+                    if(empty($gasGroup->gas_group_users)) 
+                        unset($gasGroups[$numResult]);
+                }
+            }
         }
         else
             $gasGroups = $this->GasGroups->findMy($this->_user, $this->_organization->id, $this->_user->id);

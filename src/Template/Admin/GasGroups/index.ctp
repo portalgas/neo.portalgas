@@ -24,6 +24,9 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
+      <?php 
+      echo $this->element('search/gas-groups');
+      ?>       
       <div class="box">
         <div class="box-header">
           <h3 class="box-title"><?php echo __('List'); ?></h3>
@@ -55,7 +58,10 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                 <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
                 <th scope="col" class=""><?= __('name') ?></th>
                 <th scope="col" class=""><?= __('descri') ?></th>
-                <th scope="col" class="text-center"><?= __('Totate gasisti') ?></th>
+                <?php 
+                if(!empty($request['search_user_id']))
+                  echo '<th scope="col" class="text-center">'.__('Totate gasisti').'</th>';
+                ?>
                 <th scope="col" class="text-center"><?= __('Totate consegne') ?></th>
                 <!-- th scope="col" class="text-center"><?= __('Totate ordini') ?></th -->
                 <th scope="col" class="text-center"><?= __('Is Active') ?></th>
@@ -80,7 +86,8 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '</td>';
                   echo '<td>'.h($gasGroup->name).'</td>'; 
                   echo '<td>'.$this->Text->autoParagraph($gasGroup->descri).'</td>'; 
-                  echo '<td class="text-center">'.count($gasGroup->gas_group_users).'</td>';
+                  if(!empty($request['search_user_id']))
+                    echo '<td class="text-center">'.count($gasGroup->gas_group_users).'</td>';
                   echo '<td class="text-center">'.count($gasGroup->gas_group_deliveries).'</td>';
                   echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse($gasGroup, 'is_active').'</td>';
                   echo '<td>'.$gasGroup->user->name.'</td>';

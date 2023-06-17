@@ -384,6 +384,8 @@ class ArticlesOrdersTable extends Table
                               $this->getAlias().'.stato != ' => 'N'], 
                               $where['ArticlesOrders']);
         
+        if(!isset($options['refer']))
+            $options['refer'] = 'ACQUISTA';                              
         if($options['refer']=='CART') {
             $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
         } 
