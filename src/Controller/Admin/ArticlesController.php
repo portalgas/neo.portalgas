@@ -5,45 +5,81 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
+use App\Decorator\ApiArticleDecorator;
 
-/**
- * Articles Controller
- *
- * @property \App\Model\Table\ArticlesTable $Articles
- *
- * @method \App\Model\Entity\Article[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class ArticlesController extends AppController
 {
     public function initialize()
     {
         parent::initialize();
         $this->loadComponent('Auths');
+        $this->loadComponent('SuppliersOrganization');
     }
 
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
-
-        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {
+        
+        if(!$this->_user->acl['isSuperReferente'] && !$this->_user->acl['isReferentGeneric']) {        
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
-
+  
     /**
      * Index method
      *
      * @return \Cake\Http\Response|null
      */
-    public function index()
+    public function indexQuick()
     {
-        $this->paginate = [
-            'contain' => ['Organizations', 'SuppliersOrganizations', 'CategoriesArticles'],
-        ];
-        $articles = $this->paginate($this->Articles);
+        $where = [];
 
+        /* 
+         * filters
+         */
+        $request = $this->request->getQuery();
+        $search_name = '';
+        $search_code = '';
+        $search_supplier_organization_id = '';
+          
+        if(!empty($request['search_name'])) {
+            $search_name = $request['search_name'];
+            $where += ['Articles.name LIKE ' => '%'.$search_name.'%'];
+        } 
+        if(!empty($request['search_code'])) {
+            $search_code = $request['search_code'];
+            $where += ['Articles.code' => '%'.$search_code.'%'];
+        } 
+        if(!empty($request['search_supplier_organization_id'])) {
+            $search_supplier_organization_id = $request['search_supplier_organization_id'];
+            $where += ['Articles.supplier_organization_id' => $search_supplier_organization_id];
+        }                 
+        $this->set(compact('search_code', 'search_name', 'search_supplier_organization_id'));
+     
+        $articles = $this->Articles->find()
+                    ->contain(['SuppliersOrganizations', 'CategoriesArticles'])
+                    ->where($where)
+                    ->order(['Articles.name'])
+                    ->limit(100)
+                    ->all();
+
+        $article = new ApiArticleDecorator($this->_user, $articles);
+        $articles = $article->results;
         $this->set(compact('articles'));
+
+        /* 
+         * filters
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+        $this->set(compact('suppliersOrganizations'));
+
+        $si_no = ['Y' => 'Si', 'N' => 'No'];
+        $this->set(compact('si_no'));
+
+        $this->set('ums', $this->Articles->enum('um'));
     }
 
     /**

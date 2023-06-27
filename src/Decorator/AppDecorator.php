@@ -479,5 +479,19 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
             $results = Configure::read('Article.img.no');
         
         return $results; 
-    }       
+    }  
+    
+    protected function _getArticleImg1Size($row) {
+        $img1_size = 0;
+        if(!empty($row->img1)) {
+            $config = Configure::read('Config');
+            $img_path = sprintf(Configure::read('Article.img.path.full'), $article->organization_id, $article->img1);
+            $portalgas_app_root = $config['Portalgas.App.root'];
+            $path = $portalgas_app_root.$img_path;
+            if(file_exists($path)) 
+                $img1_size = filesize($path);
+        }
+
+        return $img1_size;
+    }
 }

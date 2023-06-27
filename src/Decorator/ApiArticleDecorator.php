@@ -39,10 +39,11 @@ class ApiArticleDecorator  extends AppDecorator {
         // debug($article);
         
         $results = [];
-         
+
         $results = $article->toArray();
-        $results['img1'] = $this->_getArticleImg1($article);        
+        $results['img1'] = $this->_getArticleImg1($article);
         $results['img1_width'] = Configure::read('Article.img.preview.width');
+        $results['img1_size'] = $this->_getArticleImg1Size($article);
 
         $results['is_select'] = false; // per vue js x gestire eventuali checkbox 
 
@@ -68,7 +69,7 @@ class ApiArticleDecorator  extends AppDecorator {
 
         $results['um_rif_label'] = $this->_getArticlePrezzoUM($article->prezzo, $article->qta, $article->um, $article->um_rif);          
         $results['conf'] = $article->qta.' '.$article->um;
-     
+      
         return $results;
     }
 

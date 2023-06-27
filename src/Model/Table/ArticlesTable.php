@@ -12,7 +12,15 @@ use App\Traits;
 class ArticlesTable extends Table
 {
     use Traits\SqlTrait;
-        
+  
+    const UM_PZ = 'PZ';
+    const UM_GR = 'GR';
+    const UM_HG = 'HG';
+    const UM_KG = 'KG';
+    const UM_ML = 'ML';
+    const UM_DL = 'DL';
+    const UM_LT = 'LT';
+
     /**
      * Initialize method
      *
@@ -28,6 +36,12 @@ class ArticlesTable extends Table
         $this->setPrimaryKey(['organization_id', 'id']);
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('CakeDC/Enum.Enum', ['lists' => [
+            'um' => [
+                'strategy' => 'const',
+                'prefix' => 'UM'
+            ],
+        ]]);
 
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
