@@ -132,7 +132,10 @@ class ExportsReferentsController extends AppController {
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 
-        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        $options = [];
+        $options['sort'] = [];
+        $options['limit'] = Configure::read('sql.no.limit');        
+        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent, [], $options);
         switch($order_type_id) {
             case Configure::read('Order.type.gas_parent_groups'):
                 $article_orders = new OrdersGasParentGroupsToArticlesDecorator($this->_user, $orders);
@@ -181,7 +184,10 @@ class ExportsReferentsController extends AppController {
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 
-        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        $options = [];
+        $options['sort'] = [];
+        $options['limit'] = Configure::read('sql.no.limit');        
+        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent, [], $options);
         switch($order_type_id) {
             case Configure::read('Order.type.gas_parent_groups'):
                 $orders = new OrdersGasParentGroupsToArticlesByGroupsDecorator($this->_user, $orders);
@@ -230,7 +236,10 @@ class ExportsReferentsController extends AppController {
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $orderParent);
 
-        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent);
+        $options = [];
+        $options['sort'] = [];
+        $options['limit'] = Configure::read('sql.no.limit');
+        $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $orderParent, [], $options);
         switch($order_type_id) {
             case Configure::read('Order.type.gas_parent_groups'):
                 $orders = new OrdersGasParentGroupsToUsersArticlesByGroupsDecorator($this->_user, $orders);

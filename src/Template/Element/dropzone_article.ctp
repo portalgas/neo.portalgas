@@ -38,7 +38,7 @@ $js = "
     maxFilesize: 5, // MB
 	init: function() {
 
-		console.log('myDropzone".$id."', 'init');
+		// console.log('myDropzone".$id."', 'init');
 
         ".$js_img_edit." 
 

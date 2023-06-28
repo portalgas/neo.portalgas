@@ -261,7 +261,7 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
      * l'ordine e' fittizio, ricavo gli ordini (GasGroups) associati
      */    
     public function getCartsByOrder($user, $organization_id, $order, $where=[], $options=[], $debug=false) {
-        
+      
         $results = [];
 
         /* 
@@ -277,7 +277,7 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
                 ->where($whereOrder)
                 ->order(['GasGroups.name'])
                 ->all();
-                
+       
         if($orders->count()==0)
             return $results;
 
@@ -290,7 +290,7 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
                                 $this->getAlias().'.order_id' => $order->id,
                                 $this->getAlias().'.stato != ' => 'N'], 
                                 $where['ParamsArticlesOrders']);
-   
+                                
             $article_orders = $this->gets($user, $organization_id, $order, $where, $options, $debug);
             if($debug) debug($article_orders);
          

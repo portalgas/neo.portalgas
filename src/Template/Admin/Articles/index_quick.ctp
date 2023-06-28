@@ -2,6 +2,8 @@
 use Cake\Core\Configure;
 use App\Traits;
 
+echo $this->Html->script('vue/articles', ['block' => 'scriptPageInclude']);
+
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']); 
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']); 
 ?>
@@ -11,7 +13,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
   </h1>
 </section>
 
-<!-- Main content -->
+<div id="vue-articles">
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -59,8 +61,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
               <?php foreach ($articles as $article) { 
      
                 echo $this->Form->create(null, ['role' => 'form']);
-                echo $this->Form->control('id', ['type' => 'hidden', 'value' => $article['id']]);
-                echo $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $article['organization_id']]);
+                echo $this->Form->control('id', ['id' => 'article_id-'.$article['id'], 'type' => 'hidden', 'value' => $article['id']]);
+                echo $this->Form->control('organization_id', ['id' => 'article_id-'.$article['organization_id'], 'type' => 'hidden', 'value' => $article['organization_id']]);
                 ?>
                 <tr>
                   <td class="actions text-right">
@@ -74,8 +76,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         $label = 'Non attivo';
                         $css = 'danger';
                       }
-                      echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
-                      echo '<br />';
+                      // echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
+                      // echo '<br />';
 
                       if($article['flag_presente_articlesorders']=='Y') {
                         $label = 'Ordinabile';
@@ -89,7 +91,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
 
                       echo '<br />';
-                      echo $this->Form->button('<i class="fa fa-search-plus" aria-hidden="true"></i>', ['class'=>'btn btn-info']);
+                      echo $this->Form->button('<i class="fa fa-search-plus" aria-hidden="true"></i>', ['class'=>'btn btn-info', '@click' => 'toggleExtra($event, '.$article['organization_id'].', '.$article['id'].');']);
                       ?>
                   </td>
                   <?php 
@@ -97,7 +99,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     echo '<td>'.$article['suppliers_organization']['name'].'</td>';
                   ?>
                   <td><?= $article['categories_article']['name']; ?></td>
-                  <td><?= $this->Form->control('bio', ['label' => false, 'type' => 'radio', 'options' => $si_no, 'default' => $article['bio']]) ?></td>
+                  <td><?= $this->Form->control('bio['.$article['organization_id'].']['.$article['id'].']', ['label' => false, 'type' => 'radio', 'options' => $si_no, 'value' => $article['bio']]) ?></td>
                   <td>
                     <?php 
                       echo $this->element('dropzone_article', ['article' => $article]);
@@ -110,12 +112,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <td><?= $this->Form->control('um', ['label' => false, 'value' => $article['um'], 'options' => $ums]) ?></td>
                   <td><?= $this->Form->control('um_riferimento', ['label' => false, 'value' => $article['um_riferimento'], 'options' => $ums]) ?></td>
                 </tr>
-
-                <tr>
+                <!-- extra -->
+                <tr style="display: none;" class="extra-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>">
                   <th scope="col"></th>
                   <th scope="col"></th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
+                  <th scope="col"><?= __('Nota') ?></th>
+                  <th scope="col"><?= __('Ingredienti') ?></th>
                   <th scope="col"><?= __('pezzi_confezione') ?></th>
                   <th scope="col"><?= __('qta_minima') ?></th>
                   <th scope="col"><?= __('qta_massima') ?></th>
@@ -124,11 +126,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <th scope="col"><?= __('qta_multipli') ?></th>
                   <!-- th scope="col"><?= __('alert_to_qta') ?></th -->
                 </tr>
-                <tr>
+                <tr style="display: none;" class="extra-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>">
                   <td></td>
                   <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><?= $this->Form->control('nota', ['type' => 'textarea', 'label' => false, 'value' => $article['nota']]) ?></td>
+                  <td><?= $this->Form->control('ingredienti', ['type' => 'textarea', 'label' => false, 'value' => $article['ingredienti']]) ?></td>
                   <td><?= $this->Form->control('pezzi_confezione', ['label' => false, 'value' => $article['pezzi_confezione']]) ?></td>
                   <td><?= $this->Form->control('qta_minima', ['label' => false, 'value' => $article['qta_minima']]) ?></td>
                   <td><?= $this->Form->control('qta_massima', ['label' => false, 'value' => $article['qta_massima']]) ?></td>
@@ -150,3 +152,4 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
     </div>
   </div>
 </section>
+</div> <!-- vue-articles -->
