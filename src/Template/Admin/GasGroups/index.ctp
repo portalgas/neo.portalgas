@@ -25,7 +25,8 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
   <div class="row">
     <div class="col-xs-12">
       <?php 
-      echo $this->element('search/gas-groups');
+      if($user->acl['isManager'])
+        echo $this->element('search/gas-groups');
       ?>       
       <div class="box">
         <div class="box-header">
