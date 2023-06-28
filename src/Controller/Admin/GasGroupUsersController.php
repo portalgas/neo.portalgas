@@ -27,11 +27,10 @@ class GasGroupUsersController extends AppController
         $this->_user = $this->Authentication->getIdentity();
         $this->_organization = $this->_user->organization; // gas scelto
   
-        if(!isset($this->_user->acl) ||
-            !isset($this->_organization->paramsConfig['hasGasGroups']) || 
-            $this->_organization->paramsConfig['hasGasGroups']=='N' || 
-             !$this->_user->acl['isGasGroupsManagerGroups']
-            ) { 
+        if((!isset($this->_organization->paramsConfig['hasGasGroups']) || 
+            $this->_organization->paramsConfig['hasGasGroups']=='N') &&  
+            !$this->_user->acl['isGasGroupsManagerGroups'] &&
+            !$this->_user->acl['isManager']) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
