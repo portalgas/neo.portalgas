@@ -25,13 +25,11 @@ class GasGroupsController extends AppController
         
         parent::beforeFilter($event);
         
-        if(!isset($this->_organization->paramsConfig['hasGasGroups']) || 
-           $this->_organization->paramsConfig['hasGasGroups']=='N' || 
-           !$this->_user->acl['isGasGroupsManagerGroups'] || 
-           !$this->_user->acl['isGasGroupsManagerGroups'] ||
-           !$this->_user->acl['isManager']) {
+        if((!isset($this->_organization->paramsConfig['hasGasGroups']) || 
+            $this->_organization->paramsConfig['hasGasGroups']=='N') &&  
+            !$this->_user->acl['isGasGroupsManagerGroups'] &&
+            !$this->_user->acl['isManager']) { 
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
-            Log::error($this->request->params['controller'].'->'.$this->request->params['action'].' '.__('msg_not_permission'));
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }

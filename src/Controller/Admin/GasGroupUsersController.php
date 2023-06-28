@@ -26,7 +26,7 @@ class GasGroupUsersController extends AppController
 
         $this->_user = $this->Authentication->getIdentity();
         $this->_organization = $this->_user->organization; // gas scelto
-   
+  
         if(!isset($this->_user->acl) ||
             !isset($this->_organization->paramsConfig['hasGasGroups']) || 
             $this->_organization->paramsConfig['hasGasGroups']=='N' || 
