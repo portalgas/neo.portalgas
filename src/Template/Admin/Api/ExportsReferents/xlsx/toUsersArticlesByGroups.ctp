@@ -38,7 +38,7 @@ if(!empty($orders)) {
 		$i++;
 		$i = ($i+2);
 
-		$sheet->setCellValue('A'.($i+$ii+$iii), __('GasGroup'));
+		$sheet->setCellValue('A'.($i+$ii+$iii), __('Gas Group'));
 		$sheet->setCellValue('B'.($i+$ii+$iii), $order->gas_group->name);
 
 		if(isset($opts['deliveries_orders']) && $opts['deliveries_orders']=='Y') {

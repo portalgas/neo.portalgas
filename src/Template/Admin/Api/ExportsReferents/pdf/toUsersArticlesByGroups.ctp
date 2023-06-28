@@ -34,7 +34,10 @@ if(!empty($orders)) {
 
 	$totale = 0;
 	foreach($orders as $order) {
-		$html .= '<h3><b>'.__('GasGroup').'</b>: '.$order->gas_group->name.'</h3>';
+		$html .= '<h3><b>'.__('Gas Group').'</b>';
+		if(!empty($order->gas_group))
+			$html .= ': '.$order->gas_group->name;
+		echo '</h3>';
 		if(isset($opts['deliveries_orders']) && $opts['deliveries_orders']=='Y')
 			$html .= '<h4><b>'.__('Delivery').'</b>: '.$order->delivery->luogo.' '.$order->delivery->data->i18nFormat('eeee d MMMM').'</h4>';
 		

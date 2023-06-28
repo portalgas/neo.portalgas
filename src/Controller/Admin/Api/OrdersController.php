@@ -100,11 +100,11 @@ class OrdersController extends ApiAppController
                 $where += ['Orders.gas_group_id' => 0]; // utente non associato in alcun gruppo, prendo ordini non del gruppo 
             else {
                 $acls = array_keys($gasGroups);
-                $acls = array_merge($acls, [0]);
+                // $acls = array_merge($acls, [0]);
                 $where += ['Orders.gas_group_id IN ' => $acls];
             }
         } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
-     
+       
         $ordersTable = TableRegistry::get('Orders');
 
         /*

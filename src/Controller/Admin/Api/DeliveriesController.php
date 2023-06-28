@@ -70,6 +70,20 @@ class DeliveriesController extends ApiAppController
                             'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE'],
                             'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')
                         ];
+
+        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y') {
+            // ctrl che l'utente appartertenga al gruppo 
+            $gasGroupsTable = TableRegistry::get('GasGroups');
+            $gasGroups = $gasGroupsTable->findMyLists($this->_user, $organization_id, $this->_user->id);
+            if(empty($gasGroups))
+                $where['Orders'] += ['Orders.gas_group_id' => 0]; // utente non associato in alcun gruppo, prendo ordini non del gruppo 
+            else {
+                $acls = array_keys($gasGroups);
+                // $acls = array_merge($acls, [0]);
+                $where['Orders'] += ['Orders.gas_group_id IN ' => $acls];
+            }
+        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
+        
         $sysDelivery = $deliveriesTable->getDeliverySys($this->_user, $organization_id, $where);
         // debug($sysDelivery);
 

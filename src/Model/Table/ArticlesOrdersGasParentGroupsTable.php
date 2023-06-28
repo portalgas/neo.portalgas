@@ -63,7 +63,9 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
             $cartsTable = TableRegistry::get('Carts');
             $ordersTable = TableRegistry::get('Orders');
             $order_childs = $ordersTable->find()
-                                        ->where(['Orders.parent_id' => $order->id])
+                                        ->where([
+                                            'Orders.gas_group_id != ' => 0,
+                                            'Orders.parent_id' => $order->id])
                                         ->all();
             if($order_childs->count()>0) 
             foreach($order_childs as $order_child) { // loop per ogni ordine figlio
@@ -159,6 +161,7 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
         $ordersTable = TableRegistry::get('Orders');
         $whereOrder = ['Orders.organization_id' => $organization_id,
                     'Orders.order_type_id' => Configure::read('Order.type.gas_groups'),
+                    'Orders.gas_group_id != ' => 0,
                     'Orders.parent_id' => $orderResults->id];
         $subOrders = $ordersTable->find()
                 ->contain(['GasGroups', 'Deliveries'])
@@ -267,6 +270,7 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
         $ordersTable = TableRegistry::get('Orders');
         $whereOrder = ['Orders.organization_id' => $organization_id,
                     'Orders.order_type_id' => Configure::read('Order.type.gas_groups'),
+                    'Orders.gas_group_id != ' => 0,
                     'Orders.parent_id' => $order->id];
         $orders = $ordersTable->find()
                 ->contain(['GasGroups', 'Deliveries', 'SuppliersOrganizations'])
@@ -365,7 +369,9 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
          */
         $ordersTable = TableRegistry::get('Orders');
         $order_childs = $ordersTable->find()
-                                    ->where(['Orders.parent_id' => $order->id])
+                                    ->where([
+                                        'Orders.gas_group_id != ' => 0,
+                                        'Orders.parent_id' => $order->id])
                                     ->all();
         foreach($order_childs as $order_child) {
             $where = [$this->getAlias().'.organization_id' => $order_child->organization_id, 
