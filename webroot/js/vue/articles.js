@@ -13,215 +13,155 @@ $(function () {
       router,
       el: '#vue-articles',
       data: {
-        select_articles_all: false,
-        select_article_orders_all: false,
-        can_edit: false,
-        order: [],
-        article_orders: [],
+        ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
         articles: [],
-        is_run_loader_global: false,
-        is_run: false,
-        is_save: false
+        is_run: false
       },  
       methods: {
-        toggleExtra: function(e, organization_id, article_id) {
-          console.log('.extra-'+organization_id+'-'+article_id, 'toggleExtra');
-          $('.extra-'+organization_id+'-'+article_id).toggle('slow');
-        },
-        selectArticleOrdersAll: function(e) {
-            let _this = this;
-            if(_this.article_orders.length>0) {
-              _this.select_article_orders_all = !_this.select_article_orders_all;
-              
-              _this.article_orders.forEach(function (article_order, i) {
-                  article_order.is_select = _this.select_article_orders_all;
-              });   
-            }
-        },
-        selectArticlesAll: function(e) {
-          let _this = this;
-          if(_this.articles.length>0) {
-            _this.select_articles_all = !_this.select_articles_all;
-            
-            _this.articles.forEach(function (article, i) {
-                article.is_select = _this.select_articles_all;
-            });   
-          }          
-        },
-        gets: function(e) {
-
-            this.is_run_loader_global = true;
-            this.is_run = true;
-
-            let organization_id = $("input[name='organization_id']").val(); 
-            let order_id = $("input[name='order_id']").val();
-            let order_type_id = $("input[name='order_type_id']").val();
-            // console.log(ajaxUrlGetOrdersByDelivery+' delivery_id '+delivery_id);
-
-            if(order_id==0 || order_id=='' || order_id=='undefined') {
-              console.error('order_id '+order_id+' non definito', 'gets');
-              this.is_run_loader_global = false;
-              this.is_run = false;
-              return;
-            }
-
-            let params = {
-                organization_id: organization_id,
-                order_type_id: order_type_id,
-                order_id: order_id
-            }; 
-            console.log(params, 'getAssociateToOrder params'); 
-
-            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-            axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
-
-            axios.post('/admin/api/article-orders/getAssociateToOrder', params)
-                .then(response => {
-                  console.log(response.data, 'getAssociateToOrder'); 
-                  
-                  this.is_run_loader_global = false;
-                  this.is_run = false;
-                  if(response.data.esito) {
-                    this.can_edit = response.data.results.can_edit;  
-                    this.order = response.data.results.order;
-                    /* articoli gia' associati */
-                    this.article_orders = response.data.results.article_orders;        
-                    /* articoli da associare */
-                    this.articles = response.data.results.articles;
-                  }
-                  else {
-                    console.error(response.data.errors);
-                  }
-
-                })
-            .catch(error => {
-              this.is_run_loader_global = false;
-              this.is_run = false;
-              console.error("Error: " + error);
-            });            
-        },
-        /* 
-          * ctrl che gli articoli gia' associati non siamo gia' acquistati
-          */        
-        preSave: function(e) {
-          e.preventDefault();
-
-          let _this = this;
-          let tot_article_order_in_carts = 0;
-
-          if(_this.article_orders.length>0) {
-            /* prendo solo quelli scelti */
-            _this.article_orders.forEach(function (article_order, i) {
-              if(article_order.is_select) {
-                if(article_order.carts.length>0)
-                  tot_article_order_in_carts++;
-              }              
-            });   
-          }  
-
-          if(tot_article_order_in_carts>0) {
-            $("#myModal").modal();
-            // $("html, body").animate({ scrollTop: 0 }, 1500);
-          }
+        toggleFlagPresenteArticlesOrders: function(index) {
+          console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
+          if(this.articles[index].flag_presente_articlesorders=='Y')
+            this.articles[index].flag_presente_articlesorders = 'N';
           else 
-            _this.save(e);
-        },        
-        save: function(e) {
-          e.preventDefault();
-          
-          let _this = this;
-          
-          _this.is_save = true;
-          let _update_article_orders = [];
-          let _delete_article_orders = [];
-          let _articles = [];
-
-          /* 
-           * articoli gia' associati => update / delete (disassocio)
-           */  
-          if(_this.article_orders.length>0) {
-            /* prendo solo quelli scelti */
-            _this.article_orders.forEach(function (article_order, i) {
-              if(article_order.is_select) 
-                _delete_article_orders.push(article_order);
-              else 
-                _update_article_orders.push(article_order);
-            });   
-          }  
-
-          /* 
-           * articoli da associare
-           */            
-          if(_this.articles.length>0) {
-            /* prendo solo quelli scelti */
-            _this.articles.forEach(function (article, i) {
-              if(article.is_select) 
-                 _articles.push(article);
-            });   
-          }   
-          
-          let organization_id = $("input[name='organization_id']").val(); 
-          let order_id = $("input[name='order_id']").val();
-          let order_type_id = $("input[name='order_type_id']").val();
-          
-          let params = {
-              organization_id: organization_id,
-              order_type_id: order_type_id,
-              order_id: order_id,
-              articles: _articles,
-              update_article_orders: _update_article_orders,
-              delete_article_orders: _delete_article_orders,
-          }; 
-          console.log(params, 'params');
-
-          axios.post('/admin/api/article-orders/setAssociateToOrder', params)
-            .then(response => {
-              console.log(response.data); 
-              _this.is_save = false;   
-              
-              location.reload();
-            })
-            .catch(error => {
-              _this.is_save = false;
-              console.error("Error: " + error);
-            }); 
-                      
-          return false;
-        },        
-        preSavePreviousOrder: function(e) {
-          e.preventDefault();
-          
-          let _this = this;          
-          _this.is_save = true;
-          
-          let organization_id = $("input[name='organization_id']").val(); 
-          let order_id = $("input[name='order_id']").val();
-          let order_type_id = $("input[name='order_type_id']").val();
-          
-          let params = {
-              organization_id: organization_id,
-              order_type_id: order_type_id,
-              order_id: order_id
-          }; 
-          console.log(params, 'params');
-
-          axios.post('/admin/api/article-orders/setAssociateToPreviousOrder', params)
-            .then(response => {
-              console.log(response.data); 
-              _this.is_save = false;   
-              
-             location.reload();
-            })
-            .catch(error => {
-              _this.is_save = false;
-              console.error("Error: " + error);
-            }); 
-                      
-          return false;
+            this.articles[index].flag_presente_articlesorders = 'Y';
         },
-      },
+        toggleExtra: function(index) {
+          console.log('.extra-'+index, 'toggleExtra');
+          $('.extra-'+index).toggle('slow');
+        },
+        gets: function() {
+
+          this.is_run = true;
+
+          let search_supplier_organization_id = $("input[name='search_supplier_organization_id']").val(); 
+          let search_name = $("input[name='search_name']").val();
+          let search_code = $("input[name='search_code']").val();
+          // console.log(gets+' delivery_id '+delivery_id);
+
+          let params = {
+              supplier_organization_id: search_supplier_organization_id,
+              name: search_name,
+              code: search_code
+          }; 
+          console.log(params, 'gets params'); 
+
+          axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
+          axios.post('/admin/api/articles/gets', params)
+              .then(response => {
+                console.log(response.data, 'gets'); 
+                
+                this.is_run = false;
+                if(response.data.code=='200') {
+                  this.articles = response.data.results; 
+                }
+                else {
+                  console.error(response.data.errors);
+                }
+              })
+          .catch(error => {
+            this.is_run = false;
+            console.error("Error: " + error);
+          });            
+        },
+        um_label: function(index) {
+
+          let prezzo = this.articles[index].prezzo;
+          let qta = this.articles[index].prezzo;
+          let um_riferimento = this.articles[index].um_riferimento;
+          let prezzo_um_riferimento = (prezzo / qta);
+          
+          return prezzo_um_riferimento + ' al ' + um_riferimento;
+          /*
+          var str = '';
+              if (um == 'PZ') {
+                  str += '<input class="nospace" checked="checked" type="radio" value="PZ" id="ArticleUmRiferimentoPZ" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoPZ">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Pezzo</label>';
+              } else
+              if (um == 'KG') {
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'GR') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="GR" id="ArticleUmRiferimentoGR" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoGR">' + number_format(prezzo_um_riferimento / 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="KG" id="ArticleUmRiferimentoKG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoKG">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo</label></br>';
+              } else
+              if (um == 'HG') {
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'GR') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="GR" id="ArticleUmRiferimentoGR" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoGR">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="KG" id="ArticleUmRiferimentoKG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoKG">' + number_format(prezzo_um_riferimento * 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo</label></br>';
+              } else
+              if (um == 'GR') {
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'GR') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="GR" id="ArticleUmRiferimentoGR" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoGR">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento * 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="KG" id="ArticleUmRiferimentoKG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoKG">' + number_format(prezzo_um_riferimento * 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo</label></br>';
+              } else
+              if (um == 'LT') {
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'ML') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="ML" id="ArticleUmRiferimentoML" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoML">' + number_format(prezzo_um_riferimento / 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'DL') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="DL" id="ArticleUmRiferimentoDL" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoDL">' + number_format(prezzo_um_riferimento / 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'LT') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="LT" id="ArticleUmRiferimentoLT" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoLT">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro</label></br>';
+              } else
+              if (um == 'DL') {
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'ML') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="ML" id="ArticleUmRiferimentoML" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoML">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'DL') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="DL" id="ArticleUmRiferimentoDL" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoDL">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'LT') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="LT" id="ArticleUmRiferimentoLT" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoLT">' + number_format(prezzo_um_riferimento * 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro</label></br>';
+              } else
+              if (um == 'ML') {
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'ML') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="ML" id="ArticleUmRiferimentoML" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoML">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'DL') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="DL" id="ArticleUmRiferimentoDL" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoDL">' + number_format(prezzo_um_riferimento * 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro</label></br>';
+      
+                  str += '<input class="nospace" type="radio" ';
+                  (um_riferimento == 'LT') ? str += 'checked="checked" ' : str += ' ';
+                  str += 'value="LT" id="ArticleUmRiferimentoLT" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoLT">' + number_format(prezzo_um_riferimento * 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro</label></br>';
+              }          
+          */
+        }        
+      },      
       mounted: function(){
         console.log('mounted articles');
+        this.gets();
       },
       filters: {
         currency(amount) {

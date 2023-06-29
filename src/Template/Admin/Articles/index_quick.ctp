@@ -38,10 +38,22 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
-          <table class="table table-hover">
+
+          <!-- loader globale -->
+          <div class="loader-global" v-if="is_run">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+          </div>
+  
+          <?php
+          echo '<div v-if="articles.length==0">'; 
+          echo $this->element('msg', ['msg' => "Non sono stati trovati articoli", 'class' => 'warning']);
+          echo '</div>';
+          ?>
+
+          <table class="table table-hover" v-if="!is_run && articles.length>0">
             <thead>
               <tr>
-                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
+                  <th scope="col" colspan="2" class="actions text-center"><?= __('Actions') ?></th>
                   <?php 
                   if(empty($search_supplier_organization_id))
                     echo '<th scope="col">'.__('supplier_organization_id').'</th>';
@@ -58,46 +70,120 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($articles as $article) { 
-     
+                  <template
+                      v-for="(article, index) in articles"
+                      :key="article.id"
+                    >
+                      <tr :id="'frm-'+article.id">
+                        <td class="actions text-center">
+                          <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                        </td>
+                        <td class="actions text-center">
+                          <button class="btn-block btn" :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" @click="toggleFlagPresenteArticlesOrders(index)">
+                            <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
+                            <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
+                          </button>
+                        </td>
+                        <td>{{ article.suppliers_organization.name }}</td>
+                        <td>{{ article.categories_article.name }}</td>
+                        <td>{{ article.bio }}</td>
+                        <td>--</td>
+                        <td>
+                        <input type="text" class="form-control" v-model="article.name" name="name" />
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" v-model="article.code" name="code" />
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" v-model="article.prezzo_" name="prezzo" />
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" v-model="article.qta" name="qta" />
+                        </td>
+                        <td>
+                          <select class="form-control" :required="true" v-model="article.um">
+                            <option v-for="um in ums"
+                               v-bind:value="um" >
+                              {{ um }}
+                            </option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="form-control" :required="true" v-model="article.um_riferimento">
+                            <option v-for="um in ums"
+                               v-bind:value="um" >
+                              {{ um }}
+                            </option>
+                          </select>                          
+                          <div>{{ um_label(index) }}</div>
+                        </td>
+
+                      </tr>
+                      <!-- extra -->
+                      <tr style="display: none;" :class="'extra-'+index">
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"><?= __('Nota') ?></th>
+                        <th scope="col"><?= __('Ingredienti') ?></th>
+                        <th scope="col"><?= __('pezzi_confezione') ?></th>
+                        <th scope="col"><?= __('qta_minima') ?></th>
+                        <th scope="col"><?= __('qta_massima') ?></th>
+                        <th scope="col"><?= __('qta_minima_order') ?></th>
+                        <th scope="col"><?= __('qta_massima_order') ?></th>
+                        <th scope="col"><?= __('qta_multipli') ?></th>
+                      </tr>
+                      <tr style="display: none;" :class="'extra-'+index">
+                        <td></td>
+                        <td></td>
+                        <td>{{ article.nota }}</td>
+                        <td>{{ article.ingredienti }}</td>
+                        <td>{{ article.pezzi_confezione }}</td>
+                        <td>{{ article.qta_minima }}</td>
+                        <td>{{ article.qta_massima }}</td>
+                        <td>{{ article.qta_minima_order }}</td>
+                        <td>{{ article.qta_massima_order }}</td>
+                        <td>{{ article.qta_multipli }}</td>
+                      </tr>                      
+                </template>
+                
+          <?php 
+          /*
                 echo $this->Form->create(null, ['role' => 'form']);
                 echo $this->Form->control('id', ['id' => 'article_id-'.$article['id'], 'type' => 'hidden', 'value' => $article['id']]);
                 echo $this->Form->control('organization_id', ['id' => 'article_id-'.$article['organization_id'], 'type' => 'hidden', 'value' => $article['organization_id']]);
-                ?>
-                <tr>
-                  <td class="actions text-right">
-                      <?php 
-                      if($article['stato']=='Y') {
-                        $label = 'Attivo';
-                        $css = 'primary';
 
-                      } 
-                      else {
-                        $label = 'Non attivo';
-                        $css = 'danger';
-                      }
-                      // echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
-                      // echo '<br />';
+                echo '<tr>';
+                echo '<td class="actions text-center">';
+                echo $this->Form->button('<i class="fa fa-search-plus" aria-hidden="true"></i>', ['class'=>'btn btn-info', '@click' => 'toggleExtra($event, '.$article['organization_id'].', '.$article['id'].');']);
+                echo '</td>';
+                echo '<td class="actions text-center">';
 
-                      if($article['flag_presente_articlesorders']=='Y') {
-                        $label = 'Ordinabile';
-                        $css = 'primary';
+                  if($article['stato']=='Y') {
+                    $label = 'Attivo';
+                    $css = 'primary';
 
-                      } 
-                      else {
-                        $label = 'Non ordinabile';
-                        $css = 'danger';
-                      }
-                      echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
+                  } 
+                  else {
+                    $label = 'Non attivo';
+                    $css = 'danger';
+                  }
+                  // echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
+                  // echo '<br />';
 
-                      echo '<br />';
-                      echo $this->Form->button('<i class="fa fa-search-plus" aria-hidden="true"></i>', ['class'=>'btn btn-info', '@click' => 'toggleExtra($event, '.$article['organization_id'].', '.$article['id'].');']);
-                      ?>
-                  </td>
-                  <?php 
-                  if(empty($search_supplier_organization_id))
-                    echo '<td>'.$article['suppliers_organization']['name'].'</td>';
-                  ?>
+                  if($article['flag_presente_articlesorders']=='Y') {
+                    $label = 'Ordinabile';
+                    $css = 'primary';
+
+                  } 
+                  else {
+                    $label = 'Non ordinabile';
+                    $css = 'danger';
+                  }
+                  echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
+              echo '</td>';
+              if(empty($search_supplier_organization_id))
+                echo '<td>'.$article['suppliers_organization']['name'].'</td>';
+              ?>
                   <td><?= $article['categories_article']['name']; ?></td>
                   <td><?= $this->Form->control('bio['.$article['organization_id'].']['.$article['id'].']', ['label' => false, 'type' => 'radio', 'options' => $si_no, 'value' => $article['bio']]) ?></td>
                   <td>
@@ -110,7 +196,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <td><?= $this->Form->control('prezzo', ['label' => false, 'value' => $article['prezzo']]) ?></td>
                   <td><?= $this->Form->control('qta', ['label' => false, 'value' => $article['qta']]) ?></td>
                   <td><?= $this->Form->control('um', ['label' => false, 'value' => $article['um'], 'options' => $ums]) ?></td>
-                  <td><?= $this->Form->control('um_riferimento', ['label' => false, 'value' => $article['um_riferimento'], 'options' => $ums]) ?></td>
+                  <td>
+                    <?= $this->Form->control('um_riferimento', ['label' => false, 'value' => $article['um_riferimento'], 'options' => $ums]) ?>
+                    <div id="um-label-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>"></div>
+                  </td>
                 </tr>
                 <!-- extra -->
                 <tr style="display: none;" class="extra-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>">
@@ -142,6 +231,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
               <?php 
                 echo $this->Form->end(); 
               } // end foreach ($articles as $article)
+              */
                ?>
             </tbody>
           </table>

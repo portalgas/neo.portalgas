@@ -36,8 +36,9 @@ class ArticlesController extends AppController
         $where = [];
 
         /* 
+         * in api/ArticlesController
+         * 
          * filters
-         */
         $request = $this->request->getQuery();
         $search_name = '';
         $search_code = '';
@@ -67,10 +68,16 @@ class ArticlesController extends AppController
         $article = new ApiArticleDecorator($this->_user, $articles);
         $articles = $article->results;
         $this->set(compact('articles'));
+        */
 
         /* 
          * filters
          */
+        $search_name = '';
+        $search_code = '';
+        $search_supplier_organization_id = '';
+        $this->set(compact('search_code', 'search_name', 'search_supplier_organization_id'));
+
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
@@ -79,7 +86,7 @@ class ArticlesController extends AppController
         $si_no = ['Y' => 'Si', 'N' => 'No'];
         $this->set(compact('si_no'));
 
-        $this->set('ums', $this->Articles->enum('um'));
+        // $this->set('ums', $this->Articles->enum('um'));
     }
 
     /**
