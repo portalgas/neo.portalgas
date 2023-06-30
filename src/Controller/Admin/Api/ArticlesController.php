@@ -36,21 +36,18 @@ class ArticlesController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $supplier_organization_id = $this->request->getData('supplier_organization_id');
-        $name = $this->request->getData('name');
-        $code = trim($this->request->getData('code'));
-
+        $jsonData = $this->request->input('json_decode');
         $where = [];
-        if(!empty($request['search_name'])) {
-            $search_name = $request['search_name'];
+        if(!empty($jsonData->search_name)) {
+            $search_name = $jsonData->search_name;
             $where += ['Articles.name LIKE ' => '%'.$search_name.'%'];
         } 
-        if(!empty($request['search_code'])) {
-            $search_code = $request['search_code'];
-            $where += ['Articles.code' => '%'.$search_code.'%'];
+        if(!empty($jsonData->search_codice)) {
+            $search_codice = $jsonData->search_codice;
+            $where += ['Articles.codice' => '%'.$search_codice.'%'];
         } 
-        if(!empty($request['search_supplier_organization_id'])) {
-            $search_supplier_organization_id = $request['search_supplier_organization_id'];
+        if(!empty($jsonData->search_supplier_organization_id)) {
+            $search_supplier_organization_id = $jsonData->search_supplier_organization_id;
             $where += ['Articles.supplier_organization_id' => $search_supplier_organization_id];
         }                 
 

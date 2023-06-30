@@ -8,7 +8,7 @@ $user = $this->Identity->get();
       <h3 class="box-title"><?php echo __('Search');?></h3>
 
       <div class="box-tools pull-right">
-      <span data-toggle="tooltip" title="totale ordini <?php echo count($articles);?>" class="badge bg-light-blue"><?php echo count($articles);?></span>
+      <span data-toggle="tooltip" :title="'totale ordini '+articles.length" class="badge bg-light-blue">{{ articles.length }}</span>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
@@ -28,17 +28,18 @@ $user = $this->Identity->get();
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
     $options['empty'] = true;
+    $options['v-model'] = 'search_supplier_organization_id';
     echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
     echo '<div class="col-md-4">';
-    echo $this->Form->control('search_name', ['label' => __('Name'), 'value' => $search_name, 'placeholder' => __('Name')]);
+    echo $this->Form->control('search_name', ['label' => __('Name'), 'v-model' => 'search_name', 'placeholder' => __('Name')]);
     echo '</div>';
     echo '<div class="col-md-3">';
-    echo $this->Form->control('search_code', ['label' => __('Code'), 'value' => $search_code, 'placeholder' => __('Code')]);
+    echo $this->Form->control('search_codice', ['label' => __('Code'), 'v-model' => 'search_codice', 'placeholder' => __('Code')]);
     echo '</div>';
     echo '<div class="col col-md-2 text-right">';
     echo '<br />';
-    echo $this->Form->button(__('Search'), ['class' => 'btn btn-primary pull-right']);  
+    echo '<button type="button" class="btn btn-primary pull-right" @click="gets()">'.__('Search').'</button>';
     echo '</div>';   
     echo '</div>';
     ?>

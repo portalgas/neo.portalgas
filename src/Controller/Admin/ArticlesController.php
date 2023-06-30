@@ -70,14 +70,6 @@ class ArticlesController extends AppController
         $this->set(compact('articles'));
         */
 
-        /* 
-         * filters
-         */
-        $search_name = '';
-        $search_code = '';
-        $search_supplier_organization_id = '';
-        $this->set(compact('search_code', 'search_name', 'search_supplier_organization_id'));
-
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);

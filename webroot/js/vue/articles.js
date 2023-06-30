@@ -14,10 +14,20 @@ $(function () {
       el: '#vue-articles',
       data: {
         ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
+        search_supplier_organization_id: '',
+        search_name: '',
+        search_codice: '',
         articles: [],
         is_run: false
       },  
       methods: {
+        toggleIsBio: function(index) {
+          console.log(this.articles[index].bio, 'toggleIsBio');
+          if(this.articles[index].bio=='Y')
+            this.articles[index].bio = 'N';
+          else 
+            this.articles[index].bio = 'Y';
+        },
         toggleFlagPresenteArticlesOrders: function(index) {
           console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
           if(this.articles[index].flag_presente_articlesorders=='Y')
@@ -29,26 +39,24 @@ $(function () {
           console.log('.extra-'+index, 'toggleExtra');
           $('.extra-'+index).toggle('slow');
         },
-        gets: function() {
-
+        gets: async function() {
+          await this.getArticles();
+          await this.setDropzone();
+        },
+        getArticles: async function() {
           this.is_run = true;
 
-          let search_supplier_organization_id = $("input[name='search_supplier_organization_id']").val(); 
-          let search_name = $("input[name='search_name']").val();
-          let search_code = $("input[name='search_code']").val();
-          // console.log(gets+' delivery_id '+delivery_id);
-
           let params = {
-              supplier_organization_id: search_supplier_organization_id,
-              name: search_name,
-              code: search_code
+              search_supplier_organization_id: this.search_supplier_organization_id,
+              search_name: this.search_name,
+              search_codice: this.search_codice
           }; 
-          console.log(params, 'gets params'); 
+          console.log(params, 'getArticles params'); 
 
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
 
-          axios.post('/admin/api/articles/gets', params)
+          await axios.post('/admin/api/articles/gets', params)
               .then(response => {
                 console.log(response.data, 'gets'); 
                 
@@ -64,6 +72,85 @@ $(function () {
             this.is_run = false;
             console.error("Error: " + error);
           });            
+        },
+        setDropzone: function() {
+          let _this = this;
+
+          $('.dropzone').each(function() {
+                
+              let index = $(this).attr('data-attr-index');
+              console.log(index, 'data-attr-index');
+
+              var myDropzone = new Dropzone(this, {
+                    url: '/admin/articles/img1/upload/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'], 
+                    dictDefaultMessage: 'Trascina qui la foto dell\'articolo',
+                    dictRemoveFile: 'Elimina foto',
+                    dictFallbackMessage: 'Il tuo browser non supporta il drag\'n\'drop dei file.',
+                    dictFallbackText: 'Please use the fallback form below to upload your files like in the olden days.',
+                    dictFileTooBig: 'Il file è troppo grande ({{filesize}}MiB). Grande massima consentita: {{maxFilesize}}MiB.',
+                    dictInvalidFileType: 'Non puoi uploadare file di questo tipo.',
+                    dictResponseError: 'Server responded with {{statusCode}} code.',
+                    dictCancelUpload: 'Cancel upload',
+                    dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
+                    dictMaxFilesExceeded: 'Non puoi uploadare più file.',	
+                    parallelUploads: 1,
+                    addRemoveLinks: true,
+                    uploadMultiple:false,
+                    maxFiles: 1,
+                    // resizeWidth: 175,
+                    // acceptedFiles: 'image/*',
+                    acceptedFiles: '.jpeg,.jpg,.png,.gif',
+                    paramName: 'img1', // The name that will be used to transfer the file
+                    maxFilesize: 5, // MB  
+                    init: function() {
+
+                      // ctrl size perche' se c'e' il placeholder /img/article-no-img.png
+                      if(_this.articles[index]['img1_size']>0) {
+                          let myDropzone = this;
+                          let mockFile = { name: 'Foto articolo', size: _this.articles[index]['img1_size']};
+                          myDropzone.displayExistingFile(mockFile, _this.articles[index]['img1']);
+                          this.files.push(mockFile);
+                      }
+
+                      this.on('addedfile', function(file) {
+                        console.log('addedfile - this.files.length '+this.files.length);
+                        if (this.files.length > 1) {
+                        this.removeFile(this.files[0]);
+                        }
+                      });		
+                      this.on('maxfilesexceeded', function(file) {
+                              console.log('maxfilesexceeded');
+                        this.removeAllFiles();
+                              this.addFile(file);
+                          });
+                      this.on('success', function(file, response) {
+                        if(response.esito) {
+                  
+                        }
+                        console.log(response, 'success response'); 
+                  
+                      });		
+                      this.on('removedfile', function(file) {
+                        console.log(file, 'removedfile'); 
+                        $.post('/admin/articles/img1/delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id']); 
+                      });		
+                    },
+                    accept: function(file, done) {
+                        if (file.name == 'justinbieber.jpg') {
+                          done('dropzone eseguito');
+                        }
+                        else { done(); }
+                      }
+                }); // new Dropzone
+
+                myDropzone.on('processing', function (file) {
+                  console.log('dropzone processing');
+                });
+                myDropzone.on('queuecomplete', function (file) {
+                    console.log('dropzone queuecomplete');
+                });                
+
+            }); // $('.dropzone').each(function()
         },
         um_label: function(index) {
 

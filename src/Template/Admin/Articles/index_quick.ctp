@@ -79,20 +79,30 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                         </td>
                         <td class="actions text-center">
-                          <button class="btn-block btn" :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" @click="toggleFlagPresenteArticlesOrders(index)">
+                          <button class="btn-block btn" 
+                                :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
+                                :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'" 
+                                @click="toggleFlagPresenteArticlesOrders(index)">
                             <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
                           </button>
                         </td>
                         <td>{{ article.suppliers_organization.name }}</td>
                         <td>{{ article.categories_article.name }}</td>
-                        <td>{{ article.bio }}</td>
-                        <td>--</td>
+                        <td>
+                          <a href="#" @click="toggleIsBio(index)">
+                            <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
+                          </a>
+                        </td>
+                        <td>
+                          <!-- img :src="article.img1" :title="article.img1" width="50" / -->
+                          <div class="dropzone" :id="'my-dropzone'+article.id" :data-attr-index="index"></div>
+                        </td>
                         <td>
                         <input type="text" class="form-control" v-model="article.name" name="name" />
                         </td>
                         <td>
-                          <input type="text" class="form-control" v-model="article.code" name="code" />
+                          <input type="text" class="form-control" v-model="article.code" name="code" size="5" />
                         </td>
                         <td>
                           <input type="text" class="form-control" v-model="article.prezzo_" name="prezzo" />
@@ -125,24 +135,39 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <th scope="col"></th>
                         <th scope="col"><?= __('Nota') ?></th>
                         <th scope="col"><?= __('Ingredienti') ?></th>
+                        <th scope="col"><?= __('qta_multipli') ?></th>
                         <th scope="col"><?= __('pezzi_confezione') ?></th>
                         <th scope="col"><?= __('qta_minima') ?></th>
                         <th scope="col"><?= __('qta_massima') ?></th>
                         <th scope="col"><?= __('qta_minima_order') ?></th>
                         <th scope="col"><?= __('qta_massima_order') ?></th>
-                        <th scope="col"><?= __('qta_multipli') ?></th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
                         <td></td>
-                        <td>{{ article.nota }}</td>
-                        <td>{{ article.ingredienti }}</td>
-                        <td>{{ article.pezzi_confezione }}</td>
-                        <td>{{ article.qta_minima }}</td>
-                        <td>{{ article.qta_massima }}</td>
-                        <td>{{ article.qta_minima_order }}</td>
-                        <td>{{ article.qta_massima_order }}</td>
-                        <td>{{ article.qta_multipli }}</td>
+                        <td>
+                          <textarea>{{ article.nota }}</textarea>
+                        </td>
+                        <td>
+                          <textarea>{{ article.ingredienti }}</textarea>
+                        </td>
+                        <td>
+                          <input type="number" class="form-control" min="1" v-model="article.qta_multipli" name="qta_multipli" />
+                        </td>                        
+                        <td>
+                          <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" name="pezzi_confezione" />
+                        <td>
+                          <input type="number" class="form-control" min="1" v-model="article.qta_minima" name="qta_minima" />
+                        </td>
+                        <td>
+                          <input type="number" class="form-control" min="0" v-model="article.qta_massima" name="qta_massima" />
+                        </td>
+                        <td>
+                          <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" name="qta_minima_order" />
+                        </td>
+                        <td>
+                          <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" name="qta_massima_order" />
+                        </td>
                       </tr>                      
                 </template>
                 
@@ -243,3 +268,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
   </div>
 </section>
 </div> <!-- vue-articles -->
+
+<style>
+.no-bio {
+  opacity: 0.1
+}
+</style>

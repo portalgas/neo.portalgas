@@ -174,6 +174,10 @@ class HtmlCustomSiteOrdersHelper extends Helper
 
         $opts['style'] = 'width:100%';
 
+        // pagina articoli gestita con vue
+        if(isset($options['v-model'])) 
+            $opts['v-model'] = $options['v-model'];        
+        
         $html = '';
         
         // nei filtri di ricerca vale search_supplier_organization_id e non e' fatto il bind
