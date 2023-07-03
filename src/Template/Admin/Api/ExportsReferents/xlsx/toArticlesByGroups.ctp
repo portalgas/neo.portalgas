@@ -66,7 +66,7 @@ if(!empty($orders)) {
 			$sheet->setCellValue('C'.($i+1+$ii), $article_order->article->conf);
 			$sheet->setCellValue('D'.($i+1+$ii), $article_order->article->um_rif_label);
 			$sheet->setCellValue('E'.($i+1+$ii), $article_order->prezzo);
-			$sheet->setCellValue('F'.($i+1+$niiumResult), $article_order->cart->final_qta);
+			$sheet->setCellValue('F'.($i+1+$ii), $article_order->cart->final_qta);
 			$sheet->setCellValue('G'.($i+1+$ii), $article_order->cart->final_price);
 
 		} // end foreach($article_orders as $article_order)
