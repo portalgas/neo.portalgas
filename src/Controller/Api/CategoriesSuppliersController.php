@@ -42,7 +42,6 @@ class CategoriesSuppliersController extends ApiAppController
          * estraggo i Suppliers
          */
         $categoriesSuppliersTable = TableRegistry::get('CategoriesSuppliers'); 
-
         $categoriesSuppliersResults = $categoriesSuppliersTable->find('treeList', ['spacer' => '   ', 'order' => ['CategoriesSuppliers.name' => 'asc']]);
 
         $results['results'] = $categoriesSuppliersResults;

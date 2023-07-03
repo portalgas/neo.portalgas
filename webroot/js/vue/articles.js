@@ -17,6 +17,7 @@ $(function () {
         search_supplier_organization_id: '',
         search_name: '',
         search_codice: '',
+        search_categories_articles: '',
         articles: [],
         is_run: false
       },  
@@ -46,10 +47,15 @@ $(function () {
         getArticles: async function() {
           this.is_run = true;
 
+          // workaround per la class select2
+          let search_categories_articles = $('select[name=search_categories_articles]').val();
+          this.search_categories_articles = search_categories_articles;
+
           let params = {
               search_supplier_organization_id: this.search_supplier_organization_id,
               search_name: this.search_name,
-              search_codice: this.search_codice
+              search_codice: this.search_codice,
+              search_categories_articles: search_categories_articles
           }; 
           console.log(params, 'getArticles params'); 
 

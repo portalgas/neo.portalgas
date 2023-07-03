@@ -22,7 +22,7 @@ $user = $this->Identity->get();
     <legend><?= __('Search {0}', ['Articles']) ?></legend>
     <?php
     echo '<div class="row-no-margin">';
-    echo '<div class="col col-md-3">';
+    echo '<div class="col col-md-2">';
     $options = [];
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
@@ -31,12 +31,15 @@ $user = $this->Identity->get();
     $options['v-model'] = 'search_supplier_organization_id';
     echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
-    echo '<div class="col-md-4">';
+    echo '<div class="col-md-2">';
     echo $this->Form->control('search_name', ['label' => __('Name'), 'v-model' => 'search_name', 'placeholder' => __('Name')]);
     echo '</div>';
-    echo '<div class="col-md-3">';
+    echo '<div class="col-md-2">';
     echo $this->Form->control('search_codice', ['label' => __('Code'), 'v-model' => 'search_codice', 'placeholder' => __('Code')]);
     echo '</div>';
+    echo '<div class="col-md-2">';
+    echo $this->Form->control('search_categories_articles', ['label' => __('Categories'), 'v-model' => 'search_categories_articles', 'options' => $categories_articles, 'escape' => false, 'class' => 'form-control select2', 'empty' => Configure::read('HtmlOptionEmpty')]);
+    echo '</div>';    
     echo '<div class="col col-md-2 text-right">';
     echo '<br />';
     echo '<button type="button" class="btn btn-primary pull-right" @click="gets()">'.__('Search').'</button>';
