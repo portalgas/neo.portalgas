@@ -2,6 +2,8 @@
 use Cake\Core\Configure;
 use App\Traits;
 
+$js = "var categories_articles = $js_categories_articles";
+$this->Html->scriptBlock($js, ['block' => true]);
 echo $this->Html->script('vue/articles', ['block' => 'scriptPageInclude']);
 
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']); 
@@ -76,6 +78,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     >
                       <tr :id="'frm-'+article.id">
                         <td class="actions text-center">
+                          <!-- {{ article.id }} {{ article.organization_id }} -->
                           <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                         </td>
                         <td class="actions text-center">
@@ -88,7 +91,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           </button>
                         </td>
                         <td>{{ article.suppliers_organization.name }}</td>
-                        <td>{{ article.categories_article.name }}</td>
+                        <td>
+                          <select name="category_article_id" class="form-control" :required="true" v-model="article.category_article_id" >
+                            <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
+                            </option>
+                          </select>  
+                        </td>
                         <td>
                           <a href="#" @click="toggleIsBio(index)">
                             <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
@@ -273,4 +281,31 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 .no-bio {
   opacity: 0.1
 }
+</style>
+
+<style>
+  .autocomplete {
+    position: relative;
+  }
+  .autocomplete-results {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #eeeeee;
+    height: 120px;
+    min-height: 1em;
+    max-height: 6em;    
+    overflow: auto;
+    width: 500px;
+  }
+  .autocomplete-result {
+    list-style: none;
+    text-align: left;
+    padding: 4px 2px;
+    cursor: pointer;
+  }
+  .autocomplete-result.is-active,
+  .autocomplete-result:hover {
+    background-color:#367fa9;
+    color: white;
+  }  
 </style>

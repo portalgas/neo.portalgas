@@ -346,6 +346,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         });
         $routes->scope('/articles', ['controller' => 'Articles'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+            $routes->connect('/getAutocomplete', ['action' => 'getAutocomplete', '_method' => 'POST']);
         });        
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);

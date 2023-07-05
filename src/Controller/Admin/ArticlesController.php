@@ -79,7 +79,8 @@ class ArticlesController extends AppController
         $categories_articles = $categoriesArticlesTable->find('treeList', [
                             'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 
                             'conditions' => ['Organization_id' => $this->_organization->id]]);
-        $this->set(compact('categories_articles'));
+        $js_categories_articles = json_encode($categories_articles->toArray());
+        $this->set(compact('categories_articles', 'js_categories_articles'));
 
         $si_no = ['Y' => 'Si', 'N' => 'No'];
         $this->set(compact('si_no'));

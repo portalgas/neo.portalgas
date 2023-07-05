@@ -18,16 +18,130 @@ $(function () {
         search_name: '',
         search_codice: '',
         search_categories_articles: '',
+        search_flag_presente_articlesorders: true,
         articles: [],
-        is_run: false
+        is_run: false,
+        autocomplete_field: '',
+        autocomplete_name_results: [],
+        autocomplete_name_is_open: false,
+        autocomplete_name_is_loading : false,
+        autocomplete_name_arrow_counter: -1,
+        autocomplete_name_items: [],    
+        autocomplete_codice_results: [],
+        autocomplete_codice_is_open: false,
+        autocomplete_codice_is_loading : false,
+        autocomplete_codice_arrow_counter: -1,
+        autocomplete_codice_items: [],        
       },  
       methods: {
+        handleClickOutside: function(event) {
+          if (!this.$el.contains(event.target)) {
+            this.autocomplete_name_arrow_counter = -1;
+            this.autocomplete_name_is_open = false;
+          }
+        },
+        onArrowDownSearchName: function() {
+          if (this.autocomplete_name_arrow_counter < this.autocomplete_name_results.length) {
+            this.autocomplete_name_arrow_counter = this.autocomplete_name_arrow_counter + 1;
+          }
+        },
+        onArrowUpSearchName: function() {
+          if (this.autocomplete_name_arrow_counter > 0) {
+            this.autocomplete_name_arrow_counter = this.autocomplete_name_arrow_counter - 1;
+          }
+        },
+        onEnterSearchName: function() {
+          this.search_name = this.autocomplete_name_results[this.autocomplete_name_arrow_counter];
+          this.autocomplete_name_arrow_counter = -1;
+          this.autocomplete_name_is_open = false;
+        },        
+        filterSearchAutoCompleteResults: function(autocomplete_field) {
+          console.log('filterSearchAutoCompleteResults autocomplete_field '+autocomplete_field);
+          if(autocomplete_field=='name')
+            this.autocomplete_name_results = this.autocomplete_name_items.filter(item => item.toLowerCase().indexOf(this.search_name.toLowerCase()) > -1);
+          else 
+          if(autocomplete_field=='codice')
+            this.autocomplete_codice_results = this.autocomplete_codice_items.filter(item => item.toLowerCase().indexOf(this.search_codice.toLowerCase()) > -1);
+        },        
+        onChangeSearchAutoComplete: function(autocomplete_field) {
+
+          let _this = this;
+          _this.autocomplete_field = autocomplete_field;
+
+          console.log('onChangeSearchAutoComplete autocomplete_field '+autocomplete_field);
+
+          this.autocomplete_name_is_loading = true;    
+          let params = {}
+          if(autocomplete_field=='name')
+            params = { 
+              search_supplier_organization_id: this.search_supplier_organization_id,
+              search_name: this.search_name,
+              field: 'name'
+            }; 
+          else 
+          if(autocomplete_field=='codice')
+            params = { 
+              search_supplier_organization_id: this.search_supplier_organization_id,
+              search_codice: this.search_codice,
+              field: 'codice'
+            };
+          axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
+          axios.post('/admin/api/articles/getAutocomplete', params)
+              .then(response => {
+                console.log(response.data, 'get'); 
+
+                this.autocomplete_name_is_loading = false; 
+
+                if(response.data.code=='200') {
+                  if(response.data.results.length==0) {
+                    this.autocomplete_name_is_open = false;
+                  }
+                  else {
+                    if(_this.autocomplete_field=='name') {
+                      this.autocomplete_name_items = response.data.results; 
+                      this.filterSearchAutoCompleteResults(_this.autocomplete_field);
+                      this.autocomplete_name_is_open = true;  
+                    }
+                    else
+                    if(_this.autocomplete_field=='codice') {
+                      this.autocomplete_codice_items = response.data.results; 
+                      this.filterSearchAutoCompleteResults(_this.autocomplete_field);
+                      this.autocomplete_codice_is_open = true;  
+                    }
+                  }
+                }
+                else {
+                  console.error(response.data.errors);
+                }
+              })
+          .catch(error => {
+            this.autocomplete_name_is_loading = false; 
+            console.error("Error: " + error);
+          });         
+        },
+        setSearchAutoCompleteResult(result, field) {
+          if(field=='name') {
+            this.search_name = result;
+            this.autocomplete_name_is_open = false;  
+          }
+          else
+          if(field=='codice') {
+            this.search_codice = result;
+            this.autocomplete_codice_is_open = false;  
+          }
+        },  
+
         toggleIsBio: function(index) {
           console.log(this.articles[index].bio, 'toggleIsBio');
           if(this.articles[index].bio=='Y')
             this.articles[index].bio = 'N';
           else 
             this.articles[index].bio = 'Y';
+        },
+        toggleSearchFlagPresenteArticlesOrders: function() {
+          this.search_flag_presente_articlesorders = !this.search_flag_presente_articlesorders;
         },
         toggleFlagPresenteArticlesOrders: function(index) {
           console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
@@ -55,7 +169,8 @@ $(function () {
               search_supplier_organization_id: this.search_supplier_organization_id,
               search_name: this.search_name,
               search_codice: this.search_codice,
-              search_categories_articles: search_categories_articles
+              search_categories_articles: search_categories_articles,
+              search_flag_presente_articlesorders: this.search_flag_presente_articlesorders
           }; 
           console.log(params, 'getArticles params'); 
 
@@ -85,7 +200,7 @@ $(function () {
           $('.dropzone').each(function() {
                 
               let index = $(this).attr('data-attr-index');
-              console.log(index, 'data-attr-index');
+              // console.log(index, 'dropzone data-attr-index');
 
               var myDropzone = new Dropzone(this, {
                     url: '/admin/articles/img1/upload/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'], 
@@ -125,7 +240,7 @@ $(function () {
                         }
                       });		
                       this.on('maxfilesexceeded', function(file) {
-                              console.log('maxfilesexceeded');
+                        console.log('maxfilesexceeded');
                         this.removeAllFiles();
                               this.addFile(file);
                           });
@@ -255,8 +370,15 @@ $(function () {
       mounted: function(){
         console.log('mounted articles');
         this.gets();
+        document.addEventListener('click', this.handleClickOutside);
       },
+      destroyed() {
+        document.removeEventListener('click', this.handleClickOutside);
+      },      
       filters: {
+        html(text) {
+          return text;
+        },        
         currency(amount) {
           let locale = window.navigator.userLanguage || window.navigator.language;
           const amt = Number(amount);
