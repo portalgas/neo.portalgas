@@ -76,7 +76,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       v-for="(article, index) in articles"
                       :key="article.id"
                     >
-                      <tr :id="'frm-'+article.id">
+                      <!-- EDIT -->
+                      <template v-if="article.can_edit">
+                      <tr :id="'frm-'+article.id" >
                         <td class="actions text-center">
                           <!-- {{ article.id }} {{ article.organization_id }} -->
                           <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
@@ -90,9 +92,19 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
                           </button>
                         </td>
-                        <td>{{ article.suppliers_organization.name }}</td>
+                        <?php 
+                        if(empty($search_supplier_organization_id))
+                            echo '<td>
+                              {{ article.owner_supplier_organization.name }}
+                              <div class="small">
+                                <b>'.__('organization_owner_article_short').'</b>:
+                                <div v-if="article.can_edit">Il referente del tuo G.A.S.</div>
+                                <div v-if="!article.can_edit">{{ article.organization.name }}</div>                                    
+                              </div>
+                            </td>';
+                        ?>
                         <td>
-                          <select name="category_article_id" class="form-control" :required="true" v-model="article.category_article_id" >
+                          <select name="category_article_id" class="form-control extend" :required="true" v-model="article.category_article_id" >
                             <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
                             </option>
                           </select>  
@@ -107,10 +119,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <div class="dropzone" :id="'my-dropzone'+article.id" :data-attr-index="index"></div>
                         </td>
                         <td>
-                        <input type="text" class="form-control" v-model="article.name" name="name" />
+                        <input type="text" class="form-control extend" v-model="article.name" name="name" />
                         </td>
                         <td>
-                          <input type="text" class="form-control" v-model="article.code" name="code" size="5" />
+                          <input type="text" class="form-control extend" v-model="article.code" name="code" size="5" />
                         </td>
                         <td>
                           <input type="text" class="form-control" v-model="article.prezzo_" name="prezzo" />
@@ -141,131 +153,112 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <tr style="display: none;" :class="'extra-'+index">
                         <th scope="col"></th>
                         <th scope="col"></th>
-                        <th scope="col"><?= __('Nota') ?></th>
-                        <th scope="col"><?= __('Ingredienti') ?></th>
-                        <th scope="col"><?= __('qta_multipli') ?></th>
-                        <th scope="col"><?= __('pezzi_confezione') ?></th>
-                        <th scope="col"><?= __('qta_minima') ?></th>
-                        <th scope="col"><?= __('qta_massima') ?></th>
-                        <th scope="col"><?= __('qta_minima_order') ?></th>
-                        <th scope="col"><?= __('qta_massima_order') ?></th>
+                        <th scope="col" colspan="4"><?= __('Nota') ?></th>
+                        <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
+                        <th scope="col" colspan="3"></th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
                         <td></td>
+                        <td colspan="4">
+                          <textarea rows="10" class="form-control extend">{{ article.nota }}</textarea>
+                        </td>
+                        <td colspan="3">
+                          <textarea rows="10" class="form-control extend">{{ article.ingredienti }}</textarea>
+                        </td>
+                        <td colspan="3">
+                          <div><label><?= __('qta_multipli') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_multipli" name="qta_multipli" /></div>
+                          <div><label><?= __('pezzi_confezione') ?></label> <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" name="pezzi_confezione" /></div>
+                          <div><label><?= __('qta_minima') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_minima" name="qta_minima" /></div>
+                          <div><label><?= __('qta_massima') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima" name="qta_massima" /></div>
+                          <div><label><?= __('qta_minima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" name="qta_minima_order" /></div>
+                          <div><label><?= __('qta_massima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" name="qta_massima_order" /></div> 
+                        </td>
+                      </tr>
+                    </template>
+
+                    <!-- NOT EDIT -->
+                    <template v-if="!article.can_edit">
+                    <tr :id="'frm-'+article.id" >
+                        <td class="actions text-center">
+                          <!-- {{ article.id }} {{ article.organization_id }} -->
+                          <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                        </td>
+                        <td class="actions text-center">
+                          <button class="btn-block btn" 
+                                :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
+                                :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'">
+                            <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
+                            <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
+                          </button>
+                        </td>
+                        <?php 
+                        if(empty($search_supplier_organization_id))
+                            echo '<td>
+                              {{ article.owner_supplier_organization.name }}
+                              <div class="small">
+                                <b>'.__('organization_owner_article_short').'</b>:
+                                <div v-if="article.can_edit">Il referente del tuo G.A.S.</div>
+                                <div v-if="!article.can_edit">{{ article.organization.name }}</div>                                    
+                              </div>
+                            </td>';
+                        ?>
                         <td>
-                          <textarea>{{ article.nota }}</textarea>
+                          {{ article.categories_article.name }}
                         </td>
                         <td>
-                          <textarea>{{ article.ingredienti }}</textarea>
+                          <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                         </td>
                         <td>
-                          <input type="number" class="form-control" min="1" v-model="article.qta_multipli" name="qta_multipli" />
-                        </td>                        
-                        <td>
-                          <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" name="pezzi_confezione" />
-                        <td>
-                          <input type="number" class="form-control" min="1" v-model="article.qta_minima" name="qta_minima" />
+                          <img :src="article.img1" :title="article.img1" width="50" />
                         </td>
                         <td>
-                          <input type="number" class="form-control" min="0" v-model="article.qta_massima" name="qta_massima" />
+                          {{ article.name }}
                         </td>
                         <td>
-                          <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" name="qta_minima_order" />
+                          {{ article.code }}
                         </td>
                         <td>
-                          <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" name="qta_massima_order" />
+                          {{ article.prezzo | currency }} &euro;
                         </td>
-                      </tr>                      
+                        <td>
+                          {{ article.qta }}
+                        </td>
+                        <td>
+                          {{ article.um }}
+                        </td>
+                        <td>
+                          {{ article.um_riferimento }}          
+                          <div>{{ um_label(index) }}</div>
+                        </td>
+
+                      </tr>
+                      <!-- extra -->
+                      <tr style="display: none;" :class="'extra-'+index">
+                        <th scope="col"></th>
+                        <th scope="col" colspan="4"><?= __('Nota') ?></th>
+                        <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
+                        <th scope="col" colspan="4"></th>
+                      </tr>
+                      <tr style="display: none;" :class="'extra-'+index">
+                        <td></td>
+                        <td colspan="4">
+                          {{ article.nota }}
+                        </td>
+                        <td colspan="3">
+                          {{ article.ingredienti }}
+                        </td>
+                        <td colspan="4">
+                          <div><label><?= __('qta_multipli') ?></label>: {{ article.qta_multipli }}</div> 
+                          <div><label><?= __('pezzi_confezione') ?></label>: {{ article.pezzi_confezione }}</div> 
+                          <div><label><?= __('qta_minima') ?></label>: {{ article.qta_minima }}</div> 
+                          <div><label><?= __('qta_massima') ?></label>: {{ article.qta_massima }}</div> 
+                          <div><label><?= __('qta_minima_order') ?></label>: {{ article.qta_minima_order }}</div> 
+                          <div><label><?= __('qta_massima_order') ?></label>: {{ article.qta_massima_order }}</div> 
+                        </td>
+                      </tr>
+                    </template>
                 </template>
-                
-          <?php 
-          /*
-                echo $this->Form->create(null, ['role' => 'form']);
-                echo $this->Form->control('id', ['id' => 'article_id-'.$article['id'], 'type' => 'hidden', 'value' => $article['id']]);
-                echo $this->Form->control('organization_id', ['id' => 'article_id-'.$article['organization_id'], 'type' => 'hidden', 'value' => $article['organization_id']]);
-
-                echo '<tr>';
-                echo '<td class="actions text-center">';
-                echo $this->Form->button('<i class="fa fa-search-plus" aria-hidden="true"></i>', ['class'=>'btn btn-info', '@click' => 'toggleExtra($event, '.$article['organization_id'].', '.$article['id'].');']);
-                echo '</td>';
-                echo '<td class="actions text-center">';
-
-                  if($article['stato']=='Y') {
-                    $label = 'Attivo';
-                    $css = 'primary';
-
-                  } 
-                  else {
-                    $label = 'Non attivo';
-                    $css = 'danger';
-                  }
-                  // echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
-                  // echo '<br />';
-
-                  if($article['flag_presente_articlesorders']=='Y') {
-                    $label = 'Ordinabile';
-                    $css = 'primary';
-
-                  } 
-                  else {
-                    $label = 'Non ordinabile';
-                    $css = 'danger';
-                  }
-                  echo $this->Form->button($label, ['class'=>'btn btn-'.$css]);
-              echo '</td>';
-              if(empty($search_supplier_organization_id))
-                echo '<td>'.$article['suppliers_organization']['name'].'</td>';
-              ?>
-                  <td><?= $article['categories_article']['name']; ?></td>
-                  <td><?= $this->Form->control('bio['.$article['organization_id'].']['.$article['id'].']', ['label' => false, 'type' => 'radio', 'options' => $si_no, 'value' => $article['bio']]) ?></td>
-                  <td>
-                    <?php 
-                      echo $this->element('dropzone_article', ['article' => $article]);
-                    ?>                      
-                  </td>
-                  <td><?= $this->Form->control('name', ['label' => false, 'value' => $article['name']]) ?></td>
-                  <td><?= $this->Form->control('codice', ['label' => false, 'value' => $article['codice']]) ?></td>
-                  <td><?= $this->Form->control('prezzo', ['label' => false, 'value' => $article['prezzo']]) ?></td>
-                  <td><?= $this->Form->control('qta', ['label' => false, 'value' => $article['qta']]) ?></td>
-                  <td><?= $this->Form->control('um', ['label' => false, 'value' => $article['um'], 'options' => $ums]) ?></td>
-                  <td>
-                    <?= $this->Form->control('um_riferimento', ['label' => false, 'value' => $article['um_riferimento'], 'options' => $ums]) ?>
-                    <div id="um-label-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>"></div>
-                  </td>
-                </tr>
-                <!-- extra -->
-                <tr style="display: none;" class="extra-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>">
-                  <th scope="col"></th>
-                  <th scope="col"></th>
-                  <th scope="col"><?= __('Nota') ?></th>
-                  <th scope="col"><?= __('Ingredienti') ?></th>
-                  <th scope="col"><?= __('pezzi_confezione') ?></th>
-                  <th scope="col"><?= __('qta_minima') ?></th>
-                  <th scope="col"><?= __('qta_massima') ?></th>
-                  <th scope="col"><?= __('qta_minima_order') ?></th>
-                  <th scope="col"><?= __('qta_massima_order') ?></th>
-                  <th scope="col"><?= __('qta_multipli') ?></th>
-                  <!-- th scope="col"><?= __('alert_to_qta') ?></th -->
-                </tr>
-                <tr style="display: none;" class="extra-<?php echo $article['organization_id'];?>-<?php echo $article['id'];?>">
-                  <td></td>
-                  <td></td>
-                  <td><?= $this->Form->control('nota', ['type' => 'textarea', 'label' => false, 'value' => $article['nota']]) ?></td>
-                  <td><?= $this->Form->control('ingredienti', ['type' => 'textarea', 'label' => false, 'value' => $article['ingredienti']]) ?></td>
-                  <td><?= $this->Form->control('pezzi_confezione', ['label' => false, 'value' => $article['pezzi_confezione']]) ?></td>
-                  <td><?= $this->Form->control('qta_minima', ['label' => false, 'value' => $article['qta_minima']]) ?></td>
-                  <td><?= $this->Form->control('qta_massima', ['label' => false, 'value' => $article['qta_massima']]) ?></td>
-                  <td><?= $this->Form->control('qta_minima_order', ['label' => false, 'value' => $article['qta_minima_order']]) ?></td>
-                  <td><?= $this->Form->control('qta_massima_order', ['label' => false, 'value' => $article['qta_massima_order']]) ?></td>
-                  <td><?= $this->Form->control('qta_multipli', ['label' => false, 'value' => $article['qta_multipli']]) ?></td>
-                  <!-- td><?= $this->Form->control('alert_to_qta', ['label' => false, 'value' => $article['alert_to_qta']]) ?></td -->
-                </tr>
-              <?php 
-                echo $this->Form->end(); 
-              } // end foreach ($articles as $article)
-              */
-               ?>
             </tbody>
           </table>
         </div>
@@ -281,31 +274,32 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 .no-bio {
   opacity: 0.1
 }
-</style>
+.extend:focus{
+  width:320px;
+}
 
-<style>
-  .autocomplete {
-    position: relative;
-  }
-  .autocomplete-results {
-    padding: 0;
-    margin: 0;
-    border: 1px solid #eeeeee;
-    height: 120px;
-    min-height: 1em;
-    max-height: 6em;    
-    overflow: auto;
-    width: 500px;
-  }
-  .autocomplete-result {
-    list-style: none;
-    text-align: left;
-    padding: 4px 2px;
-    cursor: pointer;
-  }
-  .autocomplete-result.is-active,
-  .autocomplete-result:hover {
-    background-color:#367fa9;
-    color: white;
-  }  
+.autocomplete {
+  position: relative;
+}
+.autocomplete-results {
+  padding: 0;
+  margin: 0;
+  border: 1px solid #eeeeee;
+  height: 120px;
+  min-height: 1em;
+  max-height: 6em;    
+  overflow: auto;
+  width: 500px;
+}
+.autocomplete-result {
+  list-style: none;
+  text-align: left;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+.autocomplete-result.is-active,
+.autocomplete-result:hover {
+  background-color:#367fa9;
+  color: white;
+}  
 </style>

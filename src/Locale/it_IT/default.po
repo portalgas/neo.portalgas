@@ -928,6 +928,9 @@ msgstr "Gestore del listino degli articoli"
 msgid "organization_owner_articles_short"
 msgstr "Gestore articoli"
 
+msgid "organization_owner_article_short"
+msgstr "Gestore articolo"
+
 #
 # consegne
 #

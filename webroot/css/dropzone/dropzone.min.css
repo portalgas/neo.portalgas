@@ -5,3 +5,6 @@
 	min-height: 50px;
     text-align: center;	
 }
+.dropzone {
+	padding: 0px 0px;
+}

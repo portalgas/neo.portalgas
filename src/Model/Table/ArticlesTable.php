@@ -51,6 +51,14 @@ class ArticlesTable extends Table
             'foreignKey' => ['organization_id', 'supplier_organization_id'],
             'joinType' => 'INNER'
         ]);
+        // utilizzato in elenco articoli
+        $this->belongsTo('OwnerSupplierOrganizations', [
+            // campi in Articles
+            'foreignKey' => ['organization_id', 'supplier_organization_id'],
+            // campi in SupplierOrganizations
+            'bindingKey' => ['owner_organization_id', 'owner_supplier_organization_id'],
+            'joinType' => 'INNER'
+        ]);        
         $this->belongsTo('CategoriesArticles', [
             'foreignKey' => 'category_article_id',
             'joinType' => 'INNER'

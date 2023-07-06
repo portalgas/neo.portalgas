@@ -63,9 +63,9 @@ $user = $this->Identity->get();
     echo '<div class="col-md-2 autocomplete"> ';
     echo $this->Form->control('search_codice', ['label' => __('Code'), 'v-model' => 'search_codice', 
                     '@input' => 'onChangeSearchAutoComplete(\'codice\')', 
-                    '@keydown.down' => 'onArrowDownSearchName',
-                    '@keydown.up' => 'onArrowUpSearchName',
-                    '@keydown.enter' => 'onEnterSearchName',
+                    '@keydown.down' => 'onArrowDownSearchCodice',
+                    '@keydown.up' => 'onArrowUpSearchCodice',
+                    '@keydown.enter' => 'onEnterSearchCodice',
                     'autocomplete' => 'off',
                     'placeholder' => __('Code')]);
     echo '    <ul

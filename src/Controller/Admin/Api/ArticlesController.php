@@ -37,8 +37,13 @@ class ArticlesController extends ApiAppController
 
         $jsonData = $this->request->input('json_decode');
         $where = [];
+        /* 
+        prenderei solo quelli gestiti dal referente
         $where += ['Articles.organization_id' => $this->_organization->id]; 
-
+        c'e' gia' nella relazione ArticlesTables::OwnerSupplierOrganizations
+        $where += ['OwnerSupplierOrganizations.owner_organization_id = Articles.organization_id',
+                  'OwnerSupplierOrganizations.owner_supplier_organization_id = Articles.supplier_organization_id'];
+        */
         if(isset($jsonData->search_flag_presente_articlesorders)) {
             $search_flag_presente_articlesorders = $jsonData->search_flag_presente_articlesorders;
             ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N';
@@ -58,18 +63,18 @@ class ArticlesController extends ApiAppController
         }         
         if(!empty($jsonData->search_supplier_organization_id)) {
             $search_supplier_organization_id = $jsonData->search_supplier_organization_id;
-            $where += ['Articles.supplier_organization_id' => $search_supplier_organization_id];
+            $where += ['OwnerSupplierOrganizations.id' => $search_supplier_organization_id];
         } 
         else {
             // non ho scelto il produttore, filtro per ACL
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
             $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-            $where += ['Articles.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];  
+            $where += ['OwnerSupplierOrganizations.id IN ' => array_keys($suppliersOrganizations)];  
         }                
-
+        // dd($where);
         $articles = $this->Articles->find()
-                    ->contain(['SuppliersOrganizations', 'CategoriesArticles'])
+                    ->contain(['OwnerSupplierOrganizations', 'Organizations', 'CategoriesArticles'])
                     ->where($where)
                     ->order(['Articles.name'])
                     ->limit(100)
@@ -95,8 +100,13 @@ class ArticlesController extends ApiAppController
 
         $jsonData = $this->request->input('json_decode');
         $where = [];
+        /* 
+        prenderei solo quelli gestiti dal referente
         $where += ['Articles.organization_id' => $this->_organization->id]; 
-
+        c'e' gia' nella relazione ArticlesTables::OwnerSupplierOrganizations
+        $where += ['OwnerSupplierOrganizations.owner_organization_id = Articles.organization_id',
+                  'OwnerSupplierOrganizations.owner_supplier_organization_id = Articles.supplier_organization_id'];
+        */
         $field = $jsonData->field; // name / codice
 
         if($field=='name') {
@@ -109,14 +119,14 @@ class ArticlesController extends ApiAppController
         }         
         if(!empty($jsonData->search_supplier_organization_id)) {
             $search_supplier_organization_id = $jsonData->search_supplier_organization_id;
-            $where += ['Articles.supplier_organization_id' => $search_supplier_organization_id];
+            $where += ['OwnerSupplierOrganizations.id' => $search_supplier_organization_id];
         } 
         else {
             // non ho scelto il produttore, filtro per ACL
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
             $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-            $where += ['Articles.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];  
+            $where += ['OwnerSupplierOrganizations.id IN ' => array_keys($suppliersOrganizations)];  
         }                
 
         if($field=='name') 
@@ -127,6 +137,7 @@ class ArticlesController extends ApiAppController
 
         $articles = $this->Articles->find()
                     ->select($selects)
+                    ->contain(['OwnerSupplierOrganizations'])
                     ->where($where)
                     ->order(['Articles.name'])
                     ->limit(100)

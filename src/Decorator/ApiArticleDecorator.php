@@ -40,6 +40,24 @@ class ApiArticleDecorator  extends AppDecorator {
         
         $results = [];
 
+        /* 
+         * ctrl se la gestione 
+         *  e' del gas/referente => edit 
+         *  e' del produttore o des => no edit
+         */
+        if(!isset($article->owner_supplier_organization)) {
+            if($user->organization->id==$article->organization_id)
+                $article->can_edit = true;
+            else 
+                $article->can_edit = false;
+        }
+        else {
+            if($article->owner_supplier_organization->organization_id==$article->organization_id && 
+               $article->owner_supplier_organization->id==$article->supplier_organization_id)
+                $article->can_edit = true;
+            else 
+                $article->can_edit = false;
+        }
         $results = $article->toArray();
         $results['img1'] = $this->_getArticleImg1($article);
         $results['img1_width'] = Configure::read('Article.img.preview.width');

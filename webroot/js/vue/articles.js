@@ -34,15 +34,26 @@ $(function () {
         autocomplete_codice_items: [],        
       },  
       methods: {
-        handleClickOutside: function(event) {
-          if (!this.$el.contains(event.target)) {
+        handleClickOutsideAutocomplete: function(event) {          
+          let id = event.target.id;
+          // if (!this.$el.contains($search_codice)) {
+          if (id!='search-name') {  
             this.autocomplete_name_arrow_counter = -1;
             this.autocomplete_name_is_open = false;
           }
-        },
+          if (id!='search-codice') {  
+            this.autocomplete_codice_arrow_counter = -1;
+            this.autocomplete_codice_is_open = false;            
+          }          
+        },        
         onArrowDownSearchName: function() {
           if (this.autocomplete_name_arrow_counter < this.autocomplete_name_results.length) {
             this.autocomplete_name_arrow_counter = this.autocomplete_name_arrow_counter + 1;
+          }
+        },
+        onArrowDownSearchCodice: function() {
+          if (this.autocomplete_codice_arrow_counter < this.autocomplete_codice_results.length) {
+            this.autocomplete_codice_arrow_counter = this.autocomplete_codice_arrow_counter + 1;
           }
         },
         onArrowUpSearchName: function() {
@@ -50,11 +61,21 @@ $(function () {
             this.autocomplete_name_arrow_counter = this.autocomplete_name_arrow_counter - 1;
           }
         },
-        onEnterSearchName: function() {
-          this.search_name = this.autocomplete_name_results[this.autocomplete_name_arrow_counter];
-          this.autocomplete_name_arrow_counter = -1;
-          this.autocomplete_name_is_open = false;
-        },        
+        onArrowUpSearchCodice: function() {
+          if (this.autocomplete_codice_arrow_counter > 0) {
+            this.autocomplete_codice_arrow_counter = this.autocomplete_codice_arrow_counter - 1;
+          }
+        },
+        onArrowUpSearchName: function() {
+          if (this.autocomplete_name_arrow_counter > 0) {
+            this.autocomplete_name_arrow_counter = this.autocomplete_name_arrow_counter - 1;
+          }
+        },
+        onArrowUpSearchCodice: function() {
+          if (this.autocomplete_codice_arrow_counter > 0) {
+            this.autocomplete_codice_arrow_counter = this.autocomplete_codice_arrow_counter - 1;
+          }
+        },       
         filterSearchAutoCompleteResults: function(autocomplete_field) {
           console.log('filterSearchAutoCompleteResults autocomplete_field '+autocomplete_field);
           if(autocomplete_field=='name')
@@ -72,19 +93,28 @@ $(function () {
 
           this.autocomplete_name_is_loading = true;    
           let params = {}
-          if(autocomplete_field=='name')
+          if(autocomplete_field=='name') {
+            if(this.search_name.length<=3) 
+              return;
+
             params = { 
               search_supplier_organization_id: this.search_supplier_organization_id,
               search_name: this.search_name,
               field: 'name'
             }; 
+          }
           else 
-          if(autocomplete_field=='codice')
+          if(autocomplete_field=='codice') {
+            if(this.search_codice.length<=3) 
+              return;
+
             params = { 
               search_supplier_organization_id: this.search_supplier_organization_id,
               search_codice: this.search_codice,
               field: 'codice'
             };
+          }
+
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
 
@@ -370,10 +400,10 @@ $(function () {
       mounted: function(){
         console.log('mounted articles');
         this.gets();
-        document.addEventListener('click', this.handleClickOutside);
+        document.addEventListener('click', this.handleClickOutsideAutocomplete);
       },
       destroyed() {
-        document.removeEventListener('click', this.handleClickOutside);
+        document.removeEventListener('click', this.handleClickOutsideAutocomplete);
       },      
       filters: {
         html(text) {
