@@ -34,6 +34,9 @@ $(function () {
         autocomplete_codice_items: [],        
       },  
       methods: {
+        /* 
+         * autocomplete
+         */
         handleClickOutsideAutocomplete: function(event) {          
           let id = event.target.id;
           // if (!this.$el.contains($search_codice)) {
@@ -161,14 +164,80 @@ $(function () {
             this.search_codice = result;
             this.autocomplete_codice_is_open = false;  
           }
-        },  
+        }, 
+        /*  
+         * autocomplete end 
+         */
+        changeValue: function(event, index) {
 
-        toggleIsBio: function(index) {
+          console.log(event.target, 'changeValue');
+          console.log('changeValue index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
+
+          let field_id = event.target.id;
+          let field_name = event.target.name;
+          let field_value = event.target.value;
+
+          this.setValue(field_id, field_name, field_value, index);
+        },
+        setValue: function(field_id, field_name, field_value, index) {
+
+          let field = $('#'+field_id);
+          console.log(field, 'changeValue field');
+          console.log(field.parent(), 'changeValue field.parent()');
+          field.parent().append('<div id="esito-'+field_id+'"></div>');
+          let $responseHtml = $('#esito-'+field_id);
+          $responseHtml.addClass('fa-lg fa fa-spinner');
+          
+          if(!this.articles[index].can_edit) {
+            alert("L'articolo non è modificabile perchè gestito da <b>"+this.articles[index].organization.name+'</b>');
+            return;
+          }
+
+          let params = {
+              id: this.articles[index].id,
+              organization_id: this.articles[index].organization_id,
+              name: field_name,
+              value: field_value
+          }; 
+          console.log(params, 'setValue params'); 
+
+          axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
+          axios.post('/admin/api/articles/setValue', params)
+              .then(response => {
+                console.log(response.data, 'set'); 
+
+                $responseHtml.removeClass('fa-lg fa fa-spinner');
+
+                if(response.data.code=='200') {
+                  $responseHtml.addClass('fa-lg text-green fa fa-thumbs-o-up');
+                }
+                else {
+                  $responseHtml.addClass('fa-lg text-red fa fa-thumbs-o-down');
+                  console.error(response.data.errors);
+                  alert(response.data.errors);
+                }
+
+                setTimeout( function() {$responseHtml.remove()} , 2500);                
+              })
+          .catch(error => {
+            console.error("Error: " + error);
+          });            
+
+        },
+        toggleIsBio: function(field_id, index) {
           console.log(this.articles[index].bio, 'toggleIsBio');
           if(this.articles[index].bio=='Y')
             this.articles[index].bio = 'N';
           else 
             this.articles[index].bio = 'Y';
+
+          console.log(field_id, 'field_id');
+          let field_name = 'bio';
+          let field_value = this.articles[index].bio;
+            
+          this.setValue(field_id, field_name, field_value, index); 
         },
         toggleSearchFlagPresenteArticlesOrders: function() {
           this.search_flag_presente_articlesorders = !this.search_flag_presente_articlesorders;
@@ -396,7 +465,18 @@ $(function () {
               }          
           */
         }        
-      },      
+      },
+      /*
+      watch: {
+        'articles': {
+          handler (newValue, oldValue) {
+            newValue.forEach((article) => {
+              console.log(article, 'watch');
+            })
+          },
+          deep: true
+        }
+      },*/        
       mounted: function(){
         console.log('mounted articles');
         this.gets();

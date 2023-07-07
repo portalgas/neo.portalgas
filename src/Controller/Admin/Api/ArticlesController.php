@@ -158,4 +158,52 @@ class ArticlesController extends ApiAppController
       
         return $this->_response($results); 
     }    
+
+    public function setValue() {
+
+        $debug = false;
+
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+
+        $jsonData = $this->request->input('json_decode');
+        $id = $jsonData->id; 
+        $organization_id = $jsonData->organization_id; 
+        $name = $jsonData->name; 
+        $value = $jsonData->value; 
+
+        $where = ['id' => $id, 
+                  'organization_id' => $organization_id];
+
+        $article = $this->Articles->find()
+                    ->where($where)
+                    ->first();
+
+        if(empty($article)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = 'Articolo non trovato!';
+            return $this->_response($results); 
+        }
+
+        $datas = [];
+        $datas[$name] = $value;
+        $article = $this->Articles->patchEntity($article, $datas);
+        if (!$this->Articles->save($article)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = $article->getErrors();
+            return $this->_response($results); 
+        }
+
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+      
+        return $this->_response($results); 
+    }    
 }

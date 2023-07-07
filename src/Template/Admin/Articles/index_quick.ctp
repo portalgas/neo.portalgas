@@ -104,13 +104,13 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             </td>';
                         ?>
                         <td>
-                          <select name="category_article_id" class="form-control extend" :required="true" v-model="article.category_article_id" >
+                          <select name="category_article_id" class="form-control extend" :required="true" v-model="article.category_article_id" @change="changeValue(event, index)" :id="'category_article_id-'+article.organization_id+'-'+article.id">
                             <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
                             </option>
                           </select>  
                         </td>
                         <td>
-                          <a href="#" @click="toggleIsBio(index)">
+                          <a href="#" @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id">
                             <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                           </a>
                         </td>
@@ -119,19 +119,19 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <div class="dropzone" :id="'my-dropzone'+article.id" :data-attr-index="index"></div>
                         </td>
                         <td>
-                        <input type="text" class="form-control extend" v-model="article.name" name="name" />
+                        <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
                         </td>
                         <td>
-                          <input type="text" class="form-control extend" v-model="article.code" name="code" size="5" />
+                          <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
                         </td>
                         <td>
-                          <input type="text" class="form-control" v-model="article.prezzo_" name="prezzo" />
+                          <input type="text" class="form-control" v-model="article.prezzo_" @change="changeValue(event, index)" :id="'prezzo-'+article.organization_id+'-'+article.id" name="prezzo" />
                         </td>
                         <td>
-                          <input type="text" class="form-control" v-model="article.qta" name="qta" />
+                          <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
                         </td>
                         <td>
-                          <select class="form-control" :required="true" v-model="article.um">
+                          <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index)" :id="'um-'+article.organization_id+'-'+article.id">
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}
@@ -139,7 +139,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           </select>
                         </td>
                         <td>
-                          <select class="form-control" :required="true" v-model="article.um_riferimento">
+                          <select class="form-control" :required="true" v-model="article.um_riferimento" @change="changeValue(event, index)" :id="'um_riferimento-'+article.organization_id+'-'+article.id" >
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}
@@ -161,18 +161,18 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <td></td>
                         <td></td>
                         <td colspan="4">
-                          <textarea rows="10" class="form-control extend">{{ article.nota }}</textarea>
+                          <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
                         </td>
                         <td colspan="3">
-                          <textarea rows="10" class="form-control extend">{{ article.ingredienti }}</textarea>
+                          <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
                         </td>
                         <td colspan="3">
-                          <div><label><?= __('qta_multipli') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_multipli" name="qta_multipli" /></div>
-                          <div><label><?= __('pezzi_confezione') ?></label> <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" name="pezzi_confezione" /></div>
-                          <div><label><?= __('qta_minima') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_minima" name="qta_minima" /></div>
-                          <div><label><?= __('qta_massima') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima" name="qta_massima" /></div>
-                          <div><label><?= __('qta_minima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" name="qta_minima_order" /></div>
-                          <div><label><?= __('qta_massima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" name="qta_massima_order" /></div> 
+                          <div><label><?= __('qta_multipli') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_multipli" @change="changeValue(event, index)" :id="'qta_multipli-'+article.organization_id+'-'+article.id" name="qta_multipli" /></div>
+                          <div><label><?= __('pezzi_confezione') ?></label> <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" @change="changeValue(event, index)" :id="'pezzi_confezione-'+article.organization_id+'-'+article.id" name="pezzi_confezione" /></div>
+                          <div><label><?= __('qta_minima') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_minima" @change="changeValue(event, index)" :id="'qta_minima-'+article.organization_id+'-'+article.id" name="qta_minima" /></div>
+                          <div><label><?= __('qta_massima') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima" @change="changeValue(event, index)" :id="'qta_massima-'+article.organization_id+'-'+article.id" name="qta_massima" /></div>
+                          <div><label><?= __('qta_minima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" @change="changeValue(event, index)" :id="'qta_minima_order-'+article.organization_id+'-'+article.id" name="qta_minima_order" /></div>
+                          <div><label><?= __('qta_massima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" @change="changeValue(event, index)" :id="'qta_massima_order-'+article.organization_id+'-'+article.id" name="qta_massima_order" /></div> 
                         </td>
                       </tr>
                     </template>
@@ -216,7 +216,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           {{ article.name }}
                         </td>
                         <td>
-                          {{ article.code }}
+                          {{ article.codice }}
                         </td>
                         <td>
                           {{ article.prezzo | currency }} &euro;

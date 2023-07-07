@@ -142,7 +142,7 @@ function callPingJoomla(ajaxUrl) {
           withCredentials: true
       },                           
       success: function (response) {
-          console.log(response, 'callPingJoomla');
+          // console.log(response, 'callPingJoomla');
       },
       error: function (e) {
           console.error(e, ajaxUrl);
