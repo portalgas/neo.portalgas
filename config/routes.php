@@ -348,6 +348,8 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
             $routes->connect('/getAutocomplete', ['action' => 'getAutocomplete', '_method' => 'POST']);
             $routes->connect('/setValue', ['action' => 'setValue', '_method' => 'POST']);
+            $routes->connect('/img1Upload', ['action' => 'img1Upload', '_method' => 'POST']);
+            $routes->connect('/img1Delete', ['action' => 'img1Delete', '_method' => 'POST']);
         });        
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);

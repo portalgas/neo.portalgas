@@ -63,6 +63,8 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 					else
 						$this->results[$order->id]->article_orders[$article_order->article_id]->article->is_bio = false;
 				}
+			
+				$this->results[$order->id]->article_orders[$article_order->article_id]->article->codice = $article_order->article->codice;
 				$this->results[$order->id]->article_orders[$article_order->article_id]->article->img1 = $this->_getArticleImg1($article_order);
 				$this->results[$order->id]->article_orders[$article_order->article_id]->article->img1_width = Configure::read('Article.img.preview.width');
 				$this->results[$order->id]->article_orders[$article_order->article_id]->article->um_rif_label = $this->_getArticlePrezzoUM($article_order->prezzo, $article_order->article->qta, $article_order->article->um, $article_order->article->um_riferimento);          

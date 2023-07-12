@@ -44,12 +44,13 @@ if(!empty($orders)) {
 		}
 
 		$sheet->setCellValue('A'.($i+1), __('Bio')); 
-		$sheet->setCellValue('B'.($i+1), __('Name')); 
-		$sheet->setCellValue('C'.($i+1), __('Conf')); 
-		$sheet->setCellValue('D'.($i+1), __('Prezzo/UM')); 
-		$sheet->setCellValue('E'.($i+1), __('PrezzoUnita')); 
-		$sheet->setCellValue('F'.($i+1), __('Qta')); 
-		$sheet->setCellValue('G'.($i+1), __('Importo'));
+		$sheet->setCellValue('B'.($i+1), __('Code'));
+		$sheet->setCellValue('C'.($i+1), __('Name')); 
+		$sheet->setCellValue('D'.($i+1), __('Conf')); 
+		$sheet->setCellValue('E'.($i+1), __('Prezzo/UM')); 
+		$sheet->setCellValue('F'.($i+1), __('PrezzoUnita')); 
+		$sheet->setCellValue('G'.($i+1), __('Qta')); 
+		$sheet->setCellValue('H'.($i+1), __('Importo'));
 
 		$totale_ordine = 0;
 		$ii=0;
@@ -62,12 +63,13 @@ if(!empty($orders)) {
 			$article_order->article->is_bio ? $is_bio = 'Si': $is_bio = 'No';
 
 			$sheet->setCellValue('A'.($i+1+$ii), $is_bio);
-			$sheet->setCellValue('B'.($i+1+$ii), $article_order->name);
-			$sheet->setCellValue('C'.($i+1+$ii), $article_order->article->conf);
-			$sheet->setCellValue('D'.($i+1+$ii), $article_order->article->um_rif_label);
-			$sheet->setCellValue('E'.($i+1+$ii), $article_order->prezzo);
-			$sheet->setCellValue('F'.($i+1+$ii), $article_order->cart->final_qta);
-			$sheet->setCellValue('G'.($i+1+$ii), $article_order->cart->final_price);
+			$sheet->setCellValue('B'.($i+1+$ii), $article_order->article->codice);
+			$sheet->setCellValue('C'.($i+1+$ii), $article_order->name);
+			$sheet->setCellValue('D'.($i+1+$ii), $article_order->article->conf);
+			$sheet->setCellValue('E'.($i+1+$ii), $article_order->article->um_rif_label);
+			$sheet->setCellValue('F'.($i+1+$ii), $article_order->prezzo);
+			$sheet->setCellValue('G'.($i+1+$ii), $article_order->cart->final_qta);
+			$sheet->setCellValue('H'.($i+1+$ii), $article_order->cart->final_price);
 
 		} // end foreach($article_orders as $article_order)
 
@@ -76,8 +78,9 @@ if(!empty($orders)) {
 		$sheet->setCellValue('C'.($i+1+$ii+1), '');
 		$sheet->setCellValue('D'.($i+1+$ii+1), '');
 		$sheet->setCellValue('E'.($i+1+$ii+1), '');
-		$sheet->setCellValue('F'.($i+1+$ii+1), __('Totale ordine'));
-		$sheet->setCellValue('G'.($i+1+$ii+1), $totale_ordine);
+		$sheet->setCellValue('F'.($i+1+$ii+1), '');
+		$sheet->setCellValue('G'.($i+1+$ii+1), __('Totale ordine'));
+		$sheet->setCellValue('H'.($i+1+$ii+1), $totale_ordine);
 
 		$totale += $totale_ordine;
 

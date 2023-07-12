@@ -377,6 +377,7 @@ Configure::write('sql.limit', 20); // offset: num row
 Configure::write('sql.no.limit', 1000); // offset: num row 
 
 // {organizaton_id} / {img1}
+Configure::write('Article.img.paths', '/images/articles/%s');
 Configure::write('Article.img.path.full', '/images/articles/%s/%s');
 Configure::write('Article.img.no', '/img/article-no-img.png');
 Configure::write('Article.img.preview.width', '50px');

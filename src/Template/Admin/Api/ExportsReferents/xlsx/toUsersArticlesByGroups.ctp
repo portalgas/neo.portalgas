@@ -40,7 +40,7 @@ if(!empty($orders)) {
 
 		$sheet->setCellValue('A'.($i+$ii+$iii), __('Gas Group'));
 		$sheet->setCellValue('B'.($i+$ii+$iii), $order->gas_group->name);
-
+		
 		if(isset($opts['deliveries_orders']) && $opts['deliveries_orders']=='Y') {
 			$sheet->setCellValue('C'.($i+$ii+$iii), __('Delivery'));
 			$sheet->setCellValue('D'.($i+$ii+$iii), $order->delivery->luogo.' '.$order->delivery->data->i18nFormat('eeee d MMMM'));			
@@ -62,12 +62,13 @@ if(!empty($orders)) {
 			 */
 			$ii++;
 			$sheet->setCellValue('A'.($i+$ii+$iii), __('Bio')); 
-			$sheet->setCellValue('B'.($i+$ii+$iii), __('Name')); 
-			$sheet->setCellValue('C'.($i+$ii+$iii), __('Conf')); 
-			$sheet->setCellValue('D'.($i+$ii+$iii), __('Prezzo/UM')); 
-			$sheet->setCellValue('E'.($i+$ii+$iii), __('PrezzoUnita')); 
-			$sheet->setCellValue('F'.($i+$ii+$iii), __('Qta')); 
-			$sheet->setCellValue('G'.($i+$ii+$iii), __('Importo'));
+			$sheet->setCellValue('B'.($i+$ii+$iii), __('Code')); 
+			$sheet->setCellValue('C'.($i+$ii+$iii), __('Name')); 
+			$sheet->setCellValue('D'.($i+$ii+$iii), __('Conf')); 
+			$sheet->setCellValue('E'.($i+$ii+$iii), __('Prezzo/UM')); 
+			$sheet->setCellValue('F'.($i+$ii+$iii), __('PrezzoUnita')); 
+			$sheet->setCellValue('G'.($i+$ii+$iii), __('Qta')); 
+			$sheet->setCellValue('H'.($i+$ii+$iii), __('Importo'));
 						
 			$totale_user = 0;
 			foreach($user->article_orders as $article_order) {
@@ -78,12 +79,13 @@ if(!empty($orders)) {
 				$article_order->article->is_bio ? $is_bio = 'Si': $is_bio = 'No';
 
 				$sheet->setCellValue('A'.($i+$ii+$iii), $is_bio); 
-				$sheet->setCellValue('B'.($i+$ii+$iii), $article_order->name); 
-				$sheet->setCellValue('C'.($i+$ii+$iii), $article_order->article->conf); 
-				$sheet->setCellValue('D'.($i+$ii+$iii), $article_order->article->um_rif_label); 
-				$sheet->setCellValue('E'.($i+$ii+$iii), $article_order->prezzo); 
-				$sheet->setCellValue('F'.($i+$ii+$iii), $article_order->cart->final_qta); 
-				$sheet->setCellValue('G'.($i+$ii+$iii), $article_order->cart->final_price); 
+				$sheet->setCellValue('B'.($i+$ii+$iii), $article_order->article->codice); 
+				$sheet->setCellValue('C'.($i+$ii+$iii), $article_order->name); 
+				$sheet->setCellValue('D'.($i+$ii+$iii), $article_order->article->conf); 
+				$sheet->setCellValue('E'.($i+$ii+$iii), $article_order->article->um_rif_label); 
+				$sheet->setCellValue('F'.($i+$ii+$iii), $article_order->prezzo); 
+				$sheet->setCellValue('G'.($i+$ii+$iii), $article_order->cart->final_qta); 
+				$sheet->setCellValue('H'.($i+$ii+$iii), $article_order->cart->final_price); 
 
 			} // end foreach($article_orders as $ii => $article_order)
 
@@ -92,9 +94,10 @@ if(!empty($orders)) {
 			$sheet->setCellValue('B'.($i+$ii+$iii), ''); 
 			$sheet->setCellValue('C'.($i+$ii+$iii), ''); 
 			$sheet->setCellValue('D'.($i+$ii+$iii), ''); 
-			$sheet->setCellValue('E'.($i+$ii+$iii), ''); 
-			$sheet->setCellValue('F'.($i+$ii+$iii), __('Totale gasista')); 
-			$sheet->setCellValue('G'.($i+$ii+$iii), $totale_user); 
+			$sheet->setCellValue('E'.($i+$ii+$iii), '');
+			$sheet->setCellValue('F'.($i+$ii+$iii), ''); 
+			$sheet->setCellValue('G'.($i+$ii+$iii), __('Totale gasista')); 
+			$sheet->setCellValue('H'.($i+$ii+$iii), $totale_user); 
 	
 			$totale += $totale_user;
 		} // foreach($order->users as $i => $user)

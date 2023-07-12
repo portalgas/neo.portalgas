@@ -161,10 +161,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <td></td>
                         <td></td>
                         <td colspan="4">
-                          <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
+                          <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="nota" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
                         </td>
                         <td colspan="3">
-                          <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
+                          <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="ingredienti" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
                         </td>
                         <td colspan="3">
                           <div><label><?= __('qta_multipli') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_multipli" @change="changeValue(event, index)" :id="'qta_multipli-'+article.organization_id+'-'+article.id" name="qta_multipli" /></div>

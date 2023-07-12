@@ -296,13 +296,22 @@ $(function () {
         setDropzone: function() {
           let _this = this;
 
+          console.log(csrfToken, 'csrfToken');
+    
           $('.dropzone').each(function() {
                 
               let index = $(this).attr('data-attr-index');
               // console.log(index, 'dropzone data-attr-index');
 
               var myDropzone = new Dropzone(this, {
-                    url: '/admin/articles/img1/upload/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'], 
+                    url: '/admin/api/articles/img1Upload/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'], 
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },                    
+                    beforeSend: function(request) {
+                      console.log(csrfToken, 'csrfToken');
+                        return request.setRequestHeader('X-CSRF-Token', csrfToken);
+                    },                    
                     dictDefaultMessage: 'Trascina qui la foto dell\'articolo',
                     dictRemoveFile: 'Elimina foto',
                     dictFallbackMessage: 'Il tuo browser non supporta il drag\'n\'drop dei file.',
@@ -352,7 +361,7 @@ $(function () {
                       });		
                       this.on('removedfile', function(file) {
                         console.log(file, 'removedfile'); 
-                        $.post('/admin/articles/img1/delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id']); 
+                        $.post('/admin/api/articles/img1Delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id']); 
                       });		
                     },
                     accept: function(file, done) {

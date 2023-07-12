@@ -16,6 +16,7 @@ class ArticlesController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('SuppliersOrganization');
+        $this->loadComponent('Upload');
     }
 
     public function beforeFilter(Event $event)
@@ -192,6 +193,7 @@ class ArticlesController extends ApiAppController
 
         $datas = [];
         $datas[$name] = $value;
+        // dd($datas);
         $article = $this->Articles->patchEntity($article, $datas);
         if (!$this->Articles->save($article)) {
             $results['code'] = 500;
@@ -205,5 +207,47 @@ class ArticlesController extends ApiAppController
         $results['errors'] = '';
       
         return $this->_response($results); 
-    }    
+    }
+    
+    public function img1Upload($organization_id, $article_id) {
+        
+        $debug = true;
+
+        $request = $this->request->getData();   
+        if($debug) debug($request);
+        if($debug) debug('organization_id '.$organization_id);
+    
+        $config = Configure::read('Config');
+        $img_path = sprintf(Configure::read('Article.img.paths'), $organization_id);
+
+        $portalgas_app_root = $config['Portalgas.App.root'];
+        $path = $portalgas_app_root.$img_path;
+        if($debug) debug('path '.$path);
+
+        /*
+        * upload del file
+        */
+        $config = [] ;
+        $config['upload_path']    = $path;          
+        $config['allowed_types']  = ['jpeg', 'jpg', 'png', 'gif'];            
+        $config['max_size']       = 0;   
+        $config['overwrite']      = true;
+        $config['encrypt_name']  = true;
+        $config['remove_spaces'] = true;         
+        $this->Upload->init($config);  
+        $results = $this->Upload->upload('img1');
+        if ($results===false){
+            $continua = false;
+            $error = $this->Upload->errors();
+            if($debug) debug($error);
+            $this->Flash->error($error[0]);
+        } 
+        if($debug) debug($this->Upload->output());
+        $results = $this->Upload->output();
+        
+    }
+
+    public function img1Delete($organization_id, $article_id) {
+
+    }
 }

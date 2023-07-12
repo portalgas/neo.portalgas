@@ -164,7 +164,7 @@ class ImportFilesController extends AppController
             if($debug) debug($this->request->getData());
 
             /*
-             * uplaod del file
+             * upload del file
              */
             $config = [] ;
             $config['upload_path']    = WWW_ROOT;          
@@ -254,7 +254,7 @@ class ImportFilesController extends AppController
             if($debug) debug($this->request->getData());
 
             /*
-             * uplaod del file
+             * upload del file
              */
             $config = [] ;
             $config['upload_path']    = WWW_ROOT;          
