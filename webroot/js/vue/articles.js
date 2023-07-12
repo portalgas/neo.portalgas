@@ -216,7 +216,7 @@ $(function () {
                 else {
                   $responseHtml.addClass('fa-lg text-red fa fa-thumbs-o-down');
                   console.error(response.data.errors);
-                  alert(response.data.errors);
+                  alert(response.data.errors); 
                 }
 
                 setTimeout( function() {$responseHtml.remove()} , 2500);                
@@ -239,16 +239,22 @@ $(function () {
             
           this.setValue(field_id, field_name, field_value, index); 
         },
-        toggleSearchFlagPresenteArticlesOrders: function() {
-          this.search_flag_presente_articlesorders = !this.search_flag_presente_articlesorders;
-        },
-        toggleFlagPresenteArticlesOrders: function(index) {
+        toggleFlagPresenteArticlesOrders: function(field_id, index) {
           console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
           if(this.articles[index].flag_presente_articlesorders=='Y')
             this.articles[index].flag_presente_articlesorders = 'N';
           else 
             this.articles[index].flag_presente_articlesorders = 'Y';
+
+            console.log(field_id, 'field_id');
+            let field_name = 'flag_presente_articlesorders';
+            let field_value = this.articles[index].flag_presente_articlesorders;
+              
+            this.setValue(field_id, field_name, field_value, index);   
         },
+        toggleSearchFlagPresenteArticlesOrders: function() {
+          this.search_flag_presente_articlesorders = !this.search_flag_presente_articlesorders;
+        },        
         toggleExtra: function(index) {
           console.log('.extra-'+index, 'toggleExtra');
           $('.extra-'+index).toggle('slow');
@@ -332,7 +338,6 @@ $(function () {
                     paramName: 'img1', // The name that will be used to transfer the file
                     maxFilesize: 5, // MB  
                     init: function() {
-
                       // ctrl size perche' se c'e' il placeholder /img/article-no-img.png
                       if(_this.articles[index]['img1_size']>0) {
                           let myDropzone = this;
@@ -354,15 +359,20 @@ $(function () {
                           });
                       this.on('success', function(file, response) {
                         if(response.esito) {
-                  
+              
                         }
                         console.log(response, 'success response'); 
-                  
                       });		
                       this.on('removedfile', function(file) {
-                        console.log(file, 'removedfile'); 
-                        $.post('/admin/api/articles/img1Delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id']); 
-                      });		
+                          console.log(file, 'removedfile'); 
+                          $.ajax({
+                            url: '/admin/api/articles/img1Delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'],
+                            type: 'post',
+                            headers: {
+                              'X-CSRF-TOKEN': csrfToken
+                            }
+                          });
+                      });
                     },
                     accept: function(file, done) {
                         if (file.name == 'justinbieber.jpg') {
@@ -384,7 +394,7 @@ $(function () {
         um_label: function(index) {
 
           let prezzo = this.articles[index].prezzo;
-          let qta = this.articles[index].prezzo;
+          let qta = this.articles[index].qta;
           let um_riferimento = this.articles[index].um_riferimento;
           let prezzo_um_riferimento = (prezzo / qta);
           

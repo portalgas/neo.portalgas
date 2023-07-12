@@ -87,7 +87,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <button class="btn-block btn" 
                                 :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
                                 :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'" 
-                                @click="toggleFlagPresenteArticlesOrders(index)">
+                                @click="toggleFlagPresenteArticlesOrders('flag_presente_articlesorders-'+article.organization_id+'-'+article.id, index)">
                             <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
                           </button>
@@ -104,13 +104,20 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             </td>';
                         ?>
                         <td>
-                          <select name="category_article_id" class="form-control extend" :required="true" v-model="article.category_article_id" @change="changeValue(event, index)" :id="'category_article_id-'+article.organization_id+'-'+article.id">
+                          {{ article.categories_article.name }}
+                          <select 
+                              v-if="Object.keys(categories_articles).length>1"
+                              name="category_article_id" 
+                              class="form-control extend" 
+                              :required="true" 
+                              v-model="article.category_article_id" 
+                              @change="changeValue(event, index)" :id="'category_article_id-'+article.organization_id+'-'+article.id">
                             <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
                             </option>
                           </select>  
                         </td>
                         <td>
-                          <a href="#" @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id">
+                          <a @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id">
                             <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                           </a>
                         </td>
@@ -131,7 +138,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
                         </td>
                         <td>
-                          <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index)" :id="'um-'+article.organization_id+'-'+article.id">
+                          <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index)" :id="'um-'+article.organization_id+'-'+article.id" name="um">
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}
@@ -139,7 +146,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           </select>
                         </td>
                         <td>
-                          <select class="form-control" :required="true" v-model="article.um_riferimento" @change="changeValue(event, index)" :id="'um_riferimento-'+article.organization_id+'-'+article.id" >
+                          <select class="form-control" :required="true" v-model="article.um_riferimento" @change="changeValue(event, index)" :id="'um_riferimento-'+article.organization_id+'-'+article.id" name="um_riferimento">
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}

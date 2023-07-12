@@ -43,6 +43,8 @@ class ArticlesTable extends Table
             ],
         ]]);
 
+        $this->addBehavior('Burzum/Imagine.Imagine');
+        
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER'

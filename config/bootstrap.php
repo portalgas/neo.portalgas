@@ -381,6 +381,7 @@ Configure::write('Article.img.paths', '/images/articles/%s');
 Configure::write('Article.img.path.full', '/images/articles/%s/%s');
 Configure::write('Article.img.no', '/img/article-no-img.png');
 Configure::write('Article.img.preview.width', '50px');
+Configure::write('App.web.img.upload.width.article', '250');
 
 Configure::write('Supplier.img.path.full', '/images/organizations/contents/%s');
 Configure::write('Supplier.img.path.fulljs', '/images/organizations/contents/');

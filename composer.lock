@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6b909ed5abec2b278b2d577df9d677c",
+    "content-hash": "257232bd4fa0f5a57f575dd20cb7cfca",
     "packages": [
         {
             "name": "admad/cakephp-jwt-auth",
@@ -149,6 +149,60 @@
                 "source": "https://github.com/auraphp/Aura.Intl/tree/3.0.1"
             },
             "time": "2022-01-28T10:55:50+00:00"
+        },
+        {
+            "name": "burzum/cakephp-imagine-plugin",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/burzum/cakephp-imagine-plugin.git",
+                "reference": "c88eaa490dcc60df0914536dbb5da32f78c45b1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/burzum/cakephp-imagine-plugin/zipball/c88eaa490dcc60df0914536dbb5da32f78c45b1f",
+                "reference": "c88eaa490dcc60df0914536dbb5da32f78c45b1f",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": "3.*",
+                "cakephp/plugin-installer": "*",
+                "imagine/imagine": "0.6.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "Burzum\\Imagine\\": "src",
+                    "Burzum\\Imagine\\Test\\Fixture\\": "tests\\Fixture"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Krämer",
+                    "homepage": "http://florian-kraemer.net"
+                }
+            ],
+            "description": "Imagine Plugin for CakePHP",
+            "homepage": "https://github.com/burzum/cakephp-imagine-plugin",
+            "keywords": [
+                "cakephp",
+                "image",
+                "image-processing",
+                "media"
+            ],
+            "support": {
+                "issues": "https://github.com/burzum/cakephp-imagine-plugin/issues",
+                "source": "https://github.com/burzum/cakephp-imagine-plugin/tree/master"
+            },
+            "abandoned": true,
+            "time": "2016-01-28T23:14:15+00:00"
         },
         {
             "name": "cakedc/enum",
@@ -1457,6 +1511,67 @@
                 "source": "https://github.com/http-interop/http-factory-guzzle/tree/1.2.0"
             },
             "time": "2021-07-21T13:50:14+00:00"
+        },
+        {
+            "name": "imagine/imagine",
+            "version": "v0.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-imagine/Imagine.git",
+                "reference": "149041d2a1b517107bfe270ca2b1a17aa341715d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-imagine/Imagine/zipball/149041d2a1b517107bfe270ca2b1a17aa341715d",
+                "reference": "149041d2a1b517107bfe270ca2b1a17aa341715d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "sami/sami": "dev-master"
+            },
+            "suggest": {
+                "ext-gd": "to use the GD implementation",
+                "ext-gmagick": "to use the Gmagick implementation",
+                "ext-imagick": "to use the Imagick implementation"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Imagine": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com",
+                    "homepage": "http://avalanche123.com"
+                }
+            ],
+            "description": "Image processing for PHP 5.3",
+            "homepage": "http://imagine.readthedocs.org/",
+            "keywords": [
+                "drawing",
+                "graphics",
+                "image manipulation",
+                "image processing"
+            ],
+            "support": {
+                "issues": "https://github.com/php-imagine/Imagine/issues",
+                "source": "https://github.com/php-imagine/Imagine/tree/v0.6.3"
+            },
+            "time": "2015-09-19T16:54:05+00:00"
         },
         {
             "name": "ishanvyas22/asset-mix",

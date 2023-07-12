@@ -177,6 +177,12 @@ class ArticlesController extends ApiAppController
         $name = $jsonData->name; 
         $value = $jsonData->value; 
 
+        if(empty($name)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = 'Non del campo non valorizzato!';
+            return $this->_response($results);            
+        }
         $where = ['id' => $id, 
                   'organization_id' => $organization_id];
 
@@ -191,6 +197,14 @@ class ArticlesController extends ApiAppController
             return $this->_response($results); 
         }
 
+        /*
+         * trasforma 
+         */
+        switch(strtolower($name)) {
+            case 'prezzo':
+                $value = $this->convertImport($value);
+            break;
+        }
         $datas = [];
         $datas[$name] = $value;
         // dd($datas);
@@ -198,7 +212,15 @@ class ArticlesController extends ApiAppController
         if (!$this->Articles->save($article)) {
             $results['code'] = 500;
             $results['message'] = 'KO';
-            $results['errors'] = $article->getErrors();
+            $errors = $article->getErrors();
+            // trasformo in stringa per js
+            $msg = '';
+            foreach($errors as $field => $error) {
+                foreach($error as $type => $err) {
+                    $msg .= __($field) . ': ' . $err ."\r\n";
+                }
+            }
+            $results['errors'] = $msg;
             return $this->_response($results); 
         }
 
@@ -211,43 +233,166 @@ class ArticlesController extends ApiAppController
     
     public function img1Upload($organization_id, $article_id) {
         
-        $debug = true;
+        $debug = false;
 
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+                  
         $request = $this->request->getData();   
         if($debug) debug($request);
-        if($debug) debug('organization_id '.$organization_id);
-    
-        $config = Configure::read('Config');
-        $img_path = sprintf(Configure::read('Article.img.paths'), $organization_id);
+        if($debug) debug('organization_id passato al metodo ['.$organization_id.'] user ['.$this->_organization->id.']');
 
-        $portalgas_app_root = $config['Portalgas.App.root'];
-        $path = $portalgas_app_root.$img_path;
-        if($debug) debug('path '.$path);
+        if($organization_id!=$this->_organization->id) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = "L'articolo non è gestito da te!";
+            $results['results'] = [];
+            return $this->_response($results);     
+        }
+
+        $config = Configure::read('Config');
+        $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.paths'), $organization_id);
+        if($debug) debug('img_path '.$img_path);
 
         /*
         * upload del file
         */
-        $config = [] ;
-        $config['upload_path']    = $path;          
-        $config['allowed_types']  = ['jpeg', 'jpg', 'png', 'gif'];            
-        $config['max_size']       = 0;   
-        $config['overwrite']      = true;
-        $config['encrypt_name']  = true;
-        $config['remove_spaces'] = true;         
-        $this->Upload->init($config);  
-        $results = $this->Upload->upload('img1');
-        if ($results===false){
-            $continua = false;
-            $error = $this->Upload->errors();
-            if($debug) debug($error);
-            $this->Flash->error($error[0]);
+        $config_upload = [] ;
+        $config_upload['upload_path']    = $img_path;          
+        $config_upload['allowed_types']  = ['jpeg', 'jpg', 'png', 'gif'];            
+        $config_upload['max_size']       = 0;   
+        $config_upload['overwrite']      = true;
+        $config_upload['encrypt_name']  = true;
+        $config_upload['remove_spaces'] = true;         
+        $this->Upload->init($config_upload);  
+        $upload_results = $this->Upload->upload('img1');
+        if ($upload_results===false){
+            $errors = $this->Upload->errors(); 
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = $errors;
+            $results['results'] = [];
+            if($debug) debug($errors);
+            return $this->_response($results);   
         } 
         if($debug) debug($this->Upload->output());
-        $results = $this->Upload->output();
+        $upload_results = $this->Upload->output();
+        $file_name = $upload_results['file_name'];
+        if(!isset($upload_results['file_name']) || empty($upload_results['file_name'])) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = "Errore di sistema!";
+            $results['results'] = [];
+            return $this->_response($results);            
+        }
+
+        /*
+        * ridimensiono img originale
+        */
+        $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $organization_id, $file_name);
+        $imageOperations = [
+            'thumbnail' => [
+                'height' => Configure::read('App.web.img.upload.width.article'),
+                'width' => Configure::read('App.web.img.upload.width.article')
+            ]];
+            $this->Articles->processImage(
+                $img_path,
+                $img_path,
+            [],
+            $imageOperations);
+
+        /*
+        * aggiorno db
+        */            
+        $where = ['organization_id' => $this->_organization->id,
+                  'id' => $article_id];
+        $article = $this->Articles->find()
+                    ->where($where)
+                    ->first();
+        if(empty($article)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
+            $results['results'] = [];
+            return $this->_response($results);            
+        }        
+
+        $datas = [];
+        $datas['img1'] = $file_name;
+        $article = $this->Articles->patchEntity($article, $datas);
+        if (!$this->Articles->save($article)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = $article->getErrors();
+            $results['results'] = [];
+            return $this->_response($results);   
+        }        
         
+        $results['code'] = 200;
+        $results['message'] = $upload_results;
+        $results['errors'] = '';
+        $results['results'] = [];
+        return $this->_response($results);         
     }
 
     public function img1Delete($organization_id, $article_id) {
+        
+        $debug = false;
 
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+                  
+        if($debug) debug('organization_id passato al metodo ['.$organization_id.'] user ['.$this->_organization->id.']');
+
+        if($organization_id!=$this->_organization->id) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = "L'articolo non è gestito da te!";
+            $results['results'] = [];
+            return $this->_response($results);     
+        }
+
+        $where = ['organization_id' => $this->_organization->id,
+                  'id' => $article_id];
+        $article = $this->Articles->find()
+                    ->where($where)
+                    ->first();
+        if(empty($article)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
+            $results['results'] = [];
+            return $this->_response($results);            
+        }        
+
+        $config = Configure::read('Config');
+        $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $organization_id, $article->img1);
+        if($debug) debug('img_path '.$img_path);
+
+        // elimino file
+        unlink($img_path);
+
+        $datas = [];
+        $datas['img1'] = '';
+        $article = $this->Articles->patchEntity($article, $datas);
+        if (!$this->Articles->save($article)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = $article->getErrors();
+            $results['results'] = [];
+            return $this->_response($results);   
+        }        
+        
+        $results['code'] = 200;
+        $results['message'] = '';
+        $results['errors'] = '';
+        $results['results'] = [];
+        return $this->_response($results); 
     }
 }

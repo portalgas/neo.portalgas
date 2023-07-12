@@ -11,6 +11,7 @@
         "ext-openssl": "*",
         "admad/cakephp-jwt-auth": "^2.3",
         "allanmcarvalho/cakephp-datatables": "^1.6",
+        "burzum/cakephp-imagine-plugin": "2.*",
         "cakedc/enum": "~1.0",
         "cakephp/authentication": "^1.1",
         "cakephp/authorization": "^1.2",
