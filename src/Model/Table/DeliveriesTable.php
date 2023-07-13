@@ -184,8 +184,8 @@ class DeliveriesTable extends Table
         if($user->organization->paramsConfig['hasGasGroups']=='Y') {
             $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
             if(!empty($gasGroupDeliveries)) {
-                if($deliveries->count()>0)
-                    $deliveries = array_merge($deliveries->toArray(), $gasGroupDeliveries);
+                if(count($deliveries)>0)
+                    $deliveries = array_merge($deliveries, $gasGroupDeliveries);
                 else 
                     $deliveries = $gasGroupDeliveries;    
             }
