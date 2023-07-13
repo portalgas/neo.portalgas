@@ -168,6 +168,98 @@ $(function () {
         /*  
          * autocomplete end 
          */
+        numberFormat: function (number, decimals, dec_point, thousands_sep) {
+            /* da 1000.5678 in 1.000,57 */
+            /* da 1000 in 1.000,00 */
+    
+            var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
+            var d = dec_point == undefined ? "." : dec_point;
+            var t = thousands_sep == undefined ? "," : thousands_sep, s = n < 0 ? "-" : "";
+            var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
+    
+            return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+        },        
+        changeUM: function(event, index) {
+
+          console.log(event.target, 'changeUM');
+          console.log('changeUM index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
+
+          let um = event.target.value;
+          let prezzo = this.articles[index].prezzo_;
+          prezzo = prezzo.replace(',', '.');
+          let qta = this.articles[index].qta;
+          let prezzo_um_riferimento = (prezzo / qta);
+          console.log(prezzo_um_riferimento, 'prezzo_um_riferimento');
+  
+          let um_rif_values = [];
+          let um_rif_values_prezzo = 0;
+          if (um == 'PZ') {
+            um_rif_values_prezzo = prezzo_um_riferimento;
+            um_rif_values.push({id: 'PZ', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;'});
+          } else
+          if (um == 'KG') {
+              um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
+              um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
+            
+              um_rif_values_prezzo = (prezzo_um_riferimento / 100);
+              um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});              
+
+              um_rif_values_prezzo = (prezzo_um_riferimento);
+              um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});              
+          } else
+          if (um == 'HG') {
+              um_rif_values_prezzo = (prezzo_um_riferimento / 100);
+              um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});              
+  
+              um_rif_values_prezzo = (prezzo_um_riferimento);
+              um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
+  
+              um_rif_values_prezzo = (prezzo_um_riferimento * 10);
+              um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
+          } else
+          if (um == 'GR') {
+              um_rif_values_prezzo = (prezzo_um_riferimento);
+              um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
+                  
+              um_rif_values_prezzo = (prezzo_um_riferimento * 100);
+              um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
+
+              um_rif_values_prezzo = (prezzo_um_riferimento * 1000);
+              um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
+          } else
+          if (um == 'LT') {
+              um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
+              um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
+                          
+              um_rif_values_prezzo = (prezzo_um_riferimento / 10);
+              um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
+                           
+              um_rif_values_prezzo = (prezzo_um_riferimento);
+              um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
+          } else
+          if (um == 'DL') {
+              um_rif_values_prezzo = (prezzo_um_riferimento / 100);
+              um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});  
+  
+              um_rif_values_prezzo = (prezzo_um_riferimento);
+              um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
+                  
+              um_rif_values_prezzo = (prezzo_um_riferimento * 10);
+              um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
+          } else
+          if (um == 'ML') {
+              um_rif_values_prezzo = (prezzo_um_riferimento);
+              um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
+            
+              um_rif_values_prezzo = (prezzo_um_riferimento * 100);
+              um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
+                             
+              um_rif_values_prezzo = (prezzo_um_riferimento * 1000);
+              um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
+          }          
+
+          this.articles[index].um_rif_values = um_rif_values;
+        },
         changeValue: function(event, index) {
 
           console.log(event.target, 'changeValue');
@@ -387,103 +479,9 @@ $(function () {
                 });
                 myDropzone.on('queuecomplete', function (file) {
                     console.log('dropzone queuecomplete');
-                });                
-
+                });
             }); // $('.dropzone').each(function()
         },
-        um_label: function(index) {
-
-          let prezzo = this.articles[index].prezzo;
-          let qta = this.articles[index].qta;
-          let um_riferimento = this.articles[index].um_riferimento;
-          let prezzo_um_riferimento = (prezzo / qta);
-          
-          return prezzo_um_riferimento + ' al ' + um_riferimento;
-          /*
-          var str = '';
-              if (um == 'PZ') {
-                  str += '<input class="nospace" checked="checked" type="radio" value="PZ" id="ArticleUmRiferimentoPZ" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoPZ">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Pezzo</label>';
-              } else
-              if (um == 'KG') {
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'GR') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="GR" id="ArticleUmRiferimentoGR" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoGR">' + number_format(prezzo_um_riferimento / 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="KG" id="ArticleUmRiferimentoKG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoKG">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo</label></br>';
-              } else
-              if (um == 'HG') {
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'GR') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="GR" id="ArticleUmRiferimentoGR" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoGR">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="KG" id="ArticleUmRiferimentoKG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoKG">' + number_format(prezzo_um_riferimento * 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo</label></br>';
-              } else
-              if (um == 'GR') {
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'GR') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="GR" id="ArticleUmRiferimentoGR" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoGR">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento * 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="KG" id="ArticleUmRiferimentoKG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoKG">' + number_format(prezzo_um_riferimento * 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo</label></br>';
-              } else
-              if (um == 'LT') {
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'ML') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="ML" id="ArticleUmRiferimentoML" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoML">' + number_format(prezzo_um_riferimento / 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'DL') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="DL" id="ArticleUmRiferimentoDL" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoDL">' + number_format(prezzo_um_riferimento / 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'LT') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="LT" id="ArticleUmRiferimentoLT" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoLT">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro</label></br>';
-              } else
-              if (um == 'DL') {
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'ML') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="ML" id="ArticleUmRiferimentoML" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoML">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'DL') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="DL" id="ArticleUmRiferimentoDL" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoDL">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'LT') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="LT" id="ArticleUmRiferimentoLT" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoLT">' + number_format(prezzo_um_riferimento * 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro</label></br>';
-              } else
-              if (um == 'ML') {
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'ML') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="ML" id="ArticleUmRiferimentoML" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoML">' + number_format(prezzo_um_riferimento, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'DL') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="DL" id="ArticleUmRiferimentoDL" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoDL">' + number_format(prezzo_um_riferimento * 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro</label></br>';
-      
-                  str += '<input class="nospace" type="radio" ';
-                  (um_riferimento == 'LT') ? str += 'checked="checked" ' : str += ' ';
-                  str += 'value="LT" id="ArticleUmRiferimentoLT" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoLT">' + number_format(prezzo_um_riferimento * 1000, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro</label></br>';
-              }          
-          */
-        }        
       },
       /*
       watch: {

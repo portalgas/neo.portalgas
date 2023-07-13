@@ -55,20 +55,19 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
           <table class="table table-hover" v-if="!is_run && articles.length>0">
             <thead>
               <tr>
-                  <th scope="col" colspan="2" class="actions text-center"><?= __('Actions') ?></th>
+                  <th scope="col" colspan="2" class="actions text-center"></th>
                   <?php 
                   if(empty($search_supplier_organization_id))
                     echo '<th scope="col">'.__('supplier_organization_id').'</th>';
                   ?>
                   <th scope="col"><?= __('Category') ?></th>
-                  <th scope="col"><?= __('bio') ?></th>
-                  <th scope="col"><?= __('img1') ?></th>
-                  <th scope="col"><?= __('name') ?></th>
-                  <th scope="col"><?= __('codice') ?></th>
-                  <th scope="col" style="width:100px"><?= __('prezzo') ?></th>
+                  <th scope="col"><?= __('Bio') ?></th>
+                  <th scope="col"></th>
+                  <th scope="col"><?= __('Name') ?></th>
+                  <th scope="col"><?= __('Code') ?></th>
+                  <th scope="col" style="width:100px"><?= __('Prezzo') ?></th>
                   <th scope="col" style="width:100px"><?= __('qta') ?></th>
-                  <th scope="col" style="width:100px"><?= __('um') ?></th>
-                  <th scope="col" style="width:100px"><?= __('um_riferimento') ?></th>
+                  <th scope="col" style="width:150px"><?= __('UM') ?></th>
               </tr>
             </thead>
             <tbody>
@@ -138,21 +137,48 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
                         </td>
                         <td>
-                          <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index)" :id="'um-'+article.organization_id+'-'+article.id" name="um">
+                          <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index); changeUM(event, index);" :id="'um-'+article.organization_id+'-'+article.id" name="um">
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}
                             </option>
                           </select>
-                        </td>
-                        <td>
-                          <select class="form-control" :required="true" v-model="article.um_riferimento" @change="changeValue(event, index)" :id="'um_riferimento-'+article.organization_id+'-'+article.id" name="um_riferimento">
+                        
+                          <!-- select class="form-control" :required="true" v-model="article.um_riferimento" @change="changeValue(event, index)" :id="'um_riferimento-'+article.organization_id+'-'+article.id" name="um_riferimento">
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}
                             </option>
-                          </select>                          
-                          <div>{{ um_label(index) }}</div>
+                          </select --> 
+
+                          <div v-if="article.um_rif_values.length>0">
+                            <div class="form-check" v-for="um_rif_value in article.um_rif_values">
+                              <input class="form-check-input" type="radio" 
+                                     name="um_riferimento" 
+                                     v-model="article.um_riferimento" 
+                                     @change="changeValue(event, index)"
+                                     :id="'um_rif_values-'+um_rif_value.id" 
+                                     :value="um_rif_value.id">
+                              <label class="form-check-label" 
+                                     :for="'um_rif_values-'+um_rif_value.id"
+                                     v-html="$options.filters.html(um_rif_value.value)">
+                              </label>
+                            </div>
+                          </div>
+                          <div v-if="article.um_rif_values.length==0">
+                            {{ article.um_rif_label }}
+                          </div>
+  
+                          <!-- select class="form-control" 
+                              v-if="article.um_rif_values.length>0" 
+                              :required="true" 
+                              v-model="article.um_riferimento" 
+                              @change="changeValue(event, index)"
+                              :id="'um_riferimento-'+article.organization_id+'-'+article.id" name="um_riferimento">
+                            <option v-for="um_rif_value in article.um_rif_values" 
+                                    :value="um_rif_value.id" 
+                                    v-html="$options.filters.html(um_rif_value.value)"></option>                            
+                          </select --> 
                         </td>
 
                       </tr>
@@ -162,18 +188,18 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <th scope="col"></th>
                         <th scope="col" colspan="4"><?= __('Nota') ?></th>
                         <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
-                        <th scope="col" colspan="3"></th>
+                        <th scope="col" colspan="2"></th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
                         <td></td>
-                        <td colspan="4">
+                        <td colspan="3">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="nota" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
                         </td>
                         <td colspan="3">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="ingredienti" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
                         </td>
-                        <td colspan="3">
+                        <td colspan="4">
                           <div><label><?= __('qta_multipli') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_multipli" @change="changeValue(event, index)" :id="'qta_multipli-'+article.organization_id+'-'+article.id" name="qta_multipli" /></div>
                           <div><label><?= __('pezzi_confezione') ?></label> <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" @change="changeValue(event, index)" :id="'pezzi_confezione-'+article.organization_id+'-'+article.id" name="pezzi_confezione" /></div>
                           <div><label><?= __('qta_minima') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_minima" @change="changeValue(event, index)" :id="'qta_minima-'+article.organization_id+'-'+article.id" name="qta_minima" /></div>
@@ -214,7 +240,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           {{ article.categories_article.name }}
                         </td>
                         <td>
-                          <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
+                          <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" style="cursor: pointer;" />
                         </td>
                         <td>
                           <img :src="article.img1" :title="article.img1" width="50" />

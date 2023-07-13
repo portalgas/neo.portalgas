@@ -85,7 +85,8 @@ class ApiArticleDecorator  extends AppDecorator {
                 $results['is_bio'] = false;
         }
 
-        $results['um_rif_label'] = $this->_getArticlePrezzoUM($article->prezzo, $article->qta, $article->um, $article->um_rif);          
+        $results['um_rif_label'] = $this->_getArticlePrezzoUM($article->prezzo, $article->qta, $article->um, $article->um_riferimento);          
+        $results['um_rif_values'] = []; // vuoto , sara' popolato in articles.js con i possibili valori in base all'um
         $results['conf'] = $article->qta.' '.$article->um;
       
         return $results;

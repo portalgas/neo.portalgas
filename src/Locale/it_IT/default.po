@@ -361,6 +361,9 @@ msgstr "Conf"
 msgid "pezzi_confezione"
 msgstr "Conf"
 
+msgid "UM"
+msgstr "Unità di misura"
+
 msgid "Prezzo/UM"
 msgstr "Prezzo/UM"
 
