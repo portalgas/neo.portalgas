@@ -13,6 +13,8 @@ $(function () {
       router,
       el: '#vue-articles',
       data: {
+        open_box_price: false,
+        iva: 10,
         ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
         search_supplier_organization_id: '',
         search_name: '',
@@ -21,6 +23,10 @@ $(function () {
         search_flag_presente_articlesorders: true,
         articles: [],
         is_run: false,
+        is_run_paginator: false,
+        list_articles_finish: false,
+        page: 1,
+        isScrollFinish: false,
         autocomplete_field: '',
         autocomplete_name_results: [],
         autocomplete_name_is_open: false,
@@ -168,9 +174,27 @@ $(function () {
         /*  
          * autocomplete end 
          */
-        numberFormat: function (number, decimals, dec_point, thousands_sep) {
-            /* da 1000.5678 in 1.000,57 */
-            /* da 1000 in 1.000,00 */
+
+        /* 
+        * valore in 1000.50
+        */        
+        numberToJs: function(number) {
+	
+          if(number==undefined) return '0.00';
+          
+          /* elimino le migliaia */
+          number = number.replace('.','');
+        
+          /* converto eventuali decimanali */
+          number = number.replace(',','.');	
+          
+          return number; 
+        },
+        /* 
+          da 1000.5678 in 1.000,57
+          da 1000 in 1.000,00 
+        */
+        numberFormat: function(number, decimals, dec_point, thousands_sep) {
     
             var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
             var d = dec_point == undefined ? "." : dec_point;
@@ -186,7 +210,7 @@ $(function () {
 
           let um = event.target.value;
           let prezzo = this.articles[index].prezzo_;
-          prezzo = prezzo.replace(',', '.');
+          prezzo = this.numberToJs(prezzo);
           let qta = this.articles[index].qta;
           let prezzo_um_riferimento = (prezzo / qta);
           console.log(prezzo_um_riferimento, 'prezzo_um_riferimento');
@@ -260,8 +284,36 @@ $(function () {
 
           this.articles[index].um_rif_values = um_rif_values;
         },
-        changeValue: function(event, index) {
+        openBoxPrice: function() {
+          this.open_box_price = !this.open_box_price;
+        },
+        setPriceConIva: function(event, index) {
+          console.log(event.target, 'changePrice');
+          console.log('changePrice index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
 
+          let iva = $('#iva-'+this.articles[index].organization_id+'-'+this.articles[index].id).val();
+          console.log(iva, 'changePrice iva');
+
+          let field_id = event.target.id;
+          let field_name = event.target.name;
+          let field_value = event.target.value;
+
+          if(iva!=0) {
+            let prezzo_no_iva = this.numberToJs(field_value);
+            let delta_iva = (prezzo_no_iva/100)*iva;
+            console.log("delta_iva "+delta_iva);
+            //delta_iva = Math.round(delta_iva);
+            //console.log("Math.round(delta_iva) "+delta_iva);
+          
+            field_value = (parseFloat(prezzo_no_iva) + parseFloat(delta_iva));
+            this.articles[index].prezzo = field_value;
+            let prezzo = this.numberFormat(field_value,2,',','.');  
+            this.articles[index].prezzo_ = prezzo;
+          }
+
+          // this.setValue(field_id, field_name, field_value, index);
+        },
+        changeValue: function(event, index) {
           console.log(event.target, 'changeValue');
           console.log('changeValue index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
 
@@ -352,11 +404,52 @@ $(function () {
           $('.extra-'+index).toggle('slow');
         },
         gets: async function() {
-          await this.getArticles();
-          await this.setDropzone();
+
+          this.articles = [];
+          this.page = 1;
+          this.list_articles_finish = false;
+         
+          await this.scroll();
+          this.isScrollFinish = false;
+        },
+        scroll: async function() {
+          // console.log('scroll page '+this.page+' is_run_paginator '+this.is_run_paginator+' isScrollFinish '+this.isScrollFinish);
+          if(this.isScrollFinish || this.is_run_paginator || this.list_articles_finish)
+            return;
+
+          if (this.page==1) {
+            this.is_run = true;
+            await this.getArticles();
+            await setTimeout(() => {
+               this.setDropzone();
+            }, 10); 
+            this.is_run = false;
+          }
+
+          window.onscroll = async () => {
+            let scrollTop = Math.floor(document.documentElement.scrollTop);
+            let bottomOfWindow = scrollTop + window.innerHeight > (document.documentElement.offsetHeight - 10);
+            // console.log((scrollTop + window.innerHeight)+' '+(document.documentElement.offsetHeight - 10));
+
+            /*
+            scrollTop    height to top
+            innerHeight  height windows
+            offsetHeight height page
+            console.log('document.documentElement.scrollTop '+scrollTop);
+            console.log('window.innerHeight '+window.innerHeight);
+            console.log('document.documentElement.offsetHeight '+document.documentElement.offsetHeight);
+            console.log('bottomOfWindow '+bottomOfWindow);
+            */
+
+            if (bottomOfWindow && !this.is_run_paginator && !this.isScrollFinish && !this.list_articles_finish) {
+                await this.getArticles();
+                await this.setDropzone();
+            }
+          };  
         },
         getArticles: async function() {
-          this.is_run = true;
+          
+          this.is_run_paginator = true;
 
           // workaround per la class select2
           let search_categories_articles = $('select[name=search_categories_articles]').val();
@@ -367,7 +460,8 @@ $(function () {
               search_name: this.search_name,
               search_codice: this.search_codice,
               search_categories_articles: search_categories_articles,
-              search_flag_presente_articlesorders: this.search_flag_presente_articlesorders
+              search_flag_presente_articlesorders: this.search_flag_presente_articlesorders,
+              page: this.page
           }; 
           console.log(params, 'getArticles params'); 
 
@@ -378,108 +472,122 @@ $(function () {
               .then(response => {
                 console.log(response.data, 'gets'); 
                 
-                this.is_run = false;
+                this.is_run_paginator = false;
+                this.isScrollFinish = false;  
+
                 if(response.data.code=='200') {
-                  this.articles = response.data.results; 
+
+                  var data = response.data.results;
+                  for (var i = 0; i < data.length; i++) {
+                      this.articles.push(data[i]);
+                  }
+                  this.page++;
                 }
                 else {
                   console.error(response.data.errors);
                 }
               })
           .catch(error => {
-            this.is_run = false;
+            this.is_run_paginator = false;
+            this.isScrollFinish = true;            
             console.error("Error: " + error);
           });            
         },
-        setDropzone: function() {
+        setDropzone: async function() {
           let _this = this;
 
-          console.log(csrfToken, 'csrfToken');
-    
+          console.log($('.dropzone').length, 'dropzone.length');
+          // console.log(csrfToken, 'csrfToken');
           $('.dropzone').each(function() {
-                
-              let index = $(this).attr('data-attr-index');
-              // console.log(index, 'dropzone data-attr-index');
+              // ctrl se non e' gia' stato attached 
+              if(!$(this).hasClass('dz-clickable')) {
 
-              var myDropzone = new Dropzone(this, {
-                    url: '/admin/api/articles/img1Upload/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'], 
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },                    
-                    beforeSend: function(request) {
-                      console.log(csrfToken, 'csrfToken');
-                        return request.setRequestHeader('X-CSRF-Token', csrfToken);
-                    },                    
-                    dictDefaultMessage: 'Trascina qui la foto dell\'articolo',
-                    dictRemoveFile: 'Elimina foto',
-                    dictFallbackMessage: 'Il tuo browser non supporta il drag\'n\'drop dei file.',
-                    dictFallbackText: 'Please use the fallback form below to upload your files like in the olden days.',
-                    dictFileTooBig: 'Il file è troppo grande ({{filesize}}MiB). Grande massima consentita: {{maxFilesize}}MiB.',
-                    dictInvalidFileType: 'Non puoi uploadare file di questo tipo.',
-                    dictResponseError: 'Server responded with {{statusCode}} code.',
-                    dictCancelUpload: 'Cancel upload',
-                    dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
-                    dictMaxFilesExceeded: 'Non puoi uploadare più file.',	
-                    parallelUploads: 1,
-                    addRemoveLinks: true,
-                    uploadMultiple:false,
-                    maxFiles: 1,
-                    // resizeWidth: 175,
-                    // acceptedFiles: 'image/*',
-                    acceptedFiles: '.jpeg,.jpg,.png,.gif',
-                    paramName: 'img1', // The name that will be used to transfer the file
-                    maxFilesize: 5, // MB  
-                    init: function() {
-                      // ctrl size perche' se c'e' il placeholder /img/article-no-img.png
-                      if(_this.articles[index]['img1_size']>0) {
-                          let myDropzone = this;
-                          let mockFile = { name: 'Foto articolo', size: _this.articles[index]['img1_size']};
-                          myDropzone.displayExistingFile(mockFile, _this.articles[index]['img1']);
-                          this.files.push(mockFile);
-                      }
+                  let index = $(this).attr('data-attr-index');
+                  // console.log(index, 'dropzone data-attr-index');
 
-                      this.on('addedfile', function(file) {
-                        console.log('addedfile - this.files.length '+this.files.length);
-                        if (this.files.length > 1) {
-                        this.removeFile(this.files[0]);
-                        }
-                      });		
-                      this.on('maxfilesexceeded', function(file) {
-                        console.log('maxfilesexceeded');
-                        this.removeAllFiles();
-                              this.addFile(file);
-                          });
-                      this.on('success', function(file, response) {
-                        if(response.esito) {
-              
-                        }
-                        console.log(response, 'success response'); 
-                      });		
-                      this.on('removedfile', function(file) {
-                          console.log(file, 'removedfile'); 
-                          $.ajax({
-                            url: '/admin/api/articles/img1Delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'],
-                            type: 'post',
-                            headers: {
-                              'X-CSRF-TOKEN': csrfToken
+                  var myDropzone = new Dropzone(this, {
+                        url: '/admin/api/articles/img1Upload/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'], 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },                    
+                        beforeSend: function(request) {
+                          console.log(csrfToken, 'csrfToken');
+                            return request.setRequestHeader('X-CSRF-Token', csrfToken);
+                        },                    
+                        dictDefaultMessage: 'Trascina qui la foto dell\'articolo',
+                        dictRemoveFile: 'Elimina foto',
+                        dictFallbackMessage: 'Il tuo browser non supporta il drag\'n\'drop dei file.',
+                        dictFallbackText: 'Please use the fallback form below to upload your files like in the olden days.',
+                        dictFileTooBig: 'Il file è troppo grande ({{filesize}}MiB). Grande massima consentita: {{maxFilesize}}MiB.',
+                        dictInvalidFileType: 'Non puoi uploadare file di questo tipo.',
+                        dictResponseError: 'Server responded with {{statusCode}} code.',
+                        dictCancelUpload: 'Cancel upload',
+                        dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
+                        dictMaxFilesExceeded: 'Non puoi uploadare più file.',	
+                        parallelUploads: 1,
+                        addRemoveLinks: true,
+                        uploadMultiple:false,
+                        maxFiles: 1,
+                        // resizeWidth: 175,
+                        // acceptedFiles: 'image/*',
+                        acceptedFiles: '.jpeg,.jpg,.png,.gif',
+                        paramName: 'img1', // The name that will be used to transfer the file
+                        maxFilesize: 5, // MB  
+                        init: function() {
+                          // ctrl size perche' se c'e' il placeholder /img/article-no-img.png
+                          if(_this.articles[index]['img1_size']>0) {
+                                              
+                              // console.log(index + ' ' + _this.articles[index]['img1_size'] + ' ' + _this.articles[index]['img1'], 'dropzone');
+
+                              let myDropzone = this;
+                              let mockFile = { name: 'Foto articolo', size: _this.articles[index]['img1_size']};
+                              myDropzone.displayExistingFile(mockFile, _this.articles[index]['img1']);
+                              this.files.push(mockFile);
+                          }
+
+                          this.on('addedfile', function(file) {
+                            console.log('addedfile - this.files.length '+this.files.length);
+                            if (this.files.length > 1) {
+                            this.removeFile(this.files[0]);
                             }
+                          });		
+                          this.on('maxfilesexceeded', function(file) {
+                            console.log('maxfilesexceeded');
+                            this.removeAllFiles();
+                                  this.addFile(file);
+                              });
+                          this.on('success', function(file, response) {
+                            if(response.esito) {
+                  
+                            }
+                            console.log(response, 'success response'); 
+                          });		
+                          this.on('removedfile', function(file) {
+                              console.log(file, 'removedfile'); 
+                              $.ajax({
+                                url: '/admin/api/articles/img1Delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'],
+                                type: 'post',
+                                headers: {
+                                  'X-CSRF-TOKEN': csrfToken
+                                }
+                              });
                           });
-                      });
-                    },
-                    accept: function(file, done) {
-                        if (file.name == 'justinbieber.jpg') {
-                          done('dropzone eseguito');
-                        }
-                        else { done(); }
-                      }
-                }); // new Dropzone
+                        },
+                        accept: function(file, done) {
+                            if (file.name == 'justinbieber.jpg') {
+                              done('dropzone eseguito');
+                            }
+                            else { done(); }
+                          }
+                    }); // new Dropzone
 
-                myDropzone.on('processing', function (file) {
-                  console.log('dropzone processing');
-                });
-                myDropzone.on('queuecomplete', function (file) {
-                    console.log('dropzone queuecomplete');
-                });
+                    myDropzone.on('processing', function (file) {
+                      console.log('dropzone processing');
+                    });
+                    myDropzone.on('queuecomplete', function (file) {
+                      // console.log('dropzone queuecomplete');
+                    });
+              } // if(!$(this).hasClass('dz-started')) 
             }); // $('.dropzone').each(function()
         },
       },

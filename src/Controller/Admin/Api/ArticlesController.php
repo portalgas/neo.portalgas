@@ -28,8 +28,6 @@ class ArticlesController extends ApiAppController
 
         $debug = false;
 
-        $continua = true;
-
         $results = [];
         $results['code'] = 200;
         $results['message'] = 'OK';
@@ -72,13 +70,27 @@ class ArticlesController extends ApiAppController
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
             $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
             $where += ['OwnerSupplierOrganizations.id IN ' => array_keys($suppliersOrganizations)];  
-        }                
+        }          
+        
+        $orders = [];
+        if(!empty($jsonData->orders)) 
+            $orders[] = $jsonData->orders;
+        else  
+            $orders[] = 'Articles.name';
+
+        if(!empty($jsonData->page))
+            $page = $jsonData->page;
+        else 
+            $page = '1';
+        $limit = 10; // Configure::read('sql.limit');
+        
         // dd($where);
         $articles = $this->Articles->find()
                     ->contain(['OwnerSupplierOrganizations', 'Organizations', 'CategoriesArticles'])
                     ->where($where)
-                    ->order(['Articles.name'])
-                    ->limit(100)
+                    ->limit($limit)
+                    ->page($page)
+                    ->order($orders)
                     ->all();
 
         $article = new ApiArticleDecorator($this->_user, $articles);

@@ -5,6 +5,7 @@ declare(strict_types=1);
  */
 namespace App\Decorator;
 
+use Cake\Log\Log;
 use Cake\Core\Configure;
 use Cake\Event\Decorator;
 use IteratorAggregate;
@@ -483,13 +484,20 @@ class AppDecorator  implements IteratorAggregate, ArrayAccess, Countable, JsonSe
     
     protected function _getArticleImg1Size($row) {
         $img1_size = 0;
-        if(!empty($row->img1)) {
+        
+        if(!empty($row->img1) && $row->img1!=Configure::read('Article.img.no')) {
+            
             $config = Configure::read('Config');
-            $img_path = sprintf(Configure::read('Article.img.path.full'), $article->organization_id, $article->img1);
+            $img_path = sprintf(Configure::read('Article.img.path.full'), $row->organization_id, $row->img1);
             $portalgas_app_root = $config['Portalgas.App.root'];
             $path = $portalgas_app_root.$img_path;
-            if(file_exists($path)) 
+            if(file_exists($path)) {
                 $img1_size = filesize($path);
+                // Log::debug('exist '.$path.' size '.$img1_size);
+            }
+            else {
+                // Log::debug('not exist '.$path.' size '.$img1_size);
+            }
         }
 
         return $img1_size;

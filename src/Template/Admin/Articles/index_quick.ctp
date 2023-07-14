@@ -65,7 +65,16 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <th scope="col"></th>
                   <th scope="col"><?= __('Name') ?></th>
                   <th scope="col"><?= __('Code') ?></th>
-                  <th scope="col" style="width:100px"><?= __('Prezzo') ?></th>
+                  <th scope="col" style="width:100px">
+                      <?= __('Prezzo') ?>
+                      <br />
+                      <label style="cursor: pointer;" class="label" 
+                            :class="open_box_price ? 'label-success' : 'label-info'"  
+                            @click="openBoxPrice()">
+                        <span v-if="open_box_price">Prezzo senza IVA</span>
+                        <span v-if="!open_box_price">Prezzo compreso IVA</span>
+                      </label>
+                  </th>
                   <th scope="col" style="width:100px"><?= __('qta') ?></th>
                   <th scope="col" style="width:150px"><?= __('UM') ?></th>
               </tr>
@@ -116,13 +125,13 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           </select>  
                         </td>
                         <td>
-                          <a @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id">
+                          <a @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id" style="cursor: pointer;">
                             <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                           </a>
                         </td>
                         <td>
                           <!-- img :src="article.img1" :title="article.img1" width="50" / -->
-                          <div class="dropzone" :id="'my-dropzone'+article.id" :data-attr-index="index"></div>
+                          <div class="dropzone" :id="'my-dropzone'+article.organization_id+'-'+article.id" :data-attr-index="index"></div>
                         </td>
                         <td>
                         <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
@@ -130,8 +139,45 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <td>
                           <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
                         </td>
+                        <!-- price -->
                         <td>
-                          <input type="text" class="form-control" v-model="article.prezzo_" @change="changeValue(event, index)" :id="'prezzo-'+article.organization_id+'-'+article.id" name="prezzo" />
+                          <template v-if="!open_box_price">
+                            <input type="text" class="form-control" 
+                                    v-model="article.prezzo_"                                   
+                                    @change="changeValue(event, index)"
+                                    :id="'prezzo-'+article.organization_id+'-'+article.id" 
+                                    name="prezzo" />
+                          </template>
+                          <template v-if="open_box_price">
+                            <div class="input form-group">
+                              <label for="iva">Prezzo senza IVA</label>
+                              <input type="text" class="form-control" 
+                                    @change="setPriceConIva(event, index)"
+                                    :id="'prezzo_no_iva-'+article.organization_id+'-'+article.id" 
+                                    name="prezzo_no_iva" />
+                            </div>
+                            <div class="input form-group select">
+                              <!-- label for="iva">Iva</label -->
+                              <select name="iva"
+                                v-model="iva" 
+                                @change="setPriceConIva(event, index)"
+                                :id="'iva-'+article.organization_id+'-'+article.id" class="form-control">
+                                <!-- option value="0" selected="selected">Compresa nel prezzo</option -->
+                                <option value="4">4% iva</option>
+                                <option value="10" selected="selected">10% iva</option>
+                                <option value="22">22% iva</option>
+                              </select>
+                            </div>
+
+                            <div class="input form-group">
+                              <label for="iva">Prezzo finale</label>
+                              <input type="text" class="form-control" 
+                                      v-model="article.prezzo_"                                   
+                                      @change="changeValue(event, index)"
+                                      :id="'prezzo-'+article.organization_id+'-'+article.id" 
+                                      name="prezzo" />
+                            </div>                        
+                          </template>
                         </td>
                         <td>
                           <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
@@ -240,7 +286,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           {{ article.categories_article.name }}
                         </td>
                         <td>
-                          <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" style="cursor: pointer;" />
+                          <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                         </td>
                         <td>
                           <img :src="article.img1" :title="article.img1" width="50" />
@@ -294,6 +340,13 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                 </template>
             </tbody>
           </table>
+
+          <div v-if="is_run_paginator" class="box-spinner"> 
+              <div class="spinner-border text-info" role="status">
+                  <span class="sr-only">Loading...</span>
+              </div>  
+          </div>
+                    
         </div>
         <!-- /.box-body -->
       </div>

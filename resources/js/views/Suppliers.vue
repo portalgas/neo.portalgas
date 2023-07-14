@@ -287,8 +287,8 @@ export default {
       
       this.suppliers = [];
       this.page = 1;
-      this.isRunSuppliers=false;
-      this.listSuppliersFinish=false;
+      this.isRunSuppliers = false;
+      this.listSuppliersFinish = false;
       this.scroll();
       this.isScrollFinish = false;
     },
