@@ -22,7 +22,7 @@ $user = $this->Identity->get();
     <legend><?= __('Search {0}', ['Articles']) ?></legend>
     <?php
     echo '<div class="row-no-margin">';
-    echo '<div class="col col-md-2">';
+    echo '<div class="col col-md-4">';
     $options = [];
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
@@ -31,7 +31,7 @@ $user = $this->Identity->get();
     $options['v-model'] = 'search_supplier_organization_id';
     echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
-    echo '<div class="col-md-2 autocomplete">';
+    echo '<div class="col col-md-4 autocomplete">';
     echo $this->Form->control('search_name', ['label' => __('Name'), 'v-model' => 'search_name', 
                     '@input' => 'onChangeSearchAutoComplete(\'name\')', 
                     '@keydown.down' => 'onArrowDownSearchName',
@@ -60,7 +60,7 @@ $user = $this->Identity->get();
     </li>
   </ul>';
     echo '</div>';
-    echo '<div class="col-md-2 autocomplete"> ';
+    echo '<div class="col col-md-4 autocomplete"> ';
     echo $this->Form->control('search_codice', ['label' => __('Code'), 'v-model' => 'search_codice', 
                     '@input' => 'onChangeSearchAutoComplete(\'codice\')', 
                     '@keydown.down' => 'onArrowDownSearchCodice',
@@ -89,10 +89,13 @@ $user = $this->Identity->get();
     </li>
   </ul>';
     echo '</div>';
-    echo '<div class="col-md-2">';
+    echo '<div class="col col-md-4">';
     echo $this->Form->control('search_categories_articles', ['label' => __('Categories'), 'v-model' => 'search_categories_articles', 'options' => $categories_articles, 'escape' => false, 'class' => 'form-control select2', 'empty' => Configure::read('HtmlOptionEmpty')]);
+    echo '</div>'; 
+    echo '<div class="col col-md-3">';
+    echo $this->Form->control('search_order', ['label' => __('Order'), 'v-model' => 'search_order', 'options' => $search_orders, 'default' => $search_order, 'escape' => false, 'class' => 'form-control']);
     echo '</div>';  
-    echo '<div class="col-md-2">';
+    echo '<div class="col col-md-3">';
     echo '<br />'; 
     echo '<a class="btn-block btn" 
             :class="search_flag_presente_articlesorders ? \'btn-success\' : \'btn-danger\'" 

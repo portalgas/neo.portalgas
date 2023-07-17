@@ -85,6 +85,21 @@ class ArticlesController extends AppController
         $si_no = ['Y' => 'Si', 'N' => 'No'];
         $this->set(compact('si_no'));
 
+        /*
+         * ordinamento, di default 'Articles.name ASC'
+         * definito in article.js
+         */
+        $search_orders = [];
+        $search_orders['Articles.codice ASC'] = 'Codice (A-Z)';
+        $search_orders['Articles.codice DESC'] = 'Codice (Z-A)';
+        $search_orders['Articles.name ASC'] = 'Nome (A-Z)';
+        $search_orders['Articles.name DESC'] = 'Nome (Z-A)';
+        $search_orders['CategoriesArticles.name ASC'] = 'Categoria (A-Z)';
+        $search_orders['CategoriesArticles.name DESC'] = 'Categoria (Z-A)';
+        $search_orders['Articles.prezzo ASC'] = 'Prezzo (1-9)';
+        $search_orders['Articles.prezzo DESC'] = 'Prezzo (9-1)';
+        $this->set(compact('search_orders'));
+
         // $this->set('ums', $this->Articles->enum('um'));
     }
 

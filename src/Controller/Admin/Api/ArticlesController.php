@@ -72,11 +72,11 @@ class ArticlesController extends ApiAppController
             $where += ['OwnerSupplierOrganizations.id IN ' => array_keys($suppliersOrganizations)];  
         }          
         
-        $orders = [];
-        if(!empty($jsonData->orders)) 
-            $orders[] = $jsonData->orders;
+        $search_orders = [];
+        if(!empty($jsonData->search_order)) 
+            $search_orders[] = $jsonData->search_order;
         else  
-            $orders[] = 'Articles.name';
+            $search_orders[] = 'Articles.name';
 
         if(!empty($jsonData->page))
             $page = $jsonData->page;
@@ -90,7 +90,7 @@ class ArticlesController extends ApiAppController
                     ->where($where)
                     ->limit($limit)
                     ->page($page)
-                    ->order($orders)
+                    ->order($search_orders)
                     ->all();
 
         $article = new ApiArticleDecorator($this->_user, $articles);

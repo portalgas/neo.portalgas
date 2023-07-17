@@ -21,6 +21,7 @@ $(function () {
         search_codice: '',
         search_categories_articles: '',
         search_flag_presente_articlesorders: true,
+        search_order: 'Articles.name ASC',
         articles: [],
         is_run: false,
         is_run_paginator: false,
@@ -287,31 +288,30 @@ $(function () {
         openBoxPrice: function() {
           this.open_box_price = !this.open_box_price;
         },
-        setPriceConIva: function(event, index) {
-          console.log(event.target, 'changePrice');
-          console.log('changePrice index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
-
-          let iva = $('#iva-'+this.articles[index].organization_id+'-'+this.articles[index].id).val();
+        setPriceConIva: function(index) {
+          
+          let iva = this.iva;
           console.log(iva, 'changePrice iva');
 
-          let field_id = event.target.id;
-          let field_name = event.target.name;
-          let field_value = event.target.value;
+          let prezzo_no_iva = $('#prezzo_no_iva-'+this.articles[index].organization_id+'-'+this.articles[index].id).val();
 
-          if(iva!=0) {
-            let prezzo_no_iva = this.numberToJs(field_value);
+          if(iva!=0 && prezzo_no_iva!=='') {
+            prezzo_no_iva = this.numberToJs(prezzo_no_iva);
             let delta_iva = (prezzo_no_iva/100)*iva;
             console.log("delta_iva "+delta_iva);
             //delta_iva = Math.round(delta_iva);
             //console.log("Math.round(delta_iva) "+delta_iva);
           
-            field_value = (parseFloat(prezzo_no_iva) + parseFloat(delta_iva));
-            this.articles[index].prezzo = field_value;
-            let prezzo = this.numberFormat(field_value,2,',','.');  
-            this.articles[index].prezzo_ = prezzo;
+            let prezzo = (parseFloat(prezzo_no_iva) + parseFloat(delta_iva));
+            let prezzo_ = this.numberFormat(prezzo,2,',','.');
+            this.articles[index].prezzo = prezzo;
+            this.articles[index].prezzo_ = prezzo_;
+          
+            let field_id = 'prezzo-'+this.articles[index].organization_id+'-'+this.articles[index].id; 
+            let field_name = 'prezzo';
+            let field_value = prezzo_;
+            this.setValue(field_id, field_name, field_value, index);
           }
-
-          // this.setValue(field_id, field_name, field_value, index);
         },
         changeValue: function(event, index) {
           console.log(event.target, 'changeValue');
@@ -377,7 +377,7 @@ $(function () {
           else 
             this.articles[index].bio = 'Y';
 
-          console.log(field_id, 'field_id');
+          // console.log(field_id, 'field_id');
           let field_name = 'bio';
           let field_value = this.articles[index].bio;
             
@@ -461,6 +461,7 @@ $(function () {
               search_codice: this.search_codice,
               search_categories_articles: search_categories_articles,
               search_flag_presente_articlesorders: this.search_flag_presente_articlesorders,
+              search_order: this.search_order,
               page: this.page
           }; 
           console.log(params, 'getArticles params'); 
