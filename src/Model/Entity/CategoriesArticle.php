@@ -36,6 +36,7 @@ class CategoriesArticle extends Entity
         'rght' => true,
         'name' => true,
         'description' => true,
+        'is_system' => true,
         'organization' => true,
         'article' => true,
         'parent_k_categories_article' => true,

@@ -82,6 +82,10 @@ class CategoriesArticlesTable extends Table
             ->maxLength('description', 255)
             ->allowEmptyString('description');
 
+        $validator
+            ->boolean('is_system')
+            ->notEmptyString('is_system');
+
         return $validator;
     }
 

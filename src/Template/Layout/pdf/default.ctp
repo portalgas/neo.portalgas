@@ -31,10 +31,11 @@ use Cake\Core\Configure;
 </head>
 <body>
 	<div class="hearder">
-
 		<img src="<?php echo $img_path;?>/150h50.png" /> 
-
-      <div class="title"><?php echo $title;?></div>
+		<?php 
+		if(isset($title))
+			echo '<div class="title">'.$title.'</div>';
+		?>      
     <div>
 
     <div class="container clearfix">

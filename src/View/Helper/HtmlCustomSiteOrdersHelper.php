@@ -180,6 +180,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
         
         $html = '';
         
+        // debug($opts);
+
         // nei filtri di ricerca vale search_supplier_organization_id e non e' fatto il bind
         if($id=='supplier_organization_id') {
             $html .= $this->Html->script('vue/suppliersOrganization', ['block' => 'scriptPageInclude']);

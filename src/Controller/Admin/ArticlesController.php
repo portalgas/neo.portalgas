@@ -75,6 +75,9 @@ class ArticlesController extends AppController
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
         $this->set(compact('suppliersOrganizations'));
 
+        (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
+        $this->set(compact('search_supplier_organization_id'));
+
         $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
         $categories_articles = $categoriesArticlesTable->find('treeList', [
                             'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 

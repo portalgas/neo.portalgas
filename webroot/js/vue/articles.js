@@ -605,6 +605,11 @@ $(function () {
       },*/        
       mounted: function(){
         console.log('mounted articles');
+        /*
+         * se l'elenco dei produttori ha un solo elemente (ex produttore) lo imposto gia'
+         */
+        if(typeof search_supplier_organization_id_default!=='undefined')
+          this.search_supplier_organization_id = search_supplier_organization_id_default;
         this.gets();
         document.addEventListener('click', this.handleClickOutsideAutocomplete);
       },

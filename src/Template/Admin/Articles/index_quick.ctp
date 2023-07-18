@@ -2,7 +2,12 @@
 use Cake\Core\Configure;
 use App\Traits;
 
-$js = "var categories_articles = $js_categories_articles";
+$js = "var categories_articles = $js_categories_articles;";
+/*
+  * se l'elenco dei produttori ha un solo elemente (ex produttore) lo imposto gia'
+  */
+if(!empty($search_supplier_organization_id))
+  $js .= "var search_supplier_organization_id_default = $search_supplier_organization_id;";
 $this->Html->scriptBlock($js, ['block' => true]);
 echo $this->Html->script('vue/articles', ['block' => 'scriptPageInclude']);
 

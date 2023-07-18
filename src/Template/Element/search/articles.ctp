@@ -27,7 +27,7 @@ $user = $this->Identity->get();
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
-    $options['empty'] = true;
+    (count($suppliersOrganizations)==1) ? $options['empty'] = false: $options['empty'] = true;
     $options['v-model'] = 'search_supplier_organization_id';
     echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
