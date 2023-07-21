@@ -176,7 +176,9 @@ class HtmlCustomSiteOrdersHelper extends Helper
 
         // pagina articoli gestita con vue
         if(isset($options['v-model'])) 
-            $opts['v-model'] = $options['v-model'];        
+            $opts['v-model'] = $options['v-model']; 
+        if(isset($options['@change'])) 
+            $opts['@change'] = $options['@change'];
         
         $html = '';
         

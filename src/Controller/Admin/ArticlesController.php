@@ -78,12 +78,15 @@ class ArticlesController extends AppController
         (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
         $this->set(compact('search_supplier_organization_id'));
 
+        /*
+         * elenco categorie del GAS
+         */ 
         $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
         $categories_articles = $categoriesArticlesTable->find('treeList', [
                             'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 
                             'conditions' => ['Organization_id' => $this->_organization->id]]);
         $js_categories_articles = json_encode($categories_articles->toArray());
-        $this->set(compact('categories_articles', 'js_categories_articles'));
+        $this->set(compact('js_categories_articles'));
 
         $si_no = ['Y' => 'Si', 'N' => 'No'];
         $this->set(compact('si_no'));

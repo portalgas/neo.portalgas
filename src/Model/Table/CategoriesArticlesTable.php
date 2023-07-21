@@ -3,6 +3,8 @@ namespace App\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -103,4 +105,91 @@ class CategoriesArticlesTable extends Table
 
         return $rules;
     }
+
+
+	public function getIsSystemId($user, $organization_id) {
+
+		$results = $this->getIsSystem($user, $organization_id);		
+		if(empty($results)) {
+			return 0;
+		}
+		return $results->id;
+	}
+
+	/* 
+	 * setto con la categoria di default (Generali) gli articoli che non hanno categoria
+	 */
+	public function setCategoryDefaultToArticles($user=null, $organization_id, $debug=false) {
+
+		$category = $this->getIsSystem($user, $organization_id);
+
+		/*
+		 * estraggo articoli senza categoria impostata
+		 */
+        $articlesTable = TableRegistry::get('Articles');
+		
+		$update_fields = ['category_article_id' => $category->id];
+		$where = ['organization_id' => $organization_id,
+				   'category_article_id' => 0];
+		$results = $articlesTable->updateAll($update_fields, $where);
+		if($debug) debug($update_fields);
+		if($debug) debug($where);
+
+		return $results;
+	}
+	
+	/* 
+     * $user=null se chiamato dal cron CategoriesArticleIsSystemCommand
+	 * se $truncate=true cancella tutte le cateogirie dell'org che non sono is_system
+	 * 	utile la prima volta per creare quella 'Generale' e cancella le vecchie categorie
+	 * 
+	 *  ora gestione con truncate in neo
+	 */
+	public function getIsSystem($user=null, $organization_id, $truncate=false, $debug=false) {
+		
+		$where = ['organization_id' => $organization_id,
+                  'is_system'=> true];
+		$options['recursive'] = -1;
+		$results = $this->find()->where($where)->first();	
+		if($debug) debug($where);	
+		if($debug) debug($results);
+		if(empty($results)) {
+		   
+			if($truncate) {							
+				if($debug) echo('deleteAll organization_id '.$organization_id);
+				$this->deleteAll(['organization_id' => $organization_id], false);
+			}
+
+			if($this->createIsSystem($user, $organization_id)) {
+				if($debug) echo('createIsSystem organization_id '.$organization_id);
+				$results = $this->find()->where($where)->first();
+			}
+	
+			if($truncate) {
+				if($debug) echo('setCategoryDefaultToArticles organization_id '.$organization_id);
+				$this->setCategoryDefaultToArticles($user, $organization_id);
+			}
+		}
+
+		return $results;
+	}
+
+	public function createIsSystem($user=null, $organization_id) {
+
+		$datas = [];
+		$datas['organization_id'] = $organization_id;
+		$datas['name'] = 'Generale';
+		$datas['is_system'] = true;
+		$datas['parent_id'] = null;
+		$datas['lft'] = 1;
+		$datas['rght'] = 2;
+		$category = $this->newEntity();
+        $category = $this->patchEntity($category, $datas);
+        if (!$this->save($category)) {
+            debug($category->getErrors());
+			return false;
+		}
+
+		return true;
+	}    
 }

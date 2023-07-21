@@ -56,9 +56,9 @@ class ArticlesController extends ApiAppController
             $search_codice = $jsonData->search_codice;
             $where += ['Articles.codice' => '%'.$search_codice.'%'];
         } 
-        if(!empty($jsonData->search_categories_articles)) {
-            $search_categories_articles = $jsonData->search_categories_articles;
-            $where += ['Articles.category_article_id' => $search_categories_articles];
+        if(!empty($jsonData->search_categories_article_id)) {
+            $search_categories_article_id = $jsonData->search_categories_article_id;
+            $where += ['Articles.category_article_id' => $search_categories_article_id];
         }         
         if(!empty($jsonData->search_supplier_organization_id)) {
             $search_supplier_organization_id = $jsonData->search_supplier_organization_id;

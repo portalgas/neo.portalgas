@@ -316,10 +316,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           {{ article.um }}
                         </td>
                         <td>
-                          {{ article.um_riferimento }}          
-                          <div>{{ um_label(index) }}</div>
+                          {{ article.um_riferimento }}
                         </td>
-
                       </tr>
                       <!-- extra -->
                       <tr style="display: none;" :class="'extra-'+index">

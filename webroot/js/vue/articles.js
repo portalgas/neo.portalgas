@@ -19,11 +19,13 @@ $(function () {
         search_supplier_organization_id: '',
         search_name: '',
         search_codice: '',
-        search_categories_articles: '',
+        search_categories_articles: [],
+        search_categories_article_id: 0,
         search_flag_presente_articlesorders: true,
         search_order: 'Articles.name ASC',
         articles: [],
         is_run: false,
+        is_run_categories_articles: false,
         is_run_paginator: false,
         list_articles_finish: false,
         page: 1,
@@ -447,19 +449,59 @@ $(function () {
             }
           };  
         },
+        changeSearchSupplierOrganizationId: function() {
+            this.getCategoriesArticles();
+        },
+        /* 
+         * estraggo le categorie degli articoli
+         * se il produttore gestisce il listino prendo quelle del produttore
+         */
+        getCategoriesArticles: function() {
+
+          this.is_run_categories_articles = true;
+
+          this.search_categories_articles = [];
+
+          let params = {
+            search_supplier_organization_id: this.search_supplier_organization_id,
+          }; 
+          console.log(params, 'getCategoriesArticles params'); 
+
+          axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
+          axios.post('/admin/api/categories-articles/gets', params)
+              .then(response => {
+                console.log(response.data, 'categories-articles gets'); 
+                
+                this.is_run_categories_articles = false;
+              
+                if(response.data.code=='200') {
+                  this.search_categories_articles = response.data.results;
+                }
+                else {
+                  this.is_run_categories_articles = false;
+                  console.error(response.data.errors);
+                }
+              })
+          .catch(error => {
+            console.error("Error: " + error);
+          });            
+
+        },
         getArticles: async function() {
           
           this.is_run_paginator = true;
 
           // workaround per la class select2
-          let search_categories_articles = $('select[name=search_categories_articles]').val();
-          this.search_categories_articles = search_categories_articles;
+          let search_categories_article_id = $('select[name=search_categories_article_id]').val();
+          this.search_categories_article_id = search_categories_article_id;
 
           let params = {
               search_supplier_organization_id: this.search_supplier_organization_id,
               search_name: this.search_name,
               search_codice: this.search_codice,
-              search_categories_articles: search_categories_articles,
+              search_categories_article_id: search_categories_article_id,
               search_flag_presente_articlesorders: this.search_flag_presente_articlesorders,
               search_order: this.search_order,
               page: this.page
@@ -612,6 +654,8 @@ $(function () {
           this.search_supplier_organization_id = search_supplier_organization_id_default;
         this.gets();
         document.addEventListener('click', this.handleClickOutsideAutocomplete);
+
+        this.getCategoriesArticles();
       },
       destroyed() {
         document.removeEventListener('click', this.handleClickOutsideAutocomplete);
