@@ -37,6 +37,22 @@ class CategoriesArticlesController extends ApiAppController
          * se filtro per produttore verifico chi gestisce il listino
          * se il produttore visualizzo le categorie del produttore
          */
+        $search_order_id = $this->request->getData('search_order_id');
+        if(!empty($search_order_id)) {
+            $where = [];
+            $where = ['Orders.id' => $search_order_id,
+                      'Orders.organization_id' => $this->_user->organization->id
+                    ];
+            $ordersTable = TableRegistry::get('Orders');
+            
+            $order = $ordersTable->find()
+                                  ->where($where)
+                                  ->first();
+
+            if($order->owner_organization_id!=$this->_user->organization->id)
+                $organization_id = $order->owner_organization_id;
+        }
+        
         $search_supplier_organization_id = $this->request->getData('search_supplier_organization_id');
         if(!empty($search_supplier_organization_id)) {
             $where = [];

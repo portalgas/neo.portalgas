@@ -187,12 +187,14 @@ class OrdersController extends ApiAppController
 
         $page = $this->request->getData('page');
         $q = trim($this->request->getData('q'));
+        $search_categories_article_id = $this->request->getData('search_categories_article_id');
         $sort = $this->request->getData('sort');
         // debug($order_id);
 
         $options = [];
         $options['page'] = $page;
         $options['q'] = $q;
+        $options['search_categories_article_id'] = $search_categories_article_id;
         $options['sort'] = $sort;
         $options['sql_limit'] = Configure::read('sql.limit');
 

@@ -190,11 +190,13 @@ class OrderComponent extends Component {
              * options
              */
             isset($options['q'])? $q = $options['q'] : $q = '';
+            isset($options['search_categories_article_id'])? $search_categories_article_id = $options['search_categories_article_id'] : $search_categories_article_id = 0;
             isset($options['sort'])? $sort = $options['sort'] : $sort = '';
             isset($options['page'])?  $page = $options['page'] : $page = '1';
             isset($options['sql_limit'])?  $sql_limit = $options['sql_limit'] : $sql_limit = Configure::read('sql.limit');
 
             $where=[];
+            $where['Articles'] = [];
             if(!empty($q)) {
                 $where_q = [];
                 if(strpos($q, ' ')!==false) {
@@ -208,8 +210,13 @@ class OrderComponent extends Component {
                     $where_q = ['or' => ['Articles.name LIKE' => '%'.$q.'%',
                                           'Articles.nota LIKE' => '%'.$q.'%']];
                 }
-                $where['Articles'] = $where_q;
-            }
+                $where['Articles'] += $where_q;
+            } // end if(!empty($q))
+
+            if(!empty($search_categories_article_id)) {
+                $where['Articles'] += ['Articles.category_article_id' => $search_categories_article_id];
+
+            } // end if(!empty($search_categories_article_id)) 
 
             $options = [];
             $options['sort'] = $sort;

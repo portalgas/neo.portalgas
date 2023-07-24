@@ -244,6 +244,11 @@
             <app-view-article-orders :viewList="viewList" @changeView="onChangeView" />
         </div>
     </div>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-12">
+            <app-search-category-articles @searchCategoryArticles="onSearchCategoryArticles" :order="order" />
+        </div>
+    </div>
 
     <div class="row">
 
@@ -318,6 +323,7 @@ import { mapGetters, mapActions } from "vuex";
 import articleOrder from "../components/part/ArticleOrder.vue";
 import articleOrderList from "../components/part/ArticleOrderList.vue";
 import searchArticleOrders from "../components/part/SearchArticleOrders.vue";
+import searchCategoryArticles from "../components/part/SearchCategoryArticles.vue";
 import sortArticleOrders from "../components/part/SortArticleOrders.vue";
 import viewArticleOrders from "../components/part/ViewArticleOrders.vue";
 
@@ -341,6 +347,7 @@ export default {
       isRunArticles: false,   
       displayList: false,
       q: null, // parola ricerca
+      search_categories_article_id: 0, // filtro categoria 
       viewList: false, // di default e' vista griglia 
 
       cookie_name: 'tour',
@@ -381,6 +388,7 @@ export default {
     appArticleOrder: articleOrder,
     appArticleOrderList: articleOrderList,
     appSearchArticleOrders: searchArticleOrders,
+    appSearchCategoryArticles: searchCategoryArticles,
     appViewArticleOrders: viewArticleOrders,
     appSortArticleOrders: sortArticleOrders
   },/* 
@@ -466,6 +474,14 @@ export default {
       this.isScrollFinish = false;
       /* console.log('onSearch '+q); */
     },
+    onSearchCategoryArticles: function(search_categories_article_id) {
+      this.articles = [];
+      this.page = 1;
+      this.search_categories_article_id = search_categories_article_id;
+      this.scroll();
+      this.isScrollFinish = false;
+      /* console.log('onSearchCategoryArticles '+search_categories_article_id); */
+    }, 
     onChangeView: function(viewList) {
       this.viewList = viewList;
       /* console.log('onChangeView '+this.viewList); */
@@ -548,6 +564,7 @@ export default {
         order_id: this.order_id,
         page: this.page,
         q: this.q,
+        search_categories_article_id: this.search_categories_article_id,
         sort: this.sort
       };
       // console.log('getsAjaxArticles url '+url)

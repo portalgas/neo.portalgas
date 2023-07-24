@@ -273,7 +273,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                         </td>
                         <td class="actions text-center">
-                          <button class="btn-block btn" 
+                          <button style="cursor: auto !important" 
+                                class="btn-block btn" 
                                 :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
                                 :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'">
                             <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
@@ -314,9 +315,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         </td>
                         <td>
                           {{ article.um }}
-                        </td>
-                        <td>
-                          {{ article.um_riferimento }}
+                          <div v-if="article.um_rif_values.length==0">
+                            {{ article.um_rif_label }}
+                          </div>
                         </td>
                       </tr>
                       <!-- extra -->
