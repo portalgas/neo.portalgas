@@ -117,7 +117,7 @@ $user = $this->Identity->get();
     } // if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') 
     
     echo '<div class="col col-md-3">';
-    echo $this->Form->control('search_order', ['label' => __('Order'), 'v-model' => 'search_order', 'options' => $search_orders, 'default' => $search_order, 'escape' => false, 'class' => 'form-control']);
+    echo $this->Form->control('search_order', ['label' => __('Order'), 'v-model' => 'search_order', 'options' => $search_orders, 'escape' => false, 'class' => 'form-control']);
     echo '</div>';  
     echo '<div class="col col-md-3">';
     echo '<br />'; 
