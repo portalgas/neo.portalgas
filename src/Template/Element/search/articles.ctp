@@ -90,24 +90,32 @@ $user = $this->Identity->get();
     </li>
   </ul>';
     echo '</div>';
-    echo '<div class="col col-md-4">';
-    // echo $this->Form->control('search_categories_articles', ['label' => __('Categories'), 'v-model' => 'search_categories_articles', 'options' => $categories_articles, 'escape' => false, 'class' => 'form-control select2', 'empty' => Configure::read('HtmlOptionEmpty')]);
-    echo '<label for="search-categories-articles" class="control-label">Categorie</label>';
 
-    echo '<div class="loader-global" v-if="is_run_categories_articles">
-          <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    echo </div>';
-    echo '<select
-          v-if="!is_run_categories_articles" 
-          name="search_categories_article_id" 
-          id="search-categories-article_id" 
-          class="form-control select2" 
-          :required="true" 
-          v-model="search_categories_article_id" >
-          <option value="">-------</option>
-          <option v-for="(categories_article, id) in search_categories_articles" :value="id" v-html="$options.filters.html(categories_article)"></option>
-        </select>';    
-    echo '</div>'; 
+    /*
+     * categorie
+     */
+    if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
+
+        echo '<div class="col col-md-4">';
+        // echo $this->Form->control('search_categories_articles', ['label' => __('Categories'), 'v-model' => 'search_categories_articles', 'options' => $categories_articles, 'escape' => false, 'class' => 'form-control select2', 'empty' => Configure::read('HtmlOptionEmpty')]);
+        echo '<label for="search-categories-articles" class="control-label">Categorie</label>';
+
+        echo '<div class="loader-global" v-if="is_run_categories_articles">
+              <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        echo </div>';
+        echo '<select
+              v-if="!is_run_categories_articles" 
+              name="search_categories_article_id" 
+              id="search-categories-article_id" 
+              class="form-control select2" 
+              :required="true" 
+              v-model="search_categories_article_id" >
+              <option value="">-------</option>
+              <option v-for="(categories_article, id) in search_categories_articles" :value="id" v-html="$options.filters.html(categories_article)"></option>
+            </select>';    
+        echo '</div>'; 
+    } // if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') 
+    
     echo '<div class="col col-md-3">';
     echo $this->Form->control('search_order', ['label' => __('Order'), 'v-model' => 'search_order', 'options' => $search_orders, 'default' => $search_order, 'escape' => false, 'class' => 'form-control']);
     echo '</div>';  

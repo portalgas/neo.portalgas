@@ -2,6 +2,8 @@
 use Cake\Core\Configure;
 use App\Traits;
 
+$user = $this->Identity->get();
+
 $js = "var categories_articles = $js_categories_articles;";
 /*
   * se l'elenco dei produttori ha un solo elemente (ex produttore) lo imposto gia'
@@ -64,8 +66,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <?php 
                   if(empty($search_supplier_organization_id))
                     echo '<th scope="col">'.__('supplier_organization_id').'</th>';
+                  if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
+                    echo '<th scope="col">';
+                    echo __('Category');
+                    echo ' <label style="cursor: pointer;" class="label label-primary" 
+                          data-toggle="modal" data-target="#modalCategorie">?</label>';
+                    echo '</th>';
+                  }
                   ?>
-                  <th scope="col"><?= __('Category') ?></th>
                   <th scope="col"><?= __('Bio') ?></th>
                   <th scope="col"></th>
                   <th scope="col"><?= __('Name') ?></th>
@@ -83,7 +91,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <th scope="col" style="width:100px">
                     <?= __('qta') ?>
                     <label style="cursor: pointer;" class="label label-primary" 
-                          data-toggle="modal" data-target="#exampleModal">?</label>                  
+                          data-toggle="modal" data-target="#modalQta">?</label>
                   </th>
                   <th scope="col" style="width:150px"><?= __('UM') ?></th>
               </tr>
@@ -119,20 +127,25 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 <div v-if="!article.can_edit">{{ article.organization.name }}</div>                                    
                               </div>
                             </td>';
+                        
+                        if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                         ?>
-                        <td>
-                          {{ article.categories_article.name }}
-                          <select 
-                              v-if="Object.keys(categories_articles).length>1"
-                              name="category_article_id" 
-                              class="form-control extend" 
-                              :required="true" 
-                              v-model="article.category_article_id" 
-                              @change="changeValue(event, index)" :id="'category_article_id-'+article.organization_id+'-'+article.id">
-                            <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
-                            </option>
-                          </select>  
-                        </td>
+                          <td>
+                            {{ article.categories_article.name }}
+                            <select 
+                                v-if="Object.keys(categories_articles).length>1"
+                                name="category_article_id" 
+                                class="form-control extend" 
+                                :required="true" 
+                                v-model="article.category_article_id" 
+                                @change="changeValue(event, index)" :id="'category_article_id-'+article.organization_id+'-'+article.id">
+                              <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
+                              </option>
+                            </select>  
+                          </td>
+                        <?php 
+                        }
+                        ?>
                         <td>
                           <a @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id" style="cursor: pointer;">
                             <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
@@ -241,13 +254,16 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <tr style="display: none;" :class="'extra-'+index">
                         <th scope="col"></th>
                         <th scope="col"></th>
-                        <th scope="col" colspan="4"><?= __('Nota') ?></th>
+                        <th scope="col" colspan="<?php echo ($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') ? '4': '3';?>"><?= __('Nota') ?></th>
                         <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
                         <th scope="col" colspan="2"></th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
-                        <td></td>
+                        <?php 
+                        if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
+                          echo '<td></td>';
+                        ?>
                         <td colspan="3">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="nota" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
                         </td>
@@ -291,10 +307,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 <div v-if="!article.can_edit">{{ article.organization.name }}</div>                                    
                               </div>
                             </td>';
+                        if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                         ?>
-                        <td>
-                          {{ article.categories_article.name }}
-                        </td>
+                          <td>
+                            {{ article.categories_article.name }}
+                          </td>
+                        <?php 
+                        }
+                        ?>
                         <td>
                           <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                         </td>
@@ -323,13 +343,13 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <!-- extra -->
                       <tr style="display: none;" :class="'extra-'+index">
                         <th scope="col"></th>
-                        <th scope="col" colspan="4"><?= __('Nota') ?></th>
+                        <th scope="col" colspan="<?php echo ($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') ? '4': '3';?>"><?= __('Nota') ?></th>
                         <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
                         <th scope="col" colspan="4"></th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
-                        <td colspan="4">
+                        <td colspan="<?php echo ($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') ? '4': '3';?>">
                           {{ article.nota }}
                         </td>
                         <td colspan="3">
@@ -363,12 +383,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
   </div>
 </section>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal qta -->
+    <div class="modal fade" id="modalQta" tabindex="-1" aria-labelledby="modalQtaLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Esempi di quantità</h5>
+            <h5 class="modal-title" id="modalQtaLabel">Esempi di quantità</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -411,6 +431,38 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
               </table>
             </div> <!-- table-responsive -->          
 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal categorie -->
+    <div class="modal fade" id="modalCategorie" tabindex="-1" aria-labelledby="modalCategorieLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalCategorieLabel">Gestione categorie</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+          <div class="table-responsive">
+
+          <?php 
+          if($user->acl['isManager'] || $user->acl['isSuperReferente']) {
+            echo '<a href="'.$this->HtmlCustomSite->jLink('CategoriesSuppliers', 'index').'" target="_blank">';
+            echo '<button class="btn btn-info"><i aria-hidden="true" class="fa fa-tags"></i> Clicca qui se vuoi gestire le categorie degli articoli</button></a>';
+          }
+          else {
+              echo "Contatta il manager del tuo G.A.S. se desideri avere delle categorie di articoli diversi";
+          } // if($user->acl['isManager'] || $user->acl['isSuperReferente'])
+          ?>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
