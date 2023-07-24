@@ -27,7 +27,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
   <div class="row">
     <div class="col-xs-12">
       <?php 
-        echo $this->element('search/articles');
+        echo $this->element('search/articles', ['search_orders' => $search_orders]);
       ?>        
       <div class="box">
         <div class="box-header">
