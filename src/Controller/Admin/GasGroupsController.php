@@ -24,7 +24,12 @@ class GasGroupsController extends AppController
     public function beforeFilter(Event $event) {
         
         parent::beforeFilter($event);
-        
+
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         if((!isset($this->_organization->paramsConfig['hasGasGroups']) || 
             $this->_organization->paramsConfig['hasGasGroups']=='N') &&  
             !$this->_user->acl['isGasGroupsManagerGroups'] &&

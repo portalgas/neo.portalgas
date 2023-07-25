@@ -20,7 +20,7 @@ class ArticlesController extends AppController
         
         parent::beforeFilter($event);
         
-        if(!$this->_user->acl['isSuperReferente'] && !$this->_user->acl['isReferentGeneric']) {        
+        if(empty($this->_user) && (!$this->_user->acl['isSuperReferente'] && !$this->_user->acl['isReferentGeneric'])) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }

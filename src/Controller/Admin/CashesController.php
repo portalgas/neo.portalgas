@@ -33,7 +33,7 @@ class CashesController extends AppController
      */
     public function supplierOrganizationFilter()
     {     
-        if(!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isManager'] || $this->Authentication->getIdentity()->organization->paramsConfig['hasCashFilterSupplier']!='Y') {
+        if(empty($this->_user) && (!$this->_user->acl['isManager'] || $this->_user->organization->paramsConfig['hasCashFilterSupplier']!='Y')) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }   

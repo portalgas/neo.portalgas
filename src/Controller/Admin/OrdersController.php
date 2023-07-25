@@ -32,6 +32,11 @@ class OrdersController extends AppController
         
         parent::beforeFilter($event);
 
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+                
         $results = $this->Auths->ctrlRoute($this->_user, $this->request);
         if(!empty($results)) {
             $this->Flash->error($results['msg'], ['escape' => false]);

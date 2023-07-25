@@ -24,8 +24,10 @@ class GasGroupUsersController extends AppController
         
         parent::beforeFilter($event);
 
-        $this->_user = $this->Authentication->getIdentity();
-        $this->_organization = $this->_user->organization; // gas scelto
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
   
         if((!isset($this->_organization->paramsConfig['hasGasGroups']) || 
             $this->_organization->paramsConfig['hasGasGroups']=='N') &&  
