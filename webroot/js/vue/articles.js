@@ -101,7 +101,7 @@ $(function () {
           let _this = this;
           _this.autocomplete_field = autocomplete_field;
 
-          console.log('onChangeSearchAutoComplete autocomplete_field '+autocomplete_field);
+          // console.log('onChangeSearchAutoComplete autocomplete_field '+autocomplete_field);
 
           this.autocomplete_name_is_loading = true;    
           let params = {}
@@ -539,7 +539,7 @@ $(function () {
         setDropzone: async function() {
           let _this = this;
 
-          console.log($('.dropzone').length, 'dropzone.length');
+          // console.log($('.dropzone').length, 'dropzone.length');
           // console.log(csrfToken, 'csrfToken');
           $('.dropzone').each(function() {
               // ctrl se non e' gia' stato attached 
@@ -582,9 +582,18 @@ $(function () {
                                               
                               // console.log(index + ' ' + _this.articles[index]['img1_size'] + ' ' + _this.articles[index]['img1'], 'dropzone');
 
+                              let path = _this.articles[index]['img1'];
+
                               let myDropzone = this;
-                              let mockFile = { name: 'Foto articolo', size: _this.articles[index]['img1_size']};
-                              myDropzone.displayExistingFile(mockFile, _this.articles[index]['img1']);
+                              let mockFile = { name: 'Foto articolo', size: _this.articles[index]['img1_size'], accepted: true};
+                              // Uncaught DOMException: The operation is insecure.
+                              // myDropzone.displayExistingFile(mockFile, path);
+                              // myDropzone.createThumbnailFromUrl(mockFile, path);
+                              
+                              myDropzone.emit("addedfile", mockFile);
+                              myDropzone.emit("thumbnail", mockFile, path);
+                              myDropzone.emit("success", mockFile);  
+                              myDropzone.emit("complete", mockFile);                               
                               this.files.push(mockFile);
                           }
 

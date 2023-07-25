@@ -8,3 +8,11 @@
 .dropzone {
 	padding: 0px 0px;
 }
+.dropzone .dz-preview .dz-image img{
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover;
+ }
+ .dropzone .dz-preview {
+	margin: 5px;
+  }

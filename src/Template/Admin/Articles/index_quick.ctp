@@ -1,3 +1,36 @@
+<style>
+.no-bio {
+  opacity: 0.1
+}
+.extend:focus{
+  width:320px;
+}
+
+.autocomplete {
+  position: relative;
+}
+.autocomplete-results {
+  padding: 0;
+  margin: 0;
+  border: 1px solid #eeeeee;
+  height: 120px;
+  min-height: 1em;
+  max-height: 6em;    
+  overflow: auto;
+  width: 500px;
+}
+.autocomplete-result {
+  list-style: none;
+  text-align: left;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+.autocomplete-result.is-active,
+.autocomplete-result:hover {
+  background-color:#367fa9;
+  color: white;
+}  
+</style>
 <?php 
 use Cake\Core\Configure;
 use App\Traits;
@@ -456,7 +489,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
           <?php 
           if($user->acl['isManager'] || $user->acl['isSuperReferente']) {
-            echo '<a href="'.$this->HtmlCustomSite->jLink('CategoriesSuppliers', 'index').'" target="_blank">';
+            echo '<a href="'.$this->HtmlCustomSite->jLink('CategoriesArticles', 'index').'" target="_blank">';
             echo '<button class="btn btn-info"><i aria-hidden="true" class="fa fa-tags"></i> Clicca qui se vuoi gestire le categorie degli articoli</button></a>';
           }
           else {
@@ -471,39 +504,4 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
       </div>
     </div>
 
-
 </div> <!-- vue-articles -->
-
-<style>
-.no-bio {
-  opacity: 0.1
-}
-.extend:focus{
-  width:320px;
-}
-
-.autocomplete {
-  position: relative;
-}
-.autocomplete-results {
-  padding: 0;
-  margin: 0;
-  border: 1px solid #eeeeee;
-  height: 120px;
-  min-height: 1em;
-  max-height: 6em;    
-  overflow: auto;
-  width: 500px;
-}
-.autocomplete-result {
-  list-style: none;
-  text-align: left;
-  padding: 4px 2px;
-  cursor: pointer;
-}
-.autocomplete-result.is-active,
-.autocomplete-result:hover {
-  background-color:#367fa9;
-  color: white;
-}  
-</style>
