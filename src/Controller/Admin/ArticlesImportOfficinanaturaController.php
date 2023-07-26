@@ -41,7 +41,11 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
     public function beforeFilter(Event $event) {
         parent::beforeFilter($event);  
 
-        // old if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isRoot'])) {    
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         if(!$this->_user->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));

@@ -26,10 +26,15 @@ class DeliveriesController extends AppController
         
         parent::beforeFilter($event);
 
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
         /* 
          * gestisco solo le consegne dei gruppi ($type='GAS-GROUP')
          */
-        if($this->Authentication->getIdentity()==null || (!isset($this->Authentication->getIdentity()->acl) || !$this->Authentication->getIdentity()->acl['isGasGroupsManagerDeliveries'])) {
+        if(!$this->_user->acl['isGasGroupsManagerDeliveries']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
