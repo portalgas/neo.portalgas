@@ -244,7 +244,7 @@
             <app-view-article-orders :viewList="viewList" @changeView="onChangeView" />
         </div>
     </div>
-    <div class="row">
+    <div class="row" v-if="order_type_id!=9">
         <div class="col-12 col-md-12 col-lg-12">
             <app-search-category-articles @searchCategoryArticles="onSearchCategoryArticles" :order="order" />
         </div>

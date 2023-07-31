@@ -48,8 +48,8 @@ class CategoriesArticlesController extends ApiAppController
             $order = $ordersTable->find()
                                   ->where($where)
                                   ->first();
-
-            if($order->owner_organization_id!=$this->_user->organization->id)
+            // se e' socialmarket puo' essere null
+            if(!empty($order) && $order->owner_organization_id!=$this->_user->organization->id)
                 $organization_id = $order->owner_organization_id;
         }
         
