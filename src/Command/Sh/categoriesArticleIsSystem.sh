@@ -9,6 +9,5 @@ END=$TOT_ORGANIZATION
 
 for (( ORGANIZATION_ID=$START; ORGANIZATION_ID<=$END; ORGANIZATION_ID++ ))
 do
-    # /var/www/neo.portalgas/bin/cake CategoriesArticleIsSystem $ORGANIZATION_ID
-    /home/luca/progetti/neo.portalgas/bin/cake CategoriesArticleIsSystem $ORGANIZATION_ID
+    /var/www/neo.portalgas/bin/cake CategoriesArticleIsSystem $ORGANIZATION_ID
 done
