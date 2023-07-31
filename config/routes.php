@@ -350,6 +350,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/setValue', ['action' => 'setValue', '_method' => 'POST']);
             $routes->connect('/img1Upload', ['action' => 'img1Upload', '_method' => 'POST']);
             $routes->connect('/img1Delete', ['action' => 'img1Delete', '_method' => 'POST']);
+            $routes->connect('/getInCarts', ['action' => 'getInCarts', '_method' => 'POST']);
         }); 
         $routes->scope('/categories-articles', ['controller' => 'CategoriesArticles'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);

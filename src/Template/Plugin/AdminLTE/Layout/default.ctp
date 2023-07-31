@@ -3,6 +3,7 @@ use Cake\Core\Configure;
 
 $config = Configure::read('Config');
 $portalgas_ping_session = $config['Portalgas.ping.session.BO'];
+$portalgas_bo_url = $config['Portalgas.bo.url'];        
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +65,7 @@ if(Configure::read('Theme.menu_sidebar')=='close')
 <script type="text/javascript">
 "use strict";
 var objScript = null;
+var portalgas_bo_url = '<?php echo $portalgas_bo_url;?>';
 var csrfToken = <?php echo json_encode($this->request->getParam('_csrfToken')) ?>;
 var orderNotaMaxLen = <?php echo Configure::read('OrderNotaMaxLen');?>;
 var headers = {

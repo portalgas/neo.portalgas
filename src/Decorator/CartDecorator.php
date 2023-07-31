@@ -6,39 +6,39 @@ namespace App\Decorator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
-class ApiCartDecorator  extends AppDecorator {
+class CartDecorator  extends AppDecorator {
 	
 	public $serializableAttributes = null; // ['id', 'name'];
 	public $results; 
 
-    public function __construct($user, $carts, $articles_order)
+    public function __construct($user, $carts)
     {
     	$results = [];
 	    // debug($carts);
 
 	    if($carts instanceof \Cake\ORM\ResultSet) {
 			foreach($carts as $numResult => $cart) {
-				$results[$numResult] = $this->_decorate($user, $cart, $articles_order);
+				$results[$numResult] = $this->_decorate($user, $cart);
 			}
 	    }
 	    else 
 	    if($carts instanceof \App\Model\Entity\Cart) {
-			$results = $this->_decorate($user, $carts, $articles_order);  	
+			$results = $this->_decorate($user, $carts);  	
 	    }
         else {
             foreach($carts as $numResult => $cart) {
-                $results[$numResult] = $this->_decorate($user, $cart, $articles_order);
+                $results[$numResult] = $this->_decorate($user, $cart);
             }
         }
 
 		$this->results = $results;
     }
 
-	private function _decorate($user, $cart, $articles_order) {
+	private function _decorate($user, $cart) {
 
         // debug($cart);
         $results = $cart->toArray();
-       
+
         $final_qta = 0;
         $final_price = 0;
 
@@ -56,7 +56,7 @@ class ApiCartDecorator  extends AppDecorator {
             $results['is_import_mod'] = true;
         }
         else {
-            $results['final_price'] = ($final_qta * $articles_order->prezzo);
+            $results['final_price'] = ($final_qta * $cart->articles_order->prezzo);
             $results['is_import_mod'] = false;
         } 
 

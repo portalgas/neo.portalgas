@@ -210,32 +210,41 @@ trait UtilTrait
         if(empty($delivery))
             return $results;
 
-        if($delivery->sys=='Y')
-            $results = $delivery->luogo;
+        if(!is_array($delivery)) 
+            $delivery = $delivery->toArray();
+
+        if($delivery['sys']=='Y')
+            $results = $delivery['luogo'];
         else
-            $results = $delivery->data->i18nFormat('Y-MM-dd');
+            $results = $delivery['data']->i18nFormat('Y-MM-dd');
         
         return $results;
     } 
 
     // data Cake\I18n\FrozenDate
     public function getDeliveryLabel($delivery) {
-        if($delivery->sys=='Y')
+        if(!is_array($delivery)) 
+            $delivery = $delivery->toArray();
+
+        if($delivery['sys']=='Y')
             $results = 'Da definire';
         else 
-            $results = $delivery->luogo.' - '.$delivery->data->i18nFormat('eeee d MMMM');
+            $results = $delivery['luogo'].' - '.$delivery['data']->i18nFormat('eeee d MMMM');
 
         return $results;
     }
 
     // data Cake\I18n\FrozenDate
     public function getDeliveryDateLabel($delivery) {
-                
-        if($delivery->sys=='Y')
+           
+        if(!is_array($delivery)) 
+            $delivery = $delivery->toArray();
+
+        if($delivery['sys']=='Y')
             $results = '';
         else {
             $now = new Date();
-            $interval = $now->diff($delivery->data);
+            $interval = $now->diff($delivery['data']);
             $interval_gg = $interval->format('%R%a');
 
             if($interval_gg<0)
@@ -253,18 +262,21 @@ trait UtilTrait
     // data Cake\I18n\FrozenDate
     public function getOrderDateLabel($order) {
         
+        if(!is_array($order)) 
+            $order = $order->toArray();
+
         $results = '';
 
         $now = new Date();
-        $interval = $now->diff($order->data_fine);
+        $interval = $now->diff($order['data_fine']);
         $interval_gg = $interval->format('%R%a');
 
-        switch($order->state_code) {
+        switch($order['state_code']) {
             case 'CREATE-INCOMPLETE':
                 $results .= '';
             break;
             case 'OPEN-NEXT':
-                $results .= '<span class="label label-primary">Aprira&grave; ' . $order->data_inizio->i18nFormat('eeee d MMMM') . '</span>';
+                $results .= '<span class="label label-primary">Aprira&grave; ' . $order['data_inizio']->i18nFormat('eeee d MMMM') . '</span>';
             break;
             case 'PRODGASPROMOTION-GAS-OPEN':
             case 'PRODGASPROMOTION-GAS-USERS-OPEN':

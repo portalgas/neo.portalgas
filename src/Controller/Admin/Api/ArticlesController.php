@@ -192,9 +192,10 @@ class ArticlesController extends ApiAppController
         if(empty($name)) {
             $results['code'] = 500;
             $results['message'] = 'KO';
-            $results['errors'] = 'Non del campo non valorizzato!';
+            $results['errors'] = 'Nome del campo non valorizzato!';
             return $this->_response($results);            
         }
+
         $where = ['id' => $id, 
                   'organization_id' => $organization_id];
 
@@ -407,4 +408,83 @@ class ArticlesController extends ApiAppController
         $results['results'] = [];
         return $this->_response($results); 
     }
+
+    /*
+     * dato un articolo controllo eventuali acquisti
+     *  se associato non posso eliminarlo
+     */    
+    public function getInCarts() {
+
+        $debug = false;
+
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $jsonData = $this->request->input('json_decode');
+       
+        $article_organization_id = $jsonData->article_organization_id; 
+        $article_id = $jsonData->article_id;
+
+        if(empty($article_organization_id) || empty($article_id)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = 'Parametri errati!';
+            return $this->_response($results);            
+        }
+
+        $orders = ['Deliveries.data asc', 
+                      'Carts.date desc'];
+
+        $articlesTable = TableRegistry::get('Articles');
+        $carts = $articlesTable->getArticleInCarts($this->_user, $this->_organization->id, $article_organization_id, $article_id, $where=[], $orders, $debug = false);
+     
+        /*
+         * li raggruppo per consegna
+         */
+        $i=-1;
+        $delivery_ids = [];
+        $aggr_results = [];
+        if(!empty($carts)) 
+        foreach($carts as $cart) {
+            $delivery_id = $cart['order']['delivery_id'];
+            if(!in_array($delivery_id, $delivery_ids)) {
+                $i++;
+                $aggr_results[$i]['delivery'] = $cart['order']['delivery'];
+                $aggr_results[$i]['delivery']['label'] = $this->getDeliveryLabel($cart['order']['delivery']);
+                array_push($delivery_ids, $delivery_id);   
+            }
+
+            $aggr_results[$i]['delivery']['carts'][] = $cart;
+        } 
+        // debug(count($aggr_results));
+
+        $results['code'] = 200;
+        $results['message'] = '';
+        $results['errors'] = '';
+        $results['results'] = $aggr_results;
+        return $this->_response($results);
+      /*          
+    $delivery_id_old = 0;
+    foreach($carts as $cart) {
+
+        if($delivery_id_old==0 || $delivery_id_old!=$cart['order']['delivery_id']) {
+            echo '<tr>';
+            echo '<td colspan="10" class="trGroup">';
+            
+            echo __('Delivery').' : '.$this->getDeliveryLabel($cart['order']['delivery']);
+
+            echo $this->getOrderDateLabel($cart['order']);
+            echo ' - ordine dal '.$cart['order']['data_inizio'].' al '.$cart['order']['data_fine'];
+            echo '</td>';
+            echo '</tr>';	                
+        }
+
+        $delivery_id_old=$cart['order']['delivery_id'];
+        */
+    }     
 }

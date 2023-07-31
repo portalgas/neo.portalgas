@@ -5,10 +5,12 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-use App\Decorator\ApiArticleDecorator;
+use App\Traits;
 
 class ArticlesController extends AppController
 {
+    use Traits\UtilTrait;
+
     public function initialize()
     {
         parent::initialize();

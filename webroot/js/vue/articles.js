@@ -23,6 +23,7 @@ $(function () {
         search_categories_article_id: 0,
         search_flag_presente_articlesorders: true,
         search_order: 'Articles.name ASC',
+        article_in_carts: [],
         articles: [],
         is_run: false,
         is_run_categories_articles: false,
@@ -370,7 +371,12 @@ $(function () {
           .catch(error => {
             console.error("Error: " + error);
           });            
-
+        },
+        goToDelete: function(index) {          
+          let article_organization_id = this.articles[index].organization_id;
+          let article_id = this.articles[index].id;
+          let url = portalgas_bo_url+'/administrator/index.php?option=com_cake&controller=Articles&action=context_articles_delete&id='+article_id+'&article_organization_id='+article_organization_id;
+          window.location.href = url; 
         },
         toggleIsBio: function(field_id, index) {
           console.log(this.articles[index].bio, 'toggleIsBio');
@@ -404,6 +410,32 @@ $(function () {
         toggleExtra: function(index) {
           console.log('.extra-'+index, 'toggleExtra');
           $('.extra-'+index).toggle('slow');
+        },
+        modalInCarts: function(index) {
+           
+          this.article_in_carts = [];
+
+          let params = { 
+            article_organization_id: this.articles[index].organization_id,
+            article_id: this.articles[index].id
+          }; 
+          console.log(params, 'modalInCarts');
+          
+          axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
+
+          axios.post('/admin/api/articles/getInCarts', params)
+              .then(response => {
+                console.log(response.data, 'getInCarts'); 
+
+                if(response.data.code=='200') {
+                  $('#modalArticleInCarts').modal('show');
+                  this.article_in_carts = response.data.results;
+                }
+              })
+          .catch(error => {
+            console.error("Error: " + error);
+          });                      
         },
         gets: async function() {
 

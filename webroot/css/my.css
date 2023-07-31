@@ -98,3 +98,9 @@ th {
 	padding:4px;
 	background-color: #F5F5F5;
 }
+table tr td.trGroup {
+    empty-cells: show;
+    background-color: #E1E1E1;
+    border-bottom: 2px solid #DDDDDD;
+    font-weight: bold;
+}

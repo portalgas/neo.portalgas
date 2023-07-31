@@ -30,6 +30,11 @@
   background-color:#367fa9;
   color: white;
 }  
+.modal-title {
+  color: #3c8dbc;
+  font-size: 22px;
+  font-weight: bold;
+}
 </style>
 <?php 
 use Cake\Core\Configure;
@@ -138,11 +143,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <template v-if="article.can_edit">
                       <tr :id="'frm-'+article.id" >
                         <td class="actions text-center">
-                          <!-- {{ article.id }} {{ article.organization_id }} -->
+                          <!-- {{ article.organization_id }} {{ article.id }} -->
                           <div class="btn-group-vertical">
-                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
-                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
-                            <button class="btn btn-danger" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-trash"></i></button>
+                            <button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
+                            <button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                            <button title="elimina articolo" class="btn btn-danger"  @click="goToDelete(index)"><i aria-hidden="true" ><i aria-hidden="true" class="fa fa-trash"></i></button>
                           </div>
                         </td>
                         <td class="actions text-center">
@@ -324,8 +329,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <td class="actions text-center">
                           <!-- {{ article.id }} {{ article.organization_id }} -->
                           <div class="btn-group-vertical">
-                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
-                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                            <button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
+                            <button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                           </div>
                         </td>
                         <td class="actions text-center">
@@ -491,24 +496,74 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
             </button>
           </div>
           <div class="modal-body">
-
-          <div class="table-responsive">
-
-          <?php 
-          if($user->acl['isManager'] || $user->acl['isSuperReferente']) {
-            echo '<a href="'.$this->HtmlCustomSite->jLink('CategoriesArticles', 'index').'" target="_blank">';
-            echo '<button class="btn btn-info"><i aria-hidden="true" class="fa fa-tags"></i> Clicca qui se vuoi gestire le categorie degli articoli</button></a>';
-          }
-          else {
-              echo "Contatta il manager del tuo G.A.S. se desideri avere delle categorie di articoli diversi";
-          } // if($user->acl['isManager'] || $user->acl['isSuperReferente'])
-          ?>
-          </div>
+            <?php 
+            if($user->acl['isManager'] || $user->acl['isSuperReferente']) {
+              echo '<a href="'.$this->HtmlCustomSite->jLink('CategoriesArticles', 'index').'" title="gestisci le categorie degli articoli" target="_blank">';
+              echo '<button class="btn btn-info"><i aria-hidden="true" class="fa fa-tags"></i> Clicca qui se vuoi gestire le categorie degli articoli</button></a>';
+            }
+            else {
+                echo "Contatta il manager del tuo G.A.S. se desideri avere delle categorie di articoli diversi";
+            } // if($user->acl['isManager'] || $user->acl['isSuperReferente'])
+            ?>
+          </div> <!-- modal-body -->
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Modal article_in_carts -->
+    <div class="modal fade" id="modalArticleInCarts" tabindex="-1" aria-labelledby="modalArticleInCartsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalArticleInCartsLabel">Gasisti che hanno acquistato l'articolo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+    
+    
+          <table class="table table-hover" v-if="article_in_carts.length>0">
+                <thead>
+                  <tr>
+                    <th scope="col">Utente</th>
+                    <th scope="col" class="text-center">Quantità</th>
+                    <th scope="col" class="text-center">Importo</th>
+                    <th scope="col">Acquistato il</th>
+                  </tr>
+                </thead> 
+                <tbody>
+                  <template v-for="(article_in_cart, delivery_id) in article_in_carts"
+                          :key="delivery_id">
+                    <tr>
+                        <td colspan="4" class="trGroup">
+                          Consegna: {{ article_in_cart.delivery.label }}
+                        </td>
+                    </tr>
+                    <tr v-for="(cart, index) in article_in_cart.delivery.carts"> 
+                      <td>{{ cart.user.name}}</td>
+                      <td class="text-center">{{ cart.final_qta}}</td>
+                      <td class="text-center">{{ cart.final_price | currency }} &euro;</td>
+                      <td>{{ cart.date_human}}</td>
+                    </tr>
+                  </template>    
+                </tbody>
+              </table>
+
+              <div class="alert alert-info" v-if="article_in_carts.length==0">
+                Non ci sono acquisti associati all'articolo
+              </div>  
+ 
+          </div> <!-- modal-body -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>  
+
 
 </div> <!-- vue-articles -->

@@ -7,6 +7,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use App\Decorator\CartDecorator;
 use App\Traits;
 
 class ArticlesTable extends Table
@@ -226,5 +227,44 @@ class ArticlesTable extends Table
         $results = $this->gets($user, $where);
 
         return $results;
-    }    
+    }   
+    
+    /*
+     * dato un articolo controllo eventuali acquisti
+     *  se associato non posso eliminarlo
+     * 
+     * article_organization_id = puo' essere diverso dal GAS perche' e' chi gestisce l'articolo
+     */
+    public function getArticleInCarts($user, $organization_id, $article_organization_id, $article_id, $where=[], $orders=[], $debug = false) {
+
+        $where = ['Carts.organization_id' => $organization_id,
+                  'Carts.article_organization_id' => $organization_id,
+                  'Carts.article_id' => $article_id];
+
+        if($debug) debug($where);
+   
+        if(empty($orders))
+            $orders = ['Deliveries.data asc'];
+
+        $cartsTable = TableRegistry::get('Carts');
+        $carts = $cartsTable->find()
+                        ->where($where)
+                        ->order($orders)
+                        ->contain([
+                            'Articles',
+                            'ArticlesOrders',
+                            'Orders' => [
+                                'Deliveries',
+                                'SuppliersOrganizations' => ['Suppliers', 'OwnerOrganizations', 'OwnerSupplierOrganizations']
+                            ], 
+                            'Users'])
+                        ->all();
+
+        $results = [];
+        foreach($carts as $numResult => $cart) {
+            $cart2 = new CartDecorator($user, $cart);
+            $results[$numResult] = $cart2->results;
+        }
+        return $results;
+    }        
 }
