@@ -139,7 +139,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <tr :id="'frm-'+article.id" >
                         <td class="actions text-center">
                           <!-- {{ article.id }} {{ article.organization_id }} -->
-                          <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                          <div class="btn-group-vertical">
+                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
+                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                            <button class="btn btn-danger" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-trash"></i></button>
+                          </div>
                         </td>
                         <td class="actions text-center">
                           <button class="btn-block btn" 
@@ -319,7 +323,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     <tr :id="'frm-'+article.id" >
                         <td class="actions text-center">
                           <!-- {{ article.id }} {{ article.organization_id }} -->
-                          <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                          <div class="btn-group-vertical">
+                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
+                            <button class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
+                          </div>
                         </td>
                         <td class="actions text-center">
                           <button style="cursor: auto !important" 

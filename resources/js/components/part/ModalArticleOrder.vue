@@ -48,10 +48,9 @@
     </div>
   </div>
 
-
-  <div class="row" v-if="modalContent.entity.articlesOrder.codice!=''">
+  <div class="row" v-if="modalContent.entity.articlesOrder.article.codice!=null">
     <div class="col-4 col-label">Codice</div>
-    <div class="col-8">{{ modalContent.entity.articlesOrder.codice }}</div>
+    <div class="col-8">{{ modalContent.entity.articlesOrder.article.codice }}</div>
   </div>
 
   <div class="row">
@@ -121,17 +120,17 @@
     <div class="col-8">{{ modalContent.entity.articlesOrder.stato }}</div>
   </div>
 
-  <div class="row" v-if="modalContent.entity.articlesOrder.descri!=''">
+  <div class="row" v-if="modalContent.entity.articlesOrder.article.nota!=null">
     <div class="col-4 col-label">Nota</div>
-    <div class="col-8"  v-html="$options.filters.html(modalContent.entity.articlesOrder.descri)"></div>
+    <div class="col-8" v-html="$options.filters.html(modalContent.entity.articlesOrder.article.nota)"></div>
   </div>
 
-  <div class="row" v-if="modalContent.entity.articlesOrder.ingredients!=''">
+  <div class="row" v-if="modalContent.entity.articlesOrder.article.ingredienti!=null">
     <div class="col-4 col-label">Ingredienti</div>
-    <div class="col-8" v-html="$options.filters.html(modalContent.entity.articlesOrder.ingredients)"></div>
+    <div class="col-8" v-html="$options.filters.html(modalContent.entity.articlesOrder.article.ingredienti)"></div>
   </div>
            
-  <div class="row" v-if="modalContent.entity.order.suppliers_organization.frequenza!=''">
+  <div class="row" v-if="modalContent.entity.order.suppliers_organization.frequenza!=null">
     <div class="col-4 col-label">Ordine con frequenza</div>
     <div class="col-8">{{ modalContent.entity.order.suppliers_organization.frequenza }}</div>
   </div> 
@@ -294,6 +293,7 @@ export default {
           return index+1
       },
       html(text) {
+      console.log('html '+text);
           return text;
       },
   }  

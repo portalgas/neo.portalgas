@@ -37,6 +37,7 @@ export default {
 	data() {
 		return {
       is_run: false,
+      search_categories_article_id: 0,
       search_categories_articles: [],
 		  order_type_id: 0,
 		  order_id: 0,
