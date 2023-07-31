@@ -26,7 +26,6 @@
         "frankfoerster/cakephp-environment": "^3.0",
         "friendsofcake/bootstrap-ui": "^1.4",
         "friendsofcake/cakepdf": "^3.5",
-        "holt59/cakephp3-bootstrap-helpers": "dev-master",
         "ishanvyas22/asset-mix": "^0.4.0",
         "jomweb/cake-impersonate": "^3.0",
         "josegonzalez/cakephp-upload": "^4.0",
