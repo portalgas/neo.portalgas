@@ -111,6 +111,7 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
         <i class="fa fa-angle-left pull-right"></i>
       <ul class="treeview-menu">
         <li><a href="<?php echo $this->Url->build('/admin/articles/index-quick'); ?>"><?php echo $icon;?><?php echo __('Gestione completa');?> <label class="label label-success">new</label></a></li>
+        <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'context_articles_add');?>" target=""><?php echo $icon;?>Aggiungi un nuovo articolo</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Pages', 'export_docs_articles');?>" target=""><?php echo $icon;?>Stampa articoli</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'gest_categories');?>" target=""><?php echo $icon;?>Gestisci categorie</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_default');?>" target=""><?php echo $icon;?>Modifica prezzi</a></li>

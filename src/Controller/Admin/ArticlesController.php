@@ -116,92 +116,14 @@ class ArticlesController extends AppController
         // $this->set('ums', $this->Articles->enum('um'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Article id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
+    public function export()
     {
-        $article = $this->Articles->get($id, [
-            'contain' => ['Organizations', 'SuppliersOrganizations', 'CategoriesArticles'],
-        ]);
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+        $this->set(compact('suppliersOrganizations'));
 
-        $this->set('article', $article);
-    }
-
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $article = $this->Articles->newEntity();
-        if ($this->request->is('post')) {
-            $article = $this->Articles->patchEntity($article, $this->request->getData());
-            if ($this->Articles->save($article)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Article'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Article'));
-        }
-        $organizations = $this->Articles->Organizations->find('list', ['limit' => 200]);
-        $suppliersOrganizations = $this->Articles->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $categoriesArticles = $this->Articles->CategoriesArticles->find('list', ['limit' => 200]);
-        $this->set(compact('article', 'organizations', 'suppliersOrganizations', 'categoriesArticles'));
-    }
-
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Article id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $article = $this->Articles->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $article = $this->Articles->patchEntity($article, $this->request->getData());
-            if ($this->Articles->save($article)) {
-                $this->Flash->success(__('The {0} has been saved.', 'Article'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Article'));
-        }
-        $organizations = $this->Articles->Organizations->find('list', ['limit' => 200]);
-        $suppliersOrganizations = $this->Articles->SuppliersOrganizations->find('list', ['limit' => 200]);
-        $categoriesArticles = $this->Articles->CategoriesArticles->find('list', ['limit' => 200]);
-        $this->set(compact('article', 'organizations', 'suppliersOrganizations', 'categoriesArticles'));
-    }
-
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Article id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $article = $this->Articles->get($id);
-        if ($this->Articles->delete($article)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Article'));
-        } else {
-            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Article'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
+        $this->set(compact('search_supplier_organization_id'));        
     }
 }

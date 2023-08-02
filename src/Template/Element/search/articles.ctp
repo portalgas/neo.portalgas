@@ -136,7 +136,7 @@ $user = $this->Identity->get();
     echo '</div>';
     ?>
 </fieldset>
-</div>
+</div> <!-- box-body -->
     <!-- div class="box-footer">
         <?= $this->Form->button(__('Search'), ['class' => 'btn btn-primary pull-right']) ?>
     </div -->
