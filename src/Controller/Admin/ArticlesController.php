@@ -124,6 +124,30 @@ class ArticlesController extends AppController
         $this->set(compact('suppliersOrganizations'));
 
         (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
-        $this->set(compact('search_supplier_organization_id'));        
+        $this->set(compact('search_supplier_organization_id'));    
+        
+        $fields_sortable_source = [
+            'codice' => __('Code'),
+            'nota' => __('Note'),
+            'ingredienti' => 'Ingredienti',
+            'um_riferimento' => __('Name'),
+            'qta_minima' => __('qta_minima'),
+            'qta_massima' => __('qta_massima'),
+            'qta_minima_order' => __('qta_minima_order'),
+            'qta_massima_order' => __('qta_massima_order'),
+            'qta_multipli' => __('qta_multipli'),
+            'um_riferimento' => __('Name'),
+        ];
+        $fields_sortable_destination = [
+            'name' => __('Name'),
+            'prezzo' => __('Price'),
+            'qta' => __('qta'),
+            'um' => __('UM'),
+            'pezzi_confezione' => __('pezzi_confezione'),
+            'um' => __('UM'),
+            'bio' => __('Bio'),
+            'flag_presente_articlesorders' => __('flag_presente_articlesorders'),
+        ];
+        $fields_default = ['id' => 'Identificativo articolo'];
     }
 }
