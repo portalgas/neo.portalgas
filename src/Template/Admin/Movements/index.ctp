@@ -119,7 +119,7 @@ echo $this->element('msg', ['msg' => $msg, 'class' => 'info']);
               } // end loop
             echo '</tbody>';
 
-            echo '<tfooter>';
+            echo '<tfoot>';
             echo '<tr>';
             echo '<th></th>';
             echo '<th></th>';
@@ -131,7 +131,7 @@ echo $this->element('msg', ['msg' => $msg, 'class' => 'info']);
             echo '<th></th>';
             echo '<th></th>';
             echo '</tr>';
-            echo '</tfooter>';
+            echo '</tfoot>';
 
             echo '</table>';
           }

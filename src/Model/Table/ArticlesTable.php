@@ -204,6 +204,10 @@ class ArticlesTable extends Table
         return $articles;
     }
 
+    /* 
+     * articoli in base all'ordine: ordine erediata own del produttore
+     * per sapere chi gestisce il listino articoli
+     */ 
     public function getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where=[], $debug = false) {
 
         /*
@@ -222,6 +226,33 @@ class ArticlesTable extends Table
                     'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
                     'Articles.stato' => 'Y',
                     'Articles.flag_presente_articlesorders' => 'Y'];
+        if($debug) debug($where);
+   
+        $results = $this->gets($user, $where);
+
+        return $results;
+    }   
+
+    /* 
+     * articoli in base al produttore: in base al own del produttore
+     * so chi gestisce il listino articoli
+     */ 
+    public function getsToArticleSupplierOrganization($user, $organization_id, $supplier_organization_id, $where=[], $debug = false) {
+
+        /*
+         * ricerco chi gestisce il listino articoli del produttore del GAS
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $ownArticles = $suppliersOrganizationsTable->getOwnArticles($user, $organization_id, $supplier_organization_id, $debug);
+
+        if(isset($where['Articles']))
+            $where = array_merge(['Articles.organization_id' => $ownArticles->owner_organization_id,
+                                'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
+                                ], $where['Articles']);
+        else
+            $where = ['Articles.organization_id' => $ownArticles->owner_organization_id,
+                    'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
+                    ];
         if($debug) debug($where);
    
         $results = $this->gets($user, $where);

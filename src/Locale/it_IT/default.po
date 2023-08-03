@@ -361,6 +361,9 @@ msgstr "Conf"
 msgid "pezzi_confezione"
 msgstr "Conf"
 
+msgid "flag_presente_articlesorders"
+msgstr "Ordinabile"
+
 msgid "UM"
 msgstr "Unità di misura"
 

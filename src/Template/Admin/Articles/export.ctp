@@ -118,15 +118,15 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
     padding: 25px;
     border-radius: 4px;
 }
-#fields-sortable-source, #fields-sortable-destination, #fields-default {
+#source-fields, #export-fields, #default-fields {
     width: 100%;
     height: auto;
     margin: 0;
     padding: 0;
 }
-#fields-sortable-source li, 
-#fields-sortable-destination li, 
-#fields-default li {
+#source-fields li, 
+#export-fields li, 
+#default-fields li {
     width: 100%;
     height: auto;
     list-style-type: none;
@@ -139,19 +139,19 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
     box-sizing: border-box;
     cursor: move;
 }
-#fields-default li {
+#default-fields li {
     cursor: default;
 }
-#fields-sortable-source li span, 
-#fields-sortable-destination li span,
-#fields-default li span  {
+#source-fields li span, 
+#export-fields li span,
+#default-fields li span  {
     font-size: 14px;
     font-weight: 500;
     color: #48465b;
 }
-#fields-sortable-source li code, 
-#fields-sortable-destination li code,
-#fields-default li code {
+#source-fields li code, 
+#export-fields li code,
+#default-fields li code {
     font-size: 10px;
     color: #48465b;
     padding: 4px 10px 0px 4px;
@@ -168,31 +168,29 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
     <!-- /.box-header -->
     <div class="box-body">
 
-<?= $this->Form->create(null, ['id' => 'frmExport', 'type' => 'GET']); ?>
+<?php 
+echo $this->Form->create(null, ['id' => 'frmExport', 'type' => 'POST']); 
+echo $this->Form->control('export_fields', ['type' => 'hidden', 'id' => 'export_fields']);
+?>
 <fieldset>
     <legend>Export</legend>
     <?php
     echo '<div class="row-no-margin">';
     echo '<div class="col col-md-12 col-12">';
-    $options = [];
-    $options['ctrlDesACL'] = false;
-    $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
-    $options['default'] = $search_supplier_organization_id;
-    (count($suppliersOrganizations)==1) ? $options['empty'] = false: $options['empty'] = true;
-    $options['v-model'] = 'search_supplier_organization_id';
-    $options['@change'] = 'changeSearchSupplierOrganizationId';
     ?>
 
 <div class="kt-portlet">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title"><span class="kt-badge kt-badge--brand kt-badge--lg mr-3">1</span> Scegli il produttore</h3>
+                    <h3 class="kt-portlet__head-title">
+                        <span class="kt-badge kt-badge--brand kt-badge--lg mr-3">1</span> Scegli il produttore
+                    </h3>
                 </div>
                 <div class="kt-portlet__head-toolbar"></div>
             </div>
             <div class="kt-portlet__body">
                 <?php 
-                    echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
+                    echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations);
                 ?>                
             </div>
         </div>
@@ -211,20 +209,24 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
         <div class="kt-portlet">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title"><span class="kt-badge kt-badge--brand kt-badge--lg mr-3">2</span> Scegli le colonne</h3>
+                    <h3 class="kt-portlet__head-title">
+                        <span class="kt-badge kt-badge--brand kt-badge--lg mr-3">2</span> Scegli quali campi esportare
+                    </h3>
                 </div>
-                <div class="kt-portlet__head-toolbar"></div>
+                <div class="kt-portlet__head-toolbar">
+                    <label id="fields-select-all" style="cursor: pointer" class="label label-primary" >Sceglili tutti</label>
+                </div>
             </div>
             <div class="kt-portlet__body">
-                <ul id="fields-sortable-source" class="connectedSortable control-height">
-                    <li class="ui-state-default d-flex justify-content-between ui-sortable-handle" id="pratica_note">
-                        <span><i class="fa fa-arrows-alt"></i> PRATICA: NOTE</span>
-                        <code> es. Note pratica <span class="bg" style="background-color: 0"></span></code>
-                    </li>
-                    <li class="ui-state-default d-flex justify-content-between ui-sortable-handle" id="pratica_note">
-                        <span><i class="fa fa-arrows-alt"></i> PRATICA: NOTE</span>
-                        <code> es. Note pratica <span class="bg" style="background-color: 0"></span></code>
-                    </li>
+                <ul id="source-fields" class="connectedSortable control-height">
+                    <?php 
+                    foreach($source_fields as $key => $source_field) {
+                        echo '<li id="'.$key.'" class="ui-state-default d-flex justify-content-between ui-sortable-handle">';
+                        echo '<span><i class="fa fa-arrows-alt"></i> '.$source_field['label'].'</span>';
+                        echo '<code> es. '.$source_field['nota'].' <span class="bg" style="background-color: 0"></span></code>';
+                        echo '</li>';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -239,32 +241,32 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
         <div class="kt-portlet">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title"><span class="kt-badge kt-badge--brand kt-badge--lg mr-3">3</span> Ordina le colonne</h3>
+                    <h3 class="kt-portlet__head-title"><span class="kt-badge kt-badge--brand kt-badge--lg mr-3">3</span> Campi esportabili (ordinali come preferisci)</h3>
                 </div>
                 <div class="kt-portlet__head-toolbar"></div>
             </div>
             <div class="kt-portlet__body">
 
-                <ul id="fields-default" class="control-height">
-                    <li class="d-flex justify-content-between" id="pratica_note">
-                        <span><i class="fa fa-ban"></i> PRATICA: NOTE</span>
-                        <code> es. Note pratica <span class="bg" style="background-color: 0"></span></code>
-                    </li>
-                    <li class="d-flex justify-content-between" id="pratica_note">
-                        <span><i class="fa fa-ban"></i> PRATICA: NOTE</span>
-                        <code> es. Note pratica <span class="bg" style="background-color: 0"></span></code>
-                    </li>
+                <ul id="default-fields" class="control-height">
+                    <?php 
+                    foreach($default_fields as $key => $default_field) {
+                        echo '<li id="'.$key.'" class="ui-state-default d-flex justify-content-between ui-sortable-handle">';
+                        echo '<span><i class="fa fa-thumb-tack"></i> '.$default_field['label'].'</span>';
+                        echo '<code> es. '.$default_field['nota'].' <span class="bg" style="background-color: 0"></span></code>';
+                        echo '</li>';
+                    }
+                    ?>
                 </ul>
 
-                <ul id="fields-sortable-destination" class="connectedSortable control-height">
-                    <li class="ui-state-default d-flex justify-content-between ui-sortable-handle" id="pratica_note">
-                        <span><i class="fa fa-arrows"></i> PRATICA: NOTE</span>
-                        <code> es. Note pratica <span class="bg" style="background-color: 0"></span></code>
-                    </li>
-                    <li class="ui-state-default d-flex justify-content-between ui-sortable-handle" id="pratica_note">
-                        <span><i class="fa fa-arrows"></i> PRATICA: NOTE</span>
-                        <code> es. Note pratica <span class="bg" style="background-color: 0"></span></code>
-                    </li>
+                <ul id="export-fields" class="connectedSortable control-height">
+                    <?php 
+                    foreach($export_fields as $key => $export_field) {
+                        echo '<li id="'.$key.'" class="ui-state-default d-flex justify-content-between ui-sortable-handle">';
+                        echo '<span><i class="fa fa-arrows-alt"></i> '.$export_field['label'].'</span>';
+                        echo '<code> es. '.$export_field['nota'].' <span class="bg" style="background-color: 0"></span></code>';
+                        echo '</li>';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -275,7 +277,7 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
 
     echo '<div class="row">';
     echo '<div class="col col-md-12 col-12">';
-    echo '<button type="button" class="btn btn-primary btn-block" @click="gets()">'.__('Export').'</button>';
+    echo '<button type="submit" class="btn btn-primary btn-block"><i class="fa fa-file-excel-o"></i> '.__('Export').'</button>';
     echo '</div>'; 
     echo '</div>'; 
     ?>
@@ -286,17 +288,54 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
 echo $this->Form->end() 
 ?>
 
-
-
-
-
-
 <?php 
 $js = "
 $( function() {
-  $('#fields-sortable-source, #fields-sortable-destination').sortable({
-    connectWith: '.connectedSortable'
-  });
+    $('#source-fields, #export-fields').sortable({
+        connectWith: '.connectedSortable'
+    });
+
+    $('#fields-select-all').on('click', function (e) {
+        e.preventDefault();
+        $('#source-fields li').each(function() {
+            var _this = $(this);
+            _this.appendTo('#export-fields');
+           // $('#export-fields').sortable('option', 'receive')(null, { item: _this });
+        });        
+    });
+
+    $('form#frmExport').on('submit', function (e) {
+        // e.preventDefault();
+
+        let supplier_organization_id = $('#supplier_organization_id').val();
+        console.log('supplier_organization_id '+supplier_organization_id , 'submit');
+        if(supplier_organization_id=='') {
+            alert('Seleziona il produttore');
+            return false;
+        }
+
+        let tot_fields = $('ul#export-fields li').length;
+        console.log('tot_fields '+tot_fields , 'submit');
+        if(tot_fields==0) {
+            alert('Seleziona almeno un campo da esportare');
+            return false;
+        }
+        
+        /*
+         * popolo il campo hidden con i campi da esportare
+         */
+        let export_fields = '';
+        $('#export_fields').val('');
+        $.each($('ul#export-fields li'), function( key, field ) {
+            // console.log(key + ': ' + $(field).attr('id'), 'submit');
+            export_fields += $(field).attr('id')+';';
+        });
+        export_fields = export_fields.substring(0, (export_fields.length-1));
+        console.log(export_fields, 'submit');
+        $('#export_fields').val(export_fields);
+
+        return true;
+    });  
 });
 ";
 $this->Html->scriptBlock($js, ['block' => true]);
