@@ -7,8 +7,6 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use App\Traits;
 use Cake\Log\Log;
-use PhpOffice\PhpSpreadsheet\Spreadsheet; 
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Cake\Http\CallbackStream;
 
 class ArticlesController extends AppController
@@ -20,6 +18,7 @@ class ArticlesController extends AppController
         parent::initialize();
         $this->loadComponent('Auths');
         $this->loadComponent('SuppliersOrganization');
+        $this->loadComponent('ArticlesImportExport');
     }
 
     public function beforeFilter(Event $event) {
@@ -129,39 +128,9 @@ class ArticlesController extends AppController
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
         $this->set(compact('suppliersOrganizations'));  
      
-        /* 
-         * campi opzionali
-         */
-        $source_fields = [
-            'codice' => ['label' => __('Code'), 'nota' => '001'],
-            'nota' => ['label' => __('Note'), 'nota' => "descrizione dell'articolo"],
-            'ingredienti' => ['label' => 'Ingredienti', 'nota' => "solo ingredienti naturali"],
-            'um_riferimento' => ['label' => __('um_riferimento'), 'nota' => 'Kg'],
-            'qta_minima' => ['label' => __('qta_minima'), 'nota' => '1'],
-            'qta_massima' => ['label' => __('qta_massima'), 'nota' => '10'],
-            'qta_minima_order' => ['label' => __('qta_minima_order'), 'nota' => '0'],
-            'qta_massima_order' => ['label' => __('qta_massima_order'), 'nota' => '0'],
-            'qta_multipli' => ['label' => __('qta_multipli'), 'nota' => '1']
-        ];
-
-        /* 
-         * campi esportati
-         */
-        $export_fields = [
-            'name' => ['label' => __('Name'), 'nota' => 'Toma valle di Lanzo'],
-            'prezzo' => ['label' => __('Price'), 'nota' => '12,50'],
-            'qta' => ['label' => __('qta'), 'nota' => '500'],
-            'um' => ['label' => __('UM'), 'nota' => 'Gr'],
-            'pezzi_confezione' => ['label' => __('pezzi_confezione'), 'nota' => '1'],
-            'bio' => ['label' => __('Bio'), 'nota' => 'Si'],
-            'flag_presente_articlesorders' => ['label' => __('flag_presente_articlesorders'), 'nota' => 'Si']
-        ];
-
-        /* 
-         * campi di default
-         */                
-        $default_fields = ['id' => ['label' => 'Identificativo articolo', 'nota' => 'Necessario se si vuole aggiornare l\'articolo']];
-
+        $source_fields = $this->ArticlesImportExport->getExportSourceFields($this->_user);
+        $export_fields = $this->ArticlesImportExport->getExportFields($this->_user);            
+        $default_fields = $this->ArticlesImportExport->getExportDefaultFields($this->_user);
         $this->set(compact('source_fields', 'export_fields', 'default_fields'));    
 
         if ($this->request->is('post')) {
@@ -184,65 +153,15 @@ class ArticlesController extends AppController
             // Log::debug($supplier_organization);
 
             /* 
-             * campi da estrarre
-             */
-            $request_default_fields = [];
-            foreach($default_fields as $key => $default_field) {
-                $request_default_fields[] = $key;
-            }
-            
-            $arr_export_fields = [];
-            $arr_export_fields = $request_default_fields;
-            if(strpos($request_export_fields, ';')===false)
-                $arr_export_fields[] = $request_export_fields;
-            else
-                $arr_export_fields = array_merge($arr_export_fields, explode(';', $request_export_fields));
-            if($debug) debug($arr_export_fields);
-            
-            $alphabet = range('A', 'Z');
-            // if($debug) debug($alphabet);
-            $spreadsheet = new Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-
-            /* 
              * estraggo gli articoli in base al produttore (own chi gestisce il listino)
              * */
             $articles = $this->Articles->getsToArticleSupplierOrganization($this->_user, $this->_organization->id, $supplier_organization_id);
-            
             if($articles->count()==0) {
                 $this->Flash->error("Il produttore non ha articoli associati!");
                 return $this->redirect(['action' => 'export']);  
             } 
 
-            /* 
-             * header
-             */
-            foreach($arr_export_fields as $numResult => $arr_export_field) {
-                $numCol = $alphabet[$numResult].'1';
-                $sheet->setCellValue($numCol, __($arr_export_field));
-            }
-
-            foreach($articles as $numResult => $article) {
-
-                $numRow = ($numResult + 2);
-
-                foreach($arr_export_fields as $numResult2 => $arr_export_field) {
-                    $numCol = $alphabet[$numResult2].$numRow;
-                    $value = $article->{$arr_export_field};
-                    switch($value) {
-                        case 'Y':
-                            $value = 'Si';
-                        break;
-                        case 'N':
-                            $value = 'No';
-                        break;
-                    }
-                    if($debug) debug($numCol.' '.$arr_export_field.' '.$value);
-                    $sheet->setCellValue($numCol, $value);
-                } // foreach($arr_export_fields as $numResult2 => $arr_export_field) 
-            } // foreach($articles as $numResult => $article)
-
-            $writer = new Xlsx($spreadsheet);
+            $writer = $this->ArticlesImportExport->export($this->_user, $this->request->getData(), $articles);
             $stream = new CallbackStream(function () use ($writer) {
                 $writer->save('php://output');
             });
