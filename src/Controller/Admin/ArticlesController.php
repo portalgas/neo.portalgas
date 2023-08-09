@@ -174,4 +174,58 @@ class ArticlesController extends AppController
                 ->withBody($stream);
         } // post
     }
+
+    public function import()
+    {  
+        $debug = false;
+
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+        $this->set(compact('suppliersOrganizations'));  
+     
+        $import_fields = $this->ArticlesImportExport->getImportFields($this->_user);
+        $this->set(compact('import_fields'));    
+
+        if ($this->request->is('post')) {
+
+            $datas = $this->request->getData();
+            if($debug) debug($datas);
+            // Log::debug($datas);
+            $supplier_organization_id = $datas['supplier_organization_id'];
+            $request_export_fields = $datas['export_fields'];
+            if(empty($supplier_organization_id) || empty($request_export_fields)) {
+                $this->Flash->error(__('Parameters required'));
+                return $this->redirect(['action' => 'export']);           
+            } 
+        
+            /*
+             * dati produttore
+             */
+            $supplier_organization = $suppliersOrganizationsTable->get($this->_user, ['SuppliersOrganizations.id' => $supplier_organization_id]);
+            if($debug) debug($supplier_organization);
+            // Log::debug($supplier_organization);
+
+            /* 
+             * estraggo gli articoli in base al produttore (own chi gestisce il listino)
+             * */
+            $articles = $this->Articles->getsToArticleSupplierOrganization($this->_user, $this->_organization->id, $supplier_organization_id);
+            if($articles->count()==0) {
+                $this->Flash->error("Il produttore non ha articoli associati!");
+                return $this->redirect(['action' => 'export']);  
+            } 
+
+            $writer = $this->ArticlesImportExport->export($this->_user, $this->request->getData(), $articles);
+            $stream = new CallbackStream(function () use ($writer) {
+                $writer->save('php://output');
+            });
+
+            $filename = $this->setFileName('Articoli di '.$supplier_organization->name); // .'.xlsx';
+            if($debug) debug($filename);
+            $response = $this->response; 
+            return $response->withType('xlsx')
+                ->withHeader('Content-Disposition', "attachment;filename=\"{$filename}.xlsx\"")
+                ->withBody($stream);
+        } // post
+    }
 }

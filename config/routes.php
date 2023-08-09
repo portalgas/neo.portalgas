@@ -352,6 +352,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/img1Delete', ['action' => 'img1Delete', '_method' => 'POST']);
             $routes->connect('/getInCarts', ['action' => 'getInCarts', '_method' => 'POST']);
         }); 
+        $routes->scope('/articles-import', ['controller' => 'ArticlesImport'], function (RouteBuilder $routes) {
+            $routes->connect('/upload', ['action' => 'upload', '_method' => 'POST']);
+        });
         $routes->scope('/categories-articles', ['controller' => 'CategoriesArticles'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
         });                 

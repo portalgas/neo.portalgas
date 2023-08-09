@@ -36,8 +36,8 @@ echo $this->Html->css('my.min.css?v=1.0');
 // HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries 
 // WARNING: Respond.js doesn't work if you view the page via file:// 
 //[if lt IE 9]>
-echo '<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>';
-echo '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>';
+// non + disponibile echo '<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>';
+// non + disponibile echo '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>';
 echo '<![endif]';
 echo '// Google Font ';
 echo '<link href="https://fonts.googleapis.com/css?family=Raleway:500i|Roboto:300,400,700|Roboto+Mono" rel="stylesheet">';

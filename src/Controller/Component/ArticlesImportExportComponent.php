@@ -7,10 +7,13 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet; 
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use Cake\Controller\ComponentRegistry;
 
 class ArticlesImportExportComponent extends Component {
 
+    // campi della tabella
+    private $_import_fields = [];
     // campi opzionali
     private $_export_source_fields = [];
     // campi esportati    
@@ -23,7 +26,22 @@ class ArticlesImportExportComponent extends Component {
         $this->_registry = $registry;
         $controller = $registry->getController();
         //$controller->request
-
+/*
+        $this->_import_fields = [
+            __('Code'),
+            __('Note')
+        ];*/
+        $this->_import_fields = [
+            'codice' => __('Code'),
+            'nota' => __('Note'),
+            'ingredienti' => 'Ingredienti',
+            'um_riferimento' => __('um_riferimento'),
+            'qta_minima' => __('qta_minima'),
+            'qta_massima' => __('qta_massima'),
+            'qta_minima_order' => __('qta_minima_order'),
+            'qta_massima_order' => __('qta_massima_order'),
+            'qta_multipli' => __('qta_multipli')
+        ];
         $this->_export_source_fields = [
                                 'codice' => ['label' => __('Code'), 'nota' => '001'],
                                 'nota' => ['label' => __('Note'), 'nota' => "descrizione dell'articolo"],
@@ -50,9 +68,16 @@ class ArticlesImportExportComponent extends Component {
     }
 
     /* 
+     * campi import 
+     */
+    public function getImportFields($user, $debug=false) {
+        return $this->_import_fields;
+	}
+
+    /* 
      * campi opzionali
-     */    
-	public function getExportSourceFields($user, $debug=false) {
+     */   
+    public function getExportSourceFields($user, $debug=false) {
         return $this->_export_source_fields;
 	}
 
@@ -123,4 +148,15 @@ class ArticlesImportExportComponent extends Component {
         return $writer;
     }
     
+    public function read($file_path) {
+        $results = false;
+        if(!file_exists($file_path))
+            return $results;
+
+        $reader = new XlsxReader();
+        $spreadsheet = $reader->load($file_path);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $results = $worksheet->toArray();
+        return $results;
+    }
 }
