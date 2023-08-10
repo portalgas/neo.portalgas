@@ -139,6 +139,9 @@ thead tr th {
 thead tr th.another {    
     background-color: #b9b9b9;
 }
+thead tr th select option {
+    font-weight: normal !important;
+}
 
 /*
 .disabled a,

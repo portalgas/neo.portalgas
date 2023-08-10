@@ -9,6 +9,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
 echo $this->Html->script('jquery/ui/jquery-ui.min', ['block' => 'scriptPageInclude']); 
 echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']); 
+
+$js = "var import_fields = ".json_encode($import_fields);
+$this->Html->scriptBlock($js, ['block' => true]);
 ?>  
 <div id="vue-articles-import">
 <?php 
@@ -85,26 +88,29 @@ echo $this->Form->create(null, ['id' => 'frmExport', 'type' => 'POST']);
     }
     echo '</div>';
     */
-    $options = [
-        'label' => false, 
-        'escape' => false, 
-        'options' => $import_fields,
-        'empty' => 'A quale campo corrisponde?'
-    ];
+
     echo '
         <table class="table table-hover">
             <thead>
                 <tr id="droppable">
                     <th v-for="index in file_contents[0].length" :key="index">
                         Colonna {{ index }}
-                        '.$this->Form->control('import_fields[]', $options).'
+                        <select :name = "\'option-field-\'+index" 
+                                :id= "\'option-field-\'+index" 
+                                @change = "setOptionsFields(index)"
+                                class="form-control">
+                                <option v-for="(import_field, id) in import_fields" 
+                                        :value="id" 
+                                        v-html="$options.filters.html(import_field)">
+                                </option>
+                        </select>
                     </th>
                 </tr>
             </htead>
             <tbody>
-                <tr>
-                    <td v-for="index in file_contents[0].length" :key="index">
-                        {{ file_contents[0][index] }}
+                <tr v-for="(file_contents, index_row) in file_contents" :key="index_row">
+                    <td v-for="file_content in file_contents">
+                        {{ file_content }}
                     </td>
                 </tr>
             </tbody>

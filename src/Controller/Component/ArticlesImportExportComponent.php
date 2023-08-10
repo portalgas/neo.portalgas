@@ -26,22 +26,20 @@ class ArticlesImportExportComponent extends Component {
         $this->_registry = $registry;
         $controller = $registry->getController();
         //$controller->request
-/*
+
         $this->_import_fields = [
-            __('Code'),
-            __('Note')
-        ];*/
-        $this->_import_fields = [
+            'name' => __('Name'),
             'codice' => __('Code'),
+            'prezzo' => __('Price'),
+            'qta' => __('qta'),
+            'um' => __('UM'),
+            'pezzi_confezione' => __('pezzi_confezione'),
+            'bio' => __('Bio'),
+            'flag_presente_articlesorders' => __('flag_presente_articlesorders'),
             'nota' => __('Note'),
-            'ingredienti' => 'Ingredienti',
-            'um_riferimento' => __('um_riferimento'),
-            'qta_minima' => __('qta_minima'),
-            'qta_massima' => __('qta_massima'),
-            'qta_minima_order' => __('qta_minima_order'),
-            'qta_massima_order' => __('qta_massima_order'),
-            'qta_multipli' => __('qta_multipli')
+            'ingredienti' => 'Ingredienti'
         ];
+        
         $this->_export_source_fields = [
                                 'codice' => ['label' => __('Code'), 'nota' => '001'],
                                 'nota' => ['label' => __('Note'), 'nota' => "descrizione dell'articolo"],

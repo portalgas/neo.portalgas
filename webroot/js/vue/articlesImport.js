@@ -75,6 +75,55 @@ $(function () {
               }
           });
         },
+        setOptionsFields: function(index) {
+          let option_field_select = $('select[name="option-field-'+index+'"]').val();
+          // console.log(import_fields, 'import_fields');
+          // console.log(index+' '+option_field_select, 'option_field_select');
+          // non colonne dell'excel
+          let num_excel_fields = $('tr#droppable th').length;
+          // console.log(num_excel_fields, 'num_excel_fields');
+
+          /* 
+           * x ogni select estraggo il valore scelto
+           */
+          let select = '';
+          let select_options = [];
+          for(let i=1; i<=num_excel_fields; i++) {
+              select = $('select[name="option-field-'+i+'"]').val();
+              select_options[i] = select;
+          }
+          // console.log(select_options, 'array valori scelti');
+
+          let tmp = '';
+          for(let i=1; i<=num_excel_fields; i++) {
+              let $select = $('select[name="option-field-'+i+'"]');
+              $select.find('option').remove();
+              $.each(import_fields, function(key, value) {
+                  
+                  let exclude_field = false;
+
+                  /*
+                   * escludo i campi scelti in altri select
+                   * tranne IGNORE
+                   */
+                  for(let ii=1; ii<=num_excel_fields; ii++) {
+                      if(key!='IGNORE' && 
+                        select_options[ii]!='' && 
+                        select_options[ii]==key && 
+                        ii!=i) {
+                        exclude_field = true;
+                      } 
+                  }
+
+                  if(!exclude_field) {
+                      tmp = '<option value="'+key+'" ';
+                      if(select_options[i]==key) tmp += 'selected';
+                      tmp += '>'+value+'</option>';
+                      $select.append(tmp);  
+                  }
+              });  
+          }
+        },
         setDroppable: async function() {
 
             return; 

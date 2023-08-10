@@ -184,7 +184,10 @@ class ArticlesController extends AppController
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
         $this->set(compact('suppliersOrganizations'));  
      
-        $import_fields = $this->ArticlesImportExport->getImportFields($this->_user);
+        $import_fields = [];
+        $import_fields[''] = 'A quale campo corrisponde?';
+        $import_fields['IGNORE'] = 'Ignore questa colonna';
+        $import_fields += $this->ArticlesImportExport->getImportFields($this->_user);
         $this->set(compact('import_fields'));    
 
         if ($this->request->is('post')) {
