@@ -13,6 +13,8 @@ $(function () {
       router,
       el: '#vue-articles-import',
       data: {
+        can_import: false,
+        is_first_row_header: false,
         supplier_organization_id: '',
         supplier_organization: {
           name: null,
@@ -27,6 +29,9 @@ $(function () {
         is_run: false,
       },  
       methods: {
+        toggleIsFirstRowHeader: function() {
+          this.is_first_row_header = !this.is_first_row_header;
+        },
         getSuppliersOrganization: function() {
 
           /*
