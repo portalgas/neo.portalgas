@@ -75,7 +75,14 @@ class SuppliersOrganizationsController extends ApiAppController
         $results['results'] = '';
     
         $supplier_organization_id = $this->request->getData('supplier_organization_id');
-        
+        if(empty($supplier_organization_id)) {
+            $results['code'] = 500;
+            $results['message'] = __('Parameters required');
+            $results['errors'] = '';
+            $continua = false;
+            return $this->_response($results);            
+        }
+
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
 
         $where = ['SuppliersOrganizations.organization_id' => $this->_organization->id,

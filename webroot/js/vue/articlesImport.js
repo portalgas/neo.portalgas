@@ -13,7 +13,9 @@ $(function () {
       router,
       el: '#vue-articles-import',
       data: {
-        can_import: false,
+        num_excel_fields: 0,
+        fields_to_config: 0,
+        can_import: true,
         is_first_row_header: false,
         supplier_organization_id: '',
         supplier_organization: {
@@ -26,11 +28,22 @@ $(function () {
         },
         file_errors: [],
         file_contents: [],
+        file_metadatas: [],
         is_run: false,
       },  
       methods: {
         toggleIsFirstRowHeader: function() {
           this.is_first_row_header = !this.is_first_row_header;
+        },
+        init: function() {
+          this.num_excel_fields = 0;
+          this.fields_to_config = 0;
+          this.can_import = false;
+          this.supplier_organization_id = '';
+          this.file_errors = [];
+          this.file_contents = [];
+          this.file_metadatas = [];
+          this.is_run = false;
         },
         getSuppliersOrganization: function() {
 
@@ -42,6 +55,10 @@ $(function () {
            * 		owner_articles da SuppliersOrganizations
            */
           console.log('getSuppliersOrganization supplier_organization_id '+this.supplier_organization_id);
+          if(typeof this.supplier_organization_id==='undefined') {
+            this.init();
+            return;
+          }
 
           var _this = this;
             
@@ -80,38 +97,48 @@ $(function () {
               }
           });
         },
+        /*
+         * configurazione ogni colonna dell'xlsx 
+         */ 
         setOptionsFields: function(index) {
+          let debug = false;
+          let _this = this;
           let option_field_select = $('select[name="option-field-'+index+'"]').val();
-          // console.log(import_fields, 'import_fields');
+          if(debug) console.log(import_fields, 'import_fields');
           // console.log(index+' '+option_field_select, 'option_field_select');
-          // non colonne dell'excel
-          let num_excel_fields = $('tr#droppable th').length;
-          // console.log(num_excel_fields, 'num_excel_fields');
+          if(debug) console.log(_this.num_excel_fields, '_this.num_excel_fields');
 
           /* 
            * x ogni select estraggo il valore scelto
            */
           let select = '';
           let select_options = [];
-          for(let i=1; i<=num_excel_fields; i++) {
+          for(let i=0; i<_this.num_excel_fields; i++) {
               select = $('select[name="option-field-'+i+'"]').val();
               select_options[i] = select;
           }
-          // console.log(select_options, 'array valori scelti');
+          if(debug) console.log(select_options, 'array valori scelti');
 
           let tmp = '';
-          for(let i=1; i<=num_excel_fields; i++) {
+          for(let i=0; i<_this.num_excel_fields; i++) {
+
+              if(debug) console.log('tratto select '+i);
+
               let $select = $('select[name="option-field-'+i+'"]');
               $select.find('option').remove();
               $.each(import_fields, function(key, value) {
                   
                   let exclude_field = false;
 
+                  if(debug) console.log('tratto select '+i+' verifico '+key, 'import_fields');
                   /*
                    * escludo i campi scelti in altri select
                    * tranne IGNORE
                    */
-                  for(let ii=1; ii<=num_excel_fields; ii++) {
+                  for(let ii=0; ii<_this.num_excel_fields; ii++) {
+                      
+                      if(debug) console.log('tratto campo '+ii+' option '+key, 'escludo i campi scelti in altri select');
+
                       if(key!='IGNORE' && 
                         select_options[ii]!='' && 
                         select_options[ii]==key && 
@@ -127,6 +154,8 @@ $(function () {
                       $select.append(tmp);  
                   }
               });  
+
+              this.setCanImport();
           }
         },
         setDroppable: async function() {
@@ -169,12 +198,22 @@ $(function () {
                           
                           _this.file_errors = [];
                           _this.file_contents = [];
+                          _this.file_metadatas = [];
 
                           if(response.esito) {
                             _this.file_contents = response.results;
+                            /*
+                             * prima riga dell'.xlsx e' intestazione
+                             * la escludo
+                            */
+                            if(_this.is_first_row_header) 
+                              _this.file_contents.shift();  
+                            
+                            _this.file_metadatas = response.message;
 
                             setTimeout(() => {
                               _this.setDroppable();
+                              _this.num_excel_fields = $('tr#droppable th').length;
                             }, 10);                             
                           }
                           else 
@@ -184,6 +223,55 @@ $(function () {
                   });
               }
           });
+        },
+        setCanImport: function() {
+          let num_fields_config = 0;
+          let select = '';
+          // abilito tasto se ogni colonna dell'xsls e configurato
+          for(let i=1; i<=this.num_excel_fields; i++) {
+            select = $('select[name="option-field-'+i+'"]').val();
+            if(select!='') // non ho scelto la configurazione
+              num_fields_config++;
+          }
+          // console.log('num_fields_config '+num_fields_config+' num_excel_fields '+this.num_excel_fields, 'setCanImport');
+
+          this.fields_to_config = num_fields_config;
+
+          if(num_fields_config==this.num_excel_fields)
+            this.can_import=true;
+          else 
+            this.can_import=false;
+          
+        },
+        frmSubmit: function(e) {
+
+          if(!this.can_import) {
+            alert("Non tutti i parametri sono stati impostati");
+            return false;
+          }
+          // e.preventDefault();
+          let select = '';
+          let select_options = [];
+          for(let i=1; i<=this.num_excel_fields; i++) {
+              select = $('select[name="option-field-'+i+'"]').val();
+              select_options[(i-1)] = select;
+          }          
+          /*
+          console.log('select_options '+select_options);
+          console.log('is_first_row_header '+this.is_first_row_header);
+          console.log('supplier_organization_id '+this.supplier_organization_id);
+          console.log('full_path '+this.file_metadatas.full_path);
+          */
+          $('input[name="select_options"]').val(this.select_options);
+          $('input[name="is_first_row_header"]').val(this.is_first_row_header);
+          $('input[name="full_path"]').val(this.file_metadatas.full_path);
+          
+          console.log(this);
+          console.log(this.$refs);
+          console.log(this.$refs.form);
+          console.log(this.$refs.form.$el);
+         // this.$refs.submit();
+         // this.$refs.form.submit();
         }
       },
       mounted: function() {

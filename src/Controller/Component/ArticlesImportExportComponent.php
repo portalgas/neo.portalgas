@@ -28,6 +28,7 @@ class ArticlesImportExportComponent extends Component {
         //$controller->request
 
         $this->_import_fields = [
+            'id' => 'Identificativo articolo',
             'name' => __('Name'),
             'codice' => __('Code'),
             'prezzo' => __('Price'),

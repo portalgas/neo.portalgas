@@ -20,7 +20,13 @@ $this->Html->scriptBlock($js, ['block' => true]);
 </style>
 <div id="vue-articles-import">
 <?php 
-echo $this->Form->create(null, ['id' => 'frmExport', 'type' => 'POST']); 
+echo $this->Form->create(null, ['id' => 'frmImport', 
+                                'type' => 'POST', 
+                                'v-on:submit.prevent' => 'frmSubmit(e)',
+                                'ref' => 'form']); 
+echo $this->Form->hidden('select_options');
+echo $this->Form->hidden('is_first_row_header');
+echo $this->Form->hidden('full_path');
 ?>
 <div class="box box-primary">
     <div class="box-header with-border">
@@ -111,7 +117,7 @@ echo $this->Form->create(null, ['id' => 'frmExport', 'type' => 'POST']);
 
     echo '
         <div class="alert alert-info" style="font-size:18px;font-weight:bold;text-align:center;">
-            Di seguioto le prime 5 righe estratte dal file che hai caricato<br />
+            Di seguito le prime <b>5</b> righe estratte dal file che hai caricato<br />
             per ogni colonna indica che campo dell\'articolo corrisponde
         </div>
         
@@ -120,9 +126,9 @@ echo $this->Form->create(null, ['id' => 'frmExport', 'type' => 'POST']);
                 <tr id="droppable">
                     <th v-for="index in file_contents[0].length" :key="index">
                         Colonna {{ index }}
-                        <select :name = "\'option-field-\'+index" 
-                                :id= "\'option-field-\'+index" 
-                                @change = "setOptionsFields(index)"
+                        <select :name = "\'option-field-\'+(index-1)" 
+                                :id= "\'option-field-\'+(index-1)" 
+                                @change = "setOptionsFields(index-1)"
                                 class="form-control">
                                 <option v-for="(import_field, id) in import_fields" 
                                         :value="id" 
@@ -147,37 +153,27 @@ echo $this->Form->create(null, ['id' => 'frmExport', 'type' => 'POST']);
 
     echo '<br />';
 
+    echo '<div class="row" v-if="!can_import">';
+    echo '<div class="col-md-12">';
+    echo '<div class="alert alert-info" style="font-size:18px;font-weight:bold;text-align:center;">
+    Hai configurato {{ fields_to_config }} su {{ num_excel_fields }}</div>';
+    echo '</div>';
+    echo '</div>'; // row 
+    
     echo '<div class="row" v-if="can_import">';
     echo '<div class="col-md-12">';
-    echo $this->Form->button(__('Import'), ['id' => 'submit', 'class' => 'btn btn-primary btn-block']); 
+    echo $this->Form->submit(__('Import'), ['id' => 'submit', 'class' => 'btn btn-primary btn-block']); 
     echo '</div>';
-    echo '</div>'; // row  
+    echo '</div>'; // row 
+    
     echo '</template>';
     
     echo '</template>';
-?>
-</div> <!-- box-body -->
-<?php
-echo $this->Form->end() 
-?>
-</div> <!-- vue-articles-import -->
-<?php 
+    echo '</div> <!-- box-body -->';
+echo $this->Form->end();
+echo '</div> <!-- vue-articles-import -->';
+
 $js = "
-$( function() {
-    $('form#frmImport').on('submit', function (e) {
-        // e.preventDefault();
-
-        let supplier_organization_id = $('#supplier_organization_id').val();
-        console.log('supplier_organization_id '+supplier_organization_id , 'submit');
-        if(supplier_organization_id=='') {
-            alert('Seleziona il produttore');
-            return false;
-        }        
-
-        return true;
-    });        
-});
-
 Dropzone.options.myDropzone = { // camelized version of the `id`
     url: '/admin/api/articles-import/upload', 
     headers: {

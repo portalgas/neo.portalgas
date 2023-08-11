@@ -194,12 +194,13 @@ class ArticlesController extends AppController
 
             $datas = $this->request->getData();
             if($debug) debug($datas);
+            dd($datas);
             // Log::debug($datas);
             $supplier_organization_id = $datas['supplier_organization_id'];
             $request_export_fields = $datas['export_fields'];
             if(empty($supplier_organization_id) || empty($request_export_fields)) {
                 $this->Flash->error(__('Parameters required'));
-                return $this->redirect(['action' => 'export']);           
+                return $this->redirect(['action' => 'import']);           
             } 
         
             /*
