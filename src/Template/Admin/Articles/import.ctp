@@ -1,17 +1,55 @@
 <?php 
 use Cake\Core\Configure; 
 $user = $this->Identity->get();
-
+?>  
+<style>
+.stepwizard-step p {
+    margin-top: 10px;
+}
+.stepwizard-row {
+    display: table-row;
+}
+.stepwizard {
+    display: table;
+    width: 50%;
+    position: relative;
+}
+.stepwizard-step button[disabled] {
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-order: 0;
+}
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+</style>    
+<?php
 echo $this->Html->script('vue/articlesImport', ['block' => 'scriptPageInclude']);
-
-echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']); 
-echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']); 
 
 echo $this->Html->script('jquery/ui/jquery-ui.min', ['block' => 'scriptPageInclude']); 
 echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']); 
 
-$js = "var import_fields = ".json_encode($import_fields);
-$this->Html->scriptBlock($js, ['block' => true]);
+
 ?> 
 <style> 
 .option-ignore {
@@ -19,6 +57,33 @@ $this->Html->scriptBlock($js, ['block' => true]);
 } 
 </style>
 <div id="vue-articles-import">
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Importa listino articoli del produttore</h3>
+
+      <div class="box-tools pull-right">
+      </div>
+    <!-- /.box-header -->
+    <div class="box-body" style="overflow-x: auto;">
+
+    <div class="stepwizard col-md-offset-3">
+        <div class="stepwizard-row setup-panel">
+            <div class="stepwizard-step">
+                <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
+                <p>Scegli il produttore</p>
+            </div>
+            <div class="stepwizard-step">
+                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                <p>Carica il file excel</p>
+            </div>
+            <div class="stepwizard-step">
+                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                <p>Conferma i dati</p>
+            </div>
+        </div>
+    </div>
+
 <?php 
 echo $this->Form->create(null, ['id' => 'frmImport', 
                                 'type' => 'POST', 
@@ -28,208 +93,73 @@ echo $this->Form->hidden('select_options');
 echo $this->Form->hidden('is_first_row_header');
 echo $this->Form->hidden('full_path');
 ?>
-<div class="box box-primary">
-    <div class="box-header with-border">
-      <h3 class="box-title"><?php echo __('Import');?></h3>
-
-      <div class="box-tools pull-right">
-      </div>
-    <!-- /.box-header -->
-    <div class="box-body" style="overflow-x: auto;">
-    <?php
-    /* 
-     * filtri di ricerca
-     */
-    echo '<div class="row">';
-    echo '<div class="col-md-12">';
-    $options = ['options' => $suppliersOrganizations,
-                'escape' => false,
-                'class' => 'select2- form-control',
-                'label' => __('SupplierOrganization'),
-                'empty' => Configure::read('HtmlOptionEmpty'),
-                'v-model' => 'supplier_organization_id',
-                '@change' => 'getSuppliersOrganization(event)'];
-    echo $this->Form->control('supplier_organization_id', $options);
-    echo '</div>';
-    echo '</div>'; // row    
-
-    echo '<template v-if="supplier_organization.name!=null">';    
-    /* 
-     * anagrafica produttore
-     */
-    echo '<div class="row" style="margin-bottom:15px;" 
-                v-if="supplier_organization.supplier.img1!=\'\'">';
-    echo '  <div class="col-md-12">
-        <img style="max-width:250px" class="img-responsive" v-bind:src="supplier_organization.img1" /></div>';
-    echo '</div>'; 
-
-    /* 
-     * listino articoli NON gestito dal GAS
-     */
-    echo '<template v-if="supplier_organization.owner_articles!=\'REFERENT\'">';
-    echo '<div class="row">';
-    echo '<div class="col-md-12">';
-    echo '<div class="alert alert-danger">Non puoi importare il listino del produttore {{supplier_organization.name}} perchè è gestito {{supplier_organization.owner_articles | ownerArticlesLabel}}'; 
-    echo '</div>';
-    echo '</div>'; // row  
-    echo '</template>';
-
-    /* 
-     * listino articoli gestito dal GAS
-     */
-    echo '<template v-if="supplier_organization.owner_articles==\'REFERENT\'">';
-
-    echo '<div class="row" style="margin-bottom:15px;">';
-    echo '<div class="col-md-12">';
-    echo '<a class="btn-block btn" 
-            :class="is_first_row_header ? \'btn-danger\' : \'btn-success\'" 
-            @click="toggleIsFirstRowHeader()">
-        <span v-if="is_first_row_header">La prima riga è l\'intestazione, non verrà considerata</span>
-        <span v-if="!is_first_row_header">La prima riga NON è l\'intestazione, verrà importata</span>
-        </a>'; 
-    echo '</div>';
-    echo '</div>'; // row 
-
-    echo '<div class="row" style="margin-bottom:15px;">';
-    echo '<div class="col-md-12">';
-    echo '<div class="dropzone" id="my-dropzone"></div>';
-    echo '</div>';
-    echo '</div>'; // row  
-    
-    echo '<div class="row" v-if="file_contents.length>0">';
-    echo '<div class="col-md-12">';
-    /*
-    $i=0;
-    foreach($export_fields as $key => $export_field) {
-        if($i==0) 
-            echo '<div id="draggable" class="btn-group btn-group-justified">';
-        if($i==4) 
-            echo '</div><div id="draggable" class="btn-group btn-group-justified">';
-
-        echo '<div id="'.$key.'" data-attr-label="'.$export_field['label'].'" class="draggable btn btn-primary">';
-        echo '<span><i class="fa fa-arrows-alt"></i> '.$export_field['label'].'</span>';
-        echo '<code> es. '.$export_field['nota'].' <span class="bg" style="background-color: 0"></span></code>';
-        echo '</div>';
-        $i++;
-    }
-    echo '</div>';
-    */
-
-    echo '
-        <div class="alert alert-info" style="font-size:18px;font-weight:bold;text-align:center;">
-            Di seguito le prime <b>5</b> righe estratte dal file che hai caricato<br />
-            per ogni colonna indica che campo dell\'articolo corrisponde
-        </div>
-        
-        <table class="table table-hover">
-            <thead>
-                <tr id="droppable">
-                    <th v-for="index in file_contents[0].length" :key="index">
-                        Colonna {{ index }}
-                        <select :name = "\'option-field-\'+(index-1)" 
-                                :id= "\'option-field-\'+(index-1)" 
-                                @change = "setOptionsFields(index-1)"
-                                class="form-control">
-                                <option v-for="(import_field, id) in import_fields" 
-                                        :value="id" 
-                                        :class = "id==\'IGNORE\' ? \'option-ignore\' : \'\'"
-                                        v-html="$options.filters.html(import_field)">
-                                </option>
-                        </select>
-                    </th>
-                </tr>
-            </htead>
-            <tbody>
-                <tr v-for="(row, index_row) in file_contents" v-if="index_row<5" :key="index_row">
-                    <td v-for="col in row">
-                        {{ col }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>';
-
-    echo '</div>';
-    echo '</div>'; // row 
-
-    echo '<br />';
-
-    echo '<div class="row" v-if="!can_import">';
-    echo '<div class="col-md-12">';
-    echo '<div class="alert alert-info" style="font-size:18px;font-weight:bold;text-align:center;">
-    Hai configurato {{ fields_to_config }} su {{ num_excel_fields }}</div>';
-    echo '</div>';
-    echo '</div>'; // row 
-    
-    echo '<div class="row" v-if="can_import">';
-    echo '<div class="col-md-12">';
-    echo $this->Form->submit(__('Import'), ['id' => 'submit', 'class' => 'btn btn-primary btn-block']); 
-    echo '</div>';
-    echo '</div>'; // row 
-    
-    echo '</template>';
-    
-    echo '</template>';
-    echo '</div> <!-- box-body -->';
+    <div class="row setup-content" id="step-1">
+        <?php require('import-step1.ctp');?>
+    </div>
+    <div class="row setup-content" id="step-2">
+        <?php require('import-step2.ctp');?>
+    </div>
+    <div class="row setup-content" id="step-3">
+        <?php require('import-step3.ctp');?>
+    </div>
+<?php    
 echo $this->Form->end();
+echo '</div> <!-- box-body -->';
 echo '</div> <!-- vue-articles-import -->';
 
+/* 
+ * gestione STEP
+ */
 $js = "
-Dropzone.options.myDropzone = { // camelized version of the `id`
-    url: '/admin/api/articles-import/upload', 
-    headers: {
-        'X-CSRF-TOKEN': csrfToken
-    },                    
-    beforeSend: function(request) {
-        return request.setRequestHeader('X-CSRF-Token', csrfToken);
-    },    
-    dictDefaultMessage: 'Trascina qui il file excel da importare',
-    dictFileTooBig: 'Il file è troppo grande ({{filesize}}MiB). Grande massima consentita: {{maxFilesize}}MiB.',
-    dictInvalidFileType: 'Non puoi uploadare file di questo tipo.',
-    dictResponseError: 'Server responded with {{statusCode}} code',
-    dictCancelUpload: 'Cancel upload',
-    dictRemoveFile: 'Elimina file',
-    dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
-    dictMaxFilesExceeded: 'Non puoi uploadare più file.',	
-    parallelUploads: 1,
-    addRemoveLinks: true,
-    uploadMultiple:false,
-    maxFiles: 1,
-    acceptedFiles: '.xlsx',
-    paramName: 'file', // The name that will be used to transfer the file
-    maxFilesize: 5, // MB
-    init: function() {
-
-        console.log('myDropzone', 'init');
-
-        this.on('addedfile', function(file) {
-
-            _this.file_errors = [];
-            _this.file_contents = [];
-
-            console.log('addedfile - this.files.length '+this.files.length);
-            if (this.files.length > 1) {
-                this.removeFile(this.files[0]);
+$(document).ready(function () {
+    var navListItems = $('div.setup-panel div a'),
+        allWells = $('.setup-content'),
+        allNextBtn = $('.nextBtn'),
+        allPrevBtn = $('.prevBtn');
+  
+    allWells.hide();
+  
+    navListItems.click(function (e) {
+        e.preventDefault();
+        var target = $($(this).attr('href')),
+            item = $(this);
+  
+        if (!item.hasClass('disabled')) {
+            navListItems.removeClass('btn-primary').addClass('btn-default');
+            item.addClass('btn-primary');
+            allWells.hide();
+            target.show();
+            target.find('input:eq(0)').focus();
+        }
+    });
+    
+    allPrevBtn.click(function(){
+        var curStep = $(this).closest('.setup-content'),
+            curStepBtn = curStep.attr('id'),
+            prevStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().prev().children('a');
+  
+            prevStepWizard.removeAttr('disabled').trigger('click');
+    });
+  
+    allNextBtn.click(function(){
+        var curStep = $(this).closest('.setup-content'),
+            curStepBtn = curStep.attr('id'),
+            nextStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().next().children('a'),
+            curInputs = curStep.find(\"input[type='text'],input[type='url']\"),
+            isValid = true;
+  
+        $('.form-group').removeClass('has-error');
+        for(var i=0; i<curInputs.length; i++){
+            if (!curInputs[i].validity.valid){
+                isValid = false;
+                $(curInputs[i]).closest('.form-group').addClass('has-error');
             }
-        });		
-        this.on('maxfilesexceeded', function(file) {
-            console.log('maxfilesexceeded');
-            this.removeAllFiles();
-            this.addFile(file);
-        });	
-        this.on('removedfile', function(file) {
-            console.log(file, 'removedfile'); 
-        });		
-    },
-    accept: function(file, done) {
-    if (file.name == 'justinbieber.jpg') {
-        done('dropzone eseguito');
-    }
-    else { done(); }
-    }
-};
-";
+        }
+  
+        if (isValid)
+            nextStepWizard.removeAttr('disabled').trigger('click');
+    });
+  
+    $('div.setup-panel div a.btn-primary').trigger('click');
+});";
 $this->Html->scriptBlock($js, ['block' => true]);
-?>
-
-
-
