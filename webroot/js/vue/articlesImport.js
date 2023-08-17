@@ -15,7 +15,7 @@ $(function () {
       data: {
         num_excel_fields: 0,
         fields_to_config: 0,
-        can_import: true,
+        select_import_fields: [],
         is_first_row_header: false,
         supplier_organization_id: '',
         supplier_organization: {
@@ -38,7 +38,7 @@ $(function () {
         init: function() {
           this.num_excel_fields = 0;
           this.fields_to_config = 0;
-          this.can_import = false;
+          this.select_import_fields = [];
           this.supplier_organization_id = '';
           this.file_errors = [];
           this.file_contents = [];
@@ -112,12 +112,12 @@ $(function () {
            * x ogni select estraggo il valore scelto
            */
           let select = '';
-          let select_options = [];
+          _this.select_import_fields = [];
           for(let i=0; i<_this.num_excel_fields; i++) {
               select = $('select[name="option-field-'+i+'"]').val();
-              select_options[i] = select;
+              _this.select_import_fields[i] = select;
           }
-          if(debug) console.log(select_options, 'array valori scelti');
+          if(debug) console.log(_this.select_import_fields, 'select_import_fields: array valori scelti');
 
           let tmp = '';
           for(let i=0; i<_this.num_excel_fields; i++) {
@@ -140,8 +140,8 @@ $(function () {
                       if(debug) console.log('tratto campo '+ii+' option '+key, 'escludo i campi scelti in altri select');
 
                       if(key!='IGNORE' && 
-                        select_options[ii]!='' && 
-                        select_options[ii]==key && 
+                        _this.select_import_fields[ii]!='' && 
+                        _this.select_import_fields[ii]==key && 
                         ii!=i) {
                         exclude_field = true;
                       } 
@@ -149,13 +149,13 @@ $(function () {
 
                   if(!exclude_field) {
                       tmp = '<option value="'+key+'" ';
-                      if(select_options[i]==key) tmp += 'selected';
+                      if(_this.select_import_fields[i]==key) tmp += 'selected';
                       tmp += '>'+value+'</option>';
                       $select.append(tmp);  
                   }
               });  
 
-              this.setCanImport();
+              _this.setCanImport();
           }
         },
         setDroppable: async function() {
@@ -235,34 +235,27 @@ $(function () {
           }
           // console.log('num_fields_config '+num_fields_config+' num_excel_fields '+this.num_excel_fields, 'setCanImport');
 
-          this.fields_to_config = num_fields_config;
-
-          if(num_fields_config==this.num_excel_fields)
-            this.can_import=true;
-          else 
-            this.can_import=false;
-          
+          this.fields_to_config = num_fields_config;          
         },
         frmSubmit: function(e) {
 
-          if(!this.can_import) {
+          if(!this.ok_step3) {
             alert("Non tutti i parametri sono stati impostati");
             return false;
           }
           // e.preventDefault();
           let select = '';
-          let select_options = [];
+          this.select_import_fields = [];
           for(let i=1; i<=this.num_excel_fields; i++) {
               select = $('select[name="option-field-'+i+'"]').val();
-              select_options[(i-1)] = select;
+              this.select_import_fields[(i-1)] = select;
           }          
           /*
-          console.log('select_options '+select_options);
           console.log('is_first_row_header '+this.is_first_row_header);
           console.log('supplier_organization_id '+this.supplier_organization_id);
           console.log('full_path '+this.file_metadatas.full_path);
           */
-          $('input[name="select_options"]').val(this.select_options);
+          $('input[name="select_import_fields"]').val(this.select_import_fields);
           $('input[name="is_first_row_header"]').val(this.is_first_row_header);
           $('input[name="full_path"]').val(this.file_metadatas.full_path);
           
@@ -277,6 +270,32 @@ $(function () {
       mounted: function() {
         console.log('mounted articles-import');
       },
+      computed: {
+        ok_step1: function () {
+          
+          if(this.supplier_organization!=null && this.supplier_organization.owner_articles=='REFERENT')
+            return true;
+          else
+            return false; 
+        },
+        ok_step2: function () {        
+          if(this.fields_to_config==0 || 
+             this.num_excel_fields==0)
+             return false;
+          else
+          if(this.fields_to_config==this.num_excel_fields)
+            return true;
+          else 
+            return false;
+        },
+        ok_step3: function () {
+          
+          if(this.supplier_organization!=null && this.supplier_organization.owner_articles=='REFERENT')
+            return true;
+          else
+            return false; 
+        }
+      },      
       filters: {
         ownerArticlesLabel(code) {
           if(code) {

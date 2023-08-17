@@ -2,7 +2,7 @@
 use Cake\Core\Configure; 
 ?>
 <div class="col-md-12">
-    <h3>Scegli il produttore</h3>
+    <h3 class="box-title">Scegli il produttore</h3>
     <?php
     /* 
      * filtri di ricerca
@@ -43,64 +43,6 @@ use Cake\Core\Configure;
     echo '</template>';    
     ?>  
 
-    <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">Avanti</button>
+    <button class="btn btn-primary nextBtn btn-lg pull-right" type="button"
+            :disabled="!ok_step1">Avanti</button>
 </div>
-
-<?php 
-$js = "
-Dropzone.options.myDropzone = { // camelized version of the `id`
-    url: '/admin/api/articles-import/upload', 
-    headers: {
-        'X-CSRF-TOKEN': csrfToken
-    },                    
-    beforeSend: function(request) {
-        return request.setRequestHeader('X-CSRF-Token', csrfToken);
-    },    
-    dictDefaultMessage: 'Trascina qui il file excel da importare',
-    dictFileTooBig: 'Il file è troppo grande ({{filesize}}MiB). Grande massima consentita: {{maxFilesize}}MiB.',
-    dictInvalidFileType: 'Non puoi uploadare file di questo tipo.',
-    dictResponseError: 'Server responded with {{statusCode}} code',
-    dictCancelUpload: 'Cancel upload',
-    dictRemoveFile: 'Elimina file',
-    dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
-    dictMaxFilesExceeded: 'Non puoi uploadare più file.',	
-    parallelUploads: 1,
-    addRemoveLinks: true,
-    uploadMultiple:false,
-    maxFiles: 1,
-    acceptedFiles: '.xlsx',
-    paramName: 'file', // The name that will be used to transfer the file
-    maxFilesize: 5, // MB
-    init: function() {
-
-        console.log('myDropzone', 'init');
-
-        this.on('addedfile', function(file) {
-
-            _this.file_errors = [];
-            _this.file_contents = [];
-
-            console.log('addedfile - this.files.length '+this.files.length);
-            if (this.files.length > 1) {
-                this.removeFile(this.files[0]);
-            }
-        });		
-        this.on('maxfilesexceeded', function(file) {
-            console.log('maxfilesexceeded');
-            this.removeAllFiles();
-            this.addFile(file);
-        });	
-        this.on('removedfile', function(file) {
-            console.log(file, 'removedfile'); 
-        });		
-    },
-    accept: function(file, done) {
-    if (file.name == 'justinbieber.jpg') {
-        done('dropzone eseguito');
-    }
-    else { done(); }
-    }
-};
-";
-$this->Html->scriptBlock($js, ['block' => true]);
-?>

@@ -42,20 +42,19 @@ $user = $this->Identity->get();
     line-height: 1.428571429;
     border-radius: 15px;
 }
+.box-title {
+    margin-bottom: 25px;
+}
+.option-ignore {
+    background-color: #fbf049;
+} 
 </style>    
 <?php
 echo $this->Html->script('vue/articlesImport', ['block' => 'scriptPageInclude']);
 
 echo $this->Html->script('jquery/ui/jquery-ui.min', ['block' => 'scriptPageInclude']); 
 echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']); 
-
-
 ?> 
-<style> 
-.option-ignore {
-    background-color: #fbf049;
-} 
-</style>
 <div id="vue-articles-import">
 
 <div class="box box-primary">
@@ -89,17 +88,17 @@ echo $this->Form->create(null, ['id' => 'frmImport',
                                 'type' => 'POST', 
                                 'v-on:submit.prevent' => 'frmSubmit(e)',
                                 'ref' => 'form']); 
-echo $this->Form->hidden('select_options');
+echo $this->Form->hidden('select_import_fields');
 echo $this->Form->hidden('is_first_row_header');
 echo $this->Form->hidden('full_path');
 ?>
-    <div class="row setup-content" id="step-1">
+    <div class="row-disabled setup-content" id="step-1">
         <?php require('import-step1.ctp');?>
     </div>
-    <div class="row setup-content" id="step-2">
+    <div class="row-disabled setup-content" id="step-2">
         <?php require('import-step2.ctp');?>
     </div>
-    <div class="row setup-content" id="step-3">
+    <div class="row-disabled setup-content" id="step-3">
         <?php require('import-step3.ctp');?>
     </div>
 <?php    
@@ -129,7 +128,6 @@ $(document).ready(function () {
             item.addClass('btn-primary');
             allWells.hide();
             target.show();
-            target.find('input:eq(0)').focus();
         }
     });
     
@@ -144,19 +142,8 @@ $(document).ready(function () {
     allNextBtn.click(function(){
         var curStep = $(this).closest('.setup-content'),
             curStepBtn = curStep.attr('id'),
-            nextStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().next().children('a'),
-            curInputs = curStep.find(\"input[type='text'],input[type='url']\"),
-            isValid = true;
-  
-        $('.form-group').removeClass('has-error');
-        for(var i=0; i<curInputs.length; i++){
-            if (!curInputs[i].validity.valid){
-                isValid = false;
-                $(curInputs[i]).closest('.form-group').addClass('has-error');
-            }
-        }
-  
-        if (isValid)
+            nextStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().next().children('a');
+            
             nextStepWizard.removeAttr('disabled').trigger('click');
     });
   
