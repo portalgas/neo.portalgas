@@ -94,9 +94,9 @@ class ArticlesImportExportComponent extends Component {
         $request_export_fields = $request['export_fields'];
         
         /* 
-            * campi da estrarre
-            * aggiungo quelli di default (ex id)
-            */
+        * campi da estrarre
+        * aggiungo quelli di default (ex id)
+        */
         $request_default_fields = [];
         foreach($this->_export_default_fields as $key => $default_field) {
             $request_default_fields[] = $key;
@@ -116,8 +116,8 @@ class ArticlesImportExportComponent extends Component {
         $sheet = $spreadsheet->getActiveSheet();
 
         /* 
-            * header
-            */
+        * header
+        */
         foreach($arr_export_fields as $numResult => $arr_export_field) {
             $numCol = $alphabet[$numResult].'1';
             $sheet->setCellValue($numCol, __($arr_export_field));
@@ -132,10 +132,10 @@ class ArticlesImportExportComponent extends Component {
                 $value = $article->{$arr_export_field};
                 switch($value) {
                     case 'Y':
-                        $value = 'Si';
+                        $value = 'si';
                     break;
                     case 'N':
-                        $value = 'No';
+                        $value = 'no';
                     break;
                 }
                 if($debug) debug($numCol.' '.$arr_export_field.' '.$value);

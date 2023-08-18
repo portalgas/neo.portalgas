@@ -5,6 +5,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
+use App\Decorator\ArticlesImportExportDecorator;
 
 class ArticlesImportController extends ApiAppController
 {
@@ -61,7 +62,6 @@ class ArticlesImportController extends ApiAppController
         } 
         if($debug) debug($this->Upload->output());
         $upload_results = $this->Upload->output();
-        $file_name = $upload_results['file_name'];
         if(!isset($upload_results['file_name']) || empty($upload_results['file_name'])) {
             $results['esito'] = false;
             $results['code'] = 500;
@@ -72,6 +72,9 @@ class ArticlesImportController extends ApiAppController
         }
 
         $file_content = $this->ArticlesImportExport->read($upload_results['full_path']);
+        
+        $articles = new ArticlesImportExportDecorator($file_content);
+        $file_content = $articles->results;
 
         $results['esito'] = true;
         $results['code'] = 200;

@@ -17,6 +17,7 @@ $(function () {
         fields_to_config: 0,
         select_import_fields: [],
         is_first_row_header: false,
+        ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
         supplier_organization_id: '',
         supplier_organization: {
           name: null,
@@ -30,11 +31,9 @@ $(function () {
         file_contents: [],
         file_metadatas: [],
         is_run: false,
+        results: []
       },  
       methods: {
-        toggleIsFirstRowHeader: function() {
-          this.is_first_row_header = !this.is_first_row_header;
-        },
         init: function() {
           this.num_excel_fields = 0;
           this.fields_to_config = 0;
@@ -44,6 +43,10 @@ $(function () {
           this.file_contents = [];
           this.file_metadatas = [];
           this.is_run = false;
+          this.results = [];
+        },
+        toggleIsFirstRowHeader: function() {
+          this.is_first_row_header = !this.is_first_row_header;
         },
         getSuppliersOrganization: function() {
 
@@ -243,28 +246,30 @@ $(function () {
             alert("Non tutti i parametri sono stati impostati");
             return false;
           }
+
+          this.is_run = true;
+          
           // e.preventDefault();
-          let select = '';
-          this.select_import_fields = [];
-          for(let i=1; i<=this.num_excel_fields; i++) {
-              select = $('select[name="option-field-'+i+'"]').val();
-              this.select_import_fields[(i-1)] = select;
-          }          
-          /*
+          console.log('select_import_fields '+this.select_import_fields);
           console.log('is_first_row_header '+this.is_first_row_header);
           console.log('supplier_organization_id '+this.supplier_organization_id);
           console.log('full_path '+this.file_metadatas.full_path);
-          */
-          $('input[name="select_import_fields"]').val(this.select_import_fields);
-          $('input[name="is_first_row_header"]').val(this.is_first_row_header);
-          $('input[name="full_path"]').val(this.file_metadatas.full_path);
+          console.log('file_contents '+this.file_contents);
           
+          this.errors = [];
+          this.errors[0] = 'ok';
+          this.errors[1] = 'ko';
+          
+          console.table(this.errors, 'this.errors');
+          
+          /*
           console.log(this);
           console.log(this.$refs);
           console.log(this.$refs.form);
           console.log(this.$refs.form.$el);
-         // this.$refs.submit();
-         // this.$refs.form.submit();
+          // this.$refs.submit();
+          // this.$refs.form.submit();
+          */
         }
       },
       mounted: function() {
@@ -272,7 +277,6 @@ $(function () {
       },
       computed: {
         ok_step1: function () {
-          
           if(this.supplier_organization!=null && this.supplier_organization.owner_articles=='REFERENT')
             return true;
           else
@@ -289,8 +293,7 @@ $(function () {
             return false;
         },
         ok_step3: function () {
-          
-          if(this.supplier_organization!=null && this.supplier_organization.owner_articles=='REFERENT')
+          if(this.ok_step1 && this.ok_step2)
             return true;
           else
             return false; 

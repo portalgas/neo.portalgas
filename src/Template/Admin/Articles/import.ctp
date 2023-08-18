@@ -80,6 +80,10 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
                 <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
                 <p>Conferma i dati</p>
             </div>
+            <div class="stepwizard-step">
+                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                <p>Esito import</p>
+            </div>
         </div>
     </div>
 
@@ -100,6 +104,9 @@ echo $this->Form->hidden('full_path');
     </div>
     <div class="row-disabled setup-content" id="step-3">
         <?php require('import-step3.ctp');?>
+    </div>
+    <div class="row-disabled setup-content" id="step-4">
+        <?php require('import-step4.ctp');?>
     </div>
 <?php    
 echo $this->Form->end();
@@ -137,6 +144,8 @@ $(document).ready(function () {
             prevStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().prev().children('a');
   
             prevStepWizard.removeAttr('disabled').trigger('click');
+
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
     });
   
     allNextBtn.click(function(){
@@ -145,6 +154,8 @@ $(document).ready(function () {
             nextStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().next().children('a');
             
             nextStepWizard.removeAttr('disabled').trigger('click');
+
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
     });
   
     $('div.setup-panel div a.btn-primary').trigger('click');
