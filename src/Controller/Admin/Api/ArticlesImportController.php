@@ -83,4 +83,89 @@ class ArticlesImportController extends ApiAppController
         $results['results'] = $file_content;
         return $this->_response($results);         
     }
+
+    public function import() {
+        
+        $debug = true;
+        $errors = [];
+
+        $results = [];
+        $results['esito'] = true;
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+                  
+        $request = $this->request->getData();   
+        // if($debug) debug($request);
+
+        $supplier_organization_id = $request['supplier_organization_id'];
+        $select_import_fields = $request['select_import_fields'];
+        $is_first_row_header = $request['is_first_row_header'];
+        $file_contents = $request['file_contents'];
+
+        $articlesTable = TableRegistry::get('Articles');
+
+        $i=0;
+        // loop rows
+        foreach($file_contents as $numRow => $file_content_rows) {
+            // loop cols
+            $datas = [];
+            foreach($file_content_rows as $numCol => $file_content) {
+                $field = $select_import_fields[$numCol];
+                
+                $datas[$field] = trim($file_content);
+                // if($debug) debug($field.' - '.$file_content);
+            }
+            
+            $datas['organization_id'] = $this->_organization->id;
+            $datas['supplier_organization_id'] = $supplier_organization_id;
+
+            if(isset($datas['id'])) {
+                // update  
+
+                $id = (int)$datas['id'];
+                if($id===0) {
+                    $errors[$i] = [];
+                    $errors[$i]['numRow'] = $numRow;
+                    $errors[$i]['msg'] = "Identificativo articolo ".$datas['id']." non valido";
+                    $i++;
+                    continue;
+                }
+
+                $where = ['id' => $datas['id'],
+                          'organization_id' => $this->_organization->id];        
+                $article = $articlesTable->find()
+                                    ->where($where)
+                                    ->first();
+                if(empty($article)) {
+                    $errors[$i] = [];
+                    $errors[$i]['numRow'] = $numRow;
+                    $errors[$i]['msg'] = "Articolo con identificativo ".$datas['id']." non trovato";
+                    $i++;
+                    continue;
+                }    
+            }
+            else {
+                // insert
+                $article = $articlesTable->newEntity();
+            }
+            $article = $articlesTable->patchEntity($article, $datas);
+            // dd($article);
+            if (!$articlesTable->save($article)) {
+                $errors[$i] = [];
+                $errors[$i]['numRow'] = $numRow;
+                $errors[$i]['msg'] = $article->getErrors();
+                $i++;
+                continue;    
+            }
+
+            if($debug) debug($errors);
+        } // end loop rows
+
+        $results['esito'] = true;
+        $results['code'] = 200;
+        $results['errors'] = $errors;
+        return $this->_response($results);          
+    }    
 }

@@ -15,7 +15,13 @@ use Cake\Core\Configure;
             <div v-if="!is_run">
                 <pre>{{ results }}</pre>
             </div>
-            
+         
+            <button class="btn btn-success nextBtn btn-lg pull-right" type="button"
+                    @click="frmSubmit();">Carica il listino</button>
+
+        
+
+
         </div>
     </div> <!-- row -->
     

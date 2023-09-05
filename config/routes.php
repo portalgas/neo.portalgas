@@ -354,6 +354,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         }); 
         $routes->scope('/articles-import', ['controller' => 'ArticlesImport'], function (RouteBuilder $routes) {
             $routes->connect('/upload', ['action' => 'upload', '_method' => 'POST']);
+            $routes->connect('/import', ['action' => 'import', '_method' => 'POST']);
         });
         $routes->scope('/categories-articles', ['controller' => 'CategoriesArticles'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);

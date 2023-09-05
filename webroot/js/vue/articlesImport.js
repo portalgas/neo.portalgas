@@ -256,6 +256,45 @@ $(function () {
           console.log('full_path '+this.file_metadatas.full_path);
           console.log('file_contents '+this.file_contents);
           
+          let params = {
+            select_import_fields: this.select_import_fields,
+            is_first_row_header: this.is_first_row_header,
+            supplier_organization_id: this.supplier_organization_id,
+            full_path: this.full_path,
+            file_contents: this.file_contents,
+          };
+          
+          $.ajax({url: '/admin/api/articles-import/import', 
+              data: params, 
+              method: 'POST',
+              dataType: 'html',
+              cache: false,
+              headers: {
+                'X-CSRF-Token': csrfToken
+              },                
+              success: async function (response) {
+                response = JSON.parse(response);
+                  /* console.log(response); */
+                  if (response.code==200) {
+                    console.log(response.results.name, '_getSuppliersOrganization');
+                    _this.supplier_organization.name = response.results.name;
+                    _this.supplier_organization.img1 = response.results.img1;
+                    _this.supplier_organization.supplier.img1 = response.results.supplier.img1;
+                    _this.supplier_organization.owner_articles = response.results.owner_articles;
+                    
+                    await setTimeout(() => {
+                      _this.setDropzone();
+                    }, 10); 
+                }
+              },
+              error: function (e) {
+                  console.error(e, '_getSuppliersOrganization');
+                  console.error(e.responseText.message, '_getSuppliersOrganization');
+              },
+              complete: function (e) {
+              }
+          });
+                  
           this.errors = [];
           this.errors[0] = 'ok';
           this.errors[1] = 'ko';

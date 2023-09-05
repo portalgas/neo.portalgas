@@ -233,14 +233,14 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
 
     private function _sanitizeConf($value) {
         $value = trim($value);
-
+        
         $datas['qta'] = '';
         $datas['um'] = '';
         $datas['um_riferimento'] = '';
 
         if(strpos($value, 'PREZZO')!==false) 
             return $datas;   
-    
+            
         if(empty($value)) {
             $datas['qta'] = 1;
             $datas['um'] = 'PZ';
@@ -263,6 +263,11 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
          */
         if(strpos($value, ' ')!==false) {
             list($datas['qta'], $datas['um']) = explode(' ', $value);
+            switch(strtoupper($datas['um'])) {
+                case 'G':
+                    $datas['um'] = 'GR';
+                break;
+            }
         }
         else {
             $datas['qta'] = $value;
@@ -274,12 +279,14 @@ class ArticlesImportOfficinanaturaController extends ArticlesImportSuperControll
                 $datas['um'] = 'ML';
             }
             else 
-            if(strpos($datas['qta'], 'gr')!==false || strpos($datas['qta'], 'GR')!==false) {
+            if(strpos($datas['qta'], 'gr')!==false || strpos($datas['qta'], 'GR')!==false || 
+               strpos($datas['qta'], 'g')!==false || strpos($datas['qta'], 'G')!==false) {
                 $datas['qta'] = substr($datas['qta'], 0, strlen($datas['qta'])-2);
                 $datas['um'] = 'GR';
             }
             else 
-            if(strpos($datas['qta'], 'kg')!==false || strpos($datas['qta'], 'KG')!==false) {
+            if(strpos($datas['qta'], 'kg')!==false || strpos($datas['qta'], 'KG')!==false || 
+               strpos($datas['qta'], 'k')!==false || strpos($datas['qta'], 'K')!==false ) {
                 $datas['qta'] = substr($datas['qta'], 0, strlen($datas['qta'])-2);
                 $datas['um'] = 'KG';
             }
