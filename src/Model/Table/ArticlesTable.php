@@ -64,7 +64,7 @@ class ArticlesTable extends Table
         ]);        
         $this->belongsTo('CategoriesArticles', [
             'foreignKey' => 'category_article_id',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
         ]);        
     }
 

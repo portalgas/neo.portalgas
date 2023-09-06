@@ -497,14 +497,14 @@ $(function () {
           let params = {
             search_supplier_organization_id: this.search_supplier_organization_id,
           }; 
-          console.log(params, 'getCategoriesArticles params'); 
+          // console.log(params, 'getCategoriesArticles params'); 
 
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
 
           axios.post('/admin/api/categories-articles/gets', params)
               .then(response => {
-                console.log(response.data, 'categories-articles gets'); 
+                // console.log(response.data, 'categories-articles gets'); 
                 
                 this.is_run_categories_articles = false;
               
