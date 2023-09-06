@@ -74,7 +74,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         </select>
                     </th>
                 </tr>
-            </htead>
+            </thead>
             <tbody>
                 <tr v-for="(row, index_row) in file_contents" v-if="index_row<5" :key="index_row">
                     <td v-for="col in row">

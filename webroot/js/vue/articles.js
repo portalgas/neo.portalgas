@@ -90,7 +90,7 @@ $(function () {
           }
         },       
         filterSearchAutoCompleteResults: function(autocomplete_field) {
-          console.log('filterSearchAutoCompleteResults autocomplete_field '+autocomplete_field);
+          // console.log('filterSearchAutoCompleteResults autocomplete_field '+autocomplete_field);
           if(autocomplete_field=='name')
             this.autocomplete_name_results = this.autocomplete_name_items.filter(item => item.toLowerCase().indexOf(this.search_name.toLowerCase()) > -1);
           else 
@@ -133,7 +133,7 @@ $(function () {
 
           axios.post('/admin/api/articles/getAutocomplete', params)
               .then(response => {
-                console.log(response.data, 'get'); 
+                // console.log(response.data, 'get'); 
 
                 this.autocomplete_name_is_loading = false; 
 
@@ -538,7 +538,7 @@ $(function () {
               search_order: this.search_order,
               page: this.page
           }; 
-          console.log(params, 'getArticles params'); 
+          // console.log(params, 'getArticles params'); 
 
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
@@ -586,7 +586,7 @@ $(function () {
                             'X-CSRF-TOKEN': csrfToken
                         },                    
                         beforeSend: function(request) {
-                          console.log(csrfToken, 'csrfToken');
+                          // console.log(csrfToken, 'csrfToken');
                             return request.setRequestHeader('X-CSRF-Token', csrfToken);
                         },                    
                         dictDefaultMessage: 'Trascina qui la foto dell\'articolo',
@@ -630,13 +630,13 @@ $(function () {
                           }
 
                           this.on('addedfile', function(file) {
-                            console.log('addedfile - this.files.length '+this.files.length);
+                            // console.log('addedfile - this.files.length '+this.files.length);
                             if (this.files.length > 1) {
                             this.removeFile(this.files[0]);
                             }
                           });		
                           this.on('maxfilesexceeded', function(file) {
-                            console.log('maxfilesexceeded');
+                            // console.log('maxfilesexceeded');
                             this.removeAllFiles();
                                   this.addFile(file);
                               });
@@ -644,10 +644,10 @@ $(function () {
                             if(response.esito) {
                   
                             }
-                            console.log(response, 'success response'); 
+                            // console.log(response, 'success response'); 
                           });		
                           this.on('removedfile', function(file) {
-                              console.log(file, 'removedfile'); 
+                              // console.log(file, 'removedfile'); 
                               $.ajax({
                                 url: '/admin/api/articles/img1Delete/'+_this.articles[index]['organization_id']+'/'+_this.articles[index]['id'],
                                 type: 'post',
@@ -666,7 +666,7 @@ $(function () {
                     }); // new Dropzone
 
                     myDropzone.on('processing', function (file) {
-                      console.log('dropzone processing');
+                      // console.log('dropzone processing');
                     });
                     myDropzone.on('queuecomplete', function (file) {
                       // console.log('dropzone queuecomplete');

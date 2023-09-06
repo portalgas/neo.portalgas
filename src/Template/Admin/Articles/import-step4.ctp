@@ -12,8 +12,35 @@ use Cake\Core\Configure;
                     <span class="sr-only">Loading...</span>
                 </div>  
             </div>
+
+            <pre>{{ results }}</pre>
+            
             <div v-if="!is_run">
-                <pre>{{ results }}</pre>
+                <div class="alert alert-info my-alert">
+                    Di seguito gli articoli non importati perchè presentavano errori 
+                </div>
+                
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Riga dell'excel</th>
+                        <th>Errore</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="result in results" :key="result.numRow">
+                        <td>{{ result.numRow +1 }}</td>
+                        <td>
+                            <ul>
+                                <li v-for="(msg, field) in result.msg">
+                                    {{ field }}: {{ msg }}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                                     
             </div>
          
             <button class="btn btn-success nextBtn btn-lg pull-right" type="button"

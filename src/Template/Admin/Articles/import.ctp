@@ -48,6 +48,11 @@ $user = $this->Identity->get();
 .option-ignore {
     background-color: #fbf049;
 } 
+.my-alert {
+    font-size:18px;
+    font-weight:bold;
+    text-align:center;
+}
 </style>    
 <?php
 echo $this->Html->script('vue/articlesImport', ['block' => 'scriptPageInclude']);

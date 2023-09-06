@@ -23,7 +23,7 @@ use Cake\Core\Configure;
                         Colonna {{ index }}
                     </th>
                 </tr>
-            </htead>
+            </thead>
             <tbody>
                 <tr v-for="(row, num_row) in file_contents" :key="num_row">
                     <td v-for="(col, num_col) in row">
