@@ -177,7 +177,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                         ?>
                           <td>
-                            {{ article.categories_article.name }}
+                            <span v-if="article.categories_article!=null">{{ article.categories_article.name }}</span>
                             <select 
                                 v-if="Object.keys(categories_articles).length>1"
                                 name="category_article_id" 
@@ -359,7 +359,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                         ?>
                           <td>
-                            {{ article.categories_article.name }}
+                            <span v-if="article.categories_article!=null">{{ article.categories_article.name }}</span>
                           </td>
                         <?php 
                         }
