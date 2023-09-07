@@ -29,16 +29,16 @@ class ArticlesImportExportComponent extends Component {
 
         $this->_import_fields = [
             'id' => 'Identificativo articolo',
-            'name' => __('Name'),
-            'codice' => __('Code'),
-            'prezzo' => __('Price'),
-            'qta' => __('qta'),
-            'um' => __('UM'),
-            'pezzi_confezione' => __('pezzi_confezione'),
-            'bio' => __('Bio'),
-            'flag_presente_articlesorders' => __('flag_presente_articlesorders'),
-            'nota' => __('Note'),
-            'ingredienti' => 'Ingredienti'
+            'name' => __('import-article-name'),
+            'codice' => __('import-article-codice'),
+            'prezzo' => __('import-article-prezzo'),
+            'qta' => __('import-article-qta'),
+            'um' => __('import-article-um'),
+            'pezzi_confezione' => __('import-article-pezzi_confezione'),
+            'bio' => __('import-article-bio'),
+            'flag_presente_articlesorders' => __('import-article-flag_presente_articlesorders'),
+            'nota' => __('import-article-note'),
+            'ingredienti' => __('import-article-ingredienti')
         ];
         
         $this->_export_source_fields = [

@@ -13,7 +13,7 @@ use Cake\Core\Configure;
                 </div>  
             </div>
 
-            <pre>{{ results }}</pre>
+            <pre>{{ validazioneResults }}</pre>
             
             <div v-if="!is_run">
                 <div class="alert alert-info my-alert">
@@ -28,7 +28,7 @@ use Cake\Core\Configure;
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="result in results" :key="result.numRow">
+                    <tr v-for="result in validazioneResults" :key="result.numRow">
                         <td>{{ result.numRow +1 }}</td>
                         <td>
                             <ul>

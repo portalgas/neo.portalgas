@@ -202,7 +202,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <div class="dropzone" :id="'my-dropzone'+article.organization_id+'-'+article.id" :data-attr-index="index"></div>
                         </td>
                         <td>
-                        <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
+                          <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
+                          <span class="label label-primary" style="white-space: unset;font-size: 85%;">{{ article.name }}</span>
                         </td>
                         <td>
                           <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />

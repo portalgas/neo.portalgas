@@ -4,6 +4,7 @@ namespace App\Controller\Admin\Api;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Cake\Validation\Validator;
 use App\Traits;
 use App\Decorator\ArticlesImportExportDecorator;
 
@@ -92,9 +93,7 @@ class ArticlesImportController extends ApiAppController
         $results = [];
         $results['esito'] = true;
         $results['code'] = 200;
-        $results['message'] = 'OK';
         $results['errors'] = '';
-        $results['results'] = [];
                   
         $request = $this->request->getData();   
         // if($debug) debug($request);
@@ -105,35 +104,67 @@ class ArticlesImportController extends ApiAppController
         $file_contents = $request['file_contents'];
 
         $articlesTable = TableRegistry::get('Articles');
+        $validator = $articlesTable->getValidator();
 
         $i=0;
+        $datas = [];
         // loop rows
         foreach($file_contents as $numRow => $file_content_rows) {
             // loop cols
-            $datas = [];
+            
             foreach($file_content_rows as $numCol => $file_content) {
                 $field = $select_import_fields[$numCol];
                 
-                $datas[$field] = trim($file_content);
-                // if($debug) debug($field.' - '.$file_content);
+                $datas[$numRow][$field] = trim($file_content);
+                // if($debug) debug($field.' - '.$file_content);                
+            } // loop cols
+
+            /*
+            * decorate datas
+            */
+            $datas[$numRow]['organization_id'] = $this->_organization->id;
+            $datas[$numRow]['supplier_organization_id'] = $supplier_organization_id;
+            $datas[$numRow]['alert_to_qta'] = 0;
+            if(isset($datas[$numRow]['prezzo'])) $datas[$numRow]['prezzo'] = $this->convertImport($datas[$numRow]['prezzo']);
+            if(!isset($datas[$numRow]['bio'])) $datas[$numRow]['bio'] = 'N';
+            if(!isset($datas[$numRow]['pezzi_confezione'])) $datas[$numRow]['pezzi_confezione'] = 1;
+            if(!isset($datas[$numRow]['um'])) $datas[$numRow]['um'] = 'PZ';
+            if(!isset($datas[$numRow]['um_riferimento'])) $datas[$numRow]['um_riferimento'] = 'PZ';
+            if(!isset($datas[$numRow]['qta'])) $datas[$numRow]['qta'] = 1.00;
+            if(!isset($datas[$numRow]['qta_massima'])) $datas[$numRow]['qta_massima'] = 0;
+            if(!isset($datas[$numRow]['qta_minima'])) $datas[$numRow]['qta_minima'] = 1;
+            if(!isset($datas[$numRow]['qta_multipli'])) $datas[$numRow]['qta_multipli'] = 1;
+            if(!isset($datas[$numRow]['qta_minima_order'])) $datas[$numRow]['qta_minima_order'] = 0;
+            if(!isset($datas[$numRow]['qta_massima_order'])) $datas[$numRow]['qta_massima_order'] = 0;
+            if(!isset($datas[$numRow]['stato'])) $datas[$numRow]['stato'] = 'Y';
+            if(!isset($datas[$numRow]['flag_presente_articlesorders'])) $datas[$numRow]['flag_presente_articlesorders'] = 'Y'; 
+            // dd($datas);
+
+            /*
+            * validazione
+            */
+            $validationResults = $validator->errors($datas[$numRow]);
+            if(!empty($validationResults)) {
+                $errors[] = $this->_humanErrors($validationResults);
             }
-            
-            $datas['organization_id'] = $this->_organization->id;
-            $datas['supplier_organization_id'] = $supplier_organization_id;
 
-            if(isset($datas['id'])) {
+        } // loop rows
+
+        if(!empty($errors)) {
+            $results['esito'] = false;
+            $results['code'] = 200;
+            $results['errors'] = $errors;
+            return $this->_response($results);             
+        }
+
+        /*
+         * validazione OK => importo
+         */
+        foreach($datas as $data) {
+
+            if(isset($data['id'])) {
                 // update  
-
-                $id = (int)$datas['id'];
-                if($id===0) {
-                    $errors[$i] = [];
-                    $errors[$i]['numRow'] = $numRow;
-                    $errors[$i]['msg'] = "Identificativo articolo ".$datas['id']." non valido";
-                    $i++;
-                    continue;
-                }
-
-                $where = ['id' => $datas['id'],
+                $where = ['id' => $data['id'],
                           'organization_id' => $this->_organization->id];        
                 $article = $articlesTable->find()
                                     ->where($where)
@@ -141,7 +172,7 @@ class ArticlesImportController extends ApiAppController
                 if(empty($article)) {
                     $errors[$i] = [];
                     $errors[$i]['numRow'] = $numRow;
-                    $errors[$i]['msg'] = "Articolo con identificativo ".$datas['id']." non trovato";
+                    $errors[$i]['msg'] = "Articolo con identificativo ".$data['id']." non trovato";
                     $i++;
                     continue;
                 }    
@@ -150,22 +181,39 @@ class ArticlesImportController extends ApiAppController
                 // insert
                 $article = $articlesTable->newEntity();
             }
-            $article = $articlesTable->patchEntity($article, $datas);
-            // dd($article);
-            if (!$articlesTable->save($article)) {
+            $article = $articlesTable->patchEntity($article, $data);
+             dd($article);
+            if ($articlesTable->save($article)) {
+                dd($article->getErrors());
                 $errors[$i] = [];
                 $errors[$i]['numRow'] = $numRow;
                 $errors[$i]['msg'] = $article->getErrors();
                 $i++;
-                continue;    
+                continue;
             }
 
             if($debug) debug($errors);
-        } // end loop rows
+        } // end loop datas
 
         $results['esito'] = true;
         $results['code'] = 200;
         $results['errors'] = $errors;
         return $this->_response($results);          
     }    
+
+    private function _humanErrors($validationResults) {
+        
+        $i=0;
+        $results = [];
+        foreach($validationResults as $field => $validationResult) {
+            // dd($validationResult);
+            $results[$i]['field'] = $field;
+            $results[$i]['field_human'] = __('import-article-'.$field);
+            foreach($validationResult as $validation) {
+                $results[$i]['error'] = $validation;
+            }
+            $i++;
+        }
+        return $results;
+    }
 }

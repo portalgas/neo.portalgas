@@ -15,7 +15,7 @@ class CronMailsComponent extends Component {
     use Traits\UtilTrait;
 
     private $_from; // info@portalgas.it
-    private $_debug = true; // se true invio 1 email a francesco.actis@gmail.com
+    private $_debug = false; // se true invio 1 email a francesco.actis@gmail.com
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -495,7 +495,7 @@ class CronMailsComponent extends Component {
         $where = ['Organizations.id' => $organization_id,
                   'Organizations.stato' => 'Y',          
                   'Organizations.type IN ' => $type];
-
+                  
         $organization = $organizationsTable->find()
                             ->contain(['Templates'])
                             ->where($where)
@@ -503,7 +503,7 @@ class CronMailsComponent extends Component {
         if(!empty($organization)) {
             $user->organization = $organization;
         }
-        
+
         return $user;
     }    
 

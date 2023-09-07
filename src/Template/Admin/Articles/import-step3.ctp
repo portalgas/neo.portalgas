@@ -20,8 +20,9 @@ use Cake\Core\Configure;
             <thead>
                 <tr>
                     <th v-for="index in file_contents[0].length" :key="index">
-                        Colonna {{ index }}
+                        Colonna {{ index }} ({{ select_import_fields[index-1] | translateField }})
                     </th>
+                    <th>Esito</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,6 +82,13 @@ use Cake\Core\Configure;
                             <input type="number" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
                         </template>
                     </td>
+                    <td>
+                        <ul v-if="validazioneResults[num_row]!=null" style="padding: 0 0 0 5px;">
+                            <li v-for="validazione in validazioneResults[num_row]">
+                                Colonna {{ validazione.field_human }}: {{ validazione.error }}
+                            </li>
+                        </ul>
+                    </td>
                 </tr>
             </tbody>
         </table>';
@@ -89,6 +97,6 @@ use Cake\Core\Configure;
     echo '</div>'; // row 
     ?>
     <button class="btn btn-primary prevBtn btn-lg pull-left" type="button">Indietro</button>
-    <button class="btn btn-success nextBtn btn-lg pull-right" type="button"
+    <button class="btn btn-success nextBtn-disabled btn-lg pull-right" type="button"
         :disabled="!ok_step3" @click="frmSubmit();">Carica il listino</button>
 </div>

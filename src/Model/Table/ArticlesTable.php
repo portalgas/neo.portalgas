@@ -109,11 +109,13 @@ class ArticlesTable extends Table
         $validator
             ->scalar('um')
             ->requirePresence('um', 'create')
+            ->inList('um', ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'], "Valore consentito PZ, GR, HG, KG, ML, DL, LT")
             ->notEmptyString('um');
 
         $validator
             ->scalar('um_riferimento')
             ->requirePresence('um_riferimento', 'create')
+            ->inList('um_riferimento', ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'], "Valore consentito PZ, GR, HG, KG, ML, DL, LT")
             ->notEmptyString('um_riferimento');
 
         $validator
@@ -153,6 +155,7 @@ class ArticlesTable extends Table
         $validator
             ->scalar('bio')
             ->requirePresence('bio', 'create')
+            ->inList('bio', ['Y', 'N'], "Valore consentito si, no")
             ->notEmptyString('bio');
 
         $validator
@@ -162,10 +165,12 @@ class ArticlesTable extends Table
 
         $validator
             ->scalar('stato')
+            ->inList('stato', ['Y', 'N'], "Valore consentito si, no")
             ->notEmptyString('stato');
 
         $validator
             ->scalar('flag_presente_articlesorders')
+            ->inList('flag_presente_articlesorders', ['Y', 'N'], "Valore consentito si, no")
             ->notEmptyString('flag_presente_articlesorders');
 
         return $validator;

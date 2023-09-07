@@ -5,6 +5,7 @@ use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
+use Cake\Datasource\EntityInterface;
 use ArrayObject;
 
 trait SqlTrait

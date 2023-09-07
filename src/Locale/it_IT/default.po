@@ -6765,3 +6765,39 @@ msgstr "Tipologie di pagamenti"
 
 msgid "Payment Type"
 msgstr "Tipologia di pagamento"
+
+#
+# import 
+#
+msgid "import-article-id"
+msgstr "Tipologia di pagamento"
+
+msgid "import-article-name"
+msgstr "Nome articolo"
+
+msgid "import-article-codice"
+msgstr "Codice"
+
+msgid "import-article-prezzo"
+msgstr "Prezzo"
+
+msgid "import-article-qta"
+msgstr "Quantità"
+
+msgid "import-article-um"
+msgstr "Unità di misura"
+
+msgid "import-article-pezzi_confezione"
+msgstr "Confezione"
+
+msgid "import-article-bio"
+msgstr "Biologico"
+
+msgid "import-article-ingredienti"
+msgstr "Ingredienti"
+
+msgid "import-article-note"
+msgstr "Nota"
+
+msgid "import-article-flag_presente_articlesorders"
+msgstr "Ordinabili"

@@ -31,7 +31,7 @@ $(function () {
         file_contents: [],
         file_metadatas: [],
         is_run: false,
-        results: []
+        validazioneResults: []
       },  
       methods: {
         init: function() {
@@ -43,7 +43,7 @@ $(function () {
           this.file_contents = [];
           this.file_metadatas = [];
           this.is_run = false;
-          this.results = [];
+          this.validazioneResults = [];
         },
         toggleIsFirstRowHeader: function() {
           this.is_first_row_header = !this.is_first_row_header;
@@ -265,7 +265,7 @@ $(function () {
             file_contents: _this.file_contents,
           };
           
-          _this.results = [];
+          _this.validazioneResults = [];
           $.ajax({url: '/admin/api/articles-import/import', 
               data: params, 
               method: 'POST',
@@ -279,7 +279,7 @@ $(function () {
                   response = JSON.parse(response);
                   console.log(response, 'import'); 
                   if (response.code==200) {
-                    _this.results = response.errors;
+                    _this.validazioneResults = response.errors;
                   }
               },
               error: function (e) {
@@ -381,8 +381,42 @@ $(function () {
             return moment(String(value)).format('DD MMMM YYYY')
           }
         },
-          counter: function (index) {
+        counter: function (index) {
             return index+1
+        },
+        translateField: function(label) {
+          switch(label) {
+            case 'name':
+              return 'Nome articolo';
+            break;
+            case 'codice':
+              return 'Codice';
+            break;
+            case 'prezzo':
+              return 'Prezzo';
+            break;
+            case 'qta':
+              return 'Quantità';
+            break;
+            case 'um':
+              return 'Unità di misura';
+            break;
+            case 'pezzi_confezione':
+              return 'Confezione';
+            break;
+            case 'bio':
+              return 'Biologico';
+            break;
+            case 'ingredienti':
+              return 'Ingredienti';
+            break;
+            case 'note':
+              return 'Nota';
+            break;
+            case 'flag_presente_articlesorders':
+              return 'Ordinabili';
+            break;
+          }
         }
       }      
     });
