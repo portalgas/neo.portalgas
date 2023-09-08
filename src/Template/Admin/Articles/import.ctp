@@ -3,6 +3,10 @@ use Cake\Core\Configure;
 $user = $this->Identity->get();
 ?>  
 <style>
+h3.box-title {
+    margin-bottom: 15px !important;
+    font-size: 20px !important;
+}
 .stepwizard-step p {
     margin-top: 10px;
 }
@@ -53,6 +57,12 @@ $user = $this->Identity->get();
     font-weight:bold;
     text-align:center;
 }
+.fa-validation-ko {
+  color: red;
+  font-size: 24px;
+  float: left;
+  margin-right: 20px;
+}
 </style>    
 <?php
 echo $this->Html->script('vue/articlesImport', ['block' => 'scriptPageInclude']);
@@ -71,50 +81,56 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
     <!-- /.box-header -->
     <div class="box-body" style="overflow-x: auto;">
 
-    <div class="stepwizard col-md-offset-3">
-        <div class="stepwizard-row setup-panel">
-            <div class="stepwizard-step">
-                <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
-                <p>Scegli il produttore</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
-                <p>Carica il file excel</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
-                <p>Conferma i dati</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
-                <p>Esito import</p>
+    <template v-if="!importResult">
+        
+        <div class="stepwizard col-md-offset-3">
+            <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step">
+                    <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
+                    <p>Scegli il produttore</p>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                    <p>Carica il file excel</p>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                    <p>Conferma i dati e importa</p>
+                </div>
             </div>
         </div>
-    </div>
 
-<?php 
-echo $this->Form->create(null, ['id' => 'frmImport', 
-                                'type' => 'POST', 
-                                'v-on:submit.prevent' => 'frmSubmit(e)',
-                                'ref' => 'form']); 
-echo $this->Form->hidden('select_import_fields');
-echo $this->Form->hidden('is_first_row_header');
-echo $this->Form->hidden('full_path');
-?>
-    <div class="row-disabled setup-content" id="step-1">
-        <?php require('import-step1.ctp');?>
-    </div>
-    <div class="row-disabled setup-content" id="step-2">
-        <?php require('import-step2.ctp');?>
-    </div>
-    <div class="row-disabled setup-content" id="step-3">
-        <?php require('import-step3.ctp');?>
-    </div>
-    <div class="row-disabled setup-content" id="step-4">
-        <?php require('import-step4.ctp');?>
-    </div>
-<?php    
-echo $this->Form->end();
+        <?php 
+        echo $this->Form->create(null, ['id' => 'frmImport', 
+                                        'type' => 'POST', 
+                                        'v-on:submit.prevent' => 'frmSubmit(e)',
+                                        'ref' => 'form']); 
+        echo $this->Form->hidden('select_import_fields');
+        echo $this->Form->hidden('is_first_row_header');
+        echo $this->Form->hidden('full_path');
+        ?>
+            <div class="row-disabled setup-content" id="step-1">
+                <?php require('import-step1.ctp');?>
+            </div>
+            <div class="row-disabled setup-content" id="step-2">
+                <?php require('import-step2.ctp');?>
+            </div>
+            <div class="row-disabled setup-content" id="step-3">
+                <?php require('import-step3.ctp');?>
+            </div>
+        <?php    
+        echo $this->Form->end();
+        ?>
+
+    </template>
+    <template v-if="importResult">
+
+        Importazione avvenuta con successo, 
+        <a :href="'/admin/articles/index-quick?search_supplier_organization_id='+supplier_organization.id"><button class="btn btn-primary">clicca qui</button></a> 
+        per visualizzare il listino articoli del produttore {{ supplier_organization.name }}
+
+    </template>
+<?php
 echo '</div> <!-- box-body -->';
 echo '</div> <!-- vue-articles-import -->';
 

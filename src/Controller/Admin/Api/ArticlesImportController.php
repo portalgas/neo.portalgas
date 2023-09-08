@@ -106,7 +106,6 @@ class ArticlesImportController extends ApiAppController
         $articlesTable = TableRegistry::get('Articles');
         $validator = $articlesTable->getValidator();
 
-        $i=0;
         $datas = [];
         // loop rows
         foreach($file_contents as $numRow => $file_content_rows) {
@@ -144,10 +143,32 @@ class ArticlesImportController extends ApiAppController
             * validazione
             */
             $validationResults = $validator->errors($datas[$numRow]);
+            $row_errors = [];
             if(!empty($validationResults)) {
-                $errors[] = $this->_humanErrors($validationResults);
-            }
+                $row_errors = $this->_humanErrors($validationResults);
+                $errors[$numRow] = $row_errors;
+            }    
 
+            if(empty($row_errors)) {
+                /* 
+                 * ctrl identificativo articolo
+                 */
+                if(isset($datas[$numRow]['id'])) {
+                    // update  
+                    $where = ['id' => $datas[$numRow]['id'],
+                            'organization_id' => $this->_organization->id];
+                    $article = $articlesTable->find()
+                                        ->where($where)
+                                        ->first();
+                    if(empty($article)) {
+                        $id_errors = [];
+                        $id_errors[0]['field'] = 'id';
+                        $id_errors[0]['field_human'] =  __('import-article-id');
+                        $id_errors[0]['error'] = "Articolo con identificativo ".$datas[$numRow]['id']." non trovato";                  
+                        $errors[$numRow] = $id_errors;
+                    } 
+                } // if(isset($datas[$numRow]['id']))
+            } // end if(empty($errors)) 
         } // loop rows
 
         if(!empty($errors)) {
@@ -160,7 +181,7 @@ class ArticlesImportController extends ApiAppController
         /*
          * validazione OK => importo
          */
-        foreach($datas as $data) {
+        foreach($datas as $numRow => $data) {
 
             if(isset($data['id'])) {
                 // update  
@@ -170,10 +191,7 @@ class ArticlesImportController extends ApiAppController
                                     ->where($where)
                                     ->first();
                 if(empty($article)) {
-                    $errors[$i] = [];
-                    $errors[$i]['numRow'] = $numRow;
-                    $errors[$i]['msg'] = "Articolo con identificativo ".$data['id']." non trovato";
-                    $i++;
+                    // non dovrebbe capitare, controllato precedentemente                  
                     continue;
                 }    
             }
@@ -182,17 +200,11 @@ class ArticlesImportController extends ApiAppController
                 $article = $articlesTable->newEntity();
             }
             $article = $articlesTable->patchEntity($article, $data);
-             dd($article);
+            // dd($article);
             if ($articlesTable->save($article)) {
                 dd($article->getErrors());
-                $errors[$i] = [];
-                $errors[$i]['numRow'] = $numRow;
-                $errors[$i]['msg'] = $article->getErrors();
-                $i++;
                 continue;
             }
-
-            if($debug) debug($errors);
         } // end loop datas
 
         $results['esito'] = true;

@@ -83,6 +83,7 @@ use Cake\Core\Configure;
                         </template>
                     </td>
                     <td>
+                        <i class="fa-validation-ko fa fa-exclamation-circle" v-if="validazioneResults[num_row]!=null"></i>
                         <ul v-if="validazioneResults[num_row]!=null" style="padding: 0 0 0 5px;">
                             <li v-for="validazione in validazioneResults[num_row]">
                                 Colonna {{ validazione.field_human }}: {{ validazione.error }}

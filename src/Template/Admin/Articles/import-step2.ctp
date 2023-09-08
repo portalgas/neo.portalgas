@@ -152,10 +152,10 @@ Dropzone.options.myDropzone = { // camelized version of the `id`
         });		
     },
     accept: function(file, done) {
-    if (file.name == 'justinbieber.jpg') {
-        done('dropzone eseguito');
-    }
-    else { done(); }
+        if (file.name == 'justinbieber.jpg') {
+            done('dropzone eseguito');
+        }
+        else { done(); }
     }
 };
 ";

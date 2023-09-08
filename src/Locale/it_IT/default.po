@@ -6770,7 +6770,7 @@ msgstr "Tipologia di pagamento"
 # import 
 #
 msgid "import-article-id"
-msgstr "Tipologia di pagamento"
+msgstr "Identificativo articolo"
 
 msgid "import-article-name"
 msgstr "Nome articolo"

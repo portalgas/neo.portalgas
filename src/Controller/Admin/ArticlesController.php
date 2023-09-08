@@ -46,6 +46,13 @@ class ArticlesController extends AppController
         $where = [];
 
         /* 
+         * se arrivo da import
+         * */
+        $request = $this->request->getQuery();
+        (!empty($request['search_supplier_organization_id'])) ? $search_supplier_organization_id = $request['search_supplier_organization_id']: $search_supplier_organization_id = '';
+        $this->set(compact('search_supplier_organization_id'));
+
+        /* 
          * in api/ArticlesController
          * 
          * filters
@@ -85,8 +92,10 @@ class ArticlesController extends AppController
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
         $this->set(compact('suppliersOrganizations'));
 
-        (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
-        $this->set(compact('search_supplier_organization_id'));
+        if(empty($search_supplier_organization_id)) {
+            (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
+            $this->set(compact('search_supplier_organization_id'));    
+        }
 
         /*
          * elenco categorie del GAS

@@ -31,7 +31,8 @@ $(function () {
         file_contents: [],
         file_metadatas: [],
         is_run: false,
-        validazioneResults: []
+        validazioneResults: [],
+        importResult: false
       },  
       methods: {
         init: function() {
@@ -159,6 +160,13 @@ $(function () {
               });  
 
               _this.setCanImport();
+
+              /*
+              * se ho cambiato qualche configurazione delle colonne
+              * pulisco la validazione delle ok_step3
+              */
+              _this.validazioneResults = [];
+              _tthis.importResult = false;
           }
         },
         setDroppable: async function() {
@@ -202,6 +210,13 @@ $(function () {
                           _this.file_errors = [];
                           _this.file_contents = [];
                           _this.file_metadatas = [];
+
+                          /*
+                          * se carico un nuovo file
+                          * pulisco la validazione delle ok_step3
+                          */
+                          _this.validazioneResults = [];
+                          _this.importResult = false;
 
                           if(response.esito) {
                             _this.file_contents = response.results;
@@ -266,6 +281,8 @@ $(function () {
           };
           
           _this.validazioneResults = [];
+          _this.importResult = false;
+
           $.ajax({url: '/admin/api/articles-import/import', 
               data: params, 
               method: 'POST',
@@ -280,6 +297,9 @@ $(function () {
                   console.log(response, 'import'); 
                   if (response.code==200) {
                     _this.validazioneResults = response.errors;
+                    if(response.errors.length==0) {
+                      _this.importResult = true;
+                    }
                   }
               },
               error: function (e) {
@@ -307,8 +327,9 @@ $(function () {
              this.num_excel_fields==0)
              return false;
           else
-          if(this.fields_to_config==this.num_excel_fields)
+          if(this.fields_to_config==this.num_excel_fields) {
             return true;
+          }
           else 
             return false;
         },
