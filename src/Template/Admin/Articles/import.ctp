@@ -61,7 +61,11 @@ h3.box-title {
   color: red;
   font-size: 24px;
   float: left;
-  margin-right: 20px;
+  margin-right: 10px;
+}
+.li-validation-ko {
+    padding:0px;
+    list-style-type: none;
 }
 </style>    
 <?php
@@ -75,10 +79,8 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
 <div class="box box-primary">
     <div class="box-header with-border">
       <h3 class="box-title">Importa listino articoli del produttore</h3>
-
-      <div class="box-tools pull-right">
-      </div>
-    <!-- /.box-header -->
+      <div class="box-tools pull-right"></div>
+    </div> <!-- /.box-header -->
     <div class="box-body" style="overflow-x: auto;">
 
     <template v-if="!importResult">
@@ -125,10 +127,22 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
     </template>
     <template v-if="importResult">
 
-        Importazione avvenuta con successo, 
-        <a :href="'/admin/articles/index-quick?search_supplier_organization_id='+supplier_organization.id"><button class="btn btn-primary">clicca qui</button></a> 
-        per visualizzare il listino articoli del produttore {{ supplier_organization.name }}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div class="alert alert-success">
+                Importazione avvenuta con successo
+            </div>     
+            <a :href="'/admin/articles/index-quick?search_supplier_organization_id='+supplier_organization.id"><button class="btn btn-primary">clicca qui per visualizzare il listino articoli del produttore {{ supplier_organization.name }}</button></a>
+        </div>
+    </div>
+    <div class="row" style="margin:15px 0;" 
+                v-if="supplier_organization.supplier.img1!=''">
+        <div class="col-md-12 text-center">
+            <img style="max-width:250px" class="img-responsive" v-bind:src="supplier_organization.img1" /></div>
+        </div>
+    </div>
 
+    
     </template>
 <?php
 echo '</div> <!-- box-body -->';

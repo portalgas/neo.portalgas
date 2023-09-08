@@ -1,6 +1,7 @@
 <?php 
 use Cake\Core\Configure; 
 ?>
+<div class="row">
 <div class="col-md-12">
     <h3 class="box-title">Scegli il produttore</h3>
     <?php
@@ -25,20 +26,21 @@ use Cake\Core\Configure;
         * anagrafica produttore
         */
         echo '<div class="row" style="margin-bottom:15px;" 
-                    v-if="supplier_organization.supplier.img1!=\'\'">';
-        echo '  <div class="col-md-12">
-            <img style="max-width:250px" class="img-responsive" v-bind:src="supplier_organization.img1" /></div>';
-        echo '</div>'; 
+                    v-if="supplier_organization.supplier.img1!=\'\'">
+                <div class="col-md-12">
+                    <img style="max-width:250px" class="img-responsive" v-bind:src="supplier_organization.img1" />
+                </div>
+              </div>'; // row  
 
         /* 
         * listino articoli NON gestito dal GAS
         */
         echo '<template v-if="supplier_organization.owner_articles!=\'REFERENT\'">';
-        echo '<div class="row">';
-        echo '<div class="col-md-12">';
-        echo '<div class="alert alert-danger">Non puoi importare il listino del produttore {{supplier_organization.name}} perchè è gestito {{supplier_organization.owner_articles | ownerArticlesLabel}}'; 
-        echo '</div>';
-        echo '</div>'; // row  
+        echo '<div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">Non puoi importare il listino del produttore {{supplier_organization.name}} perchè è gestito {{supplier_organization.owner_articles | ownerArticlesLabel}}</div>
+                </div>
+              </div>'; // row  
         echo '</template>';    
     echo '</template>';    
     ?>  
@@ -46,3 +48,8 @@ use Cake\Core\Configure;
     <button class="btn btn-primary nextBtn btn-lg pull-right" type="button"
             :disabled="!ok_step1">Avanti</button>
 </div>
+</div> <!-- row -->
+
+<?php
+echo $this->element('helps/articles-export-import')
+?>

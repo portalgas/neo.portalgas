@@ -7,6 +7,7 @@ $this->Html->scriptBlock($js, ['block' => true]);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']); 
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']); 
 ?>
+<div class="row">
 <div class="col-md-12">
     <h3 class="box-title">Carica il file excel</h3>
     <?php
@@ -102,6 +103,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
     <button class="btn btn-primary nextBtn btn-lg pull-right" type="button"
             :disabled="!ok_step2">Avanti</button>
 </div>
+</div> <!-- row -->
 
 <?php 
 $js = "

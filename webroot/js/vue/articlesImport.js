@@ -20,6 +20,7 @@ $(function () {
         ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
         supplier_organization_id: '',
         supplier_organization: {
+          id: null,
           name: null,
           img1: null,
           owner_articles: null,
@@ -82,7 +83,8 @@ $(function () {
                 response = JSON.parse(response);
                   /* console.log(response); */
                   if (response.code==200) {
-                    console.log(response.results.name, '_getSuppliersOrganization');
+                    // console.log(response.results.name, '_getSuppliersOrganization');
+                    _this.supplier_organization.id = response.results.id;
                     _this.supplier_organization.name = response.results.name;
                     _this.supplier_organization.img1 = response.results.img1;
                     _this.supplier_organization.supplier.img1 = response.results.supplier.img1;
@@ -166,7 +168,7 @@ $(function () {
               * pulisco la validazione delle ok_step3
               */
               _this.validazioneResults = [];
-              _tthis.importResult = false;
+              _this.importResult = false;
           }
         },
         setDroppable: async function() {
@@ -432,6 +434,9 @@ $(function () {
               return 'Ingredienti';
             break;
             case 'note':
+              return 'Nota';
+            break;
+            case 'nota':
               return 'Nota';
             break;
             case 'flag_presente_articlesorders':

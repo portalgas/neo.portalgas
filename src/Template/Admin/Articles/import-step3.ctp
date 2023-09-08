@@ -1,6 +1,7 @@
 <?php 
 use Cake\Core\Configure; 
 ?>
+<div class="row">
 <div class="col-md-12">
     <h3 class="box-title">Conferma i dati</h3>
 
@@ -10,8 +11,7 @@ use Cake\Core\Configure;
 
     echo '
         <div class="alert alert-info" style="font-size:18px;font-weight:bold;text-align:center;">
-            Di seguito i dati del file che hai caricato,<br />
-            le righe che hanno degli errori saranno esclusi
+            Di seguito i dati dell\'excel che hai caricato
         </div>
         
         <!-- pre>{{ file_contents }}</pre -->
@@ -84,7 +84,7 @@ use Cake\Core\Configure;
                     </td>
                     <td>
                         <i class="fa-validation-ko fa fa-exclamation-circle" v-if="validazioneResults[num_row]!=null"></i>
-                        <ul v-if="validazioneResults[num_row]!=null" style="padding: 0 0 0 5px;">
+                        <ul v-if="validazioneResults[num_row]!=null" class="li-validation-ko">
                             <li v-for="validazione in validazioneResults[num_row]">
                                 Colonna {{ validazione.field_human }}: {{ validazione.error }}
                             </li>
@@ -101,3 +101,4 @@ use Cake\Core\Configure;
     <button class="btn btn-success nextBtn-disabled btn-lg pull-right" type="button"
         :disabled="!ok_step3" @click="frmSubmit();">Carica il listino</button>
 </div>
+</div> <!-- row -->

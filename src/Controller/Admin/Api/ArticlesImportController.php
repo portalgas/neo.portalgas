@@ -5,6 +5,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Cake\Log\Log;
 use App\Traits;
 use App\Decorator\ArticlesImportExportDecorator;
 
@@ -126,6 +127,7 @@ class ArticlesImportController extends ApiAppController
             $datas[$numRow]['alert_to_qta'] = 0;
             if(isset($datas[$numRow]['prezzo'])) $datas[$numRow]['prezzo'] = $this->convertImport($datas[$numRow]['prezzo']);
             if(!isset($datas[$numRow]['bio'])) $datas[$numRow]['bio'] = 'N';
+            else $datas[$numRow]['bio'] = $this->_translateSiNo($datas[$numRow]['bio']);
             if(!isset($datas[$numRow]['pezzi_confezione'])) $datas[$numRow]['pezzi_confezione'] = 1;
             if(!isset($datas[$numRow]['um'])) $datas[$numRow]['um'] = 'PZ';
             if(!isset($datas[$numRow]['um_riferimento'])) $datas[$numRow]['um_riferimento'] = 'PZ';
@@ -137,6 +139,8 @@ class ArticlesImportController extends ApiAppController
             if(!isset($datas[$numRow]['qta_massima_order'])) $datas[$numRow]['qta_massima_order'] = 0;
             if(!isset($datas[$numRow]['stato'])) $datas[$numRow]['stato'] = 'Y';
             if(!isset($datas[$numRow]['flag_presente_articlesorders'])) $datas[$numRow]['flag_presente_articlesorders'] = 'Y'; 
+            else $datas[$numRow]['flag_presente_articlesorders'] = $this->_translateSiNo($datas[$numRow]['flag_presente_articlesorders']);
+            
             // dd($datas);
 
             /*
@@ -198,11 +202,13 @@ class ArticlesImportController extends ApiAppController
             else {
                 // insert
                 $article = $articlesTable->newEntity();
+                $data['id'] = $this->getMax($articlesTable, 'id', ['organization_id' => $this->_organization->id]);
             }
             $article = $articlesTable->patchEntity($article, $data);
             // dd($article);
-            if ($articlesTable->save($article)) {
-                dd($article->getErrors());
+            if (!$articlesTable->save($article)) {
+                Log::error($article->getErrors());
+                // dd($article->getErrors());
                 continue;
             }
         } // end loop datas
@@ -227,5 +233,19 @@ class ArticlesImportController extends ApiAppController
             $i++;
         }
         return $results;
+    }
+
+    private function _translateSiNo($value) {
+        switch(strtolower($value)) {
+            case 'si':
+                return 'Y';
+            break;
+            case 'no':
+                return 'N';
+            break;
+            default:
+                return 'N';
+            break;
+        }
     }
 }

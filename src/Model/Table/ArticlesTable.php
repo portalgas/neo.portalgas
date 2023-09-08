@@ -77,13 +77,12 @@ class ArticlesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('id')
-            ->allowEmptyString('id', null, 'create');
+            ->nonNegativeInteger('id');
 
         $validator
-            ->scalar('name')
+            ->requirePresence('name')
             ->maxLength('name', 255)
-            ->allowEmptyString('name');
+            ->notEmptyString('name');
 
         $validator
             ->scalar('codice')
@@ -100,10 +99,12 @@ class ArticlesTable extends Table
 
         $validator
             ->numeric('prezzo')
+            ->greaterThanOrEqual('prezzo', 0)
             ->notEmptyString('prezzo');
 
         $validator
             ->numeric('qta')
+            ->greaterThanOrEqual('qta', 0)
             ->notEmptyString('qta');
 
         $validator
@@ -121,35 +122,42 @@ class ArticlesTable extends Table
         $validator
             ->integer('pezzi_confezione')
             ->requirePresence('pezzi_confezione', 'create')
+            ->greaterThanOrEqual('pezzi_confezione', 1)
             ->notEmptyString('pezzi_confezione');
 
         $validator
             ->integer('qta_minima')
             ->requirePresence('qta_minima', 'create')
+            ->greaterThanOrEqual('qta_minima', 1)
             ->notEmptyString('qta_minima');
 
         $validator
             ->integer('qta_massima')
             ->requirePresence('qta_massima', 'create')
+            ->greaterThanOrEqual('qta_massima', 0)
             ->notEmptyString('qta_massima');
 
         $validator
             ->integer('qta_minima_order')
+            ->greaterThanOrEqual('qta_minima_order', 0)
             ->notEmptyString('qta_minima_order');
 
         $validator
             ->integer('qta_massima_order')
             ->requirePresence('qta_massima_order', 'create')
+            ->greaterThanOrEqual('qta_massima_order', 0)
             ->notEmptyString('qta_massima_order');
 
         $validator
             ->integer('qta_multipli')
             ->requirePresence('qta_multipli', 'create')
+            ->greaterThanOrEqual('qta_multipli', 1)
             ->notEmptyString('qta_multipli');
 
         $validator
             ->integer('alert_to_qta')
             ->requirePresence('alert_to_qta', 'create')
+            ->greaterThanOrEqual('alert_to_qta', 0)
             ->notEmptyString('alert_to_qta');
 
         $validator

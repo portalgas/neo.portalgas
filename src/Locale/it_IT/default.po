@@ -6799,5 +6799,8 @@ msgstr "Ingredienti"
 msgid "import-article-note"
 msgstr "Nota"
 
+msgid "import-article-nota"
+msgstr "Nota"
+
 msgid "import-article-flag_presente_articlesorders"
 msgstr "Ordinabili"
