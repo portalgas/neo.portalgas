@@ -1,44 +1,123 @@
-<div class="container-fluid">
+<style>
+#help {
+    margin-bottom: 500px;
+}
+#help .page-header {
+    font-size: 26px;
+    color: #fff;
+    margin-bottom: 15px;
+}
+#help .section {
+    background-color: #fff !important;
+    padding: 15px;
+}
+#help h1 {
+    color: #337ab7;
+}
+#help p {
+    font-size: 20px;
+}
+#help li {
+    font-size: 20px;
+    list-style-type: upper-roman;
+}
+</style>
+
+<div class="container-fluid" id="help">
     <div class="row">
         <div class="col-12 col-sm-12 col-lg-12">
-            <h1>Come aggiornare un listino già esistente?</h1>
+            <h1><i class="fa fa-question-circle"></i> Come aggiornare un listino già esistente?</h1>
         </div>
     </div>
     <div class="row">
-        <div class="col-3 col-sm-3 col-lg-3">
+        <div class="col-3 col-sm-12 col-lg-3">
             <div data-spy="affix" data-offset-top="0">
                 <div class="list-group">
-                    <a class="list-group-item active" href="#step-1">Step1</a>
-                    <a class="list-group-item" href="#step-2">Step2</a>
-                    <a class="list-group-item" href="#step-3">Step3</a>
+                    <a class="list-group-item active" href="#step-1">Scaricare il listino</a>
+                    <a class="list-group-item" href="#step-2">Modificare l'excel</a>
+                    <a class="list-group-item" href="#step-3">Caricare l'excel</a>
                 </div>
             </div>
         </div>
-        <div class="col-9 col-sm-9 col-lg-9">
+        <div class="col-9 col-sm-12 col-lg-9">
             <div id="step-1" class="section">
-                <h1 class="page-header">Step1</h1>
+                <h1 class="page-header">Scaricare il listino del produttore</h1>
                 <p>
-                Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione. È sopravvissuto non solo a più di cinque secoli, ma anche al passaggio alla videoimpaginazione, pervenendoci sostanzialmente inalterato. Fu reso popolare, negli anni ’60, con la diffusione dei fogli di caratteri trasferibili “Letraset”, che contenevano passaggi del Lorem Ipsum, e più recentemente da software di impaginazione come Aldus PageMaker, che includeva versioni del Lorem Ipsum.
+                Scaricare il listino dalla pagina <a href="/admin/articles/export" target="_blank">esporta</a>, 
+                <ul>
+                    <li>selezionare il <b>produttore</b></li>
+                    <li>tra i <b>campi esportabili</b> ci sarà l'<b>identificativo</b> dell'articolo</li>
+                </ul>
+                <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg">
+                    <img class="img-responsive" src="/img/helps/articles-export-identificativo.jpg" /></a>
+                </p>
+                <p>
+                    L'identificativo dell'articolo è quel codice numerico che identifica in maniera univoca un determinato articolo: 
+                        quindi <b>non</b> dev'essere modificato 
+
                 </p>
             </div>
             <div id="step-2" class="section">
-                <h1 class="page-header">Step2</h1>
+                <h1 class="page-header">Modificare l'excel esportato</h1>
                 <p>
-                Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione. È sopravvissuto non solo a più di cinque secoli, ma anche al passaggio alla videoimpaginazione, pervenendoci sostanzialmente inalterato. Fu reso popolare, negli anni ’60, con la diffusione dei fogli di caratteri trasferibili “Letraset”, che contenevano passaggi del Lorem Ipsum, e più recentemente da software di impaginazione come Aldus PageMaker, che includeva versioni del Lorem Ipsum.
+                Modificare l'excel esportato stando attenti a non modificare la colonna dell'<b>identificativo</b> dell'articolo
                 </p>
+                <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg">
+                    <img class="img-responsive" src="/img/helps/articles-export-excel-identificativo.jpg" /></a>
             </div>
             <div id="step-3" class="section">
-                <h1 class="page-header">Step3</h1>
-                <p>
-                Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione. È sopravvissuto non solo a più di cinque secoli, ma anche al passaggio alla videoimpaginazione, pervenendoci sostanzialmente inalterato. Fu reso popolare, negli anni ’60, con la diffusione dei fogli di caratteri trasferibili “Letraset”, che contenevano passaggi del Lorem Ipsum, e più recentemente da software di impaginazione come Aldus PageMaker, che includeva versioni del Lorem Ipsum.
+                <h1 class="page-header">Caricare l'excel modificato</h1>
+                <p style="background-color: #fff !important">
+                Caricare l'excel modificato dalla pagina <a href="/admin/articles/import" target="_blank">importa</a>
+                <ul>
+                    <li>selezionando il <b>produttore</b></li>
+                    <li>
+                        escludere la prima riga dell'excel perchè riguarda l'<b>intestazione</b> delle colonne, <br />
+                        cliccando sul bottone <br />
+                        <a class="btn-block btn btn-danger"><span>La prima riga è l'intestazione, non verrà considerata</span></a>
+                    </li>
+                    <li>caricare l'excel</li>
+                    <li>
+                        come <b>prima colonna</b> scegliere <b>identificativo articolo</b>
+                        <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg">
+                            <img class="img-responsive" src="/img/helps/articles-import-colonna-identificativo.jpg" /></a>
+                    </li>
+                    <li>importare i dati</li>
+                </ul>
                 </p>
             </div>
         </div>
     </div>
 </div>	  <!-- container -->
+
+
+<div id="modalImg" class="modal fade">
+ <div class="modal-dialog modal-lg">
+  <div class="modal-content">
+   <!-- div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">Dettaglio immagine</h4>
+   </div -->
+   <div class="modal-body" style="overflow: auto;">
+    <p><img src="" id="modalImgOrig" /></p>
+   </div>
+   <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+   </div>
+  </div>
+ </div>
+</div>
+
 <?php
 $js = "
 $( function() {
+
+	$('.img_orig').click(function () {
+		var src = $(this).find('img').attr('src');
+    	console.log(src);
+    	$('#modalImgOrig').attr('src', src);
+  	})
+
     var offset = 0;
     
     // Function to handle affix width and classes in affix menu on page loading, scrolling or resizing 
@@ -71,7 +150,6 @@ $( function() {
     // Call on scroll or resize
   	$(window).on('scroll resize', function() {
         affix();
-
     });
 
     // Smooth scrolling at click on nav menu item

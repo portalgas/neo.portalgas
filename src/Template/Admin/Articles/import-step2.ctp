@@ -18,7 +18,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
     echo '<div class="row" style="margin-bottom:15px;">';
     echo '<div class="col-md-12">';
-    echo '<a class="btn-block btn" 
+    echo '<a :disabled="!is_first_row_active" 
+            class="btn-block btn" 
             :class="is_first_row_header ? \'btn-danger\' : \'btn-success\'" 
             @click="toggleIsFirstRowHeader()">
         <span v-if="is_first_row_header">La prima riga è l\'intestazione, non verrà considerata</span>

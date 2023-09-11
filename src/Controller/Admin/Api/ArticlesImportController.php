@@ -78,6 +78,9 @@ class ArticlesImportController extends ApiAppController
         $articles = new ArticlesImportExportDecorator($file_content);
         $file_content = $articles->results;
 
+        // cancello file
+        @unlink($upload_results['full_path']);
+
         $results['esito'] = true;
         $results['code'] = 200;
         $results['message'] = $upload_results;

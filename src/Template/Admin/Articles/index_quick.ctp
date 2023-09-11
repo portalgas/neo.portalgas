@@ -485,7 +485,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     <td><input type="text" class="form-control" style="max-width: 75px;" maxlength="5" value="0,40" disabled /></td>
                     <td><input type="text" class="form-control" style="max-width: 50px;" maxlength="3" value="HG" disabled /></td>
                     <td>4,00 &euro;</td>
-                    <td>4,00 &euro; al Kilo</td>
+                    <td>12,00 &euro; al Kilo</td>
                   </tr>
                   <tr>
                     <td>

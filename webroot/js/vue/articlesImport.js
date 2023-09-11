@@ -16,6 +16,7 @@ $(function () {
         num_excel_fields: 0,
         fields_to_config: 0,
         select_import_fields: [],
+        is_first_row_active: false,
         is_first_row_header: false,
         ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
         supplier_organization_id: '',
@@ -202,6 +203,9 @@ $(function () {
         },
         setDropzone: async function() {
           var _this = this;
+          
+          _this.is_first_row_active = true; 
+
           $('.dropzone').each(function() {
               // ctrl se non e' gia' stato attached 
               if(!$(this).hasClass('dz-clickable')) {
@@ -219,6 +223,8 @@ $(function () {
                           */
                           _this.validazioneResults = [];
                           _this.importResult = false;
+
+                          _this.is_first_row_active = false; 
 
                           if(response.esito) {
                             _this.file_contents = response.results;
@@ -239,6 +245,9 @@ $(function () {
                           else 
                             _this.file_errors = response.errors;
                       });
+                      this.on('removedfile', function(file) {
+                        _this.is_first_row_active = true; 
+                    });                      
                     }
                   });
               }
