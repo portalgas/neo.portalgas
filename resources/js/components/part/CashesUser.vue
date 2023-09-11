@@ -103,7 +103,7 @@
 
       </div>
       <div class="modal-footer">
-        <a :href="appConfig.$siteUrl+'/login'" class="mr-auto"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
+        <a :href="host+'/login'" class="mr-auto"><button type="button" class="btn btn-danger mr-auto">Logout</button></a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
       </div>
     </div>
@@ -138,7 +138,15 @@ export default {
     this.getCashCtrlLimit();
   },
   computed: {
-    ...mapGetters(["cashesUserReload"])
+    ...mapGetters(["cashesUserReload"]),
+    host() {
+      /*
+       * bisognerebbe compilare nei vari ambiati npm run next 
+       * appConfig.$siteUrl
+       */
+      const full = window.location.protocol + '//' + window.location.host;
+      return full;
+    }
   }, 
   watch: {
     /*

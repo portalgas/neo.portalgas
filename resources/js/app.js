@@ -8,7 +8,9 @@ import axios from "axios";
 import { config } from './config/config';
 
 Vue.prototype.appConfig = config
-/* console.log(config); console.log('siteUrl'+this.appConfig.$siteUrl);  */
+/* 
+const full = window.location.protocol + '//' + window.location.host;
+console.log(config); console.log('siteUrl'+this.appConfig.$siteUrl);  */
 
 /*
 import * as Sentry from "@sentry/browser";
