@@ -144,8 +144,21 @@ export default {
        * bisognerebbe compilare nei vari ambiati npm run next 
        * appConfig.$siteUrl
        */
-      const full = window.location.protocol + '//' + window.location.host;
-      return full;
+      // const full = window.location.protocol + '//' + window.location.host;
+      switch(window.location.host) {
+        case 'neo.portalgas.it':
+          return 'https://www.portalgas.it';
+        break;
+        case 'neonext.portalgas.it':
+          return 'https://next.portalgas.it';
+        break;
+        case 'neotest.portalgas.it':
+          return 'https://next.portalgas.it';
+        break;
+        case 'neo.portalgas.local':
+          return 'http://portalgas.local';
+        break;
+      }
     }
   }, 
   watch: {
