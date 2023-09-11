@@ -80,7 +80,7 @@ class ArticlesTable extends Table
             ->nonNegativeInteger('id');
 
         $validator
-            ->requirePresence('name')
+            ->requirePresence('name', 'create')
             ->maxLength('name', 255)
             ->notEmptyString('name');
 

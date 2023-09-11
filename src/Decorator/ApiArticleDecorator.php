@@ -76,6 +76,13 @@ class ApiArticleDecorator  extends AppDecorator {
             $results['prezzo_e'] = $results['prezzo_'].' &euro';
         }
 
+        if(empty($article->qta)) {
+            $results['qta'] = 0;
+        }
+        else {
+            $results['qta'] = number_format($article->qta,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+        }
+
         if(empty($article->bio))
             $results['is_bio'] = '';
         else {

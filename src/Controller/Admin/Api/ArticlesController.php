@@ -215,7 +215,8 @@ class ArticlesController extends ApiAppController
          */
         switch(strtolower($name)) {
             case 'prezzo':
-                $value = $this->convertImport($value);
+            case 'qta':
+                    $value = $this->convertImport($value);
             break;
         }
         $datas = [];
