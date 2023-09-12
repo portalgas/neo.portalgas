@@ -20,7 +20,7 @@ use Cake\Core\Configure;
             <thead>
                 <tr>
                     <th v-for="index in file_contents[0].length" :key="index">
-                        Colonna {{ index }} ({{ select_import_fields[index-1] | translateField }})
+                        Colonna {{ index }} <span v-if="select_import_fields[index-1]!=null">({{ select_import_fields[index-1] | translateField }})</span>
                     </th>
                     <th>Esito</th>
                 </tr>

@@ -143,7 +143,11 @@ class ArticlesImportController extends ApiAppController
             if(!isset($datas[$numRow]['stato'])) $datas[$numRow]['stato'] = 'Y';
             if(!isset($datas[$numRow]['flag_presente_articlesorders'])) $datas[$numRow]['flag_presente_articlesorders'] = 'Y'; 
             else $datas[$numRow]['flag_presente_articlesorders'] = $this->_translateSiNo($datas[$numRow]['flag_presente_articlesorders']);
-            
+            if(!isset($datas[$numRow]['category_article_id'])) {
+                // estraggo la categoria di default
+                $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
+                $datas[$numRow]['category_article_id'] = $categoriesArticlesTable->getIsSystemId($this->_user, $this->_organization->id); 
+            }
             // dd($datas);
 
             /*
@@ -206,6 +210,7 @@ class ArticlesImportController extends ApiAppController
                 // insert
                 $article = $articlesTable->newEntity();
                 $data['id'] = $this->getMax($articlesTable, 'id', ['organization_id' => $this->_organization->id]);
+                $data['id']++;
             }
             $article = $articlesTable->patchEntity($article, $data);
             // dd($article);

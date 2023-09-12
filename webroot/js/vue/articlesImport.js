@@ -418,6 +418,9 @@ $(function () {
         },
         translateField: function(label) {
           switch(label) {
+            case 'id':
+              return 'Identificativo articolo';
+            break;
             case 'name':
               return 'Nome articolo';
             break;
