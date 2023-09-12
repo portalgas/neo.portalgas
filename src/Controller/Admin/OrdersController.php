@@ -422,6 +422,10 @@ class OrdersController extends AppController
         $this->_ordersTable->addBehavior('Orders');
 
         $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
+        if(empty($order)) {
+            $this->Flash->error(__('msg_error_params'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
 
         $datas = $this->_getData($order, $order_type_id, $parent_id);
         $suppliersOrganizations = $datas['suppliersOrganizations'];

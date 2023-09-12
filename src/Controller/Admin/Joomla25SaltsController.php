@@ -94,7 +94,7 @@ class joomla25SaltsController extends AppController
          * https://www.portalgas.it/api/connect?u={salt}=&c_to=Pages&a_to=home
          *
          * localhost
-         * http://portalgas.local.it:81/index.php/?option=com_cake&controller=Rests&action=connect&u={salt}=&c_to=Pages&a_to=home
+         * http://portalgas.local/index.php/?option=com_cake&controller=Rests&action=connect&u={salt}=&c_to=Pages&a_to=home
          */
         $config = Configure::read('Config');
 
