@@ -505,8 +505,17 @@ msgstr "Aggiungi nuovo record"
 msgid "ReAddN"
 msgstr "Torna all'elenco"
 
+msgid "Import"
+msgstr "Importa"
+
+msgid "Import from EXCEL"
+msgstr "Importa da EXCEL"
+
 msgid "Export"
 msgstr "Esporta"
+
+msgid "Export to EXCEL"
+msgstr "Esporta in EXCEL"
 
 msgid "Export to PDF"
 msgstr "Esporta in formato PDF"

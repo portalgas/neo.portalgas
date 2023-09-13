@@ -81,9 +81,14 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
       <h3 class="box-title">Importa listino articoli del produttore</h3>
       <div class="box-tools pull-right"></div>
     </div> <!-- /.box-header -->
-    <div class="box-body" style="overflow-x: auto;">
+    <div class="box-body table-responsive" style="overflow-x: auto;">
 
-    <template v-if="!importResult">
+    <!-- loader globale -->
+    <div class="loader-global" v-if="is_run">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    </div>
+        
+    <template v-if="!is_run && !importResult">
         
         <div class="stepwizard col-md-offset-3">
             <div class="stepwizard-row setup-panel">

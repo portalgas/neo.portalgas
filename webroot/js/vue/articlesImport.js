@@ -32,7 +32,7 @@ $(function () {
         file_errors: [],
         file_contents: [],
         file_metadatas: [],
-        is_run: false,
+        is_run: true,
         validazioneResults: [],
         importResult: false
       },  
@@ -60,7 +60,7 @@ $(function () {
            * se non e' valorizzato order_id => order.add
            * 		owner_articles da SuppliersOrganizations
            */
-          console.log('getSuppliersOrganization supplier_organization_id '+this.supplier_organization_id);
+          // console.log('getSuppliersOrganization supplier_organization_id '+this.supplier_organization_id);
           if(typeof this.supplier_organization_id==='undefined') {
             this.init();
             return;
@@ -274,15 +274,13 @@ $(function () {
             alert("Non tutti i parametri sono stati impostati");
             return false;
           }
-
-          _this.is_run = true;
-          
+          /*
           console.log('select_import_fields '+_this.select_import_fields);
           console.log('is_first_row_header '+_this.is_first_row_header);
           console.log('supplier_organization_id '+_this.supplier_organization_id);
           console.log('full_path '+_this.file_metadatas.full_path);
           console.log('file_contents '+_this.file_contents);
-          
+          */
           let params = {
             select_import_fields: _this.select_import_fields,
             is_first_row_header: _this.is_first_row_header,
@@ -303,9 +301,8 @@ $(function () {
                 'X-CSRF-Token': csrfToken
               },                
               success: function (response) {
-                  _this.is_run = false;
                   response = JSON.parse(response);
-                  console.log(response, 'import'); 
+                  // console.log(response, 'import'); 
                   if (response.code==200) {
                     _this.validazioneResults = response.errors;
                     if(response.errors.length==0) {
@@ -318,13 +315,14 @@ $(function () {
                   console.error(e.responseText.message, 'import');
               },
               complete: function (e) {
-                _this.is_run = false;
+                $('html,body').scrollTop(0);
               }
           });
         }
       },
       mounted: function() {
         console.log('mounted articles-import');
+        this.is_run = false;
       },
       computed: {
         ok_step1: function () {
@@ -418,6 +416,9 @@ $(function () {
         },
         translateField: function(label) {
           switch(label) {
+            case 'IGNORE':
+              return 'ignora';
+            break;
             case 'id':
               return 'Identificativo articolo';
             break;

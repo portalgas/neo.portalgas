@@ -114,7 +114,6 @@ class ArticlesImportController extends ApiAppController
         // loop rows
         foreach($file_contents as $numRow => $file_content_rows) {
             // loop cols
-            
             foreach($file_content_rows as $numCol => $file_content) {
                 $field = $select_import_fields[$numCol];
                 
@@ -122,64 +121,69 @@ class ArticlesImportController extends ApiAppController
                 // if($debug) debug($field.' - '.$file_content);                
             } // loop cols
 
-            /*
-            * decorate datas
+            /* 
+            * ctrl identificativo articolo
             */
-            $datas[$numRow]['organization_id'] = $this->_organization->id;
-            $datas[$numRow]['supplier_organization_id'] = $supplier_organization_id;
-            $datas[$numRow]['alert_to_qta'] = 0;
-            if(isset($datas[$numRow]['prezzo'])) $datas[$numRow]['prezzo'] = $this->convertImport($datas[$numRow]['prezzo']);
-            if(!isset($datas[$numRow]['bio'])) $datas[$numRow]['bio'] = 'N';
-            else $datas[$numRow]['bio'] = $this->_translateSiNo($datas[$numRow]['bio']);
-            if(!isset($datas[$numRow]['pezzi_confezione'])) $datas[$numRow]['pezzi_confezione'] = 1;
-            if(!isset($datas[$numRow]['um'])) $datas[$numRow]['um'] = 'PZ';
-            if(!isset($datas[$numRow]['um_riferimento'])) $datas[$numRow]['um_riferimento'] = 'PZ';
-            if(!isset($datas[$numRow]['qta'])) $datas[$numRow]['qta'] = 1.00;
-            if(!isset($datas[$numRow]['qta_massima'])) $datas[$numRow]['qta_massima'] = 0;
-            if(!isset($datas[$numRow]['qta_minima'])) $datas[$numRow]['qta_minima'] = 1;
-            if(!isset($datas[$numRow]['qta_multipli'])) $datas[$numRow]['qta_multipli'] = 1;
-            if(!isset($datas[$numRow]['qta_minima_order'])) $datas[$numRow]['qta_minima_order'] = 0;
-            if(!isset($datas[$numRow]['qta_massima_order'])) $datas[$numRow]['qta_massima_order'] = 0;
-            if(!isset($datas[$numRow]['stato'])) $datas[$numRow]['stato'] = 'Y';
-            if(!isset($datas[$numRow]['flag_presente_articlesorders'])) $datas[$numRow]['flag_presente_articlesorders'] = 'Y'; 
-            else $datas[$numRow]['flag_presente_articlesorders'] = $this->_translateSiNo($datas[$numRow]['flag_presente_articlesorders']);
-            if(!isset($datas[$numRow]['category_article_id'])) {
-                // estraggo la categoria di default
-                $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
-                $datas[$numRow]['category_article_id'] = $categoriesArticlesTable->getIsSystemId($this->_user, $this->_organization->id); 
-            }
-            // dd($datas);
+            $id_errors = [];
+            if(isset($datas[$numRow]['id'])) {
+                // update  
+                $where = ['id' => $datas[$numRow]['id'],
+                        'organization_id' => $this->_organization->id,
+                        'supplier_organization_id' => $supplier_organization_id];
+                $article = $articlesTable->find()
+                                    ->where($where)
+                                    ->first();
+                if(empty($article)) {
+                    $id_errors[0]['field'] = 'id';
+                    $id_errors[0]['field_human'] =  __('import-article-id');
+                    $id_errors[0]['error'] = "Articolo con identificativo ".$datas[$numRow]['id']." non trovato";
+                    $errors[$numRow] = $id_errors;
+                } 
+                else {
+                    $datas[$numRow] = array_merge($article->toArray(), $datas[$numRow]);
+                }
+            } // if(isset($datas[$numRow]['id']))
+                
+            // dd($datas[$numRow]);
 
-            /*
-            * validazione
-            */
-            $validationResults = $validator->errors($datas[$numRow]);
-            $row_errors = [];
-            if(!empty($validationResults)) {
-                $row_errors = $this->_humanErrors($validationResults);
-                $errors[$numRow] = $row_errors;
-            }    
+            if(empty($id_errors)) {            
+                /*
+                * decorate datas
+                */
+                $datas[$numRow]['organization_id'] = $this->_organization->id;
+                $datas[$numRow]['supplier_organization_id'] = $supplier_organization_id;
+                $datas[$numRow]['alert_to_qta'] = 0;
+                if(isset($datas[$numRow]['prezzo'])) $datas[$numRow]['prezzo'] = $this->convertImport($datas[$numRow]['prezzo']);
+                if(!isset($datas[$numRow]['bio'])) $datas[$numRow]['bio'] = 'N';
+                else $datas[$numRow]['bio'] = $this->_translateSiNo($datas[$numRow]['bio']);
+                if(!isset($datas[$numRow]['pezzi_confezione'])) $datas[$numRow]['pezzi_confezione'] = 1;
+                if(!isset($datas[$numRow]['um'])) $datas[$numRow]['um'] = 'PZ';
+                if(!isset($datas[$numRow]['um_riferimento'])) $datas[$numRow]['um_riferimento'] = 'PZ';
+                if(!isset($datas[$numRow]['qta'])) $datas[$numRow]['qta'] = 1.00;
+                if(!isset($datas[$numRow]['qta_massima'])) $datas[$numRow]['qta_massima'] = 0;
+                if(!isset($datas[$numRow]['qta_minima'])) $datas[$numRow]['qta_minima'] = 1;
+                if(!isset($datas[$numRow]['qta_multipli'])) $datas[$numRow]['qta_multipli'] = 1;
+                if(!isset($datas[$numRow]['qta_minima_order'])) $datas[$numRow]['qta_minima_order'] = 0;
+                if(!isset($datas[$numRow]['qta_massima_order'])) $datas[$numRow]['qta_massima_order'] = 0;
+                if(!isset($datas[$numRow]['stato'])) $datas[$numRow]['stato'] = 'Y';
+                if(!isset($datas[$numRow]['flag_presente_articlesorders'])) $datas[$numRow]['flag_presente_articlesorders'] = 'Y'; 
+                else $datas[$numRow]['flag_presente_articlesorders'] = $this->_translateSiNo($datas[$numRow]['flag_presente_articlesorders']);
+                if(!isset($datas[$numRow]['category_article_id'])) {
+                    // estraggo la categoria di default
+                    $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
+                    $datas[$numRow]['category_article_id'] = $categoriesArticlesTable->getIsSystemId($this->_user, $this->_organization->id); 
+                }
 
-            if(empty($row_errors)) {
-                /* 
-                 * ctrl identificativo articolo
-                 */
-                if(isset($datas[$numRow]['id'])) {
-                    // update  
-                    $where = ['id' => $datas[$numRow]['id'],
-                            'organization_id' => $this->_organization->id];
-                    $article = $articlesTable->find()
-                                        ->where($where)
-                                        ->first();
-                    if(empty($article)) {
-                        $id_errors = [];
-                        $id_errors[0]['field'] = 'id';
-                        $id_errors[0]['field_human'] =  __('import-article-id');
-                        $id_errors[0]['error'] = "Articolo con identificativo ".$datas[$numRow]['id']." non trovato";                  
-                        $errors[$numRow] = $id_errors;
-                    } 
-                } // if(isset($datas[$numRow]['id']))
-            } // end if(empty($errors)) 
+                /*
+                * validazione
+                */
+                $validationResults = $validator->errors($datas[$numRow]);
+                $row_errors = [];
+                if(!empty($validationResults)) {
+                    $row_errors = $this->_humanErrors($validationResults);
+                    $errors[$numRow] = $row_errors;
+                }    
+            } // end if(empty($id_errors)) 
         } // loop rows
 
         if(!empty($errors)) {
@@ -197,7 +201,8 @@ class ArticlesImportController extends ApiAppController
             if(isset($data['id'])) {
                 // update  
                 $where = ['id' => $data['id'],
-                          'organization_id' => $this->_organization->id];        
+                          'organization_id' => $this->_organization->id,
+                          'supplier_organization_id' => $supplier_organization_id];        
                 $article = $articlesTable->find()
                                     ->where($where)
                                     ->first();
