@@ -82,6 +82,9 @@
                         <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg">
                             <img class="img-responsive" src="/img/helps/articles-import-colonna-identificativo.jpg" /></a>
                     </li>
+                    <li>
+                        stabilire l'associazione di tutte le altre colonne
+                    </li>
                     <li>importare i dati</li>
                 </ul>
                 </p>
