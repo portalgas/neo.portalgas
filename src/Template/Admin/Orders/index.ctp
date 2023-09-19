@@ -102,11 +102,9 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 
                   echo '<tr>';
                   echo '<td class="hidden-xs hidden-sm">';
-                  if($order->order_type->id!=Configure::read('Order.type.gas_parent_groups')) {
-                    echo '<a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapse-'.$order->id.'" aria-expanded="true" title="Clicca per maggiori informazioni">';
-                    echo '<i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>';
-                    echo '</a>';
-                  }
+                  echo '<a data-toggle="collapse" data-parent="#accordion-'.$order->id.'" href="#collapse-'.$order->id.'" aria-expanded="true" title="Clicca per maggiori informazioni">';
+                  echo '<i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>';
+                  echo '</a>';                   
                   echo '</td>';
                   echo '<td>';
                   echo $this->HtmlCustomSite->drawSupplierImage($order->suppliers_organization->supplier);
@@ -270,7 +268,13 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 
 <?php 
 $js = "
-$(function () {
+$(function () {";
+
+if($order_type_id==Configure::read('Order.type.gas_parent_groups')) 
+  $js .= "let ajaxUrlOrderDetail = '/admin/ajaxs/view-order-gas-parent-groups-details';";
+else 
+  $js .= "let ajaxUrlOrderDetail = '/admin/ajaxs/view-order-details';";
+$js .= "  
   $('.btn-menu').on('click', function (e) {
     e.preventDefault();
     let url = $(this).attr('data-attr-url');
@@ -293,9 +297,7 @@ $(function () {
       let id = $(this).attr('id');
       let dataElementArray = id.split('-');
       let order_id = dataElementArray[1];
-
-      let ajaxUrl = '/admin/ajaxs/view-order-details';
-      
+     
       let htmlResult = $('#collapseResult-'+order_id);
 			htmlResult.html('');
 			htmlResult.css('min-height', '50px');
@@ -305,7 +307,7 @@ $(function () {
         order_id: order_id
       }
 
-      $.ajax({url: ajaxUrl, 
+      $.ajax({url: ajaxUrlOrderDetail, 
         data: params, 
         type: 'POST',
         dataType: 'html',
@@ -317,7 +319,7 @@ $(function () {
             console.log(response.responseText, 'responseText');
         },
         error: function (e) {
-            console.error(e, ajaxUrl);
+            console.error(e, ajaxUrlOrderDetail);
         },
         complete: function (e) {
             htmlResult.css('background', 'none repeat scroll 0 0 transparent');

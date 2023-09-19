@@ -22,6 +22,12 @@ class OrdersGasParentGroupsTable extends OrdersTable implements OrderTableInterf
         parent::initialize($config);
 
         $this->setEntityClass('App\Model\Entity\Order');
+
+        $this->hasMany('ChildOrders', [
+            'className' => 'OrdersGasGroups',
+            'foreignKey' => ['organization_id', 'parent_id'],
+            'bindingKey' => ['organization_id', 'id']
+        ]); 
     }
 
     public function validationDefault(Validator $validator)
@@ -100,7 +106,32 @@ class OrdersGasParentGroupsTable extends OrdersTable implements OrderTableInterf
      * implement
      */   
     public function getById($user, $organization_id, $order_id, $debug=false) {
-       return parent::getById($user, $organization_id, $order_id, $debug);
+        
+        if (empty($order_id)) {
+            return null;
+        }
+
+        $results = $this->find()  
+                        ->where([
+                            $this->getAlias().'.organization_id' => $organization_id,
+                            $this->getAlias().'.id' => $order_id
+                        ])
+                        ->contain([
+                            'OrderStateCodes', 'Deliveries',
+                            'ChildOrders' => [
+                                'GasGroups',
+                                'Deliveries', 'OrderStateCodes',
+                                'SuppliersOrganizations' => [
+                                    'SuppliersOrganizationsReferents' => [
+                                        'Users' => ['UserProfiles' => ['sort' => ['ordering']]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ])
+                        ->first();
+
+        return $results;
     }
 
     /*

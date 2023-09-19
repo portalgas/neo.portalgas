@@ -105,6 +105,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
             <thead>
               <tr>
                   <th scope="col" colspan="2" class="actions text-center"></th>
+                  <th scope="col"><?= __('Name') ?></th>
+                  <th scope="col"><?= __('Code') ?></th>                  
                   <?php 
                   if(empty($search_supplier_organization_id))
                     echo '<th scope="col">'.__('supplier_organization_id').'</th>';
@@ -118,8 +120,6 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   ?>
                   <th scope="col"><?= __('Bio') ?></th>
                   <th scope="col"></th>
-                  <th scope="col"><?= __('Name') ?></th>
-                  <th scope="col"><?= __('Code') ?></th>
                   <th scope="col" style="width:100px">
                       <?= __('Prezzo') ?>
                       <br />
@@ -153,7 +153,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                             <button title="elimina articolo" class="btn btn-danger"  @click="goToDelete(index)"><i aria-hidden="true" ><i aria-hidden="true" class="fa fa-trash"></i></button>
                           </div>
-                        </td>
+                        </td>                       
                         <td class="actions text-center">
                           <button class="btn-block btn" 
                                 :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
@@ -163,6 +163,13 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
                           </button>
                         </td>
+                        <td>
+                          <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
+                          <span class="label label-primary" style="white-space: unset;font-size: 85%;">{{ article.name }}</span>
+                        </td>
+                        <td>
+                          <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
+                        </td>                         
                         <?php 
                         if(empty($search_supplier_organization_id))
                             echo '<td>
@@ -200,13 +207,6 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <td>
                           <!-- img :src="article.img1" :title="article.img1" width="50" / -->
                           <div class="dropzone" :id="'my-dropzone'+article.organization_id+'-'+article.id" :data-attr-index="index"></div>
-                        </td>
-                        <td>
-                          <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
-                          <span class="label label-primary" style="white-space: unset;font-size: 85%;">{{ article.name }}</span>
-                        </td>
-                        <td>
-                          <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
                         </td>
                         <!-- price -->
                         <td>
@@ -337,7 +337,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
                             <button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                           </div>
-                        </td>
+                        </td>                       
                         <td class="actions text-center">
                           <button style="cursor: auto !important" 
                                 class="btn-block btn" 
@@ -347,6 +347,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
                           </button>
                         </td>
+                        <td>
+                          {{ article.name }}
+                        </td>
+                        <td>
+                          {{ article.codice }}
+                        </td>                         
                         <?php 
                         if(empty($search_supplier_organization_id))
                             echo '<td>
@@ -370,12 +376,6 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         </td>
                         <td>
                           <img :src="article.img1" :title="article.img1" width="50" />
-                        </td>
-                        <td>
-                          {{ article.name }}
-                        </td>
-                        <td>
-                          {{ article.codice }}
                         </td>
                         <td>
                           {{ article.prezzo | currency }} &euro;

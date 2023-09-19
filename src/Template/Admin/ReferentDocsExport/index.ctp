@@ -2,7 +2,7 @@
 use Cake\Core\Configure;
 echo $this->Html->script('vue/exports', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Export Docs to order'), 'subtitle' => __('Management')], ['home']);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Export Docs to order'), 'subtitle' => __('Management')], ['home', 'list-orders'], $order);
 
 echo $this->HtmlCustomSite->boxOrder($order);
 

@@ -34,4 +34,13 @@ class AjaxsController extends AppController
         
         $this->set(compact('delivery_id', 'order_id', 'order'));
     }
+
+    public function ViewOrderGasParentGroupsDetails() {
+        $order_id = $this->request->data('order_id');
+        
+        $ordersTable = TableRegistry::get('OrdersGasParentGroups');
+        $order = $ordersTable->getById($this->_user, $this->_organization->id, $order_id);
+        
+        $this->set(compact('order_id', 'order'));
+    }    
 }
