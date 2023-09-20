@@ -69,7 +69,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </li>
   <?php 
     }
-    
+    /*
     if($this->Identity->get()->acl['isRoot'] || 
     (isset($this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']) && $this->Identity->get()->organization->paramsConfig['hasArticlesGdxp']=='Y')) {
   ?>
@@ -85,4 +85,4 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
           </a>
       </li>
   <?php
-  }
+  }*/
