@@ -6787,6 +6787,9 @@ msgstr "Nome articolo"
 msgid "import-article-codice"
 msgstr "Codice"
 
+msgid "import-article-codice-id"
+msgstr "Codice (utilizzato come identificativo)"
+
 msgid "import-article-prezzo"
 msgstr "Prezzo"
 
@@ -6795,6 +6798,9 @@ msgstr "Quantità"
 
 msgid "import-article-um"
 msgstr "Unità di misura"
+
+msgid "import-article-qta-um"
+msgstr "Quantità e Unità di misura"
 
 msgid "import-article-pezzi_confezione"
 msgstr "Confezione"

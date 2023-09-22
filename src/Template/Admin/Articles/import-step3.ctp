@@ -50,6 +50,7 @@ use Cake\Core\Configure;
                             </div>                        
                         </template>
                         <template v-if="select_import_fields[num_col]==\'codice\' || 
+                                        select_import_fields[num_col]==\'codice-id\' || 
                                         select_import_fields[num_col]==\'name\'">
                             <input type="text" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
                         </template>
@@ -59,6 +60,9 @@ use Cake\Core\Configure;
                         </template>
                         <template v-if="select_import_fields[num_col]==\'qta\'">
                             <input type="number" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
+                        </template>
+                        <template v-if="select_import_fields[num_col]==\'qta_um\'">
+                            <input type="text" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
                         </template>
                         <template v-if="select_import_fields[num_col]==\'prezzo\'">
                             <input type="text" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />

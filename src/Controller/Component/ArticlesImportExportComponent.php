@@ -14,6 +14,8 @@ class ArticlesImportExportComponent extends Component {
 
     // campi della tabella
     private $_import_fields = [];
+    // campi della tabella per il produttore
+    private $_import_supplier_fields = [];
     // campi opzionali
     private $_export_source_fields = [];
     // campi esportati    
@@ -41,6 +43,13 @@ class ArticlesImportExportComponent extends Component {
             'ingredienti' => __('import-article-ingredienti')
         ];
         
+        $this->_import_supplier_fields = [
+            'codice-id' => __('import-article-codice-id'),
+            'name' => __('import-article-name'),
+            'prezzo' => __('import-article-prezzo'),
+            'qta_um' => __('import-article-qta-um')     
+        ];
+
         $this->_export_source_fields = [
                                 'codice' => ['label' => __('Code'), 'nota' => '001'],
                                 'nota' => ['label' => __('Note'), 'nota' => "descrizione dell'articolo"],
@@ -72,6 +81,14 @@ class ArticlesImportExportComponent extends Component {
     public function getImportFields($user, $debug=false) {
         return $this->_import_fields;
 	}
+
+    /* 
+     * campi import per i produttori che gestisce admin (Offinina Naturae)
+     */
+    public function getImportSupplierFields($user, $debug=false) {
+        return $this->_import_supplier_fields;
+	}    
+    
 
     /* 
      * campi opzionali

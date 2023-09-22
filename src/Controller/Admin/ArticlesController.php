@@ -198,47 +198,25 @@ class ArticlesController extends AppController
         $import_fields['IGNORE'] = 'Ignore questa colonna';
         $import_fields += $this->ArticlesImportExport->getImportFields($this->_user);
         $this->set(compact('import_fields'));    
+    }
 
-        if ($this->request->is('post')) {
+    public function importSupplier()
+    {  
+        $debug = false;
 
-            $datas = $this->request->getData();
-            if($debug) debug($datas);
-            dd($datas);
-            // Log::debug($datas);
-            $supplier_organization_id = $datas['supplier_organization_id'];
-            $request_export_fields = $datas['export_fields'];
-            if(empty($supplier_organization_id) || empty($request_export_fields)) {
-                $this->Flash->error(__('Parameters required'));
-                return $this->redirect(['action' => 'import']);           
-            } 
-        
-            /*
-             * dati produttore
-             */
-            $supplier_organization = $suppliersOrganizationsTable->get($this->_user, ['SuppliersOrganizations.id' => $supplier_organization_id]);
-            if($debug) debug($supplier_organization);
-            // Log::debug($supplier_organization);
-
-            /* 
-             * estraggo gli articoli in base al produttore (own chi gestisce il listino)
-             * */
-            $articles = $this->Articles->getsToArticleSupplierOrganization($this->_user, $this->_organization->id, $supplier_organization_id);
-            if($articles->count()==0) {
-                $this->Flash->error("Il produttore non ha articoli associati!");
-                return $this->redirect(['action' => 'export']);  
-            } 
-
-            $writer = $this->ArticlesImportExport->export($this->_user, $this->request->getData(), $articles);
-            $stream = new CallbackStream(function () use ($writer) {
-                $writer->save('php://output');
-            });
-
-            $filename = $this->setFileName('Articoli di '.$supplier_organization->name); // .'.xlsx';
-            if($debug) debug($filename);
-            $response = $this->response; 
-            return $response->withType('xlsx')
-                ->withHeader('Content-Disposition', "attachment;filename=\"{$filename}.xlsx\"")
-                ->withBody($stream);
-        } // post
+        /*
+         * SELECT k_suppliers_organizations.id, k_suppliers_organizations.* 
+         * FROM k_suppliers_organizations, k_organizations 
+         * WHERE k_suppliers_organizations.organization_id = k_organizations.id 
+         *  and k_organizations.name like '%Offici%';
+         */
+        $suppliersOrganizations = [3178 => 'Officina Naturae', 0 => 'La Saponaria'];
+        $this->set(compact('suppliersOrganizations'));  
+     
+        $import_fields = [];
+        $import_fields[''] = 'A quale campo corrisponde?';
+        $import_fields['IGNORE'] = 'Ignore questa colonna';
+        $import_fields += $this->ArticlesImportExport->getImportSupplierFields($this->_user);
+        $this->set(compact('import_fields'));    
     }
 }

@@ -98,7 +98,8 @@ $(function () {
               },
               error: function (e) {
                   console.error(e, '_getSuppliersOrganization');
-                  console.error(e.responseText.message, '_getSuppliersOrganization');
+                  if(typeof e.responseText!=='undefined')
+                    console.error(e.responseText.message, '_getSuppliersOrganization');
               },
               complete: function (e) {
               }
@@ -276,14 +277,12 @@ $(function () {
           }
           /*
           console.log('select_import_fields '+_this.select_import_fields);
-          console.log('is_first_row_header '+_this.is_first_row_header);
           console.log('supplier_organization_id '+_this.supplier_organization_id);
           console.log('full_path '+_this.file_metadatas.full_path);
           console.log('file_contents '+_this.file_contents);
           */
           let params = {
             select_import_fields: _this.select_import_fields,
-            is_first_row_header: _this.is_first_row_header,
             supplier_organization_id: _this.supplier_organization_id,
             full_path: _this.full_path,
             file_contents: _this.file_contents,
@@ -312,7 +311,8 @@ $(function () {
               },
               error: function (e) {
                   console.error(e, 'import');
-                  console.error(e.responseText.message, 'import');
+                  if(typeof e.responseText!=='undefined')
+                    console.error(e.responseText.message, 'import');
               },
               complete: function (e) {
                 $('html,body').scrollTop(0);
@@ -454,6 +454,12 @@ $(function () {
             break;
             case 'flag_presente_articlesorders':
               return 'Ordinabili';
+            break;
+            case 'qta_um':
+              return 'Quantità e Unità di misura';
+            break;
+            default:
+              return label;
             break;
           }
         }

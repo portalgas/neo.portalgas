@@ -14,6 +14,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </span>
     <ul class="treeview-menu">
       <li><a href="<?php echo $this->Url->build('/admin/articles-import-officinanatura/index'); ?>"><?php echo $icon;?><?php echo __('Articles Import OfficinaNatura');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/articles/importSupplier'); ?>"><?php echo $icon;?><?php echo __('Articles Import Supplier');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations/settingParams'); ?>"><?php echo $icon;?><?php echo __('Organization Setting Params');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/tests/sitemap'); ?>"><?php echo $icon;?><?php echo __('Tests sitemap');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('Tests ajax');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>

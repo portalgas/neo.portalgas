@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * KArticle Entity
+ * Article Entity
  *
  * @property int $id
  * @property int $organization_id

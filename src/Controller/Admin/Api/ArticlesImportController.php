@@ -79,7 +79,7 @@ class ArticlesImportController extends ApiAppController
         $file_content = $articles->results;
 
         // cancello file
-        @unlink($upload_results['full_path']);
+        // @unlink($upload_results['full_path']);
 
         $results['esito'] = true;
         $results['code'] = 200;
@@ -91,25 +91,166 @@ class ArticlesImportController extends ApiAppController
 
     public function import() {
         
-        $debug = true;
+        $results = [];
+        $request = $this->request->getData();   
+        // if($debug) debug($request);
+
+        $select_import_fields = $request['select_import_fields'];
+        if(empty($select_import_fields)) {
+            dd("select_import_fields required!");
+        }
+
+        if(in_array('codice-id', $select_import_fields)) {
+            /*
+            * importazione da root dei produttori (ex OfficinaNaturae)
+            *  il codice e' identificativo
+            */
+            $results = $this->_importToSupplier($request);
+        }
+        else {
+            /*
+            * importazione da parte dei gasisti
+            */
+            $results = $this->_importToGas($request);
+        }
+
+        return $this->_response($results);         
+    }
+
+    /*
+    * importazione da root dei produttori (ex OfficinaNaturae)
+    *  il codice e' identificativo 
+    ctrl se esiste => update / se no insert
+    */
+    private function _importToSupplier($request) {
+
         $errors = [];
 
         $results = [];
         $results['esito'] = true;
         $results['code'] = 200;
         $results['errors'] = '';
-                  
-        $request = $this->request->getData();   
-        // if($debug) debug($request);
 
         $supplier_organization_id = $request['supplier_organization_id'];
-        $select_import_fields = $request['select_import_fields'];
-        $is_first_row_header = $request['is_first_row_header'];
         $file_contents = $request['file_contents'];
+        $select_import_fields = $request['select_import_fields'];
 
         $articlesTable = TableRegistry::get('Articles');
         $validator = $articlesTable->getValidator();
+        
+        /*         
+         * dati produttore, ottengo l'organization_id
+         */
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $where = ['id' => $supplier_organization_id];        
+        $suppliersOrganization = $suppliersOrganizationsTable->find()
+                                                            ->where($where)
+                                                            ->first();
+        if(empty($suppliersOrganization))
+            dd("produttore non trovato con id [$supplier_organization_id]"); 
 
+        $datas = [];
+        // loop rows
+        foreach($file_contents as $numRow => $file_content_rows) {
+            // loop cols
+            foreach($file_content_rows as $numCol => $file_content) {
+                $field = $select_import_fields[$numCol];
+         
+                switch($field) {
+                    case 'codice-id':
+                        // il codice arriva codice-id per identificare la gestione di root con il produttore
+                        $field = 'codice';
+                        $datas[$numRow][$field] = trim($file_content);
+                    break;
+                    case 'qta_um':
+                        // nella medesima cella c'e' qta e um (1 KG)
+                        list($datas[$numRow]['qta'], $datas[$numRow]['um']) = $this->_explodeQtaUm(trim($file_content));
+                    break;
+                    default:
+                        $datas[$numRow][$field] = trim($file_content);
+                    break;
+                }
+                // if($debug) debug($field.' - '.$file_content);                
+            } // loop cols
+
+            /*
+            * decorate datas
+            */
+            $datas[$numRow] += $this->_decorate($suppliersOrganization->organization_id, $supplier_organization_id, $datas[$numRow]);
+          
+            /*
+            * validazione
+            */   
+            $validationResults = $validator->errors($datas[$numRow]);
+            $row_errors = [];
+            if(!empty($validationResults)) {
+                $row_errors = $this->_humanErrors($validationResults);
+                $errors[$numRow] = $row_errors;
+            }    
+        } // loop rows
+
+        if(!empty($errors)) {
+            $results['esito'] = false;
+            $results['code'] = 200;
+            $results['errors'] = $errors;
+            return $results;             
+        }
+
+        /*
+         * validazione OK => setto flag_presente_articlesorders a N
+         */
+        $where = ['organization_id' => $suppliersOrganization->organization_id,
+        'supplier_organization_id' => $supplier_organization_id];
+        $articlesTable->updateAll(['flag_presente_articlesorders' => 'N'], $where);
+     
+        /*
+         * validazione OK => importo
+        */
+
+        foreach($datas as $numRow => $data) {
+
+            $where = ['codice' => $data['codice'],
+                        'organization_id' => $suppliersOrganization->organization_id,
+                        'supplier_organization_id' => $supplier_organization_id];        
+            $article = $articlesTable->find()
+                                ->where($where)
+                                ->first();
+            if(empty($article)) {
+                $article = $articlesTable->newEntity();
+                $data['id'] = $this->getMax($articlesTable, 'id', ['organization_id' => $suppliersOrganization->organization_id]);
+                $data['id']++;
+            }
+            $article = $articlesTable->patchEntity($article, $data);
+            // dd($article);
+            if (!$articlesTable->save($article)) {
+                Log::error($article->getErrors());
+                // dd($article->getErrors());
+                continue;
+            }
+        } // end loop datas
+
+        return $results;
+    }    
+
+    /*
+    * importazione da parte dei gasisti
+    */    
+    private function _importToGas($request) {
+
+        $errors = [];
+
+        $results = [];
+        $results['esito'] = true;
+        $results['code'] = 200;
+        $results['errors'] = '';
+
+        $supplier_organization_id = $request['supplier_organization_id'];
+        $file_contents = $request['file_contents'];
+        $select_import_fields = $request['select_import_fields'];
+
+        $articlesTable = TableRegistry::get('Articles');
+        $validator = $articlesTable->getValidator();
+        
         $datas = [];
         // loop rows
         foreach($file_contents as $numRow => $file_content_rows) {
@@ -150,29 +291,7 @@ class ArticlesImportController extends ApiAppController
                 /*
                 * decorate datas
                 */
-                $datas[$numRow]['organization_id'] = $this->_organization->id;
-                $datas[$numRow]['supplier_organization_id'] = $supplier_organization_id;
-                $datas[$numRow]['alert_to_qta'] = 0;
-                if(isset($datas[$numRow]['prezzo'])) $datas[$numRow]['prezzo'] = $this->convertImport($datas[$numRow]['prezzo']);
-                if(!isset($datas[$numRow]['bio'])) $datas[$numRow]['bio'] = 'N';
-                else $datas[$numRow]['bio'] = $this->_translateSiNo($datas[$numRow]['bio']);
-                if(!isset($datas[$numRow]['pezzi_confezione'])) $datas[$numRow]['pezzi_confezione'] = 1;
-                if(!isset($datas[$numRow]['um'])) $datas[$numRow]['um'] = 'PZ';
-                if(!isset($datas[$numRow]['um_riferimento'])) $datas[$numRow]['um_riferimento'] = 'PZ';
-                if(!isset($datas[$numRow]['qta'])) $datas[$numRow]['qta'] = 1.00;
-                if(!isset($datas[$numRow]['qta_massima'])) $datas[$numRow]['qta_massima'] = 0;
-                if(!isset($datas[$numRow]['qta_minima'])) $datas[$numRow]['qta_minima'] = 1;
-                if(!isset($datas[$numRow]['qta_multipli'])) $datas[$numRow]['qta_multipli'] = 1;
-                if(!isset($datas[$numRow]['qta_minima_order'])) $datas[$numRow]['qta_minima_order'] = 0;
-                if(!isset($datas[$numRow]['qta_massima_order'])) $datas[$numRow]['qta_massima_order'] = 0;
-                if(!isset($datas[$numRow]['stato'])) $datas[$numRow]['stato'] = 'Y';
-                if(!isset($datas[$numRow]['flag_presente_articlesorders'])) $datas[$numRow]['flag_presente_articlesorders'] = 'Y'; 
-                else $datas[$numRow]['flag_presente_articlesorders'] = $this->_translateSiNo($datas[$numRow]['flag_presente_articlesorders']);
-                if(!isset($datas[$numRow]['category_article_id'])) {
-                    // estraggo la categoria di default
-                    $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
-                    $datas[$numRow]['category_article_id'] = $categoriesArticlesTable->getIsSystemId($this->_user, $this->_organization->id); 
-                }
+                $datas[$numRow] += $this->_decorate($this->_organization->id, $supplier_organization_id, $datas[$numRow]);
 
                 /*
                 * validazione
@@ -190,7 +309,7 @@ class ArticlesImportController extends ApiAppController
             $results['esito'] = false;
             $results['code'] = 200;
             $results['errors'] = $errors;
-            return $this->_response($results);             
+            return $results;             
         }
 
         /*
@@ -226,11 +345,61 @@ class ArticlesImportController extends ApiAppController
             }
         } // end loop datas
 
-        $results['esito'] = true;
-        $results['code'] = 200;
-        $results['errors'] = $errors;
-        return $this->_response($results);          
+        return $results;
     }    
+
+    /* 
+     * setto tutti i campi dell'articolo impostando se non presente quelli di default
+     */
+    private function _decorate($organization_id, $supplier_organization_id, $datas) {
+        
+        $datas['organization_id'] = $organization_id;
+        $datas['supplier_organization_id'] = $supplier_organization_id;
+
+        $datas['alert_to_qta'] = 0;
+        if(isset($datas['prezzo'])) $datas['prezzo'] = $this->convertImport($datas['prezzo']);
+        else $datas['prezzo'] = 0;
+        if(!isset($datas['bio'])) $datas['bio'] = 'N';
+        else $datas['bio'] = $this->_translateSiNo($datas['bio']);
+        if(!isset($datas['pezzi_confezione'])) $datas['pezzi_confezione'] = 1;
+        if(!isset($datas['um'])) $datas['um'] = 'PZ';
+        if(!isset($datas['um_riferimento'])) $datas['um_riferimento'] = 'PZ';
+        if(!isset($datas['qta'])) $datas['qta'] = 1.00;
+        if(!isset($datas['qta_massima'])) $datas['qta_massima'] = 0;
+        if(!isset($datas['qta_minima'])) $datas['qta_minima'] = 1;
+        if(!isset($datas['qta_multipli'])) $datas['qta_multipli'] = 1;
+        if(!isset($datas['qta_minima_order'])) $datas['qta_minima_order'] = 0;
+        if(!isset($datas['qta_massima_order'])) $datas['qta_massima_order'] = 0;
+        if(!isset($datas['stato'])) $datas['stato'] = 'Y';
+        if(!isset($datas['flag_presente_articlesorders'])) $datas['flag_presente_articlesorders'] = 'Y'; 
+        else $datas['flag_presente_articlesorders'] = $this->_translateSiNo($datas['flag_presente_articlesorders']);
+        if(!isset($datas['category_article_id'])) {
+            // estraggo la categoria di default
+            $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
+            $datas['category_article_id'] = $categoriesArticlesTable->getIsSystemId($this->_user, $organization_id); 
+        }
+        return $datas;
+    }
+
+    /*
+     * $value = 1 KG
+     * return ['1', 'KG']
+     */
+    private function _explodeQtaUm($value) {
+
+        $results = [];
+        $results[] = 'INVALID';
+        $results[] = 'INVALID';
+
+        if(empty($value))
+            return $results;
+
+        if(strpos($value, ' ')!==false) {
+            $results = explode(' ', $value);
+        }
+        
+        return $results;
+    }
 
     private function _humanErrors($validationResults) {
         

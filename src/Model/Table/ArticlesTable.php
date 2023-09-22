@@ -99,12 +99,12 @@ class ArticlesTable extends Table
 
         $validator
             ->numeric('prezzo')
-            ->greaterThanOrEqual('prezzo', 0)
+            ->greaterThan('prezzo', 0)
             ->notEmptyString('prezzo');
 
         $validator
             ->numeric('qta')
-            ->greaterThanOrEqual('qta', 0)
+            ->greaterThan('qta', 0)
             ->notEmptyString('qta');
 
         $validator
