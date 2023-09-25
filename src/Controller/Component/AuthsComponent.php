@@ -63,7 +63,7 @@ class AuthsComponent extends Component {
         $pass = $request->pass;
         // dd($controller.' '.$action);
 
-        if(!$user->acl['isReferentGeneric'] && !$user->acl['isSuperReferente']) { 
+        if(empty($user) && !$user->acl['isReferentGeneric'] && !$user->acl['isSuperReferente']) { 
             $results['msg'] = __('msg_not_permission');
             return $results;
         } 

@@ -10,7 +10,7 @@ echo $this->element('menu-order', ['order' => $order]);
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user, $parent, $order);
 // debug($htmlCustomSiteOrders);
 
-echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('ordersForm.js?v=20230925', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list-orders'], $order);
 ?>

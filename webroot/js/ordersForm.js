@@ -156,9 +156,13 @@ OrdersForm.prototype = {
                 $('#gas-group-deliveries').show();
                 console.log(response);
 
+                let devlivey_default = $('#delivery-id').val();
+                let selected = '';
                 $('#delivery-id').html('');
                 $.each(response, function(key, value){
-                    $('#delivery-id').append('<option value="'+key+'">'+value+'</option>');
+                    selected = '';
+                    if(devlivey_default==key) selected = 'selected';
+                    $('#delivery-id').append('<option value="'+key+'" '+selected+'>'+value+'</option>');
                 });
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

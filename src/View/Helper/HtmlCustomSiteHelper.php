@@ -141,24 +141,26 @@ class HtmlCustomSiteHelper extends FormHelper
                         
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
                         <div class="col-sm-4">Dal '.$results->data_inizio.' al '.$results->data_fine.'</div>
-                    </div>
+                    </div>';
 
-                    <div class="form-group">
+    if(!empty($results->suppliers_organization)) {
+        $html .= '<div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('SupplierOrganization').'</label>
                         <div class="col-sm-4">
                             <a href="/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">'.$results->suppliers_organization->name.'</a></div>
                         
                         <label class="col-sm-2 control-label" style="padding-top:0px"></label>
                         <div class="col-sm-4">';
-            if(!empty($url)) 
-                $html .= '<img src="'.$url.'" alt="'.$results->suppliers_organization->name.'" title="'.$results->suppliers_organization->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" />';
+        if(!empty($url)) 
+            $html .= '<img src="'.$url.'" alt="'.$results->suppliers_organization->name.'" title="'.$results->suppliers_organization->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" />';
 
-                $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">'.__('ArticlesOwner'.$results->suppliers_organization->owner_articles).'</span></div>';
-                        
-                $html .= '</div>
-                    </div>
+            $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">'.__('ArticlesOwner'.$results->suppliers_organization->owner_articles).'</span></div>';
+                    
+            $html .= '</div>
+                </div>';
+    } // end if(!empty($results->suppliers_organization))
 
-                    <div class="form-group">
+    $html .= '<div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
                         <div class="col-sm-10">
                             <div style="padding-left:45px;min-height:48px;" class="action orderStato'.$results->order_state_code->code.'" title="'.$results->order_state_code->name.'">'.$results->order_state_code->descri.'</div>

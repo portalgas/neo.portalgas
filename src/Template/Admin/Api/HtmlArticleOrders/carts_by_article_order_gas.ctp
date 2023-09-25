@@ -11,7 +11,8 @@ use Cake\Core\Configure;
         echo '<div class="row">';
         echo '<div class="col col-md-6 col-6">';
         if(!empty($result['img1'])) {
-            echo '<img src="'.$result['img1'].'" width="'.$result['img1_witdh'].'"/>';
+            isset($result['img1_witdh']) ? $img1_witdh = 'width="'.$result['img1_witdh'].'"': $img1_witdh = '';
+            echo '<img src="'.$result['img1'].'" '.$img1_witdh.' />';
         } 
         echo "</div>";
         echo '<div class="col col-md-6 col-6">';

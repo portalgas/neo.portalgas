@@ -8,7 +8,7 @@ $user = $this->Identity->get();
 $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $user, $parent, $order);
 // debug($htmlCustomSiteOrders);
 
-echo $this->Html->script('ordersForm', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('ordersForm?v=20230925', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Add')], ['home', 'list-orders'], $order);
 ?>
