@@ -23,11 +23,17 @@ class CashierComponent extends Component {
     }
 
 	public function getListDeliveries($user, $debug=false) {
-
+          
+        // gasGroups
+        if(isset($user->organization->paramsConfig['hasGasGroups']) && 
+            $user->organization->paramsConfig['hasGasGroups']=='Y') {
+            $this->_where['Deliveries']['Deliveries.type'] = 'GAS-GROUP';
+        }
+        
         $deliveriesTable = TableRegistry::get('Deliveries');
 
         $results = $deliveriesTable->gets($user, $user->organization->id, $this->_where);
-        $results = $deliveriesTable->getsList($results);
+        $results = $deliveriesTable->getsList($results);    
 
 		if($debug) debug($results);
 		
