@@ -73,7 +73,10 @@ class OrdersGasParentGroupsToArticlesDecorator extends AppDecorator {
 						$this->results[$article_order->article_id]->cart->is_qta_mod = false;
 					}
 					if($cart->importo_forzato > 0) {
-						$this->results[$article_order->article_id]->cart->final_price += $cart->importo_forzato;
+						if(!isset($this->results[$article_order->article_id]->cart->final_price))
+							$this->results[$article_order->article_id]->cart->final_price = $cart->importo_forzato;
+						else 
+							$this->results[$article_order->article_id]->cart->final_price += $cart->importo_forzato;
 						$this->results[$article_order->article_id]->cart->is_import_mod = true;
 					}
 					else {
