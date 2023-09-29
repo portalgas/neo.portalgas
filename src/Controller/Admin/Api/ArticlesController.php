@@ -385,12 +385,14 @@ class ArticlesController extends ApiAppController
             return $this->_response($results);            
         }        
 
-        $config = Configure::read('Config');
-        $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $organization_id, $article->img1);
-        if($debug) debug('img_path '.$img_path);
+        if(!empty($article->img1)) {
+            $config = Configure::read('Config');
+            $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $organization_id, $article->img1);
+            if($debug) debug('img_path '.$img_path);
 
-        // elimino file
-        unlink($img_path);
+            // elimino file
+            unlink($img_path);
+        } // end if(!empty($article->img1))
 
         $datas = [];
         $datas['img1'] = '';
