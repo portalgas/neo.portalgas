@@ -868,6 +868,30 @@ msgstr "Il file da uplodare non trovato!"
 msgid "This upload failed"
 msgstr "Il file non può essere caricato sul server"
 
+msgid "upload_invalid_filetype"
+msgstr "Estensione del file non consentita"
+
+msgid "upload_file_exceeds_limit"
+msgstr "upload_file_exceeds_limit"
+
+msgid "upload_file_exceeds_form_limit"
+msgstr "upload_file_exceeds_form_limit"
+
+msgid "upload_file_partial"
+msgstr "upload_file_partial"
+
+msgid "upload_no_temp_directory"
+msgstr "Cartella temponanea non trovata!"
+
+msgid "upload_unable_to_write_file"
+msgstr "File temporaneo non scrivibile"
+
+msgid "upload_stopped_by_extension"
+msgstr "upload_stopped_by_extension"
+
+msgid "upload_no_file_selected"
+msgstr "Nessun file selezionato"
+
 msgid "UploadValidateOk"
 msgstr "Il file caricato sul server"
 

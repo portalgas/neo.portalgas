@@ -69,7 +69,7 @@ h3.box-title {
 }
 </style>    
 <?php
-echo $this->Html->script('vue/articlesImport', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articlesImport.js?v=20230929', ['block' => 'scriptPageInclude']);
 
 echo $this->Html->script('jquery/ui/jquery-ui.min', ['block' => 'scriptPageInclude']); 
 echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']); 

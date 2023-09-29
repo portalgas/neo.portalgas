@@ -28,9 +28,21 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
     echo '</div>';
     echo '</div>'; // row 
 
+    /*
+     * esito upload
+     * */
+    echo '<div class="alert alert-danger" v-if="uploadResults.length>0">
+        <ul>
+            <li v-for="uploadResult in uploadResults">
+            {{ uploadResult }}
+            </li>
+        </ul>
+        </div>';
+
     echo '<div class="row" style="margin-bottom:15px;">';
     echo '<div class="col-md-12">';
     echo '<div class="dropzone" id="my-dropzone"></div>';
+    echo '<small>Estensione del file consentito: .xlsx</small>';
     echo '</div>';
     echo '</div>'; // row  
     
@@ -128,7 +140,7 @@ Dropzone.options.myDropzone = { // camelized version of the `id`
     addRemoveLinks: true,
     uploadMultiple:false,
     maxFiles: 1,
-    acceptedFiles: '.xlsx',
+    acceptedFiles: '.xlsx, .xls',
     paramName: 'file', // The name that will be used to transfer the file
     maxFilesize: 5, // MB
     init: function() {

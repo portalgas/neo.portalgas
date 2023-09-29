@@ -34,6 +34,7 @@ $(function () {
         file_metadatas: [],
         is_run: true,
         validazioneResults: [],
+        uploadResults: [],
         importResult: false
       },  
       methods: {
@@ -47,6 +48,7 @@ $(function () {
           this.file_metadatas = [];
           this.is_run = false;
           this.validazioneResults = [];
+          this.uploadResults = [];
         },
         toggleIsFirstRowHeader: function() {
           this.is_first_row_header = !this.is_first_row_header;
@@ -169,8 +171,9 @@ $(function () {
               * se ho cambiato qualche configurazione delle colonne
               * pulisco la validazione delle ok_step3
               */
-              _this.validazioneResults = [];
-              _this.importResult = false;
+             _this.uploadResults = [];
+             _this.validazioneResults = [];
+             _this.importResult = false;
           }
         },
         setDroppable: async function() {
@@ -214,20 +217,23 @@ $(function () {
                     init: function() {
                       this.on('success', function(file, response) {
                           
-                          _this.file_errors = [];
-                          _this.file_contents = [];
-                          _this.file_metadatas = [];
+                        console.log(response, 'upload');
 
-                          /*
-                          * se carico un nuovo file
-                          * pulisco la validazione delle ok_step3
-                          */
-                          _this.validazioneResults = [];
-                          _this.importResult = false;
+                        _this.file_errors = [];
+                        _this.file_contents = [];
+                        _this.file_metadatas = [];
 
-                          _this.is_first_row_active = false; 
+                        /*
+                         * se carico un nuovo file
+                         * pulisco la validazione delle ok_step3
+                         */
+                        _this.uploadResults = [];
+                        _this.validazioneResults = [];
+                        _this.importResult = false;
 
-                          if(response.esito) {
+                        _this.is_first_row_active = false; 
+
+                        if(response.esito) {
                             _this.file_contents = response.results;
                             /*
                              * prima riga dell'.xlsx e' intestazione
@@ -242,13 +248,23 @@ $(function () {
                               _this.setDroppable();
                               _this.num_excel_fields = $('tr#droppable th').length;
                             }, 10);                             
-                          }
-                          else 
-                            _this.file_errors = response.errors;
+                        }
+                        else {
+                          console.log(response.errors, 'upload response.errors');
+                          _this.file_errors = response.errors;
+                          _this.uploadResults = response.errors;
+                        }
                       });
                       this.on('removedfile', function(file) {
                         _this.is_first_row_active = true; 
-                    });                      
+                      }); 
+                      this.on('error', function(file, errorMessage) {
+                         console.error(errorMessage, 'errorMessage');
+                         if(typeof errorMessage.message !== 'undefined') {
+                            _this.file_errors = errorMessage.message;
+                            _this.uploadResults.push(errorMessage.message); 
+                         }
+                      });                      
                     }
                   });
               }
@@ -288,6 +304,7 @@ $(function () {
             file_contents: _this.file_contents,
           };
           
+          _this.uploadResults = [];
           _this.validazioneResults = [];
           _this.importResult = false;
 
@@ -301,13 +318,17 @@ $(function () {
               },                
               success: function (response) {
                   response = JSON.parse(response);
-                  // console.log(response, 'import'); 
-                  if (response.code==200) {
+                  console.log(response, 'import'); 
+                  if (response.esito) {
+                    _this.importResult = true;
+                  }
+                  else {
                     _this.validazioneResults = response.errors;
                     if(response.errors.length==0) {
                       _this.importResult = true;
-                    }
+                    }                    
                   }
+
               },
               error: function (e) {
                   console.error(e, 'import');

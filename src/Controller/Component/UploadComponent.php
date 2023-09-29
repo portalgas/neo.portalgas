@@ -418,28 +418,28 @@ class UploadComponent extends Component {
 			switch ($error)
 			{
 				case UPLOAD_ERR_INI_SIZE:
-					$this->set_error('upload_file_exceeds_limit', 'info');
+					$this->set_error(__('upload_file_exceeds_limit'), 'info');
 					break;
 				case UPLOAD_ERR_FORM_SIZE:
-					$this->set_error('upload_file_exceeds_form_limit', 'info');
+					$this->set_error(__('upload_file_exceeds_form_limit'), 'info');
 					break;
 				case UPLOAD_ERR_PARTIAL:
-					$this->set_error('upload_file_partial', 'debug');
+					$this->set_error(__('upload_file_partial'), 'debug');
 					break;
 				case UPLOAD_ERR_NO_FILE:
-					$this->set_error('upload_no_file_selected', 'debug');
+					$this->set_error(__('upload_no_file_selected'), 'debug');
 					break;
 				case UPLOAD_ERR_NO_TMP_DIR:
-					$this->set_error('upload_no_temp_directory', 'error');
+					$this->set_error(__('upload_no_temp_directory'), 'error');
 					break;
 				case UPLOAD_ERR_CANT_WRITE:
-					$this->set_error('upload_unable_to_write_file', 'error');
+					$this->set_error(__('upload_unable_to_write_file'), 'error');
 					break;
 				case UPLOAD_ERR_EXTENSION:
-					$this->set_error('upload_stopped_by_extension', 'debug');
+					$this->set_error(__('upload_stopped_by_extension'), 'debug');
 					break;
 				default:
-					$this->set_error('upload_no_file_selected', 'debug');
+					$this->set_error(__('upload_no_file_selected'), 'debug');
 					break;
 			}
 
@@ -465,7 +465,7 @@ class UploadComponent extends Component {
 		// Is the file type allowed to be uploaded?
 		if ( ! $this->is_allowed_filetype())
 		{
-			$this->set_error('upload_invalid_filetype', 'debug');
+			$this->set_error(__('upload_invalid_filetype'), 'debug');
 			return FALSE;
 		}
 		
