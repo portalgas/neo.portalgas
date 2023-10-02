@@ -37,15 +37,15 @@ use Cake\Core\Configure;
                         <template v-if="select_import_fields[num_col]==\'bio\' || 
                                         select_import_fields[num_col]==\'flag_presente_articlesorders\'">
                             
-                            <div v-if="col!=\'si\' && col!=\'no\'" class="alert alert-danger">
+                            <div v-if="col.toLowerCase()!=\'si\' && col.toLowerCase()!=\'no\'" class="alert alert-danger">
                                 mi aspetto si / no, mentre è <b>{{col}}</b>
                             </div>
                             <div v-else>
                                 <label class="radio-inline" :for="select_import_fields[num_col]+\'-Y-\'+num_row+\'-\'+num_col">
-                                    <input type="radio" :id="select_import_fields[num_col]+\'-Y-\'+num_row+\'-\'+num_col" :name="select_import_fields[num_col]+\'-Y-\'+num_row+\'-\'+num_col" value="si" v-model="file_contents[num_row][num_col]" /> Si
+                                    <input type="radio" :id="select_import_fields[num_col]+\'-Y-\'+num_row+\'-\'+num_col" :name="select_import_fields[num_col]+\'-Y-\'+num_row+\'-\'+num_col" value="si" v-model="file_contents[num_row][num_col].toLowerCase()" /> Si
                                 </label>
                                 <label class="radio-inline" :for="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col">
-                                    <input type="radio" :id="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col" :name="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col" value="no" v-model="file_contents[num_row][num_col]" /> No
+                                    <input type="radio" :id="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col" :name="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col" value="no" v-model="file_contents[num_row][num_col].toLowerCase()" /> No
                                 </label>
                             </div>                        
                         </template>

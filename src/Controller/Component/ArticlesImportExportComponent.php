@@ -7,7 +7,9 @@ use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet; 
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Csv as CsvReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use Cake\Controller\ComponentRegistry;
 
 class ArticlesImportExportComponent extends Component {
@@ -169,7 +171,22 @@ class ArticlesImportExportComponent extends Component {
         if(!file_exists($file_path))
             return $results;
 
-        $reader = new XlsxReader();
+        $ext = pathinfo($file_path, PATHINFO_EXTENSION);
+        switch(strtolower($ext)) {
+            case 'csv':  // todo
+                $reader = new CsvReader();
+            break;
+            case 'xls':
+                $reader = new XlsReader();
+            break;
+            case 'xlsx':
+                $reader = new XlsxReader();
+            break;
+            default:
+                return false;
+            break;
+        }
+
         $spreadsheet = $reader->load($file_path);
         $worksheet = $spreadsheet->getActiveSheet();
         $results = $worksheet->toArray();

@@ -42,7 +42,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
     echo '<div class="row" style="margin-bottom:15px;">';
     echo '<div class="col-md-12">';
     echo '<div class="dropzone" id="my-dropzone"></div>';
-    echo '<small>Estensione del file consentito: .xlsx</small>';
+    echo '<small>Estensioni dei file consentiti: .xlsx .xls</small>';
     echo '</div>';
     echo '</div>'; // row  
     

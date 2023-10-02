@@ -45,7 +45,7 @@ class ArticlesImportController extends ApiAppController
         */
         $config_upload = [] ;
         $config_upload['upload_path']    = TMP.'import';          
-        $config_upload['allowed_types']  = ['xlsx'];
+        $config_upload['allowed_types']  = ['xlsx', 'xls'];
         $config_upload['max_size']       = 0;   
         $config_upload['overwrite']      = true;
         $config_upload['encrypt_name']  = true;
@@ -176,8 +176,8 @@ class ArticlesImportController extends ApiAppController
             /*
             * decorate datas
             */
-            $datas[$numRow] += $this->_decorate($suppliersOrganization->organization_id, $supplier_organization_id, $datas[$numRow]);
-          
+            $datas[$numRow] = array_merge($datas[$numRow], $this->_decorate($this->_organization->id, $supplier_organization_id, $datas[$numRow]));
+     
             /*
             * validazione
             */   
@@ -291,8 +291,8 @@ class ArticlesImportController extends ApiAppController
                 /*
                 * decorate datas
                 */
-                $datas[$numRow] += $this->_decorate($this->_organization->id, $supplier_organization_id, $datas[$numRow]);
-
+                $datas[$numRow] = array_merge($datas[$numRow], $this->_decorate($this->_organization->id, $supplier_organization_id, $datas[$numRow]));
+                
                 /*
                 * validazione
                 */
@@ -378,6 +378,7 @@ class ArticlesImportController extends ApiAppController
             $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
             $datas['category_article_id'] = $categoriesArticlesTable->getIsSystemId($this->_user, $organization_id); 
         }
+
         return $datas;
     }
 
