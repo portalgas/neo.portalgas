@@ -138,7 +138,7 @@ class OrdersSocialMarketTable extends OrdersTable implements OrderTableInterface
                 ],
                 'Deliveries' => ['conditions' => $where_delivery]
             ])
-            ->order([$this->getAlias().'.data_inizio'])
+            ->order([$this->getAlias().'.data_inizio', 'SuppliersOrganizations.name desc'])
             ->all();
         // debug($results);
 

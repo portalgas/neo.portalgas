@@ -132,7 +132,7 @@ class OrdersController extends ApiAppController
                     ]
                 ])
                 ->where($where)
-                ->order(['Orders.data_inizio'])
+                ->order(['Orders.data_inizio', 'SuppliersOrganizations.name'])
                 ->all();
         }
 
