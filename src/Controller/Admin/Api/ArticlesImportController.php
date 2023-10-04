@@ -267,21 +267,31 @@ class ArticlesImportController extends ApiAppController
             */
             $id_errors = [];
             if(isset($datas[$numRow]['id'])) {
-                // update  
-                $where = ['id' => $datas[$numRow]['id'],
-                        'organization_id' => $this->_organization->id,
-                        'supplier_organization_id' => $supplier_organization_id];
-                $article = $articlesTable->find()
-                                    ->where($where)
-                                    ->first();
-                if(empty($article)) {
+
+                if(is_string($datas[$numRow]['id'])) {
                     $id_errors[0]['field'] = 'id';
                     $id_errors[0]['field_human'] =  __('import-article-id');
-                    $id_errors[0]['error'] = "Articolo con identificativo ".$datas[$numRow]['id']." non trovato";
-                    $errors[$numRow] = $id_errors;
-                } 
+                    $id_errors[0]['error'] = "Dev'essere un numero";
+                    $errors[$numRow] = $id_errors;                    
+                }
                 else {
-                    $datas[$numRow] = array_merge($article->toArray(), $datas[$numRow]);
+                    // update  
+                    $where = ['id' => $datas[$numRow]['id'],
+                            'organization_id' => $this->_organization->id,
+                            'supplier_organization_id' => $supplier_organization_id];
+                    $article = $articlesTable->find()
+                                        ->where($where)
+                                        ->first();
+                    if(empty($article)) {
+                        $id_errors[0]['field'] = 'id';
+                        $id_errors[0]['field_human'] =  __('import-article-id');
+                        $id_errors[0]['error'] = "Articolo con identificativo ".$datas[$numRow]['id']." non trovato";
+                        $errors[$numRow] = $id_errors;
+                    } 
+                    else {
+                        $datas[$numRow] = array_merge($article->toArray(), $datas[$numRow]);
+                    }
+
                 }
             } // if(isset($datas[$numRow]['id']))
                 
