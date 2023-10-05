@@ -74,7 +74,7 @@ class ArticlesImportController extends ApiAppController
         }
 
         $file_content = $this->ArticlesImportExport->read($upload_results['full_path']);
-        
+ 
         $articles = new ArticlesImportExportDecorator($file_content);
         $file_content = $articles->results;
 
@@ -99,7 +99,7 @@ class ArticlesImportController extends ApiAppController
         if(empty($select_import_fields)) {
             dd("select_import_fields required!");
         }
-
+    
         if(in_array('codice-id', $select_import_fields)) {
             /*
             * importazione da root dei produttori (ex OfficinaNaturae)
@@ -253,11 +253,11 @@ class ArticlesImportController extends ApiAppController
         
         $datas = [];
         // loop rows
-        foreach($file_contents as $numRow => $file_content_rows) {
+        foreach($file_contents as $numRow => $file_content_rows) {    
             // loop cols
             foreach($file_content_rows as $numCol => $file_content) {
                 $field = $select_import_fields[$numCol];
-                
+            
                 $datas[$numRow][$field] = trim($file_content);
                 // if($debug) debug($field.' - '.$file_content);                
             } // loop cols

@@ -175,6 +175,7 @@ class ArticlesImportExportComponent extends Component {
         switch(strtolower($ext)) {
             case 'csv':  // todo
                 $reader = new CsvReader();
+                $reader->castFormattedNumberToNumeric(true); // Locale with comma as decimal separator
             break;
             case 'xls':
                 $reader = new XlsReader();
@@ -187,9 +188,23 @@ class ArticlesImportExportComponent extends Component {
             break;
         }
 
+        /*  
+         * per gestire i float in 1,00
+         * comand ubuntu locale -a
+         * setlocale(LC_ALL, 'it_IT@euro', 'it_IT', 'it', 'italian');
+         * 
+         * date_default_timezone_set('Europe/Rome');
+         * setlocale(LC_MONETARY, 'it_IT.UTF-8');
+         * setlocale(LC_NUMERIC, 'it_IT.UTF-8');
+         * 
+         * doesn't work, workaround in 
+         * articlesImport.js se la colonna e' imposta a prezzo sostituisco . con ,
+        */        
+        $validLocale = \PhpOffice\PhpSpreadsheet\Settings::setLocale('it');
         $spreadsheet = $reader->load($file_path);
         $worksheet = $spreadsheet->getActiveSheet();
         $results = $worksheet->toArray();
+       
         return $results;
     }
 }

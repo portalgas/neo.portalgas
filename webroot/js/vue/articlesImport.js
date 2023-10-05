@@ -118,6 +118,19 @@ $(function () {
           // console.log(index+' '+option_field_select, 'option_field_select');
           if(debug) console.log(_this.num_excel_fields, '_this.num_excel_fields');
 
+          /*
+           * workaround, se la colonna e' imposta a prezzo
+           * sostituisco . con ,
+          */
+         let val = '';
+         if(option_field_select=='prezzo') {
+            $.each( _this.file_contents, function(num_row, value) {
+              val = _this.file_contents[num_row][index] = _this.file_contents[num_row][index];
+              val = val.replace('.', ',').replace('€', '').trim();
+              _this.file_contents[num_row][index] = val;
+            });
+         }
+
           /* 
            * x ogni select estraggo il valore scelto
            */
