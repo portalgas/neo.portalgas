@@ -216,8 +216,9 @@ $(function () {
           let prezzo = this.articles[index].prezzo_;
           prezzo = this.numberToJs(prezzo);
           let qta = this.articles[index].qta;
+          qta = this.numberToJs(qta);
           let prezzo_um_riferimento = (prezzo / qta);
-          console.log(prezzo_um_riferimento, 'prezzo_um_riferimento');
+          console.log(prezzo_um_riferimento, 'changeUM prezzo_um_riferimento');
   
           let um_rif_values = [];
           let um_rif_values_prezzo = 0;
@@ -318,11 +319,11 @@ $(function () {
         },
         changeValue: function(event, index) {
           console.log(event.target, 'changeValue');
-          console.log('changeValue index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
+          console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
 
-          let field_id = event.target.id;
-          let field_name = event.target.name;
-          let field_value = event.target.value;
+          let field_id = event.target.id;  // um_rif_values-DL
+          let field_name = event.target.name; // um_riferimento
+          let field_value = event.target.value; // DL
 
           this.setValue(field_id, field_name, field_value, index);
         },

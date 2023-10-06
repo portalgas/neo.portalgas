@@ -346,6 +346,7 @@ class ArticlesImportController extends ApiAppController
                 $data['id'] = $this->getMax($articlesTable, 'id', ['organization_id' => $this->_organization->id]);
                 $data['id']++;
             }
+            // debug($data);
             $article = $articlesTable->patchEntity($article, $data);
             // dd($article);
             if (!$articlesTable->save($article)) {
@@ -373,7 +374,7 @@ class ArticlesImportController extends ApiAppController
         else $datas['bio'] = $this->_translateSiNo($datas['bio']);
         if(!isset($datas['pezzi_confezione'])) $datas['pezzi_confezione'] = 1;
         if(!isset($datas['um'])) $datas['um'] = 'PZ';
-        if(!isset($datas['um_riferimento'])) $datas['um_riferimento'] = 'PZ';
+        if(!isset($datas['um_riferimento'])) $datas['um_riferimento'] = $datas['um'];
         if(!isset($datas['qta'])) $datas['qta'] = 1.00;
         if(!isset($datas['qta_massima'])) $datas['qta_massima'] = 0;
         if(!isset($datas['qta_minima'])) $datas['qta_minima'] = 1;
