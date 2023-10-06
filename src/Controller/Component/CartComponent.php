@@ -55,7 +55,7 @@ class CartComponent extends CartSuperComponent {
         if(Configure::read('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
         $qta_new = (int)$articles_order['cart']['qta_new'];
         if(Configure::read('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
-
+      
         /*
          * action
          */
@@ -207,27 +207,35 @@ class CartComponent extends CartSuperComponent {
                         $cart = $cartsTable->find()
                                        ->where($where)
                                        ->first();
-
-                        $data = [];
-                        $data['qta'] = $qta_new;
-
-                        $cart = $cartsTable->patchEntity($cart, $data);
-                        if($debug) debug($cart);
-                        if(Configure::read('Logs.cart')) Log::write('debug', 'UPDATE CART DATA:');
-                        if(Configure::read('Logs.cart')) Log::write('debug', $cart);
-
-                        if (!$cartsTable->save($cart)) {
-                            if($debug) debug($cart->getErrors());
+                        if(empty($cart)) {
                             $results['esito'] = false;
                             $results['code'] = 500;
-                            $results['results'] = $cart->getErrors();
+                            $results['results'] = "Errore di sistema, carrello non trovato!";                            
+                            Log::write('error', 'cart empty');
+                            Log::write('error', $where);
                         }
-                        else {
-                            $results['esito'] = true;
-                            $results['code'] = 200;
-                            $results['msg'] = __('cart_msg_save_OK');
-                            $results['results'] = '';                
-                        }
+                        else {    
+                            $data = [];
+                            $data['qta'] = $qta_new;
+
+                            $cart = $cartsTable->patchEntity($cart, $data);
+                            if($debug) debug($cart);
+                            if(Configure::read('Logs.cart')) Log::write('debug', 'UPDATE CART DATA:');
+                            if(Configure::read('Logs.cart')) Log::write('debug', $cart);
+
+                            if (!$cartsTable->save($cart)) {
+                                if($debug) debug($cart->getErrors());
+                                $results['esito'] = false;
+                                $results['code'] = 500;
+                                $results['results'] = $cart->getErrors();
+                            }
+                            else {
+                                $results['esito'] = true;
+                                $results['code'] = 200;
+                                $results['msg'] = __('cart_msg_save_OK');
+                                $results['results'] = '';                
+                            }
+                        }  // end if(empty($cart))                             
                     }
                     else {
                         $results['esito'] = false;
