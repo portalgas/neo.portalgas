@@ -49,7 +49,7 @@ $js = "var categories_articles = $js_categories_articles;";
 if(!empty($search_supplier_organization_id))
   $js .= "var search_supplier_organization_id_default = $search_supplier_organization_id;";
 $this->Html->scriptBlock($js, ['block' => true]);
-echo $this->Html->script('vue/articles', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articles.js?v=20231006', ['block' => 'scriptPageInclude']);
 
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']); 
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']); 
