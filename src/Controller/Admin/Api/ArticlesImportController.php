@@ -79,7 +79,7 @@ class ArticlesImportController extends ApiAppController
         $file_content = $articles->results;
 
         // cancello file
-        // @unlink($upload_results['full_path']);
+        @unlink($upload_results['full_path']);
 
         $results['esito'] = true;
         $results['code'] = 200;
@@ -268,7 +268,12 @@ class ArticlesImportController extends ApiAppController
             $id_errors = [];
             if(isset($datas[$numRow]['id'])) {
 
-                if(is_string($datas[$numRow]['id'])) {
+                if(strpos($datas[$numRow]['id'], '.')!==false || strpos($datas[$numRow]['id'], ',')!==false) 
+                    $id_test = 'NOTVALID';
+                else
+                    $id_test = (int)$datas[$numRow]['id'];
+
+                if(is_string($id_test) || $id_test===0) {
                     $id_errors[0]['field'] = 'id';
                     $id_errors[0]['field_human'] =  __('import-article-id');
                     $id_errors[0]['error'] = "Dev'essere un numero";

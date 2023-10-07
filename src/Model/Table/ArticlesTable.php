@@ -8,6 +8,7 @@ use Cake\Validation\Validator;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use App\Decorator\CartDecorator;
+use App\Decorator\ApiArticleOrderDecorator;
 use App\Traits;
 
 class ArticlesTable extends Table
@@ -310,5 +311,40 @@ class ArticlesTable extends Table
             $results[$numResult] = $cart2->results;
         }
         return $results;
-    }        
+    }   
+    
+    /*
+     * dato un articolo controllo se associato ad evenuali ordini
+     * article_organization_id = puo' essere diverso dal GAS perche' e' chi gestisce l'articolo
+     */
+    public function getArticleInOrders($user, $organization_id, $article_organization_id, $article_id, $where=[], $orders=[], $debug = false) {
+
+        $where_orders = [];
+        if(isset($where['Orders']))
+            $where_orders = $where['Orders'];
+
+        $where = ['ArticlesOrders.organization_id' => $organization_id,
+                  'ArticlesOrders.article_organization_id' => $article_organization_id,
+                  'ArticlesOrders.article_id' => $article_id];
+
+        if($debug) debug($where);
+   
+        if(empty($orders))
+            $orders = ['Deliveries.data asc'];
+
+        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+        $articles_orders = $articlesOrdersTable->find()
+                        ->where($where)
+                        ->order($orders)
+                        ->contain([
+                            'Articles',
+                            'Orders' => [
+                                'conditions' => $where_orders,
+                                'Deliveries',
+                                'SuppliersOrganizations' => ['Suppliers']
+                            ]])
+                        ->all();
+
+        return $articles_orders;
+    }    
 }

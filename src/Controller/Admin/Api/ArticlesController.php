@@ -6,6 +6,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Decorator\ApiArticleDecorator;
 use App\Traits;
+use Cake\Log\Log;
 
 class ArticlesController extends ApiAppController
 {
@@ -172,6 +173,9 @@ class ArticlesController extends ApiAppController
         return $this->_response($results); 
     }    
 
+    /*
+     * da index-quick se cambio il valore di un campo lo aggiorno
+     */
     public function setValue() {
 
         $debug = false;
@@ -237,6 +241,45 @@ class ArticlesController extends ApiAppController
             $results['errors'] = $msg;
             return $this->_response($results); 
         }
+
+        /*
+         * aggiorno eventuali ordini associati all'articolo
+         */
+        // $this->Auths->isUserPermissionArticlesOrder($this->_user);
+        if($name=='name' || $name=='prezzo') {
+
+            $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+            $order_codes = $lifeCycleOrdersTable->getStateCodeNotUpdateArticle($this->_user);
+    
+            $where = [];
+            $where['Orders'] = ['Orders.state_code NOT IN' => $order_codes];
+            $articlesTable = TableRegistry::get('Articles');
+            $articles_orders = $articlesTable->getArticleInOrders($this->_user, $this->_organization->id, $article->organization_id, $article->id, $where);
+            if($articles_orders->count()>0) {
+                $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+                foreach($articles_orders as $articles_order) {
+                                    
+                    if($articles_order->organization_id!=$articles_order->article_organization_id) {
+                        // articolo non gestito dal GAS (ex produttore / des)
+                        continue;
+                    }
+    
+                    $articleOrder = $articlesOrdersTable->find()
+                                        ->where([
+                                            'organization_id' => $articles_order->organization_id, 
+                                            'order_id' => $articles_order->order_id, 
+                                            'article_organization_id' => $articles_order->article_organization_id, 
+                                            'article_id' => $articles_order->article_id])
+                                        ->first();
+                    $datas = [];
+                    $datas[$name] = $value;
+                    $articlesOrder = $articlesOrdersTable->patchEntity($articleOrder, $datas);
+                    if (!$articlesOrdersTable->save($articlesOrder)) {
+                        Log::write('error', $articlesOrder->getErrors());
+                    }
+                } // end foreach($articles_orders as $articles_order)
+            } // end if($articles_orders->count()>0) {
+        } // if($name=='name' || $name=='prezzo')
 
         $results['code'] = 200;
         $results['message'] = 'OK';

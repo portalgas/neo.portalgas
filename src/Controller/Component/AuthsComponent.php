@@ -39,12 +39,11 @@ class AuthsComponent extends Component {
      * verifica se un utente ha la gestione degli articoli sugli ordini
      * dipende da 
      *      - Organization.hasArticlesOrder
-     *      - User.hasArticlesOrder
      * 
      * anche in AppHelper, AppModel
      */ 
     public function isUserPermissionArticlesOrder($user) {
-        if (isset($user) && $user->organization->paramsConfig['hasArticlesOrder'] == 'Y' && $user->user->hasArticlesOrder == 'Y')
+        if (isset($user) && $user->organization->paramsConfig['hasArticlesOrder'] == 'Y')
             return true;
         else
             return false;
