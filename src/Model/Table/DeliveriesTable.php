@@ -267,7 +267,7 @@ class DeliveriesTable extends Table
         $deliveries = $this->gets($user, $organization_id, $where, $order, $debug);
         if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
             $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
-            if($gasGroupDeliveries->count()>0) {
+            if(!empty($gasGroupDeliveries)) {
                 if(count($deliveries)>0)
                     $deliveries = array_merge($deliveries, $gasGroupDeliveries);
                 else 
@@ -362,14 +362,17 @@ class DeliveriesTable extends Table
             $where_order += ['Orders.gas_group_id IN ' => array_keys($gasGroups)];
            
         $results = $this->find()
-                                    ->where($where_delivery)
-                                    ->contain(['Orders' => [
-                                        'conditions' => $where_order,
-                                        'SuppliersOrganizations' => ['Suppliers']]])
-                                    ->order($order)
-                                    ->all();
+                        ->where($where_delivery)
+                        ->contain(['Orders' => [
+                            'conditions' => $where_order,
+                            'SuppliersOrganizations' => ['Suppliers']]])
+                        ->order($order)
+                        ->all();
         if($results->count()>0) {
             $results = $results->toArray();
+        }
+        else {
+            $results = [];
         }
 
         return $results;
