@@ -267,7 +267,7 @@ class DeliveriesTable extends Table
         $deliveries = $this->gets($user, $organization_id, $where, $order, $debug);
         if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
             $gasGroupDeliveries = $this->getsGasGroups($user, $organization_id, $where);
-            if(!empty($gasGroupDeliveries)) {
+            if($gasGroupDeliveries->count()>0) {
                 if(count($deliveries)>0)
                     $deliveries = array_merge($deliveries, $gasGroupDeliveries);
                 else 
@@ -279,6 +279,7 @@ class DeliveriesTable extends Table
          * estraggo le consegne che hanno ordini
          */
         $i=0;
+        if(!empty($deliveries))
         foreach ($deliveries as $delivery) {
             if(!empty($delivery['orders'])) {
                 $results[$i] =  $delivery;

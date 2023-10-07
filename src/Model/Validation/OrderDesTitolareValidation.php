@@ -36,7 +36,7 @@ class OrderDesTitolareValidation extends Validation
         return true;  
     }  
 
-    public function dateDeliverytoDataFineMaxOrderDes($value, $context)
+    public static function dateDeliverytoDataFineMaxOrderDes($value, $context)
     { 
         // dd($context);  
         $organization_id = $context['data']['organization_id'];

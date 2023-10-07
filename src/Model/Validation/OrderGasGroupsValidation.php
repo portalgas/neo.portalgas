@@ -83,14 +83,14 @@ class OrderGasGroupsValidation extends Validation
             return true;  
     }
 
-    public function dateFine($value, $context)
+    public static function dateFine($value, $context)
     { 
         // debug($context);  
 
         $operator = '<=';
     	$value = $context['data']['data_fine']; 
         $value2 = $context['data']['parent_data_fine']; // 15/03/2023
-        
+
         if(empty($value2))
             return false;
 

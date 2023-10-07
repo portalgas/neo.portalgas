@@ -35,7 +35,7 @@ class OrderListener implements EventListenerInterface
         $cmd = sprintf($cmd, $organization_id, $debug, $order_id);
         exec($cmd);
 
-        Log::write('debug', 'OrderListener.setStatus '.$cmd);
+        // Log::write('debug', 'OrderListener.setStatus '.$cmd);
         
         // $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
         // $lifeCycleOrdersTable->stateCodeUpdate($user, $order, 'OPEN');
