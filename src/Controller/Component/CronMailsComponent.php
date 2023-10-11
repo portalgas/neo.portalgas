@@ -8,6 +8,7 @@ use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
 use App\Traits;
 Use Cake\Mailer\Email;
+use Cake\I18n\Time;
 
 class CronMailsComponent extends Component {
 
@@ -67,6 +68,7 @@ class CronMailsComponent extends Component {
                             ->where($where)
                             ->order(['Deliveries.data', 'Suppliers.name'])
                             ->all();
+                            
         if($orders->count()==0) {
             if($debug) echo "non ci sono ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderOpen')+1)." giorni \n";
             return false;
@@ -80,15 +82,23 @@ class CronMailsComponent extends Component {
         *   e' un ordine GasGroups, lo user fa parte del gruppo
         */
         $usersTable = TableRegistry::get('Users');
-        $where = ['username NOT LIKE' => '%portalgas.it'];        
+        $where = ['username NOT LIKE' => '%portalgas.it'];    
+        // debug barbara.pergreffi@alice.it
+        // $where = ['id' => 6798]; 
+
         $users = $usersTable->gets($_user, $_user->organization->id, $where);
         if($users->count()==0) {
             if($debug) echo "non ci sono utenti! \n";
             return false;
         }
 
-        foreach($users as $user) {
-            
+        foreach($users as $numResult => $user) {
+           
+            if($this->_debug) {
+                if($numResult==1)
+                    break;
+            };
+
             if(empty($user->email))
                 continue;
 
@@ -114,6 +124,7 @@ class CronMailsComponent extends Component {
                 $subject = trim($_user->organization->name).", ordini che si aprono oggi";												
 
             $email = new Email();
+            // debug $email->setTransport('aws-prod');
             $email->setTransport('aws');
             $email->viewBuilder()->setHelpers(['Html', 'Text'])
                                    ->setTemplate('users_orders_open', 'default'); // template / layout
@@ -132,10 +143,10 @@ class CronMailsComponent extends Component {
                 $email->send('');
             } catch (Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
+                Log::error('mailUsersOrdersOpen');
                 Log::error('Exception : ',  $e->getMessage());
             }  
 
-            if($this->_debug) exit;
         } // foreach($users as $user)
 
         /*
@@ -144,17 +155,18 @@ class CronMailsComponent extends Component {
         */        
         foreach($orders as $order) {
             
-            $order = $ordersTable->find()
+            $order_update = $ordersTable->find()
                         ->where(['organization_id' => $order->organization_id,
                                  'id' => $order->id])
-                        ->first();
+                        ->first();;
             $datas = [];
             $datas['mail_open_send'] = 'N';
-            $datas['mail_open_data'] = date('Y-m-d H:i:s');
-            $order = $ordersTable->patchEntity($order, $datas);
-            if(!$ordersTable->save($order)) {
-                debug($order->getErrors());
-                Log::error($order->getErrors());
+            $datas['mail_open_data'] = new Time(date('Y-m-d H:i:s'));
+            $order_update = $ordersTable->patchEntity($order_update, $datas);
+            if(!$ordersTable->save($order_update)) {
+                debug($order_update->getErrors());
+                Log::error('mailUsersOrdersOpen');
+                Log::error($order_update->getErrors());
             }            
         } // end foreach($orders as $order) 
     }
@@ -210,8 +222,13 @@ class CronMailsComponent extends Component {
             return false;
         }
 
-        foreach($users as $user) {
+        foreach($users as $numResult => $user) {
             
+            if($this->_debug) {
+                if($numResult==1)
+                    break;
+            };
+
             if(empty($user->email))
                 continue;
 
@@ -237,6 +254,7 @@ class CronMailsComponent extends Component {
                 $subject = trim($_user->organization->name).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";												
 
             $email = new Email();
+            // debug $email->setTransport('aws-prod');
             $email->setTransport('aws');
             $email->viewBuilder()->setHelpers(['Html', 'Text'])
                                    ->setTemplate('users_orders_close', 'default'); // template / layout
@@ -255,10 +273,10 @@ class CronMailsComponent extends Component {
                 $email->send('');
             } catch (Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
+                Log::error('mailUsersOrdersClose');
                 Log::error('Exception : ',  $e->getMessage());
             }  
 
-            if($this->_debug) exit;
         } // foreach($users as $user)
 
         /*
@@ -267,16 +285,17 @@ class CronMailsComponent extends Component {
         */        
         foreach($orders as $order) {
             
-            $order = $ordersTable->find()
+            $order_update = $ordersTable->find()
                         ->where(['organization_id' => $order->organization_id,
                                  'id' => $order->id])
                         ->first();
             $datas = [];
-            $datas['mail_close_data'] = date('Y-m-d H:i:s');
-            $order = $ordersTable->patchEntity($order, $datas);
-            if(!$ordersTable->save($order)) {
-                debug($order->getErrors());
-                Log::error($order->getErrors());
+            $datas['mail_close_data'] = new Time(date('Y-m-d H:i:s'));
+            $order_update = $ordersTable->patchEntity($order_update, $datas);
+            if(!$ordersTable->save($order_update)) {
+                debug($order_update->getErrors());
+                Log::error('mailUsersOrdersClose');
+                Log::error($order_update->getErrors());
             }            
         } // end foreach($orders as $order)        
     }    
@@ -333,7 +352,7 @@ class CronMailsComponent extends Component {
         if($debug) echo "Trovati ".$deliveries->count()." consegne \n";
         
         /*
-        * estraggo tutti gli UTENTI, dopp ctrl se hanno effettuato acquisti
+        * estraggo tutti gli UTENTI, dopo ctrl se hanno effettuato acquisti
         */
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];        
@@ -475,6 +494,7 @@ class CronMailsComponent extends Component {
             $email->send('');
         } catch (Exception $e) {
             echo 'Exception : ',  $e->getMessage(), "\n";
+            Log::error('_mailUsersDeliverySend');
             Log::error('Exception : ',  $e->getMessage());
         }  
 

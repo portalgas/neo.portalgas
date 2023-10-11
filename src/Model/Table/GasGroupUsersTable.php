@@ -88,19 +88,24 @@ class GasGroupUsersTable extends Table
         return $rules;
     }
 
-    public function getUsers($user, $organization_id, $gas_group_id) {
+    /* 
+     * elenco users associati ad un gasGroups 
+    */
+    public function getUsers($user, $organization_id, $gas_group_id, $where=[]) {
 
         $results = [];
 
-        $where = ['GasGroupUsers.gas_group_id' => $gas_group_id, 
+        $where_gasuser = ['GasGroupUsers.gas_group_id' => $gas_group_id, 
                   'GasGroupUsers.organization_id' => $organization_id, 
                  ];    
          
         // escludo dispensa@gas.portalgas.it	                 
         $where_user = ['Users.block' => 0, 
                         'Users.username NOT LIKE' => 'dispensa@%'];                   
-		 
-        $users = $this->find()->where($where)
+        if(!empty($where))
+            $where_user = array_merge($where_user, $where);		 
+            
+        $users = $this->find()->where($where_gasuser)
                                 ->contain(['Users' => [
                                     'conditions' => [$where_user],
                                     'sort' => ['Users.name' => 0]
