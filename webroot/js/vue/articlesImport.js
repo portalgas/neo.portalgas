@@ -472,7 +472,7 @@ $(function () {
               return 'Unità di misura';
             break;
             case 'pezzi_confezione':
-              return 'Confezione';
+              return 'Pezzi confezione';
             break;
             case 'bio':
               return 'Biologico';

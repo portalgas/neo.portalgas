@@ -359,7 +359,7 @@ msgid "Package"
 msgstr "Conf"
 
 msgid "pezzi_confezione"
-msgstr "Conf"
+msgstr "Pezzi conf"
 
 msgid "flag_presente_articlesorders"
 msgstr "Ordinabile"
@@ -6827,7 +6827,7 @@ msgid "import-article-qta-um"
 msgstr "Quantità e Unità di misura"
 
 msgid "import-article-pezzi_confezione"
-msgstr "Confezione"
+msgstr "Pezzi confezione"
 
 msgid "import-article-bio"
 msgstr "Biologico"
