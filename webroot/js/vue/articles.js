@@ -230,7 +230,7 @@ $(function () {
               um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
               um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
             
-              um_rif_values_prezzo = (prezzo_um_riferimento / 100);
+              um_rif_values_prezzo = (prezzo_um_riferimento / 10);
               um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});              
 
               um_rif_values_prezzo = (prezzo_um_riferimento);
