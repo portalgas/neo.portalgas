@@ -103,6 +103,7 @@ class CronMailsComponent extends Component {
                 continue;
 
             $to = $user->email;
+            $addTo = '';
             if(isset($user->user_profiles['email']) && !empty($user->user_profiles['email'])) 
                 $addTo = $user->user_profiles['email'];
 
@@ -124,8 +125,10 @@ class CronMailsComponent extends Component {
                 $subject = trim($_user->organization->name).", ordini che si aprono oggi";												
 
             $email = new Email();
-            // debug $email->setTransport('aws-prod');
-            $email->setTransport('aws');
+            if($this->_debug) 
+                $email->setTransport('aws-prod');
+            else
+                $email->setTransport('aws');
             $email->viewBuilder()->setHelpers(['Html', 'Text'])
                                    ->setTemplate('users_orders_open', 'default'); // template / layout
             $email->setEmailFormat('html')
@@ -141,7 +144,7 @@ class CronMailsComponent extends Component {
                 if(!empty($addTo)) 
                     $email->addTo($addTo);
                 $email->send('');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
                 Log::error('mailUsersOrdersOpen');
                 Log::error('Exception : ',  $e->getMessage());
@@ -233,6 +236,7 @@ class CronMailsComponent extends Component {
                 continue;
 
             $to = $user->email;
+            $addTo = '';
             if(isset($user->user_profiles['email']) && !empty($user->user_profiles['email'])) 
                 $addTo = $user->user_profiles['email'];
 
@@ -254,8 +258,10 @@ class CronMailsComponent extends Component {
                 $subject = trim($_user->organization->name).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";												
 
             $email = new Email();
-            // debug $email->setTransport('aws-prod');
-            $email->setTransport('aws');
+            if($this->_debug) 
+                $email->setTransport('aws-prod');
+            else 
+                $email->setTransport('aws');
             $email->viewBuilder()->setHelpers(['Html', 'Text'])
                                    ->setTemplate('users_orders_close', 'default'); // template / layout
             $email->setEmailFormat('html')
@@ -271,7 +277,7 @@ class CronMailsComponent extends Component {
                 if(!empty($addTo)) 
                     $email->addTo($addTo);
                 $email->send('');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
                 Log::error('mailUsersOrdersClose');
                 Log::error('Exception : ',  $e->getMessage());
@@ -461,6 +467,7 @@ class CronMailsComponent extends Component {
         $urlCartPreviewNoUsername = str_replace("{u}", urlencode($username_crypted), $usersTable->getUrlCartPreviewNoUsername($_user, $delivery->id));
 
         $to = $user->email;
+        $addTo = '';
         if(isset($user->user_profiles['email']) && !empty($user->user_profiles['email'])) 
             $addTo = $user->user_profiles['email'];
 
@@ -492,7 +499,7 @@ class CronMailsComponent extends Component {
             if(!empty($addTo)) 
                 $email->addTo($addTo);
             $email->send('');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo 'Exception : ',  $e->getMessage(), "\n";
             Log::error('_mailUsersDeliverySend');
             Log::error('Exception : ',  $e->getMessage());

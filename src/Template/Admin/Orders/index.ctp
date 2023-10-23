@@ -251,11 +251,14 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
         /*
         * legenda profilata
         */
-        echo '<span class="hidden-xs">';
-        $results = $this->HtmlCustomSite->drawLegenda($user, $orderStatesToLegenda);
-        echo $results['htmlLegenda'];
-        $this->Html->scriptBlock($results['jsLegenda'], ['block' => true]);
-        echo '</span>';
+        if(!empty($orderStatesToLegenda)) {
+          echo '<span class="hidden-xs">';
+          $results = $this->HtmlCustomSite->drawLegenda($user, $orderStatesToLegenda);
+          echo $results['htmlLegenda'];
+          $this->Html->scriptBlock($results['jsLegenda'], ['block' => true]);
+          echo '</span>';
+  
+        }
       }
       ?>       
       

@@ -163,7 +163,7 @@ class QueueComponent extends Component {
 
                 } // end foreach($tables as $table)
             } // if($esito)
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             if(isset($uuid))
                 $uuid = $uuid;

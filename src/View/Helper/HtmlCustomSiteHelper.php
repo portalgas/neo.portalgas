@@ -586,7 +586,7 @@ class HtmlCustomSiteHelper extends FormHelper
 
 		$htmlLegenda = '';
 
-		if(empty($states))
+		if(empty($states) || count($states)==0)
 			return $htmlLegenda;
 		
         $isTemplatesOrdersState = false;

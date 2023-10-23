@@ -127,7 +127,7 @@ class MailComponent extends Component {
 							$this->_email->send($body);
 							$results['OK'][] = $mail;
 						}
-					} catch (Exception $e) {
+					} catch (\Exception $e) {
 						$results['KO'][] = $mail;
 						Log::error('mail', 'ERROR ----------------------!', ['scope' => ['mail']]);
 						Log::error('mail', $e, ['scope' => ['mail']]);
