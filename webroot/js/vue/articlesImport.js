@@ -125,9 +125,11 @@ $(function () {
          let val = '';
          if(option_field_select=='prezzo') {
             $.each( _this.file_contents, function(num_row, value) {
-              val = _this.file_contents[num_row][index] = _this.file_contents[num_row][index];
-              val = val.replace('.', ',').replace('€', '').trim();
-              _this.file_contents[num_row][index] = val;
+              val = _this.file_contents[num_row][index];
+              if(val!==null) {
+                val = val.replace('.', ',').replace('€', '').trim();
+                _this.file_contents[num_row][index] = val;
+              }
             });
          }
 

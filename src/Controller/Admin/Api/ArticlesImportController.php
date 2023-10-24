@@ -74,7 +74,7 @@ class ArticlesImportController extends ApiAppController
         }
 
         $file_content = $this->ArticlesImportExport->read($upload_results['full_path']);
- 
+
         $articles = new ArticlesImportExportDecorator($file_content);
         $file_content = $articles->results;
 
