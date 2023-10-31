@@ -144,6 +144,8 @@ class CronMailsComponent extends Component {
                 if(!empty($addTo)) 
                     $email->addTo($addTo);
                 $email->send('');
+
+                Log::debug('mailUsersOrdersOpen send to '.$to.' '.$subject);
             } catch (\Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
                 Log::error('mailUsersOrdersOpen');
