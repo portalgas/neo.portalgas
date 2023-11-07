@@ -51,12 +51,22 @@ class GasGroupDeliveriesController extends AppController
     public function index()
     {
         /*
-         * estraggo quelle create dall'utente 'GasGroups.user_id' => $this->_user->id
+         * non + estraggo quelle create dall'utente 'GasGroups.user_id' => $this->_user->id
+         * estraggo quelle create dei gruppi associati all'utente
          */
         $where = ['Deliveries.organization_id' => $this->_organization->id,
                     'GasGroupDeliveries.organization_id' => $this->_organization->id];
-        if(!$this->_user->acl['isManager']) 
-            $where = ['GasGroups.user_id' => $this->_user->id];
+        if(!$this->_user->acl['isManager']) {
+            // $where = ['GasGroups.user_id' => $this->_user->id];
+            $gasGroupsTable = TableRegistry::get('GasGroups');
+            $gas_group_ids = $gasGroupsTable->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+            if(empty($gas_group_ids)) {
+                $this->Flash->error("Non sai associato ad alcun gruppo!");
+                return $this->redirect(['controller' => 'dashboards', 'action' => 'index']);
+            }
+                
+            $where = ['GasGroupDeliveries.gas_group_id IN ' => array_keys($gas_group_ids)];
+        }
 
         $this->paginate = [
             'contain' => ['GasGroups' => ['GasGroupUsers'], 
@@ -66,7 +76,7 @@ class GasGroupDeliveriesController extends AppController
             'conditions' => $where,
             'order' => ['Deliveries.data']
         ];
-        
+       
         $gasGroupDeliveries = $this->paginate($this->GasGroupDeliveries);
         $this->set(compact('gasGroupDeliveries'));
     }
