@@ -91,10 +91,26 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                       echo '<th class="trGroup" colspan="'.$colspan.'">';
 
                       echo '<a title="'.__('Visualizza il calendario della consegna').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'calendar_view', ['delivery_id' => $order->delivery->id]).'"><i class="fa fa-2x fa-calendar-check-o" aria-hidden="true"></i></a>';
-                      
+                    
+                      /* 
+                       * delivery
+                       */
                       $label = $this->HtmlCustomSite->drawDeliveryLabel($order->delivery);
                       echo ' <b>'.__('Delivery').'</b> ';
-                      echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'edit', ['delivery_id' => $order->delivery->id]).'">'.$label.'</a>';
+                      if($order->delivery->sys=='N') {
+                        if(isset($user->organization->paramsConfig['hasGasGroups']) && 
+                          $user->organization->paramsConfig['hasGasGroups']=='Y' && (
+                          $user->acl['isGasGroupsManagerDeliveries'] ||
+                          $user->acl['isManager']))  {
+                          echo '<a title="'.__('Edit Delivery').'" href="/admin/gas-group-deliveries/edit-by-delivery/'.$order->delivery->id.'">'.$label.'</a>';
+  
+                        }
+                        else
+                          echo '<a title="'.__('Edit Delivery').'" href="'.$this->HtmlCustomSite->jLink('deliveries', 'edit', ['delivery_id' => $order->delivery->id]).'">'.$label.'</a>';
+                      }
+                      else 
+                        echo $label;
+                      
                       echo ' '.$this->HtmlCustomSite->drawDeliveryDateLabel($order->delivery);
                       echo '</th>';
                       echo '</tr>';

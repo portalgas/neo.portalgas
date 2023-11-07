@@ -179,6 +179,43 @@ class GasGroupDeliveriesController extends AppController
         $this->set(compact('gasGroupDelivery', 'gasGroups'));
     }
 
+    public function editByDelivery($delivery_id = null)
+    {
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        
+        if ($this->request->is(['patch', 'post', 'put'])) {
+
+            $datas = $this->request->getData();
+            $gas_group_id = $datas['gas_group_id'];
+
+            /*
+             * aggiorno la consegna
+             * */
+            $delivery = $deliveriesTable->get([$this->_organization->id, $datas['deliver_id']]);
+            $datas['data'] = $this->convertDate($datas['data']);
+            $delivery = $deliveriesTable->patchEntity($delivery, $datas);
+            if (!$deliveriesTable->save($delivery)) {
+                $this->Flash->error($delivery->getErrors());
+            } 
+            else {       
+                $this->Flash->success("La consegna per il gruppo è stata salvata");
+                return $this->redirect(['action' => 'index']);
+            } 
+        } // end post
+
+        $gasGroupDelivery = $this->GasGroupDeliveries
+                                ->find()
+                                ->where(['delivery_id' => $delivery_id])
+                                ->contain(['Deliveries'])
+                                ->first(); 
+
+        $this->set('nota_evidenzas', $deliveriesTable->enum('nota_evidenza'));
+
+        $gasGroups = $this->GasGroupDeliveries->GasGroups->findMyLists($this->_user, $this->_organization->id, $this->_user->id);
+        $this->set(compact('gasGroupDelivery', 'gasGroups'));
+
+        $this->render('edit');
+    }
 
     /**
      * Delete method
