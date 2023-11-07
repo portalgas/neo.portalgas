@@ -254,7 +254,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
             if($this->_order->delivery_id==key($deliveries['Y']))
                 $default = $this->_order->delivery_id;  // consegna Da definire
             else {
-                $default = 'N'; // $this->_order->delivery_id;
+                $default = 'N';
 
                 /* 
                 * ctrl che tra l'elenco delle consegne ci sia la consegna gia' associata all'ordine 
@@ -279,7 +279,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
                 'value' => 'N', 
                 'text' => '<div id="radio-delivery-type-N" class="radio-delivery-type">'.
                         $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false, 
-                                                               'default' => $default, 'empty' => Configure::read('HtmlOptionEmpty')]).
+                                                               'default' => $this->_order->delivery_id, 'empty' => Configure::read('HtmlOptionEmpty')]).
                         '</div>'];            
         }
         
