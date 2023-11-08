@@ -6,8 +6,11 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
 use Cake\Controller\ComponentRegistry;
+use App\Traits;
 
 class ActionsOrderComponent extends CartSuperComponent {
+
+	use Traits\UtilTrait;
 
     public $components = ['ActionsDesOrder'];
 
@@ -208,7 +211,10 @@ class ActionsOrderComponent extends CartSuperComponent {
 				$orderActions[$i]['controller'] = $orders_action->controller;
 				$orderActions[$i]['action'] = $orders_action->action;				
 				$orderActions[$i]['qs'] = ['delivery_id' => $order->delivery_id, 'order_id' => $order->id];
-				$orderActions[$i]['url'] = $urlBase.'controller='.$orders_action->controller.'&action='.$orders_action->action.'&delivery_id='.$order->delivery_id.'&order_id='.$order->id;
+
+				// $orderActions[$i]['url'] = $urlBase.'controller='.$orders_action->controller.'&action='.$orders_action->action.'&delivery_id='.$order->delivery_id.'&order_id='.$order->id;				
+				$orderActions[$i]['url'] = $this->drawjLink(strtolower($orders_action->controller), strtolower($orders_action->action), ['delivery_id' => $order->delivery_id, 'order_id' => $order->id]);
+				
 				if(!empty($orders_action->neo_url)) {
 					$neo_url = $orders_action->neo_url;
 					$neo_url = str_replace('{order_type_id}', $order->order_type_id, $neo_url);
@@ -224,7 +230,8 @@ class ActionsOrderComponent extends CartSuperComponent {
 					switch ($orders_action->query_string) {
 						case 'FilterArticleOrderId':
 							$orderActions[$i]['qs'] += ['FilterArticleOrderId' => $order->id];
-							$orderActions[$i]['url'] .= '&FilterArticleOrderId='.$order->id;
+							// $orderActions[$i]['url'] .= '&FilterArticleOrderId='.$order->id;
+							$orderActions[$i]['url'] = $this->drawjLink(strtolower($orders_action->controller), strtolower($orders_action->action), ['delivery_id' => $order->delivery_id, 'order_id' => $order->id, 'FilterArticleOrderId' => $order->id]);
 							break;
 					}
 				}

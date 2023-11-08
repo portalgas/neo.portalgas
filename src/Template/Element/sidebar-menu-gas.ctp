@@ -117,8 +117,6 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_default');?>" target=""><?php echo $icon;?>Modifica prezzi</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_percentuale');?>" target=""><?php echo $icon;?>Modifica prezzi in %</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('ArticlesOrders', 'order_choice');?>" target=""><?php echo $icon;?>Modifica prezzo degli articolo associati agli ordini</a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/articles/export'); ?>"><?php echo $icon;?><?php echo __('Export to EXCEL');?> <label class="label label-success">new</label></a></li>
-        <li><a href="<?php echo $this->Url->build('/admin/articles/import'); ?>"><?php echo $icon;?><?php echo __('Import from EXCEL');?> <label class="label label-success">new</label></a></li>
         <!-- 
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles');?>" target=""><?php echo $icon;?>Importa articoli</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles_form_export');?>" target=""><?php echo $icon;?>Esporta articoli per reimportarli</a></li>
@@ -127,6 +125,18 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
       </ul>
     </a>
   </li>
+  <li class="treeview"> 
+    <a href="#">
+      <i class="fa fa-file-excel-o"></i> <span>Gestione Listini da Excel</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      <ul class="treeview-menu">
+      <li><a href="<?php echo $this->Url->build('/admin/helps/articles-export-import'); ?>"><?php echo $icon;?>Istruzioni per esporta ed importa</a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/articles/export'); ?>"><?php echo $icon;?><?php echo __('Export to EXCEL');?> <label class="label label-success">new</label></a></li>
+        <li><a href="<?php echo $this->Url->build('/admin/articles/import'); ?>"><?php echo $icon;?><?php echo __('Import from EXCEL');?> <label class="label label-success">new</label></a></li>
+      </ul>
+    </a>
+  </li>  
 <?php
 } // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
 
