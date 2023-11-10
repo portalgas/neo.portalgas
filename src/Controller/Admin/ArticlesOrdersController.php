@@ -25,7 +25,10 @@ class ArticlesOrdersController extends AppController
         
         parent::beforeFilter($event);
 
-        $results = $this->Auths->ctrlRoute($this->_user, $this->request);
+        $results = null;
+        if(!empty($this->_user))
+            $results = $this->Auths->ctrlRoute($this->_user, $this->request);
+        
         if(!empty($results)) {
             $this->Flash->error($results['msg'], ['escape' => false]);
             if(!isset($results['redirect'])) 

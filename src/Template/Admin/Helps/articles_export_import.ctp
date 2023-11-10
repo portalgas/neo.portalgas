@@ -33,13 +33,20 @@
         <div class="col-3 col-sm-12 col-lg-3">
             <div data-spy="affix" data-offset-top="0">
                 <div class="list-group">
-                    <a class="list-group-item active" href="#step-1">Scaricare il listino</a>
+                    <a class="list-group-item active" href="#step-0">Video tutorial</a>
+                    <a class="list-group-item" href="#step-1">Scaricare il listino</a>
                     <a class="list-group-item" href="#step-2">Modificare l'excel</a>
                     <a class="list-group-item" href="#step-3">Caricare l'excel</a>
                 </div>
             </div>
         </div>
         <div class="col-9 col-sm-12 col-lg-9">
+            <div id="step-0" class="section">
+                <h1 class="page-header">Video tutorial</h1>
+                <p>
+                    <iframe width="950" height="500" src="https://www.youtube.com/embed/W1K5ZAu0MYc?si=bQ27VaJUxlzUpTaQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </p>
+            </div>
             <div id="step-1" class="section">
                 <h1 class="page-header">Scaricare il listino del produttore</h1>
                 <p>
