@@ -30,66 +30,68 @@ if(isset($opts['delivery_order_parent']) && $opts['delivery_order_parent']=='Y')
 if(!empty($orders)) {
 
 	$totale = 0;
-	$i=0;
+	$num_row=0;
 	foreach($orders as $order) {
 
-		$i = ($i+3);
+		$num_row++;
 
-		$sheet->setCellValue('A'.($i), __('GasGroup'));
-		$sheet->setCellValue('B'.($i), $order->gas_group->name);
+		$sheet->setCellValue('A'.($num_row), __('Gas Group'));
+		$sheet->setCellValue('B'.($num_row), $order->gas_group->name);
 
 		if(isset($opts['deliveries_orders']) && $opts['deliveries_orders']=='Y') {
-			$sheet->setCellValue('C'.($i), __('Delivery'));
-			$sheet->setCellValue('D'.($i), $order->delivery->luogo.' '.$order->delivery->data->i18nFormat('eeee d MMMM'));			
+			$sheet->setCellValue('C'.($num_row), __('Delivery'));
+			$sheet->setCellValue('D'.($num_row), $order->delivery->luogo.' '.$order->delivery->data->i18nFormat('eeee d MMMM'));			
 		}
 
-		$sheet->setCellValue('A'.($i+1), __('Bio')); 
-		$sheet->setCellValue('B'.($i+1), __('Code'));
-		$sheet->setCellValue('C'.($i+1), __('Name')); 
-		$sheet->setCellValue('D'.($i+1), __('Conf')); 
-		$sheet->setCellValue('E'.($i+1), __('Prezzo/UM')); 
-		$sheet->setCellValue('F'.($i+1), __('PrezzoUnita')); 
-		$sheet->setCellValue('G'.($i+1), __('Qta')); 
-		$sheet->setCellValue('H'.($i+1), __('Importo'));
+		$num_row++;
+
+		$sheet->setCellValue('A'.($num_row), __('Bio')); 
+		$sheet->setCellValue('B'.($num_row), __('Code'));
+		$sheet->setCellValue('C'.($num_row), __('Name')); 
+		$sheet->setCellValue('D'.($num_row), __('Conf')); 
+		$sheet->setCellValue('E'.($num_row), __('Prezzo/UM')); 
+		$sheet->setCellValue('F'.($num_row), __('PrezzoUnita')); 
+		$sheet->setCellValue('G'.($num_row), __('Qta')); 
+		$sheet->setCellValue('H'.($num_row), __('Importo'));
 
 		$totale_ordine = 0;
-		$ii=0;
 		foreach($order->article_orders as $article_order) {
 
-			$ii++; 
+			$num_row++; 
 
 			$totale_ordine += $article_order->cart->final_price;
 			
 			$article_order->article->is_bio ? $is_bio = 'Si': $is_bio = 'No';
 
-			$sheet->setCellValue('A'.($i+1+$ii), $is_bio);
-			$sheet->setCellValue('B'.($i+1+$ii), $article_order->article->codice);
-			$sheet->setCellValue('C'.($i+1+$ii), $article_order->name);
-			$sheet->setCellValue('D'.($i+1+$ii), $article_order->article->conf);
-			$sheet->setCellValue('E'.($i+1+$ii), $article_order->article->um_rif_label);
-			$sheet->setCellValue('F'.($i+1+$ii), $article_order->prezzo);
-			$sheet->setCellValue('G'.($i+1+$ii), $article_order->cart->final_qta);
-			$sheet->setCellValue('H'.($i+1+$ii), $article_order->cart->final_price);
+			$sheet->setCellValue('A'.($num_row), $is_bio);
+			$sheet->setCellValue('B'.($num_row), $article_order->article->codice);
+			$sheet->setCellValue('C'.($num_row), $article_order->name);
+			$sheet->setCellValue('D'.($num_row), $article_order->article->conf);
+			$sheet->setCellValue('E'.($num_row), $article_order->article->um_rif_label);
+			$sheet->setCellValue('F'.($num_row), $article_order->prezzo);
+			$sheet->setCellValue('G'.($num_row), $article_order->cart->final_qta);
+			$sheet->setCellValue('H'.($num_row), $article_order->cart->final_price);
 
 		} // end foreach($article_orders as $article_order)
 
-		$sheet->setCellValue('A'.($i+1+$ii+1), '');
-		$sheet->setCellValue('B'.($i+1+$ii+1), '');
-		$sheet->setCellValue('C'.($i+1+$ii+1), '');
-		$sheet->setCellValue('D'.($i+1+$ii+1), '');
-		$sheet->setCellValue('E'.($i+1+$ii+1), '');
-		$sheet->setCellValue('F'.($i+1+$ii+1), '');
-		$sheet->setCellValue('G'.($i+1+$ii+1), __('Totale ordine'));
-		$sheet->setCellValue('H'.($i+1+$ii+1), $totale_ordine);
+		$num_row++; 
+		$sheet->setCellValue('A'.($num_row), '');
+		$sheet->setCellValue('B'.($num_row), '');
+		$sheet->setCellValue('C'.($num_row), '');
+		$sheet->setCellValue('D'.($num_row), '');
+		$sheet->setCellValue('E'.($num_row), '');
+		$sheet->setCellValue('F'.($num_row), '');
+		$sheet->setCellValue('G'.($num_row), __('Totale ordine'));
+		$sheet->setCellValue('H'.($num_row), $totale_ordine);
 
 		$totale += $totale_ordine;
 
-		$i++;
+		$num_row++; 
 
 	} // end foreach($orders as $order) 
 
-	$sheet->setCellValue('A'.($i+1+$ii+3), __('Totale'));
-	$sheet->setCellValue('B'.($i+1+$ii+3), $totale);
+	$sheet->setCellValue('A'.($num_row+3), __('Totale'));
+	$sheet->setCellValue('B'.($num_row+3), $totale);
 }
 
 $writer = new Xlsx($spreadsheet);
