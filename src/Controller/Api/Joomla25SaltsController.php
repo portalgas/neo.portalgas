@@ -84,17 +84,17 @@ class Joomla25SaltsController extends AppController
             unset($queries['a_to']);
         if(!empty($queries)) {
             foreach ($queries as $key => $value) {
-                array_push($q, $value);
+                $q[$key] = $value;
             }
             if(!empty($q)) {
                 $redirects += $q;
             }
         }
 
-        if($debug) debug($redirects); 
-        
         if($debug) debug($this->Authentication->getIdentity());
 
+        if($debug) debug($redirects); 
+        
         if($debug) exit;
 
 		return $this->redirect($redirects); 
