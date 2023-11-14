@@ -14,11 +14,12 @@ if(count($orders)>0) {
             else
                 echo "<br />Per la consegna di <b>".$order->delivery->data->i18nFormat('eeee d MMMM')."</b> a ".$order->delivery->luogo.'<br />';
 
+            /*
             $now = \Cake\I18n\Time::now();
             $now->addDays(Configure::read('GGMailToAlertOrderClose')+1);
             $data_oggi_incrementata = $now->i18nFormat('eeee d MMMM');
-
-            echo "si <span style='color:red'>chiudera'</span> tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni, ".$data_oggi_incrementata.", il periodo d'ordine nei confronti dei seguenti produttori<br /><br />";
+            */
+            echo "si <span style='color:red'>chiudera'</span> tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni, ".$order->data_fine->i18nFormat('eeee d MMMM').", il periodo d'ordine nei confronti dei seguenti produttori<br /><br />";
         } // end if($delivery_id_old==0 || $delivery_id_old != $order->delivery->id) 
         
         echo "<div style='clear:both;float:none;margin-top:5px;'>";
