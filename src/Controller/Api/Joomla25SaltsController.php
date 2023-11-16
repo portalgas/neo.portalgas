@@ -58,14 +58,20 @@ class Joomla25SaltsController extends AppController
         $scope = 'FE';      
         $c_to = ''; 
         $a_to = '';
+        $q = '';
         if(isset($queries['scope']))
             $scope = $queries['scope'];
         if(isset($queries['c_to']))
             $c_to = $queries['c_to']; 
         if(isset($queries['a_to']))
             $a_to = $queries['a_to']; 
+        if(isset($queries['q']))
+            $q = $queries['q']; 
         if(!empty($queries) && !empty($c_to)) {
-            $redirects = ['controller' => $c_to, 'action' => $a_to, 'prefix' => false];
+            if(empty($q))
+                $redirects = ['controller' => $c_to, 'action' => $a_to, 'prefix' => false];
+            else 
+                $redirects = ['controller' => $c_to, 'action' => $a_to, $q, 'prefix' => false];
         }
         else
             $redirects = ['controller' => 'admin/Dashboards', 'action' => 'index', 'prefix' => false];
@@ -82,9 +88,15 @@ class Joomla25SaltsController extends AppController
             unset($queries['c_to']);
         if(isset($queries['a_to']))
             unset($queries['a_to']);
+        if(isset($queries['q']))
+            unset($queries['q']);
         if(!empty($queries)) {
             foreach ($queries as $key => $value) {
                 $q[$key] = $value;
+                // ora prendo la key 
+                // search_supplier_organization_id = 111
+                // gli args sono in $q articles/index/10 
+                // array_push($q, $value);
             }
             if(!empty($q)) {
                 $redirects += $q;
