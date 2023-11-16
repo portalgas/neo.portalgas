@@ -16,7 +16,7 @@ class CronMailsComponent extends Component {
     use Traits\UtilTrait;
 
     private $_from; // info@portalgas.it
-    private $_debug = false; // se true invio 1 email a francesco.actis@gmail.com
+    private $_debug = true; // se true invio 1 email a francesco.actis@gmail.com
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -145,6 +145,7 @@ class CronMailsComponent extends Component {
                     $email->addTo($addTo);
                 $email->send('');
 
+                if($debug) echo "inviata mail a ".$to." ".$subject." \n";
                 Log::debug('mailUsersOrdersOpen send to '.$to.' '.$subject);
             } catch (\Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
@@ -188,7 +189,7 @@ class CronMailsComponent extends Component {
         * estraggo ordini
         */
         $ordersTable = TableRegistry::get('Orders');
-
+ 
         $where = ['Orders.organization_id' => $_user->organization->id,
                   'Orders.isVisibleFrontEnd' => 'Y',     
                   'Orders.order_type_id NOT IN ' => [Configure::read('Order.type.gas_parent_groups')],     
@@ -207,6 +208,7 @@ class CronMailsComponent extends Component {
                             ->where($where)
                             ->order(['Deliveries.data', 'Suppliers.name'])
                             ->all();
+
         if($orders->count()==0) {
             if($debug) echo "non ci sono ordini che chiuderanna tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni \n";
             return false;
@@ -279,6 +281,9 @@ class CronMailsComponent extends Component {
                 if(!empty($addTo)) 
                     $email->addTo($addTo);
                 $email->send('');
+
+                if($debug) echo "inviata mail a ".$to." ".$subject." \n";
+
             } catch (\Exception $e) {
                 echo 'Exception : ',  $e->getMessage(), "\n";
                 Log::error('mailUsersOrdersClose');
@@ -501,6 +506,9 @@ class CronMailsComponent extends Component {
             if(!empty($addTo)) 
                 $email->addTo($addTo);
             $email->send('');
+
+            if($debug) echo "inviata mail a ".$to." ".$subject." \n";
+
         } catch (\Exception $e) {
             echo 'Exception : ',  $e->getMessage(), "\n";
             Log::error('_mailUsersDeliverySend');
