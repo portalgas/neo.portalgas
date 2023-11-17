@@ -161,4 +161,11 @@ class CashiersController extends AppController
 
         $this->set(compact('deliveries', 'is_cashs', 'is_cash_default'));                  
     }
+
+    public function massive() {
+        $usersTable = TableRegistry::get('Users');
+        $users = $usersTable->getList($this->_user, $this->_organization->id);
+
+        $this->set(compact('users'));
+    }
 }
