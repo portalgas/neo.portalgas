@@ -38,6 +38,13 @@ class Joomla25SaltsController extends AppController
      *  $user_id = $this->Authentication->getIdentity()->id;
      *  $user_organization_id = $this->Authentication->getIdentity()->organization_id;
      *  $organization_id = $this->Authentication->getIdentity()->organization->id; // gas scelto
+     *
+     * /api/joomla25Salt/login?u={salt}=&scope=BO&c_to=admin/orders&a_to=home&order_type_id=10&order_id=1111 
+     *  => /admin/orders/home/{order_type_id}/{id_order}
+     * 
+     * /api/joomla25Salt/login?u={salt}=&scope=BO&c_to=admin/articles&a_to=index-quick&q=search_supplier_organization_id|3365
+     *  => /admin/articles/index-quick?search_supplier_organization_id=3365
+     *  
      */
     public function login()
     {
@@ -58,7 +65,8 @@ class Joomla25SaltsController extends AppController
         $scope = 'FE';      
         $c_to = ''; 
         $a_to = '';
-        $q = '';
+        $q = ''; // /admin/articles/index-quick?search_supplier_organization_id=3365
+
         if(isset($queries['scope']))
             $scope = $queries['scope'];
         if(isset($queries['c_to']))
@@ -67,11 +75,9 @@ class Joomla25SaltsController extends AppController
             $a_to = $queries['a_to']; 
         if(isset($queries['q']))
             $q = $queries['q']; 
+        
         if(!empty($queries) && !empty($c_to)) {
-            if(empty($q))
-                $redirects = ['controller' => $c_to, 'action' => $a_to, 'prefix' => false];
-            else 
-                $redirects = ['controller' => $c_to, 'action' => $a_to, $q, 'prefix' => false];
+            $redirects = ['controller' => $c_to, 'action' => $a_to, 'prefix' => false];
         }
         else
             $redirects = ['controller' => 'admin/Dashboards', 'action' => 'index', 'prefix' => false];
@@ -79,7 +85,6 @@ class Joomla25SaltsController extends AppController
         /*
          * parametri aggiuntivi
          */
-        $q = [];
         if(isset($queries['scope']))
             unset($queries['scope']);
         if(isset($queries['u']))
@@ -88,21 +93,29 @@ class Joomla25SaltsController extends AppController
             unset($queries['c_to']);
         if(isset($queries['a_to']))
             unset($queries['a_to']);
-        if(isset($queries['q']))
+        if(isset($queries['q'])) // /admin/articles/index-quick?search_supplier_organization_id=3365
             unset($queries['q']);
+
+        /* 
+         * da query rimane {order_type_id}/{id_order} /admin/orders/home/{order_type_id}/{id_order}
+         */
+        $args = [];
         if(!empty($queries)) {
             foreach ($queries as $key => $value) {
-                $q[$key] = $value;
-                // ora prendo la key 
-                // search_supplier_organization_id = 111
-                // gli args sono in $q articles/index/10 
-                // array_push($q, $value);
+                array_push($args, $value);
             }
-            if(!empty($q)) {
-                $redirects += $q;
-            }
+            if(!empty($args)) 
+                $redirects += $args;
         }
 
+        // /api/joomla25Salt/login?u={salt}=&scope=BO&c_to=admin/articles&a_to=index-quick&q=search_supplier_organization_id|3365
+        // /admin/articles/index-quick?search_supplier_organization_id=3365
+        if(!empty($q)) {
+            $querystrings = [];
+            $qs = explode('=', $q);
+            $querystrings[$qs[0]] = $qs[1];
+            $redirects['?'] = $querystrings;
+        }
         if($debug) debug($this->Authentication->getIdentity());
 
         if($debug) debug($redirects); 
