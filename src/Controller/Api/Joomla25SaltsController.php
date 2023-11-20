@@ -112,9 +112,11 @@ class Joomla25SaltsController extends AppController
         // /admin/articles/index-quick?search_supplier_organization_id=3365
         if(!empty($q)) {
             $querystrings = [];
-            $qs = explode('=', $q);
-            $querystrings[$qs[0]] = $qs[1];
-            $redirects['?'] = $querystrings;
+            if(strpos($q, '=')!==false) {
+                $qs = explode('=', $q);
+                $querystrings[$qs[0]] = $qs[1];
+                $redirects['?'] = $querystrings;    
+            }
         }
         if($debug) debug($this->Authentication->getIdentity());
 
