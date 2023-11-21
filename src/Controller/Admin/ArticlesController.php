@@ -210,7 +210,7 @@ class ArticlesController extends AppController
          * WHERE k_suppliers_organizations.organization_id = k_organizations.id 
          *  and k_organizations.name like '%Offici%';
          */
-        $suppliersOrganizations = [3178 => 'Officina Naturae', 0 => 'La Saponaria'];
+        $suppliersOrganizations = [3178 => 'Officina Naturae', 3389 => 'La Saponaria'];
         $this->set(compact('suppliersOrganizations'));  
      
         $import_fields = [];

@@ -87,17 +87,23 @@ class SuppliersOrganizationsController extends ApiAppController
 
         $where = ['SuppliersOrganizations.organization_id' => $this->_organization->id,
                   'SuppliersOrganizations.id' => $supplier_organization_id];
-
+        
         $suppliersOrganization = $suppliersOrganizationsTable->get($this->_user, $where);
-        if(!empty($suppliersOrganization)) {
-            $results['results'] = $suppliersOrganization;
+        if(empty($suppliersOrganization)) {
+            $results['code'] = 500;
+            $results['message'] = 'Produttore non trovato';
+            $results['errors'] = '';
+            $continua = false;
+            return $this->_response($results);    
         }
+
+        $results['results'] = $suppliersOrganization;
 
         /*
          * eventuali dati DES 
          */ 
         $is_des = false;
-        if($this->_organization->paramsConfig['hasDes']) {
+        if($this->_organization->paramsConfig['hasDes'] && $this->_organization->paramsConfig['hasDes']=='Y') {
             $desSuppliersTable = TableRegistry::get('DesSuppliers');
             $is_des = $desSuppliersTable->getDesACL($this->_user, $suppliersOrganization);    
             // dd($is_des);
