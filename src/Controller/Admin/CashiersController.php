@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Cake\Validation\Validator;
 
 class CashiersController extends AppController
 {
@@ -163,9 +164,51 @@ class CashiersController extends AppController
     }
 
     public function massive() {
-        $usersTable = TableRegistry::get('Users');
-        $users = $usersTable->getList($this->_user, $this->_organization->id);
 
+        $debug = false;
+
+        if ($this->request->is('post')) {
+           if($debug) debug($this->request->getData());
+
+           $validator = new Validator();
+           $validator->requirePresence('user_ids', true, __('Parameters required'));
+           $errors = $validator->errors($this->request->getData());
+           if (!empty($errors)) {
+                $this->Flash->error(__('Parameters required'));
+                return $this->redirect(['action' => 'massive']);
+           }
+
+           $user_ids = $this->request->getData('user_ids');
+           $minus = $this->request->getData('minus');
+           $plus = $this->request->getData('plus');
+           $note = $this->request->getData('note');
+
+           if(strpos($user_ids, ',')!==false)
+               $user_ids = explode(',', $user_ids);
+            else 
+                $user_ids = [$user_ids];
+                
+           foreach($user_ids as $user_id) {
+
+                $datas = [];
+                $datas['organization_id'] = $this->_organization->id;
+                $datas['user_id'] = $user_id;
+                /*
+                 * il (-1) * e' invertito perche' in $cashesTable->insert sottrae sempre l'importo passato
+                 */
+                $datas['importo_da_pagare'] = (!empty($minus)) ? $minus: ((-1) * $plus);
+                $datas['nota'] = $note;
+                // debug($datas);
+                $cashesTable = TableRegistry::get('Cashes');
+                $results = $cashesTable->insert($this->_user, $datas, $debug);
+                // debug($results);
+           }
+
+           $this->Flash->success("Inserito correttamente il movimento di cassa ai gas scelti");
+        } // if ($this->request->is('post'))
+
+        $usersTable = TableRegistry::get('Users');
+        $users = $usersTable->getList($this->_user, $this->_organization->id);        
         $this->set(compact('users'));
     }
 }

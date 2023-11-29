@@ -6835,6 +6835,12 @@ msgstr "Biologico"
 msgid "import-article-ingredienti"
 msgstr "Ingredienti"
 
+msgid "import-article-qta_minima"
+msgstr "Quantità minima"
+
+msgid "import-article-qta_multipli"
+msgstr "Multipli di"
+
 msgid "import-article-note"
 msgstr "Nota"
 

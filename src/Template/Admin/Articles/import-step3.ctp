@@ -82,7 +82,7 @@ use Cake\Core\Configure;
                                 </option>
                             </select>
                         </template>
-                        <template v-if="select_import_fields[num_col]==\'pezzi_confezione\'">
+                        <template v-if="select_import_fields[num_col]==\'pezzi_confezione\' || select_import_fields[num_col]==\'qta_minima\' || select_import_fields[num_col]==\'qta_multipli\'">
                             <input type="number" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
                         </template>
                     </td>

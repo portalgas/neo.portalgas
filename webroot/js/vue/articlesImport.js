@@ -488,6 +488,12 @@ $(function () {
             case 'nota':
               return 'Nota';
             break;
+            case 'qta_minima':
+              return 'Quantità minima';
+            break;
+            case 'qta_multipli':
+              return 'Multipli di';
+            break;
             case 'flag_presente_articlesorders':
               return 'Ordinabili';
             break;

@@ -42,7 +42,9 @@ class ArticlesImportExportComponent extends Component {
             'bio' => __('import-article-bio'),
             'flag_presente_articlesorders' => __('import-article-flag_presente_articlesorders'),
             'nota' => __('import-article-note'),
-            'ingredienti' => __('import-article-ingredienti')
+            'ingredienti' => __('import-article-ingredienti'),
+            'qta_minima' => __('import-article-qta_minima'),
+            'qta_multipli' => __('import-article-qta_multipli')
         ];
         
         $this->_import_supplier_fields = [

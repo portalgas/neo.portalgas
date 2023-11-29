@@ -207,8 +207,9 @@ if($user->acl['isCassiere']) {
   <ul class="treeview-menu">
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('cashs', 'index');?>" target=""><?php echo $icon;?>Gestione cassa</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('cashs', 'index_quick');?>" target=""><?php echo $icon;?>Gestione cassa rapida</a></li>
-      <li><a href="<?php echo $this->Url->build('/admin/cashiers/deliveries'); ?>"><?php echo $icon;?><?php echo __("Pagamenti dell'intera consegna");?> <label class="label label-success">new</label></a></li>
-      <li><a href="<?php echo $this->Url->build('/admin/movements/index'); ?>"><?php echo $icon;?><?php echo __("Movimenti di cassa");?> <label class="label label-success">new</label></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/cashiers/deliveries'); ?>"><?php echo $icon;?>Pagamenti dell'intera consegna <label class="label label-success">new</label></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/cashiers/massive'); ?>"><?php echo $icon;?>Movimenti di cassa massivi <label class="label label-success">new</label></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/movements/index'); ?>"><?php echo $icon;?>Movimenti di cassa <label class="label label-success">new</label></a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('docs', 'cassiere_delivery_docs_export');?>" target=""><?php echo $icon;?>Stampa/Gestisci l'intera consegna</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('docs', 'cassiere_docs_export');?>" target=""><?php echo $icon;?>Stampa i singoli ordini</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('cassiere', 'orders_to_wait_processed_tesoriere');?>" target=""><?php echo $icon;?>Passa gli ordini al tesoriere</a></li>
