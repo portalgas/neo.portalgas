@@ -41,7 +41,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_percentuale');?>" target=""><?php echo $icon;?>Modifica prezzi in %</a></li>
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('ArticlesOrders', 'order_choice');?>" target=""><?php echo $icon;?>Modifica prezzo degli articolo associati agli ordini</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/articles/export'); ?>"><?php echo $icon;?><?php echo __('Export to EXCEL');?> <label class="label label-success">new</label></a></li>
-            <li><a href="<?php echo $this->Url->build('/admin/articles/import'); ?>"><?php echo $icon;?><?php echo __('Import from EXCEL');?> <label class="label label-warning">new</label></a></li>
+            <li><a href="<?php echo $this->Url->build('/admin/articles/import'); ?>"><?php echo $icon;?><?php echo __('Import from EXCEL');?> <label class="label label-success">new</label></a></li>
             <!-- 
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles');?>" target=""><?php echo $icon;?>Importa articoli</a></li>
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles_form_export');?>" target=""><?php echo $icon;?>Esporta articoli per reimportarli</a></li>

@@ -129,7 +129,7 @@ class CashesTable extends Table
            
         /*
          * ricerco la cassa per lo user per persisterlo in cashes_histories 
-         * solo se ho gia' occorrenz in Cashs
+         * solo se ho gia' occorrenza in Cashs
          */
         $options = [];
         $cashResults = $this->getByUser($user, $organization_id, $user_id, $options, $debug);

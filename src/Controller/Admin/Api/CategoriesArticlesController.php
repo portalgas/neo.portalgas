@@ -74,7 +74,7 @@ class CategoriesArticlesController extends ApiAppController
          */
         $categoriesArticlesTable = TableRegistry::get('CategoriesArticles'); 
         $categoriesArticles = $categoriesArticlesTable->find('treeList', 
-                        ['spacer' => '   ', 
+                        ['spacer' => '&nbsp;&nbsp;&nbsp;', 
                          'conditions' => ['organization_id' => $organization_id],
                          'order' => ['CategoriesArticles.name' => 'asc']]);
 
