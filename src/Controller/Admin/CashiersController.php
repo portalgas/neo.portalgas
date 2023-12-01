@@ -204,7 +204,7 @@ class CashiersController extends AppController
                 // debug($results);
            }
 
-           $this->Flash->success("Inserito correttamente il movimento di cassa ai gas scelti");
+           $this->Flash->success("Inserito correttamente del movimento di cassa ai gasisti scelti");
         } // if ($this->request->is('post'))
 
         $usersTable = TableRegistry::get('Users');
