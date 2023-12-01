@@ -84,6 +84,10 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Cash'), 'subtitle' => 'mass
   <!-- /.row -->
 </section>
 
+<?php
+echo $this->element('helps/link-pdf')
+?>
+
 <?php 
 $js = "
 let users = ".json_encode($users).";
