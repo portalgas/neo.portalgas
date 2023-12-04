@@ -44,6 +44,8 @@ $(function () {
               return; 
             }
 
+            $('#btn-export').prop('disabled', true);
+
             let $frm = $('#frm');
             switch(this.format) {
               case 'XLSX':
@@ -53,6 +55,8 @@ $(function () {
                 $frm.attr('action', "/admin/api/exports-referents/get");   
                // $frm.attr('action', "/admin/tests/excel");          
                 $frm.submit();
+
+                $('#btn-export').prop('disabled', false);
               break;
               default:
                 $frm.attr('target', "");
@@ -128,10 +132,12 @@ $(function () {
                     break;
                   }
                   _this.is_run = false;
+                  $('#btn-export').prop('disabled', false);
                 })
             .catch(error => {
                   _this.is_run = false;
                   console.error("Error: " + error);
+                  $('#btn-export').prop('disabled', false);
             });            
         },       
         downloadBlob(res, filename) {

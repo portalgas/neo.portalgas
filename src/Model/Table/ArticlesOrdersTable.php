@@ -590,11 +590,15 @@ class ArticlesOrdersTable extends Table
         if(!isset($where['Articles']))
            $where['Articles'] = [];
         $where['Articles'] = array_merge(['Articles.stato' => 'Y'], $where['Articles']);
-        
+        if(!isset($where['Carts']))
+           $where['Carts'] = [];
+
         $results = $this->find()
                         ->contain([
                             'Articles' => ['conditions' => $where['Articles']], 
-                            'Carts' => ['Users']])
+                            'Carts' => [
+                                'conditions' => $where['Carts'],
+                                'Users']])
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
                         ->limit($this->_limit)

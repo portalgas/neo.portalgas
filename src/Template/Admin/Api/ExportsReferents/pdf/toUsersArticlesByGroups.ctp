@@ -17,7 +17,7 @@ if(!empty($orders)) {
 		* ordine titolare
 		*/
 	$html .= '<h3><b>'.__('Supplier').'</b> ';
-	if(!empty($orderParent->suppliers_organization->supplier->img1))
+	if($format=='HTML' && !empty($orderParent->suppliers_organization->supplier->img1))
 		$html .= '<img src="'.$orderParent->suppliers_organization->supplier->img1.'" width="'.Configure::read('Supplier.img.preview.width').'" />';
 	$html .= ' '.$orderParent->suppliers_organization->name;
 	$html .= ' <small>';
@@ -77,7 +77,7 @@ if(!empty($orders)) {
 
 				$totale_user += $article_order->cart->final_price;
 				
-				$article_order->article->is_bio ? $is_bio = '<img src="/img/is-bio.png" title="bio" width="20" />': $is_bio = '';
+				$article_order->article->is_bio ? $is_bio = '<img src="'.$img_path.'/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
 				$html .= '<tr>';
 				$html .= '	<td class="text-center">'.$is_bio.'</td>';

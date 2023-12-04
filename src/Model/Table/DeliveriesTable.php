@@ -389,7 +389,7 @@ class DeliveriesTable extends Table
             $where_order = $where['Orders'];
             $contain = ['Orders' => [
                             'conditions' => $where_order, 
-                            'sort' => ['Orders.data_inizio'],
+                            'sort' => ['Orders.data_inizio', 'SuppliersOrganizations.name'],
                             'SuppliersOrganizations' => ['Suppliers']]];
         }
         // debug($contain);

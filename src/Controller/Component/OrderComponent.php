@@ -55,7 +55,7 @@ class OrderComponent extends Component {
                                     */
                                 ])
                                 ->where($where)
-                                ->order(['Orders.data_inizio'])
+                                ->order(['SuppliersOrganizations.name', 'Orders.data_inizio'])
                                 ->toArray();
 
         /*

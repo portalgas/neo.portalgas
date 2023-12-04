@@ -1,6 +1,6 @@
 <?php
 use Cake\Core\Configure;
-echo $this->Html->script('vue/exports', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/exports.js?v=20231204', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Export Docs to order'), 'subtitle' => __('Management')], ['home', 'list-orders'], $order);
 
@@ -80,7 +80,7 @@ echo '</div>';
 echo '</div>';
 echo '</section>';
 
-echo $this->Form->button('<i class="fa fa-file"></i> '.__('Export'), ['type' => 'button', 'class' => 'btn btn-success pull-right btn-block', 'style' => 'margin-bottom:25px', '@click' => 'exportGets']);
+echo $this->Form->button('<i class="fa fa-file"></i> '.__('Export'), ['type' => 'button', 'id' => 'btn-export', 'class' => 'btn btn-success pull-right btn-block', 'style' => 'margin-bottom:25px', '@click' => 'exportGets']);
 ?>
 
 <div v-if="is_run" class="box-body table-responsive no-padding text-center" style="margin: 150px">

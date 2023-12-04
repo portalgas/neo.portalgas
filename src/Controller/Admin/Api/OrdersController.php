@@ -228,7 +228,7 @@ class OrdersController extends ApiAppController
         $results = $ordersTable->find()
                                 ->contain(['SuppliersOrganizations' => ['Suppliers']])
                                 ->where($where)
-                                ->order(['Orders.data_inizio'])
+                                ->order(['SuppliersOrganizations.name', 'Orders.data_inizio'])
                                 ->all();
 
         return $this->_response($results);  

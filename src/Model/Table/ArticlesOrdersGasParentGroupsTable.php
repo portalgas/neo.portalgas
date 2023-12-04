@@ -290,7 +290,8 @@ class ArticlesOrdersGasParentGroupsTable extends ArticlesOrdersTable implements 
                                 $this->getAlias().'.order_id' => $order->id,
                                 $this->getAlias().'.stato != ' => 'N'], 
                                 $where['ParamsArticlesOrders']);
-                                
+            $where['Carts'] = ['Carts.deleteToReferent' => 'N', 'Carts.stato' => 'Y'];
+                       
             $article_orders = $this->gets($user, $organization_id, $order, $where, $options, $debug);
             if($debug) debug($article_orders);
          
