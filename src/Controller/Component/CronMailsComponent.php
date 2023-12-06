@@ -194,8 +194,8 @@ class CronMailsComponent extends Component {
                   'Orders.isVisibleFrontEnd' => 'Y',     
                   'Orders.order_type_id NOT IN ' => [Configure::read('Order.type.gas_parent_groups')],     
                   'Orders.state_code NOT IN ' => ['CREATE-INCOMPLETE', 'CLOSE'],
-                  'Orders.data_fine = CURDATE() - INTERVAL '.Configure::read('GGMailToAlertOrderClose').' DAY',
-                   // 'Orders.data_fine' => 'CURDATE() - INTERVAL '.Configure::read('GGMailToAlertOrderClose').' DAY'
+                  'Orders.data_fine = CURDATE() + INTERVAL '.Configure::read('GGMailToAlertOrderClose').' DAY',
+                   // 'Orders.data_fine' => 'CURDATE() + INTERVAL '.Configure::read('GGMailToAlertOrderClose').' DAY'
                 ];
         // debug($where);          
         $orders = $ordersTable->find()

@@ -131,7 +131,7 @@ class OrganizationsPaysTable extends Table
 
     public function isSaldato($user, $organizationsPay, $debug=false) {
 
-        if($organizationsPay->data_pay->format('Y-m-d') != Configure::read('DB.field.date.empty'))
+        if(!empty($organizationsPay->data_pay) && $organizationsPay->data_pay->format('Y-m-d') != Configure::read('DB.field.date.empty'))
             return true;
         else
             return false;
