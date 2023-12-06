@@ -36,7 +36,7 @@ class SuppliersOrganizationsTable extends Table
         ]);
         $this->belongsTo('CategoriesSuppliers', [
             'foreignKey' => 'category_supplier_id',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
         ]);
         $this->belongsTo('OwnerOrganizations', [
             'foreignKey' => 'owner_organization_id',
