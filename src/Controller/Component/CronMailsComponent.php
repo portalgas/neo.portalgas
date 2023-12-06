@@ -16,7 +16,7 @@ class CronMailsComponent extends Component {
     use Traits\UtilTrait;
 
     private $_from; // info@portalgas.it
-    private $_debug = false; // se true invio 1 email a francesco.actis@gmail.com
+    private $_debug = true; // se true invio 1 email a francesco.actis@gmail.com
 
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -252,7 +252,7 @@ class CronMailsComponent extends Component {
             $user_orders = $this->_getAclUserOrders('MailUsersOrdersClose', $_user, $organization_id, $user, $orders); // array con gli ordine dell'utente
             if(empty($user_orders)) 
                 continue;
-
+          
             /*
              * subject
              */
@@ -595,7 +595,7 @@ class CronMailsComponent extends Component {
                                                         ->where(['organization_id' => $organization_id,
                                                                 'user_id' => $user->id,
                                                                 'gas_group_id' => $order->gas_group_id])
-                                                        ->first();
+                                                        ->first();                                                     
                         if(empty($gasGroupUser)) {
                             if(isset($user_orders[$order->id]))
                                 unset($user_orders[$order->id]);
