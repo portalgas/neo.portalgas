@@ -271,6 +271,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->setExtensions(['pdf']);
             $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         });
+        $routes->scope('/exports-delivery', ['controller' => 'ExportsDelivery'], function (RouteBuilder $routes) {
+            $routes->setExtensions(['pdf']);
+            $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+        });
 
         /*
          * servizi ajax
