@@ -25,6 +25,13 @@ $(function () {
           this.print_id = $("input[name='print_id']:checked").val();
           this.gets();
         },
+        setInit: function(e) {
+          this.format = 'HTML';
+          this.print_id = null;
+          this.print_results = '';
+          this.is_run = false;
+          $("input[name='print_id']:checked").prop('checked', false);
+        },
         htmlGets: function(e) {
           this.format = 'HTML';
           // workaround perche' al primo click non lo valorizzava!
@@ -40,6 +47,13 @@ $(function () {
             console.log('print_id '+this.print_id+' format '+this.format, 'gets');
             if(typeof this.print_id === 'undefined' || this.print_id==null) {
               alert("Scegli la tipologia di stampa");
+              this.is_run = false;
+              return; 
+            }
+
+            let delivery_id = $("select[name='delivery_id']").val();
+            if(delivery_id=='') {
+              alert("Scegli la consegna");
               this.is_run = false;
               return; 
             }
@@ -64,12 +78,8 @@ $(function () {
                 $frm.attr('action', ""); 
               break;
             }
-
-            let organization_id = $("input[name='organization_id']").val(); 
-            let delivery_id = $("input[name='delivery_id']").val();
             
             let params = {
-                organization_id: organization_id,
                 delivery_id: delivery_id,
                 print_id: this.print_id,
                 format: this.format              
@@ -126,7 +136,7 @@ $(function () {
                       if(typeof headers.filename!=='undefined' && headers.filename!='') 
                         filename = headers.filename;
                                             
-                      this.downloadBlob(response.data, filename);
+                        this.downloadBlob(response.data, filename);
                     break;
                   }
                   _this.is_run = false;

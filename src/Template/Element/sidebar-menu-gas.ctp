@@ -174,6 +174,22 @@ if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['ha
 <?php
 } // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
 
+if($user->acl['isManager'] || $user->acl['isSuperReferente'] || $user->acl['isReferentGeneric']) {
+  ?>
+   <li class="treeview"> 
+     <a href="#">
+       <i class="fa fa-cloud"></i> <span><?php echo __('Export');?></span>
+       <span class="pull-right-container">
+         <i class="fa fa-angle-left pull-right"></i>
+       </span>
+     <ul class="treeview-menu">
+       <li><a href="<?php echo $this->Url->build('/admin/exports/deliveries'); ?>"><?php echo $icon;?><?php echo __('Deliveries');?> <label class="label label-success">new</label></a></li>
+     </ul>
+     </a>
+   </li>
+ <?php
+ } // end if($user->acl['isManager'])
+
  if($user->acl['isManager']) {
  ?>
   <li class="treeview"> 

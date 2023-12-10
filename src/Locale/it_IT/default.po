@@ -418,6 +418,15 @@ msgstr "Importo totale dell'ordine"
 msgid "ImportoTotaleOrdineShort"
 msgstr "Imp. ord."
 
+msgid "Total carts"
+msgstr "Totale acquisti"
+
+msgid "Total user"
+msgstr "Totale gasista"
+
+msgid "Total delivery"
+msgstr "Totale consegna"
+
 msgid "CostTrasport"
 msgstr "Trasporto"
 

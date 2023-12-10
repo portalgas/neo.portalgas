@@ -159,7 +159,7 @@ class OrdersController extends ApiAppController
                 break;
             default:
                 $delivery_id = $this->request->getData('delivery_id'); // ordini GAS
-                $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, $debug);
+                $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, [], $debug);
             break;
         }
         // debug($results);

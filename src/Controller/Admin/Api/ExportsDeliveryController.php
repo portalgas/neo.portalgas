@@ -6,15 +6,10 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use App\Traits;
-use App\Decorator\Export\OrdersGasParentDecorator;
-use App\Decorator\Export\OrdersGasParentGroupsToArticlesDecorator;
-use App\Decorator\Export\OrdersGasParentGroupsToArticlesByGroupsDecorator;
-use App\Decorator\Export\OrdersGasParentGroupsToUsersArticlesByGroupsDecorator;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet; 
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Cake\Http\CallbackStream; 
-
 
 class ExportsDeliveryController extends AppController {
     
@@ -25,6 +20,7 @@ class ExportsDeliveryController extends AppController {
     public function initialize(): void
     {
         parent::initialize();
+        $this->loadComponent('Order');
 
         /*
          * non si puo' disabilitare nel controller
@@ -115,36 +111,69 @@ class ExportsDeliveryController extends AppController {
     // Doc. con acquisti della consegna raggruppati per produttore
     private function _toDeliveryBySuppliers($format, $delivery_id, $debug=false) {
         
+        $results = [];
+
         /* 
         * dati consegna
         */
         $deliveriesTable = TableRegistry::get('Deliveries');
+        $ordersTable = TableRegistry::get('Orders');
         $where = ['Deliveries.organization_id' => $this->_organization->id,
                     'Deliveries.id' => $delivery_id];
+        /* 
+         * profilazione $user->acl['isReferentGeneric'] 
+         */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            // debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+            else
+                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+        }
+
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
+                                    'sort' => ['SuppliersOrganizations.name'],
+                                    'conditions' => ['Orders.organization_id' => $this->_user->organization->id,
+                                                    'Orders.isVisibleBackOffice' => 'Y',
+                                                    'Orders.state_code != ' => 'CREATE-INCOMPLETE'],
                                     'SuppliersOrganizations' => ['Suppliers'],
                                     ]])
                                 ->where($where)
                                 ->first();
+
+        $delivery_tot_importo = 0;                        
         foreach($delivery->orders as $numResult => $order) {
+            
+            // debug($order->suppliers_organization->name);
+            $results[$numResult] = [];
+            $results[$numResult]['suppliers_organization'] = $order->suppliers_organization;
 
-            if($numResult==0) {
-                $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-                $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
+            $results[$numResult]['order']['tot_order'] = $ordersTable->getTotImporto($this->_user, $this->_organization->id, $order);
+            $delivery_tot_importo = ($delivery_tot_importo + $results[$numResult]['order']['tot_order']); 
+            $results[$numResult]['order']['trasport'] = $order->trasport;
+            $results[$numResult]['order']['cost_more'] = $order->cost_more;
+            $results[$numResult]['order']['cost_less'] = $order->cost_less;
+            
+            /* 
+             * totale importo senza costi aggiuntivi
+             * */
+            $cartsTable = TableRegistry::get('Carts');
+            $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
+            $tot_order = 0;
+            foreach($carts as $cart) {
+                $final_price = $this->getCartFinalPrice($cart);
+                // debug('final_price '.$final_price);
+                $tot_order += $final_price; 
             }
-
-            $options = [];
-            $options['sort'] = [];
-            $options['limit'] = Configure::read('sql.no.limit');        
-            $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $order, [], $options);
-            $article_orders = new OrdersGasParentGroupsToArticlesDecorator($this->_user, $orders);
+            $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
             
         } // foreach($delivery->orders as $order) 
+        $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
 
-        $this->set(compact('article_orders', 'order'));
-
-        $this->_filename = 'acquisti-aggregati-articoli';
+        $this->_filename = 'acquisti-consegna-raggruppati-produttore';
         switch($format) {
             case 'XLSX':
                 $this->_filename .= '.xlsx';
@@ -160,6 +189,8 @@ class ExportsDeliveryController extends AppController {
     // Doc. con acquisti della consegna raggruppati per gasista
     private function _toDeliveryByUsers($format, $delivery_id, $debug=false) {
  
+        $results = [];
+
         /* 
         * dati consegna
         */
@@ -167,29 +198,128 @@ class ExportsDeliveryController extends AppController {
         $where = ['Deliveries.organization_id' => $this->_organization->id,
                     'Deliveries.id' => $delivery_id];
         $delivery = $deliveriesTable->find()
-                                ->contain(['Orders' => [
-                                    'SuppliersOrganizations' => ['Suppliers'],
-                                    ]])
                                 ->where($where)
                                 ->first();
-        foreach($delivery->orders as $numResult => $order) {
+        /*
+         * ordini delle consegna
+         */
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Orders.organization_id' => $this->_user->organization->id,
+                    'Orders.isVisibleBackOffice' => 'Y',
+                    'Orders.state_code != ' => 'CREATE-INCOMPLETE',
+                    'Orders.delivery_id' => $delivery->id];
+        /* 
+         * profilazione $user->acl['isReferentGeneric'] 
+         */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            // debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+            else
+                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+        }                    
+        $orders = $ordersTable->find()
+                                ->contain(['SuppliersOrganizations' => ['Suppliers']])    
+                                    ->where($where)
+                                    ->order(['SuppliersOrganizations.name'])
+                                    ->all();
+        /*
+         * elenco gasisti
+         */
+        $cartsTable = TableRegistry::get('Carts');
+        $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
+        $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
+        $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
+        
+        $usersTable = TableRegistry::get('Users');
+        $where = ['username NOT LIKE' => '%portalgas.it'];    
+        $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
+        if($users->count()>0) {
+            $i_user=0;
+            $delivery_tot_importo = 0;
+            foreach($users as $user) {
+                $i_order=0;
+                $tot_user_importo = 0;
+                foreach($orders as $order) {
+                    $where = ['Carts.user_id' => $user->id,
+                              'Carts.organization_id' => $this->_user->organization->id,
+                              'Carts.order_id' => $order->id,
+                              'Carts.deleteToReferent' => 'N',
+                              'Carts.stato' => 'Y'];
+                    $carts = $cartsTable->find()
+                                ->contain(['ArticlesOrders' => ['Articles']])
+                                ->where($where)
+                                ->all();
+    
+                    if($carts->count()>0) {
+                        // debug($carts);
+                        if(!isset($results[$i_user])) {
+                            $results[$i_user] = [];
+                            $results[$i_user]['user']['id'] = $user->id;
+                            $results[$i_user]['user']['name'] = $user->name;
+                            $results[$i_user]['user']['username'] = $user->username;
+                            $results[$i_user]['user']['email'] = $user->email;
+                            $results[$i_user]['user']['phone'] = $user->phone;
+                        }
+                        if($i_order==0) {
+                            $results[$i_user]['orders'] = [];
+                            $results[$i_user]['orders'][$i_order] = [];
+                        }
+                        $results[$i_user]['orders'][$i_order]['order'] = $order;
+    
+                        $tot_importo = 0;
+                        foreach($carts as $cart) {
+                            $final_price = $this->getCartFinalPrice($cart);
+                            $tot_importo += $final_price; 
+                        }
 
-            if($numResult==0) {
-                $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-                $articlesOrdersTable = $articlesOrdersTable->factory($this->_user, $this->_organization->id, $order);
-            }
+                        // costi aggiuntivi
+                        $where = ['organization_id' => $this->_user->organization->id,
+                                'order_id' => $order->id,
+                                'user_id' => $user->id];
 
-            $options = [];
-            $options['sort'] = [];
-            $options['limit'] = Configure::read('sql.no.limit');        
-            $orders = $articlesOrdersTable->getCartsByOrder($this->_user, $this->_organization->id, $order, [], $options);
-            $article_orders = new OrdersGasParentGroupsToArticlesDecorator($this->_user, $orders);
-                        
-        } // foreach($delivery->orders as $numResult => $order) 
- 
-        $this->set(compact('order'));
+                        $summaryOrderTrasport = $summaryOrderTrasportsTable->find()->where($where)->first();
+                        if(!empty($summaryOrderTrasport) && $summaryOrderTrasport->importo_trasport>0)
+                            $results[$i_user]['orders'][$i_order]['importo_trasport'] = $summaryOrderTrasport->importo_trasport;
+                        else 
+                            $results[$i_user]['orders'][$i_order]['importo_trasport'] = 0;
 
-        $this->_filename = 'acquisti-aggregati-articoli-per-gruppi';
+                        $summaryOrderCostMore = $summaryOrderCostMoresTable->find()->where($where)->first();
+                        if(!empty($summaryOrderCostMore) && $summaryOrderCostMore->importo_cost_more>0)
+                            $results[$i_user]['orders'][$i_order]['importo_cost_more'] = $summaryOrderCostMore->importo_cost_more;
+                        else 
+                            $results[$i_user]['orders'][$i_order]['importo_cost_more'] = 0;
+                    
+                        $summaryOrderCostLess = $summaryOrderCostLessesTable->find()->where($where)->first();
+                        if(!empty($summaryOrderCostLess) && $summaryOrderCostLess->importo_cost_less>0)
+                            $results[$i_user]['orders'][$i_order]['importo_cost_less'] = $summaryOrderCostLess->importo_cost_less;
+                        else 
+                            $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
+                   
+                        $results[$i_user]['orders'][$i_order]['tot_importo_only_cart'] = $tot_importo;
+                        $results[$i_user]['orders'][$i_order]['tot_importo'] = ($tot_importo + $results[$i_user]['orders'][$i_order]['importo_trasport'] + $results[$i_user]['orders'][$i_order]['importo_cost_more'] + (-1 * $results[$i_user]['orders'][$i_order]['importo_cost_less']));
+                        $tot_user_importo += $results[$i_user]['orders'][$i_order]['tot_importo'];
+                        // debug($results);
+
+                                                    
+                        $i_order++;
+                    } // end if($carts->count()>0)
+                } // foreach($orders as $order)
+                
+                if($tot_user_importo>0) {
+                    $results[$i_user]['user']['tot_user_importo'] = $tot_user_importo;
+                    $delivery_tot_importo += $tot_user_importo;
+                    $i_user++;
+                }
+
+            }  // foreach($users as $user)          
+        } // end if($users->count()>0)
+        // dd($results);
+        $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
+
+        $this->_filename = 'acquisti-consegna-raggruppati-gasista';
         switch($format) {
             case 'XLSX':
                 $this->_filename .= '.xlsx';

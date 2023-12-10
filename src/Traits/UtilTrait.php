@@ -184,6 +184,9 @@ trait UtilTrait
                 case 'organization_id':
                     $user->organization->id = $value;
                 break;
+                case 'id':
+                    $user->id = $value;
+                break;
             }
         }
 
@@ -473,5 +476,20 @@ trait UtilTrait
         $random_string = substr($string, rand(0, $max_start_index), $length);
 
         return $random_string;
+    }
+
+    public function getCartFinalPrice($cart) {
+        
+        $final_qta = 0;
+        $final_price = 0;
+
+        if($cart->importo_forzato > 0) 
+            $final_price = $cart->importo_forzato;
+        else {
+            ($cart->qta_forzato > 0 ) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
+            $final_price = ($final_qta * $cart->articles_order->prezzo);
+        }        
+
+        return $final_price;
     }
 }

@@ -24,7 +24,7 @@ class OrderComponent extends Component {
      * da stampa carrello   
      * elenco ordini con acquisti dell'utente x fe
      */
-    public function userCartGets($user, $organization_id, $delivery_id, $debug=false) {
+    public function userCartGets($user, $organization_id, $delivery_id, $opts=[], $debug=false) {
 
         $results = [];
 
@@ -42,22 +42,24 @@ class OrderComponent extends Component {
                       // 'Orders.id' => 36091,
                       ];
         }
+          
+        $contains = ['OrderStateCodes', 'OrderTypes', 'Deliveries', 
+            'SuppliersOrganizations' => [
+                'Suppliers',
+                'SuppliersOrganizationsReferents' => 
+                    ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
+        ]];
+        /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
+        'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
+                                    'Carts.organization_id' => $organization_id,
+                                    'Carts.deleteToReferent' => 'N']]
+        */
 
         $ordersResults = $ordersTable->find()
-                                ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 'SuppliersOrganizations' => [
-                                    'Suppliers',
-                                    'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
-                                  ],
-                                    /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
-                                    'Carts' => ['conditions' => ['Carts.user_id' => $user->id,
-                                                                'Carts.organization_id' => $organization_id,
-                                                                'Carts.deleteToReferent' => 'N']]
-                                    */
-                                ])
+                                ->contain($contains)
                                 ->where($where)
                                 ->order(['SuppliersOrganizations.name', 'Orders.data_inizio'])
                                 ->toArray();
-
         /*
          * elimino ordini senza acquisti
          */

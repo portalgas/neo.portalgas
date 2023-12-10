@@ -23,7 +23,7 @@ class ExportsController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
 
-        if(!$this->_user->acl['isManager'] && !$this->_user->acl['isGasManagerDeliveries']) {
+        if(!$this->_user->acl['isManager'] && !$this->_user->acl['isSuperReferente'] && !$this->_user->acl['isReferentGeneric']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }        
@@ -31,8 +31,6 @@ class ExportsController extends AppController
 
     public function deliveries()
     {   
-        $debug = false;
-
         $deliveriesTable = TableRegistry::get('Deliveries');
         $deliveries = $deliveriesTable->gets($this->_user, $this->_organization->id);
         $deliveries = $deliveriesTable->getsList($deliveries);    
@@ -41,8 +39,6 @@ class ExportsController extends AppController
         $exports['toDeliveryBySuppliers'] = 'Doc. con acquisti della consegna raggruppati per produttore';
         $exports['toDeliveryByUsers'] = 'Doc. con acquisti della consegna raggruppati per gasista';
         
-        $options = [];
-        
-        $this->set(compact('deliveries', 'exports', 'options'));
+        $this->set(compact('deliveries', 'exports'));
     }
 }
