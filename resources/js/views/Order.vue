@@ -190,34 +190,8 @@
                   </span>
                </div>
 
-
-
-                <!--                        -->
-                <!--    R E F E R E N T I   -->
-                <!--                        -->
-                <p v-if="order.referents!=null" class="card-text">
-                  <!-- i class="fas fa-user-friends"></i -->
-                  <ul class="list-inline">
-                      <li class="list-inline-item" v-for="referent in order.referents">
-                        
-                          <span v-if="referent.type!='referente'">({{ referent.type }})</span>
-                            {{ referent.name }} 
-                            <a v-if="referent.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.email">{{ referent.email }}</a>
-                            <span v-if="referent.phone_satispay">
-                               &nbsp;{{ referent.phone_satispay }}  
-                              <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
-                            </span>
-                            <span v-if="referent.phone_satispay==null">
-                               &nbsp;{{ referent.phone }}  
-                            </span>
-                        
-                      </li>
-                  </ul>
-                </p>
-                <!--                        -->
-                <!--    R E F E R E N T I   -->
-                <!--                        -->
-
+               <referents v-if="order.referents!=null"
+							          :referents="order.referents" />
 
                 <!--                        -->
                 <!--        DISTANCE        -->
@@ -326,6 +300,7 @@ import searchArticleOrders from "../components/part/SearchArticleOrders.vue";
 import searchCategoryArticles from "../components/part/SearchCategoryArticles.vue";
 import sortArticleOrders from "../components/part/SortArticleOrders.vue";
 import viewArticleOrders from "../components/part/ViewArticleOrders.vue";
+import Referents from "../components/part/Referents.vue";
 
 export default {
   name: "app-order",
@@ -390,7 +365,8 @@ export default {
     appSearchArticleOrders: searchArticleOrders,
     appSearchCategoryArticles: searchCategoryArticles,
     appViewArticleOrders: viewArticleOrders,
-    appSortArticleOrders: sortArticleOrders
+    appSortArticleOrders: sortArticleOrders,
+    referents: Referents
   },/* 
   computed: {
     viewListCookie: function() { 

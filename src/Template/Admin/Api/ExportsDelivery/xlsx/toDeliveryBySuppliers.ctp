@@ -4,52 +4,39 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Cake\Http\CallbackStream;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery);
+$delivery_data = $this->HtmlCustomSite->excelSanify($this->HtmlCustomSite->drawDeliveryDateLabel($delivery));
+
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-$sheet->setCellValue('A1', __('Order-'.$order_type_id)); 
+$sheet->setCellValue('A1', __('Delivery').' '.$delivery_label.' '.$delivery_data); 
 
-if(!empty($article_orders)) {
+if(!empty($results)) {
 
-	$sheet->setCellValue('A2', __('Bio')); 
-	$sheet->setCellValue('B2', __('Code')); 
-	$sheet->setCellValue('C2', __('Name')); 
-	$sheet->setCellValue('D2', __('Conf')); 
-	$sheet->setCellValue('E2', __('Prezzo/UM')); 
-	$sheet->setCellValue('F2', __('PrezzoUnita')); 
-	$sheet->setCellValue('G2', __('Qta')); 
-	$sheet->setCellValue('H2', __('Importo')); 
+	$sheet->setCellValue('A2', __('SupplierOrganization')); 
+	$sheet->setCellValue('B2', __('Total carts')); 
+	$sheet->setCellValue('C2', __('Trasport')); 
+	$sheet->setCellValue('D2', __('CostMore')); 
+	$sheet->setCellValue('E2', __('CostLess')); 
+	$sheet->setCellValue('F2', __('Importo totale ordine')); 
 
 	$i=3;
-	$totale_ordine = 0;
-	foreach($article_orders as $numResult => $article_order) {
+	foreach($results as $result) {
 
-		$totale_ordine += $article_order->cart->final_price;
-
-		$article_order->article->is_bio ? $is_bio = 'Si': $is_bio = 'No';
-
-		$sheet->setCellValue('A'.($i), $is_bio);
-		$sheet->setCellValue('B'.($i), $article_order->article->codice);
-		$sheet->setCellValue('C'.($i), $article_order->name);
-		$sheet->setCellValue('D'.($i), $article_order->article->conf);
-		$sheet->setCellValue('E'.($i), $article_order->article->um_rif_label);
-		$sheet->setCellValue('F'.($i), $article_order->prezzo);
-		$sheet->setCellValue('G'.($i), $article_order->cart->final_qta);
-		$sheet->setCellValue('H'.($i), $article_order->cart->final_price);
+		$sheet->setCellValue('A'.($i), $result['suppliers_organization']->name);
+		$sheet->setCellValue('B'.($i), $this->HtmlCustomSite->excelimporto($result['order']['tot_order_only_cart']));
+		$sheet->setCellValue('C'.($i), $this->HtmlCustomSite->excelimporto($result['order']['trasport']));
+		$sheet->setCellValue('D'.($i), $this->HtmlCustomSite->excelimporto($result['order']['cost_more']));
+		$sheet->setCellValue('E'.($i), $this->HtmlCustomSite->excelimporto($result['order']['cost_less']));
+		$sheet->setCellValue('F'.($i), $this->HtmlCustomSite->excelimporto($result['order']['tot_order']));
 
 		$i++;
-	} // end foreach($article_orders as $numResult => $article_order)
+	} // end foreach($results as $result)
 
-	$sheet->setCellValue('A'.($i), '');
-	$sheet->setCellValue('B'.($i), '');
-	$sheet->setCellValue('C'.($i), '');
-	$sheet->setCellValue('D'.($i), '');
-	$sheet->setCellValue('E'.($i), '');
-	$sheet->setCellValue('F'.($i), '');
-	$sheet->setCellValue('G'.($i), __('Totale ordine'));
-	$sheet->setCellValue('H'.($i), $totale_ordine);
-		
-}
+	$sheet->setCellValue('E'.($i), __('Total delivery'));
+	$sheet->setCellValue('F'.($i), $this->HtmlCustomSite->excelimporto($delivery_tot_importo));
+} // end if(!empty($results))
 
 $writer = new Xlsx($spreadsheet);
 $writer->save('php://output');

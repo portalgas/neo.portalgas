@@ -47,12 +47,12 @@ if(!empty($results)) {
 			}			
 		}
 
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order_only_cart']).'</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['trasport']).'</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_more']).'</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_less']).'</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order']).'</td>';
-			$html .= '</tr>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order_only_cart']).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['trasport']).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_more']).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_less']).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order']).'</td>';
+		$html .= '</tr>';
 	} // end foreach($article_orders as $numResult => $article_order)
 
 	$html .= '	<tr>';

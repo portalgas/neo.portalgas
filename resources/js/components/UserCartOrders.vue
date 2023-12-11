@@ -7,10 +7,11 @@
         </div>
 
         <p 
-          v-for="(order, index) in results.orders"
+          v-for="order in results.orders"
           :order="order"
           :key="order.id" class="box-order">
 
+		  
 					<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
 						<div class="content-img-supplier-small">
@@ -38,12 +39,14 @@
 		        			:order="order" 
 		        			:article_orders="order.article_orders"
 		        			></user-cart-articles>
-			
+		
+				<referents v-if="order.referents!=null"
+							:referents="order.referents" />
         </p> <!-- loop orders -->
 
-				<!-- 		  		-->
-				<!--  TOTALE  -->
-				<!-- 		 		  -->
+		<!-- 		  		-->
+		<!--  TOTALE  -->
+		<!-- 		 		  -->
 	      <div class="row">
 
 	      	<div class="footer col-sm-12 col-xs-12 col-md-12" 
@@ -58,24 +61,24 @@
 	      	</div>
 	      </div>
 
-				<!-- 		  		-->
-				<!-- DISTANCE -->
-				<!-- 		  		-->
-				<p class="box-distance">
-					<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
-			        <span 
-			          v-for="(order, index) in results.orders" v-if="order.distance!=null"
-			          :order="order"
-			          :key="index">
-			
-							<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
-							</div>
-							<div class="progressBar" 
-								:style="{width: order.distance.percentuale + '%'}">&nbsp;</td>	
-								</div>
-					</span>
-					<div class="totaleKm">per un totale di {{ totalKm() }} Km</div>
-				</p>
+		<!-- 		  		-->
+		<!-- DISTANCE -->
+		<!-- 		  		-->
+		<p class="box-distance">
+			<h2>Quanta strada hanno fatto i tuoi acquisti?</h2>
+			<span 
+				v-for="(order, index) in results.orders" v-if="order.distance!=null"
+				:order="order"
+				:key="index">
+	
+					<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
+					</div>
+					<div class="progressBar" 
+						:style="{width: order.distance.percentuale + '%'}">&nbsp;</td>	
+						</div>
+			</span>
+			<div class="totaleKm">per un totale di {{ totalKm() }} Km</div>
+		</p>
 
 	</main>
 
@@ -84,6 +87,7 @@
 <script>
 import { mapActions } from "vuex";
 import UserCartArticles from "../components/part/UserCartArticles.vue";
+import Referents from "../components/part/Referents.vue";
 
 export default {
   name: "user-cart-orders",
@@ -104,7 +108,8 @@ export default {
     };
   },
   components: {
-    UserCartArticles
+    UserCartArticles,
+	Referents
   }, 
   mounted() {
     this.getGlobals();

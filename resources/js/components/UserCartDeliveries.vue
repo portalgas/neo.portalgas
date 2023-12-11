@@ -33,8 +33,8 @@
 		      <!-- ORDERS -->
 			    <user-cart-orders v-if="!isRun && results.delivery_id===delivery.id && delivery.id>0" :results="results"></user-cart-orders> 
 
-					<!-- PROMOTIONS -->
-					<user-cart-promotions v-if="!isRun && results.delivery_id===delivery.id && delivery.id==0" :results="results"></user-cart-promotions> 
+			<!-- PROMOTIONS -->
+			<user-cart-promotions v-if="!isRun && results.delivery_id===delivery.id && delivery.id==0" :results="results"></user-cart-promotions> 
 
 	      </div> <!-- card-body -->
 	    </div>

@@ -174,7 +174,8 @@ if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['ha
 <?php
 } // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
 
-if($user->acl['isManager'] || $user->acl['isSuperReferente'] || $user->acl['isReferentGeneric']) {
+if($user->organization->paramsConfig['hasGasGroups']=='N' && 
+  ($user->acl['isManager'] || $user->acl['isSuperReferente'] || $user->acl['isReferentGeneric'])) {
   ?>
    <li class="treeview"> 
      <a href="#">

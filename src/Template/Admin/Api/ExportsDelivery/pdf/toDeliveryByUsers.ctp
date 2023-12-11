@@ -85,7 +85,7 @@ if(!empty($results)) {
 		$html .= '		<th colspan="2" class="text-right no-border">' . __('Total user') . '</th>';
 		$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($result['user']['tot_user_importo']). '</th>';
 		$html .= '	</tr>';		
-	} // end foreach($article_orders as $numResult => $article_order)
+	} // end foreach($results as $result)
 
 	$html .= '	<tr>';
 	$html .= '		<th colspan="';
