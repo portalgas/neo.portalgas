@@ -331,4 +331,85 @@ class ExportsDeliveryController extends AppController {
        
         return true;
     }
+
+    // Doc. con acquisti della consegna raggruppati per produttore e dettagli acquisti
+    private function _toDeliveryBySuppliersAndCarts($format, $delivery_id, $debug=false) {
+        
+        $results = [];
+
+        /* 
+        * dati consegna
+        */
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Deliveries.organization_id' => $this->_organization->id,
+                    'Deliveries.id' => $delivery_id];
+        /* 
+         * profilazione $user->acl['isReferentGeneric'] 
+         */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            // debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+            else
+                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+        }
+
+        $delivery = $deliveriesTable->find()
+                                ->contain(['Orders' => [
+                                    'sort' => ['SuppliersOrganizations.name'],
+                                    'conditions' => ['Orders.organization_id' => $this->_user->organization->id,
+                                                    'Orders.isVisibleBackOffice' => 'Y',
+                                                    'Orders.state_code != ' => 'CREATE-INCOMPLETE'],
+                                    'SuppliersOrganizations' => ['Suppliers'],
+                                    ]])
+                                ->where($where)
+                                ->first();
+
+        $delivery_tot_importo = 0;                        
+        foreach($delivery->orders as $numResult => $order) {
+            
+            // debug($order->suppliers_organization->name);
+            $results[$numResult] = [];
+            $results[$numResult]['suppliers_organization'] = $order->suppliers_organization;
+
+            $results[$numResult]['order']['tot_order'] = $ordersTable->getTotImporto($this->_user, $this->_organization->id, $order);
+            $delivery_tot_importo = ($delivery_tot_importo + $results[$numResult]['order']['tot_order']); 
+            $results[$numResult]['order']['trasport'] = $order->trasport;
+            $results[$numResult]['order']['cost_more'] = $order->cost_more;
+            $results[$numResult]['order']['cost_less'] = $order->cost_less;
+            
+            /* 
+             * totale importo senza costi aggiuntivi
+             * */
+            $cartsTable = TableRegistry::get('Carts');
+            $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
+            $tot_order = 0;
+            foreach($carts as $cart) {
+                $final_price = $this->getCartFinalPrice($cart);
+                // debug('final_price '.$final_price);
+                $tot_order += $final_price; 
+
+                $results[$numResult]['order']['carts'][] = $cart;
+            }
+            $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
+            
+        } // foreach($delivery->orders as $order) 
+        $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
+
+        $this->_filename = 'acquisti-consegna-raggruppati-produttore-e-acquisti';
+        switch($format) {
+            case 'XLSX':
+                $this->_filename .= '.xlsx';
+            break;
+            case 'PDF':
+                $this->response->header('filename', $this->_filename.'.pdf');
+            break;
+        }
+
+        return true;
+    } 
+
 }

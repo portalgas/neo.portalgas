@@ -706,5 +706,5 @@ class HtmlCustomSiteHelper extends FormHelper
     	if(!empty($value))
     		$str = number_format($value, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
     	return $str;
-    }    
+    }     
 }
