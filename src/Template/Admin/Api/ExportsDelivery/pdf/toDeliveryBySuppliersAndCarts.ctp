@@ -16,31 +16,22 @@ $delivery_data = $this->HtmlCustomSite->drawDeliveryDateLabel($delivery);
 
 $html = '';
 $html .= '<h3>'.__('Delivery').' '.$delivery_label.' '.$delivery_data.'</h3>';
+$html .= '<div class="totale">';
+$html .= __('Total delivery').' ';
+$html .= $this->HtmlCustom->importo($delivery_tot_importo);
+$html .= '</div>';
 
 if(!empty($results)) {
 
-	foreach($results as $result) {
+	foreach($results as $numResult => $result) {
 
-		$html .= '<table cellpadding="0" cellspacing="0" border="1" width="100%" class="table">';
-		$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-borderless">';
+		$html .= '<tbody>';
 		$html .= '<tr>';
-		$html .= '	<th scope="col" colspan="3">' . __('SupplierOrganization') . '</th>';
-		if($format=='HTML')
-			$html .= '<th scope="col" class="text-center"></th>';
-		$html .= '	<th scope="col" class="text-center">' . __('Total carts') . '</th>';
-		$html .= '	<th scope="col" class="text-center">' . __('Trasport') . '</th>';
-		$html .= '	<th scope="col" class="text-center">' . __('CostMore') . '</th>';
-		$html .= '	<th scope="col" class="text-center">' . __('CostLess') . '</th>';
-		$html .= '	<th scope="col" class="text-center">' . __('Importo totale ordine') . '</th>';
-		$html .= '</tr>';
-		$html .= '</thead><tbody>';
-
-		$html .= '<tr>';
-		$html .= '	<td colspan="3">'.$result['suppliers_organization']->name.'</td>';
+		$html .= '	<td><h2>'.$result['suppliers_organization']->name.'</h2></td>';
+		$html .= '  <td>';
 		if($format=='HTML') {
-			$html .= '<td>';
 			if(!empty($result['suppliers_organization']->supplier->img1)) {
-			
 			
 				$img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $result['suppliers_organization']->supplier->img1);
 				$img_path_supplier = $_portalgas_app_root . $img_path_supplier;
@@ -51,33 +42,70 @@ if(!empty($results)) {
 					$html .= '<img src="'.$url.'" width="'.Configure::read('Supplier.img.preview.width').'" />';
 				}
 			}
-			$html .= '</td>';
 		} 
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order_only_cart']).'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['trasport']).'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_more']).'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_less']).'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order']).'</td>';
-		$html .= '</tr>';
-				
+		$html .= '</td>';
+		$html .= '</tr>';		
+		$html .= '<tr>';
+		$html .= '	<td class="text-right">' . __('Total carts') . '</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order_only_cart'], '-').'</td>';
+		$html .= '</tr>';		
+		if($result['order']['trasport']>0) {
+			$html .= '<tr>';
+			$html .= '	<td class="text-right">' . __('Trasport') . '</td>';
+			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['trasport'], '-').'</td>';
+			$html .= '</tr>';
+		}
+		if($result['order']['cost_more']>0) {
+			$html .= '<tr>';
+			$html .= '	<td class="text-right">' . __('CostMore') . '</td>';
+			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_more'], '-').'</td>';
+			$html .= '</tr>';
+		}
+		if($result['order']['cost_less']>0) {
+			$html .= '<tr>';
+			$html .= '	<td class="text-right">' . __('CostLess') . '</td>';
+			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_less'], '-').'</td>';
+			$html .= '</tr>';	
+		}
+		if($result['order']['trasport']>0 || $result['order']['cost_more']>0 || $result['order']['cost_less']>0) {
+			$html .= '<tr>';
+			$html .= '	<td class="text-right">' . __('Importo totale ordine') . '</td>';
+			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order'], '-').'</td>';
+			$html .= '</tr>';	
+		}
+		$html .= '</tbody>';
+		$html .= '</table>';
+		$html .= '<br />';
+			
+		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover">';
 		$html .= '<tr class="tr-header">';
 		$html .= '	<td></td>';
+		if($format=='HTML')
+			$html .= '	<td></td>';
 		$html .= '	<td></td>';
 		$html .= '	<td></td>';
 		$html .= '	<td></td>';
-		$html .= '	<td class="text-center">'.__('Quantità').'</td>';
-		$html .= '	<td class="text-center">'.__('Importo').'</td>';
-		$html .= '	<td class="text-center" colspan="2">'.__('Quantità e importo totali').'</td>';
 		$html .= '	<td></td>';
+		$html .= '	<td></td>';
+		if($opts['referent_modify']=='Y') {
+			$html .= '	<td class="text-center">'.__('Quantità').'</td>';
+			$html .= '	<td class="text-center">'.__('Importo').'</td>';
+			$html .= '	<td class="text-center" colspan="2">'.__('Quantità e importo totali').'</td>';
+			$html .= '	<td></td>';	
+		}
 		$html .= '</tr>';	
 		$html .= '<tr class="tr-header">';	
-		$html .= '	<td>'.__('Name').'</td>';
+		$html .= '	<td colspan="3">'.__('Name').'</td>';
+		if($format=='HTML')
+			$html .= '	<td></td>';
 		$html .= '	<td class="text-center">'.__('Prezzo unità').'</td>';
 		$html .= '	<td class="text-center">'.__('Quantità').'</td>';
-		$html .= '	<td class="text-center">'.__('Importo').'</td>';
-		$html .= '	<td class="text-center" colspan="2">dell\'utente</td>';
-		$html .= '	<td class="text-center" colspan="2">modificati dal referente</td>';
-		$html .= '	<td class="text-center">'.__('Importo forzati').'</td>';
+		$html .= '	<td class="text-right">'.__('Importo').'&nbsp;&nbsp;&nbsp;</td>';
+		if($opts['referent_modify']=='Y') {
+			$html .= '	<td class="text-center" colspan="2">dell\'utente</td>';
+			$html .= '	<td class="text-center" colspan="2">modificati dal referente</td>';
+			$html .= '	<td class="text-center">'.__('Importo forzati').'</td>';
+		}
 		$html .= '</tr>';
 		$user_id_old = 0;
 		foreach($result['order']['carts'] as $cart) {
@@ -85,50 +113,79 @@ if(!empty($results)) {
 			$final_price = $this->HtmlCustomSite->getCartFinalPrice($cart);
 			($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
 
-			if($cart->user->id!=$user_id_old) {
+			// header user
+			if($cart->user_id!=$user_id_old) {
+
+				if($user_id_old>0) {
+					// totale gasista
+					$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'], $user_id_old, $format, $opts);
+				}
+
 				$html .= '<tr>';
-				$html .= '	<td colspan="9"><b>'.__('User').': '.$cart->user->name.'</b></td>';
+				$html .= '<td colspan="6"><b>'.__('User').': '.$cart->user->name.'</b></td>';
+				if($format=='HTML')
+					$html .= '<td></td>';
+				if($opts['referent_modify']=='Y') 
+					$html .= '<td colspan="5" class="evidence"></td>';
 				$html .= '</tr>';	
 			}
 
 			$html .= '<tr>';
-			$html .= '	<td>'.$cart->articles_order->name.'</td>';
+			$html .= '	<td colspan="3">'.$cart->articles_order->name.'</td>';
+			if($format=='HTML')
+				$html .= '<td></td>';
 			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($cart->articles_order->prezzo).'</td>';
 			$html .= '	<td class="text-center">'.$final_qta.'</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($final_price).'</td>';
-			$html .= '	<td class="text-center">';
-			if($cart->qta_forzato>0)
-				$html .= $cart->qta_forzato;
-			else 
-				$html .= '-';
-			$html .= '</td>';
-			$html .= '	<td class="text-center">';
-			if($cart->qta_forzato>0)
-				$html .= $this->HtmlCustom->importo($cart->qta_forzato * $cart->articles_order->prezzo);
-			else 
-				$html .= '-';
-			$html .= '</td>';
-			$html .= '	<td class="text-center">';
-			if($cart->importo_forzato>0)
-				$html .= $this->HtmlCustom->importo($cart->importo_forzato);
-			else 
-				$html .= '-';
-			$html .= '</td>';
+			$html .= '	<td class="text-right">'.$this->HtmlCustom->importo($final_price).'&nbsp;&nbsp;&nbsp;</td>';
+
+			if($opts['referent_modify']=='Y') {
+				/*
+				* qta originali, quelli del gasista
+				*/
+				$html .= '	<td class="text-center evidence">';
+				$html .= $cart->qta;
+				$html .= '  </td>';
+				$html .= '	<td class="text-center evidence">';
+				$html .= $this->HtmlCustom->importo($cart->qta * $cart->articles_order->prezzo);
+				$html .= '</td>';
+				/*
+				* qta modificata dal referente
+				*/
+				$html .= '	<td class="text-center evidence">';
+				if($cart->qta_forzato>0)
+					$html .= $cart->qta_forzato;
+				else 
+					$html .= '-';
+				$html .= '</td>';
+				$html .= '	<td class="text-center evidence">';
+				if($cart->qta_forzato>0)
+					$html .= $this->HtmlCustom->importo($cart->qta_forzato * $cart->articles_order->prezzo);
+				else 
+					$html .= '-';
+				$html .= '</td>';
+				/* 
+				* importo modificata dal referente
+				*/
+				$html .= '	<td class="text-center evidence">';
+				if($cart->importo_forzato>0)
+					$html .= $this->HtmlCustom->importo($cart->importo_forzato);
+				else 
+					$html .= '-';
+				$html .= '</td>';
+			}
 			$html .= '</tr>';
 
-			$user_id_old = $cart->user->id;
-		}
-	
-		$html .= '	<tr>';
-		$html .= '		<td colspan="';
-		($format=='HTML')? $html .= '6' : $html .= '5';
-		$html .= '" class="no-border"></td>';
-		$html .= '		<th colspan="2" class="text-right no-border">' . __('Total delivery') . '</th>';
-		$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_importo). '</th>';
-		$html .= '	</tr>';
+			$user_id_old = $cart->user_id;
+		} // foreach($result['order']['carts'] as $cart)
+		// totale gasista
+		$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'], $user_id_old, $format ,$opts);
 
 		$html .= '	</tbody>';
 		$html .= '	</table>';	
+
+		// salto pagina tranne all'ultima pagina
+		if($opts['salto_pagina']=='Y' && $numResult<(count($results)-1)) 
+			$html .= '<div style="page-break-after: always;"></div>';
 
 	} // end foreach($article_orders as $numResult => $article_order)		
 }
@@ -141,5 +198,22 @@ echo $html;
 }
 .tr-header td {
 	
+}
+td.evidence {
+	background-color:#F5F5F5;
+}
+.totale {
+	font-size: 20px;
+	text-align: center;
+	padding: 15px;
+	background-color:#F5F5F5;
+}
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
 }
 </style>

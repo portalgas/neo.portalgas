@@ -44,6 +44,7 @@ class AppView extends View
         $this->loadHelper('Authentication.Identity');
         $this->loadHelper('HtmlCustom');
         $this->loadHelper('HtmlCustomSite');
+        $this->loadHelper('HtmlCustomSiteExport');
         $this->loadHelper('HtmlCustomSiteOrders');
         $this->loadHelper('HtmlCustomSiteOrdersGas');
         $this->loadHelper('HtmlCustomSiteOrdersGasGroups');

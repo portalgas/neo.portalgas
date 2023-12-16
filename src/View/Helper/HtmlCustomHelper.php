@@ -245,10 +245,14 @@ class HtmlCustomHelper extends FormHelper
         return $html;
     }   
 
-    public function importo($value) {
+    public function importo($value, $default_value=null) {
     	$str = '';
     	if(!empty($value))
     		$str = number_format($value, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia')).' &euro;';
+        else {
+            if(!empty($default_value))
+                $str = $default_value;
+        }
     	return $str;
     }
 

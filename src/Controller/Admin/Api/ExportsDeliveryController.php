@@ -387,13 +387,39 @@ class ExportsDeliveryController extends AppController {
             $cartsTable = TableRegistry::get('Carts');
             $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
             $tot_order = 0;
+            $user_id_old = 0;
+            $user_tot_qta = 0;
+            $user_tot_importo = 0;
             foreach($carts as $cart) {
+
                 $final_price = $this->getCartFinalPrice($cart);
+                ($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
                 // debug('final_price '.$final_price);
                 $tot_order += $final_price; 
 
+                if(!isset($results[$numResult]['order']['users'][$cart->user_id])) {
+                    $results[$numResult]['order']['users'][$cart->user_id]['tot_qta'] = 0;
+                    $results[$numResult]['order']['users'][$cart->user_id]['tot_importo'] = 0;    
+                }
+                $results[$numResult]['order']['users'][$cart->user_id]['tot_qta'] += $final_qta;
+                $results[$numResult]['order']['users'][$cart->user_id]['tot_importo'] += $final_price;
+                
+                if($cart->user_id!=$user_id_old) {
+                    if($order->hasTrasport=='Y' && $order->trasport>0) {
+                        $results[$numResult]['order']['users'][$cart->user_id]['importo_trasport'] = $this->_getUserImportoTrasport($this->_user, $cart->organization_id, $cart->user_id, $order->id);
+                    }
+                    if($order->hasCostMore=='Y' && $order->cost_more>0) {
+                        $results[$numResult]['order']['users'][$cart->user_id]['importo_cost_more'] = $this->_getUserImportoTrasport($this->_user, $cart->organization_id, $cart->user_id, $order->id);
+                    }
+                    if($order->hasCostLess=='Y' && $order->cost_less>0) {
+                        $results[$numResult]['order']['users'][$cart->user_id]['importo_cost_less'] = $this->_getUserImportoTrasport($this->_user, $cart->organization_id, $cart->user_id, $order->id);
+                    }
+                } // if($cart->user_id!=$user_id_old)
+
                 $results[$numResult]['order']['carts'][] = $cart;
-            }
+
+                $user_id_old = $cart->user_id; 
+            } // end foreach($carts as $cart)
             $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
             
         } // foreach($delivery->orders as $order) 
@@ -412,4 +438,18 @@ class ExportsDeliveryController extends AppController {
         return true;
     } 
 
+    private function _getUserImportoTrasport($_user, $organization_id, $user_id, $order_id) {
+        $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
+        $where = ['SummaryOrderTrasports.organization_id' => $organization_id,
+                  'SummaryOrderTrasports.user_id' => $user_id,
+                  'SummaryOrderTrasports.order_id' => $order_id];
+        $result = $summaryOrderTrasportsTable->find()
+                                             ->select(['importo_trasport'])
+                                             ->where($where)
+                                             ->first();
+        if(!empty($result)) 
+            return $result->importo_trasport;
+        
+        return 0;
+    }
 }
