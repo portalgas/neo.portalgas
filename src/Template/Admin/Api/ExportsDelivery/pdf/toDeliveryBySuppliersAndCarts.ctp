@@ -175,6 +175,22 @@ if(!empty($results)) {
 			}
 			$html .= '</tr>';
 
+			if(!empty($cart->nota)) {
+				$html .= '<tr>';
+				$html .= '	<td></td>';
+				if($format=='HTML')
+					$html .= '	<td></td>';
+				$html .= '	<td colspan="5"><b>Nota:</b> '.$cart->nota.'</td>';
+				if($opts['referent_modify']=='Y') {
+					$html .= '	<td></td>';
+					$html .= '	<td></td>';
+					$html .= '	<td></td>';
+					$html .= '	<td></td>';	
+					$html .= '	<td></td>';	
+				}
+				$html .= '</tr>';
+			}
+
 			$user_id_old = $cart->user_id;
 		} // foreach($result['order']['carts'] as $cart)
 		// totale gasista

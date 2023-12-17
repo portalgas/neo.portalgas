@@ -699,12 +699,5 @@ class HtmlCustomSiteHelper extends FormHelper
     public function excelSanify($value) {
         $value = strip_tags($value);
         return $value;
-    }    
-
-    public function excelImporto($value) {
-    	$str = '';
-    	if(!empty($value))
-    		$str = number_format($value, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
-    	return $str;
-    }     
+    }         
 }

@@ -58,5 +58,12 @@ class HtmlCustomSiteExportHelper extends FormHelper
         $html .= '</tr>';	
         
         return $html;
-    }     
+    } 
+    
+    public function excelImporto($value) {
+    	$str = '';
+    	if(!empty($value))
+    		$str = number_format($value, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
+    	return $str;
+    }    
 }

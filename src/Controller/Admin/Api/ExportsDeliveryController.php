@@ -280,29 +280,48 @@ class ExportsDeliveryController extends AppController {
                                 'order_id' => $order->id,
                                 'user_id' => $user->id];
 
-                        $summaryOrderTrasport = $summaryOrderTrasportsTable->find()->where($where)->first();
-                        if(!empty($summaryOrderTrasport) && $summaryOrderTrasport->importo_trasport>0)
-                            $results[$i_user]['orders'][$i_order]['importo_trasport'] = $summaryOrderTrasport->importo_trasport;
-                        else 
-                            $results[$i_user]['orders'][$i_order]['importo_trasport'] = 0;
+                        $results[$i_user]['orders'][$i_order]['importo_trasport'] = 0;
+                        if($order->hasTrasport=='Y' && $order->trasport>0) {
+                            $summaryOrderTrasport = $summaryOrderTrasportsTable->find()->where($where)->first();
+                            if(!empty($summaryOrderTrasport) && $summaryOrderTrasport->importo_trasport>0)
+                                $results[$i_user]['orders'][$i_order]['importo_trasport'] = $summaryOrderTrasport->importo_trasport;
+                            else 
+                                $results[$i_user]['orders'][$i_order]['importo_trasport'] = 0;
+                        }
 
-                        $summaryOrderCostMore = $summaryOrderCostMoresTable->find()->where($where)->first();
-                        if(!empty($summaryOrderCostMore) && $summaryOrderCostMore->importo_cost_more>0)
-                            $results[$i_user]['orders'][$i_order]['importo_cost_more'] = $summaryOrderCostMore->importo_cost_more;
-                        else 
-                            $results[$i_user]['orders'][$i_order]['importo_cost_more'] = 0;
-                    
-                        $summaryOrderCostLess = $summaryOrderCostLessesTable->find()->where($where)->first();
-                        if(!empty($summaryOrderCostLess) && $summaryOrderCostLess->importo_cost_less>0)
-                            $results[$i_user]['orders'][$i_order]['importo_cost_less'] = $summaryOrderCostLess->importo_cost_less;
-                        else 
-                            $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
-                   
+                        $results[$i_user]['orders'][$i_order]['importo_cost_more'] = 0;
+                        if($order->hasCostMore=='Y' && $order->cost_more>0) {
+                            $summaryOrderCostMore = $summaryOrderCostMoresTable->find()->where($where)->first();
+                            if(!empty($summaryOrderCostMore) && $summaryOrderCostMore->importo_cost_more>0)
+                                $results[$i_user]['orders'][$i_order]['importo_cost_more'] = $summaryOrderCostMore->importo_cost_more;
+                            else 
+                                $results[$i_user]['orders'][$i_order]['importo_cost_more'] = 0;
+                        }
+
+                        $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
+                        if($order->hasCostLess=='Y' && $order->cost_less>0) {
+                            $summaryOrderCostLess = $summaryOrderCostLessesTable->find()->where($where)->first();
+                            if(!empty($summaryOrderCostLess) && $summaryOrderCostLess->importo_cost_less>0)
+                                $results[$i_user]['orders'][$i_order]['importo_cost_less'] = $summaryOrderCostLess->importo_cost_less;
+                            else 
+                                $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
+                        }
+
+                        /* 
+                        * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
+                        *   => ricalcolo totali
+                        */
+                        if($order->typeGest=='AGGREGATE') {                         
+                            $importo_aggregate = $this->_getUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
+                            if(!empty($importo_aggregate)) {
+                                $tot_importo = $importo_aggregate;
+                            }
+                        }
+                                                
                         $results[$i_user]['orders'][$i_order]['tot_importo_only_cart'] = $tot_importo;
                         $results[$i_user]['orders'][$i_order]['tot_importo'] = ($tot_importo + $results[$i_user]['orders'][$i_order]['importo_trasport'] + $results[$i_user]['orders'][$i_order]['importo_cost_more'] + (-1 * $results[$i_user]['orders'][$i_order]['importo_cost_less']));
                         $tot_user_importo += $results[$i_user]['orders'][$i_order]['tot_importo'];
                         // debug($results);
-
                                                     
                         $i_order++;
                     } // end if($carts->count()>0)
@@ -388,9 +407,11 @@ class ExportsDeliveryController extends AppController {
             $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
             $tot_order = 0;
             $user_id_old = 0;
-            $user_tot_qta = 0;
-            $user_tot_importo = 0;
+            $user_ids = [];
             foreach($carts as $cart) {
+
+                // memorizzo un array con tutti gli user di un ordine
+                $user_ids[$cart->user_id] = $cart->user_id;
 
                 $final_price = $this->getCartFinalPrice($cart);
                 ($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
@@ -420,9 +441,27 @@ class ExportsDeliveryController extends AppController {
 
                 $user_id_old = $cart->user_id; 
             } // end foreach($carts as $cart)
+      
             $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
             
+            /* 
+             * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
+             *   => ricalcolo totali
+             */
+            if($order->typeGest=='AGGREGATE') {
+                $tot_order = 0;
+                foreach($user_ids as $user_id) {
+                    $importo_aggregate = $this->_getUserSummaryAggregates($this->_user, $this->_organization->id, $user_id, $order->id);
+                    if(!empty($importo_aggregate)) {
+                        $results[$numResult]['order']['users'][$user_id]['tot_importo'] = $importo_aggregate; 
+                        $tot_order += $importo_aggregate; 
+                    }
+                }
+                $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
+            }
+
         } // foreach($delivery->orders as $order) 
+
         $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore-e-acquisti';
@@ -452,4 +491,19 @@ class ExportsDeliveryController extends AppController {
         
         return 0;
     }
+
+    private function _getUserSummaryAggregates($_user, $organization_id, $user_id, $order_id) {
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
+        $where = ['SummaryOrderAggregates.organization_id' => $organization_id,
+                  'SummaryOrderAggregates.user_id' => $user_id,
+                  'SummaryOrderAggregates.order_id' => $order_id];
+        $result = $summaryOrderAggregatesTable->find()
+                                             ->select(['importo'])
+                                             ->where($where)
+                                             ->first();
+        if(!empty($result)) 
+            return $result->importo;
+        
+        return 0;
+    }    
 }

@@ -10,7 +10,9 @@ $delivery_data = $this->HtmlCustomSite->excelSanify($this->HtmlCustomSite->drawD
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-$sheet->setCellValue('A1', __('Delivery').' '.$delivery_label.' '.$delivery_data); 
+$sheet->setCellValue('A1', __('Delivery')); 
+$sheet->setCellValue('B1', $delivery_label); 
+$sheet->setCellValue('C1', $delivery_data); 
 
 if(!empty($results)) {
 
@@ -25,17 +27,17 @@ if(!empty($results)) {
 	foreach($results as $result) {
 
 		$sheet->setCellValue('A'.($i), $result['suppliers_organization']->name);
-		$sheet->setCellValue('B'.($i), $this->HtmlCustomSite->excelimporto($result['order']['tot_order_only_cart']));
-		$sheet->setCellValue('C'.($i), $this->HtmlCustomSite->excelimporto($result['order']['trasport']));
-		$sheet->setCellValue('D'.($i), $this->HtmlCustomSite->excelimporto($result['order']['cost_more']));
-		$sheet->setCellValue('E'.($i), $this->HtmlCustomSite->excelimporto($result['order']['cost_less']));
-		$sheet->setCellValue('F'.($i), $this->HtmlCustomSite->excelimporto($result['order']['tot_order']));
+		$sheet->setCellValue('B'.($i), $this->HtmlCustomSiteExport->excelImporto($result['order']['tot_order_only_cart']));
+		$sheet->setCellValue('C'.($i), $this->HtmlCustomSiteExport->excelImporto($result['order']['trasport']));
+		$sheet->setCellValue('D'.($i), $this->HtmlCustomSiteExport->excelImporto($result['order']['cost_more']));
+		$sheet->setCellValue('E'.($i), $this->HtmlCustomSiteExport->excelImporto($result['order']['cost_less']));
+		$sheet->setCellValue('F'.($i), $this->HtmlCustomSiteExport->excelImporto($result['order']['tot_order']));
 
 		$i++;
 	} // end foreach($results as $result)
 
 	$sheet->setCellValue('E'.($i), __('Total delivery'));
-	$sheet->setCellValue('F'.($i), $this->HtmlCustomSite->excelimporto($delivery_tot_importo));
+	$sheet->setCellValue('F'.($i), $this->HtmlCustomSiteExport->excelImporto($delivery_tot_importo));
 } // end if(!empty($results))
 
 $writer = new Xlsx($spreadsheet);

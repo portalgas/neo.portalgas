@@ -30,7 +30,6 @@ class SummaryOrderAggregate extends Entity
      * @var array
      */
     protected $_accessible = [
-        'importo' => true,
         'created' => true,
         'modified' => true,
         'organization' => true,
