@@ -20,7 +20,7 @@ class HtmlCustomSiteExportHelper extends FormHelper
         $config = Configure::read('Config');
     }
 
-    public function toDeliveryBySuppliersAndCartsDrawUserTotale($user, $user_id, $format, $opts) {
+    public function toDeliveryBySuppliersAndCartsDrawUserTotale($user, $format, $opts) {
         $html = '';
         $html .= '<tr>';
         $html .= '<td colspan="3"></td>';
@@ -28,29 +28,29 @@ class HtmlCustomSiteExportHelper extends FormHelper
             $html .= '<td></td>';
         $html .= '<td>'.__('Total user').'</td>';
         $html .= '<td class="text-center">';
-        $html .= $user[$user_id]['tot_qta'];
+        $html .= $user['tot_qta'];
         $html .= '</td>';
         $html .= '<td class="text-right">';
-        $html .= $this->HtmlCustom->importo($user[$user_id]['tot_importo']).'&nbsp;&nbsp;&nbsp;';
-        if(isset($user[$user_id]['importo_trasport']))
-            $html .= '<br />Trasporto '.$this->HtmlCustom->importo($user[$user_id]['importo_trasport']).' +';
-        if(isset($user[$user_id]['importo_cost_more']))
-            $html .= '<br />Costo agg. '.$this->HtmlCustom->importo($user[$user_id]['importo_cost_more']).' +';
-        if(isset($user[$user_id]['importo_cost_less']))
-            $html .= '<br />Sconto '.$this->HtmlCustom->importo($user[$user_id]['importo_cost_less']).' -';
+        $html .= $this->excelImporto($user['tot_importo']).'&nbsp;&nbsp;&nbsp;';
+        if(isset($user['importo_trasport']))
+            $html .= '<br />Trasporto '.$this->excelImporto($user['importo_trasport']).' +';
+        if(isset($user['importo_cost_more']))
+            $html .= '<br />Costo agg. '.$this->excelImporto($user['importo_cost_more']).' +';
+        if(isset($user['importo_cost_less']))
+            $html .= '<br />Sconto '.$this->excelImporto($user['importo_cost_less']).' -';
         
-        $user_totale = $user[$user_id]['tot_importo'];
-        if(isset($user[$user_id]['importo_trasport'])) {
-            $user_totale += $user[$user_id]['importo_trasport']; 
+        $user_totale = $user['tot_importo'];
+        if(isset($user['importo_trasport'])) {
+            $user_totale += $user['importo_trasport']; 
         }
-        if(isset($user[$user_id]['importo_cost_more'])) {
-            $user_totale += $user[$user_id]['importo_cost_more']; 
+        if(isset($user['importo_cost_more'])) {
+            $user_totale += $user['importo_cost_more']; 
         }
-        if(isset($user[$user_id]['importo_cost_less'])) {
-            $user_totale -= $user[$user_id]['importo_cost_less']; 
+        if(isset($user['importo_cost_less'])) {
+            $user_totale -= $user['importo_cost_less']; 
         }                
-        if($user_totale != $user[$user_id]['tot_importo']) {
-            $html .= '<br />'.$this->HtmlCustom->importo($user_totale).' =';
+        if($user_totale != $user['tot_importo']) {
+            $html .= '<br />'.$this->excelImporto($user_totale).' =';
         }
         $html .= '</td>';
         if($opts['referent_modify']=='Y') 
@@ -58,6 +58,26 @@ class HtmlCustomSiteExportHelper extends FormHelper
         $html .= '</tr>';	
         
         return $html;
+    } 
+
+    public function toExcelDeliveryBySuppliersAndCartsDrawUserTotale($sheet, $i, $user, $format, $opts) {
+        
+        $totale = $this->excelImporto($user['tot_importo']);
+        if(isset($user['importo_trasport']))
+            $totale .= " \n".'Trasporto '.$this->excelImporto($user['importo_trasport']).' +';
+        if(isset($user['importo_cost_more']))
+            $totale .= " \n".'Costo agg. '.$this->excelImporto($user['importo_cost_more']).' +';
+        if(isset($user['importo_cost_less']))
+            $totale .= " \n".'Sconto '.$this->excelImporto($user['importo_cost_less']).' -';
+        
+        $sheet->setCellValue('A'.$i, '');
+        $sheet->setCellValue('B'.$i, '');
+        $sheet->setCellValue('C'.$i, '');
+        $sheet->setCellValue('D'.$i, __('Total user'));
+        $sheet->setCellValue('E'.$i, $user['tot_qta']);
+        $sheet->setCellValue('F'.$i, $totale);
+
+        return $sheet;
     } 
     
     public function excelImporto($value) {

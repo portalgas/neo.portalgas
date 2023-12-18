@@ -118,7 +118,7 @@ if(!empty($results)) {
 
 				if($user_id_old>0) {
 					// totale gasista
-					$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'], $user_id_old, $format, $opts);
+					$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format, $opts);
 				}
 
 				$html .= '<tr>';
@@ -175,6 +175,7 @@ if(!empty($results)) {
 			}
 			$html .= '</tr>';
 
+			if($opts['cart_nota']=='Y')
 			if(!empty($cart->nota)) {
 				$html .= '<tr>';
 				$html .= '	<td></td>';
@@ -194,7 +195,7 @@ if(!empty($results)) {
 			$user_id_old = $cart->user_id;
 		} // foreach($result['order']['carts'] as $cart)
 		// totale gasista
-		$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'], $user_id_old, $format ,$opts);
+		$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format ,$opts);
 
 		$html .= '	</tbody>';
 		$html .= '	</table>';	

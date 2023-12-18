@@ -70,6 +70,12 @@ else {
                                                     '@click' => 'htmlGets']);
   echo '</div>';
   echo '<div>';
+  echo '<label class="radio-label">Visualizza le note delle modifiche del referente</label><br />'; 
+  echo $this->Form->radio('cart_nota', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'N', 
+                                                    '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '<div>';
   echo '<label class="radio-label">Salto pagina ad ogni produttore</label><br />'; 
   echo $this->Form->radio('salto_pagina', ['Y' => 'Si', 'N' => 'No'], 
                                                     ['class' => 'options', 'default' => 'Y', 
@@ -77,7 +83,7 @@ else {
   echo '</div>';
   echo '</template>';
   echo '</div>'; // col-md-5
-
+  
   /* 
   * formato di stampa 
   */

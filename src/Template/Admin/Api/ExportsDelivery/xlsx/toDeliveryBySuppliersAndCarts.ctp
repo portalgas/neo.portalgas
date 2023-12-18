@@ -17,9 +17,11 @@ $sheet->setCellValue('C1', $delivery_data);
 $sheet->setCellValue('A2', __('Total delivery'));
 $sheet->setCellValue('B2', $this->HtmlCustomSiteExport->excelImporto($delivery_tot_importo));
 
+$sheet->setCellValue('A3', ''); 
+
 if(!empty($results)) {
 
-	$i=2;
+	$i=3;
 	foreach($results as $numResult => $result) {
 
 		$i++;
@@ -73,8 +75,8 @@ if(!empty($results)) {
 		$sheet->setCellValue('E'.$i, __('Quantità'));
 		$sheet->setCellValue('F'.$i, __('Importo'));
 		if($opts['referent_modify']=='Y') {
-			$sheet->setCellValue('G'.$i, "dell\'utente");
-			$sheet->setCellValue('H'.$i, "dell\'utente");
+			$sheet->setCellValue('G'.$i, "dell'utente");
+			$sheet->setCellValue('H'.$i, "dell'utente");
 			$sheet->setCellValue('I'.$i, "modificati dal referente");
 			$sheet->setCellValue('J'.$i, "modificati dal referente");
 			$sheet->setCellValue('K'.$i, __('Importo forzati'));
@@ -91,7 +93,8 @@ if(!empty($results)) {
 
 				if($user_id_old>0) {
 					// totale gasista
-					// $html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'], $user_id_old, $format, $opts);
+					$i++;
+					$this->HtmlCustomSiteExport->toExcelDeliveryBySuppliersAndCartsDrawUserTotale($sheet, $i, $result['order']['users'][$user_id_old], $format, $opts);
 				}
 
 				$i++;
@@ -127,15 +130,22 @@ if(!empty($results)) {
 				$sheet->setCellValue('K'.$i, $tot);
 			}
 
-			if(!empty($cart->nota)) {
-				$i++;
-				$sheet->setCellValue('A'.$i, $cart->nota);
-			}
+			if($opts['cart_nota']=='Y')
+				if(!empty($cart->nota)) {
+					$i++;
+					$sheet->setCellValue('A'.$i, '');
+					$sheet->setCellValue('B'.$i, 'Nota');
+					$sheet->setCellValue('C'.$i, $cart->nota);
+				}
 
 			$user_id_old = $cart->user_id;
 
 		} // foreach($result['order']['carts'] as $cart)
-
+		
+		// totale gasista
+		$i++;
+		$this->HtmlCustomSiteExport->toExcelDeliveryBySuppliersAndCartsDrawUserTotale($sheet, $i, $result['order']['users'][$user_id_old], $format, $opts);
+		
 		$i++;
 		$sheet->setCellValue('A'.$i, '');
 

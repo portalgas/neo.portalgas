@@ -76,6 +76,17 @@ class ExportsDeliveryController extends AppController {
          * opzioni di stampa
          */
         $opts = $this->request->getData('opts');
+        if(empty($opts)) {
+            // l'excel effettua una post del form e le options non sono raggruppate dentro opts
+            $datas = $this->request->getData();
+            unset($datas['delivery_id']);
+            unset($datas['print_id']);
+            unset($datas['format']);
+            if(!empty($datas)) {
+                foreach($datas as $key => $value) 
+                    $opts[$key] = $value;
+            }
+        }
         $this->set(compact('opts'));
 
         $method = '_'.$print_id;
