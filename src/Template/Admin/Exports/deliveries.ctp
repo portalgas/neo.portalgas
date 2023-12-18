@@ -53,16 +53,16 @@ else {
   ]);
 
   // toDeliveryByUsers
-  echo '<template v-if="print_id==\'toDeliveryByUsers\'">';
+  echo '<div v-show="print_id==\'toDeliveryByUsers\'">';
   echo '<div>';
   echo '<label class="radio-label">Visualizza contatti gasista</label><br />'; 
   echo $this->Form->radio('users_contacts', ['Y' => 'Si', 'N' => 'No'], 
                                                     ['class' => 'options', 'default' => 'N', 
                                                     '@click' => 'htmlGets']);
   echo '</div>';
-  echo '</template>';
+  echo '</div>';
   // toDeliveryBySuppliersAndCarts
-  echo '<template v-if="print_id==\'toDeliveryBySuppliersAndCarts\'">';
+  echo '<div v-show="print_id==\'toDeliveryBySuppliersAndCarts\'">';
   echo '<div>';
   echo '<label class="radio-label">Visualizza le modifiche del referente</label><br />'; 
   echo $this->Form->radio('referent_modify', ['Y' => 'Si', 'N' => 'No'], 
@@ -81,7 +81,7 @@ else {
                                                     ['class' => 'options', 'default' => 'Y', 
                                                     '@click' => 'htmlGets']);
   echo '</div>';
-  echo '</template>';
+  echo '</div>';
   echo '</div>'; // col-md-5
   
   /* 

@@ -38,13 +38,14 @@ $(function () {
           this.print_id = $("input[name='print_id']:checked").val();
           this.print_results = '';
           this.is_run = true;
+          // setTimeout(() => {}, 2000);          
           this.gets();
         },
         gets: function(e) {
 
             let _this = this; 
 
-            console.log('print_id '+this.print_id+' format '+this.format, 'gets');
+            // console.log('print_id '+this.print_id+' format '+this.format, 'gets');
             if(typeof this.print_id === 'undefined' || this.print_id==null) {
               alert("Scegli la tipologia di stampa");
               this.is_run = false;
@@ -94,13 +95,13 @@ $(function () {
             $.each($('.options'),function(i){
               type = $(this).attr('type');
               name = $(this).attr('name');
-              console.log(name + ' ' + $(this).is(':checked') + ' => ' + $(this).val());
+              // console.log(name + ' ' + $(this).is(':checked') + ' => ' + $(this).val());
               if(type=='radio' && $(this).is(':checked')) {
                   options['opts'][name] = $(this).val()
               }
             });      
             params = Object.assign({}, params, options);
-            console.log(params, 'gets params'); 
+            // console.log(params, 'gets params'); 
 
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;  
