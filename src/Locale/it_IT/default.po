@@ -424,6 +424,9 @@ msgstr "Totale acquisti"
 msgid "Total user"
 msgstr "Totale gasista"
 
+msgid "Total users"
+msgstr "Totale gasisti"
+
 msgid "Total delivery"
 msgstr "Totale consegna"
 

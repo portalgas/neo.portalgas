@@ -4,7 +4,9 @@ use Cake\Core\Configure;
 $config = Configure::read('Config');
 $_portalgas_app_root = $config['Portalgas.App.root'];
 $_portalgas_fe_url = $config['Portalgas.fe.url'];        
-debug($opts);
+
+// debug($opts);
+
 /*
  * user passato da Controller perche' IdentityHelper could not be found.
  * $user = $this->Identity->get();
