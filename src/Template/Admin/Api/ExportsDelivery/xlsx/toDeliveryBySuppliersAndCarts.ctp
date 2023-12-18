@@ -28,7 +28,7 @@ if(!empty($results)) {
 		$sheet->setCellValue('A'.$i, $result['suppliers_organization']->name);
 		
 		$i++;
-		$sheet->setCellValue('A'.$i, __('Total carts'));
+		$sheet->setCellValue('A'.$i, __('Total Carts'));
 		$sheet->setCellValue('B'.$i, $this->HtmlCustomSiteExport->excelImporto($result['order']['tot_order_only_cart']));
 
 		if($result['order']['trasport']>0) {

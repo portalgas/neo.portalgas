@@ -418,7 +418,7 @@ msgstr "Importo totale dell'ordine"
 msgid "ImportoTotaleOrdineShort"
 msgstr "Imp. ord."
 
-msgid "Total carts"
+msgid "Total Carts"
 msgstr "Totale acquisti"
 
 msgid "Total user"

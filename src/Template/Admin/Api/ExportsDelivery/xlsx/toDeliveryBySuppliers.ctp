@@ -17,7 +17,7 @@ $sheet->setCellValue('C1', $delivery_data);
 if(!empty($results)) {
 
 	$sheet->setCellValue('A2', __('SupplierOrganization')); 
-	$sheet->setCellValue('B2', __('Total carts')); 
+	$sheet->setCellValue('B2', __('Total Carts')); 
 	$sheet->setCellValue('C2', __('Trasport')); 
 	$sheet->setCellValue('D2', __('CostMore')); 
 	$sheet->setCellValue('E2', __('CostLess')); 

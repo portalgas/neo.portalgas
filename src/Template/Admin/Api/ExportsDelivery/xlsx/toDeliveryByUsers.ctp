@@ -19,7 +19,7 @@ if(isset($opts['users_contacts']) && $opts['users_contacts']=='Y')
 	$sheet->setCellValue('B2', __('Contacts')); 
 
 $sheet->setCellValue('C2', __('SupplierOrganization'));
-$sheet->setCellValue('D2', __('Total carts'));
+$sheet->setCellValue('D2', __('Total Carts'));
 $sheet->setCellValue('E2', __('Trasport'));
 $sheet->setCellValue('F2', __('CostMore'));
 $sheet->setCellValue('G2', __('CostLess'));

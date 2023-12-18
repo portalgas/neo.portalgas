@@ -25,7 +25,7 @@ if(!empty($results)) {
 	$html .= '			<th scope="col">' . __('SupplierOrganization') . '</th>';
 	if($format=='HTML')
 		$html .= '			<th scope="col" class="text-center"></th>';
-	$html .= '			<th scope="col" class="text-center">' . __('Total carts') . '</th>';
+	$html .= '			<th scope="col" class="text-center">' . __('Total Carts') . '</th>';
 	$html .= '			<th scope="col" class="text-center">' . __('Trasport') . '</th>';
 	$html .= '			<th scope="col" class="text-center">' . __('CostMore') . '</th>';
 	$html .= '			<th scope="col" class="text-center">' . __('CostLess') . '</th>';

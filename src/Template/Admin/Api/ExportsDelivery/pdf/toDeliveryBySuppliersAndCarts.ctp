@@ -48,7 +48,7 @@ if(!empty($results)) {
 		$html .= '</td>';
 		$html .= '</tr>';		
 		$html .= '<tr>';
-		$html .= '	<td class="text-right">' . __('Total carts') . '</td>';
+		$html .= '	<td class="text-right">' . __('Total Carts') . '</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order_only_cart'], '-').'</td>';
 		$html .= '</tr>';		
 		if($result['order']['trasport']>0) {
