@@ -1,6 +1,6 @@
 <?php
 use Cake\Core\Configure;
-echo $this->Html->script('vue/exports-delivery.js?v=20231208', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/exports-delivery.js?v=20231218', ['block' => 'scriptPageInclude']);
 
 echo $this->HtmlCustomSite->boxTitle(['title' => __('Export Docs to delivery'), 'subtitle' => __('Management')], ['home']);
 
