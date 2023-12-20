@@ -21,6 +21,10 @@ class HtmlCustomSiteExportHelper extends FormHelper
     }
 
     public function toDeliveryBySuppliersAndCartsDrawUserTotale($user, $format, $opts) {
+
+        if(empty($user))
+            return '';
+
         $html = '';
         $html .= '<tr>';
         $html .= '<td colspan="3"></td>';
@@ -62,6 +66,9 @@ class HtmlCustomSiteExportHelper extends FormHelper
 
     public function toExcelDeliveryBySuppliersAndCartsDrawUserTotale($sheet, $i, $user, $format, $opts) {
         
+        if(empty($user))
+            return $sheet;
+
         $totale = $this->excelImporto($user['tot_importo']);
         if(isset($user['importo_trasport']))
             $totale .= " \n".'Trasporto '.$this->excelImporto($user['importo_trasport']).' +';

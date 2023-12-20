@@ -79,128 +79,130 @@ if(!empty($results)) {
 		$html .= '</table>';
 		$html .= '<br />';
 			
-		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover">';
-		$html .= '<tr class="tr-header">';
-		$html .= '	<td></td>';
-		if($format=='HTML')
+		if(isset($result['order']['carts'])) {
+			$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover">';
+			$html .= '<tr class="tr-header">';
 			$html .= '	<td></td>';
-		$html .= '	<td></td>';
-		$html .= '	<td></td>';
-		$html .= '	<td></td>';
-		$html .= '	<td></td>';
-		$html .= '	<td></td>';
-		if($opts['referent_modify']=='Y') {
-			$html .= '	<td class="text-center">'.__('Quantità').'</td>';
-			$html .= '	<td class="text-center">'.__('Importo').'</td>';
-			$html .= '	<td class="text-center" colspan="2">'.__('Quantità e importo totali').'</td>';
-			$html .= '	<td></td>';	
-		}
-		$html .= '</tr>';	
-		$html .= '<tr class="tr-header">';	
-		$html .= '	<td colspan="3">'.__('Name').'</td>';
-		if($format=='HTML')
-			$html .= '	<td></td>';
-		$html .= '	<td class="text-center">'.__('Prezzo unità').'</td>';
-		$html .= '	<td class="text-center">'.__('Quantità').'</td>';
-		$html .= '	<td class="text-right">'.__('Importo').'&nbsp;&nbsp;&nbsp;</td>';
-		if($opts['referent_modify']=='Y') {
-			$html .= '	<td class="text-center" colspan="2">dell\'utente</td>';
-			$html .= '	<td class="text-center" colspan="2">modificati dal referente</td>';
-			$html .= '	<td class="text-center">'.__('Importo forzati').'</td>';
-		}
-		$html .= '</tr>';
-		$user_id_old = 0;
-		foreach($result['order']['carts'] as $cart) {
-		
-			$final_price = $this->HtmlCustomSite->getCartFinalPrice($cart);
-			($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
-
-			// header user
-			if($cart->user_id!=$user_id_old) {
-
-				if($user_id_old>0) {
-					// totale gasista
-					$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format, $opts);
-				}
-
-				$html .= '<tr>';
-				$html .= '<td colspan="6"><b>'.__('User').': '.$cart->user->name.'</b></td>';
-				if($format=='HTML')
-					$html .= '<td></td>';
-				if($opts['referent_modify']=='Y') 
-					$html .= '<td colspan="5" class="evidence"></td>';
-				$html .= '</tr>';	
-			}
-
-			$html .= '<tr>';
-			$html .= '	<td colspan="3">'.$cart->articles_order->name.'</td>';
 			if($format=='HTML')
-				$html .= '<td></td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($cart->articles_order->prezzo).'</td>';
-			$html .= '	<td class="text-center">'.$final_qta.'</td>';
-			$html .= '	<td class="text-right">'.$this->HtmlCustom->importo($final_price).'&nbsp;&nbsp;&nbsp;</td>';
-
+				$html .= '	<td></td>';
+			$html .= '	<td></td>';
+			$html .= '	<td></td>';
+			$html .= '	<td></td>';
+			$html .= '	<td></td>';
+			$html .= '	<td></td>';
 			if($opts['referent_modify']=='Y') {
-				/*
-				* qta originali, quelli del gasista
-				*/
-				$html .= '	<td class="text-center evidence">';
-				$html .= $cart->qta;
-				$html .= '  </td>';
-				$html .= '	<td class="text-center evidence">';
-				$html .= $this->HtmlCustom->importo($cart->qta * $cart->articles_order->prezzo);
-				$html .= '</td>';
-				/*
-				* qta modificata dal referente
-				*/
-				$html .= '	<td class="text-center evidence">';
-				if($cart->qta_forzato>0)
-					$html .= $cart->qta_forzato;
-				else 
-					$html .= '-';
-				$html .= '</td>';
-				$html .= '	<td class="text-center evidence">';
-				if($cart->qta_forzato>0)
-					$html .= $this->HtmlCustom->importo($cart->qta_forzato * $cart->articles_order->prezzo);
-				else 
-					$html .= '-';
-				$html .= '</td>';
-				/* 
-				* importo modificata dal referente
-				*/
-				$html .= '	<td class="text-center evidence">';
-				if($cart->importo_forzato>0)
-					$html .= $this->HtmlCustom->importo($cart->importo_forzato);
-				else 
-					$html .= '-';
-				$html .= '</td>';
+				$html .= '	<td class="text-center">'.__('Quantità').'</td>';
+				$html .= '	<td class="text-center">'.__('Importo').'</td>';
+				$html .= '	<td class="text-center" colspan="2">'.__('Quantità e importo totali').'</td>';
+				$html .= '	<td></td>';	
+			}
+			$html .= '</tr>';	
+			$html .= '<tr class="tr-header">';	
+			$html .= '	<td colspan="3">'.__('Name').'</td>';
+			if($format=='HTML')
+				$html .= '	<td></td>';
+			$html .= '	<td class="text-center">'.__('Prezzo unità').'</td>';
+			$html .= '	<td class="text-center">'.__('Quantità').'</td>';
+			$html .= '	<td class="text-right">'.__('Importo').'&nbsp;&nbsp;&nbsp;</td>';
+			if($opts['referent_modify']=='Y') {
+				$html .= '	<td class="text-center" colspan="2">dell\'utente</td>';
+				$html .= '	<td class="text-center" colspan="2">modificati dal referente</td>';
+				$html .= '	<td class="text-center">'.__('Importo forzati').'</td>';
 			}
 			$html .= '</tr>';
+			$user_id_old = 0;
+			foreach($result['order']['carts'] as $cart) {
+			
+				$final_price = $this->HtmlCustomSite->getCartFinalPrice($cart);
+				($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
 
-			if($opts['cart_nota']=='Y')
-			if(!empty($cart->nota)) {
+				// header user
+				if($cart->user_id!=$user_id_old) {
+
+					if($user_id_old>0) {
+						// totale gasista
+						$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format, $opts);
+					}
+
+					$html .= '<tr>';
+					$html .= '<td colspan="6"><b>'.__('User').': '.$cart->user->name.'</b></td>';
+					if($format=='HTML')
+						$html .= '<td></td>';
+					if($opts['referent_modify']=='Y') 
+						$html .= '<td colspan="5" class="evidence"></td>';
+					$html .= '</tr>';	
+				}
+
 				$html .= '<tr>';
-				$html .= '	<td></td>';
+				$html .= '	<td colspan="3">'.$cart->articles_order->name.'</td>';
 				if($format=='HTML')
-					$html .= '	<td></td>';
-				$html .= '	<td colspan="5"><b>Nota:</b> '.$cart->nota.'</td>';
+					$html .= '<td></td>';
+				$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($cart->articles_order->prezzo).'</td>';
+				$html .= '	<td class="text-center">'.$final_qta.'</td>';
+				$html .= '	<td class="text-right">'.$this->HtmlCustom->importo($final_price).'&nbsp;&nbsp;&nbsp;</td>';
+
 				if($opts['referent_modify']=='Y') {
-					$html .= '	<td></td>';
-					$html .= '	<td></td>';
-					$html .= '	<td></td>';
-					$html .= '	<td></td>';	
-					$html .= '	<td></td>';	
+					/*
+					* qta originali, quelli del gasista
+					*/
+					$html .= '	<td class="text-center evidence">';
+					$html .= $cart->qta;
+					$html .= '  </td>';
+					$html .= '	<td class="text-center evidence">';
+					$html .= $this->HtmlCustom->importo($cart->qta * $cart->articles_order->prezzo);
+					$html .= '</td>';
+					/*
+					* qta modificata dal referente
+					*/
+					$html .= '	<td class="text-center evidence">';
+					if($cart->qta_forzato>0)
+						$html .= $cart->qta_forzato;
+					else 
+						$html .= '-';
+					$html .= '</td>';
+					$html .= '	<td class="text-center evidence">';
+					if($cart->qta_forzato>0)
+						$html .= $this->HtmlCustom->importo($cart->qta_forzato * $cart->articles_order->prezzo);
+					else 
+						$html .= '-';
+					$html .= '</td>';
+					/* 
+					* importo modificata dal referente
+					*/
+					$html .= '	<td class="text-center evidence">';
+					if($cart->importo_forzato>0)
+						$html .= $this->HtmlCustom->importo($cart->importo_forzato);
+					else 
+						$html .= '-';
+					$html .= '</td>';
 				}
 				$html .= '</tr>';
-			}
 
-			$user_id_old = $cart->user_id;
-		} // foreach($result['order']['carts'] as $cart)
-		// totale gasista
-		$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format ,$opts);
+				if($opts['cart_nota']=='Y')
+				if(!empty($cart->nota)) {
+					$html .= '<tr>';
+					$html .= '	<td></td>';
+					if($format=='HTML')
+						$html .= '	<td></td>';
+					$html .= '	<td colspan="5"><b>Nota:</b> '.$cart->nota.'</td>';
+					if($opts['referent_modify']=='Y') {
+						$html .= '	<td></td>';
+						$html .= '	<td></td>';
+						$html .= '	<td></td>';
+						$html .= '	<td></td>';	
+						$html .= '	<td></td>';	
+					}
+					$html .= '</tr>';
+				}
 
-		$html .= '	</tbody>';
-		$html .= '	</table>';	
+				$user_id_old = $cart->user_id;
+			} // foreach($result['order']['carts'] as $cart)
+			// totale gasista
+			$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format ,$opts);
+
+			$html .= '	</tbody>';
+			$html .= '	</table>';	
+		} // if(isset($result['order']['carts']))
 
 		// salto pagina tranne all'ultima pagina
 		if($opts['salto_pagina']=='Y' && $numResult<(count($results)-1)) 
