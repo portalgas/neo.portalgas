@@ -268,7 +268,7 @@ class HtmlCustomSiteHelper extends FormHelper
 
             if(isset($referent['phone_satispay'])) {
                 $html .= '&nbsp;'.$referent['phone_satispay'];
-                $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispy" />';
+                $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispay" />';
             }
             else 
             if(isset($referent['phone'])) 
@@ -303,7 +303,7 @@ class HtmlCustomSiteHelper extends FormHelper
             if(isset($referent['phone_satispay'])) {
                 $html .= '<span>';
                 $html .= '&nbsp;'.$referent['phone_satispay'];
-                $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispy" />';
+                $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispay" />';
                 $html .= '</span>';
             }
             else 

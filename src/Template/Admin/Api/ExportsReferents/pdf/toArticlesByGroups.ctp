@@ -85,7 +85,29 @@ if(!empty($orders)) {
 		($format=='HTML')? $html .= '6' : $html .= '5';
 		$html .= '" class="no-border"></td>';
 		$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale ordine') . '</th>';
-		$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($totale_ordine). '</th>';
+		$html .= '		<th class="text-left no-border">' .$this->HtmlCustom->importo($totale_ordine);
+		if($order->hasTrasport=='Y' && $order->trasport>0)
+			$html .= '<br />'.$this->HtmlCustom->importo($order->trasport).' '.__('CostTrasport');
+		if($order->hasCostMore=='Y' && $order->cost_more>0)
+			$html .= '<br />'.$this->HtmlCustom->importo($order->cost_more).' '.__('CostMore');
+		if($order->hasCostLess=='Y' && $order->cost_less>0)
+			$html .= '<br />'.$this->HtmlCustom->importo($order->cost_less).' '.__('CostLess');
+		if(
+			($order->hasTrasport=='Y' && $order->trasport>0) || 
+			($order->hasCostMore=='Y' && $order->cost_more>0) || 
+			($order->hasCostLess=='Y' && $order->cost_less>0)
+		) {
+			if($order->hasTrasport=='Y' && $order->trasport>0)
+				$totale_ordine = ($totale_ordine + $order->trasport);
+			if($order->hasCostMore=='Y' && $order->cost_more>0)
+				$totale_ordine = ($totale_ordine + $order->cost_more);
+			if($order->hasCostLess=='Y' && $order->cost_less>0)
+				$totale_ordine = ($totale_ordine + (-1 * $order->cost_less));
+			
+			$html .= '<br />-------------------------';
+			$html .= '<br />'.$this->HtmlCustom->importo($totale_ordine);	
+		}
+		$html .= '</th>';
 		$html .= '	</tr>';
 
 		$html .= '	</tbody>';

@@ -176,4 +176,31 @@ function callPingJoomla(ajaxUrl) {
 </div>
 
 </body>
+
+<script>
+/* torna in alto */
+$("body").append("<div id=\"scroll_to_top\"><a href=\"#top\">Torna su</a></div>");
+$("#scroll_to_top a").css({	'display' : 'block', 'z-index' : '9', 'position' : 'fixed', 'top' : '100%', 'width' : '110px', 'margin-top' : '-30px', 'right' : '50%', 'margin-left' : '-50px', 'height' : '20px', 'padding' : '3px 5px', 'font-size' : '14px', 'text-align' : 'center', 'padding' : '3px', 'color' : '#FFFFFF', 'background-color' : '#625043', '-moz-border-radius' : '5px', '-khtml-border-radius' : '5px', '-webkit-border-radius' : '5px', 'opacity' : '.8', 'text-decoration' : 'none'});
+$('#scroll_to_top a').click(function(){
+  $('html, body').animate({scrollTop:0}, 'slow');
+});
+var scroll_timer;
+var displayed = false;
+var top = $(document.body).children(0).position().top;
+$(window).scroll(function () {
+  window.clearTimeout(scroll_timer);
+  scroll_timer = window.setTimeout(function () {
+    if($(window).scrollTop() <= top)
+    {
+      displayed = false;
+      $('#scroll_to_top a').fadeOut(500);
+    }
+    else if(displayed == false)
+    {
+      displayed = true;
+      $('#scroll_to_top a').stop(true, true).show().click(function () { $('#scroll_to_top a').fadeOut(500); });
+    }
+  }, 100);
+});
+</script>
 </html>

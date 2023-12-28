@@ -22,6 +22,7 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 		
 			if(!isset($this->results[$order->id])) {
 				$this->results[$order->id] = new \stdClass();
+				$this->results[$order->id]->order  = new \stdClass();
 				$this->results[$order->id]->delivery  = new \stdClass();
 				$this->results[$order->id]->suppliers_organization = new \stdClass();
 				$this->results[$order->id]->gas_group = new \stdClass();
@@ -32,6 +33,18 @@ class OrdersGasParentGroupsToArticlesByGroupsDecorator extends AppDecorator {
 			$this->results[$order->id]->delivery->luogo = $order->delivery->luogo;
 			$this->results[$order->id]->delivery->data = $order->delivery->data;
 			$this->results[$order->id]->suppliers_organization->name = $order->suppliers_organization->name;
+			$this->results[$order->id]->id = $order->id;
+			$this->results[$order->id]->data_inizio = $order->data_inizio;
+			$this->results[$order->id]->data_fine = $order->data_fine;
+			$this->results[$order->id]->hasTrasport = $order->hasTrasport;
+			$this->results[$order->id]->trasport = $order->trasport;
+			$this->results[$order->id]->hasCostMore = $order->hasCostMore;
+			$this->results[$order->id]->cost_more = $order->cost_more;
+			$this->results[$order->id]->hasCostLess = $order->hasCostLess;
+			$this->results[$order->id]->cost_less = $order->cost_less;
+			$this->results[$order->id]->order->state_code = $order->state_code;
+			$this->results[$order->id]->tot_importo = $order->tot_importo;
+
 			if(!empty($order->gas_group))
 				$this->results[$order->id]->gas_group->name = $order->gas_group->name;
 
