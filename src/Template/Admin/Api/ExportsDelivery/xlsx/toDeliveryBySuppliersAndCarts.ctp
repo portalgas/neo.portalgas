@@ -4,7 +4,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Cake\Http\CallbackStream;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery);
+$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery, $opts = ['year'=> true]);
 $delivery_data = $this->HtmlCustomSite->excelSanify($this->HtmlCustomSite->drawDeliveryDateLabel($delivery));
 
 $spreadsheet = new Spreadsheet();
@@ -26,6 +26,7 @@ if(!empty($results)) {
 
 		$i++;
 		$sheet->setCellValue('A'.$i, $result['suppliers_organization']->name);
+		$sheet->setCellValue('B'.$i, __($result['order']['state_code'].'-intro'));
 		
 		$i++;
 		$sheet->setCellValue('A'.$i, __('Total Carts'));
@@ -61,7 +62,7 @@ if(!empty($results)) {
 			$sheet->setCellValue('D'.$i, '');
 			$sheet->setCellValue('E'.$i, '');
 			$sheet->setCellValue('F'.$i, '');
-			if($opts['referent_modify']=='Y') {
+			if($opts['referent_modify_suppliers']=='Y') {
 				$sheet->setCellValue('G'.$i, __('Quantità'));
 				$sheet->setCellValue('H'.$i, __('Importo'));
 				$sheet->setCellValue('I'.$i, __('Quantità'));
@@ -75,7 +76,7 @@ if(!empty($results)) {
 			$sheet->setCellValue('D'.$i, __('Prezzo unità'));
 			$sheet->setCellValue('E'.$i, __('Quantità'));
 			$sheet->setCellValue('F'.$i, __('Importo'));
-			if($opts['referent_modify']=='Y') {
+			if($opts['referent_modify_suppliers']=='Y') {
 				$sheet->setCellValue('G'.$i, "dell'utente");
 				$sheet->setCellValue('H'.$i, "dell'utente");
 				$sheet->setCellValue('I'.$i, "modificati dal referente");
@@ -110,7 +111,7 @@ if(!empty($results)) {
 				$sheet->setCellValue('D'.$i, $this->HtmlCustomSiteExport->excelimporto($cart->articles_order->prezzo));
 				$sheet->setCellValue('E'.$i, $final_qta);
 				$sheet->setCellValue('F'.$i, $this->HtmlCustomSiteExport->excelimporto($final_price));
-				if($opts['referent_modify']=='Y') {
+				if($opts['referent_modify_suppliers']=='Y') {
 					/*
 					* qta originali, quelli del gasista
 					*/
@@ -131,7 +132,7 @@ if(!empty($results)) {
 					$sheet->setCellValue('K'.$i, $tot);
 				}
 
-				if($opts['cart_nota']=='Y')
+				if($opts['cart_nota_suppliers']=='Y')
 					if(!empty($cart->nota)) {
 						$i++;
 						$sheet->setCellValue('A'.$i, '');

@@ -35,13 +35,13 @@ class HtmlCustomSiteExportHelper extends FormHelper
         $html .= $user['tot_qta'];
         $html .= '</td>';
         $html .= '<td class="text-right">';
-        $html .= $this->excelImporto($user['tot_importo']).'&nbsp;&nbsp;&nbsp;';
+        $html .= $this->HtmlCustom->importo($user['tot_importo']).'&nbsp;&nbsp;&nbsp;';
         if(isset($user['importo_trasport']))
-            $html .= '<br />Trasporto '.$this->excelImporto($user['importo_trasport']).' +';
+            $html .= '<br />Trasporto '.$this->HtmlCustom->importo($user['importo_trasport']).' +';
         if(isset($user['importo_cost_more']))
-            $html .= '<br />Costo agg. '.$this->excelImporto($user['importo_cost_more']).' +';
+            $html .= '<br />Costo agg. '.$this->HtmlCustom->importo($user['importo_cost_more']).' +';
         if(isset($user['importo_cost_less']))
-            $html .= '<br />Sconto '.$this->excelImporto($user['importo_cost_less']).' -';
+            $html .= '<br />Sconto '.$this->HtmlCustom->importo((-1 * $user['importo_cost_less'])).' -';
         
         $user_totale = $user['tot_importo'];
         if(isset($user['importo_trasport'])) {
@@ -51,7 +51,7 @@ class HtmlCustomSiteExportHelper extends FormHelper
             $user_totale += $user['importo_cost_more']; 
         }
         if(isset($user['importo_cost_less'])) {
-            $user_totale -= $user['importo_cost_less']; 
+            $user_totale += $user['importo_cost_less']; 
         }                
         if($user_totale != $user['tot_importo']) {
             $html .= '<br />'.$this->excelImporto($user_totale).' =';
@@ -75,7 +75,7 @@ class HtmlCustomSiteExportHelper extends FormHelper
         if(isset($user['importo_cost_more']))
             $totale .= " \n".'Costo agg. '.$this->excelImporto($user['importo_cost_more']).' +';
         if(isset($user['importo_cost_less']))
-            $totale .= " \n".'Sconto '.$this->excelImporto($user['importo_cost_less']).' -';
+            $totale .= " \n".'Sconto '.$this->excelImporto((-1 * $user['importo_cost_less'])).' -';
         
         $sheet->setCellValue('A'.$i, '');
         $sheet->setCellValue('B'.$i, '');

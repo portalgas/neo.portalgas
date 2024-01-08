@@ -22,6 +22,21 @@ class ExportsController extends AppController {
         $this->loadComponent('Order');
         $this->loadComponent('Storeroom');
         $this->loadComponent('ProdGasPromotion');
+
+        /* 
+         * read file config CakePdf.php
+         * debug(Configure::read('CakePdf'));   
+         */
+        define('DOMPDF_ENABLE_AUTOLOAD', false);
+        define('DOMPDF_ENABLE_HTML5PARSER', true);
+        define('DOMPDF_ENABLE_REMOTE', false);
+        define('DEBUG_LAYOUT', true); 
+        define("DOMPDF_ENABLE_CSS_FLOAT", true);
+        define("DOMPDF_ENABLE_JAVASCRIPT", false);
+        define("DEBUGPNG", true);
+        define("DEBUGCSS", true);
+
+        Configure::load('CakePdf', 'default');
     }
 
     public function beforeFilter(Event $event) {
@@ -34,8 +49,10 @@ class ExportsController extends AppController {
         parent::beforeRender($event);
         
         // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
-        if(!$this->_debug) 
+        if(!$this->_debug) {
             $this->viewBuilder()->setClassName('CakePdf.Pdf');
+            $this->viewBuilder()->setTheme('CakePdf'); 
+        }
     }
 
     /*
@@ -44,7 +61,7 @@ class ExportsController extends AppController {
     public function userCart($delivery_id, $debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
-            return $this->_respondWithUnauthorized();
+            return false;
         }
 
         $debug = false;
@@ -52,40 +69,24 @@ class ExportsController extends AppController {
         $storeroomResults = [];
         $title = '';
 
-        $user = $this->Authentication->getIdentity();
-        $organization_id = $user->organization->id;
-
         $deliveriesTable = TableRegistry::get('Deliveries');
-        $delivery = $deliveriesTable->getById($user, $organization_id, $delivery_id);
+        $delivery = $deliveriesTable->getById($this->_user, $this->_organization->id, $delivery_id);
         if(!empty($delivery)) {
             
-            $title = "Carrello della consegna ".$delivery->label.' di '.$user->username;
-            $filename = $this->setFileName($title.'.pdf');
-
-            Configure::write('CakePdf', [
-                'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
-                'margin' => [
-                    'bottom' => 15,
-                    'left' => 50,
-                    'right' => 30,
-                    'top' => 45
-                ],
-                'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
-                'download' => true,
-                'filename' => $filename
-            ]);
+            $title = "Carrello della consegna ".$delivery->label.' di '.$this->_user->username;
+            Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));
 
             $options = [];
             $options['sql_limit'] = Configure::read('sql.no.limit');
 
-            $results = $this->Order->userCartGets($user, $organization_id, $delivery_id, [], $debug); 
+            $results = $this->Order->userCartGets($this->_user, $this->_organization->id, $delivery_id, [], $debug); 
             // debug($results);
 
             /*
              * storerooms
              */
-            if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
-                $storeroomResults = $this->Storeroom->getArticlesByDeliveryId($user, $organization_id, $delivery_id, $options=[], $debug);            
+            if ($this->user->organization->paramsConfig['hasStoreroom'] == 'Y' && $this->_organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
+                $storeroomResults = $this->Storeroom->getArticlesByDeliveryId($this->_user, $this->_organization_id, $delivery_id, $options=[], $debug);            
             }
 
         } // end if(!empty($delivery))
@@ -98,6 +99,14 @@ class ExportsController extends AppController {
             $this->render('/Admin/Api/Exports/pdf/user_cart');
         } 
         else {
+            $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
+                                // Template/Admin/Api/Exports/pdf/user_cart.ctp 
+                                ->setTemplate('/Admin/Api/Exports/pdf/user_cart') 
+                                // Template/Layout/pdf/default.ctp
+                                ->setLayout('../../Layout/pdf/default') 
+                                // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
+                                ->setClassName('CakePdf.Pdf'); 
+                             
             $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
         }
     }
@@ -105,7 +114,7 @@ class ExportsController extends AppController {
     public function userPromotionCart($debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
-            return $this->_respondWithUnauthorized();
+            return false;
         }
 
         $debug = false;
@@ -116,32 +125,15 @@ class ExportsController extends AppController {
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id;
 
-        $organization_id = $this->Authentication->getIdentity()->organization->id;
-        $user_id = $this->Authentication->getIdentity()->id;
-        $user = $this->Authentication->getIdentity();
-
         $prod_gas_promotion_state_code = ['PRODGASPROMOTION-GAS-USERS-OPEN', 'PRODGASPROMOTION-GAS-USERS-CLOSE'];
         $prod_gas_promotion_organization_state_code = ['OPEN', 'CLOSE'];
 
-        $results = $this->ProdGasPromotion->userCartGets($user, $organization_id, $user_id, $prod_gas_promotion_state_code, $prod_gas_promotion_organization_state_code);
+        $results = $this->ProdGasPromotion->userCartGets($this->_user, $this->_organization_id, $this->_user->id, $prod_gas_promotion_state_code, $prod_gas_promotion_organization_state_code);
 
         if(!empty($results)) {
 
             $title = "Carrello delle promozioni";
-            $filename = $this->setFileName($title.'.pdf');
-
-            Configure::write('CakePdf', [
-                'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
-                'margin' => [
-                    'bottom' => 15,
-                    'left' => 50,
-                    'right' => 30,
-                    'top' => 45
-                ],
-                'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
-                'download' => true,
-                'filename' => $filename
-            ]);
+            Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));
 
             $results = $results['results'];
    
@@ -155,6 +147,8 @@ class ExportsController extends AppController {
             $this->render('/Admin/Api/Exports/pdf/user_promotion_cart');
         } 
         else {
+            $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
+                               ->setClassName('CakePdf.Pdf');            
             $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
         }
     }         

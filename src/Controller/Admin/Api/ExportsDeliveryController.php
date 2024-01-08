@@ -22,11 +22,20 @@ class ExportsDeliveryController extends AppController {
         parent::initialize();
         $this->loadComponent('Order');
 
-        /*
-         * non si puo' disabilitare nel controller
-         * settarlo in .env export DEBUG="false" 
-         * Configure::write('debug', 0);
+        /* 
+         * read file config CakePdf.php
+         * debug(Configure::read('CakePdf'));   
          */
+        define('DOMPDF_ENABLE_AUTOLOAD', false);
+        define('DOMPDF_ENABLE_HTML5PARSER', true);
+        define('DOMPDF_ENABLE_REMOTE', false);
+        define('DEBUG_LAYOUT', true); 
+        define("DOMPDF_ENABLE_CSS_FLOAT", true);
+        define("DOMPDF_ENABLE_JAVASCRIPT", false);
+        define("DEBUGPNG", true);
+        define("DEBUGCSS", true);
+
+        Configure::load('CakePdf', 'default');        
     }
 
     public function beforeFilter(Event $event) {
@@ -53,7 +62,10 @@ class ExportsDeliveryController extends AppController {
                 $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
                     ->setTemplate('/Admin/Api/ExportsDelivery/pdf/'.$print_id) 
                     ->setLayout('../../Layout/pdf/default') 
-                    ->setClassName('CakePdf.Pdf');             
+                    ->setClassName('CakePdf.Pdf'); 
+                
+                $this->viewBuilder()->setClassName('CakePdf.Pdf');
+                $this->viewBuilder()->setTheme('CakePdf');                     
             break;
         }
     }
@@ -64,7 +76,7 @@ class ExportsDeliveryController extends AppController {
     public function get($debug=false) { 
         
         if (!$this->Authentication->getResult()->isValid()) {
-            return $this->_respondWithUnauthorized();
+            return false;
         }
                 
         $debug = false;
@@ -103,17 +115,6 @@ class ExportsDeliveryController extends AppController {
                 $this->render('/Admin/Api/ExportsDelivery/xlsx/'.$print_id);
             break;
             case 'PDF':
-                Configure::write('CakePdf', [
-                    'engine' => 'CakePdf.DomPdf', // 'CakePdf.WkHtmlToPdf',
-                    'margin' => [
-                        'bottom' => 15,
-                        'left' => 50,
-                        'right' => 30,
-                        'top' => 45
-                    ],
-                    'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
-                    'download' => false, // This can be omitted if "filename" is specified.
-                ]);
                 $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
             break;
         }    
@@ -167,6 +168,7 @@ class ExportsDeliveryController extends AppController {
             $results[$numResult]['order']['trasport'] = $order->trasport;
             $results[$numResult]['order']['cost_more'] = $order->cost_more;
             $results[$numResult]['order']['cost_less'] = $order->cost_less;
+            $results[$numResult]['order']['state_code'] = $order->state_code;
             
             /* 
              * totale importo senza costi aggiuntivi
@@ -182,7 +184,9 @@ class ExportsDeliveryController extends AppController {
             $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
             
         } // foreach($delivery->orders as $order) 
-        $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
+
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore - '.date('d/m/Y H:i');
+        $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore';
         switch($format) {
@@ -190,7 +194,8 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                $this->response->header('filename', $this->_filename.'.pdf');
+                // $this->response->header('filename', $this->_filename.'.pdf');
+                Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }
 
@@ -347,7 +352,8 @@ class ExportsDeliveryController extends AppController {
             }  // foreach($users as $user)          
         } // end if($users->count()>0)
         // dd($results);
-        $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
+        $title = 'Doc. con acquisti della consegna raggruppati per gasista - '.date('d/m/Y H:i');
+        $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista';
         switch($format) {
@@ -355,7 +361,8 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                $this->response->header('filename', $this->_filename.'.pdf');
+                // $this->response->header('filename', $this->_filename.'.pdf');
+                Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }
        
@@ -410,6 +417,7 @@ class ExportsDeliveryController extends AppController {
             $results[$numResult]['order']['trasport'] = $order->trasport;
             $results[$numResult]['order']['cost_more'] = $order->cost_more;
             $results[$numResult]['order']['cost_less'] = $order->cost_less;
+            $results[$numResult]['order']['state_code'] = $order->state_code;
             
             /* 
              * totale importo senza costi aggiuntivi
@@ -441,10 +449,10 @@ class ExportsDeliveryController extends AppController {
                         $results[$numResult]['order']['users'][$cart->user_id]['importo_trasport'] = $this->_getUserImportoTrasport($this->_user, $cart->organization_id, $cart->user_id, $order->id);
                     }
                     if($order->hasCostMore=='Y' && $order->cost_more>0) {
-                        $results[$numResult]['order']['users'][$cart->user_id]['importo_cost_more'] = $this->_getUserImportoTrasport($this->_user, $cart->organization_id, $cart->user_id, $order->id);
+                        $results[$numResult]['order']['users'][$cart->user_id]['importo_cost_more'] = $this->_getUserImportoCostMore($this->_user, $cart->organization_id, $cart->user_id, $order->id);
                     }
                     if($order->hasCostLess=='Y' && $order->cost_less>0) {
-                        $results[$numResult]['order']['users'][$cart->user_id]['importo_cost_less'] = $this->_getUserImportoTrasport($this->_user, $cart->organization_id, $cart->user_id, $order->id);
+                        $results[$numResult]['order']['users'][$cart->user_id]['importo_cost_less'] = $this->_getUserImportoCostLess($this->_user, $cart->organization_id, $cart->user_id, $order->id);
                     }
                 } // if($cart->user_id!=$user_id_old)
 
@@ -473,7 +481,8 @@ class ExportsDeliveryController extends AppController {
 
         } // foreach($delivery->orders as $order) 
 
-        $this->set(compact('delivery', 'results', 'delivery_tot_importo'));
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti - '.date('d/m/Y H:i');
+        $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore-e-acquisti';
         switch($format) {
@@ -481,24 +490,214 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                $this->response->header('filename', $this->_filename.'.pdf');
+                // $this->response->header('filename', $this->_filename.'.pdf');
+                Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }
 
         return true;
     } 
 
+    // Doc. con acquisti della consegna raggruppati per gasista e dettaglio acquisti
+    private function _toDeliveryByUsersAndCarts($format, $delivery_id, $debug=false) {
+        
+        $i = 0;
+        $results = [];
+
+        /* 
+        * dati consegna
+        */
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Deliveries.organization_id' => $this->_organization->id,
+                    'Deliveries.id' => $delivery_id];
+        /* 
+         * profilazione $user->acl['isReferentGeneric'] 
+         */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            // debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+            else
+                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+        }
+
+        $delivery = $deliveriesTable->find()
+                                ->contain(['Orders' => [
+                                    'sort' => ['SuppliersOrganizations.name'],
+                                    'conditions' => ['Orders.organization_id' => $this->_user->organization->id,
+                                                    'Orders.isVisibleBackOffice' => 'Y',
+                                                    'Orders.state_code != ' => 'CREATE-INCOMPLETE'],
+                                    'SuppliersOrganizations' => ['Suppliers'],
+                                    ]])
+                                ->where($where)
+                                ->first();
+        if(!empty($delivery->orders)) {
+
+            /* 
+            * elenco users
+            */
+            $usersTable = TableRegistry::get('Users');
+            $where = ['username NOT LIKE' => '%portalgas.it'];    
+            $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
+            if($users->count()>0) {
+                
+                $cartsTable = TableRegistry::get('Carts');
+
+                foreach($users as $user) {
+
+                    $results[$i]['user'] = $user;
+                    $results[$i]['user']['orders'] = [];
+
+                    /*
+                    * per ogni user controllo eventuali acquisti per ordine
+                    */
+                    foreach($delivery->orders as $numResult => $order) {
+                   
+                        $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id, $user->id);
+                        if($carts->count()>0) {
+                            
+                            if(!isset($results[$i]['user']['orders'][$numResult])) {
+                                $results[$i]['user']['orders'][$numResult] = [];
+                                $results[$i]['user']['orders'][$numResult]['order']['state_code'] = $order->state_code;
+                                $results[$i]['user']['orders'][$numResult]['order']['trasport'] = $order->trasport;
+                                $results[$i]['user']['orders'][$numResult]['order']['cost_more'] = $order->cost_more;
+                                $results[$i]['user']['orders'][$numResult]['order']['cost_less'] = $order->cost_less;                                
+                                $results[$i]['user']['orders'][$numResult]['suppliers_organization'] = $order->suppliers_organization; 
+                            }
+                            $results[$i]['user']['orders'][$numResult]['carts'] = [];  
+                            foreach($carts as $numResult2 => $cart) {
+                
+                                $results[$i]['user']['orders'][$numResult]['carts'][$numResult2] = $cart; 
+
+                                $final_price = $this->getCartFinalPrice($cart);
+                                ($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
+                                // debug('final_price '.$final_price);
+                                $results[$i]['user']['orders'][$numResult]['carts'][$numResult2]['final_price'] = $final_price;
+
+                                // totali dell'utente dell'ordine
+                                if(!isset($results[$i]['user']['orders'][$numResult]['user_order_tot_importo']))  
+                                    $results[$i]['user']['orders'][$numResult]['user_order_tot_importo'] = $final_price;                            
+                                else
+                                    $results[$i]['user']['orders'][$numResult]['user_order_tot_importo'] += $final_price;
+
+                                if(!isset($results[$i]['user']['orders'][$numResult]['user_order_tot_qta']))  
+                                    $results[$i]['user']['orders'][$numResult]['user_order_tot_qta'] = $final_qta;                            
+                                else
+                                    $results[$i]['user']['orders'][$numResult]['user_order_tot_qta'] += $final_qta;                                    
+
+                            } // end foreach($carts as $cart)
+
+                            // totali dell'utente dell'ordine
+                            if($order->hasTrasport=='Y' && $order->trasport>0) {
+                                $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport'] = $this->_getUserImportoTrasport($this->_user, $user->organization_id, $user->id, $order->id);
+                            }
+                            if($order->hasCostMore=='Y' && $order->cost_more>0) {
+                                $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more'] = $this->_getUserImportoCostMore($this->_user, $user->organization_id, $user->id, $order->id);
+                            }
+                            if($order->hasCostLess=='Y' && $order->cost_less>0) {
+                                $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less'] = $this->_getUserImportoCostLess($this->_user, $user->organization_id, $user->id, $order->id);
+                            }
+
+                            // totali dell'utente di tutti i suoi ordini
+                            if(!isset($results[$i]['user']['user_tot_importo']))  
+                                $results[$i]['user']['user_tot_importo'] = $results[$i]['user']['orders'][$numResult]['user_order_tot_importo'];                            
+                            else
+                                $results[$i]['user']['user_tot_importo'] += $results[$i]['user']['orders'][$numResult]['user_order_tot_importo'];
+                            
+                            if(!isset($results[$i]['user']['user_tot_qta']))  
+                                $results[$i]['user']['user_tot_qta'] = $results[$i]['user']['orders'][$numResult]['user_order_tot_qta'];                            
+                            else
+                                $results[$i]['user']['user_tot_qta'] += $results[$i]['user']['orders'][$numResult]['user_order_tot_qta'];                
+
+                            if(!isset($results[$i]['user']['user_importo_trasport']))  
+                                $results[$i]['user']['user_importo_trasport'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport'];                            
+                            else
+                                $results[$i]['user']['user_importo_trasport'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport']; 
+
+                            if(!isset($results[$i]['user']['user_importo_cost_more']))  
+                                $results[$i]['user']['user_importo_cost_more'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more'];                            
+                            else
+                                $results[$i]['user']['user_importo_cost_more'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more']; 
+
+                            if(!isset($results[$i]['user']['user_importo_cost_less']))  
+                                $results[$i]['user']['user_importo_cost_less'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less'];                            
+                            else
+                                $results[$i]['user']['user_importo_cost_less'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less']; 
+
+                        }  // end if($carts->count()>0) 
+                    } // end foreach($delivery->orders as $numResult => $order) 
+                 
+                    if(empty($results[$i]['user']['orders'])) 
+                        unset($results[$i]);  // gasista senza acquiti per tutti gli ordini della consegna
+                    else 
+                        $i++;
+
+                } // end foreach($users as $user)
+            } // end if($users->count()>0)
+
+        } // end if(!empty($delivery->orders))
+        
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti - '.date('d/m/Y H:i');
+        $this->set(compact('delivery', 'results', 'title'));
+
+        $this->_filename = 'acquisti-consegna-raggruppati-gasista-e-acquisti';
+        switch($format) {
+            case 'XLSX':
+                $this->_filename .= '.xlsx';
+            break;
+            case 'PDF':
+                // $this->response->header('filename', $this->_filename.'.pdf');
+                Configure::write('CakePdf.filename', $this->_filename.'.pdf');
+            break;
+        }
+
+        return true;
+    }  
+
     private function _getUserImportoTrasport($_user, $organization_id, $user_id, $order_id) {
-        $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
-        $where = ['SummaryOrderTrasports.organization_id' => $organization_id,
-                  'SummaryOrderTrasports.user_id' => $user_id,
-                  'SummaryOrderTrasports.order_id' => $order_id];
-        $result = $summaryOrderTrasportsTable->find()
-                                             ->select(['importo_trasport'])
-                                             ->where($where)
-                                             ->first();
+        $summaryOrderTable = TableRegistry::get('SummaryOrderTrasports');
+        $where = ['organization_id' => $organization_id,
+                  'user_id' => $user_id,
+                  'order_id' => $order_id];
+        $result = $summaryOrderTable->find()
+                                    ->select(['importo_trasport'])
+                                    ->where($where)
+                                    ->first();
         if(!empty($result)) 
             return $result->importo_trasport;
+        
+        return 0;
+    }
+
+    private function _getUserImportoCostMore($_user, $organization_id, $user_id, $order_id) {
+        $summaryOrderTable = TableRegistry::get('SummaryOrderCostMores');
+        $where = ['organization_id' => $organization_id,
+                  'user_id' => $user_id,
+                  'order_id' => $order_id];
+        $result = $summaryOrderTable->find()
+                                    ->select(['importo_cost_more'])
+                                    ->where($where)
+                                    ->first();
+        if(!empty($result)) 
+            return $result->importo_cost_more;
+        
+        return 0;
+    }
+    
+    private function _getUserImportoCostLess($_user, $organization_id, $user_id, $order_id) {
+        $summaryOrderTable = TableRegistry::get('SummaryOrderCostLesses');
+        $where = ['organization_id' => $organization_id,
+                  'user_id' => $user_id,
+                  'order_id' => $order_id];
+        $result = $summaryOrderTable->find()
+                                    ->select(['importo_cost_less'])
+                                    ->where($where)
+                                    ->first();
+        if(!empty($result)) 
+            return $result->importo_cost_less;
         
         return 0;
     }

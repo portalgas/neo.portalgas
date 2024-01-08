@@ -95,15 +95,11 @@ class AppController extends Controller
         */          
     }
 
-    public function beforeFilter(Event $event) {
+    public function beforeFilter2(Event $event) {
      
         parent::beforeFilter($event); 
  
-        $user =null;
-        if($this->Authentication->getIdentity()!=null) {
-            $user = $this->Authentication->getIdentity();
-        }
-        $this->set('user', $user);
+        $this->set('user', $this->_user);
         // debug($user);
        
         $prefix = $this->request->getParam('prefix');

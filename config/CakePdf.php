@@ -3,26 +3,41 @@
  * https://github.com/FriendsOfCake/CakePdf
  * engine => CakePdf.WkHtmlToPdf, CakePdf.DomPdf 
  */
-return [
+return  [
     'CakePdf' => [
-        'engine' => [
-            'className' => 'CakePdf.Dompdf',
-            'options' => [
-                'print-media-type' => false,
-                'outline' => true,
-                'dpi' => 96
-            ]
-        ],
-        //'binary' => '/usr/local/bin/wkhtmltopdf',
-        //'cwd' => '/tmp',
+		'engine' => [
+			'className' => 'CakePdf.DomPdf',
+			'options' => [
+				'encoding' => 'UTF-8',
+				'print-media-type' => false,
+				'outline' => true,
+				'dpi' => 96,
+				'chroot' => WWW_ROOT,
+				'isPhpEnabled' => true
+			]
+		],        
+        'options' => [
+            'encoding' => 'UTF-8',
+            'print-media-type' => false,
+            'outline' => true,
+            'dpi' => 96,
+            'chroot' => WWW_ROOT,
+            //'isRemoteEnabled' => true
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+        ],    
         'margin' => [
             'bottom' => 15,
-            'left' => 50,
-            'right' => 30,
+            'left' => 25,
+            'right' => 25,
             'top' => 45
         ],
         'pageSize' => 'Letter',
-        'orientation' => 'landscape', // portrait
-        'download' => true
+        'orientation' => 'portrait', // landscape (orizzontale) portrait (verticale)
+        'defaultFont' => 'Calibri',
+        'encoding' => 'UTF-8',
+        'download' => true,
+        'isHtml5ParserEnabled' => true,
+        'isPhpEnabled' => true,
     ]
 ];

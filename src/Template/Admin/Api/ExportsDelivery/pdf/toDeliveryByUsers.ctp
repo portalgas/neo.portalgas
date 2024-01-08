@@ -11,7 +11,7 @@ $_portalgas_fe_url = $config['Portalgas.fe.url'];
  */
 // debug($results);
 // debug($user);
-$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery);
+$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery, ['year'=> true]);
 $delivery_data = $this->HtmlCustomSite->drawDeliveryDateLabel($delivery);
 
 $html = '';

@@ -40,7 +40,7 @@ class UsersBehavior extends Behavior
                      * elimino primo e ultimo carattere se sono "
                      */
                     if(!empty($user_profile->profile_value) && strpos(substr($user_profile->profile_value, 0, 1), '"')!==false) {
-                        dd("..");
+                        // dd("..");
                         $user_profile->profile_value = substr($user_profile->profile_value, 1, strlen($user_profile->profile_value)-2);
                     }
                     $user_profiles[$profile_key] = $user_profile->profile_value;

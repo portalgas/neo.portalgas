@@ -5,12 +5,14 @@ use Cake\Core\Configure;
 <html>
 <head>
     <?= $this->Html->charset() ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>	
     <title>
         <?= $this->fetch('title') ?>
     </title>
+	<?= $this->Html->meta('icon') ?>
 	<style type="text/css">
-		body {font-size: 12px;font-family:Helvetica, Arial, sans-serif;}
-		.hearder .title {float:right}
+		.hearder-title {float:right}
 		h1 {background-color:#c3d2e5;padding:2px;}
 		h3 {background: none repeat scroll 0 0 #1e83c2; color: #fff; font-size: 1.5em;padding: 5px;}
 		h2 {color:#484848;font-size: 1.4em;}
@@ -27,21 +29,69 @@ use Cake\Core\Configure;
 		.list-inline-item:not(:last-child) {margin-right: .5rem;}
 		.list-inline-item {display: inline-block;margin-right: .5rem;}		
 		.box-totali {text-align:center;background-color:#c3d2e5;padding:3px;margin:3px 0px;font-weight: bold;font-size: 14px;}
-	</style>	
+
+		@page {
+           /* margin: 0cm 0cm; */
+		}
+
+		body {
+			font-size: 12px;
+			font-family:Helvetica, Arial, sans-serif;
+			margin-top: 1.5cm;
+			margin-bottom: 1.5cm;
+		}
+		header {
+			position: fixed;
+			top: 0cm;
+			left: 0.3cm;
+			right: 0.3cm;
+			height: 1cm;
+		}
+		footer {
+			position: fixed; 
+			bottom: 0cm; 
+			left: 0.3cm;
+			right: 0.3cm;
+			height: 1cm;
+			text-align: center;
+		}
+</style>	
 </head>
 <body>
-	<div class="hearder">
+	<header>
 		<img src="<?php echo $img_path;?>/150h50.png" /> 
 		<?php 
 		if(isset($title))
-			echo '<div class="title">'.$title.'</div>';
-		?>      
-    <div>
+			echo '<div class="hearder-title">'.$title.'</div>';
+		?> 
+	</header>
 
-    <div class="container clearfix">
+	<footer>
+		<script type="text/php">
+		if(isset($pdf)) {
+			$pdf->page_script('
+				$x = ($pdf->get_width() - 100);
+				$y = ($pdf->get_height() - 20);
+				$text = "Pagina ".$PAGE_NUM." di ".$PAGE_COUNT;
+				$font = $fontMetrics->get_font("helvetica", "normal");
+				$size = 10;
+				$color = array(0,0,0);
+				$word_space = 0.0;  //  default
+				$char_space = 0.0;  //  default
+				$angle = 0.0;   //  default
+				$pdf->text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+				// $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+			');
+		}
+		</script>
+
+	</footer>
+
+    <div class="container clearfix">	
 		<?php 
 		echo $this->fetch('content');
 		?>
-	</div>
+	</div>	
+	
 </body>
 </html>

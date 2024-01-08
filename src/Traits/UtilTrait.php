@@ -225,14 +225,20 @@ trait UtilTrait
     } 
 
     // data Cake\I18n\FrozenDate
-    public function getDeliveryLabel($delivery) {
+    public function getDeliveryLabel($delivery, $opts=[]) {
         if(!is_array($delivery)) 
             $delivery = $delivery->toArray();
 
         if($delivery['sys']=='Y')
             $results = 'Da definire';
-        else 
+        else {
             $results = $delivery['luogo'].' - '.$delivery['data']->i18nFormat('eeee d MMMM');
+            if(!empty($opts)) {
+                if(isset($opts['year']))
+                    $results = $delivery['luogo'].' - '.$delivery['data']->i18nFormat('eeee d MMMM YYYY');
+            }
+            
+        }
 
         return $results;
     }

@@ -11,7 +11,7 @@ $_portalgas_fe_url = $config['Portalgas.fe.url'];
  */
 // debug($results);
 // debug($user);
-$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery);
+$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery, ['year'=> true]);
 $delivery_data = $this->HtmlCustomSite->drawDeliveryDateLabel($delivery);
 
 $html = '';
@@ -25,6 +25,7 @@ if(!empty($results)) {
 	$html .= '			<th scope="col">' . __('SupplierOrganization') . '</th>';
 	if($format=='HTML')
 		$html .= '			<th scope="col" class="text-center"></th>';
+	$html .= '			<th scope="col">' . __('StateOrder') . '</th>';
 	$html .= '			<th scope="col" class="text-center">' . __('Total Carts') . '</th>';
 	$html .= '			<th scope="col" class="text-center">' . __('Trasport') . '</th>';
 	$html .= '			<th scope="col" class="text-center">' . __('CostMore') . '</th>';
@@ -36,28 +37,32 @@ if(!empty($results)) {
 	foreach($results as $result) {
 		$html .= '<tr>';
 		$html .= '	<td>'.$result['suppliers_organization']->name.'</td>';
-		if($format=='HTML' && !empty($result['suppliers_organization']->supplier->img1)) {
-			$img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $result['suppliers_organization']->supplier->img1);
-			$img_path_supplier = $_portalgas_app_root . $img_path_supplier;
-
-			$url = '';
-			if(file_exists($img_path_supplier)) {
-				$url = sprintf($_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $result['suppliers_organization']->supplier->img1);
-				$html .= '<td><img src="'.$url.'" width="'.Configure::read('Supplier.img.preview.width').'" /></td>';
-			}			
-		}
-
+		if($format=='HTML') {
+			$html .= '<td>';
+			if(!empty($result['suppliers_organization']->supplier->img1)) {
+				$img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $result['suppliers_organization']->supplier->img1);
+				$img_path_supplier = $_portalgas_app_root . $img_path_supplier;
+	
+				$url = '';
+				if(file_exists($img_path_supplier)) {
+					$url = sprintf($_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $result['suppliers_organization']->supplier->img1);
+					$html .= '<img src="'.$url.'" width="'.Configure::read('Supplier.img.preview.width').'" />';
+				}			
+			}
+			$html .= '</td>';
+		} 
+		$html .= '	<td>'.__($result['order']['state_code'].'-intro').'</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order_only_cart']).'</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['trasport']).'</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_more']).'</td>';
-		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_less']).'</td>';
+		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo((-1 * $result['order']['cost_less'])).'</td>';
 		$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['tot_order']).'</td>';
-		$html .= '</tr>';
+		$html .= '</td>';
 	} // end foreach($article_orders as $numResult => $article_order)
 
 	$html .= '	<tr>';
 	$html .= '		<td colspan="';
-	($format=='HTML')? $html .= '4' : $html .= '3';
+	($format=='HTML')? $html .= '5' : $html .= '4';
 	$html .= '" class="no-border"></td>';
 	$html .= '		<th colspan="2" class="text-right no-border">' . __('Total delivery') . '</th>';
 	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_importo). '</th>';

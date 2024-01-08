@@ -65,19 +65,40 @@ else {
   echo '<div v-show="print_id==\'toDeliveryBySuppliersAndCarts\'">';
   echo '<div>';
   echo '<label class="radio-label">Visualizza le modifiche del referente</label><br />'; 
-  echo $this->Form->radio('referent_modify', ['Y' => 'Si', 'N' => 'No'], 
+  echo $this->Form->radio('referent_modify_suppliers', ['Y' => 'Si', 'N' => 'No'], 
                                                     ['class' => 'options', 'default' => 'N', 
                                                     '@click' => 'htmlGets']);
   echo '</div>';
   echo '<div>';
   echo '<label class="radio-label">Visualizza le note delle modifiche del referente</label><br />'; 
-  echo $this->Form->radio('cart_nota', ['Y' => 'Si', 'N' => 'No'], 
+  echo $this->Form->radio('cart_nota_suppliers', ['Y' => 'Si', 'N' => 'No'], 
                                                     ['class' => 'options', 'default' => 'N', 
                                                     '@click' => 'htmlGets']);
   echo '</div>';
   echo '<div>';
   echo '<label class="radio-label">Salto pagina ad ogni produttore</label><br />'; 
-  echo $this->Form->radio('salto_pagina', ['Y' => 'Si', 'N' => 'No'], 
+  echo $this->Form->radio('salto_pagina_suppliers', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'Y', 
+                                                    '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '</div>';
+  // toDeliveryByUsersAndCarts
+  echo '<div v-show="print_id==\'toDeliveryByUsersAndCarts\'">';
+  echo '<div>';
+  echo '<label class="radio-label">Visualizza le modifiche del referente</label><br />'; 
+  echo $this->Form->radio('referent_modify_users', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'N', 
+                                                    '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '<div>';
+  echo '<label class="radio-label">Visualizza le note delle modifiche del referente</label><br />'; 
+  echo $this->Form->radio('cart_nota_users', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'N', 
+                                                    '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '<div>';
+  echo '<label class="radio-label">Salto pagina ad ogni gasista</label><br />'; 
+  echo $this->Form->radio('salto_pagina_users', ['Y' => 'Si', 'N' => 'No'], 
                                                     ['class' => 'options', 'default' => 'Y', 
                                                     '@click' => 'htmlGets']);
   echo '</div>';

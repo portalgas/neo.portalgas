@@ -4,7 +4,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Cake\Http\CallbackStream;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery);
+$delivery_label = $this->HtmlCustomSite->drawDeliveryLabel($delivery, $opts = ['year'=> true]);
 $delivery_data = $this->HtmlCustomSite->excelSanify($this->HtmlCustomSite->drawDeliveryDateLabel($delivery));
 
 $spreadsheet = new Spreadsheet();

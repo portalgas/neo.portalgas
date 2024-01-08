@@ -71,8 +71,8 @@ class HtmlCustomSiteHelper extends FormHelper
         return $results;
     }       
 
-    public function drawDeliveryLabel($delivery) {
-        return $this->getDeliveryLabel($delivery);
+    public function drawDeliveryLabel($delivery, $opts=[]) {
+        return $this->getDeliveryLabel($delivery, $opts);
     }
 
     public function drawDeliveryDateLabel($delivery) {
@@ -89,8 +89,15 @@ class HtmlCustomSiteHelper extends FormHelper
 
     public function drawOrdersStateDiv($order) {
 
-        $str = '';   	
-        $str .= '<div class="action orderStato'.$order->state_code.'" title="'.__($order->state_code.'-intro').'"></div>';
+        $state_code = '';
+        $str = '';  
+
+        if(isset($order->state_code)) $state_code = $order->state_code;
+        else 
+        if(isset($order['state_code'])) $state_code = $order['state_code'];
+        
+        if(!empty($state_code))
+            $str .= '<div class="action orderStato'.$state_code.'" title="'.__($state_code.'-intro').'"></div>';
              
         return $str;
     }
