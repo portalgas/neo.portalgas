@@ -95,10 +95,10 @@ class AppController extends Controller
         */          
     }
 
-    public function beforeFilter2(Event $event) {
+    public function beforeFilter(Event $event) {
      
         parent::beforeFilter($event); 
- 
+
         $this->set('user', $this->_user);
         // debug($user);
        
