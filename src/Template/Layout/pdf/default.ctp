@@ -32,13 +32,14 @@ use Cake\Core\Configure;
 
 		@page {
            /* margin: 0cm 0cm; */
+		   margin-bottom: 0.2cm;
 		}
 
 		body {
 			font-size: 12px;
 			font-family:Helvetica, Arial, sans-serif;
 			margin-top: 1.5cm;
-			margin-bottom: 1.5cm;
+			margin-bottom: 0cm;
 		}
 		header {
 			position: fixed;
@@ -52,7 +53,7 @@ use Cake\Core\Configure;
 			bottom: 0cm; 
 			left: 0.3cm;
 			right: 0.3cm;
-			height: 1cm;
+			height: 0.5cm;
 			text-align: center;
 		}
 </style>	
@@ -67,6 +68,7 @@ use Cake\Core\Configure;
 	</header>
 
 	<footer>
+		Stampato il <?php echo date('d/m/Y');?> alle <?php echo date('H:i');?>
 		<script type="text/php">
 		if(isset($pdf)) {
 			$pdf->page_script('

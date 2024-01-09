@@ -31,11 +31,11 @@ if(!empty($results)) {
 		$html .= '<td class="text-right">';
 		$html .= __('Total user').' '.$this->HtmlCustom->importo($result['user']['user_tot_importo']).'&nbsp;&nbsp;&nbsp;';
 		if(!empty($result['user']['user_importo_trasport']))
-			$html .= '<br />Trasporto '.$this->HtmlCustom->importo($result['user']['user_importo_trasport']).' +';
+			$html .= '<br />'.__('Trasport').' '.$this->HtmlCustom->importo($result['user']['user_importo_trasport']).' +';
 		if(!empty($result['user']['user_importo_cost_more']))
-			$html .= '<br />Costo agg. '.$this->HtmlCustom->importo($result['user']['user_importo_cost_more']).' +';
+			$html .= '<br />'.__('CostMore').' '.$this->HtmlCustom->importo($result['user']['user_importo_cost_more']).' +';
 		if(!empty($result['user']['user_importo_cost_less']))
-			$html .= '<br />Sconto '.$this->HtmlCustom->importo((-1 * $result['user']['user_importo_cost_less'])).' -';
+			$html .= '<br />'.__('CostLess').' '.$this->HtmlCustom->importo((-1 * $result['user']['user_importo_cost_less'])).' -';
 
 		$user_totale = $result['user']['user_tot_importo'];
 		if(!empty($result['user']['user_importo_trasport'])) {
@@ -61,7 +61,7 @@ if(!empty($results)) {
 			$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-borderless">';
 			$html .= '<tbody>';
 			$html .= '<tr>';
-			$html .= '	<td><h3>'.$order['suppliers_organization']->name.'</h3></td>';
+			$html .= '	<td><h3>'.$order['suppliers_organization']->name.' <small>'.__($order['order']['state_code'].'-intro').'</small></h3></td>';
 			$html .= '  <td>';
 			if($format=='HTML') {
 				if(!empty($order['suppliers_organization']->supplier->img1)) {
@@ -96,7 +96,7 @@ if(!empty($results)) {
 				$html .= '	<td></td>';
 				$html .= '	<td></td>';
 				
-				$html .= '	<td class="text-center">'.__('Quantità').'</td>';
+				$html .= '	<td class="text-center">'.__('Qta').'</td>';
 				$html .= '	<td class="text-center">'.__('Importo').'</td>';
 				$html .= '	<td class="text-center" colspan="2">'.__('Quantità e importo totali').'</td>';
 				$html .= '	<td></td>';	
@@ -106,8 +106,8 @@ if(!empty($results)) {
 			$html .= '	<td colspan="3">'.__('Name').'</td>';
 			if($format=='HTML')
 				$html .= '	<td></td>';
-			$html .= '	<td class="text-center">'.__('Prezzo unità').'</td>';
-			$html .= '	<td class="text-center">'.__('Quantità').'</td>';
+			$html .= '	<td class="text-center">'.__('PrezzoUnita').'</td>';
+			$html .= '	<td class="text-center">'.__('Qta').'</td>';
 			$html .= '	<td class="text-right">'.__('Importo').'&nbsp;&nbsp;&nbsp;</td>';
 			if($opts['referent_modify_users']=='Y') {
 				$html .= '	<td class="text-center" colspan="2">dell\'utente</td>';
@@ -119,7 +119,6 @@ if(!empty($results)) {
 			
 				$final_price = $this->HtmlCustomSite->getCartFinalPrice($cart);
 				($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
-
 
 				$html .= '<tr>';
 				$html .= '	<td colspan="3">'.$cart->articles_order->name.'</td>';
@@ -197,11 +196,11 @@ if(!empty($results)) {
 			$html .= '<td class="text-right">';
 			$html .= $this->HtmlCustom->importo($order['user_order_tot_importo']).'&nbsp;&nbsp;&nbsp;';
 			if(isset($order['user_order_importo_trasport']))
-				$html .= '<br />Trasporto '.$this->HtmlCustom->importo($order['user_order_importo_trasport']).' +';
+				$html .= '<br />'.__('Trasport').' '.$this->HtmlCustom->importo($order['user_order_importo_trasport']).' +';
 			if(isset($order['user_order_importo_cost_more']))
-				$html .= '<br />Costo agg. '.$this->HtmlCustom->importo($order['user_order_importo_cost_more']).' +';
+				$html .= '<br />'.__('CostMore').' '.$this->HtmlCustom->importo($order['user_order_importo_cost_more']).' +';
 			if(isset($order['user_order_importo_cost_less']))
-				$html .= '<br />Sconto '.$this->HtmlCustom->importo((-1 * $order['user_order_importo_cost_less'])).' -';
+				$html .= '<br />'.__('CostLess').' '.$this->HtmlCustom->importo((-1 * $order['user_order_importo_cost_less'])).' -';
 
 			$user_totale = $order['user_order_tot_importo'];
 			if(isset($order['user_order_importo_trasport'])) {

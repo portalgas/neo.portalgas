@@ -185,7 +185,7 @@ class ExportsDeliveryController extends AppController {
             
         } // foreach($delivery->orders as $order) 
 
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore - '.date('d/m/Y H:i');
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore';
         $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore';
@@ -352,7 +352,7 @@ class ExportsDeliveryController extends AppController {
             }  // foreach($users as $user)          
         } // end if($users->count()>0)
         // dd($results);
-        $title = 'Doc. con acquisti della consegna raggruppati per gasista - '.date('d/m/Y H:i');
+        $title = 'Doc. con acquisti della consegna raggruppati per gasista';
         $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista';
@@ -481,7 +481,7 @@ class ExportsDeliveryController extends AppController {
 
         } // foreach($delivery->orders as $order) 
 
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti - '.date('d/m/Y H:i');
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti';
         $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore-e-acquisti';
@@ -640,7 +640,7 @@ class ExportsDeliveryController extends AppController {
 
         } // end if(!empty($delivery->orders))
         
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti - '.date('d/m/Y H:i');
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti';
         $this->set(compact('delivery', 'results', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista-e-acquisti';
