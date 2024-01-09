@@ -612,21 +612,26 @@ class ExportsDeliveryController extends AppController {
                             else
                                 $results[$i]['user']['user_tot_qta'] += $results[$i]['user']['orders'][$numResult]['user_order_tot_qta'];                
 
-                            if(!isset($results[$i]['user']['user_importo_trasport']))  
-                                $results[$i]['user']['user_importo_trasport'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport'];                            
-                            else
-                                $results[$i]['user']['user_importo_trasport'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport']; 
+                            if(isset($results[$i]['user']['orders'][$numResult]['user_order_importo_trasport'])) {
+                                if(!isset($results[$i]['user']['user_importo_trasport']))  
+                                    $results[$i]['user']['user_importo_trasport'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport'];                            
+                                else
+                                    $results[$i]['user']['user_importo_trasport'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport']; 
+                            }
 
-                            if(!isset($results[$i]['user']['user_importo_cost_more']))  
-                                $results[$i]['user']['user_importo_cost_more'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more'];                            
-                            else
-                                $results[$i]['user']['user_importo_cost_more'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more']; 
+                            if(isset($results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more'])) {
+                                if(!isset($results[$i]['user']['user_importo_cost_more']))  
+                                    $results[$i]['user']['user_importo_cost_more'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more'];                            
+                                else
+                                    $results[$i]['user']['user_importo_cost_more'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_more']; 
+                            }
 
-                            if(!isset($results[$i]['user']['user_importo_cost_less']))  
-                                $results[$i]['user']['user_importo_cost_less'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less'];                            
-                            else
-                                $results[$i]['user']['user_importo_cost_less'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less']; 
-
+                            if(isset($results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less'])) {
+                                if(!isset($results[$i]['user']['user_importo_cost_less']))  
+                                    $results[$i]['user']['user_importo_cost_less'] = $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less'];                            
+                                else
+                                    $results[$i]['user']['user_importo_cost_less'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less']; 
+                            }
                         }  // end if($carts->count()>0) 
                     } // end foreach($delivery->orders as $numResult => $order) 
                  
