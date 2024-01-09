@@ -57,7 +57,7 @@ class HtmlCustomSiteExportHelper extends FormHelper
             $html .= '<br />'.$this->excelImporto($user_totale).' =';
         }
         $html .= '</td>';
-        if($opts['referent_modify']=='Y') 
+        if($opts['referent_modify_suppliers']=='Y') 
             $html .= '<td colspan="5" class="evidence"></td>';
         $html .= '</tr>';	
         
