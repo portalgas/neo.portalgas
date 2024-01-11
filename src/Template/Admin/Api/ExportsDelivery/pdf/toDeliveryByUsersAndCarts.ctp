@@ -26,10 +26,10 @@ if(!empty($results)) {
 		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-borderless">';
 		$html .= '<tbody>';
 		$html .= '<tr>';
-		$html .= '	<td><h3>'.$result['user']->name.'</h3></td>';
+		$html .= '	<td style="vertical-align: top"><h2>'.$result['user']->name.'</h2></td>';
 		// totali gasista di tutti gli ordini
-		$html .= '<td class="text-right">';
-		$html .= __('Total user').' '.$this->HtmlCustom->importo($result['user']['user_tot_importo']).'&nbsp;&nbsp;&nbsp;';
+		$html .= '<td class="text-right user-tot">';
+		$html .= __('Total Carts').' '.$this->HtmlCustom->importo($result['user']['user_tot_importo']).'&nbsp;&nbsp;&nbsp;';
 		if(!empty($result['user']['user_importo_trasport']))
 			$html .= '<br />'.__('Trasport').' '.$this->HtmlCustom->importo($result['user']['user_importo_trasport']).' +';
 		if(!empty($result['user']['user_importo_cost_more']))
@@ -48,7 +48,7 @@ if(!empty($results)) {
 			$user_totale += $result['user']['user_importo_cost_less']; 
 		}                
 		if($user_totale != $result['user']['user_tot_importo']) {
-			$html .= '<br />'.$this->HtmlCustom->importo($user_totale).' =';
+			$html .= '<br />'.__('Total user').' '.$this->HtmlCustom->importo($user_totale).' =';
 		}
 		$html .= '</td>';
 		$html .= '</tr>';
@@ -189,12 +189,12 @@ if(!empty($results)) {
 			$html .= '<td colspan="3"></td>';
 			if($format=='HTML')
 				$html .= '<td></td>';
-			$html .= '<td>'.__('Total user').'</td>';
+			$html .= '<td></td>';
 			$html .= '<td class="text-center">';
 			$html .= $order['user_order_tot_qta'];
 			$html .= '</td>';
-			$html .= '<td class="text-right">';
-			$html .= $this->HtmlCustom->importo($order['user_order_tot_importo']).'&nbsp;&nbsp;&nbsp;';
+			$html .= '<td class="text-right user-order-tot">';
+			$html .= __('Total Carts').' '.$this->HtmlCustom->importo($order['user_order_tot_importo']).'&nbsp;&nbsp;&nbsp;';
 			if(isset($order['user_order_importo_trasport']))
 				$html .= '<br />'.__('Trasport').' '.$this->HtmlCustom->importo($order['user_order_importo_trasport']).' +';
 			if(isset($order['user_order_importo_cost_more']))
@@ -213,7 +213,7 @@ if(!empty($results)) {
 				$user_totale += $order['user_order_importo_cost_less']; 
 			}                
 			if($user_totale != $order['user_order_tot_importo']) {
-				$html .= '<br />'.$this->HtmlCustom->importo($user_totale).' =';
+				$html .= '<br />'.__('Total user').' '.$this->HtmlCustom->importo($user_totale).' =';
 			}
 			$html .= '</td>';
 			if($opts['referent_modify_users']=='Y') 
@@ -254,6 +254,10 @@ td.evidence {
 	text-align: center;
 	padding: 15px;
 	background-color:#F5F5F5;
+}
+.user-tot {
+	font-size: 18px;
+	font-weight: bold;
 }
 .table-borderless > tbody > tr > td,
 .table-borderless > tbody > tr > th,

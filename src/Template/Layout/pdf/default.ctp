@@ -32,7 +32,7 @@ use Cake\Core\Configure;
 
 		@page {
            /* margin: 0cm 0cm; */
-		   margin-bottom: 0.2cm;
+		   margin-bottom: 0.5cm;
 		}
 
 		body {
@@ -49,12 +49,16 @@ use Cake\Core\Configure;
 			height: 1cm;
 		}
 		footer {
+			/* border: 1px solid red; */
 			position: fixed; 
 			bottom: 0cm; 
 			left: 0.3cm;
 			right: 0.3cm;
 			height: 0.5cm;
 			text-align: center;
+		}
+		.container {
+			padding-bottom: 0.5cm;
 		}
 </style>	
 </head>

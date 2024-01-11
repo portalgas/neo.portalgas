@@ -18,7 +18,10 @@ $sheet->setCellValue('A2', __('User'));
 if(isset($opts['users_contacts']) && $opts['users_contacts']=='Y')
 	$sheet->setCellValue('B2', __('Contacts')); 
 
-$sheet->setCellValue('C2', __('SupplierOrganization'));
+if($opts['users_detail_orders']=='Y') 
+	$sheet->setCellValue('C2', __('SupplierOrganization'));
+else
+	$sheet->setCellValue('C2', '');
 $sheet->setCellValue('D2', __('Total Carts'));
 $sheet->setCellValue('E2', __('Trasport'));
 $sheet->setCellValue('F2', __('CostMore'));
@@ -32,18 +35,24 @@ foreach($results as $result) {
 	if(isset($opts['users_contacts']) && $opts['users_contacts']=='Y') 
 		$sheet->setCellValue('B'.($num_row), $result['user']['email'].' '.$result['user']['phone']);
 	
+	if($opts['users_detail_orders']=='Y')
 	foreach($result['orders'] as $order) {
 		$sheet->setCellValue('C'.($num_row), $order['order']->suppliers_organization->name);
 		$sheet->setCellValue('D'.($num_row), $this->HtmlCustomSiteExport->excelImporto($order['tot_importo_only_cart']));		
 		$sheet->setCellValue('E'.($num_row), $this->HtmlCustomSiteExport->excelImporto($order['importo_trasport']));		
-		$sheet->setCellValue('f'.($num_row), $this->HtmlCustomSiteExport->excelImporto($order['importo_cost_more']));		
+		$sheet->setCellValue('F'.($num_row), $this->HtmlCustomSiteExport->excelImporto($order['importo_cost_more']));		
 		$sheet->setCellValue('G'.($num_row), $this->HtmlCustomSiteExport->excelImporto($order['importo_cost_less']));		
 		$sheet->setCellValue('H'.($num_row), $this->HtmlCustomSiteExport->excelImporto($order['tot_importo']));
 		
 		$num_row++;
 	} //end foreach($result['orders'] as $order) 
 
-	$sheet->setCellValue('G'.($num_row), __('Total user'));		
+	if($opts['users_detail_orders']=='Y')
+		$sheet->setCellValue('C'.($num_row), __('Total user'));			
+	$sheet->setCellValue('D'.($num_row), $this->HtmlCustomSiteExport->excelImporto($result['user']['tot_user_importo_only_cart']));	
+	$sheet->setCellValue('E'.($num_row), $this->HtmlCustomSiteExport->excelImporto($result['user']['tot_user_trasport']));	
+	$sheet->setCellValue('F'.($num_row), $this->HtmlCustomSiteExport->excelImporto($result['user']['tot_user_cost_more']));	
+	$sheet->setCellValue('G'.($num_row), $this->HtmlCustomSiteExport->excelImporto($result['user']['tot_user_cost_less']));	
 	$sheet->setCellValue('H'.($num_row), $this->HtmlCustomSiteExport->excelImporto($result['user']['tot_user_importo']));		
 
 	$num_row++;

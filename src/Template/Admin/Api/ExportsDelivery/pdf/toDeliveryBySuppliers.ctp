@@ -22,6 +22,7 @@ if(!empty($results)) {
 	$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">';
 	$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 	$html .= '	<tr>';
+	$html .= '			<th scope="col">' . __('N') . '</th>';
 	$html .= '			<th scope="col">' . __('SupplierOrganization') . '</th>';
 	if($format=='HTML')
 		$html .= '			<th scope="col" class="text-center"></th>';
@@ -34,8 +35,9 @@ if(!empty($results)) {
 	$html .= '	</tr>';
 	$html .= '	</thead><tbody>';
 
-	foreach($results as $result) {
+	foreach($results as $numResult => $result) {
 		$html .= '<tr>';
+		$html .= '	<td>'.($numResult + 1).'</td>';
 		$html .= '	<td>'.$result['suppliers_organization']->name.'</td>';
 		if($format=='HTML') {
 			$html .= '<td>';
@@ -61,10 +63,15 @@ if(!empty($results)) {
 	} // end foreach($article_orders as $numResult => $article_order)
 
 	$html .= '	<tr>';
-	$html .= '		<td colspan="';
-	($format=='HTML')? $html .= '5' : $html .= '4';
-	$html .= '" class="no-border"></td>';
-	$html .= '		<th colspan="2" class="text-right no-border">' . __('Total delivery') . '</th>';
+	$html .= '		<th class="no-border"></th>';
+	$html .= '		<th class="no-border"></th>';
+	if($format=='HTML') 
+		$html .= '<th class="no-border"></th>';
+	$html .= '		<th class="text-right no-border">' . __('Total delivery') . '</th>';
+	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_order_only_cart). '</th>';
+	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_trasport). '</th>';
+	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_cost_more). '</th>';
+	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_cost_less). '</th>';
 	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_importo). '</th>';
 	$html .= '	</tr>';
 

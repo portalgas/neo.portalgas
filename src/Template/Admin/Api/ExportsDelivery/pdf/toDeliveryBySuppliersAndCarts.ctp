@@ -113,6 +113,7 @@ if(!empty($results)) {
 				$html .= '	<td class="text-center">'.__('Importo forzati').'</td>';
 			}
 			$html .= '</tr>';
+			$num_users = 0;
 			$user_id_old = 0;
 			foreach($result['order']['carts'] as $cart) {
 			
@@ -122,13 +123,15 @@ if(!empty($results)) {
 				// header user
 				if($cart->user_id!=$user_id_old) {
 
+					$num_users++;
+					
 					if($user_id_old>0) {
 						// totale gasista
 						$html .= $this->HtmlCustomSiteExport->toDeliveryBySuppliersAndCartsDrawUserTotale($result['order']['users'][$user_id_old], $format, $opts);
 					}
 
 					$html .= '<tr>';
-					$html .= '<td colspan="6"><b>'.__('User').': '.$cart->user->name.'</b></td>';
+					$html .= '<td colspan="6">'.($num_users).' <b>'.__('User').': '.$cart->user->name.'</b></td>';
 					if($format=='HTML')
 						$html .= '<td></td>';
 					if($opts['referent_modify_suppliers']=='Y') 

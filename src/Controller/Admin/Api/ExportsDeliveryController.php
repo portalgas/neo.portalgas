@@ -156,6 +156,10 @@ class ExportsDeliveryController extends AppController {
                                 ->where($where)
                                 ->first();
 
+        $delivery_tot_order_only_cart = 0;  
+        $delivery_tot_trasport = 0;  
+        $delivery_tot_cost_more = 0;
+        $delivery_tot_cost_less = 0;  
         $delivery_tot_importo = 0;                        
         foreach($delivery->orders as $numResult => $order) {
             
@@ -181,12 +185,20 @@ class ExportsDeliveryController extends AppController {
                 // debug('final_price '.$final_price);
                 $tot_order += $final_price; 
             }
+
             $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
+
+            $delivery_tot_order_only_cart += $tot_order;  
+            $delivery_tot_trasport += $order->trasport;  
+            $delivery_tot_cost_more += $order->cost_more;
+            $delivery_tot_cost_less += $order->cost_less;
             
         } // foreach($delivery->orders as $order) 
 
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore';
-        $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore<br>';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
+        $this->set(compact('delivery', 'results', 'title'));
+        $this->set(compact('delivery_tot_order_only_cart', 'delivery_tot_trasport', 'delivery_tot_cost_more', 'delivery_tot_cost_less', 'delivery_tot_importo'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore';
         switch($format) {
@@ -194,7 +206,7 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                // $this->response->header('filename', $this->_filename.'.pdf');
+                $this->response->header('filename', $this->_filename.'.pdf');
                 Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }
@@ -254,9 +266,19 @@ class ExportsDeliveryController extends AppController {
         $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
         if($users->count()>0) {
             $i_user=0;
+            $delivery_tot_only_cart = 0;
+            $delivery_tot_trasport = 0;
+            $delivery_tot_cost_more = 0;
+            $delivery_tot_cost_less = 0;
+            $delivery_tot_importo = 0;            
             $delivery_tot_importo = 0;
             foreach($users as $user) {
+
                 $i_order=0;
+                $tot_user_importo_only_cart = 0;
+                $tot_user_trasport = 0;
+                $tot_user_cost_more = 0;
+                $tot_user_cost_less = 0;
                 $tot_user_importo = 0;
                 foreach($orders as $order) {
                     $where = ['Carts.user_id' => $user->id,
@@ -304,6 +326,7 @@ class ExportsDeliveryController extends AppController {
                             else 
                                 $results[$i_user]['orders'][$i_order]['importo_trasport'] = 0;
                         }
+                        $tot_user_trasport += $results[$i_user]['orders'][$i_order]['importo_trasport'];
 
                         $results[$i_user]['orders'][$i_order]['importo_cost_more'] = 0;
                         if($order->hasCostMore=='Y' && $order->cost_more>0) {
@@ -313,6 +336,7 @@ class ExportsDeliveryController extends AppController {
                             else 
                                 $results[$i_user]['orders'][$i_order]['importo_cost_more'] = 0;
                         }
+                        $tot_user_cost_more += $results[$i_user]['orders'][$i_order]['importo_cost_more'];
 
                         $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
                         if($order->hasCostLess=='Y' && $order->cost_less>0) {
@@ -322,6 +346,7 @@ class ExportsDeliveryController extends AppController {
                             else 
                                 $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
                         }
+                        $tot_user_cost_less += $results[$i_user]['orders'][$i_order]['importo_cost_less']; 
 
                         /* 
                         * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
@@ -336,6 +361,7 @@ class ExportsDeliveryController extends AppController {
                                                 
                         $results[$i_user]['orders'][$i_order]['tot_importo_only_cart'] = $tot_importo;
                         $results[$i_user]['orders'][$i_order]['tot_importo'] = ($tot_importo + $results[$i_user]['orders'][$i_order]['importo_trasport'] + $results[$i_user]['orders'][$i_order]['importo_cost_more'] + (-1 * $results[$i_user]['orders'][$i_order]['importo_cost_less']));
+                        $tot_user_importo_only_cart += $results[$i_user]['orders'][$i_order]['tot_importo_only_cart'];
                         $tot_user_importo += $results[$i_user]['orders'][$i_order]['tot_importo'];
                         // debug($results);
                                                     
@@ -344,6 +370,10 @@ class ExportsDeliveryController extends AppController {
                 } // foreach($orders as $order)
                 
                 if($tot_user_importo>0) {
+                    $results[$i_user]['user']['tot_user_importo_only_cart'] = $tot_user_importo_only_cart;
+                    $results[$i_user]['user']['tot_user_trasport'] = $tot_user_trasport;
+                    $results[$i_user]['user']['tot_user_cost_more'] = $tot_user_cost_more;
+                    $results[$i_user]['user']['tot_user_cost_less'] = $tot_user_cost_less;
                     $results[$i_user]['user']['tot_user_importo'] = $tot_user_importo;
                     $delivery_tot_importo += $tot_user_importo;
                     $i_user++;
@@ -352,7 +382,8 @@ class ExportsDeliveryController extends AppController {
             }  // foreach($users as $user)          
         } // end if($users->count()>0)
         // dd($results);
-        $title = 'Doc. con acquisti della consegna raggruppati per gasista';
+        $title = 'Doc. con acquisti della consegna raggruppati per gasista<br>';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista';
@@ -361,7 +392,7 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                // $this->response->header('filename', $this->_filename.'.pdf');
+                $this->response->header('filename', $this->_filename.'.pdf');
                 Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }
@@ -481,7 +512,8 @@ class ExportsDeliveryController extends AppController {
 
         } // foreach($delivery->orders as $order) 
 
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti';
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti<br>';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore-e-acquisti';
@@ -490,7 +522,7 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                // $this->response->header('filename', $this->_filename.'.pdf');
+                $this->response->header('filename', $this->_filename.'.pdf');
                 Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }
@@ -645,7 +677,8 @@ class ExportsDeliveryController extends AppController {
 
         } // end if(!empty($delivery->orders))
         
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti';
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti<br>';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista-e-acquisti';
@@ -654,7 +687,7 @@ class ExportsDeliveryController extends AppController {
                 $this->_filename .= '.xlsx';
             break;
             case 'PDF':
-                // $this->response->header('filename', $this->_filename.'.pdf');
+                $this->response->header('filename', $this->_filename.'.pdf');
                 Configure::write('CakePdf.filename', $this->_filename.'.pdf');
             break;
         }

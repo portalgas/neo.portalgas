@@ -60,6 +60,12 @@ else {
                                                     ['class' => 'options', 'default' => 'N', 
                                                     '@click' => 'htmlGets']);
   echo '</div>';
+  echo '<div>';
+  echo '<label class="radio-label">Visualizza dettaglio ordini</label><br />'; 
+  echo $this->Form->radio('users_detail_orders', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'N', 
+                                                    '@click' => 'htmlGets']);
+  echo '</div>';
   echo '</div>';
   // toDeliveryBySuppliersAndCarts
   echo '<div v-show="print_id==\'toDeliveryBySuppliersAndCarts\'">';
