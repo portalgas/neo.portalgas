@@ -182,6 +182,7 @@ class ExportsDeliveryController extends AppController {
             * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
             *   => ricalcolo totali
             */
+            $tot_order = 0;
             if($order->typeGest=='AGGREGATE') {                         
                 $importo_aggregate = $summaryOrderAggregates->getByOrderSummaryAggregates($this->_user, $this->_organization->id, $order->id);
                 if(!empty($importo_aggregate)) {
@@ -194,7 +195,6 @@ class ExportsDeliveryController extends AppController {
                 * */
                 $cartsTable = TableRegistry::get('Carts');
                 $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
-                $tot_order = 0;
                 foreach($carts as $cart) {
                     $final_price = $this->getCartFinalPrice($cart);
                     $tot_order += $final_price; 
