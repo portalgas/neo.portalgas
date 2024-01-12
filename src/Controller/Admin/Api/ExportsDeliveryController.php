@@ -135,26 +135,30 @@ class ExportsDeliveryController extends AppController {
         /* 
          * profilazione $user->acl['isReferentGeneric'] 
          */
+        $where_orders = ['Orders.organization_id' => $this->_user->organization->id,
+                        'Orders.isVisibleBackOffice' => 'Y',
+                        'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
             // debug($suppliersOrganizations);
             if(empty($suppliersOrganizations))
-                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+                $where_orders += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
             else
-                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+                $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
-
+        // $where_orders += ['Orders.id' => 40439];
+      
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
                                     'sort' => ['SuppliersOrganizations.name'],
-                                    'conditions' => ['Orders.organization_id' => $this->_user->organization->id,
-                                                    'Orders.isVisibleBackOffice' => 'Y',
-                                                    'Orders.state_code != ' => 'CREATE-INCOMPLETE'],
+                                    'conditions' => $where_orders,
                                     'SuppliersOrganizations' => ['Suppliers'],
                                     ]])
                                 ->where($where)
                                 ->first();
+
+        $summaryOrderAggregates = TableRegistry::get('SummaryOrderAggregates');             
 
         $delivery_tot_order_only_cart = 0;  
         $delivery_tot_trasport = 0;  
@@ -175,17 +179,27 @@ class ExportsDeliveryController extends AppController {
             $results[$numResult]['order']['state_code'] = $order->state_code;
             
             /* 
-             * totale importo senza costi aggiuntivi
-             * */
-            $cartsTable = TableRegistry::get('Carts');
-            $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
-            $tot_order = 0;
-            foreach($carts as $cart) {
-                $final_price = $this->getCartFinalPrice($cart);
-                // debug('final_price '.$final_price);
-                $tot_order += $final_price; 
+            * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
+            *   => ricalcolo totali
+            */
+            if($order->typeGest=='AGGREGATE') {                         
+                $importo_aggregate = $summaryOrderAggregates->getByOrderSummaryAggregates($this->_user, $this->_organization->id, $order->id);
+                if(!empty($importo_aggregate)) {
+                    $tot_order = $importo_aggregate;
+                }
             }
-
+            else {
+                /* 
+                * totale importo senza costi aggiuntivi
+                * */
+                $cartsTable = TableRegistry::get('Carts');
+                $carts = $cartsTable->getByOrder($this->_user, $this->_organization->id, $order->id);
+                $tot_order = 0;
+                foreach($carts as $cart) {
+                    $final_price = $this->getCartFinalPrice($cart);
+                    $tot_order += $final_price; 
+                }
+            }
             $results[$numResult]['order']['tot_order_only_cart'] = $tot_order;
 
             $delivery_tot_order_only_cart += $tot_order;  
@@ -247,7 +261,9 @@ class ExportsDeliveryController extends AppController {
                 $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
             else
                 $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
-        }                    
+        }    
+        // $where += ['Orders.id' => 40396]; 
+
         $orders = $ordersTable->find()
                                 ->contain(['SuppliersOrganizations' => ['Suppliers']])    
                                     ->where($where)
@@ -260,7 +276,8 @@ class ExportsDeliveryController extends AppController {
         $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
         $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
         $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
-        
+        $summaryOrderAggregates = TableRegistry::get('SummaryOrderAggregates');          
+                            
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];    
         $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
@@ -341,19 +358,19 @@ class ExportsDeliveryController extends AppController {
                         $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
                         if($order->hasCostLess=='Y' && $order->cost_less>0) {
                             $summaryOrderCostLess = $summaryOrderCostLessesTable->find()->where($where)->first();
-                            if(!empty($summaryOrderCostLess) && $summaryOrderCostLess->importo_cost_less>0)
+                            if(!empty($summaryOrderCostLess) && !empty($summaryOrderCostLess->importo_cost_less))
                                 $results[$i_user]['orders'][$i_order]['importo_cost_less'] = $summaryOrderCostLess->importo_cost_less;
                             else 
                                 $results[$i_user]['orders'][$i_order]['importo_cost_less'] = 0;
                         }
                         $tot_user_cost_less += $results[$i_user]['orders'][$i_order]['importo_cost_less']; 
-
+                        
                         /* 
                         * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
                         *   => ricalcolo totali
                         */
-                        if($order->typeGest=='AGGREGATE') {                         
-                            $importo_aggregate = $this->_getUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
+                        if($order->typeGest=='AGGREGATE') {
+                            $importo_aggregate = $summaryOrderAggregates->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
                             if(!empty($importo_aggregate)) {
                                 $tot_importo = $importo_aggregate;
                             }
@@ -415,27 +432,30 @@ class ExportsDeliveryController extends AppController {
         /* 
          * profilazione $user->acl['isReferentGeneric'] 
          */
+        $where_orders = ['Orders.organization_id' => $this->_user->organization->id,
+                        'Orders.isVisibleBackOffice' => 'Y',
+                        'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
             // debug($suppliersOrganizations);
             if(empty($suppliersOrganizations))
-                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+                $where_orders += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
             else
-                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+                $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
 
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
                                     'sort' => ['SuppliersOrganizations.name'],
-                                    'conditions' => ['Orders.organization_id' => $this->_user->organization->id,
-                                                    'Orders.isVisibleBackOffice' => 'Y',
-                                                    'Orders.state_code != ' => 'CREATE-INCOMPLETE'],
+                                    'conditions' => $where_orders,
                                     'SuppliersOrganizations' => ['Suppliers'],
                                     ]])
                                 ->where($where)
                                 ->first();
 
+        $summaryOrderAggregates = TableRegistry::get('SummaryOrderAggregates'); 
+                    
         $delivery_tot_importo = 0;                        
         foreach($delivery->orders as $numResult => $order) {
             
@@ -501,7 +521,7 @@ class ExportsDeliveryController extends AppController {
             if($order->typeGest=='AGGREGATE') {
                 $tot_order = 0;
                 foreach($user_ids as $user_id) {
-                    $importo_aggregate = $this->_getUserSummaryAggregates($this->_user, $this->_organization->id, $user_id, $order->id);
+                    $importo_aggregate = $summaryOrderAggregates->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user_id, $order->id);
                     if(!empty($importo_aggregate)) {
                         $results[$numResult]['order']['users'][$user_id]['tot_importo'] = $importo_aggregate; 
                         $tot_order += $importo_aggregate; 
@@ -546,22 +566,23 @@ class ExportsDeliveryController extends AppController {
         /* 
          * profilazione $user->acl['isReferentGeneric'] 
          */
+        $where_orders = ['Orders.organization_id' => $this->_user->organization->id,
+                        'Orders.isVisibleBackOffice' => 'Y',
+                        'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
             // debug($suppliersOrganizations);
             if(empty($suppliersOrganizations))
-                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+                $where_orders += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
             else
-                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+                $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
 
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
                                     'sort' => ['SuppliersOrganizations.name'],
-                                    'conditions' => ['Orders.organization_id' => $this->_user->organization->id,
-                                                    'Orders.isVisibleBackOffice' => 'Y',
-                                                    'Orders.state_code != ' => 'CREATE-INCOMPLETE'],
+                                    'conditions' => $where_orders,
                                     'SuppliersOrganizations' => ['Suppliers'],
                                     ]])
                                 ->where($where)
@@ -740,6 +761,9 @@ class ExportsDeliveryController extends AppController {
         return 0;
     }
 
+    /*
+     * importi aggregati per user
+     */
     private function _getUserSummaryAggregates($_user, $organization_id, $user_id, $order_id) {
         $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
         $where = ['SummaryOrderAggregates.organization_id' => $organization_id,
@@ -751,6 +775,22 @@ class ExportsDeliveryController extends AppController {
                                              ->first();
         if(!empty($result)) 
             return $result->importo;
+        
+        return 0;
+    }
+
+    /*
+     * importi aggregati per ordine
+     */
+    private function _getOrderSummaryAggregates($_user, $organization_id, $order_id) {
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
+        $where = ['SummaryOrderAggregates.organization_id' => $organization_id,
+                  'SummaryOrderAggregates.order_id' => $order_id];
+
+        $query = $summaryOrderAggregatesTable->find()->where($where);
+        $result = $query->select(['sum' => $query->func()->max('importo')])->first();
+        if(!empty($result)) 
+            return $result->sum;
         
         return 0;
     }    

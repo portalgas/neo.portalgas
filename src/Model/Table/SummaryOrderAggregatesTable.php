@@ -138,5 +138,40 @@ class SummaryOrderAggregatesTable extends Table
         if($debug) debug($results);
         
         return $results;
-    }    
+    } 
+    
+
+    /*
+     * importi aggregati per user
+     */
+    public function getByUserSummaryAggregates($_user, $organization_id, $user_id, $order_id) {
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
+        $where = ['SummaryOrderAggregates.organization_id' => $organization_id,
+                  'SummaryOrderAggregates.user_id' => $user_id,
+                  'SummaryOrderAggregates.order_id' => $order_id];
+        $result = $summaryOrderAggregatesTable->find()
+                                             ->select(['importo'])
+                                             ->where($where)
+                                             ->first();
+        if(!empty($result)) 
+            return $result->importo;
+        
+        return 0;
+    }
+
+    /*
+     * importi aggregati per ordine
+     */
+    public function getByOrderSummaryAggregates($_user, $organization_id, $order_id) {
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
+        $where = ['SummaryOrderAggregates.organization_id' => $organization_id,
+                  'SummaryOrderAggregates.order_id' => $order_id];
+
+        $query = $summaryOrderAggregatesTable->find()->where($where);
+        $result = $query->select(['importo' => $query->func()->sum('importo')])->first();
+        if(!empty($result)) 
+            return $result->importo;
+        
+        return 0;
+    }     
 }

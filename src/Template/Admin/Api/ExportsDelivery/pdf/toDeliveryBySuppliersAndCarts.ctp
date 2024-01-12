@@ -68,7 +68,7 @@ if(!empty($results)) {
 		if($result['order']['cost_less']>0) {
 			$html .= '<tr>';
 			$html .= '	<td class="text-right">' . __('CostLess') . '</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($result['order']['cost_less'], '-').'</td>';
+			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo((-1 * $result['order']['cost_less']), '-').'</td>';
 			$html .= '</tr>';	
 		}
 		if($result['order']['trasport']>0 || $result['order']['cost_more']>0 || $result['order']['cost_less']>0) {

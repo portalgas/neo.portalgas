@@ -71,7 +71,7 @@ if(!empty($results)) {
 	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_order_only_cart). '</th>';
 	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_trasport). '</th>';
 	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_cost_more). '</th>';
-	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_cost_less). '</th>';
+	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo((-1 * $delivery_tot_cost_less)). '</th>';
 	$html .= '		<th class="text-center no-border">' .$this->HtmlCustom->importo($delivery_tot_importo). '</th>';
 	$html .= '	</tr>';
 

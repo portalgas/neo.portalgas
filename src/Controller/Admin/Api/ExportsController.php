@@ -73,7 +73,7 @@ class ExportsController extends AppController {
         $delivery = $deliveriesTable->getById($this->_user, $this->_organization->id, $delivery_id);
         if(!empty($delivery)) {
             
-            $title = "Carrello della consegna ".$delivery->label.' di '.$this->_user->username;
+            $title = "Carrello della consegna ".$delivery->label.'<br />di '.$this->_user->username;
             Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));
 
             $options = [];
