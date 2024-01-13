@@ -85,13 +85,14 @@ class ExportsController extends AppController {
             /*
              * storerooms
              */
-            if ($this->user->organization->paramsConfig['hasStoreroom'] == 'Y' && $this->_organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
+            if ($this->_user->organization->paramsConfig['hasStoreroom'] == 'Y' && $this->_organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
                 $storeroomResults = $this->Storeroom->getArticlesByDeliveryId($this->_user, $this->_organization_id, $delivery_id, $options=[], $debug);            
             }
 
         } // end if(!empty($delivery))
         
-        $this->set(compact('results', 'storeroomResults', 'delivery', 'title', 'user'));
+        $this->set(compact('results', 'storeroomResults', 'delivery', 'title'));
+        $this->set('user', $this->_user);
 
         if($this->_debug) {
             $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
