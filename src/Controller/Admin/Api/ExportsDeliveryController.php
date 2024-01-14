@@ -287,8 +287,7 @@ class ExportsDeliveryController extends AppController {
             $delivery_tot_trasport = 0;
             $delivery_tot_cost_more = 0;
             $delivery_tot_cost_less = 0;
-            $delivery_tot_importo = 0;            
-            $delivery_tot_importo = 0;
+            $delivery_tot_importo = 0; 
             foreach($users as $user) {
 
                 $i_order=0;
@@ -375,12 +374,12 @@ class ExportsDeliveryController extends AppController {
                                 $tot_importo = $importo_aggregate;
                             }
                         }
-                                                
+                 
                         $results[$i_user]['orders'][$i_order]['tot_importo_only_cart'] = $tot_importo;
-                        $results[$i_user]['orders'][$i_order]['tot_importo'] = ($tot_importo + $results[$i_user]['orders'][$i_order]['importo_trasport'] + $results[$i_user]['orders'][$i_order]['importo_cost_more'] + (-1 * $results[$i_user]['orders'][$i_order]['importo_cost_less']));
+                        $results[$i_user]['orders'][$i_order]['tot_importo'] = ($tot_importo + $results[$i_user]['orders'][$i_order]['importo_trasport'] + $results[$i_user]['orders'][$i_order]['importo_cost_more'] + $results[$i_user]['orders'][$i_order]['importo_cost_less']);
                         $tot_user_importo_only_cart += $results[$i_user]['orders'][$i_order]['tot_importo_only_cart'];
                         $tot_user_importo += $results[$i_user]['orders'][$i_order]['tot_importo'];
-                        // debug($results);
+                        // debug($tot_user_importo);
                                                     
                         $i_order++;
                     } // end if($carts->count()>0)
@@ -392,6 +391,11 @@ class ExportsDeliveryController extends AppController {
                     $results[$i_user]['user']['tot_user_cost_more'] = $tot_user_cost_more;
                     $results[$i_user]['user']['tot_user_cost_less'] = $tot_user_cost_less;
                     $results[$i_user]['user']['tot_user_importo'] = $tot_user_importo;
+
+                    $delivery_tot_only_cart += $tot_user_importo_only_cart;
+                    $delivery_tot_trasport += $tot_user_trasport;
+                    $delivery_tot_cost_more += $tot_user_cost_more;
+                    $delivery_tot_cost_less += $tot_user_cost_less;   
                     $delivery_tot_importo += $tot_user_importo;
                     $i_user++;
                 }
@@ -401,7 +405,8 @@ class ExportsDeliveryController extends AppController {
         // dd($results);
         $title = 'Doc. con acquisti della consegna raggruppati per gasista<br>';
         $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
-        $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
+        $this->set(compact('delivery', 'results', 'title'));
+        $this->set(compact('delivery_tot_only_cart', 'delivery_tot_trasport', 'delivery_tot_cost_more', 'delivery_tot_cost_less', 'delivery_tot_importo'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista';
         switch($format) {
@@ -578,6 +583,7 @@ class ExportsDeliveryController extends AppController {
             else
                 $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
+        $where_orders += ['Orders.id' => 41267];
 
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
@@ -593,7 +599,8 @@ class ExportsDeliveryController extends AppController {
             * elenco users
             */
             $usersTable = TableRegistry::get('Users');
-            $where = ['username NOT LIKE' => '%portalgas.it'];    
+            $where = ['username NOT LIKE' => '%portalgas.it'];  
+           // $where += ['id' => 6408];  
             $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
             if($users->count()>0) {
                 
@@ -627,7 +634,7 @@ class ExportsDeliveryController extends AppController {
 
                                 $final_price = $this->getCartFinalPrice($cart);
                                 ($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
-                                // debug('final_price '.$final_price);
+                                // if($cart->user_id==6408) debug('final_price '.$final_price);
                                 $results[$i]['user']['orders'][$numResult]['carts'][$numResult2]['final_price'] = $final_price;
 
                                 // totali dell'utente dell'ordine

@@ -80,9 +80,10 @@ class HtmlCustomSiteExportHelper extends FormHelper
         $sheet->setCellValue('A'.$i, '');
         $sheet->setCellValue('B'.$i, '');
         $sheet->setCellValue('C'.$i, '');
-        $sheet->setCellValue('D'.$i, __('Total user'));
-        $sheet->setCellValue('E'.$i, $user['tot_qta']);
-        $sheet->setCellValue('F'.$i, $totale);
+        $sheet->setCellValue('D'.$i, '');
+        $sheet->setCellValue('E'.$i, __('Total user'));
+        $sheet->setCellValue('F'.$i, $user['tot_qta']);
+        $sheet->setCellValue('G'.$i, $totale);
 
         return $sheet;
     } 
