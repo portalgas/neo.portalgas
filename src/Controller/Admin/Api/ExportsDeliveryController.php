@@ -583,7 +583,7 @@ class ExportsDeliveryController extends AppController {
             else
                 $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
-        $where_orders += ['Orders.id' => 41267];
+        // $where_orders += ['Orders.id' => 41267];
 
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
