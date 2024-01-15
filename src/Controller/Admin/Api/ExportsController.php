@@ -86,7 +86,7 @@ class ExportsController extends AppController {
              * storerooms
              */
             if ($this->_user->organization->paramsConfig['hasStoreroom'] == 'Y' && $this->_organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
-                $storeroomResults = $this->Storeroom->getArticlesByDeliveryId($this->_user, $this->_organization_id, $delivery_id, $options=[], $debug);            
+                $storeroomResults = $this->Storeroom->getArticlesByDeliveryId($this->_user, $this->_organization->id, $delivery_id, $options=[], $debug);            
             }
 
         } // end if(!empty($delivery))
