@@ -26,7 +26,9 @@ class UserUsergroupMap extends Entity
     protected $_accessible = [
         'user_id' => true,
         'group_id' => true,
+        'gas_group_id' => true,
         'user' => true,
-        'group' => true
+        'group' => true,
+        'gas_group' => true
     ];
 }

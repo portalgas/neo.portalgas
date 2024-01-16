@@ -93,8 +93,6 @@ class GasGroupUsersController extends AppController
             }
         } // end post 
 
-        $gasGroupUser = $this->GasGroupUsers->newEntity();
-
         $gasGroup = $this->GasGroupUsers->GasGroups->get($gas_group_id, ['contain' => ['Users']]);
         $users = $this->GasGroupUsers->getUsersToAssocitateList($this->_user, $this->_organization->id, $gas_group_id);
         $gasGroupUsers = $this->GasGroupUsers->getUsersAssocitateList($this->_user, $this->_organization->id, $gas_group_id);;

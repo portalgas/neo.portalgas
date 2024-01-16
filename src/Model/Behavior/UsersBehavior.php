@@ -32,7 +32,7 @@ class UsersBehavior extends Behavior
          */
         $user_profiles = [];
         foreach($users as $numResult => $user) {
-            if($user->has('user_profiles')) {
+            if(!is_string($user) && $user->has('user_profiles')) {
                 foreach($user->user_profiles as $numResult2 => $user_profile) {
 
                     $profile_key = str_replace('profile.', '', $user_profile->profile_key);
@@ -51,5 +51,4 @@ class UsersBehavior extends Behavior
             }
         }
     }
-     
 }

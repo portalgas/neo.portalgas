@@ -94,7 +94,6 @@ class HtmlCustomHelper extends FormHelper
 
     public function mail($value, $label='') {
         $str = '';
-
         if(!empty($value)) {
             if(empty($label))
                 $label = $value;

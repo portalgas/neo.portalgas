@@ -20,7 +20,7 @@ class UserUsergroupMapTable extends Table
 
         $this->setTable('j_user_usergroup_map');
         $this->setDisplayField('user_id');
-        $this->setPrimaryKey(['user_id', 'group_id']);
+        $this->setPrimaryKey(['user_id', 'group_id', 'gas_group_id']);
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -31,6 +31,10 @@ class UserUsergroupMapTable extends Table
             'foreignKey' => 'group_id',
             'joinType' => 'INNER'
         ]);
+        $this->belongsTo('GasGroups', [
+            'foreignKey' => 'gas_group_id',
+            'joinType' => 'LEFT'
+        ]);        
     }
 
     /**
@@ -57,8 +61,8 @@ class UserUsergroupMapTable extends Table
         if(isset($where['Users']))
             $where_user = array_merge($where_user, $where['Users']);
         if(isset($where['UserUsergroupMap']))
-            $where_group = array_merge($where_group, $where['UUserUsergroupMapsers']);
-                        
+            $where_group = array_merge($where_group, $where['UserUsergroupMap']);
+                   
         $results = $this->find()
                         ->contain(['Users' => ['conditions' => $where_user]])
                         ->where($where_group)
