@@ -158,7 +158,7 @@ class ExportsDeliveryController extends AppController {
                                 ->where($where)
                                 ->first();
 
-        $summaryOrderAggregates = TableRegistry::get('SummaryOrderAggregates');             
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');             
 
         $delivery_tot_order_only_cart = 0;  
         $delivery_tot_trasport = 0;  
@@ -184,7 +184,7 @@ class ExportsDeliveryController extends AppController {
             */
             $tot_order = 0;
             if($order->typeGest=='AGGREGATE') {                         
-                $importo_aggregate = $summaryOrderAggregates->getByOrderSummaryAggregates($this->_user, $this->_organization->id, $order->id);
+                $importo_aggregate = $summaryOrderAggregatesTable->getByOrderSummaryAggregates($this->_user, $this->_organization->id, $order->id);
                 if(!empty($importo_aggregate)) {
                     $tot_order = $importo_aggregate;
                 }
@@ -276,7 +276,7 @@ class ExportsDeliveryController extends AppController {
         $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
         $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
         $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
-        $summaryOrderAggregates = TableRegistry::get('SummaryOrderAggregates');          
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');          
                             
         $usersTable = TableRegistry::get('Users');
         $where = ['username NOT LIKE' => '%portalgas.it'];    
@@ -369,7 +369,7 @@ class ExportsDeliveryController extends AppController {
                         *   => ricalcolo totali
                         */
                         if($order->typeGest=='AGGREGATE') {
-                            $importo_aggregate = $summaryOrderAggregates->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
+                            $importo_aggregate = $summaryOrderAggregatesTable->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
                             if(!empty($importo_aggregate)) {
                                 $tot_importo = $importo_aggregate;
                             }
@@ -449,6 +449,7 @@ class ExportsDeliveryController extends AppController {
             else
                 $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
+        // $where_orders += ['Orders.id' => 41266];
 
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
@@ -459,7 +460,7 @@ class ExportsDeliveryController extends AppController {
                                 ->where($where)
                                 ->first();
 
-        $summaryOrderAggregates = TableRegistry::get('SummaryOrderAggregates'); 
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates'); 
                     
         $delivery_tot_importo = 0;                        
         foreach($delivery->orders as $numResult => $order) {
@@ -526,7 +527,7 @@ class ExportsDeliveryController extends AppController {
             if($order->typeGest=='AGGREGATE') {
                 $tot_order = 0;
                 foreach($user_ids as $user_id) {
-                    $importo_aggregate = $summaryOrderAggregates->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user_id, $order->id);
+                    $importo_aggregate = $summaryOrderAggregatesTable->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user_id, $order->id);
                     if(!empty($importo_aggregate)) {
                         $results[$numResult]['order']['users'][$user_id]['tot_importo'] = $importo_aggregate; 
                         $tot_order += $importo_aggregate; 
@@ -583,7 +584,7 @@ class ExportsDeliveryController extends AppController {
             else
                 $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
-        // $where_orders += ['Orders.id' => 41267];
+        // $where_orders += ['Orders.id' => 41266];
 
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
@@ -650,6 +651,18 @@ class ExportsDeliveryController extends AppController {
 
                             } // end foreach($carts as $cart)
 
+                            /* 
+                            * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
+                            *   => ricalcolo totali
+                            */
+                            if($order->typeGest=='AGGREGATE') {
+                                $summaryOrderAggregatesTable = TableRegistry::get('summaryOrderAggregates');
+                                $importo_aggregate = $summaryOrderAggregatesTable->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
+                                if(!empty($importo_aggregate)) {
+                                    $results[$i]['user']['orders'][$numResult]['user_order_tot_importo'] = $importo_aggregate;
+                                }
+                            }
+
                             // totali dell'utente dell'ordine
                             if($order->hasTrasport=='Y' && $order->trasport>0) {
                                 $results[$i]['user']['orders'][$numResult]['user_order_importo_trasport'] = $this->_getUserImportoTrasport($this->_user, $user->organization_id, $user->id, $order->id);
@@ -692,6 +705,8 @@ class ExportsDeliveryController extends AppController {
                                 else
                                     $results[$i]['user']['user_importo_cost_less'] += $results[$i]['user']['orders'][$numResult]['user_order_importo_cost_less']; 
                             }
+
+
                         }  // end if($carts->count()>0) 
                     } // end foreach($delivery->orders as $numResult => $order) 
                  
