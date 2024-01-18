@@ -29,7 +29,7 @@
           <!-- form start -->
           <?php 
           
-          echo $this->Form->create($gasGroup, ['role' => 'form', 'id' => 'frm']);
+          echo $this->Form->create($gasGroupUser, ['role' => 'form', 'id' => 'frm']);
           echo $this->Form->hidden('gas_group_id', ['value' => $gas_group_id]);
           
           echo '<div class="box-body">'; 

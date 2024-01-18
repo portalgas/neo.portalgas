@@ -45,6 +45,7 @@ class GasGroupUsersController extends AppController
      */
     public function management($gas_group_id)
     {
+        $gasGroupUser = $this->GasGroupUsers->newEntity();
         if ($this->request->is('post')) {
             
             $continua = true;
