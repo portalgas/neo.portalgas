@@ -109,6 +109,9 @@ class CashesUsersTable extends Table
         } // end if(!empty($supplierOrganizationCashExcludedResults))
         if($debug) debug($sql_supplier_organization_cash_excluded);
 
+		/*
+		 * non + perche' LEFT JOIN k_summary_orders non considera quelli SummaryOrder.saldato_a = 'CASSIERE'
+		 * dopo ciclo gli ordini e li escludo        
         $sql = "SELECT `Order`.id, ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
                 FROM
                     ".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
@@ -127,6 +130,25 @@ class CashesUsersTable extends Table
                     and Cart.deleteToReferent = 'N' 
                     and `Order`.isVisibleBackOffice = 'Y'
                     and `Order`.state_code not in ($stateCodeUsersCash)";
+            */
+            $sql = "SELECT `Order`.id, ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato, Cart.user_id
+                    FROM
+                        ".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
+                        ".Configure::read('DB.prefix')."carts as Cart
+                        LEFT JOIN ".Configure::read('DB.prefix')."summary_orders as SummaryOrder ON 
+                        (SummaryOrder.organization_id = $organization_id and SummaryOrder.user_id = Cart.user_id and SummaryOrder.order_id = Cart.order_id and SummaryOrder.saldato_a is null)
+                    WHERE
+                        ArticlesOrder.organization_id = $organization_id
+                        and `Order`.organization_id = $organization_id
+                        and Cart.organization_id = $organization_id
+                        and Cart.user_id = $user_id
+                        and Cart.order_id = `Order`.id  
+                        and Cart.article_organization_id = ArticlesOrder.article_organization_id
+                        and Cart.article_id = ArticlesOrder.article_id  
+                        and ArticlesOrder.order_id = `Order`.id  
+                        and Cart.deleteToReferent = 'N' 
+                        and `Order`.isVisibleBackOffice = 'Y'
+                        and `Order`.state_code not in ($stateCodeUsersCash)";                    
         if(!empty($sql_supplier_organization_cash_excluded))
             $sql .= $sql_supplier_organization_cash_excluded;
         if($debug) debug($sql); 
@@ -135,10 +157,25 @@ class CashesUsersTable extends Table
 
         /*
          * memorizzo tutti gli order_id per calcolare eventuali costi di trasporto / costi aggiuntivi / sconti
-         */
+         */                
+        $summaryOrdersTable = TableRegistry::get('SummaryOrders');
         $order_ids = [];
         foreach($results as $numResult => $result) {
-            
+
+			/*
+			* controllo se esiste in SummaryOrder (passato al Cassiere) e se saldato lo escludo
+			*/
+            $where = ['SummaryOrders.organization_id' => $organization_id,
+                        'SummaryOrders.user_id' => $result['user_id'],
+                        'SummaryOrders.order_id' => $result['id']];
+            $summary_order = $summaryOrdersTable->find()->where($where)->first();
+			if(!empty($summary_order)) {
+				// e' passato al cassiere => salto
+				if(!empty($summary_order->saldato_a)) { // ENUM('CASSIERE', 'TESORIERE')
+					continue;
+				}
+			}
+
             $order_ids[$result['id']] = $result['id'];
 
             // debug($result); 
@@ -172,25 +209,22 @@ class CashesUsersTable extends Table
 
         // debug($order_ids);
         if(!empty($order_ids)) {
+            $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
+            $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
+            $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
             foreach($order_ids as $order_id) {
                 
                 $importo_trasport = 0;
                 $importo_cost_less = 0;
                 $importo_cost_more = 0;
 
-                $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
-
                 $summaryOrderTrasportResults = $summaryOrderTrasportsTable->getByUserByOrder($user, $organization_id, $user_id, $order_id);
                 if(!empty($summaryOrderTrasportResults)) 
                     $importo_trasport = $summaryOrderTrasportResults['importo_trasport'];
-
-                $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
-
+                
                 $summaryOrderCostLessResults = $summaryOrderCostLessesTable->getByUserByOrder($user, $organization_id, $user_id, $order_id);
                 if(!empty($summaryOrderCostLessResults))
                     $importo_cost_less = $summaryOrderCostLessResults['importo_cost_less'];
-
-                $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
 
                 $summaryOrderCostMoreResults = $summaryOrderCostMoresTable->getByUserByOrder($user, $organization_id, $user_id, $order_id);
                 if(!empty($summaryOrderCostMoreResults))
