@@ -73,7 +73,7 @@ class SupplierOrganizationCashExcludedsTable extends Table
         $results = [];
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-        $where = array_merge(['SuppliersOrganizations.stato' => 'Y', 'Suppliers.stato IN ' => ['Y', 'T']], $where);
+        $where = array_merge(['SuppliersOrganizations.stato' => 'Y', 'Suppliers.stato IN ' => ['Y', 'T', 'PG']], $where);
         // debug($where);
         $suppliersOrganizations = $suppliersOrganizationsTable->gets($user, $where);
 
