@@ -883,6 +883,9 @@ msgstr "Il file non può essere caricato sul server"
 msgid "upload_invalid_filetype"
 msgstr "Estensione del file non consentita"
 
+msgid "upload_no_filepath"
+msgstr "Percorso dove salvare il file non esiste"
+
 msgid "upload_file_exceeds_limit"
 msgstr "upload_file_exceeds_limit"
 

@@ -1,4 +1,22 @@
 <?php
+/*
+ per estensioni webp ed evitare 
+ Error: [Imagine\Exception\InvalidArgumentException] Saving image in "webp" format is not supported, please use one of the following extensions: "gif", "jpeg", "png", "wbmp", "xbm" (/vendor/imagine/imagine/lib/Imagine/Gd/Image.php:536)
+#0 /vendor/imagine/imagine/lib/Imagine/Gd/Image.php(233): Imagine\Gd\Image->saveOrOutput()
+
+ in /vendor/imagine/imagine/lib/Imagine/Gd/Image.php
+
+ private function supported($format = null)
+    {
+        $formats = array('gif', 'jpeg', 'png', 'wbmp', 'xbm', 'webp');
+
+        if (null === $format) {
+            return $formats;
+        }
+
+        return in_array($format, $formats);
+    }
+*/
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
@@ -830,7 +848,7 @@ class UploadComponent extends Component {
 		{
 			if (FALSE !== ($D = @getimagesize($path)))
 			{
-				$types = array(1 => 'gif', 2 => 'jpeg', 3 => 'png');
+				$types = array(1 => 'gif', 2 => 'jpeg', 3 => 'png', 4 => 'webp');
 
 				$this->image_width	= $D[0];
 				$this->image_height	= $D[1];
@@ -883,7 +901,7 @@ class UploadComponent extends Component {
 			$this->file_type = 'image/jpeg';
 		}
 
-		$img_mimes = array('image/gif',	'image/jpeg', 'image/png');
+		$img_mimes = array('image/gif',	'image/jpeg', 'image/png', 'image/webp');
 
 		return in_array($this->file_type, $img_mimes, TRUE);
 	}
@@ -910,14 +928,14 @@ class UploadComponent extends Component {
 		}
 
 		$ext = strtolower(ltrim($this->file_ext, '.'));
-
+	
 		if ( ! in_array($ext, $this->allowed_types, TRUE))
 		{
 			return FALSE;
 		}
 
 		// Images get some additional checks
-		if (in_array($ext, array('gif', 'jpg', 'jpeg', 'jpe', 'png'), TRUE) && @getimagesize($this->file_temp) === FALSE)
+		if (in_array($ext, array('gif', 'jpg', 'jpeg', 'jpe', 'png', 'webp'), TRUE) && @getimagesize($this->file_temp) === FALSE)
 		{
 			return FALSE;
 		}

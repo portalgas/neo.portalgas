@@ -319,7 +319,7 @@ class ArticlesController extends ApiAppController
         */
         $config_upload = [] ;
         $config_upload['upload_path']    = $img_path;          
-        $config_upload['allowed_types']  = ['jpeg', 'jpg', 'png', 'gif'];            
+        $config_upload['allowed_types']  = ['jpeg', 'jpg', 'png', 'gif', 'webp'];            
         $config_upload['max_size']       = 0;   
         $config_upload['overwrite']      = true;
         $config_upload['encrypt_name']  = true;

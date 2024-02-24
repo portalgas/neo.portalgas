@@ -606,7 +606,7 @@ $(function () {
                         maxFiles: 1,
                         // resizeWidth: 175,
                         // acceptedFiles: 'image/*',
-                        acceptedFiles: '.jpeg,.jpg,.png,.gif',
+                        acceptedFiles: '.jpeg,.jpg,.png,.gif,.webp',
                         paramName: 'img1', // The name that will be used to transfer the file
                         maxFilesize: 5, // MB  
                         init: function() {

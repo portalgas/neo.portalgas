@@ -164,6 +164,7 @@ return [
 			'vcf'	=>	'text/x-vcard',
 			'srt'	=>	['text/srt', 'text/plain'],
 			'vtt'	=>	['text/vtt', 'text/plain'],
-			'ico'	=>	['image/x-icon', 'image/x-ico', 'image/vnd.microsoft.icon']
+			'ico'	=>	['image/x-icon', 'image/x-ico', 'image/vnd.microsoft.icon'],
+			'webp'	=>	['image/webp']
 		]
 ];
