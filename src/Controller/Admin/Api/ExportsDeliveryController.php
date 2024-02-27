@@ -137,7 +137,7 @@ class ExportsDeliveryController extends AppController {
          */
         $where_orders = ['Orders.organization_id' => $this->_user->organization->id,
                         'Orders.isVisibleBackOffice' => 'Y',
-                        'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
+                        'Orders.state_code NOT IN' => ['CREATE-INCOMPLETE', 'OPEN']];
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
@@ -147,7 +147,7 @@ class ExportsDeliveryController extends AppController {
             else
                 $where_orders += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
         }
-        // $where_orders += ['Orders.id' => 40439];
+        // $where_orders += ['Orders.id' => 42591];
       
         $delivery = $deliveriesTable->find()
                                 ->contain(['Orders' => [
@@ -189,7 +189,8 @@ class ExportsDeliveryController extends AppController {
                     $tot_order = $importo_aggregate;
                 }
             }
-            else {
+            
+            if($tot_order===0) {
                 /* 
                 * totale importo senza costi aggiuntivi
                 * */
@@ -248,7 +249,7 @@ class ExportsDeliveryController extends AppController {
         $ordersTable = TableRegistry::get('Orders');
         $where = ['Orders.organization_id' => $this->_user->organization->id,
                     'Orders.isVisibleBackOffice' => 'Y',
-                    'Orders.state_code != ' => 'CREATE-INCOMPLETE',
+                    'Orders.state_code NOT IN' => ['CREATE-INCOMPLETE', 'OPEN'],
                     'Orders.delivery_id' => $delivery->id];
         /* 
          * profilazione $user->acl['isReferentGeneric'] 
@@ -439,7 +440,7 @@ class ExportsDeliveryController extends AppController {
          */
         $where_orders = ['Orders.organization_id' => $this->_user->organization->id,
                         'Orders.isVisibleBackOffice' => 'Y',
-                        'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
+                        'Orders.state_code NOT IN' => ['CREATE-INCOMPLETE', 'OPEN']];
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
@@ -574,7 +575,7 @@ class ExportsDeliveryController extends AppController {
          */
         $where_orders = ['Orders.organization_id' => $this->_user->organization->id,
                         'Orders.isVisibleBackOffice' => 'Y',
-                        'Orders.state_code != ' => 'CREATE-INCOMPLETE'];
+                        'Orders.state_code NOT IN' => ['CREATE-INCOMPLETE', 'OPEN']];
         if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
             $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);

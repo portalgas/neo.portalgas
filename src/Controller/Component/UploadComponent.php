@@ -4,7 +4,7 @@
  Error: [Imagine\Exception\InvalidArgumentException] Saving image in "webp" format is not supported, please use one of the following extensions: "gif", "jpeg", "png", "wbmp", "xbm" (/vendor/imagine/imagine/lib/Imagine/Gd/Image.php:536)
 #0 /vendor/imagine/imagine/lib/Imagine/Gd/Image.php(233): Imagine\Gd\Image->saveOrOutput()
 
- in /vendor/imagine/imagine/lib/Imagine/Gd/Image.php
+ in /vendor/imagine/imagine/lib/Imagine/Gd/Image.php  riga 679
 
  private function supported($format = null)
     {
