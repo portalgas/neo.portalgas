@@ -65,7 +65,7 @@ class MovementDecorator  extends AppDecorator {
          * verso chi
          */
         $movement->verso_chi = '';
-        if(!empty($movement->user_id)) $movement->verso_chi = 'Gasista: '.$movement->user->name;
+        if(!empty($movement->user_id) && !empty($movement->user)) $movement->verso_chi = 'Gasista: '.$movement->user->name;
         if(!empty($movement->supplier_organization_id)) $movement->verso_chi = 'Produttore: '.$movement->suppliers_organization->name;
         if(!empty($movement->order_id) || !empty($movement->stat_order_id)) $movement->verso_chi = 'Ordine del produttore <br /><small>'.h($movement->descri).'</small>';
 
