@@ -81,8 +81,26 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
       <h3 class="box-title">Importa listino articoli del produttore</h3>
       <div class="box-tools pull-right"></div>
     </div> <!-- /.box-header -->
-    <div class="box-body table-responsive" style="overflow-x: auto;">
+    
+    <?php
+    echo $this->element('msg', ['msg' => "Stai impersonificamdo l'organizzazione ".$user->organization->name]);
+    echo $this->element('msg', ['msg' => "La differenza rispetto all'importazione che effettua un G.A.S. che l'excel deve contenere la colonna CODICE che sarà utilizzata come identificativo"]);
 
+    $msg = "Formato EXCEL concordato con il produttore
+        <ul>
+            <li>prima colonna: codice articolo univoco (necessario per identificare se l'articolo è già presente e quindi da aggiornare)</li>
+            <li>seconda colonna: nome articolo</li>
+            <li>terza colonna: quantità, ex 500 ML , 1 LT, etc<br />
+                    i possibili valori delle unità di misura dovrebbero essere GR, HG, KG, ML, DL, LT, PZ (per indicare il pezzo)</li>
+            <li>quarta colonna: importo (già comprensivo di iva)</li>
+    </ul>
+    dev'essere contenuto tutto nel medesimo TAB dell'excel";
+    echo $this->element('msg', ['msg' => $msg]);
+
+    echo $this->element('msg', ['msg' => "Accedere alla pagina scegliendo come Organizzazione quella del produttore con il quale si vuole lavorare"]);
+    ?>
+
+    <div class="box-body table-responsive" style="overflow-x: auto;">
     <!-- loader globale -->
     <div class="loader-global" v-if="is_run">
         <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>

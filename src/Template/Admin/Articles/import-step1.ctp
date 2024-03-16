@@ -4,6 +4,9 @@ use Cake\Core\Configure;
 <div class="row">
 <div class="col-md-12">
     <h3 class="box-title">Scegli il produttore</h3>
+
+    <!-- pre>{{ supplier_organization }}</pre -->
+
     <?php
     /* 
      * filtri di ricerca

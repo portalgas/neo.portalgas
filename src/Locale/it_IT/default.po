@@ -2957,14 +2957,14 @@ msgstr "Importazione dati da file .csv"
 msgid "Csv Import Prepare"
 msgstr "Preparazione dati"
 
-msgid "Csv Import Prepare"
-msgstr "Preparazione dati"
-
 msgid "Csv Export-Import"
 msgstr "Esportazione dati in file .csv per successiva importazione"
 
 msgid "Csv Import-Export"
 msgstr "Importazione dati da file .csv precedentemente esportato"
+
+msgid "Articles Import Supplier"
+msgstr "Importa listino del produttore"
 
 msgid "List Events"
 msgstr "Elenco delle attività"

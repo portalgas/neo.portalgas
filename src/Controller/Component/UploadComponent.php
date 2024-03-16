@@ -1022,7 +1022,7 @@ class UploadComponent extends Component {
 	{
 		if ($this->upload_path === '')
 		{
-			$this->set_error('upload_no_filepath', 'error');
+			$this->set_error("Non è configurata la directory per l'upload", 'error');
 			return FALSE;
 		}
 
@@ -1033,13 +1033,13 @@ class UploadComponent extends Component {
 
 		if ( ! is_dir($this->upload_path))
 		{
-			$this->set_error('upload_no_filepath', 'error');
+			$this->set_error("La directory per l'upload [".$this->upload_path."] non esiste", 'error');
 			return FALSE;
 		}
 
 		if ( ! $this->is_really_writable($this->upload_path))
 		{
-			$this->set_error('upload_not_writable', 'error');
+			$this->set_error("La directory per l'upload [".$this->upload_path."] non è scrivibile", 'error');
 			return FALSE;
 		}
 

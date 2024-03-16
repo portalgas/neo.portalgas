@@ -255,7 +255,7 @@ $(function () {
                              * la escludo
                             */
                             if(_this.is_first_row_header) 
-                              _this.file_contents.shift();  
+                              _this.file_contents.shift();  /* remove the first element of the array: */
                             
                             _this.file_metadatas = response.message;
 
