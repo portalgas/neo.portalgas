@@ -132,6 +132,17 @@ $(function () {
               }
             });
          }
+         else
+         if(option_field_select=='qta_um' || option_field_select=='um') {
+            $.each( _this.file_contents, function(num_row, value) {
+              val = _this.file_contents[num_row][index];
+              if(val!==null) {
+                val = val.replace(',', '.').trim();
+                val = val.toUpperCase();
+                _this.file_contents[num_row][index] = val;
+              }
+            });
+         }
 
           /* 
            * x ogni select estraggo il valore scelto
@@ -449,6 +460,9 @@ $(function () {
         },
         counter: function (index) {
             return index+1
+        },
+        uppercase : function (text) {
+          return text.toUpperCase()
         },
         translateField: function(label) {
           switch(label) {
