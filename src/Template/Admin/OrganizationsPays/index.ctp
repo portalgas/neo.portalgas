@@ -89,6 +89,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
             <tbody>
               <?php 
               $tot_importo = 0;
+              $tot_importo_add = 0;
+              $tot_importo_bollo = 0;
               foreach ($organizationsPays as $organizationsPay) { 
 
                  if(empty($search_hasPdf) || 
@@ -96,6 +98,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     ($search_hasPdf=='N' && empty($organizationsPay->doc_url))) {
 
                     $tot_importo += $organizationsPay->importo;
+                    $tot_importo_add += $organizationsPay->import_additional_cost;
+                    $tot_importo_bollo += $organizationsPay->bollo;
 
                     echo '<tr>';
                     echo '<td>';
@@ -241,7 +245,11 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <th scope="col"></th>
                   <th scope="col"></th>
                   <th scope="col"></th>
-                  <th scope="col" colspan="3"><?= $this->HtmlCustom->importo($tot_importo) ?></th>
+                  <th scope="col"><?= $this->HtmlCustom->importo($tot_importo) ?></th>
+                  <th scope="col"><?= $this->HtmlCustom->importo($tot_importo_add) ?></th>
+                  <th scope="col"><?= $this->HtmlCustom->importo($tot_importo_bollo) ?></th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
                   <th scope="col"></th>
                   <th scope="col"></th>
                   <th scope="col"></th>
