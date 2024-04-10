@@ -71,10 +71,12 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <th scope="col"><?= $this->Paginator->sort('lastVisitDate') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_users') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_orders') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('tot_suppliers_organizations') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('tot_suppliers_organizations', 'tot prod.') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('tot_articles') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('beneficiario_pay') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('importo') ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('import_additional_cost', 'Costo agg.') ?></th>
+                  <th scope="col">Bollo</th>
                   <th scope="col"><?= $this->Paginator->sort('type_pay') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('data_pay') ?></th>
                   <th scope="col"><?= __('Is Saldato') ?></th>
@@ -148,8 +150,6 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
 
                     echo '<td>';
                     echo $this->HtmlCustom->importo($organizationsPay->importo);
-                    if(!empty($organizationsPay->import_additional_cost))
-                      echo ' + '.$this->HtmlCustom->importo($organizationsPay->import_additional_cost);
                     /*
                     echo $this->Form->control('importo', ['type' => 'number', 'label' => false, 'inputmode' => 'numeric', 
                         'class' => 'customFieldUpdateAjax', 
@@ -159,6 +159,14 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     ]);
                     */
                     echo '</td>';
+                    echo '<td>';
+                    if(!empty($organizationsPay->import_additional_cost))
+                      echo '+ '.$this->HtmlCustom->importo($organizationsPay->import_additional_cost);
+                    echo '</td>';                                        
+                    echo '<td>';
+                    if(!empty($organizationsPay->bollo))
+                      echo '+ '.$this->HtmlCustom->importo($organizationsPay->bollo);
+                    echo '</td>';                                        
                     echo '<td>';
                     echo $this->Form->control('type_pay', ['label' => false, 
                         'options' => $type_pays,
