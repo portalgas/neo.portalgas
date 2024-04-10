@@ -333,7 +333,7 @@ class OrganizationsPaysController extends AppController
             
             // debug($organizationsPay->doc_url);
 
-            if($organizationsPay->type_pay=='RITENUTA' && ($organizationsPay->importo + $organizationsPay->import_additional_cost) > 77.47)
+            if(($organizationsPay->importo + $organizationsPay->import_additional_cost) > 77.47)
                 $organizationsPay->bollo = 2.00;
             else 
                 $organizationsPay->bollo = 0;
