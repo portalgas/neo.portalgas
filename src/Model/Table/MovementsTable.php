@@ -167,6 +167,12 @@ class MovementsTable extends Table
      * */
     public function decorateMovementType($datas) {
 
+        if(!isset($datas['movement_type_id'])) {
+            $datas['user_id'] = null;
+            $datas['supplier_organization_id'] = null;
+            return $datas;
+        }
+
         switch($datas['movement_type_id']) {
             case '1': // Spesa del G.A.S.
             case '2': // Entrata del G.A.S.

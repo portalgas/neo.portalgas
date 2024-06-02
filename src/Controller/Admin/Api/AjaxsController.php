@@ -82,7 +82,7 @@ class AjaxsController extends ApiAppController
     }
 
     private function _fieldUpdateExecute($entityTable, $entity, $field, $value, $debug=false) {
-
+dd();
         $results = [];
 
         $data = [];
@@ -101,7 +101,7 @@ class AjaxsController extends ApiAppController
             $results['errors'] = $entity->getErrors();
             $results['message'] = __('ajax error');
         }  
-
+dd($results);
         return $results; 
     }
  
