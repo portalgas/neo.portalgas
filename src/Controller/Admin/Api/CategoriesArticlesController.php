@@ -65,7 +65,7 @@ class CategoriesArticlesController extends ApiAppController
                                                             ->where($where)
                                                             ->first();
 
-            if($suppliers_organization->owner_organization_id!=$this->_user->organization->id)
+            if(!empty($suppliers_organization) && $suppliers_organization->owner_organization_id!=$this->_user->organization->id)
                 $organization_id = $suppliers_organization->owner_organization_id;
         } // end if(!empty($search_supplier_organization_id))
 
