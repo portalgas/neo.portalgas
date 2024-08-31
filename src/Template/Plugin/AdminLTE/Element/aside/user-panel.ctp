@@ -1,9 +1,21 @@
 <?php
+use Cake\Core\Configure;
+
+$user = $this->Identity->get();
+$icon = ''; // '<i class="fa fa-circle"></i> ';
+
+$config = Configure::read('Config');
+
+$portalgas_fe_url = $config['Portalgas.fe.url'];
+
 if ($this->Identity->isLoggedIn()) {
 ?>
 	<div class="user-panel">
 	    <div class="pull-left image">
-	        <?php echo $this->Html->image('avatar5.png', array('class' => 'img-circle', 'alt' => 'User Image')); ?>
+	        <?php 
+			// echo $this->Html->image('avatar5.png', array('class' => 'img-circle', 'alt' => 'User Image')); 
+			echo '<img src="'.$portalgas_fe_url.'/images/organizations/contents/'.$user->organization_id.'.jpg" />';
+			?>
 	    </div>
 	    <div class="pull-left info">
 	        <?php // echo '<p>'.$this->Identity->get('username').'</p>';?>

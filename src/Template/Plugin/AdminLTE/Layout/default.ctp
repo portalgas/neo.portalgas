@@ -24,7 +24,7 @@ if(Configure::read('Theme.menu_sidebar')=='close')
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="<?php echo $this->Url->build('/admin'); ?>" class="logo">
+    <a href="<?php echo $this->Url->build('/admin/joomla25Salts').'?scope=BO'; ?>" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><?php echo Configure::read('Theme.logo.mini'); ?></span>
       <!-- logo for regular state and mobile devices -->
