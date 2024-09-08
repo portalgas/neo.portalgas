@@ -17,6 +17,7 @@ class ArticlesArticlesTypesTable extends Table
     public function initialize(array $config)
     {
         parent::initialize($config);
+        $this->setPrimaryKey(['organization_id', 'article_id', 'article_type_id']);
 
         $this->setTable('k_articles_articles_types');
 
@@ -28,7 +29,7 @@ class ArticlesArticlesTypesTable extends Table
             'foreignKey' => 'article_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('ArticleTypes', [
+        $this->belongsTo('ArticlesTypes', [
             'foreignKey' => 'article_type_id',
             'joinType' => 'INNER'
         ]);
@@ -45,8 +46,25 @@ class ArticlesArticlesTypesTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['article_id'], 'Articles'));
-        $rules->add($rules->existsIn(['article_type_id'], 'ArticleTypes'));
+        $rules->add($rules->existsIn(['article_type_id'], 'ArticlesTypes'));
 
         return $rules;
     }
+
+    public function insert($organization_id, $article_id, $article_type_id) {
+
+        try {
+            $sql =  "INSERT INTO k_articles_articles_types
+                            (organization_id, article_id, article_type_id)
+                            VALUES ($organization_id, $article_id, $article_type_id)";
+            $connection = ConnectionManager::get('default');
+            $results = $connection->execute($sql);
+        }
+        catch (Exception $e) {
+            Log::error($e->getMessage());
+            return false;
+        }
+        
+        return true;
+   }    
 }

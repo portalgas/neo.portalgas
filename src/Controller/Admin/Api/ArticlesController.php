@@ -280,6 +280,32 @@ class ArticlesController extends ApiAppController
                 } // end foreach($articles_orders as $articles_order)
             } // end if($articles_orders->count()>0) {
         } // if($name=='name' || $name=='prezzo')
+        elseif($name=='bio') {
+         
+            // cerco se in k_articles_types e' settato a BIO (article_type_id = 1)
+            $articlesArticlesTypesTable = TableRegistry::get('ArticlesArticlesTypes');
+            $articlesArticlesType = $articlesArticlesTypesTable->find()->where([
+                'organization_id' => $organization_id, 
+                'article_id' => $id,
+                'article_type_id' => 1])->first();
+                // debug($articlesArticlesType);
+            if($value=='N' && !empty($articlesArticlesType)) {
+                if(!empty($articlesArticlesType))
+                    $articlesArticlesTypesTable->delete($articlesArticlesType);    
+            }
+            else
+            if($value=='Y'&& empty($articlesArticlesType)) {    
+                $datas = [];
+                $datas['organization_id'] = $organization_id;
+                $datas['article_id'] = $id;
+                $datas['article_type_id'] = 1;
+                $articlesArticlesType = $articlesArticlesTypesTable->newEntity();
+                $articlesArticlesType = $articlesArticlesTypesTable->patchEntity($articlesArticlesType, $datas);
+                if (!$articlesArticlesTypesTable->save($articlesArticlesType)) { // dd($articlesArticlesType);
+                    Log::write('error', $articlesArticlesType->getErrors());
+                }        
+            }            
+        }
 
         $results['code'] = 200;
         $results['message'] = 'OK';
