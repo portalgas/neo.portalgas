@@ -40,6 +40,10 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
                 */
               echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations);
 
+              echo '<div class="form-group input"><label class="control-label" for="delivery-id">Consegna attuale</label>';
+              echo '<div>'.$this->HtmlCustomSite->drawDeliveryLabel($order->delivery).'</div>';
+              echo '</div>';
+
               echo $this->Form->control('delivery_id', ['options' => $delivery_olds, 'escape' => false, 'empty' => false]);
 
           echo '</div>';  // /.box-body

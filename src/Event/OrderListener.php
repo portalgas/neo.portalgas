@@ -32,11 +32,11 @@ class OrderListener implements EventListenerInterface
         $debug = 0;
         (!empty($order)) ? $order_id = $order->id: $order_id = '';
         $cmd = 'php -f '.$portalgas_app_root.'/components/com_cake/app/Cron/index.php ordersStatoElaborazione %s %s %s';
+        $cmd = sprintf($cmd, $organization_id, $debug, $order_id);
 
         if(env(DEBUG)==true)
             Log::info($cmd, ['scope' => ['monitoring']]);
 
-        $cmd = sprintf($cmd, $organization_id, $debug, $order_id);
         exec($cmd);
 
         // Log::write('debug', 'OrderListener.setStatus '.$cmd);
