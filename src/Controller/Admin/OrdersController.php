@@ -434,13 +434,10 @@ class OrdersController extends AppController
             $request = $this->request->getData();
             $request['organization_id'] = $this->_organization->id;
             $request['order_type_id'] = $order_type_id;
-            $request['delivery_id'] = $order->delivery_id;
             // $request['parent_id'] = $parent_id;
             // debug($request);
             $order = $this->_ordersTable->patchEntity($order, $request);
-            // debug($order);
             if ($this->_ordersTable->save($order)) {
-
                 /*
                 * aggiorno stato ordine 'OPEN' // OPEN-NEXT
                 */

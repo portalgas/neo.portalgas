@@ -109,14 +109,14 @@ class CategoriesArticlesTable extends Table
 
 	public function getIsSystemId($user, $organization_id) {
 
-		$results = $this->getIsSystem($user, $organization_id);		
+		$results = $this->getIsSystem($user, $organization_id);
 		if(empty($results)) {
 			return 0;
 		}
 		return $results->id;
 	}
 
-	/* 
+	/*
 	 * setto con la categoria di default (Generali) gli articoli che non hanno categoria
 	 */
 	public function setCategoryDefaultToArticles($user=null, $organization_id, $debug=false) {
@@ -127,7 +127,7 @@ class CategoriesArticlesTable extends Table
 		 * estraggo articoli senza categoria impostata
 		 */
         $articlesTable = TableRegistry::get('Articles');
-		
+
 		$update_fields = ['category_article_id' => $category->id];
 		$where = ['organization_id' => $organization_id,
 				   'category_article_id' => 0];
@@ -137,25 +137,25 @@ class CategoriesArticlesTable extends Table
 
 		return $results;
 	}
-	
-	/* 
+
+	/*
      * $user=null se chiamato dal cron CategoriesArticleIsSystemCommand
 	 * se $truncate=true cancella tutte le cateogirie dell'org che non sono is_system
 	 * 	utile la prima volta per creare quella 'Generale' e cancella le vecchie categorie
-	 * 
+	 *
 	 *  ora gestione con truncate in neo
 	 */
 	public function getIsSystem($user=null, $organization_id, $truncate=false, $debug=false) {
-		
+
 		$where = ['organization_id' => $organization_id,
                   'is_system'=> true];
 		$options['recursive'] = -1;
-		$results = $this->find()->where($where)->first();	
-		if($debug) debug($where);	
+		$results = $this->find()->where($where)->first();
+		if($debug) debug($where);
 		if($debug) debug($results);
 		if(empty($results)) {
-		   
-			if($truncate) {							
+
+			if($truncate) {
 				if($debug) echo('deleteAll organization_id '.$organization_id);
 				$this->deleteAll(['organization_id' => $organization_id], false);
 			}
@@ -164,7 +164,7 @@ class CategoriesArticlesTable extends Table
 				if($debug) echo('createIsSystem organization_id '.$organization_id);
 				$results = $this->find()->where($where)->first();
 			}
-	
+
 			if($truncate) {
 				if($debug) echo('setCategoryDefaultToArticles organization_id '.$organization_id);
 				$this->setCategoryDefaultToArticles($user, $organization_id);
@@ -191,5 +191,25 @@ class CategoriesArticlesTable extends Table
 		}
 
 		return true;
-	}    
+	}
+
+    /*
+     * aggiungo un id contatore perche' se no cambia l'ordinamento
+     */
+    public function jsListGets($user=null, $organization_id) {
+
+        $categories_articles = $this->find('treeList', [
+                                            'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+                                            'conditions' => ['Organization_id' => $organization_id]]);
+
+        $results = [];
+        $i = 0;
+        foreach($categories_articles->toArray() as $id => $name) {
+            $results[$i] = ['id' => $id, 'name' => $name];
+            $i++;
+        }
+        // $results = json_encode($results);
+
+        return $results;
+    }
 }

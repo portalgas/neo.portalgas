@@ -22,9 +22,9 @@ class ArticlesController extends AppController
     }
 
     public function beforeFilter(Event $event) {
-        
+
         parent::beforeFilter($event);
-        
+
         if(empty($this->_user)) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
@@ -35,7 +35,7 @@ class ArticlesController extends AppController
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
-  
+
     /**
      * Index method
      *
@@ -45,36 +45,36 @@ class ArticlesController extends AppController
     {
         $where = [];
 
-        /* 
+        /*
          * se arrivo da import
          * */
         $request = $this->request->getQuery();
         (!empty($request['search_supplier_organization_id'])) ? $search_supplier_organization_id = $request['search_supplier_organization_id']: $search_supplier_organization_id = '';
         $this->set(compact('search_supplier_organization_id'));
 
-        /* 
+        /*
          * in api/ArticlesController
-         * 
+         *
          * filters
         $request = $this->request->getQuery();
         $search_name = '';
         $search_code = '';
         $search_supplier_organization_id = '';
-          
+
         if(!empty($request['search_name'])) {
             $search_name = $request['search_name'];
             $where += ['Articles.name LIKE ' => '%'.$search_name.'%'];
-        } 
+        }
         if(!empty($request['search_code'])) {
             $search_code = $request['search_code'];
             $where += ['Articles.code' => '%'.$search_code.'%'];
-        } 
+        }
         if(!empty($request['search_supplier_organization_id'])) {
             $search_supplier_organization_id = $request['search_supplier_organization_id'];
             $where += ['Articles.supplier_organization_id' => $search_supplier_organization_id];
-        }                 
+        }
         $this->set(compact('search_code', 'search_name', 'search_supplier_organization_id'));
-     
+
         $articles = $this->Articles->find()
                     ->contain(['SuppliersOrganizations', 'CategoriesArticles'])
                     ->where($where)
@@ -94,17 +94,16 @@ class ArticlesController extends AppController
 
         if(empty($search_supplier_organization_id)) {
             (count($suppliersOrganizations)==1) ? $search_supplier_organization_id = key($suppliersOrganizations): $search_supplier_organization_id = '';
-            $this->set(compact('search_supplier_organization_id'));    
+            $this->set(compact('search_supplier_organization_id'));
         }
 
         /*
          * elenco categorie del GAS
-         */ 
+         * gestito /admin/api/categories-articles/gets
+         */
         $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
-        $categories_articles = $categoriesArticlesTable->find('treeList', [
-                            'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 
-                            'conditions' => ['Organization_id' => $this->_organization->id]]);
-        $js_categories_articles = json_encode($categories_articles->toArray());
+        $js_categories_articles = $categoriesArticlesTable->jsListGets($this->_user, $this->_organization->id);
+        $js_categories_articles = json_encode($js_categories_articles);
         $this->set(compact('js_categories_articles'));
 
         $si_no = ['Y' => 'Si', 'N' => 'No'];
@@ -129,18 +128,18 @@ class ArticlesController extends AppController
     }
 
     public function export()
-    {  
+    {
         $debug = false;
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-        $this->set(compact('suppliersOrganizations'));  
-     
+        $this->set(compact('suppliersOrganizations'));
+
         $source_fields = $this->ArticlesImportExport->getExportSourceFields($this->_user);
-        $export_fields = $this->ArticlesImportExport->getExportFields($this->_user);            
+        $export_fields = $this->ArticlesImportExport->getExportFields($this->_user);
         $default_fields = $this->ArticlesImportExport->getExportDefaultFields($this->_user);
-        $this->set(compact('source_fields', 'export_fields', 'default_fields'));    
+        $this->set(compact('source_fields', 'export_fields', 'default_fields'));
 
         if ($this->request->is('post')) {
 
@@ -151,9 +150,9 @@ class ArticlesController extends AppController
             $request_export_fields = $datas['export_fields'];
             if(empty($supplier_organization_id) || empty($request_export_fields)) {
                 $this->Flash->error(__('Parameters required'));
-                return $this->redirect(['action' => 'export']);           
-            } 
-        
+                return $this->redirect(['action' => 'export']);
+            }
+
             /*
              * dati produttore
              */
@@ -161,14 +160,14 @@ class ArticlesController extends AppController
             if($debug) debug($supplier_organization);
             // Log::debug($supplier_organization);
 
-            /* 
+            /*
              * estraggo gli articoli in base al produttore (own chi gestisce il listino)
              * */
             $articles = $this->Articles->getsToArticleSupplierOrganization($this->_user, $this->_organization->id, $supplier_organization_id);
             if($articles->count()==0) {
                 $this->Flash->error("Il produttore non ha articoli associati!");
-                return $this->redirect(['action' => 'export']);  
-            } 
+                return $this->redirect(['action' => 'export']);
+            }
 
             $writer = $this->ArticlesImportExport->export($this->_user, $this->request->getData(), $articles);
             $stream = new CallbackStream(function () use ($writer) {
@@ -177,7 +176,7 @@ class ArticlesController extends AppController
 
             $filename = $this->setFileName('Articoli di '.$supplier_organization->name); // .'.xlsx';
             if($debug) debug($filename);
-            $response = $this->response; 
+            $response = $this->response;
             return $response->withType('xlsx')
                 ->withHeader('Content-Disposition', "attachment;filename=\"{$filename}.xlsx\"")
                 ->withBody($stream);
@@ -185,38 +184,38 @@ class ArticlesController extends AppController
     }
 
     public function import()
-    {  
+    {
         $debug = false;
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-        $this->set(compact('suppliersOrganizations'));  
-     
+        $this->set(compact('suppliersOrganizations'));
+
         $import_fields = [];
         $import_fields[''] = 'A quale campo corrisponde?';
         $import_fields['IGNORE'] = 'Ignore questa colonna';
         $import_fields += $this->ArticlesImportExport->getImportFields($this->_user);
-        $this->set(compact('import_fields'));    
+        $this->set(compact('import_fields'));
     }
 
     public function importSupplier()
-    {  
+    {
         $debug = false;
 
         /*
-         * SELECT k_suppliers_organizations.id, k_suppliers_organizations.* 
-         * FROM k_suppliers_organizations, k_organizations 
-         * WHERE k_suppliers_organizations.organization_id = k_organizations.id 
+         * SELECT k_suppliers_organizations.id, k_suppliers_organizations.*
+         * FROM k_suppliers_organizations, k_organizations
+         * WHERE k_suppliers_organizations.organization_id = k_organizations.id
          *  and k_organizations.name like '%Offici%';
          */
         $suppliersOrganizations = [3178 => 'Officina Naturae', 3389 => 'La Saponaria'];
-        $this->set(compact('suppliersOrganizations'));  
-     
+        $this->set(compact('suppliersOrganizations'));
+
         $import_fields = [];
         $import_fields[''] = 'A quale campo corrisponde?';
         $import_fields['IGNORE'] = 'Ignore questa colonna';
         $import_fields += $this->ArticlesImportExport->getImportSupplierFields($this->_user);
-        $this->set(compact('import_fields'));    
+        $this->set(compact('import_fields'));
     }
 }

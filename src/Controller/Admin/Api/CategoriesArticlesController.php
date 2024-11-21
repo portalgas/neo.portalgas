@@ -8,19 +8,19 @@ use Cake\ORM\TableRegistry;
 
 class CategoriesArticlesController extends ApiAppController
 {
-    public function initialize(): void 
+    public function initialize(): void
     {
         parent::initialize();
     }
 
     public function beforeFilter(Event $event): void {
-     
+
         parent::beforeFilter($event);
     }
-    
+
     /*
-     * lista di tutte le categorie degli articoli 
-     */  
+     * lista di tutte le categorie degli articoli
+     */
     public function gets() {
 
         $debug = false;
@@ -30,7 +30,7 @@ class CategoriesArticlesController extends ApiAppController
         $results['message'] = 'OK';
         $results['errors'] = '';
         $results['results'] = [];
-    
+
         $organization_id = $this->_user->organization->id;
 
         /*
@@ -44,7 +44,7 @@ class CategoriesArticlesController extends ApiAppController
                       'Orders.organization_id' => $this->_user->organization->id
                     ];
             $ordersTable = TableRegistry::get('Orders');
-            
+
             $order = $ordersTable->find()
                                   ->where($where)
                                   ->first();
@@ -52,7 +52,7 @@ class CategoriesArticlesController extends ApiAppController
             if(!empty($order) && $order->owner_organization_id!=$this->_user->organization->id)
                 $organization_id = $order->owner_organization_id;
         }
-        
+
         $search_supplier_organization_id = $this->request->getData('search_supplier_organization_id');
         if(!empty($search_supplier_organization_id)) {
             $where = [];
@@ -60,7 +60,7 @@ class CategoriesArticlesController extends ApiAppController
                       'SuppliersOrganizations.organization_id' => $this->_user->organization->id
                     ];
             $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            
+
             $suppliers_organization = $suppliersOrganizationsTable->find()
                                                             ->where($where)
                                                             ->first();
@@ -69,14 +69,17 @@ class CategoriesArticlesController extends ApiAppController
                 $organization_id = $suppliers_organization->owner_organization_id;
         } // end if(!empty($search_supplier_organization_id))
 
-        /* 
+        /*
          * estraggo i CategoriesArticles
          */
-        $categoriesArticlesTable = TableRegistry::get('CategoriesArticles'); 
-        $categoriesArticles = $categoriesArticlesTable->find('treeList', 
-                        ['spacer' => '&nbsp;&nbsp;&nbsp;', 
+        $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
+        /*
+        $categoriesArticles = $categoriesArticlesTable->find('treeList',
+                        ['spacer' => '&nbsp;&nbsp;&nbsp;',
                          'conditions' => ['organization_id' => $organization_id],
                          'order' => ['CategoriesArticles.name' => 'asc']]);
+        */
+        $categoriesArticles = $categoriesArticlesTable->jsListGets($this->_user, $this->_organization->id);
 
         $results['results'] = $categoriesArticles;
 
@@ -85,5 +88,5 @@ class CategoriesArticlesController extends ApiAppController
          * debug($categoriesSuppliersResults->toArray());
          */
         return $this->_response($results);
-    } 
+    }
 }
