@@ -39,7 +39,7 @@ class OrdersTable extends Table
         $this->belongsTo('OrderStateCodes', [
             'foreignKey' => 'state_code',
             'joinType' => 'INNER',
-        ]); 
+        ]);
         $this->belongsTo('OrderTypes', [
             'foreignKey' => 'order_type_id',
             'joinType' => 'INNER',
@@ -62,19 +62,19 @@ class OrdersTable extends Table
         ]);
         $this->hasMany('Carts', [
             'foreignKey' => ['organization_id', 'order_id'],
-        ]); 
+        ]);
         $this->hasMany('ArticlesOrders', [
             'foreignKey' => ['organization_id', 'order_id'],
-        ]);   
+        ]);
         $this->belongsTo('GasGroups', [
             'foreignKey' => ['gas_group_id'],
             'joinType' => 'LEFT',
         ]);
-        // ordini associati all'ordine parent 
+        // ordini associati all'ordine parent
         $this->hasMany('GasGroupsChilds', [
             'className' => 'Orders',
             'foreignKey' => ['organization_id', 'parent_id'],
-        ]);         
+        ]);
     }
 
     public function validationDefault(Validator $validator)
@@ -95,7 +95,7 @@ class OrdersTable extends Table
                     'provider' => 'order',
                     'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
                 ]
-            ]);  
+            ]);
 
         $validator
             ->scalar('owner_articles')
@@ -121,7 +121,7 @@ class OrdersTable extends Table
                     'provider' => 'order',
                     'message' => 'La data di apertura non può essere posteriore alla data della consegna'
                 ]
-            ]);            
+            ]);
 
         $validator
             ->date('data_fine')
@@ -161,7 +161,7 @@ class OrdersTable extends Table
             ->scalar('hasTrasport')
             ->notEmptyString('hasTrasport')
             ->add('hasTrasport', 'inList', ['rule' => ['inList', ['Y', 'N']],
-                                    'message' => 'Tipologia di trasporto non prevista']);            
+                                    'message' => 'Tipologia di trasporto non prevista']);
 
         $validator
             ->scalar('trasport_type')
@@ -177,13 +177,13 @@ class OrdersTable extends Table
             ->scalar('hasCostMore')
             ->notEmptyString('hasCostMore')
             ->add('hasCostMore', 'inList', ['rule' => ['inList', ['Y', 'N']],
-                                    'message' => 'Tipologia di costo aggiuntivo non prevista']); 
+                                    'message' => 'Tipologia di costo aggiuntivo non prevista']);
 
         $validator
             ->scalar('cost_more_type')
             ->allowEmptyString('cost_more_type')
             ->add('cost_more_type', 'inList', ['rule' => ['inList', ['QTA', 'WEIGHT', 'USERS', '']],
-                                    'message' => 'Tipologia di costo aggiuntivo non prevista']);            
+                                    'message' => 'Tipologia di costo aggiuntivo non prevista']);
 
         $validator
             ->numeric('cost_more')
@@ -193,13 +193,13 @@ class OrdersTable extends Table
             ->scalar('hasCostLess')
             ->notEmptyString('hasCostLess')
             ->add('hasCostMore', 'inList', ['rule' => ['inList', ['Y', 'N']],
-                                    'message' => 'Tipologia di sconto non prevista']); 
+                                    'message' => 'Tipologia di sconto non prevista']);
 
         $validator
             ->scalar('cost_less_type')
             ->allowEmptyString('cost_less_type')
             ->add('cost_less_type', 'inList', ['rule' => ['inList', ['QTA', 'WEIGHT', 'USERS', '']],
-                                    'message' => 'Tipologia di sconto non prevista']);  
+                                    'message' => 'Tipologia di sconto non prevista']);
 
         $validator
             ->numeric('cost_less')
@@ -209,7 +209,7 @@ class OrdersTable extends Table
             ->scalar('typeGest')
             ->allowEmptyString('typeGest')
             ->add('typeGest', 'inList', ['rule' => ['inList', ['AGGREGATE', 'SPLIT', '']],
-                                    'message' => 'Tipologia di gestione non prevista']);  
+                                    'message' => 'Tipologia di gestione non prevista']);
 
         $validator
             ->scalar('state_code')
@@ -221,7 +221,7 @@ class OrdersTable extends Table
             ->scalar('mail_open_send')
             ->notEmptyString('mail_open_send')
             ->add('mail_open_send', 'inList', ['rule' => ['inList', ['Y', 'N']],
-                                    'message' => 'Tipologia invio mail per apertura ordine non prevista']); 
+                                    'message' => 'Tipologia invio mail per apertura ordine non prevista']);
 
         $validator
             ->dateTime('mail_open_data')
@@ -235,7 +235,7 @@ class OrdersTable extends Table
             ->scalar('type_draw')
             ->notEmptyString('type_draw')
             ->add('type_draw', 'inList', ['rule' => ['inList', ['SIMPLE', 'COMPLETE', 'PROMOTION', '']],
-                                    'message' => 'Tipologia di visualizzazione non prevista']); 
+                                    'message' => 'Tipologia di visualizzazione non prevista']);
 
         $validator
             ->numeric('tot_importo')
@@ -251,13 +251,13 @@ class OrdersTable extends Table
             ->scalar('qta_massima_um')
             ->allowEmptyString('qta_massima_um')
             ->add('qta_massima_um', 'inList', ['rule' => ['inList', ['PZ', 'KG', 'LT', '']],
-                                    'message' => 'Tipologia unità di misura per quantità massima non prevista']); 
+                                    'message' => 'Tipologia unità di misura per quantità massima non prevista']);
 
         $validator
             ->scalar('send_mail_qta_massima')
             ->notEmptyString('send_mail_qta_massima')
             ->add('send_mail_qta_massima', 'inList', ['rule' => ['inList', ['Y', 'N']],
-                                    'message' => 'Tipologia invio mail per quantità massima non prevista']); 
+                                    'message' => 'Tipologia invio mail per quantità massima non prevista']);
 
         $validator
             ->numeric('importo_massimo')
@@ -268,7 +268,7 @@ class OrdersTable extends Table
             ->scalar('send_mail_importo_massimo')
             ->notEmptyString('send_mail_importo_massimo')
             ->add('send_mail_importo_massimo', 'inList', ['rule' => ['inList', ['Y', 'N']],
-                                    'message' => 'Tipologia invio mail per importo massimo non prevista']); 
+                                    'message' => 'Tipologia invio mail per importo massimo non prevista']);
 
         $validator
             ->scalar('tesoriere_nota')
@@ -341,8 +341,8 @@ class OrdersTable extends Table
         $rules->addCreate(function ($entity, $options) {
             debug('buildRules');
             // debug($entity);
-        }, 'ruleName');        
-        */     
+        }, 'ruleName');
+        */
         return $rules;
     }
 
@@ -366,12 +366,12 @@ class OrdersTable extends Table
             else
                 $order_type_id = 0;
         }
-       
+
         if(empty($order_type_id)) {
             return false;
             // die('OrdersTable order_type_id ['.$order_type_id.'] non previsto');
         }
-      
+
         switch (strtoupper($order_type_id)) {
             case Configure::read('Order.type.des_titolare'):
                 $table_registry = 'OrdersDesTitolare';
@@ -407,11 +407,11 @@ class OrdersTable extends Table
         if($debug) debug($table_registry);
 
         return TableRegistry::get($table_registry);
-    } 
-    
+    }
+
     /*
      * implement
-     */ 
+     */
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
         $results = $suppliersOrganizationsTable->ACLgets($user, $organization_id, $user_id);
@@ -421,7 +421,7 @@ class OrdersTable extends Table
     /*
      * implement
      * ..behaviour afterSave() ha l'entity ma non la request
-     */   
+     */
     public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {
         return true;
     }
@@ -429,28 +429,28 @@ class OrdersTable extends Table
     /*
      * implement
      * get() gia' Cake\ORM\Table::get($primaryKey, $options = Array)
-     */   
+     */
     public function getById($user, $organization_id, $order_id, $debug=false) {
 
         if (empty($order_id)) {
             return null;
         }
 
-        $results = $this->find()  
+        $results = $this->find()
                         ->where([
                             $this->getAlias().'.organization_id' => $organization_id,
                             $this->getAlias().'.id' => $order_id
                         ])
-                        ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries', 
+                        ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
                                     'SuppliersOrganizations' => [
-                                        'Suppliers', 
+                                        'Suppliers',
                                         'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]],
                                   /*
                                    * con Orders.owner_articles => chi gestisce il listino
                                    */
                                   'OwnerOrganizations', 'OwnerSupplierOrganizations'
                                   ])
-                        ->first();        
+                        ->first();
 
         /*
          * produttori esclusi dal prepagato
@@ -464,12 +464,12 @@ class OrdersTable extends Table
          * referenti
          */
         if(isset($results->suppliers_organization->suppliers_organizations_referents)) {
-            $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $results->suppliers_organization->suppliers_organizations_referents); 
-            $results->referents = $referentsResult->results;  
-            unset($results->suppliers_organization->suppliers_organizations_referents);          
+            $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $results->suppliers_organization->suppliers_organizations_referents);
+            $results->referents = $referentsResult->results;
+            unset($results->suppliers_organization->suppliers_organizations_referents);
         }
 
-        return $results;      
+        return $results;
     }
 
     public function getsList($user, $organization_id, $where=[], $debug=false) {
@@ -483,7 +483,7 @@ class OrdersTable extends Table
                   * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
                   * key array non per id, nel json perde l'ordinamento della data
                   * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
-                  */                 
+                  */
                 // debug($result);exit;
                 $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->data->i18nFormat('eeee d MMMM').' - '.$result->delivery->luogo;
             }
@@ -504,40 +504,40 @@ class OrdersTable extends Table
         $where_order = array_merge([$this->getAlias().'.organization_id' => $organization_id,
                               $this->getAlias().'.isVisibleBackOffice' => 'Y'],
                               $where_order);
-        if($debug) debug($where_order); 
+        if($debug) debug($where_order);
 
         if(isset($where['Deliveries']))
             $where_delivery = $where['Deliveries'];
         $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id], $where_delivery);
-                          
+
         if($debug) debug($where_delivery);
         $results = $this->find()
                         ->where($where_order)
                         ->contain([
-                            // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],  
-                            'OrderStateCodes',  
-                            'SuppliersOrganizations' => ['Suppliers'], 
-                            'Deliveries' => ['conditions' => $where_delivery]  
+                            // 'OrderTypes' => ['conditions' => ['code IN ' => ['GAS', 'DES', ...]],
+                            'OrderStateCodes',
+                            'SuppliersOrganizations' => ['Suppliers'],
+                            'Deliveries' => ['conditions' => $where_delivery]
                         ])
                         ->order([$this->getAlias().'.data_inizio'])
                         ->all();
         // debug($results);
-        
+
         return $results;
     }
 
     /*
      * da OrdersBehavior
-     * 
+     *
      * ctrl data_inizio con data_oggi
-     * 
+     *
      *      se data_inizio < data_oggi NON invio mail
      *      se data_inizio = data_oggi mail_open_send = Y, Cron::mailUsersOrdersOpen domani invio mail
      *      se data_inizio > data_oggi mail_open_send = N, Cron::mailUsersOrdersOpen invio mail
-     */     
+     */
     public function setOrderMailOpenSend($request) {
         $mail_open_send = 'Y';
-        
+
         /*
          * ctrl che il produttore scelto abbia SuppliersOrganization.mail_order_open = Y
          */
@@ -553,26 +553,30 @@ class OrdersTable extends Table
         // debug($request);
         // debug($results);
         if($results->mail_order_open=='N')
-            $mail_open_send = 'N';  
+            $mail_open_send = 'N';
          else {
-            $data_inizio = $request['data_inizio']; 
-            $data_inizio = self::dateFrozenToArray($data_inizio); 
-            $data_inizio = $data_inizio['year'].'-'.$data_inizio['month'].'-'.$data_inizio['day']; 
-            $data_oggi = date("Y-m-d");
-            
-            if ($data_inizio == $data_oggi)
-                $mail_open_send = 'Y';
-            else 
-                $mail_open_send = 'N';  
+             if(isset($request['data_inizio'])) {
+                 $data_inizio = $request['data_inizio'];
+                 $data_inizio = self::dateFrozenToArray($data_inizio);
+                 $data_inizio = $data_inizio['year'].'-'.$data_inizio['month'].'-'.$data_inizio['day'];
+                 $data_oggi = date("Y-m-d");
+
+                 if ($data_inizio == $data_oggi)
+                     $mail_open_send = 'Y';
+                 else
+                     $mail_open_send = 'N';
+             }
+             else
+                 $mail_open_send = 'N';
         }
-            
+
         // debug('setOrderMailOpenSend() data_inizio '.$data_inizio.' data_oggi '.$data_oggi.' mail_open_send = '.$mail_open_send);
-            
+
         return $mail_open_send;
-    }   
+    }
 
     public function riapriOrdine($user, $organization_id, $order_id, $debug=false) {
-        
+
     }
 
     /*
@@ -589,63 +593,63 @@ class OrdersTable extends Table
             $order = $this->getById($user, $organization_id, $order, $debug);
 
         /*
-         * SummaryOrderAggregate: estraggo eventuali dati aggregati 
+         * SummaryOrderAggregate: estraggo eventuali dati aggregati
          */
         $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
-         
+
         $summaryOrderAggregateResults = $summaryOrderAggregatesTable->getByOrder($user, $organization_id, $order->id);
         if($summaryOrderAggregateResults->count()>0) {
-            foreach ($summaryOrderAggregateResults as  $summaryOrderAggregateResult) 
+            foreach ($summaryOrderAggregateResults as  $summaryOrderAggregateResult)
                 $importo_totale += $summaryOrderAggregateResult->importo;
-                
-            if($debug) debug("SummaryOrderAggregate->importo_totale ".$importo_totale);      
+
+            if($debug) debug("SummaryOrderAggregate->importo_totale ".$importo_totale);
         }
         else {
             /*
              * estrae l'importo totale degli acquisti (qta e qta_forzato, importo_forzato) di un ordine
             */
             $CartsTable = TableRegistry::get('Carts');
-            
+
             $where = [];
             $where = ['Carts.order_id' => $order->id];
             $importo_totale = $CartsTable->getTotImporto($user, $organization_id, $where);
-            
+
             if($debug) debug("Cart::getTotImporto() ".$importo_totale);
         } // end if($summaryOrderAggregateResults->count()>0)
 
         /*
          * trasporto
         */
-        if($order->hasTrasport=='Y') 
+        if($order->hasTrasport=='Y')
             $importo_totale += $order->trasport;
-            
-        if($order->hasCostMore=='Y') 
+
+        if($order->hasCostMore=='Y')
             $importo_totale += $order->cost_more;
-            
-        if($order->hasCostLess=='Y') 
+
+        if($order->hasCostLess=='Y')
             $importo_totale -= $order->cost_less;
-        
-        /* 
+
+        /*
          *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
          */
         if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
-        
+
         if($debug) debug("Order::getTotImporto ".$importo_totale);
 
         return $importo_totale;
     }
-    
+
 	/*
 	 * ctrl se la validazione del carrello e' abilitata (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
 	*/
 	public function isOrderToValidate($user, $order_id) {
-	
+
 		$articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-			
+
 		$where = ['ArticlesOrders.order_id' => (int)$order_id,
 					   'ArticlesOrders.pezzi_confezione >' => '1',
                        'ArticlesOrders.organization_id' => $user->organization->id,
-                       'ArticlesOrders.stato != ' => 'N', 
+                       'ArticlesOrders.stato != ' => 'N',
                        'Articles.stato' => 'Y'];
 
 	    $results = $articlesOrdersTable->find()->contain(['Articles'])->where($where)->all();
@@ -653,15 +657,15 @@ class OrdersTable extends Table
             $isToValidate = false;
         else
             $isToValidate = true;
-        
-        return $isToValidate;      
-	}  
+
+        return $isToValidate;
+	}
 
     /*
      * estrae ordine precedente escludendo gli ordini che hanno dei parent Configure::read('Order.type.des') / Configure::read('Order.type.gas_groups')
      */
 	public function getPrevious($user, $order) {
-	
+
 		$where = ['Deliveries.organization_id' => $user->organization->id,
                     'Deliveries.isVisibleBackOffice' => 'Y',
                     'DATE(Deliveries.data) < CURDATE()',
@@ -671,9 +675,9 @@ class OrdersTable extends Table
                     'Orders.order_type_id NOT IN ' => [Configure::read('Order.type.des'), Configure::read('Order.type.gas_groups')]];
 	    $results = $this->find()
                         ->contain(['Deliveries',
-                            'ArticlesOrders' => 
+                            'ArticlesOrders' =>
                                 ['Articles' => [
-                                    'conditions' => ['Articles.stato' => 'Y', 
+                                    'conditions' => ['Articles.stato' => 'Y',
                                                      'Articles.flag_presente_articlesorders' => 'Y']]]])
                         ->where($where)
                         ->first();
@@ -684,6 +688,6 @@ class OrdersTable extends Table
             $results = [];
         }
 
-        return $results;      
-	}       
+        return $results;
+	}
 }
