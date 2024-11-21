@@ -1,4 +1,4 @@
-<?php 
+<?php
 use Cake\Core\Configure;
 
 $user = $this->Identity->get();
@@ -31,7 +31,8 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
-    $options['empty'] = true;
+    $options['empty'] = false;
+    $options['select2'] = true;
     echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
     echo '<div class="col-md-5">';
@@ -39,8 +40,8 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
     echo '</div>';
     echo '<div class="col col-md-2 text-right">';
     echo '<br />';
-    echo $this->Form->button(__('Search'), ['class' => 'btn btn-primary pull-right']);  
-    echo '</div>';   
+    echo $this->Form->button(__('Search'), ['class' => 'btn btn-primary pull-right']);
+    echo '</div>';
     echo '</div>';
     ?>
 </fieldset>

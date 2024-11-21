@@ -25,8 +25,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
     protected $_user = null;
     protected $_parent = null;
     protected $_order = null;
- 
-	public $helpers = ['Html', 'Form', 
+
+	public $helpers = ['Html', 'Form',
                        'HtmlCustom', 'HtmlCustomSite',
                        'HtmlCustomSiteOrdersDesGroups',
                        'HtmlCustomSiteOrdersGasParentGroups',
@@ -41,10 +41,10 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $config = Configure::read('Config');
         $this->_portalgas_app_root = $config['Portalgas.App.root'];
         $this->_portalgas_fe_url = $config['Portalgas.fe.url'];
-        $this->_portalgas_bo_url = $config['Portalgas.bo.url'];       
+        $this->_portalgas_bo_url = $config['Portalgas.bo.url'];
     }
 
-    /* 
+    /*
      * $user = $this->Identity->get() perche' negli altri Helper e' null!
      * $parent: per DES / GAS-GROUP ordine titolare
      * $order l'ordine per edit
@@ -52,7 +52,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
     public function factory($order_type_id, $user, $parent=null, $order=null, $debug=false) {
 
         $helper = '';
-        
+
         switch (strtoupper($order_type_id)) {
             case self::$GAS:
                 $helper = 'HtmlCustomSiteOrdersGas';
@@ -87,101 +87,115 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $this->_user = $user;
         $this->_parent = $parent;
         $this->_order = $order;
-        
+
         // workaround
         $this->{$helper}->_user = $user;
         $this->{$helper}->_parent = $parent;
         $this->{$helper}->_order = $order;
 
         return $this->{$helper};
-    } 
+    }
 
     public function hiddenFields() {
 
         $html = '';
         $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_user->organization->id, 'required' => 'required']);
-    
+
         return $html;
-    }    
+    }
+
+    public function deliveryOlds($order_type_id, $order, $parent, $delivery_olds) {
+
+        $html = '';
+
+        $url = '';
+        if(!empty($order) && !empty($parent)) {
+            $url = '/admin/orders/change_delivery/'.$order_type_id.'/'.$order->id.'/'.$parent->id;
+        }
+        if(!empty($url) && !empty($delivery_olds))
+            $html .= '<div class="text-right"><a href="'.$url.'"><button type="button" class="btn btn-primary btn-sm"><i class="fa fa-2x fa-link"></i> Associalo ad una consegna scaduta</button></a></div>';
+
+        return $html;
+    }
 
     /*
      * dettaglio ordine padre
      */
     public function infoParent() {
-        return '';    
+        return '';
     }
-    
+
     public function data() {
         $html = '';
         $html .= '<div class="row">';
-        $html .= '<div class="col-md-6">'; 
+        $html .= '<div class="col-md-6">';
         $html .= $this->HtmlCustom->datepicker('data_inizio', ['autocomplete' => 'off']);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-6">'; 
+        $html .= '</div>';
+        $html .= '<div class="col-md-6">';
         $html .= $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
-        $html .= '</div>'; 
+        $html .= '</div>';
         $html .= '</div>';
 
         if(!empty($this->_parent)) {
             $msg = "L'ordine si chiuderà il ".$this->HtmlCustom->data($this->_parent->data_fine);
 
             $html .= '<div class="row">';
-            $html .= '<div class="col-md-12">'; 
+            $html .= '<div class="col-md-12">';
             $html .= $this->HtmlCustom->alert($msg);
-            $html .= '</div>'; 
-            $html .= '</div>';    
+            $html .= '</div>';
+            $html .= '</div>';
         }
 
         return $html;
     }
 
     /*
-     * $options=['empty'] 
+     * $options=['empty']
      * $options=['ctrlDesACL'] nella creazione di un ordine ctrl se il produttore e' DES e l'utente e' titolare
      * $options=['select2'] se attivata la ricerca nella select
      */
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
 
-        if(isset($options['id'])) 
+        if(isset($options['id']))
             $id = $options['id'];
-        else 
+        else
             $id = 'supplier_organization_id';
 
-        $opts = ['options' => $suppliersOrganizations, 
+        $opts = ['options' => $suppliersOrganizations,
                  // @change' => 'getSuppliersOrganization', con select2 non ha + effetto, fatto il bind in supplierOrganization.js
                  'id' => $id,
                  'escape' => false,
                  'class' => 'form-control'];
-        
-        if(isset($options['label'])) 
-            $opts['label'] = $options['label'];        
-        else 
+
+        if(isset($options['label']))
+            $opts['label'] = $options['label'];
+        else
             $opts['label'] = __('SupplierOrganization');
 
         if(isset($options['select2'])) {
-            if($options['select2']) 
-                $opts['class'] = 'select2 form-control';                
-        }              
+            if($options['select2'])
+                $opts['class'] = 'select2 form-control';
+        }
         if(isset($options['empty'])) {
             if($options['empty'])
                 $opts += ['empty' => Configure::read('HtmlOptionEmpty')];
-        } 
-        else 
+        }
+        else
             $opts += ['empty' => Configure::read('HtmlOptionEmpty')];
-        
-        if(isset($options['default'])) 
-            $opts['default'] = $options['default'];                
+
+        if(isset($options['default']))
+            $opts['default'] = $options['default'];
 
         $opts['style'] = 'width:100%';
 
         // pagina articoli gestita con vue
-        if(isset($options['v-model'])) 
-            $opts['v-model'] = $options['v-model']; 
-        if(isset($options['@change'])) 
+        if(isset($options['v-model']))
+            $opts['v-model'] = $options['v-model'];
+        if(isset($options['@change']))
             $opts['@change'] = $options['@change'];
-        
+
         $html = '';
-        
+
         // debug($opts);
 
         // nei filtri di ricerca vale search_supplier_organization_id e non e' fatto il bind
@@ -196,7 +210,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
             $html .= '  <div class="box-img" v-if="supplier_organization.supplier.img1!=\'\'"><img width="'.Configure::read('Supplier.img.preview.width').'" class="img-responsive-disabled userAvatar" v-bind:src="supplier_organization.img1" /></div>';
             $html .= '  <div class="box-name">{{supplier_organization.name}}</div>';
             $html .= '  <div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">{{supplier_organization.owner_articles | ownerArticlesLabel}}</span></div>';
-            $html .= '</div>';    
+            $html .= '</div>';
         }
         else {
             $html .= '<div>';
@@ -221,10 +235,10 @@ class HtmlCustomSiteOrdersHelper extends Helper
               </div>
             </div>';
         }
-        $html .= '</div>';  // vue-supplier-organization      
+        $html .= '</div>';  // vue-supplier-organization
 
         return $html;
-    } 
+    }
 
     public function deliveries($deliveries, $options=[]) {
         $results = [];
@@ -232,18 +246,18 @@ class HtmlCustomSiteOrdersHelper extends Helper
         return $results;
     }
 
-    /* 
-     * $deliveries 
+    /*
+     * $deliveries
      *      array['N'] elenco consegne attive per select
-     *      array['Y] consegna da definire 
-     * 
+     *      array['Y] consegna da definire
+     *
      * $results['html']
      * $results['bottom'] html inserito nel Layout in fondo, ex modal
      */
     public function gestTypeDeliveries($deliveries, $options=[]) {
 
         $results = [];
-        
+
         // debug($deliveries);
 
         /*
@@ -256,44 +270,44 @@ class HtmlCustomSiteOrdersHelper extends Helper
             else {
                 $default = 'N';
 
-                /* 
-                * ctrl che tra l'elenco delle consegne ci sia la consegna gia' associata all'ordine 
-                * se non c'e' (per esempio consegna chiusa e qui prendo solo DATE(Delivery.data) >= CURDATE() ) 
-                * l'aggiungo 
+                /*
+                * ctrl che tra l'elenco delle consegne ci sia la consegna gia' associata all'ordine
+                * se non c'e' (per esempio consegna chiusa e qui prendo solo DATE(Delivery.data) >= CURDATE() )
+                * l'aggiungo
                 * */
                 if(!array_key_exists($this->_order->delivery_id, $deliveries['N']))
                     $deliveries['N'][$this->_order->delivery_id] = $this->_order->delivery->luogo.' - '.$this->_order->delivery->data->i18nFormat('eeee d MMMM Y');
-            }           
+            }
         }
 
         // return $this->Form->control('delivery_id', ['options' => $deliveries['N'], 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
         if(empty($deliveries['N'])) {
             $item1 = [
-                'value' => 'N', 
+                'value' => 'N',
                 'text' => '<div id="radio-delivery-type-N" class="radio-delivery-type" style="margin-bottom: 10px;">'.
                         __('OrderNotFoundDeliveries').
                         '</div>'];
         }
         else {
             $item1 = [
-                'value' => 'N', 
+                'value' => 'N',
                 'text' => '<div id="radio-delivery-type-N" class="radio-delivery-type">'.
-                        $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false, 
+                        $this->Form->control('delivery_ids', ['id' => 'delivery_ids', 'options' => $deliveries['N'], 'label' => false, 'disabled' => true, 'escape' => false,
                                                                'default' => $this->_order->delivery_id, 'empty' => Configure::read('HtmlOptionEmpty')]).
-                        '</div>'];            
+                        '</div>'];
         }
-        
+
         $item2 = [
-            'value' => key($deliveries['Y']), 
+            'value' => key($deliveries['Y']),
             'text' => '<div id="radio-delivery-type-Y" class="radio-delivery-type" style="margin-bottom: 10px;">'.
                     'Data e luogo della consegna ancora da definire'. // $deliveries['Y'][key($deliveries['Y'])].
                     '</div>'];
 
         if($this->_user->acl['isManagerDelivery']) {
             $item3 = [
-                'value' => 'TO-CREATE', 
+                'value' => 'TO-CREATE',
                 'text' => '<div id="radio-delivery-type-TO-CREATE" class="radio-delivery-type" style="margin-bottom: 10px;">'.
-                            '<a target="_blank"  title="Crea una nuova consegna" href="'.$this->HtmlCustomSite->jLink('Deliveries', 'add').'">'.        
+                            '<a target="_blank"  title="Crea una nuova consegna" href="'.$this->HtmlCustomSite->jLink('Deliveries', 'add').'">'.
                             'Crea una nuova consegna <i class="text-primary fa fa-lg fa-plus-circle"></i></a>'.
                         '</div>
                         <div id="radio-delivery-type-TO-CREATE-disabled" class="radio-delivery-type" style="margin-bottom: 10px;display:none;">'.
@@ -302,16 +316,16 @@ class HtmlCustomSiteOrdersHelper extends Helper
         }
         else {
             $item3 = [
-                'value' => 'TO-CREATE', 
+                'value' => 'TO-CREATE',
                 'text' => '<div id="radio-delivery-type-TO-CREATE" class="radio-delivery-type" style="margin-bottom: 10px;">'.
-                            '<a class="sendMail" title="'.__('Send mail to manager to delivery').'" href="">'.        
+                            '<a class="sendMail" title="'.__('Send mail to manager to delivery').'" href="">'.
                             __('Send mail to manager to delivery').' <i class="text-primary fa fa-lg fa-envelope"></i></a>'.
                         '</div>
                         <div id="radio-delivery-type-TO-CREATE-disabled" class="radio-delivery-type" style="margin-bottom: 10px;display:none;">'.
                         __('Send mail to manager to delivery').'  <i class="text-primary fa fa-lg fa-envelope"></i></a>'.
                         '</div>'];
         }
-    
+
         $html = '<section class="content delivery">';
         $html .= $this->title(__('Delivery'));
         $html .= $this->Form->hidden('delivery_id', ['value' => '']);
@@ -327,7 +341,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
             );
         $html .= '</section>';
 
-        /* 
+        /*
          * css
          */
         $html .= '<style>
@@ -338,7 +352,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
         ;
         $results['html'] = $html;
 
-        /* 
+        /*
         * modal, js in ordersForm.js
         */
         $results['bottom'] = '
@@ -346,14 +360,14 @@ class HtmlCustomSiteOrdersHelper extends Helper
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form id="formGasMail" action="">
-                <legend style="display:none;">'.__('Send Mail').'</legend>            
+                <legend style="display:none;">'.__('Send Mail').'</legend>
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">'.__('Send Mail').'</h4>
                     </div>
-                    <div class="modal-body">                
+                    <div class="modal-body">
                         <div class="form-group">
-                            <label for="email">Mittente</label> 
+                            <label for="email">Mittente</label>
                             <input type="email" class="form-control" id="email" value="'.$this->_user->get('email').'" disabled/>
                         </div>
                         <div class="form-group">
@@ -366,7 +380,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
                     </div>
                 </form>
             </div>
-        </div>		
+        </div>
         </div>';
 
         return $results;
@@ -375,39 +389,39 @@ class HtmlCustomSiteOrdersHelper extends Helper
     public function note() {
         $html = '';
         $html .= '<div class="row">';
-        $html .= '<div class="col-md-10">'; 
+        $html .= '<div class="col-md-10">';
         $html .= $this->Form->control('nota', ['type' => 'text', 'class' => 'form-control ctrl-length', 'maxlength' => Configure::read('OrderNotaMaxLen')]);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-2">'; 
+        $html .= '</div>';
+        $html .= '<div class="col-md-2">';
         $html .= '<a title="clicca per ingrandire l\'immagine" class="img-helps img-fluid rounded float-right" href="" data-toggle="modal" data-target="#modalHelps" ';
         $html .= 'data-attr-title="Dove comparirà la nota che inserisci"';
         $html .= '><img class="img-responsive" src="/img/helps/orders-nota.png" /></a>';
-        $html .= '</div>';   
-        $html .= '</div>';   
+        $html .= '</div>';
+        $html .= '</div>';
 
-        return $html;     
-    } 
-    
+        return $html;
+    }
+
     public function mailOpenTesto() {
         $html = '';
         $html .= '<div class="row">';
-        $html .= '<div class="col-md-10">'; 
+        $html .= '<div class="col-md-10">';
         $html .= $this->Form->control('mail_open_testo', ['type' => 'textarea']);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-2">'; 
+        $html .= '</div>';
+        $html .= '<div class="col-md-2">';
         $html .= '<a title="clicca per ingrandire l\'immagine" class="img-helps img-fluid rounded float-right" href="" data-toggle="modal" data-target="#modalHelps" ';
         $html .= 'data-attr-title="Il testo sarà aggiunto alla mail di notifica di apertura dell\'ordine e sarà visibile anche sul sito"';
         $html .= '><img class="img-responsive" src="/img/helps/orders-mail-open-testo.png" /></a>';
-        $html .= '</div>';         
-        $html .= '</div>';   
+        $html .= '</div>';
+        $html .= '</div>';
 
-        return $html;     
-    }   
-    
+        return $html;
+    }
+
     public function monitoraggio() {
 
-        $qta_massima_um_options = ['KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)', 
-                                    'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)', 
+        $qta_massima_um_options = ['KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)',
+                                    'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)',
                                     'PZ' => 'Pezzi'];
         $qta_massima_um = 'KG';
 
@@ -416,19 +430,19 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $html .= '<div class="row">
                 <div class="col-md-3">
                 '.$this->Form->control('qta_massima', [
-                            'label' => 'Quantità massima', 
-                            'type' => 'number', 
+                            'label' => 'Quantità massima',
+                            'type' => 'number',
                             'min' => 0, 'value' => 0]).'
                 </div>
                 <div class="col-md-4">
                 '.$this->Form->input('qta_massima_um', ['id' => 'qta_massima_um', 'label' => 'UM', 'options' => $qta_massima_um_options, 'default' => $qta_massima_um, 'required' => 'false']).'
                 </div>
-                <div class="col-md-5"> 
+                <div class="col-md-5">
                     <br /><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#monitoraggio-qta_massima">
                         <i class="fa fa-2x fa-envelope" aria-hidden="true"></i> maggior informazioni</button>
                     '.$this->modal('monitoraggio-qta_massima', 'Monitoraggio quantità massima', "Quando il peso totale espresso nell'unità di misura indicata raggiungerà la quantità indicata, verrà inviata una mail ai referenti e chiuso l'ordine").'
-                </div>         
-            </div> <!-- row --> 
+                </div>
+            </div> <!-- row -->
             <div class="row">
                 <div class="col-md-3">
                 '.$this->Form->label('importo_massimo', ['label' => 'Importo massimo']).'
@@ -442,26 +456,26 @@ class HtmlCustomSiteOrdersHelper extends Helper
                                                             </div>']]).'
                 </div>
                 <div class="col-md-4">
-                </div>                
-                <div class="col-md-5"> 
+                </div>
+                <div class="col-md-5">
                     <br /><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#monitoraggio-importo_massimo">
                         <i class="fa fa-2x fa-envelope" aria-hidden="true"></i> maggior informazioni</button>
                         '.$this->modal('monitoraggio-importo_massimo', 'Monitoraggio importo massimo', "Quando il totale degli acquisti raggiungerà l'importo indicato, verrà inviata una mail ai referenti e chiuso l'ordine").'
-                </div>         
-            </div> <!-- row -->  
-            <section>'; 
+                </div>
+            </div> <!-- row -->
+            <section>';
 
         return $html;
     }
-    
+
     public function typeGest() {
 
         if($this->_order->isNew()) {
-            // add 
+            // add
             $type_gest = '';
         }
         else  {
-            // edit 
+            // edit
             $type_gest = $this->_order->typeGest;
         }
 
@@ -483,7 +497,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $typeGests[$i]['modal_title'] = "Esempio: Gestisci gli acquisti dividendo le quantità di ogni acquisto";
         $typeGests[$i]['modal_body'] = '<div class="table-responsive"><table class="table"><tbody><tr><th>Gasista</th><th>ha ordinato</th><th>con l\'importo</th><th>Gestito ogni singola quantità</th></tr><tr><td rowspan="2">Rossi Mario</td><td rowspan="2"><b>2</b> orate</td><td rowspan="2">10,00&nbsp;€</td><td><b>1</b> orate&nbsp;&nbsp;....&nbsp;€</td></tr><tr><td><b>1</b> orata&nbsp;&nbsp;....&nbsp;€</td></tr></tbody></table></div>';
 
-        $html = ''; 
+        $html = '';
         $html .= '<section>';
         $html .= $this->title("Tipologia di gestione");
 
@@ -493,9 +507,9 @@ class HtmlCustomSiteOrdersHelper extends Helper
                     <div class="col-6 col-md-6">
                         <div class="radio">
                           <label><input type="radio" name="typeGest" value="'.$typeGest['value'].'" ';
-            if($type_gest==$typeGest['value'])  $html .= 'checked';   
+            if($type_gest==$typeGest['value'])  $html .= 'checked';
             $html .= ' />'.$typeGest['label'].'</label>
-                        </div>        
+                        </div>
                     </div>
                     <div class="col-6 col-md-6">';
             if(isset($typeGest['modal_title'])) {
@@ -518,11 +532,11 @@ class HtmlCustomSiteOrdersHelper extends Helper
 
     /*
      * trasport / cost_more / cost_less
-     */    
+     */
     public function extra() {
 
         if($this->_order->isNew()) {
-            // add 
+            // add
             $hasTrasport = 'N';
             $trasport = 0;
             $hasCostMore = 'N';
@@ -539,11 +553,11 @@ class HtmlCustomSiteOrdersHelper extends Helper
             $hasCostMore = $this->_order->hasCostMore;
             $costMore = $this->_order->costMore;
             $hasCostLess = $this->_order->hasCostLess;
-            $costLess = $this->_order->costLess;          
-            
+            $costLess = $this->_order->costLess;
+
             $disabled = false;
         }
-   
+
         if(!empty($this->_parent)) {
             $hasTrasport = $this->_parent->hasTrasport;
             $trasport = $this->_parent->trasport;
@@ -583,8 +597,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
         $extras[$i]['importo'] = $costLess;
         if($hasCostMore=='Y' && $costMore>0)
             $extras[$i]['importo_display'] = true;
-        
-        $html = ''; 
+
+        $html = '';
         $html .= '<section>';
         $html .= $this->title("Costi extra");
         $html .= '<div class="row">';
@@ -595,25 +609,25 @@ class HtmlCustomSiteOrdersHelper extends Helper
                 <span class="input-group-btn" style="padding:25px"><img src="'.$extra['img'].'" /></span>
                 '.$this->Form->label($extra['field_importo'], ['label' => $extra['label']]).'
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="N" id="'.$extra['field_has'].'-n" '; 
+                    <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="N" id="'.$extra['field_has'].'-n" ';
             if($extra['has']=='N') $html .= 'checked="checked"';
             $html .= ' required="required">
                     <label class="form-check-label" for="'.$extra['field_has'].'-n">No</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="Y" id="'.$extra['field_has'].'-y" '; 
+                    <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="Y" id="'.$extra['field_has'].'-y" ';
             if($extra['has']=='Y') $html .= 'checked="checked"';
             $html .= ' required="required">
                     <label class="form-check-label" for="'.$extra['field_has'].'-y">Si</label>
                 </div>';
-            if(isset($extra['importo_display'])) 
+            if(isset($extra['importo_display']))
                 $html .= $this->Form->control($extra['field_importo'], ['label' => false, 'disabled', 'min' => 0, 'value' => $extra['importo']]);
             $html .= '
                 </div><!-- /input-grgroup -->
             </div><!-- /.col-sm-4 col-12 -->';
         }
         $html .= '</div></section>';
-    
+
         return $html;
     }
 }

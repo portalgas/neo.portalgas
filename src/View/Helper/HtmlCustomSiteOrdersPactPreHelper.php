@@ -24,24 +24,28 @@ class HtmlCustomSiteOrdersPactPreHelper extends HtmlCustomSiteOrdersPactHelper
 
     public function hiddenFields() {
         return parent::hiddenFields();
-    }   
+    }
 
     public function deliveries($deliveries, $options=[]) {
         return parent::deliveries($deliveries, $options);
     }
 
+    public function deliveryOlds($order_type_id, $order, $parent, $delivery_olds) {
+        return parent::deliveryOlds($order_type_id, $order, $parent, $delivery_olds);
+    }
+
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
         if(!isset($options['ctrlDesACL'])) $options['ctrlDesACL'] = true;
-        if(!isset($options['empty'])) $options['empty'] = true; 
-        if(!isset($options['select2'])) $options['select2'] = true;          
+        if(!isset($options['empty'])) $options['empty'] = true;
+        if(!isset($options['select2'])) $options['select2'] = true;
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
-    
+
     public function monitoraggio() {
         return parent::monitoraggio();
     }
 
     public function typeGest() {
         return parent::typeGest();
-    }      
+    }
 }

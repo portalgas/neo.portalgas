@@ -301,7 +301,7 @@ class ArticlesController extends ApiAppController
                 $datas['article_type_id'] = 1;
                 $articlesArticlesType = $articlesArticlesTypesTable->newEntity();
                 $articlesArticlesType = $articlesArticlesTypesTable->patchEntity($articlesArticlesType, $datas);
-                if (!$articlesArticlesTypesTable->save($articlesArticlesType)) { // dd($articlesArticlesType);
+                if (!$articlesArticlesTypesTable->save($articlesArticlesType)) {
                     Log::write('error', $articlesArticlesType->getErrors());
                 }        
             }            

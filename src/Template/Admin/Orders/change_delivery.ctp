@@ -12,7 +12,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
 
 echo $this->Html->script('ordersForm.js?v=20230925', ['block' => 'scriptPageInclude']);
 
-echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Edit')], ['home', 'list-orders'], $order);
+echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 'subtitle' => __('Associalo ad una consegna scaduta')], ['home', 'list-orders'], $order);
 ?>
 
 <!-- Main content -->
@@ -40,34 +40,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
                 */
               echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations);
 
-              $deliveries = $htmlCustomSiteOrders->deliveries($deliveries, $deliveryOptions);
-              echo $deliveries['html'];
-              if(isset($deliveries['bottom'])) { // html inserito nel Layout in fondo, ex modal
-                $this->start('bottom');
-                  echo $deliveries['bottom'];
-                $this->end();
-              }
-
-              echo $htmlCustomSiteOrders->deliveryOlds($order_type_id, $order, $parent, $delivery_olds);
-
-              echo $htmlCustomSiteOrders->data();
-
-              /*
-                * gli ordini titolari per il gruppo sono ordini che non appaiono a FE
-                * e non hanno articoli acquistabili ma solo ereditari dagli ordini gruppo
-                */
-              if($order_type_id!=Configure::read('Order.type.gas_parent_groups')) {
-
-                echo $htmlCustomSiteOrders->note();
-
-                echo $htmlCustomSiteOrders->mailOpenTesto();
-
-                echo $htmlCustomSiteOrders->monitoraggio();
-
-                echo $htmlCustomSiteOrders->typeGest();
-
-                echo $htmlCustomSiteOrders->extra();
-              } // if($order_type_id!=Configure::read('Order.type.gas_parent_groups'))
+              echo $this->Form->control('delivery_id', ['options' => $delivery_olds, 'escape' => false, 'empty' => false]);
 
           echo '</div>';  // /.box-body
 

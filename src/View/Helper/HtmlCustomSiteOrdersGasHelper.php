@@ -16,21 +16,21 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         parent::initialize($config);
         // debug($config);
     }
-     
+
     // eventuale msg in index
     public function msg() {
         return '';
     }
-    
+
     public function hiddenFields() {
         return parent::hiddenFields();
-    }   
+    }
 
     /*
      * dettaglio ordine padre
      */
     public function infoParent() {
-        return '';    
+        return '';
     }
 
     public function data() {
@@ -39,8 +39,8 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
 
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
         if(!isset($options['ctrlDesACL'])) $options['ctrlDesACL'] = true;
-        if(!isset($options['empty'])) $options['empty'] = true; 
-        if(!isset($options['select2'])) $options['select2'] = true;       
+        if(!isset($options['empty'])) $options['empty'] = true;
+        if(!isset($options['select2'])) $options['select2'] = true;
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 
@@ -48,19 +48,23 @@ class HtmlCustomSiteOrdersGasHelper extends HtmlCustomSiteOrdersHelper
         return parent::gestTypeDeliveries($deliveries, $options);
     }
 
-    public function note() {
-        return parent::note();     
-    } 
-    
-    public function mailOpenTesto() {
-        return parent::mailOpenTesto();     
+    public function deliveryOlds($order_type_id, $order, $parent, $delivery_olds) {
+        return parent::deliveryOlds($order_type_id, $order, $parent, $delivery_olds);
     }
-    
+
+    public function note() {
+        return parent::note();
+    }
+
+    public function mailOpenTesto() {
+        return parent::mailOpenTesto();
+    }
+
     public function monitoraggio() {
         return parent::monitoraggio();
     }
 
     public function typeGest() {
         return parent::typeGest();
-    }    
+    }
 }

@@ -71,24 +71,24 @@ class GasGroupDeliveriesTable extends Table
     }
 
     public function getsActiveList($user, $organization_id, $gas_group_id, $debug=false) {
-        
+
         $where = ['GasGroupDeliveries.organization_id' => $user->organization->id,
                   'GasGroupDeliveries.gas_group_id' => $gas_group_id
                ];
-        // dd($where);
+
         $deliveries = $this->find('list', [
                         'keyField' => function ($gas_group_delivery) {
                             return $gas_group_delivery->delivery->get('id');
                         },
                         'valueField' => function ($gas_group_delivery) {
-                            return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data');
+                            return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data')->i18nFormat('eeee d MMMM YYYY');
                         }])
                         ->where($where)
                         ->contain(['Deliveries' => ['conditions' => [
                             'Deliveries.isVisibleFrontEnd' => 'Y',
                             'Deliveries.stato_elaborazione' => 'OPEN',
                             'Deliveries.sys' => 'N',
-                            'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'    
+                            'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
                         ]]])
                         ->order(['Deliveries.data'])
                         ->all();
@@ -100,6 +100,41 @@ class GasGroupDeliveriesTable extends Table
         if($deliveries->count()>0)
            $results += $deliveries->toArray();
         $results += $sysDeliveries;
+
+        return $results;
+    }
+
+    /*
+     *  elenco delle consegne scadute
+     */
+
+    public function getsOldList($user, $organization_id, $gas_group_id, $debug=false) {
+
+        $where = ['GasGroupDeliveries.organization_id' => $user->organization->id,
+                 'GasGroupDeliveries.gas_group_id' => $gas_group_id
+        ];
+
+        $deliveries = $this->find('list', [
+            'keyField' => function ($gas_group_delivery) {
+                return $gas_group_delivery->delivery->get('id');
+            },
+            'valueField' => function ($gas_group_delivery) {
+                return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data')->i18nFormat('eeee d MMMM YYYY');
+            }])
+            ->where($where)
+            ->contain(['Deliveries' => ['conditions' => [
+                'Deliveries.isVisibleBackOffice' => 'Y',
+                'Deliveries.isVisibleFrontEnd' => 'Y',
+                'Deliveries.stato_elaborazione' => 'OPEN',
+                'Deliveries.sys' => 'N',
+                'DATE(Deliveries.data) < CURDATE()'
+            ]]])
+            ->order(['Deliveries.data'])
+            ->all();
+
+        $results = [];
+        if($deliveries->count()>0)
+            $results += $deliveries->toArray();
 
         return $results;
     }

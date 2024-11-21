@@ -27,24 +27,24 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         $html = '';
         $html .= $this->Form->control('organization_id', ['type' => 'hidden', 'value' => $this->_parent->organization_id, 'required' => 'required']);
 
-        // ordine del GAS 
+        // ordine del GAS
         if(!empty($this->_parent))
             $html .= $this->Form->control('parent_id', ['type' => 'hidden', 'value' => $this->_parent->id, 'required' => 'required']);
-        
+
         return $html;
-    }    
+    }
 
     public function supplierOrganizations($suppliersOrganizations, $options=[]) {
         if(!isset($options['ctrlDesACL'])) $options['ctrlDesACL'] = false;
-        if(!isset($options['empty'])) $options['empty'] = false; 
-        if(!isset($options['select2'])) $options['select2'] = false;             
+        if(!isset($options['empty'])) $options['empty'] = false;
+        if(!isset($options['select2'])) $options['select2'] = false;
         return parent::supplierOrganizations($suppliersOrganizations, $options);
     }
 
     public function gasGroups($gasGroups) {
-        
+
     }
-        
+
     public function deliveries($deliveries, $gasGroups=[]) {
 
         $results = [];
@@ -52,19 +52,25 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
         $results['html'] .= '<div id="gas-group-deliveries" style="display:none">';
         $results['html'] .= $this->Form->control('delivery_id', ['options' => $deliveries, 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty')]);
         $results['html'] .='</div>';
+
+
         return $results;
+    }
+
+    public function deliveryOlds($order_type_id, $order, $parent, $delivery_olds) {
+        return parent::deliveryOlds($order_type_id, $order, $parent, $delivery_olds);
     }
 
     public function data() {
 
         $html = '';
         $html .= '<div class="row">';
-        $html .= '<div class="col-md-6">'; 
+        $html .= '<div class="col-md-6">';
         $html .= $this->HtmlCustom->datepicker('data_inizio', ['autocomplete' => 'off']);
-        $html .= '</div>'; 
-        $html .= '<div class="col-md-6">'; 
+        $html .= '</div>';
+        $html .= '<div class="col-md-6">';
         $html .= $this->HtmlCustom->datepicker('data_fine', ['autocomplete' => 'off']);
-        $html .= '</div>'; 
+        $html .= '</div>';
         $html .= '</div>';
 
         if(!empty($this->_parent)) {
@@ -73,23 +79,23 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
             $html .= $this->Form->control('parent_data_fine', ['type' => 'hidden', 'value' => $this->_parent->data_fine]);
 
             $html .= '<div class="row">';
-            $html .= '<div class="col-md-12">'; 
+            $html .= '<div class="col-md-12">';
             $html .= $this->HtmlCustom->alert($msg);
-            $html .= '</div>'; 
-            $html .= '</div>';    
+            $html .= '</div>';
+            $html .= '</div>';
         }
 
         return $html;
     }
 
     public function note() {
-        return parent::note();     
-    } 
-    
+        return parent::note();
+    }
+
     public function mailOpenTesto() {
-        return parent::mailOpenTesto();     
-    }  
-    
+        return parent::mailOpenTesto();
+    }
+
     /*
      * dettaglio ordine padre
      */
@@ -100,7 +106,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
 
         if($this->_parent->delivery->sys=='N')
             $delivery_label = $this->_parent->delivery->luogo.' '.$this->_parent->delivery->luogo;
-        else 
+        else
             $delivery_label = $this->_parent->delivery->luogo;
 
         $html = '<div class="box box-solid">
@@ -118,7 +124,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Delivery').'</label>
                         <div class="col-sm-4">'.$delivery_label.'</div>
-                        
+
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
                         <div class="col-sm-4">Da '.$this->_parent->data_inizio->i18nFormat('eeee d MMMM').' a '.$this->_parent->data_fine->i18nFormat('eeee d MMMM').'</div>
                     </div>
@@ -134,7 +140,7 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
             </div>
         </div>';
 
-        return $html;   
+        return $html;
     }
 
     public function monitoraggio() {
@@ -143,5 +149,5 @@ class HtmlCustomSiteOrdersGasGroupsHelper extends HtmlCustomSiteOrdersHelper
 
     public function typeGest() {
         return parent::typeGest();
-    }    
+    }
 }
