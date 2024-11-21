@@ -441,7 +441,7 @@ class OrdersController extends AppController
                 /*
                 * aggiorno stato ordine 'OPEN' // OPEN-NEXT
                 */
-                $event = new Event('OrderListener.setStatus', $this, ['user' => $this->_user]);
+                $event = new Event('OrderListener.setStatus', $this, ['user' => $this->_user, 'order' => $order]);
                 $this->getEventManager()->dispatch($event);
 
                 // todo $this->_ordersTable->afterEditWithRequest($this->_user, $this->_organization->id, $request);
