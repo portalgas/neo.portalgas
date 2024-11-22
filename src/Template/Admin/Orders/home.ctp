@@ -13,24 +13,24 @@ echo $this->HtmlCustomSite->boxOrder($order);
 
 echo '<section class="content-header">
         <ul class="helpOnline">';
-        
+
 if(!empty($raggruppamentoOrderActions))  {
- 
+
 	/*
 	 * gestione con il raggruppamento
 	 */
 	foreach($raggruppamentoOrderActions as $raggruppamentoOrderAction) {
- 
+
 		if($raggruppamentoOrderAction['tot_figli']>1) {
 			echo "\r\n";
 			echo '<li id="'.$raggruppamentoOrderAction['controller'].'">';
 			echo '<a title="'.__($raggruppamentoOrderAction['label']).'">';
 			echo '<img alt="'.__($raggruppamentoOrderAction['label']).'" src="'.Configure::read('App.img.cake').'/help-online/'.$raggruppamentoOrderAction['img'].'" />';
 			echo '</a>';
-			
+
 			echo '<ul class="helpOnline" id="'.$raggruppamentoOrderAction['controller'].'Content" style="display:none;">';
 		}
- 
+
 		foreach($orderActions as $orderAction) {
 
 			if($orderAction->controller==$raggruppamentoOrderAction['controller']) {
@@ -39,26 +39,26 @@ if(!empty($raggruppamentoOrderActions))  {
 				if(!empty($orderAction->neo_url))
 					echo '<a title="'.__($orderAction->label).'" href="'.$orderAction->neo_url.'">';
 				else
-					echo '<a title="'.__($orderAction->label).'" href="'.$urlBase.$orderAction->url.'">';
+					echo '<a title="'.__($orderAction->label).'" href="'.$orderAction->url.'">';
 
 				echo '<img alt="'.__($orderAction->label).'" src="'.Configure::read('App.img.cake').'/help-online/'.$orderAction->img.'" />';
 				echo '</a>';
 				echo '</li>';
 			}
 		}
-		
+
 		if($raggruppamentoOrderAction['tot_figli']>1) {
 			echo '</li>';
 			echo '</ul>';
-		}	
-		
-	}	
+		}
+
+	}
 }
 else {
 	/*
 	 * gestione SENZA il raggruppamento
 	*/
-	foreach($orderActions as $orderAction) {	
+	foreach($orderActions as $orderAction) {
 		echo "\r\n";
 		echo '<li>';
 		if(!empty($orderAction->neo_url))
@@ -68,7 +68,7 @@ else {
 		echo '<img alt="'.__($orderAction->label).'" src="'.Configure::read('App.img.cake').'/help-online/'.$orderAction->img.'" />';
 		echo '</a>';
 		echo '</li>';
-	}	
+	}
 }
 echo '</ul>';
 

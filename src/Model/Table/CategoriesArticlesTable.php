@@ -200,7 +200,9 @@ class CategoriesArticlesTable extends Table
 
         $categories_articles = $this->find('treeList', [
                                             'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-                                            'conditions' => ['Organization_id' => $organization_id]]);
+                                            'conditions' => ['Organization_id' => $organization_id],
+                                            'order' => ['name']
+                                            ]);
 
         $results = [];
         $i = 0;
