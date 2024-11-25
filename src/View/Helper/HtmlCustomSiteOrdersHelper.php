@@ -535,6 +535,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
      */
     public function extra() {
 
+        $disabled = true;
         if($this->_order->isNew()) {
             // add
             $hasTrasport = 'N';
@@ -611,12 +612,14 @@ class HtmlCustomSiteOrdersHelper extends Helper
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="N" id="'.$extra['field_has'].'-n" ';
             if($extra['has']=='N') $html .= 'checked="checked"';
+            if($disabled)  $html .= ' disabled="disabled" ';
             $html .= ' required="required">
                     <label class="form-check-label" for="'.$extra['field_has'].'-n">No</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="Y" id="'.$extra['field_has'].'-y" ';
             if($extra['has']=='Y') $html .= 'checked="checked"';
+            if($disabled)  $html .= ' disabled="disabled" ';
             $html .= ' required="required">
                     <label class="form-check-label" for="'.$extra['field_has'].'-y">Si</label>
                 </div>';
