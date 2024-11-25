@@ -559,6 +559,8 @@ class HtmlCustomSiteOrdersHelper extends Helper
             $disabled = false;
         }
 
+        /*
+         * non li eredita dall'ordine titolare perche' nell'ordine titolare gli extra non vengono gestiti
         if(!empty($this->_parent)) {
             $hasTrasport = $this->_parent->hasTrasport;
             $trasport = $this->_parent->trasport;
@@ -569,6 +571,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
 
             $disabled = true;
         }
+        */
 
         $extras = [];
         $i=0;
@@ -612,14 +615,14 @@ class HtmlCustomSiteOrdersHelper extends Helper
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="N" id="'.$extra['field_has'].'-n" ';
             if($extra['has']=='N') $html .= 'checked="checked"';
-            if($disabled)  $html .= ' disabled="disabled" ';
+            // if($disabled)  $html .= ' disabled="disabled" ';
             $html .= ' required="required">
                     <label class="form-check-label" for="'.$extra['field_has'].'-n">No</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="'.$extra['field_has'].'" value="Y" id="'.$extra['field_has'].'-y" ';
             if($extra['has']=='Y') $html .= 'checked="checked"';
-            if($disabled)  $html .= ' disabled="disabled" ';
+            // if($disabled)  $html .= ' disabled="disabled" ';
             $html .= ' required="required">
                     <label class="form-check-label" for="'.$extra['field_has'].'-y">Si</label>
                 </div>';
