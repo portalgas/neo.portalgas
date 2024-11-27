@@ -419,7 +419,7 @@ class OrdersController extends AppController
     public function changeDelivery($order_type_id, $id = null, $parent_id=0)
     {
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
-        $this->_ordersTable->addBehavior('Orders');
+        // $this->_ordersTable->addBehavior('Orders');
 
         $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
 
@@ -434,8 +434,6 @@ class OrdersController extends AppController
             $request = $this->request->getData();
             $request['organization_id'] = $this->_organization->id;
             $request['order_type_id'] = $order_type_id;
-            // $request['parent_id'] = $parent_id;
-            // debug($request);
             $order = $this->_ordersTable->patchEntity($order, $request);
             if ($this->_ordersTable->save($order)) {
                 /*

@@ -15,16 +15,16 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
   <section class="content">
     <div class="row">
       <div class="col-md-12">
-        
-        <?php 
+
+        <?php
           echo $htmlCustomSiteOrders->infoParent();
         ?>
 
         <div class="box box-primary">
           <div class="box-header with-border">
             <h3 class="box-title"><?php echo __('Dati ordine'); ?></h3>
-          </div>          
-          <?php 
+          </div>
+          <?php
             echo $this->Form->create($order, ['role' => 'form', 'id' => 'frm']);
             echo '<div class="box-body" style="padding: 25px;">';
 
@@ -32,12 +32,12 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
                  * passato per OrderValidation
                  */
                 echo $htmlCustomSiteOrders->hiddenFields();
-                
+
                 /*
                  * produttore + ricava i ruoli DES dello user x modal
                  */
                 echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations);
-                
+
                 $deliveries = $htmlCustomSiteOrders->deliveries($deliveries, $deliveryOptions);
                 echo $deliveries['html'];
                 if(isset($deliveries['bottom'])) { // html inserito nel Layout in fondo, ex modal
@@ -59,19 +59,19 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
                   echo $htmlCustomSiteOrders->mailOpenTesto();
 
                   echo $htmlCustomSiteOrders->monitoraggio();
-                
+
                   echo $htmlCustomSiteOrders->typeGest();
-                
+
                   echo $htmlCustomSiteOrders->extra();
                 } // if($order_type_id!=Configure::read('Order.type.gas_parent_groups'))
-               
-            echo '</div>';  // /.box-body 
+
+            echo '</div>';  // /.box-body
 
             echo $this->Form->submit(__('Submit'), ['id' => 'submit', 'class' => 'btn btn-success  pull-right']);
 
-          echo $this->Form->end(); 
-          
+          echo $this->Form->end();
+
           echo '</div>';  // /.box -->
       echo '</div>';
   echo '</div>';  //  /.row -->
-echo '</section>'; 
+echo '</section>';

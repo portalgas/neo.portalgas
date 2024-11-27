@@ -8,7 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
 
-class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface 
+class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
 {
     /**
      * Initialize method
@@ -30,7 +30,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
             'class' => 'Deliveries',
             'foreignKey' => 'parent_id',
             'joinType' => 'INNER',
-        ]);        
+        ]);
     }
 
     public function validationDefault(Validator $validator)
@@ -38,7 +38,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         $validator = parent::validationDefault($validator);
 
         $validator->setProvider('orderGasGroups', \App\Model\Validation\OrderGasGroupsValidation::class);
-       
+
         $validator
             ->requirePresence('supplier_organization_id')
             ->notEmptyString('supplier_organization_id')
@@ -49,8 +49,8 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
                     'provider' => 'orderGasGroups',
                     'message' => 'Esiste già un ordine del produttore sulla consegna scelta'
                 ]
-            ]); 
-                    
+            ]);
+
         $validator
             ->notEmpty('supplier_organization_id')
             ->add('supplier_organization_id', [
@@ -75,7 +75,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
     }
 
     public function buildRules(RulesChecker $rules)
-    {   
+    {
         // debug('OrdersGasTable buildRules');
         $rules = parent::buildRules($rules);
 
@@ -83,10 +83,10 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
     }
 
     /*
-     * implement 
-     * 
+     * implement
+     *
      * il parent (ordine principale) gli passa il supplier_organization_id
-     */ 
+     */
     public function getSuppliersOrganizations($user, $organization_id, $user_id, $where=[], $debug=false) {
 
         $results = [];
@@ -94,7 +94,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         // lo eredita dal parent (ordine principale)
         if(empty($where) && !isset($where['supplier_organization_id']))
             return $results;
-            
+
         $where2 = [];
         $where2['SuppliersOrganizations'] = ['SuppliersOrganizations.id' => $where['supplier_organization_id']];
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
@@ -102,12 +102,12 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
 
         return $results;
 
-        /* 
+        /*
          * estraggo i produttori con orders.order_type_id' => Configure::read('Order.type.gas_parent_groups')
          * con consegne ancora aperte
          * e produttori profilati
-         * 
-         */        
+         *
+         */
         $suppliers_organizations_ids = [];
 
         $ordersTable = TableRegistry::get('Orders');
@@ -131,11 +131,11 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         }
 
         return $results;
-    } 
+    }
 
     /*
      * implement
-     */ 
+     */
     public function getDeliveries($user, $organization_id, $where=[], $debug=false) {
 
         $results = [];
@@ -148,14 +148,14 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         $results = $gasGroupDeliveriesTable->getsActiveList($user, $organization_id, $gas_group_id);
 
         return $results;
-    }    
+    }
 
     /*
      * implement
      * dati promozione / order des
-     */   
+     */
     public function getParent($user, $organization_id, $parent_id, $where=[], $debug=false) {
-      
+
        if(empty($parent_id))
         $results = '';
 
@@ -175,23 +175,23 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
     /*
      * implement
      * ..behaviour afterSave() ha l'entity ma non la request
-     */   
+     */
     public function afterAddWithRequest($user, $organization_id, $order, $request, $debug=false) {
         return parent::afterAddWithRequest($user, $organization_id, $order, $request, $debug);
     }
-    
+
     /*
      * implement
-     */   
+     */
     public function getById($user, $organization_id, $order_id, $debug=false) {
        return parent::getById($user, $organization_id, $order_id, $debug);
     }
 
     /*
      * implement
-     */      
+     */
     public function gets($user, $organization_id, $where=[], $debug=false) {
-       
+
         $results = [];
         $where_order = [];
         $where_delivery = [];
@@ -201,33 +201,33 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
         $where_order = array_merge([$this->getAlias().'.organization_id' => $organization_id,
                               $this->getAlias().'.isVisibleBackOffice' => 'Y'],
                               $where_order);
-        if($debug) debug($where_order); 
+        if($debug) debug($where_order);
 
         if(isset($where['Deliveries']))
             $where_delivery = $where['Deliveries'];
         $where_delivery = array_merge(['Deliveries.organization_id' => $organization_id], $where_delivery);
-                          
+
         if($debug) debug($where_delivery);
         $results = $this->find()
                                 ->where($where)
                                 ->contain([
                                   'OrderTypes' => ['conditions' => ['code' => 'GASGROUP']],
                                   'OrderStateCodes',
-                                  'SuppliersOrganizations' => ['Suppliers'], 
-                                  'Deliveries' => ['conditions' => $where_delivery]  
+                                  'SuppliersOrganizations' => ['Suppliers'],
+                                  'Deliveries' => ['conditions' => $where_delivery]
                                 ])
                                 ->order([$this->getAlias().'.data_inizio'])
                                 ->all();
         // debug($results);
-        
+
         return $results;
     }
-    
+
     /*
      * implement
-     */     
+     */
     public function getsList($user, $organization_id, $where=[], $debug=false) {
-               
+
         $listResults = [];
 
         $results = $this->gets($user, $organization_id, $where);
@@ -237,7 +237,7 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
                   * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
                   * key array non per id, nel json perde l'ordinamento della data
                   * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
-                  */                  
+                  */
                 // debug($result);exit;
                 $listResults[$result->id] = $result->suppliers_organization->name.' - '.$result->delivery->data->i18nFormat('eeee d MMMM').' - '.$result->delivery->luogo;
             }
@@ -245,5 +245,5 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
 
         // debug($listResults);
         return $listResults;
-    }         
+    }
 }
