@@ -7,22 +7,22 @@
       </span>
     </div>
 
-    <div v-if="is_run" class="box-spinner"> 
+    <div v-if="is_run" class="box-spinner">
         <div class="spinner-border text-info" role="status">
             <span class="sr-only">Loading...</span>
-        </div>  
-    </div>  
+        </div>
+    </div>
 
     <select
           v-if="!is_run"
-          name="search_categories_article_id" 
-          id="search-categories-article_id" 
-          class="form-control" 
-          :required="true" 
-          v-on:change="search()" 
+          name="search_categories_article_id"
+          id="search-categories-article_id"
+          class="form-control"
+          :required="true"
+          v-on:change="search()"
           v-model="search_categories_article_id" >
           <option value="">Filtra per categoria</option>
-          <option v-for="(categories_article, id) in search_categories_articles" :value="id" v-html="$options.filters.html(categories_article)"></option>
+          <option v-for="(categories_article) in search_categories_articles" :value="categories_article.id" v-html="$options.filters.html(categories_article.name)"></option>
         </select>
 
   </div>
@@ -76,7 +76,7 @@ export default {
         .catch(error => {
           this.is_run = false;
           console.error("Error: " + error);
-        });    
+        });
     },
 		search() {
 			// console.log('search '+this.search_categories_article_id);
@@ -87,17 +87,17 @@ export default {
       }
       this.timer = setTimeout(() => {
 					this.$emit('searchCategoryArticles', this.search_categories_article_id); /* definito in <app-search-articles @search="onSearch"> */
-      }, 800);		
+      }, 800);
 		}
 	},
   mounted() {
-    console.log('mounted searchCategoryArticles');    
+    console.log('mounted searchCategoryArticles');
     this.gets();
   },
   filters: {
     html(text) {
       return text;
-    },       
+    },
   }
 }
 </script>

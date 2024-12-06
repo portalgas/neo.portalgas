@@ -419,7 +419,7 @@ class OrdersController extends AppController
     public function changeDelivery($order_type_id, $id = null, $parent_id=0)
     {
         $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
-        // $this->_ordersTable->addBehavior('Orders');
+        // $this->_ordersTable->addBehavior('Orders');  // commentato perche' patchEntity perdeva i dati dell'ordine!!!
 
         $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
 
