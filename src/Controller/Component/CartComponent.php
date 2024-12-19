@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Component;
 
+use App\Decorator\ApiArticleOrderDecorator;
 use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
@@ -21,13 +22,13 @@ class CartComponent extends CartSuperComponent {
      * qta_new = qta aggiornata
      */
     public function managementCart($user, $organization_id, $order, $articles_order, $debug=false) {
-        
+
         $results = [];
         $results['esito'] = true;
         $results['code'] = '';
         $results['msg'] = '';
         $results['results'] = '';
-       
+
         if (empty($articles_order) || !isset($articles_order['cart'])) {
             $results['esito'] = false;
             $results['code'] = 500;
@@ -55,19 +56,19 @@ class CartComponent extends CartSuperComponent {
         if(Configure::read('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
         $qta_new = (int)$articles_order['cart']['qta_new'];
         if(Configure::read('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
-      
+
         /*
          * action
          */
         $action = '';
-        if($qta_new==0) 
+        if($qta_new==0)
            $action = 'DELETE';
-        else 
+        else
         if(empty($articles_order['cart']['user_id']))
            $action = 'INSERT';
-        else 
+        else
            $action = 'UPDATE';
-        
+
         if($debug) debug('action '.$action);
         if(Configure::read('Logs.cart')) Log::write('debug', 'Action '.$action);
 
@@ -89,7 +90,7 @@ class CartComponent extends CartSuperComponent {
         }
 
         if($results['esito']) {
-            
+
             switch (strtoupper($action)) {
                 case 'DELETE':
                     $where = ['Carts.organization_id' => $organization_id,
@@ -99,8 +100,8 @@ class CartComponent extends CartSuperComponent {
                               'Carts.article_id' => $article_id];
                     $cart = $cartsTable->find()
                                     ->where($where)
-                                    ->first(); 
-                                    
+                                    ->first();
+
                     if(Configure::read('Logs.cart')) Log::write('debug', 'DELETE CART DATA:');
                     if(Configure::read('Logs.cart')) Log::write('debug', $cart);
 
@@ -113,9 +114,9 @@ class CartComponent extends CartSuperComponent {
                     else {
                         $results['esito'] = true;
                         $results['code'] = 200;
-                        $results['msg'] = 'Cancellazione avvenuta con successo';  
-                        $results['results'] = '';                
-                    } 
+                        $results['msg'] = 'Cancellazione avvenuta con successo';
+                        $results['results'] = '';
+                    }
                 break;
                 case 'INSERT':
 
@@ -163,7 +164,7 @@ class CartComponent extends CartSuperComponent {
                         else {
                             $results['esito'] = true;
                             $results['code'] = 200;
-                            $results['msg'] = 'Inserimento avvenuto con successo';  
+                            $results['msg'] = 'Inserimento avvenuto con successo';
                             $results['results'] = '';
                         }
 
@@ -171,17 +172,17 @@ class CartComponent extends CartSuperComponent {
                     else {
                         $results['esito'] = false;
                         $results['code'] = 200;
-                        $results['msg'] = __('cart_msg_limit_cash');  
+                        $results['msg'] = __('cart_msg_limit_cash');
                         $results['results'] = '';
                     }
                 break;
                 case 'UPDATE':
 
-                    /* 
-                     * ctrl Cassa 
+                    /*
+                     * ctrl Cassa
                      * solo se aumento la qta
                      */
-                    $esito_ctrl_limit_cart = true; 
+                    $esito_ctrl_limit_cart = true;
                     if($qta_new > $qta) {
 
                         $cashesUsersTable = TableRegistry::get('CashesUsers');
@@ -198,7 +199,7 @@ class CartComponent extends CartSuperComponent {
                     }
 
                     if($esito_ctrl_limit_cart) {
-              
+
                         $where = ['Carts.organization_id' => $organization_id,
                                   'Carts.order_id' => $order_id,
                                   'Carts.user_id' => $user_id,
@@ -210,11 +211,11 @@ class CartComponent extends CartSuperComponent {
                         if(empty($cart)) {
                             $results['esito'] = false;
                             $results['code'] = 500;
-                            $results['results'] = "Errore di sistema, carrello non trovato!";                            
+                            $results['results'] = "Errore di sistema, carrello non trovato!";
                             Log::write('error', 'cart empty');
                             Log::write('error', $where);
                         }
-                        else {    
+                        else {
                             $data = [];
                             $data['qta'] = $qta_new;
 
@@ -233,19 +234,19 @@ class CartComponent extends CartSuperComponent {
                                 $results['esito'] = true;
                                 $results['code'] = 200;
                                 $results['msg'] = __('cart_msg_save_OK');
-                                $results['results'] = '';                
+                                $results['results'] = '';
                             }
-                        }  // end if(empty($cart))                             
+                        }  // end if(empty($cart))
                     }
                     else {
                         $results['esito'] = false;
                         $results['code'] = 200;
-                        $results['msg'] = __('cart_msg_limit_cash');  
+                        $results['msg'] = __('cart_msg_limit_cash');
                         $results['results'] = '';
-                    }                         
+                    }
                 break;
                 default:
-                    
+
                 break;
             } // end switch (strtoupper($action))
 
@@ -253,19 +254,34 @@ class CartComponent extends CartSuperComponent {
 
         // debug($results);
         if(Configure::read('Logs.cart')) Log::write('debug', $results);
-        
+
         if($results['esito']) {
 
             $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
             $articlesOrdersTable = $articlesOrdersTable->factory($user, $organization_id, $order);
-            
+
             // debug($articlesOrdersTable);
             if(Configure::read('Logs.cart')) Log::write('debug', 'FACTORY articlesOrdersTable->alias '.$articlesOrdersTable->getAlias());
-            
-            if($articlesOrdersTable!==false) 
+
+            if($articlesOrdersTable!==false)
                 $updateResults = $articlesOrdersTable->aggiornaQtaCart_StatoQtaMax($user, $organization_id, $order, $articles_order, $debug);
+
+            /*
+             * rileggo l'articolo per aggiornare il FE (ex qta_massima_order / qta_minima_order)
+             */
+            $ids = [];
+            $ids['organization_id'] = $organization_id;
+            $ids['order_id'] = $order_id;
+            $ids['article_organization_id'] = $article_organization_id;
+            $ids['article_id'] = $article_id;
+            $articlesOrdersResults = $articlesOrdersTable->getByIds($user, $organization_id, $ids, $debug);
+
+            $articlesOrdersResults = new ApiArticleOrderDecorator($this->_user, $articlesOrdersResults, null);
+            $articlesOrder = $articlesOrdersResults->results;
+
+            $results['results'] = $articlesOrder;
         }
-        
+
         return $results;
     }
 
@@ -281,8 +297,8 @@ class CartComponent extends CartSuperComponent {
 
         $pezzi_confezione = (int)$articles_order['package']; // pezzi_confezione
         if($qta >= $pezzi_confezione) {
-            $delta = ($qta % $pezzi_confezione); 
-            
+            $delta = ($qta % $pezzi_confezione);
+
             if($delta==0) {
                 $msg = __('cart_msg_riopen_package_close');
                 $esito = false;
@@ -296,7 +312,7 @@ class CartComponent extends CartSuperComponent {
         return $results;
     }
 
-    /* 
+    /*
      * estrae solo gli users che hanno effettuato acquisti in base alla consegna
      */
 	public function getUsersByDelivery($user, $delivery_id, $options=[], $debug=false) {
@@ -305,16 +321,16 @@ class CartComponent extends CartSuperComponent {
 
 		/*
 		 * estraggo ordini
-		 */ 
+		 */
         $ordersTable = TableRegistry::get('Orders');
 
         $where = ['Orders.organization_id' => $user->organization->id,
    				  'Orders.delivery_id' => $delivery_id];
-        if(isset($options['where'])) 
+        if(isset($options['where']))
         foreach ($options['where'] as $key => $value) {
             $where += [$key => $value];
         }
-            
+
 		if($debug) debug($where);
 
         $orderResults = $ordersTable->find()
@@ -330,17 +346,17 @@ class CartComponent extends CartSuperComponent {
 
 			/*
 			 * estraggo acquisti
-			 */ 
-			$results = $this->getUsersByOrders($user, $order_ids, $options, $debug);        
+			 */
+			$results = $this->getUsersByOrders($user, $order_ids, $options, $debug);
 
-        } // end if(!empty($orderResults)) 
+        } // end if(!empty($orderResults))
 
 		if($debug) debug($results);
-		
+
 		return $results;
 	}
 
-    /* 
+    /*
      * estrae solo gli users che hanno effettuato acquisti in base agli ordini
      */
 	public function getUsersByOrders($user, $order_ids, $options=[], $debug=false) {
@@ -363,10 +379,10 @@ class CartComponent extends CartSuperComponent {
                                 ->group($fields)
                                 ->all();
 		if($debug) debug($cartResults);
-		
+
         /*
-         * il recordset e' object(App\Model\Entity\Cart) 
-         *    'user' => object(App\Model\Entity\User) => js user.user.name!! 
+         * il recordset e' object(App\Model\Entity\Cart)
+         *    'user' => object(App\Model\Entity\User) => js user.user.name!!
          *   => lo normalizzo
          */
         if(!empty($cartResults)) {

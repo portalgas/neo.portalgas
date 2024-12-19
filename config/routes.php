@@ -77,9 +77,9 @@ Router::scope('/', function (RouteBuilder $routes) {
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
     $config = Configure::read('Config');
-    $vue_is_active = $config['Vue.isActive']; 
+    $vue_is_active = $config['Vue.isActive'];
     if(!$vue_is_active) {
-        $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home-backoffice']);        
+        $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home-backoffice']);
     }
     else {
         // $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']); accesso alla pagina della home con autenticazione
@@ -92,17 +92,17 @@ Router::scope('/', function (RouteBuilder $routes) {
 
         /*
          * mapping route gestiti da cakephp e non da vue
-         */ 
-        $routes->connect('/users/login', ['controller' => 'Users', 'action' => 'login']);  
+         */
+        $routes->connect('/users/login', ['controller' => 'Users', 'action' => 'login']);
         $routes->connect('/users/logout', ['controller' => 'Users', 'action' => 'logout']);
         $routes->connect('/users/logout_bo', ['controller' => 'Users', 'action' => 'logoutBo']);
     }
-    
+
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
      */
     $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
-	
+
     /**
      * Connect catchall routes for all controllers.
      *
@@ -144,20 +144,20 @@ Router::scope('/', function (RouteBuilder $routes) {
 
 /*
  * in App\Controller\AppController::isAuthorized gestisco i prefix / Application.php CsrfProtectionMiddleware
- */ 
-Router::prefix('api', function (RouteBuilder $routes) { 
-    $routes->setExtensions(['json', 'xml']);      
+ */
+Router::prefix('api', function (RouteBuilder $routes) {
+    $routes->setExtensions(['json', 'xml']);
 
     /*
      * token da portalgas cakephp 2.x => neo.portalgas
-     */ 
+     */
     $routes->scope('/joomla25Salt', ['controller' => 'joomla25Salts'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'GET']);
-    }); 
+    });
 
     /*
     * token jwt, login da front-end
-    */ 
+    */
     $routes->scope('/tokenJwt', ['controller' => 'TokenJwts'], function (RouteBuilder $routes) {
         $routes->connect('/login', ['action' => 'login', '_method' => 'POST']);
         $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
@@ -177,7 +177,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
             ]);
 
     });
-  
+
     $routes->scope('/categories-suppliers', ['controller' => 'CategoriesSuppliers'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
     });
@@ -186,7 +186,7 @@ Router::prefix('api', function (RouteBuilder $routes) {
         $routes->connect('/produttoriGets', ['action' => 'prodGasSupplierGets', '_method' => 'POST']);
         $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
         $routes->connect('/getBySlug', ['action' => 'getBySlug', '_method' => 'POST']);
-    });  
+    });
     $routes->scope('/regions', ['controller' => 'Regions'], function (RouteBuilder $routes) {
         $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
     });
@@ -195,40 +195,40 @@ Router::prefix('api', function (RouteBuilder $routes) {
     });
     $routes->scope('/html-suppliers', ['controller' => 'HtmlSuppliers'], function (RouteBuilder $routes) {
         $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
-    });    
+    });
 });
 
-Router::prefix('admin', function (RouteBuilder $routes) { 
+Router::prefix('admin', function (RouteBuilder $routes) {
     $routes->connect('/', ['controller' => 'Dashboards', 'action' => 'index']);
-    $routes->fallbacks(DashedRoute::class); 
+    $routes->fallbacks(DashedRoute::class);
 
     $routes->prefix('api', function(RouteBuilder $routes) {
-        
+
         $routes->setExtensions(['json', 'xml']);
-        
-        /* 
+
+        /*
          * ping per mantenere la session
          */
         $routes->scope('/pings', ['controller' => 'Pings'], function (RouteBuilder $routes) {
-                $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);     
+                $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);
         });
 
-        /* 
+        /*
          * queue
          */
         $routes->scope('/queue', ['controller' => 'Queues'], function (RouteBuilder $routes) {
                 $routes->connect('/queue', ['action' => 'queue', '_method' => 'POST']);
         });
-        /* 
+        /*
          * richiama queue in loops (ex remote-file)
-         */        
+         */
         $routes->scope('/queues', ['controller' => 'Queues'], function (RouteBuilder $routes) {
             $routes->connect('/queues', ['action' => 'queues', '_method' => 'POST']);
-        }); 
+        });
 
         $routes->scope('/users', ['controller' => 'Users'], function (RouteBuilder $routes) {
             $routes->connect('/getByDelivery', ['action' => 'getByDelivery', '_method' => 'POST']);
-        });       
+        });
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/getUsersByDelivery', ['action' => 'getUsersByDelivery', '_method' => 'POST']);
             $routes->connect('/getUsersCashByDelivery', ['action' => 'getUsersCashByDelivery', '_method' => 'POST']);
@@ -244,7 +244,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/OrganizationsPays', ['controller' => 'OrganizationsPays'], function (RouteBuilder $routes) {
             $routes->connect('/setMsgText', ['action' => 'setMsgText', '_method' => 'POST']);
         });
-        
+
         /*
          * mail
          */
@@ -278,33 +278,33 @@ Router::prefix('admin', function (RouteBuilder $routes) {
 
         /*
          * servizi ajax
-         */ 
+         */
         $routes->scope('/', ['controller' => 'Ajaxs'], function (RouteBuilder $routes) {
             $routes->connect('/fieldUpdate', ['action' => 'fieldUpdate', '_method' => 'POST']);
             $routes->connect('/eventUpdate', ['action' => 'eventUpdate', '_method' => 'POST']);
             $routes->connect('/getList', ['action' => 'getList', '_method' => 'POST']);
-        }); 
+        });
 
         $routes->scope('/PriceTypes', ['controller' => 'PriceTypes'], function (RouteBuilder $routes) {
             $routes->connect('/getsByOrderId', ['action' => 'getsByOrderId', '_method' => 'POST']);
-        });        
+        });
 
         $routes->scope('/SuppliersOrganizations', ['controller' => 'SuppliersOrganizations'], function (RouteBuilder $routes) {
             $routes->connect('/getsById', ['action' => 'getsById', '_method' => 'POST']);
             $routes->connect('/getByOrderId', ['action' => 'getByOrderId', '_method' => 'POST']);
             // $routes->connect('/import', ['action' => 'import', '_method' => 'POST']);
-        });     
+        });
 
         $routes->scope('/ProdGasSuppliers', ['controller' => 'ProdGasSuppliers'], function (RouteBuilder $routes) {
             $routes->connect('/import', ['action' => 'import', '_method' => 'POST']);
-        });     
+        });
 
         /*
          * gas groups
          */
         $routes->scope('/gas-group-deliveries', ['controller' => 'GasGroupDeliveries'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
-        }); 
+        });
 
         /*
          * ecommerce vue
@@ -312,20 +312,20 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/deliveries', ['controller' => 'Deliveries'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
-        }); 
+        });
         $routes->scope('/orders', ['controller' => 'Orders'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
-            $routes->connect('/getArticlesOrdersByOrderId', ['action' => 'getArticlesOrdersByOrderId', '_method' => 'POST']); 
+            $routes->connect('/getArticlesOrdersByOrderId', ['action' => 'getArticlesOrdersByOrderId', '_method' => 'POST']);
         });
         $routes->scope('/storerooms', ['controller' => 'Storerooms'], function (RouteBuilder $routes) {
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
-        }); 
+        });
         $routes->scope('/carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCart', '_method' => 'POST']);
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
             $routes->connect('/getTotImportByOrderId', ['action' => 'getTotImportByOrderId', '_method' => 'POST']);
-        }); 
+        });
         $routes->scope('/promotion-carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCartProdGasPromotionGasUser', '_method' => 'POST']);
         });
@@ -355,14 +355,14 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/img1Upload', ['action' => 'img1Upload', '_method' => 'POST']);
             $routes->connect('/img1Delete', ['action' => 'img1Delete', '_method' => 'POST']);
             $routes->connect('/getInCarts', ['action' => 'getInCarts', '_method' => 'POST']);
-        }); 
+        });
         $routes->scope('/articles-import', ['controller' => 'ArticlesImport'], function (RouteBuilder $routes) {
             $routes->connect('/upload', ['action' => 'upload', '_method' => 'POST']);
             $routes->connect('/import', ['action' => 'import', '_method' => 'POST']);
         });
         $routes->scope('/categories-articles', ['controller' => 'CategoriesArticles'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
-        });                 
+        });
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
@@ -372,6 +372,6 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/order', ['action' => 'orders', '_method' => 'GET']);
         });
 
-        $routes->fallbacks(DashedRoute::class);        
-    }); 
+        $routes->fallbacks(DashedRoute::class);
+    });
 });

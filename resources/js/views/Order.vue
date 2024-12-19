@@ -22,7 +22,7 @@
   <div class="col-sm-12 col-xs-12 col-md-12">
     <div class="form-group">
 
-        <b-dropdown text="Vai all'ordine" block class="m-md-2" menu-class="w-100" 
+        <b-dropdown text="Vai all'ordine" block class="m-md-2" menu-class="w-100"
         v-if="!isRunOrders && orders.length>0">
 
           <template v-for="(order, index) in orders"
@@ -30,7 +30,7 @@
             <a :href="'/order/'+order.order_type_id + '/' + order.id" class="order-change">
               <b-dropdown-item-button block >
 
-                <img style="max-width:75px" v-if="order.suppliers_organization.supplier.img1 != ''" 
+                <img style="max-width:75px" v-if="order.suppliers_organization.supplier.img1 != ''"
                   :src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
                   :alt="order.suppliers_organization.name">
 
@@ -41,17 +41,17 @@
                     </b-badge>
                     <b-badge variant="secondary" v-if="order.order_type_id!=9 && order.delivery.sys!='Y'" style="float:right">
                         {{ order.delivery.luogo }} il {{ order.delivery.data | formatDate }}
-                    </b-badge>            
+                    </b-badge>
               </b-dropdown-item-button>
             </a>
           </template>
 
         </b-dropdown>
-        <div v-if="isRunOrders" class="box-spinner"> 
+        <div v-if="isRunOrders" class="box-spinner">
             <div class="spinner-border text-info" role="status">
                 <span class="sr-only">Loading...</span>
-            </div>  
-        </div>              
+            </div>
+        </div>
     </div>
   </div> <!-- col-sm-12 col-xs-12 col-md-12 -->
   <!--               -->
@@ -59,17 +59,17 @@
   <!--               -->
 
   <div class="row">
-      <div class="col-sm-12 col-xs-12 col-md-12"> 
+      <div class="col-sm-12 col-xs-12 col-md-12">
 
-        <div v-if="isRunOrder" class="box-spinner"> 
+        <div v-if="isRunOrder" class="box-spinner">
           <div class="spinner-border text-info" role="status">
             <span class="sr-only">Loading...</span>
-          </div>  
+          </div>
         </div>
 
         <div v-if="!isRunOrder && order!=null" class="card mb-3">
           <div class="row no-gutters">
-            <div class="col-md-2"> 
+            <div class="col-md-2">
                 <div class="content-img-supplier">
                   <img v-if="order.suppliers_organization.supplier.img1 != ''"
                     class="img-supplier" :src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
@@ -101,15 +101,15 @@
                         <ul class="list-unstyled">
                           <li v-for="(all_des_orders_organization, index) in order.all_des_orders_organizations">
                             <a target="_blank" v-bind:href="all_des_orders_organization.organization.www" title="vai al sito del G.A.S.">
-                              
+
                               <div class="content-img-organization">
                                   <img v-if="all_des_orders_organization.organization.img1 != ''"
                                   class="img-organization" :src="appConfig.$siteUrl+'/images/organizations/contents/'+all_des_orders_organization.organization.img1"
                                   :alt="all_des_orders_organization.organization.name" />
                               </div>
-                              
-                              {{ all_des_orders_organization.organization.name }}                     
-                            </a>                          
+
+                              {{ all_des_orders_organization.organization.name }}
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -143,7 +143,7 @@
                        <span v-if="!isRunTotCart" class="badge badge-pill badge-info">Totale: {{ tot_cart | currency }} &euro;</span>
 
                         <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
-                        <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
+                        <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>
                       </div>
 
                       <span v-if="order.order_type_id!=9 && order.order_state_code.code=='OPEN-NEXT'">Aprirà {{ order.data_inizio | formatDate }} </span>
@@ -181,7 +181,7 @@
                   </p>
                </div> <!-- card-body -->
                <div class="card-footer text-muted bg-transparent-disabled">
-                  <strong>Consegna</strong> 
+                  <strong>Consegna</strong>
                   <span v-if="order.delivery.sys=='Y'">
                       {{ order.delivery.luogo }}
                   </span>
@@ -196,7 +196,7 @@
                 <!--                        -->
                 <!--        DISTANCE        -->
                 <!--                        -->
-                <div v-if="order.distance!=null">          
+                <div v-if="order.distance!=null">
                     <i class="fas fa-truck"></i> I tuoi acquisti hanno percorso {{ order.distance.distance }} Km
                 </div>
 
@@ -227,42 +227,42 @@
     <div class="row">
 
           <!-- modalita list -->
-          <div class="col-sm-12 col-xs-12 col-md-12" 
+          <div class="col-sm-12 col-xs-12 col-md-12"
                   v-if="viewList"
                   v-for="(article, index) in articles"
                   :article="article"
                   :key="article.article_id"
-                > 
+                >
                 <div class="box-article-order">
-                 
+
                   <app-article-order-list
                     v-bind:article="article"
                     v-bind:order="order"
-                    v-on:emitCartSave="emitCartSave"
+                    v-on:emitCartSave="emitCartSave()"
                     >
                     </app-article-order-list>
 
-                </div> 
+                </div>
           </div>
 
 
           <!-- modalita grid -->
-          <div class="col-sm-12 col-xs-2 col-md-3" 
+          <div class="col-sm-12 col-xs-2 col-md-3"
                   v-if="!viewList"
                   v-for="(article, index) in articles"
                   :article="article"
                   :key="article.article_id"
-                > 
+                >
                 <div class="box-article-order" :class="{even: index % 2, odd: !(index % 2)}">
-                 
+
                   <app-article-order
                     v-bind:article="article"
                     v-bind:order="order"
-                    v-on:emitCartSave="emitCartSave"
+                    v-on:emitCartSave="emitCartSave()"
                     >
                     </app-article-order>
-                    
-                </div> 
+
+                </div>
           </div>
 
 
@@ -273,10 +273,10 @@
             </div>
           </div>
 
-          <div v-if="isRunArticles" class="box-spinner"> 
+          <div v-if="isRunArticles" class="box-spinner">
             <div class="spinner-border text-info" role="status">
               <span class="sr-only">Loading...</span>
-            </div>  
+            </div>
           </div>
 
     </div> <!-- row -->
@@ -286,7 +286,7 @@
     <v-tour name="myTour" :steps="steps" :options="tourOptions" :callbacks="tourCallbacks"></v-tour>
     -->
 
-  </main> 
+  </main>
 
 </template>
 
@@ -317,13 +317,13 @@ export default {
       isScrollFinish: false,
       tot_cart: 0,
       isRunTotCart: false,
-      isRunOrders: false,    
-      isRunOrder: false,   
-      isRunArticles: false,   
+      isRunOrders: false,
+      isRunOrder: false,
+      isRunArticles: false,
       displayList: false,
       q: null, // parola ricerca
-      search_categories_article_id: 0, // filtro categoria 
-      viewList: false, // di default e' vista griglia 
+      search_categories_article_id: 0, // filtro categoria
+      viewList: false, // di default e' vista griglia
 
       cookie_name: 'tour',
       scope: 'order',
@@ -341,12 +341,12 @@ export default {
       tourCallbacks: {
         onSkip: this.onSkip,
         onFinish: this.onFinish,
-      },     
+      },
       steps:[
          {
             "target":"#btn-cart-previous",
             "content": "Sei un nostalgico? Torna alla precedente versione per gli acquisti"
-         },      
+         },
          {
             "target":"#btn-view-grid",
             "content": "Se usi lo smartphone, visualizza gli articoli in formato griglia"
@@ -367,9 +367,9 @@ export default {
     appViewArticleOrders: viewArticleOrders,
     appSortArticleOrders: sortArticleOrders,
     referents: Referents
-  },/* 
+  },/*
   computed: {
-    viewListCookie: function() { 
+    viewListCookie: function() {
          * recupero modalita' visualizzazione griglia / lista da cookie
         return this.getCookie('viewList');
     }
@@ -396,13 +396,14 @@ export default {
   methods: {
     getGlobals() {
       /*
-       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window.
        * recuperata nei components con getGlobals()
        */
       this.j_seo = window.j_seo;
     },
     emitCartSave() {
       // console.log('emitCartSave', 'Order');
+
       this.totalPrice();
     },
     totalPrice() {
@@ -429,7 +430,7 @@ export default {
 
             this.isRunTotCart = false;
 
-            console.log(response.data);
+            // console.log(response.data);
             if(typeof response.data !== "undefined") {
                this.tot_cart = response.data.results;
             }
@@ -441,7 +442,7 @@ export default {
             this.isRunOrder = false;
             console.error("Error: " + error);
           });
-    },  
+    },
     onSearch: function(q) {
       this.articles = [];
       this.page = 1;
@@ -457,7 +458,7 @@ export default {
       this.scroll();
       this.isScrollFinish = false;
       /* console.log('onSearchCategoryArticles '+search_categories_article_id); */
-    }, 
+    },
     onChangeView: function(viewList) {
       this.viewList = viewList;
       /* console.log('onChangeView '+this.viewList); */
@@ -466,7 +467,7 @@ export default {
       this.sort = sort;
       console.log('sort '+this.sort);
       this.onSearch();
-    },    
+    },
     scroll() {
       // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles+' isScrollFinish '+this.isScrollFinish);
       if(this.isScrollFinish || this.isRunArticles)
@@ -527,7 +528,7 @@ export default {
         .catch(error => {
           this.isRunOrder = false;
           console.error("Error: " + error);
-        });    
+        });
     },
     getsAjaxArticles() {
 
@@ -563,7 +564,7 @@ export default {
                 }
                 this.page++;
                 this.isScrollFinish = false;
-              }          
+              }
           }
           else {
             this.isScrollFinish = true;
@@ -578,7 +579,7 @@ export default {
     },
     getListOrders() {
 
-        if(this.order==null) 
+        if(this.order==null)
           return;
 
         this.isRunOrders=true;
@@ -586,7 +587,7 @@ export default {
         let params = {
           /*
            * per gli ordini per produttore non ho la consegna
-           delivery_id: this.order.delivery_id 
+           delivery_id: this.order.delivery_id
           */
         };
 
@@ -630,17 +631,17 @@ export default {
           if (c.indexOf(name) == 0) {
             var viewList = c.substring(name.length, c.length);
 
-            if(viewList=='false') 
+            if(viewList=='false')
                 return false;
             else
-            if(viewList=='true') 
+            if(viewList=='true')
               return true;
             else
               return viewList;
           }
         }
         return "";
-    }, 
+    },
 
     /*
      * event: btn CLOSE
@@ -675,9 +676,9 @@ export default {
 
         if(!found) {
           value_new = value_old + this.delimiter + value;
-          value_new = value_new.toLowerCase();    
+          value_new = value_new.toLowerCase();
         }
-      } 
+      }
 
       if(!found) {
         /* console.log("addCookie newCookies value " + value_new); */
@@ -703,26 +704,26 @@ export default {
       else {
         if(values.indexOf(this.delimiter)>0) {
           var value_splits = values.split(this.delimiter);
-          for(var i = 0; i < value_splits.length; i++) 
+          for(var i = 0; i < value_splits.length; i++)
           {
             if(value_splits[i].toLowerCase() == value.toLowerCase())
               found = true;
-          }     
+          }
         }
         else {
           if(values.toLowerCase() == value.toLowerCase())
             found = true;
-        }     
+        }
       }
 
       return found;
     },
     onSkip () {
       this.addCookie(this.cookie_name, this.scope);
-    }, 
+    },
     onFinish () {
       this.addCookie(this.cookie_name, this.scope);
-    }, 
+    },
   },
   filters: {
       currency(amount) {
@@ -763,7 +764,7 @@ ul.link-top {
 ul.link-top li {
   list-style: none;
   padding: 5px;
-  border-radius: 5px;  
+  border-radius: 5px;
 }
 ul.link-top li:first-child {
   float: left;
@@ -779,7 +780,7 @@ ul.link-top li a:hover {
   color: #fff !important;
   text-decoration: none;
 }
-.card { 
+.card {
   border: none;
 }
 .card-body.type-PROMOTION {

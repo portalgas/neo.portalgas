@@ -77,13 +77,13 @@ if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-	
+
     $application_env = env('APPLICATION_ENV', 'production');
     Configure::load('database_'.$application_env, 'default');
     // debug(Configure::read('Datasources'));
-    Configure::load('config_'.$application_env, 'default'); 
-    // debug(Configure::read('Config'));       
-	
+    Configure::load('config_'.$application_env, 'default');
+    // debug(Configure::read('Config'));
+
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -131,9 +131,9 @@ if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
     if($application_env!='development') {
-        (new ErrorHandler(Configure::read('Error')))->register(); 
+        (new ErrorHandler(Configure::read('Error')))->register();
         \Sentry\init(['dsn' => 'https://966ebad1c76a469791228b9eb6feb04e@o4504674099789824.ingest.sentry.io/4504674107260928' ]);
-        // Sentry\init(['dsn' => 'https://87ba0753c7ca4314a1e85fe9da02a760@o503778.ingest.sentry.io/5589346' ]);    
+        // Sentry\init(['dsn' => 'https://87ba0753c7ca4314a1e85fe9da02a760@o503778.ingest.sentry.io/5589346' ]);
     }
 }
 
@@ -214,7 +214,7 @@ Type::build('timestamp')->useImmutable();
 \Cake\I18n\Date::setToStringFormat('dd/MM/yyyy');
 \Cake\I18n\FrozenTime::setToStringFormat('dd/MM/yyyy'); //  HH:mm:ss
 \Cake\I18n\FrozenDate::setToStringFormat('dd/MM/yyyy');
- 
+
 Type::build('decimal')->useLocaleParser();
 //Type::build('float')->useLocaleParser(); se no non salva i decimali del float!
 Type::build('date')->useLocaleParser();
@@ -240,12 +240,12 @@ $this->addPlugin('Bootstrap'); // https://holt59.github.io/cakephp3-bootstrap-he
 $this->addPlugin('CakeDC/Enum');
 
 Configure::write('HtmlOptionEmpty', [null => __('-------')]);
- 
+
 // table class="dataTables table table-striped table-hover"
 Configure::write('dataTables.active', true);
 if(Configure::read('dataTables.active'))
-    Configure::write('paginate.limit', 10000); 
-else 
+    Configure::write('paginate.limit', 10000);
+else
     Configure::write('paginate.limit', 20);  // default
 
 Configure::write('ckeditor5.toolbar', "['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable']");
@@ -259,7 +259,7 @@ Configure::write('document.path', '/files/Documents/file_name/%d/');
 
 Configure::write('group_id_root',8);
 Configure::write('group_id_root_supplier',24);
-Configure::write('group_id_manager',10);  
+Configure::write('group_id_manager',10);
 Configure::write('group_id_manager_delivery',20);
 Configure::write('group_id_generic',60); // Per raggruppare utenti per uso statistico
 Configure::write('group_id_referent',18);
@@ -275,8 +275,8 @@ Configure::write('group_id_user_manager_des', 77);
 Configure::write('group_id_user_flag_privacy', 78);
 Configure::write('group_id_referent_tesoriere',23);  // referente tesoriere (pagamento con richiesta degli utenti dopo consegna) gestisce anche il pagamento del suo produttore
 Configure::write('group_id_tesoriere',11); // tesoriere (pagamento ai fornitori)
-Configure::write('group_id_storeroom',9); 
-Configure::write('group_id_user',2);  
+Configure::write('group_id_storeroom',9);
+Configure::write('group_id_user',2);
 Configure::write('group_id_events',65); // calendar events gasEvents
 Configure::write('group_system',66); // system info@gas.portalgas.it dispensa@gas.portalgas.it
 Configure::write('group_id_gas_groups_manager_groups', 122);  // gas_groups
@@ -292,7 +292,7 @@ Configure::write('SOC.site', 'www.portalgas.it');
 Configure::write('SOC.mail', 'info@portalgas.it');
 Configure::write('SOC.mail-contatti', 'contatti@portalgas.it');
 Configure::write('SOC.mail-assistenza', 'info@portalgas.it'); // utilizzato in default.po
-Configure::write('SOC.mail-privacy', 'info@portalgas.it'); 
+Configure::write('SOC.mail-privacy', 'info@portalgas.it');
 Configure::write('EmailExcludeDomains', ['portalgas.it']);
 Configure::write('SOC.hosting.url',"https://www.hetzner.com/");
 Configure::write('SOC.hosting.name',"Hosting (Cloud VPS (Virtual Private Server) presso Hetzner: https://www.hetzner.com/)");
@@ -315,8 +315,8 @@ Configure::write('Order.type.gas', 1);
 Configure::write('Order.type.des', 2);
 Configure::write('Order.type.des_titolare', 3);
 Configure::write('Order.type.promotion', 4);
-Configure::write('Order.type.pact_pre', 5); 
-Configure::write('Order.type.pact', 6);  
+Configure::write('Order.type.pact_pre', 5);
+Configure::write('Order.type.pact', 6);
 Configure::write('Order.type.supplier', 7);
 Configure::write('Order.type.promotion_gas_users', 8);
 Configure::write('Order.type.socialmarket', 9);
@@ -326,14 +326,14 @@ Configure::write('Order.type.gas_parent_groups', 11);
 /*
  * decoding() per getUsernameCrypted
  */
-Configure::write('crypt_method', 'AES-256-CBC');  
+Configure::write('crypt_method', 'AES-256-CBC');
 Configure::write('crypt_key', 'PortAlGas--k1');
 
 /*
  * altre tipologie di organization GAS PRODGAS PACT
  */
 Configure::write('prod_gas_supplier_manager',62); // prodGasSupplier
-Configure::write('group_pact_supplier_manager',84);   // manager pact 
+Configure::write('group_pact_supplier_manager',84);   // manager pact
 
 Configure::write('DB.prefix', 'k_');        // in database.php (cron per il dump delle tabelle)
 Configure::write('DB.portalPrefix', 'j_');  // (cron per il dump delle tabelle)
@@ -357,7 +357,7 @@ Configure::write('Logs.cart', false);
 Configure::write('SupplierOrganizationStatoIni', 'Y');
 Configure::write('SupplierOrganizationMailOrderOpenIni', 'Y');
 Configure::write('SupplierOrganizationMailOrderCloseIni', 'Y');
-Configure::write('SupplierOrganizationOwnerArticlesIni', 'REFERENT');  
+Configure::write('SupplierOrganizationOwnerArticlesIni', 'REFERENT');
 Configure::write('SupplierOrganizationCanViewOrdersIni', 'Y');
 Configure::write('SupplierOrganizationCanViewOrdersUserIni', 'Y');
 Configure::write('SupplierOrganizationCanPromotionsIni', 'N');
@@ -374,8 +374,8 @@ Configure::write('LatLngDistanceAbsolute', '1000'); // per calcolare la distanza
  */
 Configure::write('html.title', "PortAlGas, il gestionale web e app per i gruppi d'acquisto solidale - GAS - e i DES - PortAlGas");
 
-Configure::write('sql.limit', 20); // offset: num row 
-Configure::write('sql.no.limit', 1000); // offset: num row 
+Configure::write('sql.limit', 20); // offset: num row
+Configure::write('sql.no.limit', 1000); // offset: num row
 
 // {organizaton_id} / {img1}
 Configure::write('Article.img.paths', '/images/articles/%s');
@@ -425,9 +425,9 @@ Configure::write('GGArchiveStatics', 35);     // dopo quanti giorni il Cron::arc
 Configure::write('GGDeleteLogs', 6);          // dopo quanti giorni il Cron::filesystemLogDelete() cancella i log dei cron => ne aggiunge uno
 Configure::write('GGDeleteBackup', 1);        // dopo quanti giorni il Cron::filesystemLogDelete() cancella i backup del codice => ne aggiunge uno
 Configure::write('GGDeleteDump', 5);         // dopo quanti giorni il Cron::filesystemLogDelete() cancella i dump del DATABASE => ne aggiunge uno
-Configure::write('CartLimitPreview', 5);  // numero di ultimi articoli acquistati 
+Configure::write('CartLimitPreview', 5);  // numero di ultimi articoli acquistati
 Configure::write('ArticlesOrderToTypeDrawComplete', 100);  // numero articoli in un ordine per la modalita' COMPLETE
-Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE 
+Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE
 Configure::write('DeliveryToDefinedDate', '2050-01-01');
 Configure::write('DeliveryToDefinedLabel', 'Da definire');
 
@@ -435,7 +435,7 @@ Configure::write('OrderNotaMaxLen', 150);
 Configure::write('NoteMoreLen', 150);
 
 /*
- * path portalgas 
+ * path portalgas
  * $config = Configure::read('Config');
  * $portalgas_fe_url = $config['Portalgas.fe.url'];
  */
@@ -454,15 +454,15 @@ Configure::write('OrganizationPayBeneficiarioMarcoLabel', 'Marco Siviero');
 Configure::write('OrganizationPayBeneficiarioMarcoIbanLabel', 'Siviero Marco e Sivera Laura');
 Configure::write('OrganizationPayBeneficiarioMarcoIban', 'IT79N0301503200000000234427');
 Configure::write('OrganizationPayBeneficiarioMarcoCell', '339 402 8600');
-Configure::write('OrganizationPayBeneficiarioMarcoMail', 'marco.siviero@portalgas.it'); 
+Configure::write('OrganizationPayBeneficiarioMarcoMail', 'marco.siviero@portalgas.it');
 
 Configure::write('OrganizationPayBeneficiarioFrancescoLabel', 'Francesco Actis Grosso');
 Configure::write('OrganizationPayBeneficiarioFrancescoIbanLabel', 'Francesco Actis Grosso e Sara Besacchi');
 Configure::write('OrganizationPayBeneficiarioFrancescoIban', 'IT05P0347501605CC0010194166');
 Configure::write('OrganizationPayBeneficiarioFrancescoCell', '347 491 5588');
-Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco.actis@portalgas.it'); 
+Configure::write('OrganizationPayBeneficiarioFrancescoMail', 'francesco.actis@portalgas.it');
 
-Configure::write('OrganizationProdGas.paramsConfig.default', '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N","hasPromotionGas":"N","hasPromotionGasUsers":"N"}'); 
+Configure::write('OrganizationProdGas.paramsConfig.default', '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N","hasPromotionGas":"N","hasPromotionGasUsers":"N"}');
 
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');
@@ -473,11 +473,11 @@ Configure::write('pingTime', 500000); // 1000 = 1 sec (0,14 h)
 /*
  * cron per creare sh dinamici
  * tot users 2100
- * totale file sh creati 
+ * totale file sh creati
  * (7 * 20 min = 140 min - 2,33 h)
  */
 Configure::write('mailSendMax', 240);  // limite aruba, 250 mail ogni 20 min
-Configure::write('totFilesSh', 6);  // numero file sh creati, parte da 0 => il cron deve averli gia' configurati per richiamarli ogni 20 min 
+Configure::write('totFilesSh', 6);  // numero file sh creati, parte da 0 => il cron deve averli gia' configurati per richiamarli ogni 20 min
 
 /*
  * \vendor\friendsofcake\cakepdf\src\Pdf\CakePdf.php

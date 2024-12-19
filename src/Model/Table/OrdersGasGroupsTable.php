@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use App\Decorator\ApiSuppliersOrganizationsReferentDecorator;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -26,10 +27,17 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
             'foreignKey' => 'gas_group_id',
             'joinType' => 'INNER',
         ]);
+        /*
         $this->belongsTo('ParentDeliveries', [
-            'class' => 'Deliveries',
-            'foreignKey' => 'parent_id',
-            'joinType' => 'INNER',
+            'className' => 'Deliveries',
+            'foreignKey' => ['organization_id', 'parent_id'],
+            'joinType' => 'LEFT',
+        ]);
+        */
+        $this->belongsTo('Parent', [
+            'className' => 'Orders',
+            'foreignKey' => ['organization_id', 'parent_id'],
+            'joinType' => 'LEFT',
         ]);
     }
 
@@ -184,7 +192,46 @@ class OrdersGasGroupsTable extends OrdersTable implements OrderTableInterface
      * implement
      */
     public function getById($user, $organization_id, $order_id, $debug=false) {
-       return parent::getById($user, $organization_id, $order_id, $debug);
+
+        if (empty($order_id)) {
+            return null;
+        }
+
+        $results = $this->find()
+            ->where([
+                $this->getAlias().'.organization_id' => $organization_id,
+                $this->getAlias().'.id' => $order_id
+            ])
+            ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
+                'SuppliersOrganizations' => [
+                    'Suppliers',
+                    'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]],
+                /*
+                 * con Orders.owner_articles => chi gestisce il listino
+                 */
+                'OwnerOrganizations', 'OwnerSupplierOrganizations',
+                'Parent' => ['Deliveries']
+            ])
+            ->first();
+
+        /*
+         * produttori esclusi dal prepagato
+         */
+        if(!empty($results) && isset($user->organization->paramsConfig['hasCashFilterSupplier']) && $user->organization->paramsConfig['hasCashFilterSupplier']=='Y') {
+            $supplierOrganizationCashExcludedsTable = TableRegistry::get('SupplierOrganizationCashExcludeds');
+            $results->suppliers_organization->isSupplierOrganizationCashExcluded = $supplierOrganizationCashExcludedsTable->isSupplierOrganizationCashExcluded($user, $results->suppliers_organization->organization_id, $results->suppliers_organization->id);
+        }
+
+        /*
+         * referenti
+         */
+        if(isset($results->suppliers_organization->suppliers_organizations_referents)) {
+            $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $results->suppliers_organization->suppliers_organizations_referents);
+            $results->referents = $referentsResult->results;
+            unset($results->suppliers_organization->suppliers_organizations_referents);
+        }
+
+        return $results;
     }
 
     /*

@@ -8,11 +8,11 @@ use Cake\ORM\TableRegistry;
 use App\Decorator\ApiCartDecorator;
 
 class ApiArticleOrderDecorator  extends AppDecorator {
-	
-	public $serializableAttributes = null; // ['id', 'name'];
-	public $results; 
 
-    public function __construct($user, $articles_orders, $order)
+	public $serializableAttributes = null; // ['id', 'name'];
+	public $results;
+
+    public function __construct($user, $articles_orders, $order=null)
     {
     	$results = [];
 	    // debug($articles_orders);
@@ -22,9 +22,9 @@ class ApiArticleOrderDecorator  extends AppDecorator {
 				$results[$numResult] = $this->_decorate($user, $articles_order, $order);
 			}
 	    }
-	    else 
+	    else
 	    if($articles_orders instanceof \App\Model\Entity\ArticlesOrder) {
-			$results = $this->_decorate($user, $articles_orders, $order);  	
+			$results = $this->_decorate($user, $articles_orders, $order);
 	    }
         else {
             foreach($articles_orders as $numResult => $articles_order) {
@@ -36,15 +36,15 @@ class ApiArticleOrderDecorator  extends AppDecorator {
     }
 
 	private function _decorate($user, $articles_order, $order) {
-        
+
         // debug($articles_order);
         $results = [];
-             
+
         /*
          * setto tag con gli id
-         */        
+         */
         $results = $articles_order->toArray();
-       
+
         $ids = [];
         $ids['organization_id'] = $articles_order->organization_id;
         $ids['order_id'] = $articles_order->order_id;
@@ -56,11 +56,11 @@ class ApiArticleOrderDecorator  extends AppDecorator {
          * dati ordine
          */
         $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
-        $results['isOpenToPurchasable'] = $lifeCycleOrdersTable->isOpenToPurchasable($user, $order->state_code);
-        $results['type_draw'] = $order->type_draw; // ENUM('SIMPLE', 'COMPLETE', 'PROMOTION')
+        if(!empty($order)) $results['isOpenToPurchasable'] = $lifeCycleOrdersTable->isOpenToPurchasable($user, $order->state_code);
+        if(!empty($order)) $results['type_draw'] = $order->type_draw; // ENUM('SIMPLE', 'COMPLETE', 'PROMOTION')
 
         $results['has_variants'] = false; // e' sempre articolo e la sua variante
-            
+
         if(empty($articles_order->codice)) {
             $results['sku'] = '';
         }
@@ -68,7 +68,7 @@ class ApiArticleOrderDecorator  extends AppDecorator {
             $results['sku'] = $articles_order->article->codice;
         }
 
-        $results['img1'] = $this->_getArticleImg1($articles_order);        
+        $results['img1'] = $this->_getArticleImg1($articles_order);
         $results['img1_width'] = Configure::read('Article.img.preview.width');
 
         /*
@@ -78,7 +78,7 @@ class ApiArticleOrderDecorator  extends AppDecorator {
             $results['slug'] = $articles_order->article->slug.'-'.$results['sku'];
         */
 
-        $results['is_select'] = false; // per vue js x gestire eventuali checkbox 
+        $results['is_select'] = false; // per vue js x gestire eventuali checkbox
 
         if(empty($articles_order->prezzo)) {
             $results['price'] = 0;
@@ -124,19 +124,19 @@ class ApiArticleOrderDecorator  extends AppDecorator {
             case 'N':
                 $results['stato_human'] = 'Articolo può essere acquistato';
             break;
-            case 'LOCK': 
+            case 'LOCK':
                 $results['stato_human'] = 'Articolo non più acquistabile perchè è bloccato';
             break;
             case 'QTAMAXORDER':
                 $results['stato_human'] = 'Articolo non più acquistabile perchè raggiunta la quantità massima';
             break;
         }
-                    
+
         /*
          * dati da article
          */
         $results['article']['stato'] = $articles_order->article->stato;
-        $results['qta'] = $articles_order->article->qta; 
+        $results['qta'] = $articles_order->article->qta;
         if(empty($articles_order->article->bio))
             $results['is_bio'] = '';
         else {
@@ -156,32 +156,32 @@ class ApiArticleOrderDecorator  extends AppDecorator {
         else
             $results['ingredients'] = $articles_order->article->ingredienti;
 
-        $results['um'] = $articles_order->article->um;   
-        $results['um_rif'] = $articles_order->article->um_riferimento;   
+        $results['um'] = $articles_order->article->um;
+        $results['um_rif'] = $articles_order->article->um_riferimento;
 
-        $results['um_rif_label'] = $this->_getArticlePrezzoUM($results['price'], $results['qta'], $results['um'], $results['um_rif']);          
+        $results['um_rif_label'] = $this->_getArticlePrezzoUM($results['price'], $results['qta'], $results['um'], $results['um_rif']);
         $results['conf'] = $results['qta'].' '.$results['um'];
 
         /*
          * cart
-         * se non ci sono ancora acquisti 
-         * 'user_id' => (int) 0,   
+         * se non ci sono ancora acquisti
+         * 'user_id' => (int) 0,
          * 'qta' => (int) 0,
-         * 'qta_new' => (int) 0 
+         * 'qta_new' => (int) 0
          */
-         
-        /* 
+
+        /*
          * tutti gli acquisti del gasista sull'articolo
          * */
-        if(isset($articles_order->cart) && !empty($articles_order->cart->user_id)) { 
+        if(isset($articles_order->cart) && !empty($articles_order->cart->user_id)) {
 
             $cartResults = new ApiCartDecorator($user, $articles_order->cart, $articles_order);
             $results['cart'] = $cartResults->results;
         }
 
-        /* 
+        /*
          * tutti gli acquisti dei gasisti sull'articolo
-         * */       
+         * */
         if(isset($articles_order->carts)) {
             $cartResults = new ApiCartDecorator($user, $articles_order->carts, $articles_order);
             $results['carts'] = $cartResults->results;
@@ -204,12 +204,12 @@ class ApiArticleOrderDecorator  extends AppDecorator {
          * order.staste_code RI-OPEN-VALIDATE
          */
         if(isset($articles_order['riopen'])) {
-            if(isset($articles_order['riopen']['differenza_da_ordinare'])) 
+            if(isset($articles_order['riopen']['differenza_da_ordinare']))
                 $results['riopen']['differenza_da_ordinare'] = $articles_order['riopen']['differenza_da_ordinare'];
-            if(isset($articles_order['riopen']['differenza_importo'])) 
+            if(isset($articles_order['riopen']['differenza_importo']))
                 $results['riopen']['differenza_importo'] = $articles_order['riopen']['differenza_importo'];
         }
-           
+
         return $results;
     }
 

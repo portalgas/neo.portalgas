@@ -33,10 +33,10 @@ class HtmlCustomSiteHelper extends FormHelper
             case 'FUNCTION':
                 if(!empty($mapping->master_json_xpath))
                     $results .= 'Da <b>json</b> '.$mapping->master_json_xpath.' => ';
-                else            
+                else
                 if(!empty($mapping->master_xml_xpath))
                     $results .= 'Da <b>xml</b> '.$mapping->master_xml_xpath.' => ';
-                else         
+                else
                 if(!empty($mapping->master_csv_num_col))
                     $results .= 'Da <b>col</b> '.$mapping->master_csv_num_col.' => ';
 
@@ -51,7 +51,7 @@ class HtmlCustomSiteHelper extends FormHelper
                 else
                 if(!empty($mapping->master_csv_num_col))
                     $results = '<b>col</b> '.$mapping->master_csv_num_col;
-                else                    
+                else
                     $results = $mapping->value;
             break;
             case 'PARAMETER-EXT':
@@ -61,7 +61,7 @@ class HtmlCustomSiteHelper extends FormHelper
                 if($mapping->has('queue_table'))
                    $results = $mapping->queue_table->table->name.' ('.$mapping->queue_table->table->id.')';
                 else
-                   $results = '<span class="label label-danger">dato inconsitente</span>'; 
+                   $results = '<span class="label label-danger">dato inconsitente</span>';
             break;
             default:
                 $results = ("mapping type [".$mapping->mapping_type->code."] non consentito");
@@ -69,7 +69,7 @@ class HtmlCustomSiteHelper extends FormHelper
         }
 
         return $results;
-    }       
+    }
 
     public function drawDeliveryLabel($delivery, $opts=[]) {
         return $this->getDeliveryLabel($delivery, $opts);
@@ -90,23 +90,23 @@ class HtmlCustomSiteHelper extends FormHelper
     public function drawOrdersStateDiv($order) {
 
         $state_code = '';
-        $str = '';  
+        $str = '';
 
         if(isset($order->state_code)) $state_code = $order->state_code;
-        else 
+        else
         if(isset($order['state_code'])) $state_code = $order['state_code'];
-        
+
         if(!empty($state_code))
             $str .= '<div class="action orderStato'.$state_code.'" title="'.__($state_code.'-intro').'"></div>';
-             
+
         return $str;
     }
 
     public function drawDesOrdersStateDiv($des_order) {
 
-        $str = '';   	
+        $str = '';
         $str .= '<div class="action orderStato'.$des_order->state_code.'" title="'.__($des_order->state_code.'-intro').'"></div>';
-             
+
         return $str;
     }
 
@@ -123,11 +123,11 @@ class HtmlCustomSiteHelper extends FormHelper
             $img_path = sprintf(Configure::read('Supplier.img.path.full'), $results->suppliers_organization->supplier->img1);
             $portalgas_app_root = $config['Portalgas.App.root'];
             $path = $portalgas_app_root.$img_path;
-    
+
             if(file_exists($path)) {
                 $portalgas_fe_url = $config['Portalgas.fe.url'];
                 $url = sprintf($portalgas_fe_url.Configure::read('Supplier.img.path.full'), $results->suppliers_organization->supplier->img1);
-            }   
+            }
         }
 
         $html = '
@@ -140,12 +140,28 @@ class HtmlCustomSiteHelper extends FormHelper
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body no-padding-disabled">
-
                 <div class="form-horizontal">
+            ';
+
+        /*
+         *  dati ordine titolare
+         */
+        if(!empty($results->parent)) {
+
+            $delivery_parent_label = $this->getDeliveryLabel($results->parent->delivery);
+
+            $html .='
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order-11').'</label>
+                        <div class="col-sm-4">'.$delivery_parent_label.'</div>
+                    </div>';
+        }
+
+        $html .='
                     <div class="form-group">
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Delivery').'</label>
                         <div class="col-sm-4">'.$delivery_label.'</div>
-                        
+
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('Order').'</label>
                         <div class="col-sm-4">Dal '.$results->data_inizio.' al '.$results->data_fine.'</div>
                     </div>';
@@ -155,28 +171,91 @@ class HtmlCustomSiteHelper extends FormHelper
                         <label class="col-sm-2 control-label" style="padding-top:0px">'.__('SupplierOrganization').'</label>
                         <div class="col-sm-4">
                             <a href="/site/produttore/'.$results->suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">'.$results->suppliers_organization->name.'</a></div>
-                        
+
                         <label class="col-sm-2 control-label" style="padding-top:0px"></label>
                         <div class="col-sm-4">';
-        if(!empty($url)) 
+        if(!empty($url))
             $html .= '<img src="'.$url.'" alt="'.$results->suppliers_organization->name.'" title="'.$results->suppliers_organization->name.'" width="'.Configure::read('Supplier.img.preview.width').'" class="img-supplier" />';
 
             $html .= '<div class="box-owner">'.__('organization_owner_articles').': <span class="label label-info">'.__('ArticlesOwner'.$results->suppliers_organization->owner_articles).'</span></div>';
-                    
+
             $html .= '</div>
                 </div>';
     } // end if(!empty($results->suppliers_organization))
 
     $html .= '<div class="form-group">
-                        <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
-                        <div class="col-sm-10">
-                            <div style="padding-left:45px;min-height:48px;" class="action orderStato'.$results->order_state_code->code.'" title="'.$results->order_state_code->name.'">'.$results->order_state_code->descri.'</div>
-                        </div>
-                    </div>
+                <label class="col-sm-2 control-label" style="padding-top:0px">'.__('StatoElaborazione').'</label>
+                <div class="col-sm-10">
+                    <div style="padding-left:45px;min-height:48px;" class="action orderStato'.$results->order_state_code->code.'" title="'.$results->order_state_code->name.'">'.$results->order_state_code->descri.'</div>
                 </div>
+            </div>';
 
-            </div>
-        </div>';
+        /*
+         *  dati ordini associati al titolare
+         */
+        if(!empty($results->child_orders)) {
+
+            $html .= '<div class="box-header with-border"><h3 class="box-title">Elenco ordini dei gruppi associati all\'ordine titolare</h3></div>';
+
+            if (count($results->child_orders) == 0) {
+                $html .= $this->element('msg', ['msg' => "Non ci sono ancora ordini dei gruppi associati", 'class' => 'warning']);
+            } else {
+                $html .= '<div>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">' . __('Gas Group') . '</th>
+                                            <th scope="col" colspan="2">' . __('Delivery') . '</th>
+                                            <th scope="col">' . __('StatoElaborazione') . '</th>
+                                            <th scope="col">Si chiuderà</th>
+                                            <th scope="col">' . __('List Supplier Organization Referents') . '</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>';
+                foreach ($results->child_orders as $child_order) {
+
+                    // dd($child_order);
+                    $delivery_label = $this->drawDeliveryLabel($child_order->delivery);
+                    $delivery_data = $this->drawDeliveryDateLabel($child_order->delivery);
+
+
+                    $html .= '<tr>';
+                    $html .= '<td>' . $child_order->gas_group->name . '</td>';
+                    $html .= '<td>' . $delivery_label . '</td>';
+                    $html .= '<td>' . $delivery_data . '</td>';
+                    $html .= '<td>';
+                    $html .= $this->drawOrdersStateDiv($child_order);
+                    $html .= '&nbsp;';
+                    $html .= __($child_order->state_code . '-label');
+                    $html .= '</td>';
+                    $html .= '<td>';
+                    $html .= $child_order->data_fine->i18nFormat('eeee d MMMM');
+                    if ($child_order->data_fine_validation != Configure::read('DB.field.date.empty2'))
+                        $html .= '<br />Riaperto fino a ' . $child_order->data_fine_validation->i18nFormat('eeee d MMMM');
+                    $html .= '</td>';
+                    $html .= '<td>';
+                    //   $html .= '$this->boxVerticalSupplierOrganizationreferents($child_order->suppliers_organization->suppliers_organizations_referents);
+                    $html .= '<ul>';
+                    foreach ($child_order->suppliers_organization->suppliers_organizations_referents as $suppliers_organizations_referent) {
+
+                        $user = $suppliers_organizations_referent->user;
+
+                        $html .= '<li>';
+                        $html .= $user->name;
+                        if (!empty($user->email))
+                            $html .= '&nbsp;' . $this->HtmlCustom->mailIco($user->email);
+                        $html .= '</li>';
+                    }
+                    $html .= '</ul>';
+                    $html .= '</td>';
+                    $html .= '</tr>';
+                } // end foreach ($results->child_orders as $child_order)
+
+                $html .= '</tbody></table></div>';
+            }
+        } // end if(!empty($results->child_orders))
+
+        $html .= '</div></div></div>';
 
         return $html;
     }
@@ -201,7 +280,7 @@ class HtmlCustomSiteHelper extends FormHelper
         $html .= '<span class="box-name">';
         $html .= '<a href="/site/produttore/'.$suppliers_organization->supplier->slug.'" target="_blank" title="vai al sito del produttore">';
         $html .= $suppliers_organization->name;
-        $html .= '</a>'; 
+        $html .= '</a>';
         $html .= '</span>';
         $html .= "</div>";
 
@@ -250,7 +329,7 @@ class HtmlCustomSiteHelper extends FormHelper
     }
 
     /*
-     * REFERENTI 
+     * REFERENTI
      */
     public function boxVerticalSupplierOrganizationreferents($results, $options=[]) {
 
@@ -271,16 +350,16 @@ class HtmlCustomSiteHelper extends FormHelper
 
             $html .= '<dd class="col-sm-9">';
             if(!empty($referent['email']))
-                $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);   
+                $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);
 
             if(isset($referent['phone_satispay'])) {
                 $html .= '&nbsp;'.$referent['phone_satispay'];
                 $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispay" />';
             }
-            else 
-            if(isset($referent['phone'])) 
+            else
+            if(isset($referent['phone']))
                 $html .= '&nbsp;'.$referent['phone'];
-           
+
             $html .= '</dd>';
         }
         $html .= '</dl>';
@@ -305,7 +384,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $html .= $referent['name'].' ';
 
             if(!empty($referent['email']))
-                $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);   
+                $html .= '&nbsp;'.$this->HtmlCustom->mail($referent['email']);
 
             if(isset($referent['phone_satispay'])) {
                 $html .= '<span>';
@@ -313,15 +392,15 @@ class HtmlCustomSiteHelper extends FormHelper
                 $html .= '<img src="'.$img_path.'/satispay-ico.png" title="il referente ha Satispay" />';
                 $html .= '</span>';
             }
-            else 
-            if(isset($referent['phone'])) 
+            else
+            if(isset($referent['phone']))
                 $html .= '&nbsp;'.$referent['phone'];
-           
+
             $html .= '</li>';
 
             if(isset($options['br'])) {
                 if(($numResult%2)!=0)
-                    $html .= '<br />';                
+                    $html .= '<br />';
             }
         }
         $html .= '</ul>';
@@ -332,7 +411,7 @@ class HtmlCustomSiteHelper extends FormHelper
     public function boxTitle($results, $breadcrumbs=[], $order=null) {
 
         if(!isset($results['title']))
-            $results['title'] = ''; 
+            $results['title'] = '';
 
         $html = '';
         $html .= '<section class="content-header">';
@@ -342,7 +421,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $html .= '<small>';
             $html .= __($results['subtitle']);
             $html .= '</small>';
-        }            
+        }
         $html .= '</h1>';
 
         (!empty($order)) ? $order_type_id = $order->order_type_id: $order_type_id = 0;
@@ -365,11 +444,11 @@ class HtmlCustomSiteHelper extends FormHelper
                     }
                 }
             }
-            
+
             if(!empty($order)) {
                 $html .= '<li><a href="'.$this->Url->build(['controller' => 'orders', 'action' => 'home', $order_type_id, $order->id]).'"><i class="fa fa-home"></i> '.__('Order home').'</a></li>';
             }
-        
+
             $html .= '</ol>';
         }
 
@@ -383,15 +462,15 @@ class HtmlCustomSiteHelper extends FormHelper
         $html = '';
         $html .= '<div class="panel panel-primary">';
         $html .= '<div class="panel-heading"><h3 class="panel-title">'.__('priceTypes').'</h3></div>';
-        
-        $html .= '<div class="panel-body box_order_price_types" id="vue-order-price-types" style="display:none;">'; 
 
-        $html .= '<div v-if="spinner_run_type_prices === true" class="run run-type-prices"><div class="spinner"></div></div>'; 
-        $html .= '<div v-if="spinner_run_type_prices === false">'; 
+        $html .= '<div class="panel-body box_order_price_types" id="vue-order-price-types" style="display:none;">';
+
+        $html .= '<div v-if="spinner_run_type_prices === true" class="run run-type-prices"><div class="spinner"></div></div>';
+        $html .= '<div v-if="spinner_run_type_prices === false">';
 
         /*
          * fields new row
-         */ 
+         */
         $html .= '<div class="row" id="frm">';
         $html .= '<div class="col-xs-2">';
         $html .= '<label for="name">'.__('Name').'</label>';
@@ -427,7 +506,7 @@ class HtmlCustomSiteHelper extends FormHelper
 
         /*
          * table
-         */ 
+         */
         $html .= '<div class="table-responsive"><table class="table">';
         $html .= '<thead>';
         $html .= '<tr>';
@@ -459,7 +538,7 @@ class HtmlCustomSiteHelper extends FormHelper
                     <input name="priceTypes.value[]" type="hidden" v-bind:value="row.value" />
                     <input name="priceTypes.sort[]" type="hidden" v-bind:value="row.sort" />
                   </td>
-                </tr>'; 
+                </tr>';
 
         $html .= '</tbody>';
         $html .= '</table></div>';
@@ -478,7 +557,7 @@ class HtmlCustomSiteHelper extends FormHelper
 
             if(isset($options['max-width']))
                 $max_width = $options['max-width'];
-            else 
+            else
                 $max_width = '100px';
 
             $config = Configure::read('Config');
@@ -486,7 +565,7 @@ class HtmlCustomSiteHelper extends FormHelper
             $this->_portalgas_app_root = $config['Portalgas.App.root'];
             $img_path_supplier = sprintf(Configure::read('Supplier.img.path.full'), $supplier->img1);
             $img_path_supplier = $this->_portalgas_app_root . $img_path_supplier;
-    
+
             $url = '';
             if(file_exists($img_path_supplier)) {
                 $url = sprintf($this->_portalgas_fe_url.Configure::read('Supplier.img.path.full'), $supplier->img1);
@@ -497,23 +576,23 @@ class HtmlCustomSiteHelper extends FormHelper
     }
 
 	public function drawOrderStateNext($order) {
-		
+
 		$str = '';
-		
+
 		if(isset($order->orderStateNext) && !empty($order->orderStateNext)) {
 			foreach($order->orderStateNext as $orderStateNext)
 				$str .= '<a class="'.$orderStateNext['class'].'" title="'.$orderStateNext['label'].'" href="'.$this->jLink($orderStateNext['controller'], $orderStateNext['action'], $orderStateNext['qs']).'">'.$orderStateNext['label'].'</a>';
 		}
-		
+
 		return $str;
 	}
 
 	public function drawOrderBtnPaid($order, $isRoot=false, $isTesoriereGeneric=false) {
-		
+
 		$str = '';
 
 		/*
-		 * saldato da gasisti 
+		 * saldato da gasisti
 		 * solo per Organization.orderUserPaid = 'Y'
 		 */
 		if(isset($order->PaidUsers['totalSummaryOrder'])) {
@@ -525,14 +604,14 @@ class HtmlCustomSiteHelper extends FormHelper
 				else {
 					if($order->PaidUsers['totalSummaryOrderNotPaid']==$order->PaidUsers['totalSummaryOrder']) {
 						$label = __('Devono saldare tutti i gasisti');
-						$str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'summary_order', ['order_id' => $order->id]).'">'.$label.'</a>';                        
-					}	
+						$str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'summary_order', ['order_id' => $order->id]).'">'.$label.'</a>';
+					}
 					else {
-						if($order->PaidUsers['totalSummaryOrderNotPaid']==1) 
+						if($order->PaidUsers['totalSummaryOrderNotPaid']==1)
 							$label = 'Deve saldare ancora '.$order->PaidUsers['totalSummaryOrderNotPaid'].' gasista';
-						else 
+						else
 							$label = 'Devono saldare ancora '.$order->PaidUsers['totalSummaryOrderNotPaid'].' gasisti';
-						
+
 						$str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'summary_order', ['order_id' => $order->id]).'">'.$label.'</a>';
 					}
 				}
@@ -541,71 +620,71 @@ class HtmlCustomSiteHelper extends FormHelper
 				$label = __('Non ci sono acquisti');
 				$str .= '<span class="label label-danger" title="'.$label.'">'.$label.'</span>';
 			}
-		}	
-					
+		}
+
 		/*
 		 * pagamento al produttore
 		 * solo per Organization.orderSupplierPaid = 'Y'
 		 */
-		if(isset($order->PaidSupplier['isPaid'])) { 
-		
+		if(isset($order->PaidSupplier['isPaid'])) {
+
 			$str .= '<p></p>';
-		
-			if($order->PaidSupplier['isPaid']) {	
+
+			if($order->PaidSupplier['isPaid']) {
 				$label = __('Pagato al produttore');
-				if($isTesoriereGeneric) 
+				if($isTesoriereGeneric)
 					$str .= '<a class="label label-info" title="'.$label.'" href="'.$this->jLink('tesoriere', 'pay_suppliers', ['delivery_id' => $order->delivery_id,'order_id' => $order->id]).'">'.$label.'</a>';
 				else
 					$str .= '<a class="label label-info" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'pay_suppliers', ['order_id' => $order->id]).'">'.$label.'</a>';
 			}
 			else {
 				$label = __('Non pagato al produttore');
-				if($isTesoriereGeneric) 
+				if($isTesoriereGeneric)
                     $str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('tesoriere', 'pay_suppliers', ['delivery_id' => $order->delivery_id,'order_id' => $order->id]).'">'.$label.'</a>';
                 else
                     $str .= '<a class="label label-danger" title="'.$label.'" href="'.$this->jLink('orderLifeCycles', 'pay_suppliers', ['order_id' => $order->id]).'">'.$label.'</a>';
 			}
 		}
-		
+
 		return $str;
 	}
-		
+
 	public function drawOrderMsgGgArchiveStatics($order) {
-		
+
 		$str = '';
 		$label = $order->msgGgArchiveStatics['mgs'];
 
 		if(isset($order->msgGgArchiveStatics['mailto']))
 			$str .= '<a href="mailto:'.$order->msgGgArchiveStatics['mailto'].'">';
-		
+
 		$str .= '<span class="'.$order->msgGgArchiveStatics['class'].'" title="'.$label.'">'.$label.'</span>';
 
 		if(isset($order->msgGgArchiveStatics['mailto']))
 			$str .= '</a>';
-		
+
 		return $str;
 	}
 
     /*
      * tipologie di legende Orders / DesOrders / ProdGasPromotions
-     */    
-	public function drawLegenda($user, $states, $debug=false) {	
+     */
+	public function drawLegenda($user, $states, $debug=false) {
 
 		$htmlLegenda = '';
 
 		if(empty($states) || count($states)==0)
 			return $htmlLegenda;
-		
+
         $isTemplatesOrdersState = false;
         foreach($states as $state) {
-            if($state instanceof \App\Model\Entity\TemplatesOrdersState) 
+            if($state instanceof \App\Model\Entity\TemplatesOrdersState)
                 $isTemplatesOrdersState = true;
-        }            
+        }
 		$colsWidth = floor(100/count($states));
-			
+
 		$htmlLegenda = '<div class="legenda">';
 		$htmlLegenda .= '<div class="table-responsive"><table class="table">';
-	
+
 		/*
 		 * solo per gli ordini
  		 */
@@ -613,22 +692,22 @@ class HtmlCustomSiteHelper extends FormHelper
 			$htmlLegenda .= "\r\n";
 			$htmlLegenda .= '<tr>';
 			foreach($states as $state) {
-				
+
 				/*
 				 * differenzio lo stato CLOSE tra Tesoriere e Cassiere passandogli il group_id
 				 */
 				$target = __($state->state_code.'-target');
 				if($target==$state->state_code.'-target')  // e' == perche' non viene trovato
 					$target = __($state->state_code.'-target-PAY'.$user->organization->template->payToDelivery);
-					
+
 				$htmlLegenda .= "\r\n";
 				$htmlLegenda .= '<td width="'.$colsWidth.'%"><h4>';
 				$htmlLegenda .= $target;
 				$htmlLegenda .= '</h4></td>';
 			}
-			$htmlLegenda .= '</tr>';			
+			$htmlLegenda .= '</tr>';
 		}
-        
+
 		$htmlLegenda .= "\r\n";
 		$htmlLegenda .= '<tr>';
 		foreach($states as $state) {
@@ -636,13 +715,13 @@ class HtmlCustomSiteHelper extends FormHelper
 			$htmlLegenda .= '<td id="icoOrder'.$state->state_code.'" class="tdLegendaOrdersStateIco">';
 			$htmlLegenda .= '<div style="padding-left:45px;width:80%;cursor:pointer;height:auto;min-height:48px;" class="action orderStato'.$state->state_code.'" title="'.__($state->state_code.'-intro').'">'.__($state->state_code.'-label').'</div>&nbsp;';
 			$htmlLegenda .= '</td>';
-	
+
 		}
 		$htmlLegenda .= '</tr>';
-	
+
 		$htmlLegenda .= '<tr>';
 		$htmlLegenda .= '<td id="tdLegendaOrdersStateTesto" colspan="'.count($states).'" style="border-bottom:none;background-color:#FFFFFF;height:50px;">';
-	
+
 		$htmlLegenda .= "\r\n";
 		foreach($states as $state) {
 			$htmlLegenda .= "\r\n";
@@ -652,10 +731,10 @@ class HtmlCustomSiteHelper extends FormHelper
 		}
 		$htmlLegenda .= '</td>';
 		$htmlLegenda .= '</tr>';
-	
+
 		$htmlLegenda .= '</table></div>';
         $htmlLegenda .= '</div>';
-	
+
         $jsLegenda = '';
 		$jsLegenda .= 'function bindLegenda() {';
 		$jsLegenda .= "\r\n";
@@ -674,7 +753,7 @@ class HtmlCustomSiteHelper extends FormHelper
 			$jsLegenda .= '	$("#testoOrder'.$state->state_code.'").show();';
 			$jsLegenda .= "\r\n";
 			$jsLegenda .= '});';
-	
+
 			$jsLegenda .= "\r\n";
 			$jsLegenda .= '$( ".orderStato'.$state->state_code.'" ).mouseleave(function () {';
 			$jsLegenda .= "\r\n";
@@ -683,15 +762,15 @@ class HtmlCustomSiteHelper extends FormHelper
 			$jsLegenda .= '	$(".testoLegendaTesoriereStato").hide();';
 			$jsLegenda .= "\r\n";
 			$jsLegenda .= '});';
-	
+
 		}
 		$jsLegenda .= "\r\n";
 		$jsLegenda .= '}';
-		
+
 		$jsLegenda .= "\r\n";
 		$jsLegenda .= '$(document).ready(function() {bindLegenda();});';
 		$jsLegenda .= "\r\n";
-	
+
 		return ['htmlLegenda' => $htmlLegenda, 'jsLegenda' => $jsLegenda];
 	}
 
@@ -706,5 +785,5 @@ class HtmlCustomSiteHelper extends FormHelper
     public function excelSanify($value) {
         $value = strip_tags($value);
         return $value;
-    }         
+    }
 }
