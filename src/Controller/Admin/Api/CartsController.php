@@ -16,12 +16,12 @@ class CartsController extends ApiAppController
     }
 
     public function beforeFilter(Event $event) {
-     
+
         parent::beforeFilter($event);
     }
-  
+
     public function managementCart() {
-        
+
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -38,15 +38,15 @@ class CartsController extends ApiAppController
         ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
         // debug($article);
         $results = $this->Cart->managementCart($user, $organization_id, $order, $article, $debug);
-        
-        return $this->_response($results); 
-    } 
 
-    /* 
+        return $this->_response($results);
+    }
+
+    /*
      * carrello per promozioni GAS-USERS
      */
     public function managementCartProdGasPromotionGasUser() {
-        
+
         $debug = false;
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
@@ -55,24 +55,24 @@ class CartsController extends ApiAppController
         $user = $this->Authentication->getIdentity();
 
         $results = [];
-   
+
         $order = $this->request->getData('order');
         $article = $this->request->getData('article');
         $organization_id = $order['organization_id']; // organization_id del produttore
- 
-        $results = $this->CartProdGasPromotionGasUser->managementCart($user, $organization_id, $order, $article, $debug);
-        
-        return $this->_response($results); 
-    } 
 
-    /* 
+        $results = $this->CartProdGasPromotionGasUser->managementCart($user, $organization_id, $order, $article, $debug);
+
+        return $this->_response($results);
+    }
+
+    /*
      * estrae solo gli users che hanno effettuato acquisti in base alla consegna
      */
     public function getUsersByDelivery() {
 
         $debug = false;
         $results = [];
-    
+
         $delivery_id = $this->request->getData('delivery_id');
         if(!empty($delivery_id)) {
 
@@ -81,7 +81,7 @@ class CartsController extends ApiAppController
 
             if(!empty($userResults)) {
                 /*
-                 * il recordset e' object(App\Model\Entity\Cart) 
+                 * il recordset e' object(App\Model\Entity\Cart)
                  *    'user' => object(App\Model\Entity\User) => js user.user.name!!
                  */
                 foreach($userResults as $numResult => $userResult) {
@@ -91,10 +91,10 @@ class CartsController extends ApiAppController
 
         } // end if(!empty($delivery_id))
 
-        return $this->_response($results); 
-    } 
+        return $this->_response($results);
+    }
 
-    /* 
+    /*
      * estrae solo gli users + cassa che hanno effettuato acquisti in base alla consegna
      */
     public function getUsersCashByDelivery() {
@@ -103,17 +103,17 @@ class CartsController extends ApiAppController
         $results = [];
 
         $delivery_id = $this->request->getData('delivery_id');
-        
+
         if(!empty($delivery_id)) {
 
             $cashesTable = TableRegistry::get('Cashes');
-            
+
             $options = [];
             $userResults = $this->Cart->getUsersByDelivery($this->Authentication->getIdentity(), $delivery_id, $options, $debug);
 
             if(!empty($userResults)) {
                 /*
-                 * il recordset e' object(App\Model\Entity\Cart) 
+                 * il recordset e' object(App\Model\Entity\Cart)
                  *    'user' => object(App\Model\Entity\User) => js user.user.name!!
                  */
                 foreach($userResults as $numResult => $userResult) {
@@ -122,17 +122,17 @@ class CartsController extends ApiAppController
                     /*
                      * associo la cassa
                      */
-                    $cashResults = $cashesTable->getByUser($this->Authentication->getIdentity(), $userResult->user->organization->id, $userResult->user->id, $options, $debug);                    
+                    $cashResults = $cashesTable->getByUser($this->Authentication->getIdentity(), $userResult->user->organization->id, $userResult->user->id, $options, $debug);
                     $results[$numResult]['cash'] = $cashResults;
                 }
             } // if(!empty($userResults))
 
         } // end if(!empty($delivery_id))
 
-        return $this->_response($results);  
-    }  
+        return $this->_response($results);
+    }
 
-    /* 
+    /*
      * url: /admin/api/carts/setNota
      * front-end - salva la nota per il referente
      */
@@ -161,7 +161,7 @@ class CartsController extends ApiAppController
             $results['msg'] = 'Errore nel salvataggio della nota';
             $results['results'] = [];
 
-            return $this->_response($results); 
+            return $this->_response($results);
         }
 
         $cartsTable = TableRegistry::get('Carts');
@@ -169,26 +169,26 @@ class CartsController extends ApiAppController
         if($esito===false) {
             $results['esito'] = false;
             $results['msg'] = "L'articolo non è stato ancora acquistato!";
-            $results['results'] = [];            
-        } 
-        else 
+            $results['results'] = [];
+        }
+        else
         if($esito===true) {
             $results['esito'] = true;
             $results['msg'] = 'Nota al referente salvata';
-            $results['results'] = [];            
-        }     
+            $results['results'] = [];
+        }
         else {
             $results['esito'] = false;
             $results['msg'] = $esito;
-            $results['results'] = $esito;            
-        } 
+            $results['results'] = $esito;
+        }
 
-        return $this->_response($results); 
+        return $this->_response($results);
     }
 
-    /* 
+    /*
      * url: /admin/api/carts/getByOrder
-     * front-end - estrae gli articoli associati ad un ordine filtrati per user  
+     * front-end - estrae gli articoli associati ad un ordine filtrati per user
      */
     public function getByOrder() {
 
@@ -199,11 +199,11 @@ class CartsController extends ApiAppController
         $results = [];
         $where = [];
         $order = [];
-   
+
         $order_id = $this->request->getData('order_id');
-        
+
         $cartsTable = TableRegistry::get('Carts');
-        $results = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);            
+        $results = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);
         /*
         if(!empty($results)) {
             // $results = new ApiArticleOrderDecorator($results);
@@ -211,8 +211,8 @@ class CartsController extends ApiAppController
             $results = $results->results;
         }
         */
-        
-        return $this->_response($results); 
+
+        return $this->_response($results);
     }
 
     /*

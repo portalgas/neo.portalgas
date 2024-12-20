@@ -200,6 +200,12 @@ export default {
               msg = response.data.msg;
 
               /*
+               * se la this.article.cart.qta_new = 0 prossimo step sara' INSERT
+               * in CartComponent ctrl if(empty($articles_order['cart']['user_id'])) $action = 'INSERT';
+               */
+              if(this.article.cart.qta_new==0)
+                  this.article.cart.user_id = 0;
+              /*
                * aggiorno dati articolo
                */
               this.article.cart.qta = this.article.cart.qta_new;  // aggiorno la qta
