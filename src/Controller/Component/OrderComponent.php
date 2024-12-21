@@ -21,7 +21,7 @@ class OrderComponent extends Component {
 
     /*
      * da /admin/api/orders/user-cart-gets
-     * da stampa carrello   
+     * da stampa carrello
      * elenco ordini con acquisti dell'utente x fe
      */
     public function userCartGets($user, $organization_id, $delivery_id, $opts=[], $debug=false) {
@@ -38,15 +38,15 @@ class OrderComponent extends Component {
             /*
              * per gli ordini per produttore non ho la consegna
              */
-            $where += ['Orders.delivery_id' => $delivery_id, 
+            $where += ['Orders.delivery_id' => $delivery_id,
                       // 'Orders.id' => 36091,
                       ];
         }
-          
-        $contains = ['OrderStateCodes', 'OrderTypes', 'Deliveries', 
+
+        $contains = ['OrderStateCodes', 'OrderTypes', 'Deliveries',
             'SuppliersOrganizations' => [
                 'Suppliers',
-                'SuppliersOrganizationsReferents' => 
+                'SuppliersOrganizationsReferents' =>
                     ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
         ]];
         /* estrae anche gli ordini senza acquisti, perche' query aggiuntiva hasMany
@@ -83,37 +83,37 @@ class OrderComponent extends Component {
                 $options['sort'] = [];
                 $options['limit'] = Configure::read('sql.no.limit');
                 $options['page'] = 1;
-                $options['refer'] = 'CART';                
+                $options['refer'] = 'CART';
                 $articlesOrdersResults = $articlesOrdersTable->getCartsByUser($user, $organization_id, $user->id, $result, $where, $options);
                 // debug($articlesOrdersResults);
-                
+
                 /*
                  * estraggo solo quelli acquistati dallo user
                  */
                 $ii=0;
-                foreach($articlesOrdersResults as  $numResult2 => $articlesOrdersResult) { 
+                foreach($articlesOrdersResults as  $numResult2 => $articlesOrdersResult) {
                     /*
                      * se lo user non ha acquisti e' cmq valorizzato qta / qta_new
                      */
-                    if(!isset($articlesOrdersResult['cart']) || !isset($articlesOrdersResult['cart']['user_id']) || 
-                        empty($articlesOrdersResult['cart']['user_id'])) { 
+                    if(!isset($articlesOrdersResult['cart']) || !isset($articlesOrdersResult['cart']['user_id']) ||
+                        empty($articlesOrdersResult['cart']['user_id'])) {
                          unset($articlesOrdersResult[$numResult2]);
                          unset($ordersResults[$numResult]);
                     }
                     else {
                         $found_cart = true;
-                        $articlesOrdersResult = new ApiArticleOrderDecorator($user, $articlesOrdersResult, $result); 
+                        $articlesOrdersResult = new ApiArticleOrderDecorator($user, $articlesOrdersResult, $result);
                         $newResults[$i]['article_orders'][$ii] = $articlesOrdersResult->results;
                         $ii++;
                     }
                 }
-            } // end if($articlesOrdersTable!==false) 
+            } // end if($articlesOrdersTable!==false)
 
             if($found_cart) {
 
                 /*
-                 * aggiunge ad un ordine le eventuali 
-                 *  SummaryOrder 
+                 * aggiunge ad un ordine le eventuali
+                 *  SummaryOrder
                  *  SummaryOrderTrapsort spese di trasporto
                  *  SummaryOrderMore spese generiche
                  *  SummaryOrderLess sconti
@@ -131,24 +131,24 @@ class OrderComponent extends Component {
                     $newResults[$i]['summary_order_cost_more'] = $resultsSummaryOrderPlus->summary_order_cost_more;
                     $newResults[$i]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;
 
-                    // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
+                    // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);
                 }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
 
                 /*
                  * referenti
                  */
-                if(isset($result->suppliers_organization->suppliers_organizations_referents)) { 
-                    $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $result->suppliers_organization->suppliers_organizations_referents, $result); 
+                if(isset($result->suppliers_organization->suppliers_organizations_referents)) {
+                    $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($user, $result->suppliers_organization->suppliers_organizations_referents, $result);
                     $newResults[$i]['referents'] = $referentsResult->results;
                     unset($result->suppliers_organization->suppliers_organizations_referents);
                 }
-                
+
                 /*
                  * distance
                  */
                 $distance = $this->_registry->Distance->get($user, $result->suppliers_organization);
                 $newResults[$i]['distance'] = $distance;
-                
+
                 $i++;
                 $found_cart = false;
             }
@@ -156,18 +156,18 @@ class OrderComponent extends Component {
                 unset($newResults[$i]);
             }
 
-        } // end foreach($ordersResults as $numResult => $result) 
+        } // end foreach($ordersResults as $numResult => $result)
 
-        return $newResults;  
-    } 
+        return $newResults;
+    }
 
-    /* 
-     * /admin/api/orders/getArticlesOrdersByOrderId 
-     * da stampa carrello   
-     * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
+    /*
+     * /admin/api/orders/getArticlesOrdersByOrderId
+     * da stampa carrello
+     * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user
      */
     public function getArticlesOrdersByOrderId($user, $organization_id, $order_id, $order_type_id, $options=[], $debug=false) {
-        
+
         $results = [];
 
         $ordersTable = TableRegistry::get('Orders');
@@ -218,7 +218,7 @@ class OrderComponent extends Component {
             if(!empty($search_categories_article_id)) {
                 $where['Articles'] += ['Articles.category_article_id' => $search_categories_article_id];
 
-            } // end if(!empty($search_categories_article_id)) 
+            } // end if(!empty($search_categories_article_id))
 
             $options = [];
             $options['sort'] = $sort;
@@ -235,5 +235,5 @@ class OrderComponent extends Component {
         }
 
         return $results;
-    }   
+    }
 }
