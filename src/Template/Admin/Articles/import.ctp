@@ -1,7 +1,7 @@
-<?php 
-use Cake\Core\Configure; 
+<?php
+use Cake\Core\Configure;
 $user = $this->Identity->get();
-?>  
+?>
 <style>
 h3.box-title {
     margin-bottom: 15px !important;
@@ -51,7 +51,7 @@ h3.box-title {
 }
 .option-ignore {
     background-color: #fbf049;
-} 
+}
 .my-alert {
     font-size:18px;
     font-weight:bold;
@@ -67,13 +67,13 @@ h3.box-title {
     padding:0px;
     list-style-type: none;
 }
-</style>    
+</style>
 <?php
-echo $this->Html->script('vue/articlesImport.js?v=20231129', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articlesImport.js?v=20250127', ['block' => 'scriptPageInclude']);
 
-echo $this->Html->script('jquery/ui/jquery-ui.min', ['block' => 'scriptPageInclude']); 
-echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']); 
-?> 
+echo $this->Html->script('jquery/ui/jquery-ui.min', ['block' => 'scriptPageInclude']);
+echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
+?>
 <div id="vue-articles-import">
 
 <div class="box box-primary">
@@ -87,9 +87,9 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
     <div class="loader-global" v-if="is_run">
         <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
     </div>
-        
+
     <template v-if="!is_run && !importResult">
-        
+
         <div class="stepwizard col-md-offset-3">
             <div class="stepwizard-row setup-panel">
                 <div class="stepwizard-step">
@@ -107,11 +107,11 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
             </div>
         </div>
 
-        <?php 
-        echo $this->Form->create(null, ['id' => 'frmImport', 
-                                        'type' => 'POST', 
+        <?php
+        echo $this->Form->create(null, ['id' => 'frmImport',
+                                        'type' => 'POST',
                                         'v-on:submit.prevent' => 'frmSubmit(e)',
-                                        'ref' => 'form']); 
+                                        'ref' => 'form']);
         echo $this->Form->hidden('select_import_fields');
         echo $this->Form->hidden('is_first_row_header');
         echo $this->Form->hidden('full_path');
@@ -125,7 +125,7 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
             <div class="row-disabled setup-content" id="step-3">
                 <?php require('import-step3.ctp');?>
             </div>
-        <?php    
+        <?php
         echo $this->Form->end();
         ?>
 
@@ -136,24 +136,24 @@ echo $this->Html->css('jquery/ui/jquery-ui.min', ['block' => 'css']);
         <div class="col-md-12 text-center">
             <div class="alert alert-success">
                 Importazione avvenuta con successo
-            </div>     
+            </div>
             <a :href="'/admin/articles/index-quick?search_supplier_organization_id='+supplier_organization.id"><button class="btn btn-primary">clicca qui per visualizzare il listino articoli del produttore {{ supplier_organization.name }}</button></a>
         </div>
     </div>
-    <div class="row" style="margin:15px 0;" 
+    <div class="row" style="margin:15px 0;"
                 v-if="supplier_organization.supplier.img1!=''">
         <div class="col-md-12 text-center">
             <img style="max-width:250px" class="img-responsive" v-bind:src="supplier_organization.img1" /></div>
         </div>
     </div>
 
-    
+
     </template>
 <?php
 echo '</div> <!-- box-body -->';
 echo '</div> <!-- vue-articles-import -->';
 
-/* 
+/*
  * gestione STEP
  */
 $js = "
@@ -162,14 +162,14 @@ $(document).ready(function () {
         allWells = $('.setup-content'),
         allNextBtn = $('.nextBtn'),
         allPrevBtn = $('.prevBtn');
-  
+
     allWells.hide();
-  
+
     navListItems.click(function (e) {
         e.preventDefault();
         var target = $($(this).attr('href')),
             item = $(this);
-  
+
         if (!item.hasClass('disabled')) {
             navListItems.removeClass('btn-primary').addClass('btn-default');
             item.addClass('btn-primary');
@@ -177,27 +177,27 @@ $(document).ready(function () {
             target.show();
         }
     });
-    
+
     allPrevBtn.click(function(){
         var curStep = $(this).closest('.setup-content'),
             curStepBtn = curStep.attr('id'),
             prevStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().prev().children('a');
-  
+
             prevStepWizard.removeAttr('disabled').trigger('click');
 
             $('html, body').animate({ scrollTop: 0 }, 'fast');
     });
-  
+
     allNextBtn.click(function(){
         var curStep = $(this).closest('.setup-content'),
             curStepBtn = curStep.attr('id'),
             nextStepWizard = $('div.setup-panel div a[href=\"#' + curStepBtn + '\"]').parent().next().children('a');
-            
+
             nextStepWizard.removeAttr('disabled').trigger('click');
 
             $('html, body').animate({ scrollTop: 0 }, 'fast');
     });
-  
+
     $('div.setup-panel div a.btn-primary').trigger('click');
 });";
 $this->Html->scriptBlock($js, ['block' => true]);

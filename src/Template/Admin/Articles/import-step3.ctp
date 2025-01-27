@@ -1,5 +1,5 @@
-<?php 
-use Cake\Core\Configure; 
+<?php
+use Cake\Core\Configure;
 ?>
 <div class="row">
 <div class="col-md-12">
@@ -13,7 +13,7 @@ use Cake\Core\Configure;
         <div class="alert alert-info" style="font-size:18px;font-weight:bold;text-align:center;">
             Di seguito i dati dell\'excel che hai caricato
         </div>
-        
+
         <!-- pre>{{ file_contents }}</pre -->
 
         <table class="table table-hover">
@@ -34,9 +34,9 @@ use Cake\Core\Configure;
                         <template v-if="select_import_fields[num_col]==\'id\'">
                             <b>{{ col }}</b>
                         </template>
-                        <template v-if="select_import_fields[num_col]==\'bio\' || 
+                        <template v-if="select_import_fields[num_col]==\'bio\' ||
                                         select_import_fields[num_col]==\'flag_presente_articlesorders\'">
-                            
+
                             <div v-if="col.toLowerCase()!=\'si\' && col.toLowerCase()!=\'no\'" class="alert alert-danger">
                                 mi aspetto si / no, mentre è <b>{{col}}</b>
                             </div>
@@ -47,14 +47,14 @@ use Cake\Core\Configure;
                                 <label class="radio-inline" :for="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col">
                                     <input type="radio" :id="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col" :name="select_import_fields[num_col]+\'-N-\'+num_row+\'-\'+num_col" value="no" v-model="file_contents[num_row][num_col].toLowerCase()" /> No
                                 </label>
-                            </div>                        
+                            </div>
                         </template>
-                        <template v-if="select_import_fields[num_col]==\'codice\' || 
-                                        select_import_fields[num_col]==\'codice-id\' || 
+                        <template v-if="select_import_fields[num_col]==\'codice\' ||
+                                        select_import_fields[num_col]==\'codice-id\' ||
                                         select_import_fields[num_col]==\'name\'">
                             <input type="text" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
                         </template>
-                        <template v-if="select_import_fields[num_col]==\'nota\' || 
+                        <template v-if="select_import_fields[num_col]==\'nota\' ||
                                         select_import_fields[num_col]==\'ingredienti\'">
                             <textarea :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]"></textarea>
                         </template>
@@ -72,9 +72,9 @@ use Cake\Core\Configure;
                             <div v-if="!ums.includes(col)" class="alert alert-danger">
                                 mi aspetto un valore tra {{ ums }}, mentre è <b>{{col}}</b>
                             </div>
-                            <select v-else class="form-control" 
-                                    :required="true" 
-                                    :name="select_import_fields[num_col]+\'-\'+num_row+\' \'+num_col" 
+                            <select v-else class="form-control"
+                                    :required="true"
+                                    :name="select_import_fields[num_col]+\'-\'+num_row+\' \'+num_col"
                                     v-model="file_contents[num_row][num_col]">
                                 <option v-for="um in ums"
                                 v-bind:value="um" >
@@ -82,7 +82,7 @@ use Cake\Core\Configure;
                                 </option>
                             </select>
                         </template>
-                        <template v-if="select_import_fields[num_col]==\'pezzi_confezione\' || select_import_fields[num_col]==\'qta_minima\' || select_import_fields[num_col]==\'qta_multipli\'">
+                        <template v-if="select_import_fields[num_col]==\'pezzi_confezione\' || select_import_fields[num_col]==\'qta_minima\' || select_import_fields[num_col]==\'qta_minima_order\' || select_import_fields[num_col]==\'qta_multipli\'">
                             <input type="number" :name="select_import_fields[num_col]+\'-\'+num_row+\'-\'+num_col" v-model="file_contents[num_row][num_col]" />
                         </template>
                     </td>
@@ -99,7 +99,7 @@ use Cake\Core\Configure;
         </table>';
 
     echo '</div>';
-    echo '</div>'; // row 
+    echo '</div>'; // row
     ?>
     <button class="btn btn-primary prevBtn btn-lg pull-left" type="button">Indietro</button>
     <button class="btn btn-success nextBtn-disabled btn-lg pull-right" type="button"

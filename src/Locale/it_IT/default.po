@@ -377,7 +377,7 @@ msgid "Qta"
 msgstr "Quantità"
 
 #
-# stati 
+# stati
 #
 msgid "StateDelivery"
 msgstr "Stato della consegna"
@@ -978,7 +978,7 @@ msgstr "P.iva"
 
 msgid "organization_owner_articles"
 msgstr "Gestore del listino degli articoli"
- 	
+
 msgid "organization_owner_articles_short"
 msgstr "Gestore articoli"
 
@@ -1301,13 +1301,13 @@ msgid "Loops Orders"
 msgstr "Ordini ricorsivi"
 
 msgid "Loops Order"
-msgstr "Ordine ricorsivo" 
+msgstr "Ordine ricorsivo"
 
 msgid "Loops Deliveries"
 msgstr "Consegne ricorsive"
 
 msgid "Loops Delivery"
-msgstr "Consegna ricorsiva" 
+msgstr "Consegna ricorsiva"
 
 #
 # M S G  system
@@ -1477,8 +1477,8 @@ msgstr "Consegnato tutto"
 msgid "socialmarket-purchase-delete-all"
 msgstr "Annullo tutto"
 
-# 
-# validazione 
+#
+# validazione
 #
 msgid "delivery_id"
 msgstr "Consegna"
@@ -1554,7 +1554,7 @@ msgid "SUPPLIER-PAID-label"
 msgstr "Pagare al produttore"
 
 msgid "WAIT-REQUEST-PAYMENT-CLOSE-label"
-msgstr "In attesa che la richiesta si chiuda" 
+msgstr "In attesa che la richiesta si chiuda"
 
 msgid "CLOSE-label"
 msgstr "Ordine chiuso"
@@ -3809,7 +3809,7 @@ msgstr "Passa l'ordine al Cassiere"
 
 msgid "OrderGoToTesoriere"
 msgstr "Passa l'ordine al Tesoriere"
-	
+
 msgid "OrderGoBackReferente"
 msgstr "Rimandalo al referente"
 
@@ -4170,7 +4170,7 @@ msgid "Related SummaryOrders"
 msgstr "Pagamenti degli utenti (k_summary_orders)"
 
 msgid "Related SummaryPayments"
-msgstr "Pagamenti degli utenti alla richiesta di pagamento (k_summary_payments)" 
+msgstr "Pagamenti degli utenti alla richiesta di pagamento (k_summary_payments)"
 
 msgid "Related RequestPayment Orders"
 msgstr "Ordini associati alla richiesta di pagamento"
@@ -4462,10 +4462,10 @@ msgstr "Saldo in cassa"
 
 msgid "totImportoUserAcquistato"
 msgstr "Totale acquistato"
-	
+
 msgid "Nominative"
 msgstr "Nominativo"
-	
+
 msgid "Username"
 msgstr ""
 
@@ -4924,7 +4924,7 @@ msgstr "E' ordinato"
 
 msgid "DesSupplierInCart"
 msgstr "E' acquistato"
-			
+
 msgid "Permission"
 msgstr "Permessi"
 
@@ -4984,7 +4984,7 @@ msgstr "Super-Referente"
 
 msgid "UserGroupsReferentTitolareDes"
 msgstr "Referente Titolare"
-       
+
 msgid "UserGroupsReferentDesAllGas"
 msgstr "Referente degli ordini dei Gas"
 
@@ -5395,10 +5395,10 @@ msgstr "Gestore articoli"
 
 msgid "organization_owner_articles"
 msgstr "Gestore del listino degli articoli"
- 	
+
 msgid "organization_owner_articles_short"
 msgstr "Gestore articoli"
- 	
+
 msgid "EventNota"
 msgstr "Testo"
 
@@ -5733,7 +5733,7 @@ msgid "SUPPLIER-PAID-label"
 msgstr "Pagare al produttore"
 
 msgid "WAIT-REQUEST-PAYMENT-CLOSE-label"
-msgstr "In attesa che la richiesta si chiuda" 
+msgstr "In attesa che la richiesta si chiuda"
 
 msgid "CLOSE-label"
 msgstr "Ordine chiuso"
@@ -6095,7 +6095,7 @@ msgstr "Ottimo"
 
 #
 # M S G
-# 
+#
 msgid "TotaleConfirmTesoriere"
 msgstr "Totale presunto della consegna: %s<br /><i>(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)</i>"
 
@@ -6272,22 +6272,22 @@ msgstr "Trovata %s riga che presenta errori: di seguito la struttura corretta de
 
 msgid "cvs_import_error_n"
 msgstr "Trovate %s righe che presentano errori: di seguito la struttura corretta del file .csv"
-		
+
 msgid "IsArticleInCart"
 msgstr "L'articolo non può essere cancellato perchè è stato già <b>acquistato</b>: si dovrà attendere il passaggio degli ordini nel modulo STATISTICHE"
-				
+
 msgid "IsArticleInOrder"
 msgstr "L'articolo è stato associato ad ordini ma <b>non</b> è stato acquistato, se sicuro di volerlo cancellare?"
-		
+
 msgid "msg_summary_order_just_saldato_a"
 msgstr "Ordine già saldato al %s"
-		
+
 msgid "msg_summary_order_just_saldato"
 msgstr "Ordine già saldato"
 
 msgid "msg_fe_user_registration_expire_modal"
 msgstr "Devi rinnovare la tua iscrizione annuale al G.A.S."
-		
+
 #
 # M S G   system
 #
@@ -6494,10 +6494,10 @@ msgstr "Se è valorizzato a 'Si' si potrà gestire dopo la consegna le richieste
 
 msgid "toolTipHasUserGroupsTesoriere"
 msgstr "Se è valorizzato a 'Si' si potrà gestire i pagamenti ai fornitori"
-					
+
 msgid "toolTipHasUserGroupsStoreroom"
 msgstr "Se è valorizzato a 'Si' si potrà gestire la dispensa"
-						
+
 msgid "toolTipPayToDelivery"
 msgstr "Quando si gestisce il pagamento alla consegna"
 
@@ -6760,9 +6760,9 @@ msgstr "Limite superato credito in cassa di"
 msgid "LIMIT-CASH-USER"
 msgstr "Limite per ogni gasista"
 
-# 
+#
 # Gas Groups
-# 
+#
 msgid "Gas Groups"
 msgstr "Gruppi dei G.A.S."
 
@@ -6777,10 +6777,10 @@ msgstr "Gestione gasisti"
 
 msgid "Gas Group Parent Orders"
 msgstr "Ordini titolari per gruppi"
- 
+
 msgid "Gas Group Parent Orders"
 msgstr "Ordine titolare per gruppi"
- 
+
 msgid "Gas Group Orders"
 msgstr "Ordini per i gruppi"
 
@@ -6791,22 +6791,22 @@ msgid "Gas Group Delivery"
 msgstr "Consegna per i gruppi"
 
 msgid "Gas Group Deliveries"
-msgstr "Consegne per i gruppi" 
+msgstr "Consegne per i gruppi"
 
 #
 # movements
 #
 msgid "Movements"
-msgstr "Movimenti di cassa" 
+msgstr "Movimenti di cassa"
 
 msgid "Movement"
-msgstr "Movimento di cassa" 
+msgstr "Movimento di cassa"
 
 msgid "Movement Types"
-msgstr "Tipologie di movimenti di cassa" 
+msgstr "Tipologie di movimenti di cassa"
 
 msgid "Movement Type"
-msgstr "Tipologia di movimenti di cassa" 
+msgstr "Tipologia di movimenti di cassa"
 
 msgid "Payment Types"
 msgstr "Tipologie di pagamenti"
@@ -6815,7 +6815,7 @@ msgid "Payment Type"
 msgstr "Tipologia di pagamento"
 
 #
-# import 
+# import
 #
 msgid "import-article-id"
 msgstr "Identificativo articolo"
@@ -6851,7 +6851,10 @@ msgid "import-article-ingredienti"
 msgstr "Ingredienti"
 
 msgid "import-article-qta_minima"
-msgstr "Quantità minima"
+msgstr "Quantità minima che un gasista può acquistare"
+
+msgid "import-article-qta_minima-order"
+msgstr "Quantità minima rispetto a tutti gli acquisti"
 
 msgid "import-article-qta_multipli"
 msgstr "Multipli di"

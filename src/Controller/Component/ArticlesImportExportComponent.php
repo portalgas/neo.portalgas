@@ -5,7 +5,7 @@ use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Log\Log;
-use PhpOffice\PhpSpreadsheet\Spreadsheet; 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Csv as CsvReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
@@ -20,9 +20,9 @@ class ArticlesImportExportComponent extends Component {
     private $_import_supplier_fields = [];
     // campi opzionali
     private $_export_source_fields = [];
-    // campi esportati    
+    // campi esportati
 	private $_export_export_fields = [];
-    // campi di default        
+    // campi di default
 	private $_export_default_fields = [];
 
     public function __construct(ComponentRegistry $registry, array $config = [])
@@ -44,14 +44,15 @@ class ArticlesImportExportComponent extends Component {
             'nota' => __('import-article-note'),
             'ingredienti' => __('import-article-ingredienti'),
             'qta_minima' => __('import-article-qta_minima'),
+            'qta_minima_order' => __('import-article-qta_minima-order'),
             'qta_multipli' => __('import-article-qta_multipli')
         ];
-        
+
         $this->_import_supplier_fields = [
             'codice-id' => __('import-article-codice-id'),
             'name' => __('import-article-name'),
             'prezzo' => __('import-article-prezzo'),
-            'qta_um' => __('import-article-qta-um')     
+            'qta_um' => __('import-article-qta-um')
         ];
 
         $this->_export_source_fields = [
@@ -74,29 +75,29 @@ class ArticlesImportExportComponent extends Component {
             'pezzi_confezione' => ['label' => __('pezzi_confezione'), 'nota' => '1'],
             'bio' => ['label' => __('Bio'), 'nota' => 'Si'],
             'flag_presente_articlesorders' => ['label' => __('flag_presente_articlesorders'), 'nota' => 'Si']
-        ];   
-        
+        ];
+
         $this->_export_default_fields = ['id' => ['label' => 'Identificativo articolo', 'nota' => 'Necessario se si vuole aggiornare l\'articolo']];
     }
 
-    /* 
-     * campi import 
+    /*
+     * campi import
      */
     public function getImportFields($user, $debug=false) {
         return $this->_import_fields;
 	}
 
-    /* 
+    /*
      * campi import per i produttori che gestisce admin (Offinina Naturae)
      */
     public function getImportSupplierFields($user, $debug=false) {
         return $this->_import_supplier_fields;
-	}    
-    
+	}
 
-    /* 
+
+    /*
      * campi opzionali
-     */   
+     */
     public function getExportSourceFields($user, $debug=false) {
         return $this->_export_source_fields;
 	}
@@ -113,8 +114,8 @@ class ArticlesImportExportComponent extends Component {
 
         $supplier_organization_id = $request['supplier_organization_id'];
         $request_export_fields = $request['export_fields'];
-        
-        /* 
+
+        /*
         * campi da estrarre
         * aggiungo quelli di default (ex id)
         */
@@ -122,7 +123,7 @@ class ArticlesImportExportComponent extends Component {
         foreach($this->_export_default_fields as $key => $default_field) {
             $request_default_fields[] = $key;
         }
-            
+
         $arr_export_fields = [];
         $arr_export_fields = $request_default_fields;
         if(strpos($request_export_fields, ';')===false)
@@ -130,13 +131,13 @@ class ArticlesImportExportComponent extends Component {
         else
             $arr_export_fields = array_merge($arr_export_fields, explode(';', $request_export_fields));
         if($debug) debug($arr_export_fields);
-        
+
         $alphabet = range('A', 'Z');
         // if($debug) debug($alphabet);
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        /* 
+        /*
         * header
         */
         foreach($arr_export_fields as $numResult => $arr_export_field) {
@@ -161,13 +162,13 @@ class ArticlesImportExportComponent extends Component {
                 }
                 if($debug) debug($numCol.' '.$arr_export_field.' '.$value);
                 $sheet->setCellValue($numCol, $value);
-            } // foreach($arr_export_fields as $numResult2 => $arr_export_field) 
+            } // foreach($arr_export_fields as $numResult2 => $arr_export_field)
         } // foreach($articles as $numResult => $article)
 
         $writer = new Xlsx($spreadsheet);
         return $writer;
     }
-    
+
     public function read($file_path) {
         $results = false;
         if(!file_exists($file_path))
@@ -190,23 +191,23 @@ class ArticlesImportExportComponent extends Component {
             break;
         }
 
-        /*  
+        /*
          * per gestire i float in 1,00
          * comand ubuntu locale -a
          * setlocale(LC_ALL, 'it_IT@euro', 'it_IT', 'it', 'italian');
-         * 
+         *
          * date_default_timezone_set('Europe/Rome');
          * setlocale(LC_MONETARY, 'it_IT.UTF-8');
          * setlocale(LC_NUMERIC, 'it_IT.UTF-8');
-         * 
-         * doesn't work, workaround in 
+         *
+         * doesn't work, workaround in
          * articlesImport.js se la colonna e' imposta a prezzo sostituisco . con ,
-        */        
+        */
         $validLocale = \PhpOffice\PhpSpreadsheet\Settings::setLocale('it');
         $spreadsheet = $reader->load($file_path);
         $worksheet = $spreadsheet->getActiveSheet();
         $results = $worksheet->toArray();
-       
+
         return $results;
     }
 }
