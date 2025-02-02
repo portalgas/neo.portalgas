@@ -27,20 +27,20 @@ class OrganizationsPaysController extends AppController
     }
 
     public function beforeFilter(Event $event) {
-        
+
         parent::beforeFilter($event);
 
         if(empty($this->_user)) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
-                
+
         if(!$this->_user->acl['isRoot']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
-       
+
     /*
      * genera i pagamenti per l'anno corrente
      */
@@ -68,15 +68,15 @@ class OrganizationsPaysController extends AppController
          * parent_id: per raggruppare i GAS
          */
         $organizations = $this->OrganizationsPays->Organizations->find()
-                    ->where(['Organizations.stato' => 'Y', 
-                            'Organizations.type' => 'GAS', 
-                            // 'Organizations.id' => 28, 
+                    ->where(['Organizations.stato' => 'Y',
+                            'Organizations.type' => 'GAS',
+                            // 'Organizations.id' => 28,
                             'Organizations.parent_id is null'])
                     ->order(['Organizations.name'])
                     ->all();
-             
+
         foreach($organizations as $organization) {
-            
+
             $child_tot_users = 0;
             $child_tot_orders = 0;
             $child_tot_suppliers_organizations = 0;
@@ -85,11 +85,11 @@ class OrganizationsPaysController extends AppController
 
             if($debug) debug($organization->name.' ('.$organization->id.')');
 
-            /* 
-             * ctrl se ha GAS figli 
+            /*
+             * ctrl se ha GAS figli
              */
             $childOrganizations = $this->OrganizationsPays->Organizations->find()
-                                    ->where(['Organizations.stato' => 'Y', 
+                                    ->where(['Organizations.stato' => 'Y',
                                             'Organizations.type' => 'GAS',
                                             'Organizations.parent_id' => $organization->id])
                                     ->order(['Organizations.name'])
@@ -109,26 +109,26 @@ class OrganizationsPaysController extends AppController
                     * tolgo info@nomegas.portalgas.it
                     * eventuale dispensa@nomegas.portalgas.it
                     */
-                    if(isset($childOrganization->paramsConfig['hasStoreroom']) && $childOrganization->paramsConfig['hasStoreroom']=='Y') 
+                    if(isset($childOrganization->paramsConfig['hasStoreroom']) && $childOrganization->paramsConfig['hasStoreroom']=='Y')
                         $users_default = 2;
                     else
                         $users_default = 1;
                     $_tot_users = ($_tot_users - $users_default);
-                    
+
                     /*
                     * totale ordini
-                    */         
+                    */
                     $child_tot_orders += $this->Total->totOrdersByYear($this->Authentication->getIdentity(), $childOrganization->id, $year, [], $debug);
-                    
-                    $child_tot_suppliers_organizations += $this->Total->totSuppliersOrganizations($this->Authentication->getIdentity(), $childOrganization->id, [], $debug);
-                    
-                    $child_tot_articles += $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $childOrganization->id, [], $debug); 
 
-                    /* 
-                     * importo 
+                    $child_tot_suppliers_organizations += $this->Total->totSuppliersOrganizations($this->Authentication->getIdentity(), $childOrganization->id, [], $debug);
+
+                    $child_tot_articles += $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $childOrganization->id, [], $debug);
+
+                    /*
+                     * importo
                      */
-                    $child_importo += $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $childOrganization->id, $year, $_tot_users, $debug);                
-           
+                    $child_importo += $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $childOrganization->id, $year, $_tot_users, $debug);
+
                     $child_tot_users += $_tot_users;
                 } // end foreach($childOrganizations as $childOrganization)
             }
@@ -142,7 +142,7 @@ class OrganizationsPaysController extends AppController
                                 ->find()
                                 ->where(['OrganizationsPays.organization_id' => $organization->id,
                                          'OrganizationsPays.year' => $year_prev])
-                                ->first();  
+                                ->first();
             if(!empty($organization_prev)) {
                 $beneficiario_pay = $organization_prev->beneficiario_pay;
                 $type_pay = $organization_prev->type_pay;
@@ -162,13 +162,13 @@ class OrganizationsPaysController extends AppController
 
             // fractis
             if($organization->id==37)
-                $tot_users = 24;
+                $tot_users = 25;
 
             /*
              * tolgo info@nomegas.portalgas.it
              * eventuale dispensa@nomegas.portalgas.it
              */
-            if(isset($organization->paramsConfig['hasStoreroom']) && $organization->paramsConfig['hasStoreroom']=='Y') 
+            if(isset($organization->paramsConfig['hasStoreroom']) && $organization->paramsConfig['hasStoreroom']=='Y')
                 $users_default = 2;
             else
                 $users_default = 1;
@@ -177,7 +177,7 @@ class OrganizationsPaysController extends AppController
 
             /*
              * totale ordini
-             */         
+             */
             $tot_orders = $this->Total->totOrdersByYear($this->Authentication->getIdentity(), $organization->id, $year, [], $debug);
             $tot_orders = ($tot_orders + $child_tot_orders);
             if($debug) debug($organization->name.' tot_orders '.$tot_orders);
@@ -186,12 +186,12 @@ class OrganizationsPaysController extends AppController
             $tot_suppliers_organizations = ($tot_suppliers_organizations + $child_tot_suppliers_organizations);
             if($debug) debug($organization->name.' tot_suppliers_organizations '.$tot_suppliers_organizations);
 
-            $tot_articles = $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $organization->id, [], $debug); 
+            $tot_articles = $this->Total->totArticlesOrganizations($this->Authentication->getIdentity(), $organization->id, [], $debug);
             $tot_articles = ($tot_articles + $child_tot_articles);
-            if($debug) debug($organization->name.' tot_articles '.$tot_articles);           
+            if($debug) debug($organization->name.' tot_articles '.$tot_articles);
 
-            /* 
-             * importo 
+            /*
+             * importo
              */
             $importo = $this->OrganizationsPays->getImporto($this->Authentication->getIdentity(), $organization->id, $year, $tot_users, $debug);
             $importo = ($importo + $child_importo);
@@ -209,7 +209,7 @@ class OrganizationsPaysController extends AppController
             $data['tot_articles'] = $tot_articles;
             $data['importo'] = $importo;
             $data['import_additional_cost'] = 0;
-            
+
             $data['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
             $data['beneficiario_pay'] = $beneficiario_pay;
             $data['type_pay'] = $type_pay;
@@ -248,35 +248,35 @@ class OrganizationsPaysController extends AppController
             $q = $this->getStringToRequest($this->request->getQuery(), 'search_');
         $this->set(compact('q'));
 
-        // debug($request);  
+        // debug($request);
         if(!empty($request['search_beneficiario_pay']) || !empty($this->request->getQuery('search_beneficiario_pay'))) {
             !empty($request['search_beneficiario_pay']) ? $search_beneficiario_pay = $request['search_beneficiario_pay']: $search_beneficiario_pay = $this->request->getQuery('search_beneficiario_pay');
-        } 
+        }
         else
             $search_beneficiario_pay = '';
-        if(!empty($request['search_hasMsg']) || !empty($this->request->getQuery('search_hasMsg'))) 
+        if(!empty($request['search_hasMsg']) || !empty($this->request->getQuery('search_hasMsg')))
             !empty($request['search_hasMsg']) ? $search_hasMsg = $request['search_hasMsg']: $search_hasMsg = $this->request->getQuery('search_hasMsg');
         else
             $search_hasMsg = '';
-        if(!empty($request['search_hasPdf']) || !empty($this->request->getQuery('search_hasPdf')))   
+        if(!empty($request['search_hasPdf']) || !empty($this->request->getQuery('search_hasPdf')))
             !empty($request['search_hasPdf']) ? $search_hasPdf = $request['search_hasPdf']: $search_hasPdf = $this->request->getQuery('search_hasPdf');
         else
             $search_hasPdf = '';
-        if(!empty($request['search_type_pay']) || !empty($this->request->getQuery('search_type_pay')))  
+        if(!empty($request['search_type_pay']) || !empty($this->request->getQuery('search_type_pay')))
             !empty($request['search_type_pay']) ? $search_type_pay = $request['search_type_pay']: $search_type_pay = $this->request->getQuery('search_type_pay');
         else
             $search_type_pay = '';
-        if(!empty($request['search_organization_id']) || !empty($this->request->getQuery('search_organization_id'))) 
+        if(!empty($request['search_organization_id']) || !empty($this->request->getQuery('search_organization_id')))
             !empty($request['search_organization_id']) ? $search_organization_id = $request['search_organization_id']: $search_organization_id = $this->request->getQuery('search_organization_id');
         else
             $search_organization_id = '';
-        
-        if(!empty($request['search_year']) || !empty($this->request->getQuery('search_year'))) 
+
+        if(!empty($request['search_year']) || !empty($this->request->getQuery('search_year')))
             !empty($request['search_year']) ? $search_year = $request['search_year']: $search_year = $this->request->getQuery('search_year');
         else
             $search_year = date('Y');
         array_push($where, ['OrganizationsPays.year' => $search_year]);
-         
+
         if(!empty($search_beneficiario_pay)) {
             array_push($where, ['OrganizationsPays.beneficiario_pay' => $search_beneficiario_pay]);
         }
@@ -291,7 +291,7 @@ class OrganizationsPaysController extends AppController
         }
         // debug($where);
         $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_hasPdf', 'search_type_pay', 'search_organization_id'));
-        
+
         // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
 
         $this->paginate = [
@@ -305,7 +305,7 @@ class OrganizationsPaysController extends AppController
         $organizationsPays = $this->paginate($this->OrganizationsPays);
 
         foreach($organizationsPays as $numResult => $organizationsPay) {
-            
+
             /*
              * mail per i pagamento
              */
@@ -314,7 +314,7 @@ class OrganizationsPaysController extends AppController
             /*
              * ctrl l'ultima lastVisitDate del manager / tesoriere
              */
-            $where_groups = ['UserUsergroupMap.group_id IN ' => 
+            $where_groups = ['UserUsergroupMap.group_id IN ' =>
                             [Configure::read('group_id_manager'), Configure::read('group_id_referent_tesoriere')]];
             $where = ['Users.organization_id' => $organizationsPay->organization_id];
             $organizationsPay->lastVisitDate = $this->Total->getLastVisitDateByGroups($this->Authentication->getIdentity(), $where_groups, $where, $debug);
@@ -322,20 +322,20 @@ class OrganizationsPaysController extends AppController
             $organizationsPay->isSaldato = $this->OrganizationsPays->isSaldato($this->Authentication->getIdentity(), $organizationsPay);
 
             /*
-             * creazione path documento di pagamento 
+             * creazione path documento di pagamento
              */
             // debug($this->OrganizationsPay->getDocPath($this->Authentication->getIdentity(), $organizationsPay, $debug));
             if(!empty($this->OrganizationsPay->getDocPath($this->Authentication->getIdentity(), $organizationsPay, $debug))) {
                 $organizationsPay->doc_url = $this->OrganizationsPay->getDocUrl($this->Authentication->getIdentity(), $organizationsPay, $debug);
             }
-            else 
+            else
                 $organizationsPay->doc_url = '';
-            
+
             // debug($organizationsPay->doc_url);
 
             if(($organizationsPay->importo + $organizationsPay->import_additional_cost) > 77.47)
                 $organizationsPay->bollo = 2.00;
-            else 
+            else
                 $organizationsPay->bollo = 0;
 
                 $organizationsPay->importo_totale = ($organizationsPay->importo + $organizationsPay->import_additional_cost + $organizationsPay->bollo);
@@ -347,8 +347,8 @@ class OrganizationsPaysController extends AppController
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
         $organizations = $this->OrganizationsPays->Organizations->find('list', [
-                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
-                'order' => ['Organizations.name' => 'asc'], 
+                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'],
+                'order' => ['Organizations.name' => 'asc'],
                 'limit' => 500]);
 
         $years = [];
@@ -369,7 +369,7 @@ class OrganizationsPaysController extends AppController
     public function view($id = null)
     {
         // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
-        
+
         $organizationsPay = $this->OrganizationsPays->get($id, [
             'contain' => ['Organizations'],
         ]);
@@ -386,7 +386,7 @@ class OrganizationsPaysController extends AppController
     public function add()
     {
         // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
-        
+
         $organizationsPay = $this->OrganizationsPays->newEntity();
         if ($this->request->is('post')) {
             $requestData = $this->request->getData();
@@ -404,12 +404,12 @@ class OrganizationsPaysController extends AppController
         }
 
         $organizations = $this->OrganizationsPays->Organizations->find('list', [
-                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
-                'order' => ['Organizations.name' => 'asc'], 
+                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'],
+                'order' => ['Organizations.name' => 'asc'],
                 'limit' => 500]);
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
         $type_pays = $this->OrganizationsPays->enum('type_pay');
-        
+
         $this->set(compact('organizationsPay', 'organizations', 'beneficiario_pays', 'type_pays'));
     }
 
@@ -432,11 +432,11 @@ class OrganizationsPaysController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $requestData = $this->request->getData();
-            
+
             if(empty($requestData['data_pay']))
                 $requestData['data_pay'] = $this->convertDate(Configure::read('DB.field.date.empty'));
-            // debug($requestData);            
-            $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);          
+            // debug($requestData);
+            $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $requestData);
             if ($this->OrganizationsPays->save($organizationsPay)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Organizations Pay'));
 
@@ -448,11 +448,11 @@ class OrganizationsPaysController extends AppController
         }
 
         $organizations = $this->OrganizationsPays->Organizations->find('list', [
-                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'], 
-                'order' => ['Organizations.name' => 'asc'], 
+                'conditions' => ['Organizations.stato' => 'Y', 'type' => 'GAS'],
+                'order' => ['Organizations.name' => 'asc'],
                 'limit' => 500]);
         $beneficiario_pays = $this->OrganizationsPays->enum('beneficiario_pay');
-        $type_pays = $this->OrganizationsPays->enum('type_pay'); 
+        $type_pays = $this->OrganizationsPays->enum('type_pay');
 
         if($organizationsPay->data_pay->format('Y-m-d')==Configure::read('DB.field.date.empty'))
             $organizationsPay->data_pay = '';

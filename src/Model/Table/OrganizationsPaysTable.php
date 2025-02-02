@@ -45,7 +45,7 @@ class OrganizationsPaysTable extends Table
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
-        ]);       
+        ]);
     }
 
     /**
@@ -149,30 +149,34 @@ class OrganizationsPaysTable extends Table
              * calcolo a persona
              */
             $results['importo'] = (Configure::read('costToUser') * (float)$tot_users);
-            
+
             if($results['importo'] > Configure::read('OrganizationPayImportMax')) {
                 $results['importo'] = Configure::read('OrganizationPayImportMax');
                 $results['importo_nota'] = ' <span>(max)</span>';
             }
             else
                 $results['importo_nota'] = '';
-            
+
             $results['importo_e'] = number_format($results['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
         }
         else {
-            if($tot_users<=25) 
+            if($tot_users<=25)
                 $importo = 25;
              else
-             if($tot_users>25 && $tot_users<=50) 
+             if($tot_users>25 && $tot_users<=50)
                 $importo = 50;
              else
-             if($tot_users>50 && $tot_users<=75) 
+             if($tot_users>50 && $tot_users<=75)
                 $importo = 75;
              else
-             if($tot_users>75) 
+             if($tot_users>75 && $tot_users<=100)
                 $importo = 100;
+             else
+             if($tot_users>100)
+                 $importo = 125;
 
-            $results['importo'] = $importo; 
+
+            $results['importo'] = $importo;
             $results['importo_e'] = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
             $results['importo_nota'] = '';
         }
@@ -189,19 +193,22 @@ class OrganizationsPaysTable extends Table
         $results = 0;
 
         if($year >= Configure::read('OrganizationPayFasceYearStart')) {
-            if($tot_users<=25) 
+            if($tot_users<=25)
                 $results = 25;
              else
-             if($tot_users>25 && $tot_users<=50) 
+             if($tot_users>25 && $tot_users<=50)
                 $results = 50;
              else
-             if($tot_users>50 && $tot_users<=75) 
+             if($tot_users>50 && $tot_users<=75)
                 $results = 75;
              else
-             if($tot_users>75) 
-                $results = 100;
+             if($tot_users>75 && $tot_users<=100)
+                 $importo = 100;
+             else
+                 if($tot_users>100)
+                     $importo = 125;
         }
 
         return $results;
-    }    
+    }
 }
