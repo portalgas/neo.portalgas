@@ -160,6 +160,7 @@ class OrganizationsPaysTable extends Table
             $results['importo_e'] = number_format($results['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
         }
         else {
+            $importo = 0;
             if($tot_users<=25)
                 $importo = 25;
              else
@@ -174,7 +175,6 @@ class OrganizationsPaysTable extends Table
              else
              if($tot_users>100)
                  $importo = 125;
-
 
             $results['importo'] = $importo;
             $results['importo_e'] = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
@@ -203,10 +203,10 @@ class OrganizationsPaysTable extends Table
                 $results = 75;
              else
              if($tot_users>75 && $tot_users<=100)
-                 $importo = 100;
+                 $results = 100;
              else
-                 if($tot_users>100)
-                     $importo = 125;
+             if($tot_users>100)
+                 $results = 125;
         }
 
         return $results;
