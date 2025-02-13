@@ -173,8 +173,23 @@ class OrganizationsPaysTable extends Table
              if($tot_users>75 && $tot_users<=100)
                 $importo = 100;
              else
-             if($tot_users>100)
+             if($tot_users>100 && $tot_users<=150)
                  $importo = 125;
+             else
+             if($tot_users>150 && $tot_users<=175)
+                 $importo = 150;
+             else
+             if($tot_users>175 && $tot_users<=200)
+                 $importo = 175;
+             else
+             if($tot_users>200 && $tot_users<=225)
+                 $importo = 200;
+             else
+             if($tot_users>225 && $tot_users<=250)
+                 $importo = 225;
+             else
+             if($tot_users>250 && $tot_users<=275)
+                 $importo = 250;
 
             $results['importo'] = $importo;
             $results['importo_e'] = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
@@ -205,8 +220,23 @@ class OrganizationsPaysTable extends Table
              if($tot_users>75 && $tot_users<=100)
                  $results = 100;
              else
-             if($tot_users>100)
+             if($tot_users>100 && $tot_users<=150)
                  $results = 125;
+             else
+             if($tot_users>150 && $tot_users<=175)
+                 $results = 150;
+             else
+             if($tot_users>175 && $tot_users<=200)
+                 $results = 175;
+             else
+             if($tot_users>200 && $tot_users<=225)
+                 $results = 200;
+             else
+             if($tot_users>225 && $tot_users<=250)
+                 $results = 225;
+             else
+             if($tot_users>250 && $tot_users<=275)
+                 $results = 250;
         }
 
         return $results;

@@ -15,7 +15,7 @@ echo $this->Html->script('organizationsPaysIndex', ['block' => 'scriptPageInclud
   </h1>
 </section>
 
-<?php 
+<?php
 echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tesoriere dopo la login visualizzarà il messaggio<br /><br />".__('msg_organization_pay_to_pay')]);
 ?>
 
@@ -34,8 +34,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
-        <div class="box-header"> 
-          <?php 
+        <div class="box-header">
+          <?php
           echo '<h3 class="box-title">';
           echo __('List');
           if(!empty($search_year))
@@ -87,14 +87,14 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
               </tr>
             </thead>
             <tbody>
-              <?php 
+              <?php
               $tot_importo = 0;
               $tot_importo_add = 0;
               $tot_importo_bollo = 0;
-              foreach ($organizationsPays as $organizationsPay) { 
+              foreach ($organizationsPays as $organizationsPay) {
 
-                 if(empty($search_hasPdf) || 
-                    ($search_hasPdf=='Y' && !empty($organizationsPay->doc_url)) || 
+                 if(empty($search_hasPdf) ||
+                    ($search_hasPdf=='Y' && !empty($organizationsPay->doc_url)) ||
                     ($search_hasPdf=='N' && empty($organizationsPay->doc_url))) {
 
                     $tot_importo += $organizationsPay->importo;
@@ -104,9 +104,14 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     echo '<tr>';
                     echo '<td>';
                     $label = $organizationsPay->organization->name.' ('.$organizationsPay->organization->id.')';
-                       echo  $label;
-                       // echo $this->Html->link($label, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]); 
-                      
+                       echo  '<div>'.$label.'</div>';
+                       // echo $this->Html->link($label, ['controller' => 'Organizations', 'action' => 'view', $organizationsPay->organization->id]);
+                     /*
+                      * Ecoredia - Gas Ivrea
+                      * MandiGAS - Villalta
+                      */
+                     if(in_array($organizationsPay->organization->id, [15, 28]))
+                         echo '<p class="label label-info">unisce + GAS</p>';
                     echo '</td>';
                     if(empty($search_year))
                         echo '<td>'.h($organizationsPay->year).'</td>';
@@ -142,12 +147,12 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                       echo $this->Number->format($organizationsPay->tot_articles);
                     echo '</td>';
                     echo '<td>';
-                    echo $this->Form->control('beneficiario_pay', ['label' => false, 
+                    echo $this->Form->control('beneficiario_pay', ['label' => false,
                         'options' => $beneficiario_pays,
                         'default' => $organizationsPay->beneficiario_pay,
-                        'class' => 'form-control fieldUpdateAjaxChange', 
-                        'data-attr-entity' => 'OrganizationsPays', 
-                        'data-attr-field' => 'beneficiario_pay', 
+                        'class' => 'form-control fieldUpdateAjaxChange',
+                        'data-attr-entity' => 'OrganizationsPays',
+                        'data-attr-field' => 'beneficiario_pay',
                         'data-attr-id' => $organizationsPay->id
                     ]);
                     echo '</td>';
@@ -155,10 +160,10 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     echo '<td>';
                     echo $this->HtmlCustom->importo($organizationsPay->importo);
                     /*
-                    echo $this->Form->control('importo', ['type' => 'number', 'label' => false, 'inputmode' => 'numeric', 
-                        'class' => 'customFieldUpdateAjax', 
-                        'data-attr-entity' => 'OrganizationsPays', 
-                        'data-attr-field' => 'importo', 
+                    echo $this->Form->control('importo', ['type' => 'number', 'label' => false, 'inputmode' => 'numeric',
+                        'class' => 'customFieldUpdateAjax',
+                        'data-attr-entity' => 'OrganizationsPays',
+                        'data-attr-field' => 'importo',
                         'data-attr-id' => $organizationsPay->id
                     ]);
                     */
@@ -166,18 +171,18 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     echo '<td>';
                     if(!empty($organizationsPay->import_additional_cost))
                       echo '+ '.$this->HtmlCustom->importo($organizationsPay->import_additional_cost);
-                    echo '</td>';                                        
+                    echo '</td>';
                     echo '<td>';
                     if(!empty($organizationsPay->bollo))
                       echo '+ '.$this->HtmlCustom->importo($organizationsPay->bollo);
-                    echo '</td>';                                        
+                    echo '</td>';
                     echo '<td>';
-                    echo $this->Form->control('type_pay', ['label' => false, 
+                    echo $this->Form->control('type_pay', ['label' => false,
                         'options' => $type_pays,
                         'default' => $organizationsPay->type_pay,
-                        'class' => 'form-control fieldUpdateAjaxChange', 
-                        'data-attr-entity' => 'OrganizationsPays', 
-                        'data-attr-field' => 'type_pay', 
+                        'class' => 'form-control fieldUpdateAjaxChange',
+                        'data-attr-entity' => 'OrganizationsPays',
+                        'data-attr-field' => 'type_pay',
                         'data-attr-id' => $organizationsPay->id
                     ]);
                     echo '</td>';
@@ -189,7 +194,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                        echo '<td class="table-col-label table-col-label-success">Saldato</td>';
                     else
                        echo '<td class="table-col-label table-col-label-alert">Da saldare</td>';
-                    
+
                     echo '<td>';
                     if(!empty($organizationsPay->doc_url)) {
                         echo $this->Html->link(
@@ -208,13 +213,13 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                     else
                        echo '<td class="table-col-label table-col-label-alert">';
 
-                      $options = ['class' => 'form-control customFieldUpdateAjax', 
-                                  'data-attr-id' => $organizationsPay->id, 
-                                  'label' => false, 
-                                  'value' => $organizationsPay->organization->hasMsg, 
+                      $options = ['class' => 'form-control customFieldUpdateAjax',
+                                  'data-attr-id' => $organizationsPay->id,
+                                  'label' => false,
+                                  'value' => $organizationsPay->organization->hasMsg,
                                   'options' => $hasMsgs];
 
-                      if(empty($organizationsPay->doc_url)) 
+                      if(empty($organizationsPay->doc_url))
                         $options += ['disabled' => 'disabled', 'title' => 'File PDF non presente'];
 
                         echo $this->Form->control('hasMsg', $options, ['class' => 'width-75']);
@@ -227,8 +232,8 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
 
                     echo '</td>';
                     echo '</tr>';
-                } 
-              } // end loop 
+                }
+              } // end loop
               ?>
             </tbody>
             <tfoot>
@@ -256,7 +261,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                   <th scope="col"></th>
                   <th scope="col"></th>
               </tr>
-            </tfoot>            
+            </tfoot>
           </table>
         </div>
         <!-- /.box-body -->
@@ -274,7 +279,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
         <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
     </div>
 
-    
+
     </div>
   </div>
 </section>

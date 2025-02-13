@@ -137,7 +137,6 @@ class OrganizationsPaysController extends AppController
              * dati anno precedente per beneficiario_pay / type_pay
              */
             $beneficiario_pay = '';
-            $type_pay = '';
             $organization_prev = $this->OrganizationsPays
                                 ->find()
                                 ->where(['OrganizationsPays.organization_id' => $organization->id,
@@ -145,9 +144,13 @@ class OrganizationsPaysController extends AppController
                                 ->first();
             if(!empty($organization_prev)) {
                 $beneficiario_pay = $organization_prev->beneficiario_pay;
-                $type_pay = $organization_prev->type_pay;
             }
 
+            /*
+             * $type_pay = $organization_prev->type_pay; non lo prendo + dall'anno precedente ma dalla config dell'organizzazione
+             */
+            $paramsPay = json_decode($organization->paramsPay, true);
+            $type_pay = $paramsPay['payType'];
             if(empty($beneficiario_pay))
                 $beneficiario_pay = strtoupper($this->OrganizationsPays::BENEFICIARIO_PAY_MARCO);
             if(empty($type_pay))
@@ -162,7 +165,7 @@ class OrganizationsPaysController extends AppController
 
             // fractis
             if($organization->id==37)
-                $tot_users = 25;
+                $tot_users = 21;
 
             /*
              * tolgo info@nomegas.portalgas.it
@@ -217,7 +220,7 @@ class OrganizationsPaysController extends AppController
             $organizationsPay = $this->OrganizationsPays->patchEntity($organizationsPay, $data);
             if($debug) debug($organizationsPay);
             if (!$this->OrganizationsPays->save($organizationsPay)) {
-                debug($organizationsPay->getErrors());
+                dd([$organizationsPay, $organizationsPay->getErrors()]);
                 $continue=false;
             }
 
