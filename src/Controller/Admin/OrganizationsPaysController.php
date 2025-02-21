@@ -163,7 +163,7 @@ class OrganizationsPaysController extends AppController
                       'block' => 0];
             $tot_users = $this->Total->totUsers($this->Authentication->getIdentity(), $where, $debug);
 
-            // fractis
+            // fractis anche su controller=OrganizationsPays&action=index
             if($organization->id==37)
                 $tot_users = 21;
 

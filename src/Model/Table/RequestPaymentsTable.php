@@ -51,6 +51,10 @@ class RequestPaymentsTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+        $this->hasMany('SummaryPayments', [
+            'foreignKey' => ['request_payment_id'],
+        ]);
+
     }
 
     /**
@@ -105,39 +109,39 @@ class RequestPaymentsTable extends Table
     }
 
 	public  function getRequestPaymentByOrderId($user, $order_id, $debug=false) {
-        
+
         $requestPaymentsOrdersTable = TableRegistry::get('RequestPaymentsOrders');
-        
+
 		$where = ['RequestPaymentsOrders.organization_id' => $user->organization->id,
 				  'RequestPaymentsOrders.order_id' => $order_id];
-               
+
 		$requestPaymentsOrderResults = $requestPaymentsOrdersTable->find()
                                         ->contain(['RequestPayments'])
                                         ->where($where)
-                                        ->first();		
-                                    	
+                                        ->first();
+
 		return $requestPaymentsOrderResults;
 	}
-	
+
 	public  function getRequestPaymentIdByOrderId($user, $order_id, $debug=false) {
-        
+
         $request_payment_id = 0;
 
-		$requestPaymentsOrder = $this->getRequestPaymentByOrderId($user, $order_id, $debug);		
+		$requestPaymentsOrder = $this->getRequestPaymentByOrderId($user, $order_id, $debug);
 		if(!empty($requestPaymentsOrder))
             $request_payment_id = $requestPaymentsOrder->request_payment->id;
 
 		return $request_payment_id;
 	}
-	
+
 	public  function getRequestPaymentNumByOrderId($user, $order_id, $debug=false) {
-        
+
         $request_payment_num = '';
 
 		$requestPaymentsOrder = $this->getRequestPaymentByOrderId($user, $order_id, $debug);
         if(!empty($requestPaymentsOrder))
     		$request_payment_num = $requestPaymentsOrder->request_payment->num;
-      
+
 		return $request_payment_num;
 	}
 }

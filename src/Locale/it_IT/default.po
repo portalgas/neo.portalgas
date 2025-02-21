@@ -4793,8 +4793,11 @@ msgstr "Anni"
 msgid "full_text"
 msgstr "Testo della pagina per descrivere l'attività del produttore"
 
-msgid "Subject"
-msgstr "Oggetto"
+msgid "Mail Subject"
+msgstr "Oggetto della mail"
+
+msgid "Mail Body"
+msgstr "Testo della mail"
 
 msgid "Body"
 msgstr "Testo"

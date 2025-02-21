@@ -251,6 +251,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/mails', ['controller' => 'Mails'], function (RouteBuilder $routes) {
             $routes->connect('/request-delivery-new', ['action' => 'requestDeliveryNew', '_method' => 'POST']);
         });
+        $routes->scope('/mails', ['controller' => 'Mails'], function (RouteBuilder $routes) {
+            $routes->connect('/request-payments', ['action' => 'requestPaymentSollecito', '_method' => 'POST']);
+        });
 
         /*
          * gdxp
