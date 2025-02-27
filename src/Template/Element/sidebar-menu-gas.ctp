@@ -27,26 +27,26 @@ else {
   echo '</li>';
 }
 
-/* 
- * ordini 
+/*
+ * ordini
  */
 if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
 ?>
   <li class="treeview" id="box-menu-order"></li>
 
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-folder-open"></i> <span>Ordini</span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
       <ul class="treeview-menu">
-        <?php 
-        /* 
+        <?php
+        /*
           * nuova versione ordini ora solo gas_parent_groups / gas_groups
           */
         if($user->organization->paramsConfig['hasGasGroups']=='Y') {
-          if($user->acl['isGasGroupsManagerParentOrders']) 
+          if($user->acl['isGasGroupsManagerParentOrders'])
             echo '<li><a href="'.$this->Url->build('/admin/orders/index/'.Configure::read('Order.type.gas_parent_groups')).'">'.$icon.__('Gas Group Parent Orders').' <label class="label label-success">new</label></a></li>';
           if($user->acl['isGasGroupsManagerOrders']) {
             echo '<li><a href="'.$this->Url->build('/admin/orders/index/'.Configure::read('Order.type.gas_groups')).'">'.$icon.__('Gas Group Orders').' <label class="label label-success">new</label></a></li>';
@@ -54,12 +54,12 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
           }
         }
         else {
-        /* 
+        /*
           * versione predecente ordini
           */
         ?>
           <li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'index');?>" target="">Elenco ordini</a></li>
-          <?php 
+          <?php
           if($application_env==='development')
             echo '<li><a href="'.$this->Url->build('/admin/orders/add/'.Configure::read('Order.type.gas')).'">'.$icon.'Aggiungi un nuovo ordine <small class="label pull-right bg-red">root</small></a></li>';
           ?>
@@ -67,44 +67,44 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
           <li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'easy_add');?>" target="">Aggiungi un nuovo ordine (modalità semplificata)</a></li>
           <li><a href="<?php echo $this->HtmlCustomSite->jLink('orders', 'index_history');?>" target="">Ordini storici</a></li>
           <li><a href="<?php echo $this->Url->build('/admin/loops-orders/index'); ?>"><?php echo $icon;?><?php echo __('Loops Orders');?> <label class="label label-success">new</label></a></li>
-          <li><a href="<?php echo $this->HtmlCustomSite->jLink('monitoringOrders', 'home');?>" target="">Monitoraggio Ordini</a></li>        
+          <li><a href="<?php echo $this->HtmlCustomSite->jLink('monitoringOrders', 'home');?>" target="">Monitoraggio Ordini</a></li>
         <?php
-        }  
+        }
         ?>
       </ul>
     </a>
   </li>
-<?php 
-} // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
+<?php
+} // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y')
 
 if($user->organization->paramsConfig['hasGasGroups']=='Y') {
-  if($user->acl['isGasGroupsManagerGroups'] || 
-     $user->acl['isGasGroupsManagerDeliveries'] || 
+  if($user->acl['isGasGroupsManagerGroups'] ||
+     $user->acl['isGasGroupsManagerDeliveries'] ||
      $user->acl['isManager']) {
 ?>
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-users"></i> <span><?php echo __('Gas Groups');?></span>
       <span class="pull-right-container">
         <i class="fa fa-angle-left pull-right"></i>
       </span>
     <ul class="treeview-menu">
-        <?php 
-        if($user->acl['isGasGroupsManagerGroups']) 
+        <?php
+        if($user->acl['isGasGroupsManagerGroups'])
           echo '<li><a href="'.$this->Url->build('/admin/gas-groups').'">'.$icon.__('Gas Group Users').' <label class="label label-success">new</label></a></li>';
-        if($user->acl['isGasGroupsManagerDeliveries']) 
+        if($user->acl['isGasGroupsManagerDeliveries'])
           echo '<li><a href="'.$this->Url->build('/admin/gas-group-deliveries').'">'.$icon.__('Gas Group Deliveries').' <label class="label label-success">new</label></a></li>';
         ?>
       </ul>
     </a>
   </li>
-<?php 
+<?php
   } // end if($user->acl['isGasGroupsManagerGroups'] || $user->acl['isGasGroupsManagerDeliveries']) {
-} // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
+} // end if($user->organization->paramsConfig['hasGasGroups']=='Y')
 
 if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
 ?>
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-cubes"></i> <span>Articoli</span>
       <span class="pull-right-container">
@@ -117,7 +117,7 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_default');?>" target=""><?php echo $icon;?>Modifica prezzi</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_percentuale');?>" target=""><?php echo $icon;?>Modifica prezzi in %</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('ArticlesOrders', 'order_choice');?>" target=""><?php echo $icon;?>Modifica prezzo degli articolo associati agli ordini</a></li>
-        <!-- 
+        <!--
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles');?>" target=""><?php echo $icon;?>Importa articoli</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles_form_export');?>" target=""><?php echo $icon;?>Esporta articoli per reimportarli</a></li>
         <li><a href="<?php echo $this->HtmlCustomSite->jLink('CsvImports', 'articles_form_import');?>" target=""><?php echo $icon;?>Importa articoli da esportazione precedente</a></li>
@@ -125,7 +125,7 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
       </ul>
     </a>
   </li>
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-file-excel-o"></i> <span>Gestione Listini da Excel</span>
       <span class="pull-right-container">
@@ -136,14 +136,14 @@ if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {
         <li><a href="<?php echo $this->Url->build('/admin/articles/import'); ?>"><?php echo $icon;?><?php echo __('Import from EXCEL');?> <label class="label label-success">new</label></a></li>
       </ul>
     </a>
-  </li>  
+  </li>
 <?php
-} // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
+} // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y')
 
 // if($user->acl['isSuperReferente']) || $user->acl['isReferentGeneric'])) {
 if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') {
 ?>
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-share-alt"></i> <span>Interoperabilità</span>
       <span class="pull-right-container">
@@ -172,12 +172,12 @@ if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['ha
     </a>
   </li>
 <?php
-} // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y') 
+} // end if($user->acl['isSuperReferente'] && isset($user->organization->paramsConfig['hasArticlesGdxp']) && $user->organization->paramsConfig['hasArticlesGdxp']=='Y')
 
-if($user->organization->paramsConfig['hasGasGroups']=='N' && 
+if($user->organization->paramsConfig['hasGasGroups']=='N' &&
   ($user->acl['isManager'] || $user->acl['isSuperReferente'] || $user->acl['isReferentGeneric'])) {
   ?>
-   <li class="treeview"> 
+   <li class="treeview">
      <a href="#">
        <i class="fa fa-cloud"></i> <span><?php echo __('Export');?></span>
        <span class="pull-right-container">
@@ -193,7 +193,7 @@ if($user->organization->paramsConfig['hasGasGroups']=='N' &&
 
  if($user->acl['isManager']) {
  ?>
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-money"></i> <span><?php echo __('Prepaid');?></span>
       <span class="pull-right-container">
@@ -205,7 +205,7 @@ if($user->organization->paramsConfig['hasGasGroups']=='N' &&
       <?php
       if($this->Identity->get('organization')->paramsConfig['hasCashFilterSupplier']=='Y') {
           echo '<li><a href="'.$this->Url->build('/admin/cashes/supplier-organization-filter').'">'.$icon.__('Prepagato per produttori').' <label class="label label-success">new</label></a></li>';
-      }   
+      }
       ?>
     </ul>
     </a>
@@ -215,7 +215,7 @@ if($user->organization->paramsConfig['hasGasGroups']=='N' &&
 
 if($user->acl['isCassiere']) {
 ?>
-<li class="treeview"> 
+<li class="treeview">
   <a href="#">
     <i class="fa fa-bank"></i> <span><?php echo __('Cashier');?></span>
     <span class="pull-right-container">
@@ -232,9 +232,29 @@ if($user->acl['isCassiere']) {
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('cassiere', 'orders_to_wait_processed_tesoriere');?>" target=""><?php echo $icon;?>Passa gli ordini al tesoriere</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('organizationsCashs', 'ctrl');?>" target=""><?php echo $icon;?>Prepagato - prospetto utenti</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jlink('pages', 'export_docs_cassiere');?>" target=""><?php echo $icon;?>Stampe cassiere</a></li>
-      <li><a href="<?php echo $this->HtmlCustomSite->jlink('pages', 'utility_docs_cassiere');?>" target=""><?php echo $icon;?>Utility da scaricare</a></li>      
+      <li><a href="<?php echo $this->HtmlCustomSite->jlink('pages', 'utility_docs_cassiere');?>" target=""><?php echo $icon;?>Utility da scaricare</a></li>
   </ul>
   </a>
 </li>
-<?php 
-} // if($user->acl['isCassiere']) 
+<?php
+} // if($user->acl['isCassiere'])
+
+if($user->acl['isTesoriere']) {
+    ?>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-credit-card"></i> <span><?php echo __('UserGroupsTesoriere');?></span>
+            <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+            <ul class="treeview-menu">
+                <li><a href="<?php echo $this->HtmlCustomSite->jLink('Tesoriere', 'home');?>" target=""><?php echo __('Tesoriere home');?></a></li>
+                <li><a href="<?php echo $this->HtmlCustomSite->jLink('Tesoriere', 'orders_get_WAIT_PROCESSED_TESORIERE');?>" target=""><?php echo __('OrdersWaitProcessedTesoriere');?></a></li>
+                <li><a href="<?php echo $this->HtmlCustomSite->jLink('Tesoriere', 'orders_get_PROCESSED_TESORIERE');?>" target=""><?php echo __('OrdersProcessedTesoriereShort');?></a></li>
+                <li><a href="<?php echo $this->HtmlCustomSite->jLink('Tesoriere', 'orders_get_TO_REQUEST_PAYMENT');?>" target=""><?php echo __('OrdersToRequestPaymentShort');?></a></li>
+                <li><a href="<?php echo $this->HtmlCustomSite->jLink('RequestPayments', 'index');?>" target=""><?php echo __('OrdersToPaymentShort');?></a></li>
+            </ul>
+        </a>
+    </li>
+<?php
+} // if($user->acl['isTesoriere'])

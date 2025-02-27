@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 
 class RequestPaymentsController extends AppController
@@ -54,6 +55,5 @@ class RequestPaymentsController extends AppController
         $mail_body_post = "\r\nAl momento risulta da saldate 99,01 €.\r\nPer maggior dettagli Collegati al sito ".$portalgas_fe_url." e, dopo aver fatto la login, scarica il documento per effettuare il pagamento.\r\n\r\nSe effettui il pagamento tramite bonifico indica come causale: Richiesta num ".$request_payment->num." di Mario Rossi\r\nGrazie.";
 
         $this->set(compact('request_payment', 'mail_subject', 'mail_body_pre', 'mail_body', 'mail_body_post'));
-
     }
 }

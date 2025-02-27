@@ -2,14 +2,14 @@
 // debug($results);
 use Cake\Core\Configure;
 
-echo $this->HtmlCustomSite->boxTitle(['title' => "Mail", 'subtitle' => 'Sollecito pagamento alla richiesta di pagamento num°'.$request_payment->num]);
+echo $this->HtmlCustomSite->boxTitle(['title' => __("Email"), 'subtitle' => 'Sollecito pagamento alla richiesta di pagamento num°'.$request_payment->num]);
 
 echo '<section class="content">';
 
 if(count($request_payment->summary_payments)==0) {
     echo '<div class="row">';
     echo '<div class="col-md-12">';
-    echo $this->element('msg', ['msg' => "Per la richiesta di pagamento num° $request_payment->num non ci sono gasisti nello stato SOLLECITO a cui inviare la mail"]);
+    echo $this->element('msg', ['msg' => "Per la richiesta di pagamento num° $request_payment->num non ci sono gasisti nello stato SOLLECITO a cui inviare la email"]);
     echo '</div>';
     echo '</div>'; // row
 }
@@ -43,6 +43,7 @@ else {
     echo '<th>'.__('Name').'</th>';
     echo '<th>'.__('Mail').'</th>';
     echo '<th>'.__('Tesoriere Stato Pay').'</th>';
+    echo '<th>'.__('data_mail_send').'</th>';
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
@@ -75,6 +76,14 @@ else {
         echo __($summary_payment->stato);
         echo '</span>';
         echo '</td>';
+        echo '<td>';
+        if(empty($summary_payment->data_send))
+            echo 'Mai';
+        else
+            echo $summary_payment->data_send->i18nFormat('eeee d MMMM');;
+        echo '</td>';
+        echo '</tr>';
+
     }
     echo '</tbody>';
     echo '</table>';
@@ -156,23 +165,36 @@ $( function() {
             },
             success: function (response) {
                 console.log(response, 'response');
-                let msg_ok = '';
+
+                /*
+                 * invii fallito KO
+                 */
                 let msg_ko = '';
                 if(typeof response.results.KO !== undefined) {
+                    console.log(response.results.KO.length, 'KO.length');
                     response.results.KO.forEach(function (result) {
                         msg_ko += result+' non inviata!<br>';
                     });
+
+                    if(response.results.KO.length > 0) {
+                        $('.msg-send-KO').show();
+                        $('.msg-send-KO').html(msg_ko);
+                    }
+                }
+
+                /*
+                 * invii corretti OK
+                 */
+                let msg_ok = '';
+                if(typeof response.results.OK !== undefined) {
+                    console.log(response.results.OK.length, 'KO.length');
                     response.results.OK.forEach(function (result) {
                         msg_ok += result+' inviata correttamente<br>';
                     });
 
-                    if(msg_ko.length > 0) {
+                    if(response.results.OK.length > 0) {
                         $('.msg-send-OK').show();
                         $('.msg-send-OK').html(msg_ok);
-                    }
-                    if(msg_ko.length > 0) {
-                        $('.msg-send-KO').show();
-                        $('.msg-send-KO').html(msg_ko);
                     }
                 }
             },

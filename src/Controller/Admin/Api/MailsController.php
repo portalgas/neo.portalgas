@@ -2,6 +2,7 @@
 namespace App\Controller\Admin\Api;
 
 use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Mailer\Email;
 use Cake\Core\Configure;
@@ -86,6 +87,7 @@ class MailsController extends ApiAppController
         $portalgas_fe_url = $config['Portalgas.fe.url'];
 
         $requestPaymentTable = TableRegistry::get('RequestPayments');
+        $summaryPaymentsTable = TableRegistry::get('SummaryPayments');
 
         $user_ids = explode(',', $user_ids);
         foreach($user_ids as $user_id) {
@@ -122,8 +124,18 @@ class MailsController extends ApiAppController
             else
                 $results['results']['OK'][] = $resultMail['mail'];
 
+            /*
+             * aggiorno data invio mail
+             */
+            $summary_payment = $summaryPaymentsTable->get($request_payment->summary_payments[0]->id);
+            $datas = [];
+            $datas['data_send'] = new Time(date('Y-m-d H:i:s'));
+            $summary_payment = $summaryPaymentsTable->patchEntity($summary_payment, $datas);
+            if (!$summaryPaymentsTable->save($summary_payment)) {
+                Log::error($summary_payment->getErrors());
+            }
         } // end foreach($user_ids as $user_id)
-        $results['results']['KO'][] = 'fractisaaaaaaaaaaaaaaaaaaa';
+
         $results['code'] = 200;
         return $this->_response($results);
     }
