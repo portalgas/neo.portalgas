@@ -31,14 +31,14 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
     <?= $this->fetch('content') ?>
 </body>
 </html>
-*/ 
+*/
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
     <head>
         <title><?= $this->fetch('title') ?></title>
-    
+
         <style style="text/css">
         body {
             background: none repeat scroll 0 0 #F6F6F8;
@@ -48,7 +48,7 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
         }
         a {
             color:#000000;
-        }   
+        }
         .bgContenuto {
             width:100%;
             background-color: #FFFFFF;
@@ -66,7 +66,7 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
         }
         .bgContenuto td {
             font-size: 16px;
-        }       
+        }
         .tblHeader {
             width:100%;
             height:30px;
@@ -81,27 +81,27 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
         .tblFooter ul.social > li {
             list-style: outside none none;
             margin: 0 0 10px;
-        }                
-        .mobileHide { display: inline; } 
-         
-         /* Smartphone Portrait and Landscape */ 
-         @media only screen 
-            and (min-device-width : 320px) 
-            and (max-device-width : 480px){ 
+        }
+        .mobileHide { display: inline; }
+
+         /* Smartphone Portrait and Landscape */
+         @media only screen
+            and (min-device-width : 320px)
+            and (max-device-width : 480px){
              .mobileHide { display: none;}
-         }      
+         }
         </style>
-        
+
     </head>
 
-<body>    
+<body>
 <center>
-   
+
     <table border="0" cellpadding="0" cellspacing="0" align="center" height="100%" width="100%" style="margin: 0;padding: 0;background-color:#F6F6F8;height: 100% !important;max-width: 1240px !important;">
         <tbody>
             <tr>
                 <td>
-                    
+
                         <!-- H E A D E R -->
                         <table width="100%" border="0" cellpadding="5" cellspacing="0">
                             <tr valign="middle" class="bgContenuto" bgcolor="#FFFFFF">
@@ -115,7 +115,7 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
                                 </td>
                             </tr>
                         </table>
-                        
+
                         <!-- C O N T E N T -->
                         <table width="100%" border="0" cellpadding="1" cellspacing="5" class="bgContenuto"  bgcolor="#FFFFFF">
                             <tr valign="middle">
@@ -128,7 +128,7 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
                             </tr>
                             <tr valign="middle">
                                 <td height="20">&nbsp;</td>
-                            </tr>                            
+                            </tr>
                         </table>
 
                         <!-- F O O T E R -->
@@ -140,13 +140,13 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
                                 <td align="left" width="20%">
                                         <!-- span>
                                             <a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
-                                                <img border="0" title="vai allo store di Itunes" src="https://www.portalgas.it/images/appstore.png"></a>        
-                                        </span>                             
+                                                <img border="0" title="vai allo store di Itunes" src="https://www.portalgas.it/images/appstore.png"></a>
+                                        </span>
                                         <span>
                                             <a href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas" target="_blank">
                                                 <img border="0" src="https://www.portalgas.it/images/googleplay.png" title="vai allo store di Google"></a>
-                                        </span -->  
-                                </td>                               
+                                        </span -->
+                                </td>
                                 <td align="left" width="20%">
                                     <ul class="social">
                                             <li style="list-style: outside none none; margin-bottom:5px">
@@ -164,11 +164,11 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
                                     </ul>
                                 </td>
 
-                                
+
                             </tr>
                             <tr valign="middle">
                                 <td colspan="3" style="background-color:#F0F0F0;text-align:center;font-size: 12px;margin: 5px 0 40px 0;">
-                                    <br /><?php echo Configure::read('SOC.name')."/".Configure::read('SOC.descrizione');?> 
+                                    <br /><?php echo Configure::read('SOC.name')."/".Configure::read('SOC.descrizione');?>
                                 </td>
                             </tr>
                         </table>
@@ -176,14 +176,14 @@ $logo_url = 'https://'.Configure::read('SOC.site').'/images/cake/loghi/0/150h50.
 
                 </td>
             </tr>
-            
+
             <!-- IMG sfondo -->
             <tr class="mobileHide">
               <td style="background:url(https://www.portalgas.it/images/mails/<?php echo date('N');?>.jpg) no-repeat scroll center center #000; height: 250px;">
               </td>
             </tr>
-            
-        </tbody>    
+
+        </tbody>
     </table>
 </center>
 
