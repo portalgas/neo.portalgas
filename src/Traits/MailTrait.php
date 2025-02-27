@@ -5,7 +5,7 @@ use Cake\Mailer\Email;
 use Cake\Core\Configure;
 use Cake\Log\Log;
 
-/* 
+/*
  * mail inviate se $this->_config['mail.send'] = true
  */
 trait MailTrait
@@ -22,14 +22,13 @@ trait MailTrait
               ->setReplyTo([Configure::read('Mail.no_reply_mail') => Configure::read('Mail.no_reply_name')])
               ->setSender([Configure::read('SOC.mail') => Configure::read('SOC.name')]) // real sender
               ;
-        $this->_email->setSubject($subject); 
+        $this->_email->setSubject($subject);
         /*
          * /src/Template/Email/html/{template}.ctp
          * /src/Template/Layout/Email/html/default.ctp
-         */        
+         */
         $this->_email->setTemplate($template, 'default')
-               ->setEmailFormat('html')
-              ;              
+               ->setEmailFormat('html');
     }
 
     public function mailSetViewVars($datas) {
@@ -64,7 +63,7 @@ trait MailTrait
             else {
                 $this->_email->send();
                 $results['esito'] = true;
-                $results['mail'] = $mail.' (modalita PRODUZIONE)';
+                $results['mail'] = $mail; // .' (modalita PRODUZIONE)';
             }
         } catch (Exception $e) {
             $results['esito'] = false;
@@ -72,8 +71,8 @@ trait MailTrait
             Log::error('mail', 'ERROR ----------------------!', ['scope' => ['mail']]);
             Log::error('mail', $e, ['scope' => ['mail']]);
             Log::error('mail', 'ERROR ----------------------!', ['scope' => ['mail']]);
-        }  
-        
+        }
+
         return $results;
-    }    
+    }
 }

@@ -201,7 +201,7 @@ $( function() {
             error: function (e) {
                 console.log(e);
                 $('.msg-send-KO').show();
-                $('.msg-send-KO').html('Errore nel invio!');
+                $('.msg-send-KO').html('Errore nell'\invio!');
                 return false;
             },
             complete: function (e) {

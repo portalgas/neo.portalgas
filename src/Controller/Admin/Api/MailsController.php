@@ -49,7 +49,7 @@ class MailsController extends ApiAppController
             $this->mailSetViewVars(['datas' => $datas]);
 
             $mail = trim($userManagerDelivery->user->email);
-            $mail = 'francesco.actis@gmail.com';
+            // $mail = 'francesco.actis@gmail.com';
 
             $resultMail = $this->mailSend($mail);
             if($resultMail['esito'])
@@ -110,11 +110,12 @@ class MailsController extends ApiAppController
             $mail = trim($user->email);
             $importo_richiesto = $request_payment->summary_payments[0]->importo_richiesto;
 
-            $mail_body_pre = "Salve ".$user->username.",\r\nal momento non è ancora pervenuto il tuo pagamento relativo alla richiesta n°".$request_payment->num." inviata il ".$request_payment->data_send->format('d/m/Y').", ";
-            $mail_body_post = "\r\nAl momento risulta da saldate ".$importo_richiesto."€.\r\nPer maggior dettagli Collegati al sito ".$portalgas_fe_url." e, dopo aver fatto la login, scarica il documento per effettuare il pagamento.\r\n\r\nSe effettui il pagamento tramite bonifico indica come causale: Richiesta num ".$request_payment->num." di Mario Rossi\r\nGrazie.";
+            $mail_body_pre = "al momento non è ancora pervenuto il tuo pagamento relativo alla richiesta n°".$request_payment->num." inviata il ".$request_payment->data_send->format('d/m/Y').", ";
+            $mail_body_post = "<br />Al momento risulta da saldate ".$importo_richiesto."€.<br /><br />Per maggior dettagli Collegati al sito ".$portalgas_fe_url." e, dopo aver fatto la login, scarica il documento per effettuare il pagamento.<br /><br />Se effettui il pagamento tramite bonifico indica come causale: Richiesta num ".$request_payment->num." di Mario Rossi<br />Grazie.";
 
             $mail_body = $mail_body_pre . $mail_body . $mail_body_post;
 
+            $this->mailSetViewVars(['greeting' => sprintf(Configure::read('Mail.body_header'), $user->username)]);
             $this->mailSetViewVars(['mail_body' => $mail_body]);
             // $mail = 'francesco.actis@gmail.com';
 
