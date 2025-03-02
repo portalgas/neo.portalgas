@@ -111,7 +111,7 @@ class MailsController extends ApiAppController
             $importo_richiesto = $request_payment->summary_payments[0]->importo_richiesto;
 
             $mail_body_pre = "al momento <b>non</b> è ancora pervenuto il tuo <b>pagamento</b> relativo alla richiesta n°".$request_payment->num." inviata il ".$request_payment->data_send->format('d/m/Y').", ";
-            $mail_body_post = "<br />Al momento risulta da saldate <b>".$importo_richiesto."€.</b><br /><br />Per maggior dettagli collegati al sito ".$portalgas_fe_url." e, dopo aver fatto la login, scarica il documento per effettuare il pagamento.<br /><br />Se effettui il pagamento tramite bonifico indica come causale: Richiesta num ".$request_payment->num." di Mario Rossi<br />Grazie.";
+            $mail_body_post = "<br />Al momento risulta da saldare <b>".$importo_richiesto."€.</b><br /><br />Per maggior dettagli collegati al sito ".$portalgas_fe_url." e, dopo aver fatto la login, scarica il documento per effettuare il pagamento.<br /><br />Se effettui il pagamento tramite bonifico indica come causale: Richiesta num ".$request_payment->num." di Mario Rossi<br />Grazie.";
 
             $mail_body = $mail_body_pre . $mail_body . $mail_body_post;
 

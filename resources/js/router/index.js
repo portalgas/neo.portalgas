@@ -7,6 +7,7 @@ import UserCart from "../views/UserCart.vue";
 import Promotion from "../views/Promotion.vue";
 import Suppliers from "../views/Suppliers.vue";
 import Supplier from "../views/Supplier.vue";
+import Gas from "../views/Gas.vue";
 import GasSuppliers from "../views/GasSuppliers.vue";
 import Gmaps from "../views/GoogleMapLoader.vue";
 import SocialMarketOrders from "../views/SocialMarketOrders.vue";
@@ -57,6 +58,11 @@ const routes = [
     component: Gmaps
   },
   {
+    path: "/gas/:slugGas/:slugPage",
+    name: "Gas",
+    component: Gas
+  },
+  {
     path: "/promozioni",
     name: "Promotion",
     component: Promotion
@@ -80,7 +86,7 @@ const routes = [
     path: "/*",
     name: "404",
     component: Home
-  },  
+  },
   {
     path: "/site/*",
     name: "site404",

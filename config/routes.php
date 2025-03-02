@@ -86,9 +86,13 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);
         $routes->connect('/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
         $routes->connect('/*/*', ['controller' => 'Pages', 'action' => 'vue', 'vue']);
-        $routes->connect('/site', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
-        $routes->connect('/site/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
-        $routes->connect('/site/*/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  // senza autenitcazione (socialMarket)
+        $routes->connect('/site', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);     // senza autenitcazione (socialMarket)
+        $routes->connect('/site/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);   // senza autenitcazione (socialMarket)
+        $routes->connect('/site/*/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']); // senza autenitcazione (socialMarket)
+
+        $routes->connect('/gas', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);     // senza autenitcazione
+        $routes->connect('/gas/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);   // senza autenitcazione
+        $routes->connect('/gas/*/*', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']); // senza autenitcazione
 
         /*
          * mapping route gestiti da cakephp e non da vue
@@ -195,6 +199,21 @@ Router::prefix('api', function (RouteBuilder $routes) {
     });
     $routes->scope('/html-suppliers', ['controller' => 'HtmlSuppliers'], function (RouteBuilder $routes) {
         $routes->connect('/get', ['action' => 'get', '_method' => 'POST']);
+    });
+
+    $routes->scope('/organizations', ['controller' => 'Organizations'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+    });
+
+    /*
+     * gas
+     */
+    $routes->scope('/gas', ['controller' => 'Gas'], function (RouteBuilder $routes) {
+        $routes->connect('/menu/:slugGas', ['action' => 'gets', '_method' => 'GET']);
+        $routes->connect('/page/:slugGas/:slugPage', ['action' => 'page', '_method' => 'GET'],
+            [
+                'pass' => ['slug']
+            ]);
     });
 });
 

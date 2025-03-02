@@ -3,7 +3,12 @@
 <div class="row">
 
 <div class="col-md-12">
-  <h2>Il progetto PortAlGas</h2>
+  <h2>
+      <span style="float:left;">Il progetto PortAlGas</span>
+      <span style="float:right;">
+          <Organizations />
+      </span>
+  </h2>
 </div>
 
 <div class="col-md-3" style="text-align:center;">
@@ -57,7 +62,17 @@
 </template>
 
 <script>
+import Organizations from "../components/common/Organizations.vue";
 export default {
-  name: "Home",
+    name: "Home",
+    components: {
+        Organizations: Organizations
+    },
 };
 </script>
+
+<style scoped>
+h2 {
+    height: 65px;
+}
+</style>
