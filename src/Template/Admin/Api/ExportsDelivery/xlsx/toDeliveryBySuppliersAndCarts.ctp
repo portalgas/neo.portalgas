@@ -1,5 +1,5 @@
-<?php 
-use PhpOffice\PhpSpreadsheet\Spreadsheet; 
+<?php
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Cake\Http\CallbackStream;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -10,15 +10,16 @@ $delivery_data = $this->HtmlCustomSite->excelSanify($this->HtmlCustomSite->drawD
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
-$sheet->setCellValue('A1', ''); 
-$sheet->setCellValue('B1', __('Delivery')); 
-$sheet->setCellValue('C1', $delivery_label); 
-$sheet->setCellValue('D1', $delivery_data); 
+$sheet->setCellValue('A1', '');
+$sheet->setCellValue('B1', __('Delivery'));
+$sheet->setCellValue('C1', $delivery_label);
+$sheet->setCellValue('D1', $delivery_data);
 
 $sheet->setCellValue('B2', __('Total delivery'));
 $sheet->setCellValue('C2', $this->HtmlCustomSiteExport->excelImporto($delivery_tot_importo));
 
-$sheet->setCellValue('A3', ''); 
+$sheet->setCellValue('A3', '');
+$user_id_old = 0;
 
 if(!empty($results)) {
 
@@ -29,7 +30,7 @@ if(!empty($results)) {
 		$sheet->setCellValue('A'.$i, ($numResult+1));
 		$sheet->setCellValue('B'.$i, $result['suppliers_organization']->name);
 		$sheet->setCellValue('C'.$i, __($result['order']['state_code'].'-intro'));
-		
+
 		$i++;
 		$sheet->setCellValue('B'.$i, __('Total Carts'));
 		$sheet->setCellValue('C'.$i, $this->HtmlCustomSiteExport->excelImporto($result['order']['tot_order_only_cart']));
@@ -37,7 +38,7 @@ if(!empty($results)) {
 		if($result['order']['trasport']>0) {
 			$i++;
 			$sheet->setCellValue('B'.$i, __('Trasport'));
-			$sheet->setCellValue('C'.$i, $this->HtmlCustomSiteExport->excelImporto($result['order']['trasport']));			
+			$sheet->setCellValue('C'.$i, $this->HtmlCustomSiteExport->excelImporto($result['order']['trasport']));
 		}
 		if($result['order']['cost_more']>0) {
 			$i++;
@@ -54,8 +55,8 @@ if(!empty($results)) {
 			$i++;
 			$sheet->setCellValue('B'.$i, __('Importo totale ordine'));
 			$sheet->setCellValue('C'.$i, $this->HtmlCustomSiteExport->excelImporto($result['order']['tot_order']));
-		}		
-		
+		}
+
 		if(isset($result['order']['carts'])) {
 			$i++;
 			$sheet->setCellValue('B'.$i, '');
@@ -69,7 +70,7 @@ if(!empty($results)) {
 				$sheet->setCellValue('I'.$i, __('Importo'));
 				$sheet->setCellValue('J'.$i, __('Quantità'));
 				$sheet->setCellValue('K'.$i, __('e importo totali'));
-			}		
+			}
 
 			$i++;
 			$sheet->setCellValue('B'.$i, __('Name'));
@@ -85,10 +86,10 @@ if(!empty($results)) {
 				$sheet->setCellValue('K'.$i, "modificati dal referente");
 				$sheet->setCellValue('L'.$i, __('Importo forzati'));
 			}
-			
+
 			$user_id_old = 0;
 			foreach($result['order']['carts'] as $cart) {
-				
+
 				$final_price = $this->HtmlCustomSite->getCartFinalPrice($cart);
 				($cart->qta_forzato>0) ? $final_qta = $cart->qta_forzato: $final_qta = $cart->qta;
 
@@ -127,7 +128,7 @@ if(!empty($results)) {
 					($cart->qta_forzato>0) ? $tot = $this->HtmlCustomSiteExport->excelimporto($cart->qta_forzato * $cart->articles_order->prezzo): $tot = 0;
 					$sheet->setCellValue('K'.$i, $tot);
 
-					/* 
+					/*
 					* importo modificata dal referente
 					*/
 					($cart->importo_forzato>0) ? $tot = $this->HtmlCustomSiteExport->excelimporto($cart->importo_forzato): $tot = 0;
@@ -148,13 +149,15 @@ if(!empty($results)) {
 		} // if(isset($result['order']['carts']))
 
 		// totale gasista
-		$i++;
-		$this->HtmlCustomSiteExport->toExcelDeliveryBySuppliersAndCartsDrawUserTotale($sheet, $i, $result['order']['users'][$user_id_old], $format, $opts);
-		
+        if($user_id_old>0) {
+            $i++;
+            $this->HtmlCustomSiteExport->toExcelDeliveryBySuppliersAndCartsDrawUserTotale($sheet, $i, $result['order']['users'][$user_id_old], $format, $opts);
+        }
+
 		$i++;
 		$sheet->setCellValue('A'.$i, '');
 
-	} // end foreach($results as $numResult => $result) 
+	} // end foreach($results as $numResult => $result)
 } // end if(!empty($results))
 
 $writer = new Xlsx($spreadsheet);
