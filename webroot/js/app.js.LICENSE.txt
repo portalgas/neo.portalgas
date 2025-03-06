@@ -7,14 +7,6 @@
  */
 
 /*!
- * BootstrapVue Icons, generated from Bootstrap Icons 1.0.0-alpha4
- *
- * @link https://icons.getbootstrap.com/
- * @license MIT
- * https://github.com/twbs/icons/blob/master/LICENSE.md
- */
-
-/*!
  * The buffer module from node.js, for the browser.
  *
  * @author   Feross Aboukhadijeh <http://feross.org>
@@ -22,14 +14,14 @@
  */
 
 /*!
- * Vue.js v2.6.11
- * (c) 2014-2019 Evan You
+ * Vue.js v2.7.16
+ * (c) 2014-2023 Evan You
  * Released under the MIT License.
  */
 
 /*!
- * vuex v3.5.1
- * (c) 2020 Evan You
+ * vuex v3.6.2
+ * (c) 2021 Evan You
  * @license MIT
  */
 
@@ -43,6 +35,10 @@
   * https://github.com/linusborg/portal-vue
   * 
  */
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
 
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
