@@ -28,6 +28,27 @@ else {
 }
 
 /*
+?>
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-files-o"></i> <span><?php echo __('Cms');?></span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    <ul class="treeview-menu">
+        <?php
+        echo '<li><a href="'.$this->Url->build('/admin/cms-menu-types').'">'.$icon.__('CMS menu types').' <label class="label label-success">new</label></a></li>';
+        echo '<li><a href="'.$this->Url->build('/admin/cms-menus').'">'.$icon.__('CMS menus').' <label class="label label-success">new</label></a></li>';
+        echo '<li><a href="'.$this->Url->build('/admin/cms-pages').'">'.$icon.__('CMS pages').' <label class="label label-success">new</label></a></li>';
+        ?>
+      </ul>
+    </a>
+  </li>
+
+<?php
+*/
+
+/*
  * ordini
  */
 if($user->acl['isReferentGeneric'] || $user->acl['isSuperReferente']) {

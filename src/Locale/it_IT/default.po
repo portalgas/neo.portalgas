@@ -6903,3 +6903,9 @@ msgstr "Nota"
 
 msgid "import-article-flag_presente_articlesorders"
 msgstr "Ordinabili"
+
+#
+# CMS
+#
+msgid "Cms Menus"
+msgstr "Voci del menù"

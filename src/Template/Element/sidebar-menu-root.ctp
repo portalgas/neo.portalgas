@@ -5,8 +5,25 @@ $icon = ''; // '<i class="fa fa-circle"></i> ';
 
 $config = Configure::read('Config');
 $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
-?> 
-  <li class="treeview"> 
+?>
+<li class="treeview">
+    <a href="#">
+        <i class="fa fa-files-o"></i> <span><?php echo __('Cms');?></span>
+        <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+        <ul class="treeview-menu">
+            <?php
+            echo '<li><a href="'.$this->Url->build('/admin/cms-menu-types').'">'.$icon.__('CMS menu types').' <label class="label label-success">new</label></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-menus').'">'.$icon.__('CMS menus').' <label class="label label-success">new</label></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-pages').'">'.$icon.__('CMS pages').' <label class="label label-success">new</label></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-page-images').'">'.$icon.__('CMS page images').' <label class="label label-success">new</label></a></li>';
+            ?>
+        </ul>
+    </a>
+</li>
+
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-cog"></i> <span><?php echo __('Administrator');?></span>
       <span class="pull-right-container">
@@ -20,8 +37,8 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->Url->build('/admin/tests/sitemap'); ?>"><?php echo $icon;?><?php echo __('Tests sitemap');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/tests/ajax'); ?>"><?php echo $icon;?><?php echo __('yTests ajax');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/tests/ajax_cart'); ?>"><?php echo $icon;?><?php echo __('Tests ajax cart');?></a></li>
-      <li><a href="<?php echo $this->Url->build('/admin/tests/searchable'); ?>"><?php echo $icon;?><?php echo __('Tests searchable');?></a></li>      
-      <li><a href="<?php echo $this->Url->build('/admin/tests/salt'); ?>"><?php echo $icon;?><?php echo __('Tests salt');?></a></li>   
+      <li><a href="<?php echo $this->Url->build('/admin/tests/searchable'); ?>"><?php echo $icon;?><?php echo __('Tests searchable');?></a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/tests/salt'); ?>"><?php echo $icon;?><?php echo __('Tests salt');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/logs/index'); ?>"><?php echo $icon;?><?php echo __('Logs Lists');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/mail-sends/index'); ?>"><?php echo $icon;?><?php echo __('Logs cron mail');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/order-types/index'); ?>"><?php echo $icon;?><?php echo __('OrderTypes Lists');?></a></li>
@@ -30,8 +47,8 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->Url->build('/admin/geo-provincies/index'); ?>"><?php echo $icon;?><?php echo __('Provincies Lists');?></a></li>
     </ul>
     </a>
-  </li>  
-  <li class="treeview"> 
+  </li>
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-envelope"></i> <span><?php echo __('Mail');?></span>
       <span class="pull-right-container">
@@ -42,8 +59,8 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->Url->build('/admin/mails/suppliers'); ?>"><?php echo $icon;?><?php echo __('Suppliers');?></a></li>
     </ul>
     </a>
-  </li>   
-  <li class="treeview"> 
+  </li>
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-book"></i> <span><?php echo __('Documents');?></span>
       <span class="pull-right-container">
@@ -58,8 +75,8 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->Url->build('/admin/document-owner-models'); ?>"><?php echo $icon;?><?php echo __('List Document Owner Models');?> <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>
     </ul>
     </a>
-  </li>  
-  <li class="treeview"> 
+  </li>
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-handshake-o"></i> <span><?php echo __('Pact');?></span>
       <span class="pull-right-container">
@@ -71,7 +88,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
     </ul>
     </a>
   </li>
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-apple"></i> <span><?php echo __('SocialMarket');?></span>
       <span class="pull-right-container">
@@ -85,7 +102,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
     </a>
   </li>
 
-  <li class="treeview"> 
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-credit-card"></i> <span><?php echo __('OrganizationPay');?></span>
       <span class="pull-right-container">
@@ -102,8 +119,8 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('pages', 'export_docs_root');?>" target="">Stampa documenti</a></li>
     </ul>
     </a>
-  </li>  
-  <li class="treeview"> 
+  </li>
+  <li class="treeview">
     <a href="#">
       <i class="fa fa-dashboard"></i> <span>Queue</span>
       <span class="pull-right-container">
@@ -121,12 +138,12 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
           <a href="#"><?php echo $icon;?>Mappings
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
-              <small class="label pull-right bg-red">root</small>   
+              <small class="label pull-right bg-red">root</small>
             </span>
           </a>
           <ul class="treeview-menu">
-            
-            <li><a href="<?php echo $this->Url->build('/admin/tables'); ?>"><?php echo $icon;?>Lists tables</a></li>            
+
+            <li><a href="<?php echo $this->Url->build('/admin/tables'); ?>"><?php echo $icon;?>Lists tables</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/queue-tables'); ?>"><?php echo $icon;?>Lists queue tables</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/mapping-value-types'); ?>"><?php echo $icon;?>Lists mapping value types</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/mapping-types'); ?>"><?php echo $icon;?>Lists mapping types</a></li>
