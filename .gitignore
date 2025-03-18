@@ -9,6 +9,8 @@ schema.xlsx
 /src/Command/Sh/MailUsersOrdersClose-*.sh
 /src/Command/Sh/MailUsersOrdersOpen-*.sh
 
+/resources/cms/*
+
 # CakePHP specific files #
 ##########################
 /config/app.php
@@ -21,8 +23,8 @@ schema.xlsx
 
 # vue #
 ##########################
-/node_modules/* 
-/resources/js/config/* 
+/node_modules/*
+/resources/js/config/*
 npm-debug.log*
 
 # OS generated files #
