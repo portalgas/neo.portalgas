@@ -32,27 +32,27 @@
           <table class="table table-hover">
             <thead>
               <tr>
+                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('code') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($cmsMenuTypes as $cmsMenuType): ?>
                 <tr>
+                    <td class="actions">
+                        <?= $this->Html->link(__('View'), ['action' => 'view', $cmsMenuType->id], ['class'=>'btn btn-info btn-xs']) ?>
+                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cmsMenuType->id], ['class'=>'btn btn-warning btn-xs']) ?>
+                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenuType->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenuType->id), 'class'=>'btn btn-danger btn-xs']) ?>
+                    </td>
                   <td><?= $this->Number->format($cmsMenuType->id) ?></td>
                   <td><?= h($cmsMenuType->code) ?></td>
                   <td><?= h($cmsMenuType->name) ?></td>
                   <td><?= h($cmsMenuType->created) ?></td>
                   <td><?= h($cmsMenuType->modified) ?></td>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $cmsMenuType->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cmsMenuType->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenuType->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenuType->id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
                 </tr>
               <?php endforeach; ?>
             </tbody>

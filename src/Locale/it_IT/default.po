@@ -6904,8 +6904,67 @@ msgstr "Nota"
 msgid "import-article-flag_presente_articlesorders"
 msgstr "Ordinabili"
 
+msgid "Is Public"
+msgstr "E' pubblico"
+
+msgid "Is Active"
+msgstr "E' attivo"
+
+msgid "Is System"
+msgstr "E' di sistema"
 #
 # CMS
 #
 msgid "Cms Menus"
 msgstr "Voci del menù"
+
+msgid "Cms MenuType"
+msgstr "Tipologia di voce di menù"
+
+msgid "Cms MenuName"
+msgstr "Voce del menù"
+
+msgid "Cms Menu Is Public"
+msgstr "E' visibile a tutti"
+
+msgid "Cms Docs"
+msgstr "Documenti"
+
+msgid "Cms Pages"
+msgstr "Pagine"
+
+msgid "CMS Page Images"
+msgstr "Immagini delle pagine"
+
+msgid "Cms LinkExt Options"
+msgstr "Indirizzo esterno"
+
+msgid "Cms Add Doc"
+msgstr "Aggiungi documento"
+
+msgid "Cms Edit Doc"
+msgstr "Modifica documento"
+
+msgid "Cms Delete Doc"
+msgstr "Elimina documento"
+
+msgid "Cms Add Page Image"
+msgstr "Aggiungi immagine"
+
+msgid "Cms Edit Page Image"
+msgstr "Modifica immagine"
+
+msgid "Cms Delete Page Image"
+msgstr "Elimina immagine"
+
+msgid "Cms Add Page"
+msgstr "Aggiungi pagina"
+
+msgid "Cms Edit Page"
+msgstr "Modifica pagina"
+
+msgid "Cms Delete Page"
+msgstr "Elimina pagina"
+
+msgid "Cms Doc Download"
+msgstr "Scarica il documento"

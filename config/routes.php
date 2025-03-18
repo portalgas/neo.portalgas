@@ -394,6 +394,12 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/order', ['action' => 'orders', '_method' => 'GET']);
         });
 
+        $routes->scope('/cms-docs', ['controller' => 'CmsDocs'], function (RouteBuilder $routes) {
+            $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);
+            $routes->connect('/doc1Upload', ['action' => 'doc1Upload', '_method' => 'POST']);
+        $routes->connect('/doc1Delete', ['action' => 'doc1Delete', '_method' => 'POST']);
+    });
+
         $routes->fallbacks(DashedRoute::class);
     });
 });

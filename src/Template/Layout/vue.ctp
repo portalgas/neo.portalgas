@@ -18,8 +18,8 @@ $organization = $this->Identity->get('organization');
    <?php
     if(!Configure::read('Site.robots'))
       echo '<meta name="robots" content="noindex">';
-    ?>    
-    <?php echo $this->element('fe/metatag');?> 
+    ?>
+    <?php echo $this->element('fe/metatag');?>
     <title><?php echo Configure::read('html.title'); ?></title>
     <?= $this->Html->meta('icon') ?>
 
@@ -48,10 +48,10 @@ $organization = $this->Identity->get('organization');
 	<noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
 
 	<?php echo $this->fetch('content');?>
-    
+
     <?php echo $this->element('fe/footer', ['config' => $config, 'organization' => $organization, 'user' => $this->Identity]);?>
     <?php echo $this->element('fe/include_js'); ?>
-    
+
     <script type="text/javascript">
     "use strict";
 
@@ -72,7 +72,7 @@ $organization = $this->Identity->get('organization');
         "X-Requested-With": "XMLHttpRequest",
         "X-CSRF-Token": csrfToken
     };
-    
+
     $(document).ready(function() {
         window.setInterval(callPing, <?php echo Configure::read('pingTime');?>);
         /* cors domain window.setInterval(callPingJoomla, <?php echo Configure::read('pingTime');?>); */
@@ -96,8 +96,8 @@ $organization = $this->Identity->get('organization');
         httpRequest.setRequestHeader("Content-type", "application/json");
         httpRequest.setRequestHeader('X-CSRF-Token', csrfToken);
         httpRequest.send(null);
-    }   
-    function callPingJoomla() { 
+    }
+    function callPingJoomla() {
         var url = '<?php echo $portalgas_ping_session;?>';
         /* console.log("Script.callPingJoomla "+url);  */
         var httpRequest = new XMLHttpRequest();
@@ -105,8 +105,8 @@ $organization = $this->Identity->get('organization');
         httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         httpRequest.withCredentials = true;
         httpRequest.send(null);
-    }   
-    </script>                           
+    }
+    </script>
 </main>
    </body>
 </html>

@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * CmsPageImages Model
  *
- * @property &\Cake\ORM\Association\BelongsTo $Organizations
+ * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\CmsPagesTable&\Cake\ORM\Association\BelongsTo $CmsPages
  *
  * @method \App\Model\Entity\CmsPageImage get($primaryKey, $options = [])
@@ -65,12 +65,13 @@ class CmsPageImagesTable extends Table
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 75)
+            ->maxLength('name', 256)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
         $validator
             ->scalar('path')
+            ->maxLength('path', 256)
             ->allowEmptyString('path');
 
         $validator
@@ -78,6 +79,10 @@ class CmsPageImagesTable extends Table
             ->maxLength('ext', 75)
             ->requirePresence('ext', 'create')
             ->notEmptyString('ext');
+
+        $validator
+            ->numeric('size')
+            ->allowEmptyString('size');
 
         $validator
             ->integer('sort')

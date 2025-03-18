@@ -394,6 +394,9 @@ Configure::write('Organization.img.preview.width', '50px');
 
 Configure::write('App.img.cake', '/images/cake');
 
+
+Configure::write('Cms.doc.paths', '/resources/cms/docs/%s');
+
 /*
  * https://github.com/madbob/gdxp
  */

@@ -1,6 +1,6 @@
 <?php
 /*
- per estensioni webp ed evitare 
+ per estensioni webp ed evitare
  Error: [Imagine\Exception\InvalidArgumentException] Saving image in "webp" format is not supported, please use one of the following extensions: "gif", "jpeg", "png", "wbmp", "xbm" (/vendor/imagine/imagine/lib/Imagine/Gd/Image.php:536)
 #0 /vendor/imagine/imagine/lib/Imagine/Gd/Image.php(233): Imagine\Gd\Image->saveOrOutput()
 
@@ -24,6 +24,8 @@ use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
+use Sluggable\Utility\Slug;
+
 
 /*
 	https://github.com/zankatkalpesh/cakephp-3-file-upload
@@ -170,7 +172,8 @@ class UploadComponent extends Component {
 	 *
 	 * @var	bool
 	 */
-	public $encrypt_name = FALSE;
+    public $encrypt_name = FALSE;
+    public $slug_name = FALSE;
 
 	/**
 	 * Is image flag
@@ -275,7 +278,7 @@ class UploadComponent extends Component {
 	public function initialize(array $config = [])
 	{
 		Configure::load('upload');
-	
+
 		//Read mime_types Configure
 		$mime_types = Configure::read('mime_types');
 		if(empty($mime_types) || !is_array($mime_types)){
@@ -284,10 +287,10 @@ class UploadComponent extends Component {
 
 		$mime_types['json'][] = 'text/plain';
 		$this->_mimes = $mime_types;
-        
-		$this->init($config); 		
+
+		$this->init($config);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -297,11 +300,11 @@ class UploadComponent extends Component {
 	 * @param	bool	$reset
 	 * @return	FileuploadComponent
 	 */
-	 
+
 	public function init($sConfig = [], $reset = TRUE)
 	{
 		$this->_file_name_override = '';
-		
+
 		$reflection = new \ReflectionClass($this);
 		if ($reset === TRUE)
 		{
@@ -348,7 +351,7 @@ class UploadComponent extends Component {
 		// supplied file name for all uploads until initialized again
 		$this->_file_name_override = $this->file_name;
 		//$this->_file_name_override = '';
-		
+
 		return $this;
 	}
 
@@ -377,7 +380,7 @@ class UploadComponent extends Component {
 			$esito = simplexml_load_file($this->file_temp); // object(SimpleXMLElement)
 		}
 
-		return $esito;		
+		return $esito;
 	}
 
 	public function readCsv($field = 'file') {
@@ -386,12 +389,12 @@ class UploadComponent extends Component {
 			$file = new File($this->file_temp);
 			dd($file->handle);
 			$esito = $file->read();
-			$file->close(); 
-			// dd($esito);			
+			$file->close();
+			// dd($esito);
 			// $esito = fopen($this->file_temp, "r");
 		}
 
-		return $esito;		
+		return $esito;
 	}
 
 
@@ -463,7 +466,7 @@ class UploadComponent extends Component {
 
 			return FALSE;
 		}
-		
+
 		// Set the uploaded data as class variables
 		$this->file_temp = $_file['tmp_name'];
 		$this->file_size = $_file['size'];
@@ -486,7 +489,7 @@ class UploadComponent extends Component {
 			$this->set_error(__('upload_invalid_filetype'), 'debug');
 			return FALSE;
 		}
-		
+
 		// if we're overriding, let's now make sure the new name and type is allowed
 		if ($this->_file_name_override !== '')
 		{
@@ -509,7 +512,7 @@ class UploadComponent extends Component {
 				return FALSE;
 			}
 		}
-		
+
 		// Convert the file size to kilobytes
 		if ($this->file_size > 0)
 		{
@@ -533,7 +536,7 @@ class UploadComponent extends Component {
 
 		// Sanitize the file name for security
 		$this->file_name = $this->sanitize_filename($this->file_name);
-		
+
 		// Truncate the file name if it's too long
 		if ($this->max_filename > 0)
 		{
@@ -551,7 +554,7 @@ class UploadComponent extends Component {
 			// file_ext was previously lower-cased by a get_extension() call
 			$this->file_name = substr($this->file_name, 0, -$ext_length).$this->file_ext;
 		}
-		
+
 		/*
 		 * Validate the file name
 		 * This function appends an number onto the end of
@@ -575,10 +578,10 @@ class UploadComponent extends Component {
 			$this->set_error('upload_unable_to_write_file', 'error');
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
-	
+
 	private function _copy() {
 
 		// Is the upload path valid?
@@ -683,10 +686,17 @@ class UploadComponent extends Component {
 	 */
 	public function set_filename($path, $filename)
 	{
-		if ($this->encrypt_name === TRUE)
-		{
-			$filename = md5(uniqid(mt_rand())).$this->file_ext;
-		}
+        if ($this->encrypt_name === TRUE)
+        {
+            $filename = md5(uniqid(mt_rand())).$this->file_ext;
+        }
+
+        if ($this->slug_name === TRUE)
+        {
+            $filename = str_replace($this->file_ext, '', $filename);
+            $filename = Slug::generate($filename).$this->file_ext;
+        }
+
 
 		if ($this->overwrite === TRUE OR ! file_exists($path.$filename))
 		{
@@ -928,7 +938,7 @@ class UploadComponent extends Component {
 		}
 
 		$ext = strtolower(ltrim($this->file_ext, '.'));
-	
+
 		if ( ! in_array($ext, $this->allowed_types, TRUE))
 		{
 			return FALSE;
@@ -946,7 +956,7 @@ class UploadComponent extends Component {
 		}
 
 		if (isset($this->_mimes[$ext]))
-		{   
+		{
 			return is_array($this->_mimes[$ext])
 				? in_array($this->file_type, $this->_mimes[$ext], TRUE)
 				: ($this->_mimes[$ext] === $this->file_type);
@@ -1030,6 +1040,14 @@ class UploadComponent extends Component {
 		{
 			$this->upload_path = str_replace('\\', '/', realpath($this->upload_path));
 		}
+
+        if ( ! is_dir($this->upload_path))
+        {
+            if(!mkdir($this->upload_path, 0755, true)) {
+                $this->set_error("La directory per l'upload [".$this->upload_path."] non esiste e non è stato possibile crearla", 'error');
+                return FALSE;
+            }
+        }
 
 		if ( ! is_dir($this->upload_path))
 		{
@@ -1367,7 +1385,7 @@ class UploadComponent extends Component {
 
 		return FALSE;
 	}
-	
+
 	/**
 	 * Tests for file writability
 	 *
@@ -1451,7 +1469,7 @@ class UploadComponent extends Component {
 
 		return stripslashes($str);
 	}
-	
+
 	/**
 	 * Remove Invisible Characters
 	 *
@@ -1481,7 +1499,7 @@ class UploadComponent extends Component {
 
 		return $str;
 	}
-	
+
 	function is_php($version)
 	{
 		static $_is_php;

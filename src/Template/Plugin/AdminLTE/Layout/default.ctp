@@ -3,7 +3,7 @@ use Cake\Core\Configure;
 
 $config = Configure::read('Config');
 $portalgas_ping_session = $config['Portalgas.ping.session.BO'];
-$portalgas_bo_url = $config['Portalgas.bo.url'];        
+$portalgas_bo_url = $config['Portalgas.bo.url'];
 ?>
 
 <!DOCTYPE html>
@@ -100,21 +100,21 @@ $(document).ready(function() {
       }
     });
 
-    objScript = new Script(); 
+    objScript = new Script();
     objScript.ping('<?php echo Configure::read('pingAjaxUrl');?>', <?php echo Configure::read('pingTime');?>);
-    /* cors domain 
+    /* cors domain
      * objScript.ping('<?php echo $portalgas_ping_session;?>', <?php echo Configure::read('pingTime');?>);
      */
     window.setInterval(callPingJoomla, <?php echo Configure::read('pingTime');?>, '<?php echo $portalgas_ping_session;?>');
-    
+
     var anchor = objScript.getUrlAnchor();
     if(anchor!='') {
         $('#'+anchor).css('background-color', 'yellow');
-    }    
+    }
 
     /*
     tinymce.init({ mode : 'specific_textareas',
-                   editor_selector : "editor", 
+                   editor_selector : "editor",
                    theme : "silver"
                  });
     */
@@ -122,27 +122,27 @@ $(document).ready(function() {
     if($('.editor').length>0) {
       ClassicEditor
             .create(document.querySelector( '.editor' ), {
-                toolbar: <?php echo Configure::read('ckeditor5.toolbar');?>  
+                toolbar: <?php echo Configure::read('ckeditor5.toolbar');?>
             }
-          )  
+          )
           .then( editor => {
               console.log( 'Editor was initialized', editor );
               myEditor = editor;
           })
           .catch( error => {
               console.error( error );
-          });      
+          });
     }
 });
 
 function callPingJoomla(ajaxUrl) {
-    $.ajax({url: ajaxUrl,  
+    $.ajax({url: ajaxUrl,
       type: 'GET',
       dataType: 'html',
       cache: false,
       xhrFields: {
           withCredentials: true
-      },                           
+      },
       success: function (response) {
           // console.log(response, 'callPingJoomla');
       },
@@ -150,9 +150,9 @@ function callPingJoomla(ajaxUrl) {
           console.error(e, ajaxUrl);
       }
     });
-} 
-</script>  
-  
+}
+</script>
+
 <?php echo $this->fetch('script'); ?>
 <?php echo $this->fetch('scriptBottom'); ?>
 

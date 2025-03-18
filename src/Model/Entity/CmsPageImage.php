@@ -12,10 +12,12 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string|null $path
  * @property string $ext
+ * @property float|null $size
  * @property int|null $sort
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
+ * @property \App\Model\Entity\Organization $organization
  * @property \App\Model\Entity\CmsPage $cms_page
  */
 class CmsPageImage extends Entity
@@ -35,9 +37,11 @@ class CmsPageImage extends Entity
         'name' => true,
         'path' => true,
         'ext' => true,
+        'size' => true,
         'sort' => true,
         'created' => true,
         'modified' => true,
+        'organization' => true,
         'cms_page' => true,
     ];
 }

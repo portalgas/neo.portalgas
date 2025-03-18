@@ -7,7 +7,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * CmsMenuDocs Model
+ * CmsDocs Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\CmsMenusTable&\Cake\ORM\Association\BelongsTo $CmsMenus
@@ -47,7 +47,6 @@ class CmsDocsTable extends Table
         ]);
         $this->belongsTo('CmsMenus', [
             'foreignKey' => 'cms_menu_id',
-            'joinType' => 'INNER',
         ]);
     }
 
@@ -65,12 +64,13 @@ class CmsDocsTable extends Table
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 75)
+            ->maxLength('name', 256)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
         $validator
             ->scalar('path')
+            ->maxLength('path', 256)
             ->allowEmptyString('path');
 
         $validator
@@ -78,6 +78,10 @@ class CmsDocsTable extends Table
             ->maxLength('ext', 75)
             ->requirePresence('ext', 'create')
             ->notEmptyString('ext');
+
+        $validator
+            ->numeric('size')
+            ->allowEmptyString('size');
 
         return $validator;
     }

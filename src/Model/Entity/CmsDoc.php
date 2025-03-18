@@ -4,14 +4,15 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * CmsMenuDoc Entity
+ * CmsDoc Entity
  *
  * @property int $id
  * @property int $organization_id
- * @property int $cms_menu_id
+ * @property int|null $cms_menu_id
  * @property string $name
  * @property string|null $path
  * @property string $ext
+ * @property float|null $size
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
@@ -35,6 +36,7 @@ class CmsDoc extends Entity
         'name' => true,
         'path' => true,
         'ext' => true,
+        'size' => true,
         'created' => true,
         'modified' => true,
         'organization' => true,

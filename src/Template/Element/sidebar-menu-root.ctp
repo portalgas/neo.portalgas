@@ -14,10 +14,11 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </span>
         <ul class="treeview-menu">
             <?php
-            echo '<li><a href="'.$this->Url->build('/admin/cms-menu-types').'">'.$icon.__('CMS menu types').' <label class="label label-success">new</label></a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-menus').'">'.$icon.__('CMS menus').' <label class="label label-success">new</label></a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-pages').'">'.$icon.__('CMS pages').' <label class="label label-success">new</label></a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-page-images').'">'.$icon.__('CMS page images').' <label class="label label-success">new</label></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-menu-types').'">'.$icon.__('CMS MenuType').' <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-menus').'">'.$icon.__('CMS Menus').'</a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-pages').'">'.$icon.__('CMS Pages').'</a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-page-images').'">'.$icon.__('CMS Page Images').' <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>';
+            echo '<li><a href="'.$this->Url->build('/admin/cms-docs').'">'.$icon.__('CMS Docs').' <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>';
             ?>
         </ul>
     </a>
