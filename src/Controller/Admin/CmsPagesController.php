@@ -20,7 +20,8 @@ class CmsPagesController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Organizations', 'CmsMenus'],
+            'contain' => ['CmsMenus', 'CmsPagesImages', 'CmsPagesDocs'],
+            'conditions' => ['CmsPages.organization_id' => $this->_organization->id],
         ];
         $cmsPages = $this->paginate($this->CmsPages);
 
@@ -37,7 +38,7 @@ class CmsPagesController extends AppController
     public function view($id = null)
     {
         $cmsPage = $this->CmsPages->get($id, [
-            'contain' => ['Organizations', 'CmsMenus', 'CmsPageImages'],
+            'contain' => ['Organizations', 'CmsMenus', 'CmsPagesDocs', 'CmsPagesImages'],
         ]);
 
         $this->set('cmsPage', $cmsPage);

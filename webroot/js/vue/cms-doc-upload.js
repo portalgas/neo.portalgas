@@ -1,4 +1,4 @@
-Dropzone.options.myDropzone = {
+Dropzone.options.myDropzoneDoc = {
     url: '/admin/api/cms-docs/doc1Upload',
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrfToken"]').attr('content')
@@ -42,7 +42,9 @@ Dropzone.options.myDropzone = {
             if(response.esito) {
 
             }
-            window.location.reload();
+
+            vueCmsDocs.gets();
+            // window.location.reload();
             // console.log(response, 'success response');
         });
         this.on('removedfile', function(file) {
@@ -63,52 +65,3 @@ Dropzone.options.myDropzone = {
         else { done(); }
     }
 };
-
-var vueCmsDocs = null;
-
-$(function () {
-
-    var router = new VueRouter({
-        mode: 'history',
-        routes: []
-    });
-
-    var ico_spinner = 'fa-lg fa fa-spinner fa-spin';
-
-    vueCmsDocs = new Vue({
-        router,
-        el: '#vue-cms-docs',
-        data: {
-            errors: [],
-            docs: null,
-            is_found_docs: false
-        },
-        methods: {
-            gets: function(e) {
-
-                $('.run-docs').show();
-                $('.run-docs .spinner').addClass(ico_spinner);
-
-                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-                axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrfToken"]').attr('content');
-
-                axios.get('/admin/api/cms-docs/index')
-                    .then(response => {
-                        /* console.log(response.data); */
-                        $('.run-docs .spinner').removeClass(ico_spinner);
-                        this.is_found_docs = true;
-                        this.docs = response.data.results;
-                    })
-                    .catch(error => {
-                        $('.run-orders .spinner').removeClass(ico_spinner);
-                        this.is_found_docs = false;
-                        console.error("Error: " + error);
-                    });
-            },
-        },
-        mounted: function(){
-            console.log('mounted vueCmsDocs');
-            this.gets();
-        }
-    });
-});

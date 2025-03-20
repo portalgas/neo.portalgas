@@ -1,11 +1,12 @@
 <?php
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
-echo $this->Html->script('cms-doc.js?v=20250316', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/cms-doc-upload.js?v=20250316', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInclude']);
 ?>
 <section class="content-header">
     <h1>
-        <?php echo __('Cms Doc');?>
+        <?php echo __('Cms Docs');?>
         <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
@@ -25,11 +26,11 @@ echo $this->Html->script('cms-doc.js?v=20250316', ['block' => 'scriptPageInclude
                 <div class="box-body">
                     <?php
                     echo $this->Form->create($cmsDoc, ['role' => 'form']);
-                    echo '<div class="dropzone" id="myDropzone"></div>';
+                    echo '<div class="dropzone" id="myDropzoneDoc"></div>';
                     echo $this->Form->end(); ?>
 
                     <div id="vue-cms-docs" style="margin-top: 20px;">
-                        <div v-show="is_found_docs === false" style="display: none;text-align: center;" class="run run-orders"><div class="spinner"></div></div>
+                        <div v-show="is_found_docs === false" style="display: none;text-align: center;" class="run run-docs"><div class="spinner"></div></div>
                         <div v-show="is_found_docs === true" style="display:none;">
 
                             <table class="table table-hover">
@@ -44,7 +45,6 @@ echo $this->Html->script('cms-doc.js?v=20250316', ['block' => 'scriptPageInclude
                                 <tbody>
                                 <tr
                                     v-for="doc in docs"
-                                    :order="doc.id"
                                     :key="doc.id"
                                 >
                                     <td>
@@ -66,6 +66,7 @@ echo $this->Html->script('cms-doc.js?v=20250316', ['block' => 'scriptPageInclude
 
                         </div>
                     </div>
+
                 </div>
             </div>
             <!-- /.box -->

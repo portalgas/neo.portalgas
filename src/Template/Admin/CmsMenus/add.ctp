@@ -29,56 +29,54 @@ use Cake\Core\Configure;
                 echo $this->Form->control('cms_menu_type_id', ['options' => $cmsMenuTypes, 'id' => 'cms_menu_type_id', 'label' => __('Cms MenuType'), 'empty' => Configure::read('HtmlOptionEmpty')]);
                 echo $this->Form->control('name', ['label' => __('Cms MenuName'), 'required' => true]);
 
-                echo '<div id="doc" style="display:none;">';
-                if(count($cmsDocs->toArray())==0) {
-                    echo '<div class="row">';
-                    echo '<div class="col col-md-12">';
+                /*
+                 * docs
+                 */
+                echo '<div class="row" id="doc" style="display:none;">';
+                echo '<div class="col col-md-8">';
+                if(count($cmsDocs->toArray())==0)
                     echo $this->element('msg', ['msg' => "Non ci sono documenti caricati da poter associare alla voce di menù", 'class' => 'warning']);
-                    echo '</div>';
-                    echo '</div>';
-                }
                 else
-                    echo $this->Form->control('cms_docs_id', ['options' => $cmsDocs]);
-
-                  echo '<div class="row">';
-                  echo '<div class="col col-md-12" style="vertical-align: middle;"><br />';
-                  echo '<a href="'.$this->Url->build(['controller' => 'cmsDocs', 'action' => 'index']).'" class="btn btn-primary btn-block">'.__('Cms Add Doc').'</a>';
-                  echo '</div>';
-                  echo '</div>';
-
+                    echo $this->Form->control('cms_docs_id', ['options' => $cmsDocs, 'label' => __('Cms Docs'), 'empty' => Configure::read('HtmlOptionEmpty')]);
+                echo '</div>';
+                echo '<div class="col col-md-4"><br />';
+                echo '<a href="'.$this->Url->build(['controller' => 'cmsDocs', 'action' => 'index']).'" class="btn btn-primary btn-block">'.__('Cms Add Doc').'</a>';
+                echo '</div>';
                 echo '</div>';
 
-                echo '<div id="page" style="display:none;">';
-                  if(count($cmsPages->toArray())==0) {
-                      echo '<div class="row">';
-                      echo '<div class="col col-md-12">';
-                      echo $this->element('msg', ['msg' => "Non ci sono pagine da poter associare alla voce di menù", 'class' => 'warning']);
-                      echo '</div>';
-                      echo '</div>';
-                  }
-                  else
-                    echo $this->Form->control('cms_page_id', ['options' => $cmsPages]);
-
-                      echo '<div class="row">';
-                      echo '<div class="col col-md-12" style="vertical-align: middle;"><br />';
-                      echo '<a href="'.$this->Url->build(['controller' => 'cmsPages', 'action' => 'add']).'" class="btn btn-primary btn-block">'.__('Cms Add Page').'</a>';
-                      echo '</div>';
-                      echo '</div>';
+                /*
+                * pages
+                */
+                echo '<div class="row" id="page" style="display:none;">';
+                echo '<div class="col col-md-8">';
+                if(count($cmsPages->toArray())==0)
+                    echo $this->element('msg', ['msg' => "Non ci sono pagine da poter associare alla voce di menù", 'class' => 'warning']);
+                else
+                    echo $this->Form->control('cms_page_id', ['options' => $cmsPages, 'label' => __('Cms Pages'), 'empty' => Configure::read('HtmlOptionEmpty')]);
+                echo '</div>';
+                echo '<div class="col col-md-4"><br />';
+                echo '<a href="'.$this->Url->build(['controller' => 'cmsPages', 'action' => 'index']).'" class="btn btn-primary btn-block">'.__('Cms Add Page').'</a>';
+                echo '</div>';
                 echo '</div>';
 
                 echo '<div id="link-ext" style="display:none;">';
                 echo $this->Form->control('options', ['type' => 'text', 'label' => __('Cms LinkExt Options')]);
                 echo '</div>';
 
+                echo '<div class="row">';
+                echo '<div class="col col-md-6">';
                 echo $this->Form->control('is_public', ['label' => __('Cms Menu Is Public')]);
+                echo '</div>';
+                echo '<div class="col col-md-6">';
                 echo $this->Form->control('is_active');
-              ?>
-            </div>
-            <!-- /.box-body -->
+                echo '</div>';
+                echo '</div>';
 
-          <?php echo $this->Form->submit(__('Submit')); ?>
+                echo '</div>'; //.box-body
 
-          <?php echo $this->Form->end(); ?>
+                echo $this->Form->submit(__('Submit'));
+
+          echo $this->Form->end(); ?>
         </div>
         <!-- /.box -->
       </div>

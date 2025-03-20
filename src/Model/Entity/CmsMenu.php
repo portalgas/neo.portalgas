@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Organization $organization
  * @property \App\Model\Entity\CmsMenuType $cms_menu_type
+ * @property \App\Model\Entity\CmsDoc[] $cms_docs
  * @property \App\Model\Entity\CmsPage[] $cms_pages
  */
 class CmsMenu extends Entity
@@ -46,7 +47,7 @@ class CmsMenu extends Entity
         'modified' => true,
         'organization' => true,
         'cms_menu_type' => true,
-        'cms_pages' => true,
         'cms_docs' => true,
+        'cms_pages' => true,
     ];
 }

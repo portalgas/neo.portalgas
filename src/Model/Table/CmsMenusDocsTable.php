@@ -7,25 +7,24 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * CmsPages Model
+ * CmsMenusDocs Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\CmsMenusTable&\Cake\ORM\Association\BelongsTo $CmsMenus
- * @property &\Cake\ORM\Association\HasMany $CmsPagesDocs
- * @property &\Cake\ORM\Association\HasMany $CmsPagesImages
+ * @property \App\Model\Table\CmsDocsTable&\Cake\ORM\Association\BelongsTo $CmsDocs
  *
- * @method \App\Model\Entity\CmsPage get($primaryKey, $options = [])
- * @method \App\Model\Entity\CmsPage newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\CmsPage[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\CmsPage|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\CmsPage saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\CmsPage patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\CmsPage[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\CmsPage findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc get($primaryKey, $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\CmsMenusDoc findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class CmsPagesTable extends Table
+class CmsMenusDocsTable extends Table
 {
     /**
      * Initialize method
@@ -37,8 +36,8 @@ class CmsPagesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('cms_pages');
-        $this->setDisplayField('name');
+        $this->setTable('cms_menus_docs');
+        $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -51,11 +50,9 @@ class CmsPagesTable extends Table
             'foreignKey' => 'cms_menu_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('CmsPagesDocs', [
-            'foreignKey' => 'cms_page_id',
-        ]);
-        $this->hasMany('CmsPagesImages', [
-            'foreignKey' => 'cms_page_id',
+        $this->belongsTo('CmsDocs', [
+            'foreignKey' => 'cms_doc_id',
+            'joinType' => 'INNER',
         ]);
     }
 
@@ -68,18 +65,12 @@ class CmsPagesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('id')
+            ->integer('id')
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('name')
-            ->maxLength('name', 75)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
-
-        $validator
-            ->scalar('body')
-            ->allowEmptyString('body');
+            ->integer('sort')
+            ->notEmptyString('sort');
 
         return $validator;
     }
@@ -95,6 +86,7 @@ class CmsPagesTable extends Table
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['cms_menu_id'], 'CmsMenus'));
+        $rules->add($rules->existsIn(['cms_doc_id'], 'CmsDocs'));
 
         return $rules;
     }

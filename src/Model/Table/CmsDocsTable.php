@@ -10,7 +10,8 @@ use Cake\Validation\Validator;
  * CmsDocs Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\CmsMenusTable&\Cake\ORM\Association\BelongsTo $CmsMenus
+ * @property &\Cake\ORM\Association\HasMany $CmsMenusDocs
+ * @property &\Cake\ORM\Association\HasMany $CmsPagesDocs
  *
  * @method \App\Model\Entity\CmsDoc get($primaryKey, $options = [])
  * @method \App\Model\Entity\CmsDoc newEntity($data = null, array $options = [])
@@ -45,8 +46,11 @@ class CmsDocsTable extends Table
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('CmsMenus', [
-            'foreignKey' => 'cms_menu_id',
+        $this->hasMany('CmsMenusDocs', [
+            'foreignKey' => 'cms_doc_id',
+        ]);
+        $this->hasMany('CmsPagesDocs', [
+            'foreignKey' => 'cms_doc_id',
         ]);
     }
 
@@ -96,7 +100,6 @@ class CmsDocsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['cms_menu_id'], 'CmsMenus'));
 
         return $rules;
     }

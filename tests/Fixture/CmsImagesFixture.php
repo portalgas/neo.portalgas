@@ -4,9 +4,9 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * CmsDocsFixture
+ * CmsImagesFixture
  */
-class CmsDocsFixture extends TestFixture
+class CmsImagesFixture extends TestFixture
 {
     /**
      * Fields
@@ -15,7 +15,7 @@ class CmsDocsFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'organization_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'name' => ['type' => 'string', 'length' => 256, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'path' => ['type' => 'string', 'length' => 256, 'null' => true, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
@@ -47,8 +47,8 @@ class CmsDocsFixture extends TestFixture
                 'path' => 'Lorem ipsum dolor sit amet',
                 'ext' => 'Lorem ipsum dolor sit amet',
                 'size' => 1,
-                'created' => '2025-03-20 11:31:43',
-                'modified' => '2025-03-20 11:31:43',
+                'created' => '2025-03-20 14:58:58',
+                'modified' => '2025-03-20 14:58:58',
             ],
         ];
         parent::init();

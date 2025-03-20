@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\CmsMenuTypesTable&\Cake\ORM\Association\BelongsTo $CmsMenuTypes
- * @property &\Cake\ORM\Association\HasMany $CmsMenuDocs
+ * @property &\Cake\ORM\Association\HasMany $CmsMenusDocs
  * @property \App\Model\Table\CmsPagesTable&\Cake\ORM\Association\HasMany $CmsPages
  *
  * @method \App\Model\Entity\CmsMenu get($primaryKey, $options = [])
@@ -51,7 +51,7 @@ class CmsMenusTable extends Table
             'foreignKey' => 'cms_menu_type_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('CmsDocs', [
+        $this->hasMany('CmsMenusDocs', [
             'foreignKey' => 'cms_menu_id',
         ]);
         $this->hasMany('CmsPages', [

@@ -4,23 +4,21 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * CmsPageImage Entity
+ * CmsImage Entity
  *
  * @property int $id
  * @property int $organization_id
- * @property int $cms_page_id
  * @property string $name
  * @property string|null $path
  * @property string $ext
  * @property float|null $size
- * @property int|null $sort
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
  * @property \App\Model\Entity\Organization $organization
- * @property \App\Model\Entity\CmsPage $cms_page
+ * @property \App\Model\Entity\CmsPagesImage[] $cms_pages_images
  */
-class CmsPageImage extends Entity
+class CmsImage extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -33,15 +31,13 @@ class CmsPageImage extends Entity
      */
     protected $_accessible = [
         'organization_id' => true,
-        'cms_page_id' => true,
         'name' => true,
         'path' => true,
         'ext' => true,
         'size' => true,
-        'sort' => true,
         'created' => true,
         'modified' => true,
         'organization' => true,
-        'cms_page' => true,
+        'cms_pages_images' => true,
     ];
 }

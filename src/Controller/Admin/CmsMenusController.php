@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * CmsMenus Controller
@@ -41,29 +42,12 @@ class CmsMenusController extends AppController
         }
 
         $cmsMenus = $this->CmsMenus->find()->where(['organization_id' => $this->_organization->id])
-            ->contain(['CmsMenuTypes', 'CmsDocs', 'CmsPages'])
+            ->contain(['CmsMenuTypes', 'CmsMenusDocs', 'CmsPages'])
             ->order(['sort'])
             ->all();
 
         $this->set(compact('cmsMenus'));
     }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Cms Menu id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $cmsMenu = $this->CmsMenus->get($id, [
-            'contain' => ['CmsMenuTypes', 'CmsDocs', 'CmsPages'],
-        ]);
-
-        $this->set('cmsMenu', $cmsMenu);
-    }
-
 
     /**
      * Add method
@@ -83,8 +67,13 @@ class CmsMenusController extends AppController
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Cms Menu'));
         }
         $cmsMenuTypes = $this->CmsMenus->CmsMenuTypes->find('list', ['order' => 'name', 'limit' => 200]);
-        $cmsDocs = $this->CmsMenus->CmsDocs->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
-        $cmsPages = $this->CmsMenus->CmsPages->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
+
+        $cmsDocsTable = TableRegistry::get('CmsDocs');
+        $cmsDocs = $cmsDocsTable->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
+
+        $cmsPagesTable = TableRegistry::get('CmsPages');
+        $cmsPages = $cmsPagesTable->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
+
         $this->set(compact('cmsMenu', 'cmsDocs', 'cmsMenuTypes', 'cmsPages'));
     }
 

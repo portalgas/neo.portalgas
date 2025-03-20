@@ -396,6 +396,7 @@ Configure::write('App.img.cake', '/images/cake');
 
 
 Configure::write('Cms.doc.paths', '/resources/cms/docs/%s');
+Configure::write('Cms.img.paths', '/resources/cms/imgs/%s');
 
 /*
  * https://github.com/madbob/gdxp

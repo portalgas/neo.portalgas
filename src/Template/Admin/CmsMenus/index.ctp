@@ -44,7 +44,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                     if($cmsMenu->cms_menu_type->code=='PAGE' && empty($cmsMenu->cms_pages))
                         echo '  <span class="label label-danger label-danger">Nessuna pagina associata!</span>';
                     else
-                    if($cmsMenu->cms_menu_type->code=='DOC' && empty($cmsMenu->cms_docs))
+                    if($cmsMenu->cms_menu_type->code=='DOC' && empty($cmsMenu->cms_menus_docs))
                         echo '  <span class="label label-danger label-danger">Nessun documento associato!</span>';
 
                     echo $this->Form->control('id', ['type' => 'hidden', 'name' => 'ids[]', 'value' => $cmsMenu->id]);

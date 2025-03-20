@@ -397,8 +397,19 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/cms-docs', ['controller' => 'CmsDocs'], function (RouteBuilder $routes) {
             $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);
             $routes->connect('/doc1Upload', ['action' => 'doc1Upload', '_method' => 'POST']);
-        $routes->connect('/doc1Delete', ['action' => 'doc1Delete', '_method' => 'POST']);
-    });
+            $routes->connect('/doc1Delete', ['action' => 'doc1Delete', '_method' => 'POST']);
+        });
+
+        $routes->scope('/cms-pages', ['controller' => 'CmsPages'], function (RouteBuilder $routes) {
+            $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);
+        });
+
+        $routes->scope('/cms-images', ['controller' => 'CmsImages'], function (RouteBuilder $routes) {
+            $routes->connect('/index', ['action' => 'index', '_method' => 'GET']);
+            $routes->connect('/img1Upload', ['action' => 'img1Upload', '_method' => 'POST']);
+            $routes->connect('/img1Delete', ['action' => 'img1Delete', '_method' => 'POST']);
+        });
+
 
         $routes->fallbacks(DashedRoute::class);
     });

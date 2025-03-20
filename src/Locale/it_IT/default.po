@@ -6933,6 +6933,9 @@ msgstr "Documenti"
 msgid "Cms Pages"
 msgstr "Pagine"
 
+msgid "CMS Images"
+msgstr "Immagini"
+
 msgid "CMS Page Images"
 msgstr "Immagini delle pagine"
 

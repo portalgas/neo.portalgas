@@ -7,7 +7,7 @@ use Cake\ORM\TableRegistry;
 use App\Traits;
 use Cake\Log\Log;
 
-class CmsDocsController extends ApiAppController
+class CmsImagesController extends ApiAppController
 {
     use Traits\SqlTrait;
     use Traits\UtilTrait;
@@ -15,12 +15,12 @@ class CmsDocsController extends ApiAppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Upload');
     }
 
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
+        $this->loadComponent('Upload');
     }
 
     public function index() {
@@ -31,11 +31,11 @@ class CmsDocsController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $cmsDocsTable = TableRegistry::get('CmsDocs');
-        $assets = $cmsDocsTable->find()
-            ->contain(['CmsMenusDocs' => ['CmsMenus'], 'CmsPagesDocs' => ['CmsPages']])
-            ->where(['CmsDocs.organization_id' => $this->_organization->id])
-            ->order(['CmsDocs.name' => 'asc'])
+        $cmsImagesTable = TableRegistry::get('CmsImages');
+        $assets = $cmsImagesTable->find()
+            ->contain(['CmsPagesImages' => ['CmsPages']])
+            ->where(['CmsImages.organization_id' => $this->_organization->id])
+            ->order(['CmsImages.name' => 'asc'])
             ->all();
 
         if(!empty($assets))
@@ -45,7 +45,7 @@ class CmsDocsController extends ApiAppController
         return $this->_response($results);
     }
 
-    public function doc1Upload() {
+    public function img1Upload() {
 
         $debug = false;
 
@@ -58,7 +58,7 @@ class CmsDocsController extends ApiAppController
         $request = $this->request->getData();
         if($debug) debug($request);
 
-        $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $this->_organization->id);
+        $asset_path = ROOT . sprintf(Configure::read('Cms.img.paths'), $this->_organization->id);
         if($debug) debug('asset_path '.$asset_path);
 
         /*
@@ -66,14 +66,14 @@ class CmsDocsController extends ApiAppController
         */
         $config_upload = [] ;
         $config_upload['upload_path']    = $asset_path;
-        $config_upload['allowed_types']  = ['pdf'];
+        $config_upload['allowed_types']  = ['jpeg', 'jpg', 'png'];
         $config_upload['max_size']       = 0;
         $config_upload['overwrite']      = true;
         $config_upload['encrypt_name']  = false;
         $config_upload['slug_name']  = true;
         $config_upload['remove_spaces'] = true;
         $this->Upload->init($config_upload);
-        $upload_results = $this->Upload->upload('doc1');
+        $upload_results = $this->Upload->upload('img1');
         if ($upload_results===false){
             $errors = $this->Upload->errors();
             $results['code'] = 500;
@@ -96,24 +96,23 @@ class CmsDocsController extends ApiAppController
 
         /*
         * ridimensiono img originale
-
-        $asset_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $this->_organization->id, $file_name);
+        */
+        $asset_path = $asset_path.'/'.$file_name;
         $imageOperations = [
             'thumbnail' => [
                 'height' => Configure::read('App.web.img.upload.width.article'),
                 'width' => Configure::read('App.web.img.upload.width.article')
             ]];
-            $this->Articles->processImage(
-                $asset_path,
-                $asset_path,
+        $this->Articles->processImage(
+            $asset_path,
+            $asset_path,
             [],
             $imageOperations);
-        */
 
         /*
         * aggiorno db
         */
-        $cms_doc = $this->CmsDocs->newEntity();
+        $cms_image = $this->CmsImages->newEntity();
 
         $datas = [];
         $datas['organization_id'] = $this->_organization->id;
@@ -122,77 +121,17 @@ class CmsDocsController extends ApiAppController
         $datas['ext'] = $upload_results['file_ext'];
         $datas['size'] = $upload_results['file_size'];
 
-        $cms_doc = $this->CmsDocs->patchEntity($cms_doc, $datas);
-        if (!$this->CmsDocs->save($cms_doc)) {
+        $cms_image = $this->CmsImages->patchEntity($cms_image, $datas);
+        if (!$this->CmsImages->save($cms_image)) {
             $results['code'] = 500;
             $results['message'] = 'KO';
-            $results['errors'] = $cms_doc->getErrors();
+            $results['errors'] = $cms_image->getErrors();
             $results['results'] = [];
             return $this->_response($results);
         }
 
         $results['code'] = 200;
         $results['message'] = $upload_results;
-        $results['errors'] = '';
-        $results['results'] = [];
-        return $this->_response($results);
-    }
-
-    public function doc1Delete() {
-
-        $debug = false;
-
-        $results = [];
-        $results['code'] = 200;
-        $results['message'] = 'OK';
-        $results['errors'] = '';
-        $results['results'] = [];
-
-        if($debug) debug('organization_id passato al metodo ['.$this->_organization->id.'] user ['.$this->_organization->id.']');
-
-        if($this->_organization->id!=$this->_organization->id) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = "L'articolo non è gestito da te!";
-            $results['results'] = [];
-            return $this->_response($results);
-        }
-
-        $where = ['organization_id' => $this->_organization->id,
-                  'id' => $article_id];
-        $article = $this->Articles->find()
-                    ->where($where)
-                    ->first();
-        if(empty($article)) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
-            $results['results'] = [];
-            return $this->_response($results);
-        }
-
-        if(!empty($article->doc1)) {
-            $config = Configure::read('Config');
-            $asset_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $this->_organization->id, $article->doc1);
-            if($debug) debug('img_path '.$asset_path);
-
-            // elimino file
-            unlink($asset_path);
-        } // end if(!empty($article->doc1))
-
-        $datas = [];
-        $datas['doc1'] = '';
-        $article = $this->Articles->patchEntity($article, $datas);
-        if (!$this->Articles->save($article)) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = $article->getErrors();
-            $results['results'] = [];
-            return $this->_response($results);
-        }
-
-        $results['code'] = 200;
-        $results['message'] = '';
         $results['errors'] = '';
         $results['results'] = [];
         return $this->_response($results);

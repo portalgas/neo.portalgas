@@ -7,25 +7,23 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * CmsPages Model
+ * CmsImages Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property \App\Model\Table\CmsMenusTable&\Cake\ORM\Association\BelongsTo $CmsMenus
- * @property &\Cake\ORM\Association\HasMany $CmsPagesDocs
- * @property &\Cake\ORM\Association\HasMany $CmsPagesImages
+ * @property \App\Model\Table\CmsPagesImagesTable&\Cake\ORM\Association\HasMany $CmsPagesImages
  *
- * @method \App\Model\Entity\CmsPage get($primaryKey, $options = [])
- * @method \App\Model\Entity\CmsPage newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\CmsPage[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\CmsPage|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\CmsPage saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\CmsPage patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\CmsPage[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\CmsPage findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\CmsImage get($primaryKey, $options = [])
+ * @method \App\Model\Entity\CmsImage newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\CmsImage[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\CmsImage|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\CmsImage saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\CmsImage patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\CmsImage[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\CmsImage findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class CmsPagesTable extends Table
+class CmsImagesTable extends Table
 {
     /**
      * Initialize method
@@ -37,7 +35,7 @@ class CmsPagesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('cms_pages');
+        $this->setTable('cms_images');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
@@ -47,15 +45,8 @@ class CmsPagesTable extends Table
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('CmsMenus', [
-            'foreignKey' => 'cms_menu_id',
-            'joinType' => 'INNER',
-        ]);
-        $this->hasMany('CmsPagesDocs', [
-            'foreignKey' => 'cms_page_id',
-        ]);
         $this->hasMany('CmsPagesImages', [
-            'foreignKey' => 'cms_page_id',
+            'foreignKey' => 'cms_image_id',
         ]);
     }
 
@@ -73,13 +64,24 @@ class CmsPagesTable extends Table
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 75)
+            ->maxLength('name', 256)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
         $validator
-            ->scalar('body')
-            ->allowEmptyString('body');
+            ->scalar('path')
+            ->maxLength('path', 256)
+            ->allowEmptyString('path');
+
+        $validator
+            ->scalar('ext')
+            ->maxLength('ext', 75)
+            ->requirePresence('ext', 'create')
+            ->notEmptyString('ext');
+
+        $validator
+            ->numeric('size')
+            ->allowEmptyString('size');
 
         return $validator;
     }
@@ -94,7 +96,6 @@ class CmsPagesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['cms_menu_id'], 'CmsMenus'));
 
         return $rules;
     }
