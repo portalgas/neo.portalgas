@@ -55,7 +55,7 @@ use Cake\Core\Configure;
                     echo $this->Form->control('cms_page_id', ['options' => $cmsPages, 'label' => __('Cms Pages'), 'empty' => Configure::read('HtmlOptionEmpty')]);
                 echo '</div>';
                 echo '<div class="col col-md-4"><br />';
-                echo '<a href="'.$this->Url->build(['controller' => 'cmsPages', 'action' => 'index']).'" class="btn btn-primary btn-block">'.__('Cms Add Page').'</a>';
+                echo '<a href="'.$this->Url->build(['controller' => 'cmsPages', 'action' => 'add']).'" class="btn btn-primary btn-block">'.__('Cms Add Page').'</a>';
                 echo '</div>';
                 echo '</div>';
 

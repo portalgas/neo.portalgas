@@ -114,4 +114,11 @@ class CmsMenusTable extends Table
 
         return $rules;
     }
+
+    /*
+     * estrae le voci di menu' per le pagine non associate a pagine
+     */
+    public function getMenuToAssociateList($organization_id) {
+        return $this->find('list', ['conditions' => ['organization_id' => $organization_id, 'cms_menu_type_id' => 1], 'limit' => 200]);
+    }
 }

@@ -25,7 +25,12 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
           <div class="box-header with-border">
             <h3 class="box-title"><?php echo __('Form'); ?></h3>
           </div>
-            <?php echo $this->Form->create($cmsPage, ['id' => 'frm', 'role' => 'form']); ?>
+            <?php
+            echo $this->Form->create($cmsPage, ['id' => 'frm', 'role' => 'form']);
+            echo $this->Form->control('cms_page_id', ['type' => 'hidden', 'id' => 'cms_page_id', 'value' => $cmsPage->id]);
+            echo $this->Form->control('img_ids', ['type' => 'hidden', 'id' => 'img_ids', 'value' => '']);
+            echo $this->Form->control('doc_ids', ['type' => 'hidden', 'id' => 'doc_ids',  'value' => '']);
+            ?>
             <div class="box-body">
               <?php
               if(!empty($cmsPage->cms_menu))
@@ -59,7 +64,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                         :key="image.id"
                                     >
                                         <td>
-                                            <input type="checkbox" v-model="selected_images" :value="image.id" />
+                                            <input type="checkbox" name="imgs" v-model="selected_images" :value="image.id" />
                                         </td>
                                         <td><img :src="image.path" width="150px"></td>
                                         <td>{{ image.name }}</td>
@@ -96,7 +101,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                         :key="doc.id"
                                     >
                                         <td>
-                                            <input type="checkbox" v-model="selected_docs" :value="doc.id" />
+                                            <input type="checkbox" name="docs" v-model="selected_docs" :value="doc.id" />
                                         </td>
                                         <td>
                                             <a :href="'/admin/cms-docs/download/'+doc.id" target="_blank">
@@ -148,6 +153,38 @@ $( function() {
             color: true
         },
         locale: 'it-IT'
+    });
+});
+";
+$this->Html->scriptBlock($js, ['block' => true]);
+
+$js = "
+$( function() {
+    $('#frm').on('submit', function (e) {
+        // e.preventDefault();
+        // let datas = $(this).serializeArray();
+
+        let img_ids = [];
+        let imgs = document.querySelectorAll('input[name=\"imgs\"]');
+        for(var i = 0; i < imgs.length; i++) {
+           if(imgs[i].checked)
+             img_ids.push(imgs[i].value);
+        }
+        // datas.push({name: 'img_ids', value: img_ids});
+        document.getElementById('img_ids').value = img_ids.join(',');
+
+        let doc_ids = [];
+        let docs = document.querySelectorAll('input[name=\"docs\"]');
+        for(var i = 0; i < docs.length; i++) {
+           if(docs[i].checked)
+             doc_ids.push(docs[i].value);
+        }
+        // datas.push({name: 'doc_ids', value: doc_ids});
+        document.getElementById('doc_ids').value = doc_ids.join(',');
+
+        // console.table(datas, 'datas');
+
+        return true;
     });
 });
 ";

@@ -90,4 +90,28 @@ class CmsPagesImagesTable extends Table
 
         return $rules;
     }
+
+    public function setImgs($organization_id, $cms_page_id, $img_ids=[]): bool {
+
+        if(empty($img_ids)) return true;
+
+        $img_ids = explode(',', $img_ids);
+
+        $this->deleteAll(['organization_id' => $organization_id, 'cms_page_id' => $cms_page_id]);
+        foreach($img_ids as $numResult => $img_id) {
+            $cmsPageImages = $this->newEntity();
+            $datas = [];
+            $datas['organization_id'] = $organization_id;
+            $datas['cms_page_id'] = $cms_page_id;
+            $datas['cms_image_id'] = $img_id;
+            $datas['sort'] = $numResult;
+
+            $cmsPageImages = $this->patchEntity($cmsPageImages, $datas);
+            if (!$this->save($cmsPageImages)) {
+                dd($cmsPageImages->getErrors());
+            }
+        }
+
+        return true;
+    }
 }

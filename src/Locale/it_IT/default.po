@@ -6915,6 +6915,9 @@ msgstr "E' di sistema"
 #
 # CMS
 #
+msgid "Cms Menu"
+msgstr "Voce del menù"
+
 msgid "Cms Menus"
 msgstr "Voci del menù"
 
@@ -6927,14 +6930,26 @@ msgstr "Voce del menù"
 msgid "Cms Menu Is Public"
 msgstr "E' visibile a tutti"
 
+msgid "Cms Doc"
+msgstr "Documento"
+
 msgid "Cms Docs"
 msgstr "Documenti"
 
 msgid "Cms Pages"
 msgstr "Pagine"
 
+msgid "Cms Page"
+msgstr "Pagina"
+
+msgid "CMS Image"
+msgstr "Immagine"
+
 msgid "CMS Images"
 msgstr "Immagini"
+
+msgid "CMS Page Image"
+msgstr "Immagini delle pagina"
 
 msgid "CMS Page Images"
 msgstr "Immagini delle pagine"

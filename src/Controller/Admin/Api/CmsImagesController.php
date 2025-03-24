@@ -35,7 +35,6 @@ class CmsImagesController extends ApiAppController
         $assets = $cmsImagesTable->find()
             ->contain(['CmsPagesImages' => ['CmsPages']])
             ->where(['CmsImages.organization_id' => $this->_organization->id])
-            ->order(['CmsImages.name' => 'asc'])
             ->all();
 
         if(!empty($assets))

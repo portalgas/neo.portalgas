@@ -25,6 +25,11 @@ $(function () {
                 $('.run-images').show();
                 $('.run-images .spinner').addClass(ico_spinner);
 
+                /*
+                 * estraggo eventuale cms_page_id dalla pagina
+                 */
+                let cms_page_id = $('#cms_page_id').val();
+
                 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrfToken"]').attr('content');
 
@@ -38,10 +43,12 @@ $(function () {
                         /*
                          * immagini gia' associate alla pagina
                          */
-                        _this.images.forEach(function (image) {
-                            if(image.cms_pages_images.length>0)
-                                _this.selected_images.push(image.id);
-                        });
+                        if(_this.cms_page_id>0) {
+                            _this.images.forEach(function (image) {
+                                if(image.cms_pages_images.length>0 && image.cms_pages_images.page_id==cms_page_id)
+                                    _this.selected_images.push(image.id);
+                            });
+                        }
                     })
                     .catch(error => {
                         $('.run-run-images .spinner').removeClass(ico_spinner);

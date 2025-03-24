@@ -35,7 +35,6 @@ class CmsDocsController extends ApiAppController
         $assets = $cmsDocsTable->find()
             ->contain(['CmsMenusDocs' => ['CmsMenus'], 'CmsPagesDocs' => ['CmsPages']])
             ->where(['CmsDocs.organization_id' => $this->_organization->id])
-            ->order(['CmsDocs.name' => 'asc'])
             ->all();
 
         if(!empty($assets))

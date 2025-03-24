@@ -90,4 +90,28 @@ class CmsPagesDocsTable extends Table
 
         return $rules;
     }
+
+    public function setDocs($organization_id, $cms_page_id, $doc_ids=[]): bool {
+
+        if(empty($doc_ids)) return true;
+
+        $doc_ids = explode(',', $doc_ids);
+
+        $this->deleteAll(['organization_id' => $organization_id, 'cms_page_id' => $cms_page_id]);
+        foreach($doc_ids as $numResult => $doc_id) {
+            $cmsPageDocs = $this->newEntity();
+            $datas = [];
+            $datas['organization_id'] = $organization_id;
+            $datas['cms_page_id'] = $cms_page_id;
+            $datas['cms_doc_id'] = $doc_id;
+            $datas['sort'] = $numResult;
+
+            $cmsPageDocs = $this->patchEntity($cmsPageDocs, $datas);
+            if (!$this->save($cmsPageDocs)) {
+                dd($cmsPageDocs->getErrors());
+            }
+        }
+
+        return true;
+    }
 }

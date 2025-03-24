@@ -53,9 +53,11 @@ class CmsPagesTable extends Table
         ]);
         $this->hasMany('CmsPagesDocs', [
             'foreignKey' => 'cms_page_id',
+            'order' => 'sort'
         ]);
         $this->hasMany('CmsPagesImages', [
             'foreignKey' => 'cms_page_id',
+            'order' => 'sort'
         ]);
     }
 

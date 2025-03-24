@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * CmsPages Controller
@@ -29,23 +30,6 @@ class CmsPagesController extends AppController
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id Cms Page id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $cmsPage = $this->CmsPages->get($id, [
-            'contain' => ['Organizations', 'CmsMenus', 'CmsPagesDocs', 'CmsPagesImages'],
-        ]);
-
-        $this->set('cmsPage', $cmsPage);
-    }
-
-
-    /**
      * Add method
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
@@ -54,17 +38,33 @@ class CmsPagesController extends AppController
     {
         $cmsPage = $this->CmsPages->newEntity();
         if ($this->request->is('post')) {
-            $cmsPage = $this->CmsPages->patchEntity($cmsPage, $this->request->getData());
+            $datas = $this->request->getData();
+            $datas['organization_id'] = $this->_organization->id;
+
+            $cmsPage = $this->CmsPages->patchEntity($cmsPage, $datas);
             if ($this->CmsPages->save($cmsPage)) {
+
+                if(isset($datas['img_ids'])) {
+                    $cmsPagesImagesTable = TableRegistry::get('CmsPagesImages');
+                    $cmsPagesImagesTable->setImgs($this->_organization->id, $cmsPage->id, $datas['img_ids']);
+                }
+                if(isset($datas['doc_ids'])) {
+                    $cmsPagesDocsTable = TableRegistry::get('CmsPagesDocs');
+                    $cmsPagesDocsTable->setDocs($this->_organization->id, $cmsPage->id, $datas['doc_ids']);
+                }
+
                 $this->Flash->success(__('The {0} has been saved.', 'Cms Page'));
 
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Cms Page'));
         }
-        $organizations = $this->CmsPages->Organizations->find('list', ['limit' => 200]);
-        $cmsMenus = $this->CmsPages->CmsMenus->find('list', ['limit' => 200]);
-        $this->set(compact('cmsPage', 'organizations', 'cmsMenus'));
+        /*
+         * estraggo solo i link di tipo 'page'
+         */
+        $cmsMenusTable = TableRegistry::get('CmsMenus');
+        $cmsMenus = $cmsMenusTable->getMenuToAssociateList($this->_organization->id);
+        $this->set(compact('cmsPage', 'cmsMenus'));
     }
 
 
@@ -78,9 +78,21 @@ class CmsPagesController extends AppController
     public function edit($id = null)
     {
         $cmsPage = $this->CmsPages->get($id, [
-            'contain' => []
+            'contain' => ['CmsMenus'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $datas = $this->request->getData();
+            $datas['organization_id'] = $this->_organization->id;
+
+            if(isset($datas['img_ids'])) {
+                $cmsPagesImagesTable = TableRegistry::get('CmsPagesImages');
+                $cmsPagesImagesTable->setImgs($this->_organization->id, $cmsPage->id, $datas['img_ids']);
+            }
+            if(isset($datas['doc_ids'])) {
+                $cmsPagesDocsTable = TableRegistry::get('CmsPagesDocs');
+                $cmsPagesDocsTable->setDocs($this->_organization->id, $cmsPage->id, $datas['doc_ids']);
+            }
+
             $cmsPage = $this->CmsPages->patchEntity($cmsPage, $this->request->getData());
             if ($this->CmsPages->save($cmsPage)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Cms Page'));
@@ -89,9 +101,8 @@ class CmsPagesController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Cms Page'));
         }
-        $organizations = $this->CmsPages->Organizations->find('list', ['limit' => 200]);
-        $cmsMenus = $this->CmsPages->CmsMenus->find('list', ['limit' => 200]);
-        $this->set(compact('cmsPage', 'organizations', 'cmsMenus'));
+        $cmsMenus = $this->CmsPages->CmsMenus->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'limit' => 200]);
+        $this->set(compact('cmsPage', 'cmsMenus'));
     }
 
 
