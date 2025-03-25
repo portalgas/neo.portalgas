@@ -119,6 +119,23 @@ class CmsMenusTable extends Table
      * estrae le voci di menu' per le pagine non associate a pagine
      */
     public function getMenuToAssociateList($organization_id) {
-        return $this->find('list', ['conditions' => ['organization_id' => $organization_id, 'cms_menu_type_id' => 1], 'limit' => 200]);
+
+        $resultList = [];
+        $results = $this->find('all', [
+                                'conditions' => ['organization_id' => $organization_id, 'cms_menu_type_id' => 1],
+                                'contain' => ['CmsPages']]);
+
+        if(!empty($results)) {
+            /*
+             * verifico se la voce di menu' è associata ad una pagina
+             */
+            $results = $results->toArray();
+            foreach ($results as $numResult => $result) {
+                if(empty($result->cms_pages)) {
+                    $resultList[$result->id] = $result->name;
+                }
+            }
+        }
+        return $resultList;
     }
 }

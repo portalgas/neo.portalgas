@@ -41,6 +41,8 @@ class CmsImagesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('Burzum/Imagine.Imagine');
+
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER',

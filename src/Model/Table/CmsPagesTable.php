@@ -49,7 +49,7 @@ class CmsPagesTable extends Table
         ]);
         $this->belongsTo('CmsMenus', [
             'foreignKey' => 'cms_menu_id',
-            'joinType' => 'INNER',
+            'joinType' => 'LEFT',
         ]);
         $this->hasMany('CmsPagesDocs', [
             'foreignKey' => 'cms_page_id',

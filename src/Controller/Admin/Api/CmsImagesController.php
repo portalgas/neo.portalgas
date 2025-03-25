@@ -57,7 +57,7 @@ class CmsImagesController extends ApiAppController
         $request = $this->request->getData();
         if($debug) debug($request);
 
-        $asset_path = ROOT . sprintf(Configure::read('Cms.img.paths'), $this->_organization->id);
+        $asset_path = WWW_ROOT . sprintf(Configure::read('Cms.img.paths'), $this->_organization->id);
         if($debug) debug('asset_path '.$asset_path);
 
         /*
@@ -80,7 +80,11 @@ class CmsImagesController extends ApiAppController
             $results['errors'] = $errors;
             $results['results'] = [];
             if($debug) debug($errors);
-            return $this->_response($results);
+            if(is_array($errors))
+                $msg = $errors[0];
+            else
+                $msg = $errors;
+            return $this->_respondWith(500, $msg);
         }
         if($debug) debug($this->Upload->output());
         $upload_results = $this->Upload->output();
@@ -102,7 +106,7 @@ class CmsImagesController extends ApiAppController
                 'height' => Configure::read('App.web.img.upload.width.article'),
                 'width' => Configure::read('App.web.img.upload.width.article')
             ]];
-        $this->Articles->processImage(
+        $this->CmsImages->processImage(
             $asset_path,
             $asset_path,
             [],

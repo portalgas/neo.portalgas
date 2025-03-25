@@ -28,7 +28,7 @@ $(function () {
                 /*
                  * estraggo eventuale cms_page_id dalla pagina
                  */
-                let cms_page_id = $('#cms_page_id').val();
+                let cms_page_id = document.getElementById('cms_page_id');
 
                 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrfToken"]').attr('content');
@@ -43,10 +43,15 @@ $(function () {
                         /*
                          * immagini gia' associate alla pagina
                          */
-                        if(_this.cms_page_id>0) {
+                        if(typeof cms_page_id!=='undefined' && cms_page_id!=null && cms_page_id.value>0) {
                             _this.images.forEach(function (image) {
-                                if(image.cms_pages_images.length>0 && image.cms_pages_images.page_id==cms_page_id)
-                                    _this.selected_images.push(image.id);
+                                if(image.cms_pages_images.length>0) {
+                                    image.cms_pages_images.forEach(function (cms_pages_image) {
+                                        console.log(cms_pages_image.cms_page_id+' '+cms_page_id.value, 'cms-images');
+                                        if(cms_pages_image.cms_page_id==cms_page_id.value)
+                                            _this.selected_images.push(cms_pages_image.cms_image_id);
+                                    });
+                                }
                             });
                         }
                     })

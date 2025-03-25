@@ -12,7 +12,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
         <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+        <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Cms Pages'); ?></a></li>
     </ol>
 </section>
 
@@ -35,6 +35,8 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                     <?php
                     if(!empty($cmsMenus))
                         echo $this->Form->control('cms_menu_id', ['options' => $cmsMenus, 'empty' => true]);
+                    else
+                        echo $this->element('msg', ['msg' => __('Nessuna voce di menù disponibile'), 'class' => 'warning']);
                     echo $this->Form->control('name');
                     echo $this->Form->control('body', ['type' => 'textarea', 'class' => 'form-control wysihtml5', 'rows' => 25]);
                     ?>
@@ -64,7 +66,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                     <td>
                                         <input type="checkbox" name="imgs" v-model="selected_images" :value="image.id" />
                                     </td>
-                                    <td><img :src="image.path" width="150px"></td>
+                                    <td><img :src="'/cms/imgs/'+image.organization_id+'/'+image.path" width="150px"></td>
                                     <td>{{ image.name }}</td>
                                 </tr>
                                 </tbody>

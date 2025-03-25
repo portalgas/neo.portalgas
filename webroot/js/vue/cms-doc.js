@@ -28,7 +28,7 @@ $(function () {
                 /*
                  * estraggo eventuale cms_page_id dalla pagina
                  */
-                let cms_page_id = $('#cms_page_id').val();
+                let cms_page_id = document.getElementById('cms_page_id');
 
                 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrfToken"]').attr('content');
@@ -40,14 +40,17 @@ $(function () {
                         _this.is_found_docs = true;
                         _this.docs = response.data.results;
 
-
                         /*
                          * docs gia' associate alla pagina
                          */
-                        if(_this.cms_page_id>0) {
+                        if(typeof cms_page_id!=='undefined' && cms_page_id!=null && cms_page_id.value>0) {
                             _this.docs.forEach(function (doc) {
-                                if(doc.cms_pages_docs.length>0 && doc.cms_pages_docs.page_id==cms_page_id)
-                                    _this.selected_docs.push(doc.id);
+                                if(doc.cms_pages_docs.length>0) {
+                                    doc.cms_pages_docs.forEach(function (cms_pages_doc) {
+                                        if(cms_pages_doc.cms_page_id==cms_page_id.value)
+                                            _this.selected_docs.push(cms_pages_doc.cms_doc_id);
+                                    });
+                                }
                             });
                         }
                     })

@@ -10,6 +10,7 @@ schema.xlsx
 /src/Command/Sh/MailUsersOrdersOpen-*.sh
 
 /resources/cms/*
+/webroot/cms/imgs/*
 
 # CakePHP specific files #
 ##########################

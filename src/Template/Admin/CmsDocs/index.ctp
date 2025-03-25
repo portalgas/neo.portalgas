@@ -9,9 +9,6 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
         <?php echo __('Cms Docs');?>
         <small><?php echo __('Add'); ?></small>
     </h1>
-    <ol class="breadcrumb">
-        <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
-    </ol>
 </section>
 
 <!-- Main content -->
@@ -33,12 +30,13 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                         <div v-show="is_found_docs === false" style="display: none;text-align: center;" class="run run-docs"><div class="spinner"></div></div>
                         <div v-show="is_found_docs === true" style="display:none;">
 
-                            <table class="table table-hover">
+                            <table class="table table-hover" v-if="docs.length>0">
                                 <thead class="thead-light">
                                 <tr>
                                     <th colspan="2"><?php echo __('Name');?></th>
                                     <th><?php echo __('Size');?></th>
                                     <th><?php echo __('Cms Menu');?></th>
+                                    <th><?php echo __('Cms Page');?></th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -53,7 +51,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                         </a>
                                     </td>
                                     <td>{{ doc.name }}</td>
-                                    <td>{{ doc.size }}</td>
+                                    <td>{{ doc.size }} kb</td>
                                     <td>{{ doc.cms_menu }}</td>
                                     <td>
                                         <a :href="'/admin/cms-docs/delete/'+doc.id" target="_blank">
@@ -63,6 +61,9 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                 </tr>
                                 </tbody>
                             </table>
+                            <div v-else>
+                                <div class="alert alert-warning">Nessun documento caricato</div>
+                            </div>
 
                         </div>
                     </div>

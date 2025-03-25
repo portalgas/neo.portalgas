@@ -7,7 +7,7 @@
 <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Cms Menu
+      <?php echo __('Cms Menu');?>
       <small><?php echo __('Edit'); ?></small>
     </h1>
     <ol class="breadcrumb">

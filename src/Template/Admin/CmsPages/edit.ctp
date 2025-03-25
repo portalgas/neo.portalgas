@@ -66,7 +66,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                         <td>
                                             <input type="checkbox" name="imgs" v-model="selected_images" :value="image.id" />
                                         </td>
-                                        <td><img :src="image.path" width="150px"></td>
+                                        <td><img :src="'/cms/imgs/'+image.organization_id+'/'+image.path" width="150px"></td>
                                         <td>{{ image.name }}</td>
                                     </tr>
                                     </tbody>

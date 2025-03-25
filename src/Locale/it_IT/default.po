@@ -6912,6 +6912,7 @@ msgstr "E' attivo"
 
 msgid "Is System"
 msgstr "E' di sistema"
+
 #
 # CMS
 #
@@ -6942,16 +6943,16 @@ msgstr "Pagine"
 msgid "Cms Page"
 msgstr "Pagina"
 
-msgid "CMS Image"
+msgid "Cms Image"
 msgstr "Immagine"
 
-msgid "CMS Images"
+msgid "Cms Images"
 msgstr "Immagini"
 
-msgid "CMS Page Image"
+msgid "Cms Page Image"
 msgstr "Immagini delle pagina"
 
-msgid "CMS Page Images"
+msgid "Cms Page Images"
 msgstr "Immagini delle pagine"
 
 msgid "Cms LinkExt Options"
@@ -6986,3 +6987,6 @@ msgstr "Elimina pagina"
 
 msgid "Cms Doc Download"
 msgstr "Scarica il documento"
+
+msgid "Cms Page Name"
+msgstr "Nome della pagina"
