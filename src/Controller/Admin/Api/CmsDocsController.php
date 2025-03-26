@@ -23,7 +23,7 @@ class CmsDocsController extends ApiAppController
         parent::beforeFilter($event);
     }
 
-    public function index() {
+    public function index($cms_page_id) {
 
         $results = [];
         $results['code'] = 200;
@@ -31,14 +31,51 @@ class CmsDocsController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $cmsDocsTable = TableRegistry::get('CmsDocs');
-        $assets = $cmsDocsTable->find()
-            ->contain(['CmsMenusDocs' => ['CmsMenus'], 'CmsPagesDocs' => ['CmsPages']])
-            ->where(['CmsDocs.organization_id' => $this->_organization->id])
-            ->all();
+        $i=0;
+        $doc_ids = [];
+        $assets = [];
+        if(!empty($cms_page_id)) {
+            /*
+             * estraggo prima gli assets associati alla pagina
+             */
+            $cmsPagesDocsTable = TableRegistry::get('CmsPagesDocs');
+            $tmp_assets = $cmsPagesDocsTable->find()
+                ->contain(['CmsPages', 'CmsDocs' => ['CmsMenusDocs' => ['CmsMenus']]])
+                ->where(['CmsPagesDocs.organization_id' => $this->_organization->id,
+                        ['CmsPagesDocs.cms_page_id' => $cms_page_id]])
+                ->all();
+            if($tmp_assets->count()>0) {
+                foreach ($tmp_assets as $tmp_asset) {
+                    $doc_ids[] = $tmp_asset->cms_doc_id;
 
-        if(!empty($assets))
-            $assets = $assets->toArray();
+                    $assets[$i] = $tmp_asset->cms_doc;
+                    $assets[$i]['cms_page'] = $tmp_asset->cms_page;
+                    $assets[$i]['cms_menu'] = $tmp_asset->cms_doc->cms_menu;
+
+                    $i++;
+                }
+            }
+        } // emd if(!empty($cms_page_id))
+
+        $where = ['CmsDocs.organization_id' => $this->_organization->id];
+        if(!empty($doc_ids))
+            $where += ['CmsDocs.id not in ' => $doc_ids];
+
+        $cmsDocsTable = TableRegistry::get('CmsDocs');
+        $tmp_assets = $cmsDocsTable->find()
+            ->contain([
+                'CmsMenusDocs' => ['CmsMenus'],
+                'CmsPagesDocs' => ['CmsPages']])
+            ->where($where)
+            ->all();
+        if($tmp_assets->count()>0) {
+            foreach ($tmp_assets as $tmp_asset) {
+                $assets[$i] = $tmp_asset;
+                $assets[$i]['cms_page'] = null;
+
+                $i++;
+            }
+        }
 
         $results['results'] = $assets;
         return $this->_response($results);
@@ -97,16 +134,16 @@ class CmsDocsController extends ApiAppController
         * ridimensiono img originale
 
         $asset_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $this->_organization->id, $file_name);
-        $imageOperations = [
+        $docOperations = [
             'thumbnail' => [
                 'height' => Configure::read('App.web.img.upload.width.article'),
                 'width' => Configure::read('App.web.img.upload.width.article')
             ]];
-            $this->Articles->processImage(
+            $this->Articles->processDoc(
                 $asset_path,
                 $asset_path,
             [],
-            $imageOperations);
+            $docOperations);
         */
 
         /*

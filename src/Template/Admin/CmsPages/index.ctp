@@ -1,10 +1,3 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\CmsPage $cmsPage
- */
-?>
-<!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
         <?php echo __('Cms Page');?>

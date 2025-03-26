@@ -30,7 +30,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                         <div v-show="is_found_docs === false" style="display: none;text-align: center;" class="run run-docs"><div class="spinner"></div></div>
                         <div v-show="is_found_docs === true" style="display:none;">
 
-                            <table class="table table-hover" v-if="docs.length>0">
+                            <table class="table table-hover" v-if="docs!=null && docs.length>0">
                                 <thead class="thead-light">
                                 <tr>
                                     <th colspan="2"><?php echo __('Name');?></th>
@@ -52,7 +52,15 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                     </td>
                                     <td>{{ doc.name }}</td>
                                     <td>{{ doc.size }} kb</td>
-                                    <td>{{ doc.cms_menu }}</td>
+                                    <td>
+                                        <ul v-if="doc.cms_menus_docs.length>0" style="margin:0px; padding:0px;">
+                                            <li v-for="cms_menus_doc in doc.cms_menus_docs">{{ cms_menus_doc.cms_menu.name }} </li>
+                                        </ul>
+                                    <td>
+                                        <ul v-if="doc.cms_pages_docs.length>0" style="margin:0px; padding:0px;">
+                                            <li v-for="cms_pages_doc in doc.cms_pages_docs">{{ cms_pages_doc.cms_page.name }} </li>
+                                        </ul>
+                                    </td>
                                     <td>
                                         <a :href="'/admin/cms-docs/delete/'+doc.id" target="_blank">
                                             <button class="btn btn-danger"><i class="fa fa-trash"></i></button>

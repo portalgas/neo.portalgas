@@ -29,11 +29,15 @@ $(function () {
                  * estraggo eventuale cms_page_id dalla pagina
                  */
                 let cms_page_id = document.getElementById('cms_page_id');
+                if(typeof cms_page_id==='undefined' || cms_page_id==null)
+                    cms_page_id=0;
+                else
+                    cms_page_id = cms_page_id.value;
 
                 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrfToken"]').attr('content');
 
-                axios.get('/admin/api/cms-docs/index')
+                axios.get('/admin/api/cms-docs/index/'+cms_page_id)
                     .then(response => {
                         /* console.log(response.data); */
                         $('.run-docs .spinner').removeClass(ico_spinner);
@@ -43,16 +47,13 @@ $(function () {
                         /*
                          * docs gia' associate alla pagina
                          */
-                        if(typeof cms_page_id!=='undefined' && cms_page_id!=null && cms_page_id.value>0) {
-                            _this.docs.forEach(function (doc) {
-                                if(doc.cms_pages_docs.length>0) {
-                                    doc.cms_pages_docs.forEach(function (cms_pages_doc) {
-                                        if(cms_pages_doc.cms_page_id==cms_page_id.value)
-                                            _this.selected_docs.push(cms_pages_doc.cms_doc_id);
-                                    });
-                                }
-                            });
-                        }
+                        _this.docs.forEach(function (doc) {
+                            // console.log(doc.cms_page, 'doc');
+                            if(doc.cms_page!=null) {
+                                _this.selected_docs.push(doc.id);
+                            }
+                        });
+                        // console.table(_this.selected_images, 'selected_images');
                     })
                     .catch(error => {
                         $('.run-docs .spinner').removeClass(ico_spinner);

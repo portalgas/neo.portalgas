@@ -23,7 +23,7 @@ class CmsImagesController extends ApiAppController
         $this->loadComponent('Upload');
     }
 
-    public function index() {
+    public function index($cms_page_id) {
 
         $results = [];
         $results['code'] = 200;
@@ -31,14 +31,49 @@ class CmsImagesController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $cmsImagesTable = TableRegistry::get('CmsImages');
-        $assets = $cmsImagesTable->find()
-            ->contain(['CmsPagesImages' => ['CmsPages']])
-            ->where(['CmsImages.organization_id' => $this->_organization->id])
-            ->all();
+        $i=0;
+        $image_ids = [];
+        $assets = [];
+        if(!empty($cms_page_id)) {
+            /*
+             * estraggo prima gli assets associati alla pagina
+             */
+            $cmsPagesImagesTable = TableRegistry::get('CmsPagesImages');
+            $tmp_assets = $cmsPagesImagesTable->find()
+                            ->contain(['CmsPages', 'CmsImages'])
+                            ->where(['CmsPagesImages.organization_id' => $this->_organization->id,
+                                    ['CmsPagesImages.cms_page_id' => $cms_page_id]])
+                            ->all();
+            if($tmp_assets->count()>0) {
+                foreach ($tmp_assets as $tmp_asset) {
+                    $image_ids[] = $tmp_asset->cms_image_id;
 
-        if(!empty($assets))
-            $assets = $assets->toArray();
+                    $assets[$i] = $tmp_asset->cms_image;
+                    $assets[$i]['cms_page'] = $tmp_asset->cms_page;
+
+                    $i++;
+                }
+            }
+        } // emd if(!empty($cms_page_id))
+
+        $where = ['CmsImages.organization_id' => $this->_organization->id];
+        if(!empty($image_ids))
+            $where += ['CmsImages.id not in ' => $image_ids];
+
+        $cmsImagesTable = TableRegistry::get('CmsImages');
+        $tmp_assets = $cmsImagesTable->find()
+            ->contain([
+                'CmsPagesImages' => ['CmsPages']])
+            ->where($where)
+            ->all();
+        if($tmp_assets->count()>0) {
+            foreach ($tmp_assets as $tmp_asset) {
+                $assets[$i] = $tmp_asset;
+                $assets[$i]['cms_page'] = null;
+
+                $i++;
+            }
+        }
 
         $results['results'] = $assets;
         return $this->_response($results);

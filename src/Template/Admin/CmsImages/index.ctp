@@ -30,7 +30,7 @@ echo $this->Html->script('vue/cms-image.js?v=20250316', ['block' => 'scriptPageI
                         <div v-show="is_found_images === false" style="display: none;text-align: center;" class="run run-images"><div class="spinner"></div></div>
                         <div v-show="is_found_images === true" style="display:none;">
 
-                            <table class="table table-hover" v-if="images.length>0">
+                            <table class="table table-hover" v-if="images!=null && images.length>0">
                                 <thead class="thead-light">
                                 <tr>
                                     <th colspan="2"><?php echo __('Name');?></th>
@@ -52,15 +52,17 @@ echo $this->Html->script('vue/cms-image.js?v=20250316', ['block' => 'scriptPageI
                                     <td>{{ image.name }}</td>
                                     <td>{{ image.size }} kb</td>
                                     <td>
-                                        <div v-if="image.cms_pages_images.length==0">
-                                            Nessuna pagina
-                                        </div>
-                                        <div v-else>
-                                            <ul style="margin:0px; padding: 0px">
-                                                <li v-for="cms_pages_image in image.cms_pages_images">
-                                                    {{ cms_pages_image.cms_page.name }}
-                                                </li>
-                                            </ul>
+                                        <div v-if="image.cms_pages_images!=null">
+                                            <div v-if="image.cms_pages_images.length==0">
+                                                Nessuna pagina
+                                            </div>
+                                            <div v-else>
+                                                <ul style="margin:0px; padding: 0px">
+                                                    <li v-for="cms_pages_image in image.cms_pages_images">
+                                                        {{ cms_pages_image.cms_page.name }}
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>

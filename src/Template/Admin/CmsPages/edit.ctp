@@ -4,8 +4,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
 echo $this->Html->script('vue/cms-image.js?v=20250316', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInclude']);
-?>
 
+echo $this->Html->script('https://code.jquery.com/ui/1.14.1/jquery-ui.js', ['block' => true]);
+echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css', ['block' => 'css']);
+?>
   <section class="content-header">
     <h1>
       <?php echo __('Cms Page');?>
@@ -57,20 +59,21 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                         </div>
                         <div class="box-body">
 
-                                <table class="table table-hover">
-                                    <tbody>
-                                    <tr
+                                <ul id="sortable_imgs" class="sortable">
+                                    <li
                                         v-for="image in images"
                                         :key="image.id"
+                                        class="ui-state-default row"
                                     >
-                                        <td>
+
+                                        <div class="col col-md-1">
                                             <input type="checkbox" name="imgs" v-model="selected_images" :value="image.id" />
-                                        </td>
-                                        <td><img :src="'/cms/imgs/'+image.organization_id+'/'+image.path" width="150px"></td>
-                                        <td>{{ image.name }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                        </div>
+                                        <div class="col col-md-10 text-center">
+                                            <img :src="'/cms/imgs/'+image.organization_id+'/'+image.path" width="150px">
+                                                <div>{{ image.name }}</div></div>
+                                    </li>
+                                </ul>
                                 <?php
                                 echo $this->Form->create(null, ['id' => 'frmImage', 'role' => 'form']);
                                 echo '<div class="dropzone" id="myDropzoneImage"></div>';
@@ -93,25 +96,23 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                         </div>
                         <div class="box-body">
 
-                                <table class="table table-hover">
-                                    <thead class="thead-light">
-                                    <tbody>
-                                    <tr
+                                <ul id="sortable_docs" class="sortable">
+                                    <li
                                         v-for="doc in docs"
                                         :key="doc.id"
+                                        class="ui-state-default row"
                                     >
-                                        <td>
+
+                                        <div class="col col-md-1">
                                             <input type="checkbox" name="docs" v-model="selected_docs" :value="doc.id" />
-                                        </td>
-                                        <td>
+                                        </div>
+                                        <div class="col col-md-10">
                                             <a :href="'/admin/cms-docs/download/'+doc.id" target="_blank">
-                                                <button class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> <?php echo __('Cms Doc Download');?></button>
+                                                {{ doc.name }}
                                             </a>
-                                        </td>
-                                        <td>{{ doc.name }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                        </div>
+                                    </li>
+                                </ul>
                                 <?php
                                 echo $this->Form->create(null, ['id' => 'frmDoc', 'role' => 'form']);
                                 echo '<div class="dropzone" id="myDropzoneDoc"></div>';
@@ -189,4 +190,37 @@ $( function() {
 });
 ";
 $this->Html->scriptBlock($js, ['block' => true]);
+
+$js = "
+$( function() {
+    $('#sortable_imgs').sortable();
+    $('#sortable_docs').sortable();
+});";
+$this->Html->scriptBlock($js, ['block' => true]);
 ?>
+<style>
+    .sortable {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .sortable li {
+        margin: 0 3px 3px 3px;
+        height: auto;
+        min-height: 45px;
+        width: 100%;
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .ui-state-default {
+        border: 1px solid #3c8dbc;
+        background: #f6f6f6;
+        font-weight: normal;
+        color: #454545;
+    }
+
+</style>

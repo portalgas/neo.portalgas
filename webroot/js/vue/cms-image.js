@@ -29,11 +29,15 @@ $(function () {
                  * estraggo eventuale cms_page_id dalla pagina
                  */
                 let cms_page_id = document.getElementById('cms_page_id');
+                if(typeof cms_page_id==='undefined' || cms_page_id==null)
+                    cms_page_id=0;
+                else
+                    cms_page_id = cms_page_id.value;
 
                 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 axios.defaults.headers.common['X-CSRF-Token'] = $('meta[name="csrfToken"]').attr('content');
 
-                axios.get('/admin/api/cms-images/index')
+                axios.get('/admin/api/cms-images/index/'+cms_page_id)
                     .then(response => {
                         // console.log(response.data, 'cms-images');
                         $('.run-images .spinner').removeClass(ico_spinner);
@@ -43,17 +47,13 @@ $(function () {
                         /*
                          * immagini gia' associate alla pagina
                          */
-                        if(typeof cms_page_id!=='undefined' && cms_page_id!=null && cms_page_id.value>0) {
-                            _this.images.forEach(function (image) {
-                                if(image.cms_pages_images.length>0) {
-                                    image.cms_pages_images.forEach(function (cms_pages_image) {
-                                        console.log(cms_pages_image.cms_page_id+' '+cms_page_id.value, 'cms-images');
-                                        if(cms_pages_image.cms_page_id==cms_page_id.value)
-                                            _this.selected_images.push(cms_pages_image.cms_image_id);
-                                    });
-                                }
-                            });
-                        }
+                        _this.images.forEach(function (image) {
+                            // console.log(image.cms_page, 'image');
+                            if(image.cms_page!=null) {
+                                _this.selected_images.push(image.id);
+                            }
+                        });
+                        // console.table(_this.selected_images, 'selected_images');
                     })
                     .catch(error => {
                         $('.run-run-images .spinner').removeClass(ico_spinner);
