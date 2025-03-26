@@ -5,7 +5,7 @@ use Cake\Core\Configure;
 $this->Html->css('BootstrapUI.dashboard', ['block' => true]);
 
 echo $this->Html->css('style.css');
-echo $this->Html->script('scripts.js');
+echo $this->Html->script('scripts.js?v=20250326');
 
 $this->prepend('tb_body_attrs', ' class="' . implode(' ', [$this->request->getParam('controller'), $this->request->getParam('action')]) . '" ');
 $this->start('tb_body_start');
@@ -13,7 +13,7 @@ $this->start('tb_body_start');
 <body <?= $this->fetch('tb_body_attrs') ?>>
 
 	<?php echo $this->element('navbar');?>
-	
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-2 sidebar">
@@ -41,13 +41,13 @@ $this->end();
 $this->append('content', '</div></div></div>');
 echo $this->fetch('content');
 
-			
+
 $js = '
 "use strict";
 var objScript;
 
 $(function() {
-    objScript = new Script();	
+    objScript = new Script();
 });';
 
 $this->prepend('script', '<script type="text/javascript">' . $js . '</script>');

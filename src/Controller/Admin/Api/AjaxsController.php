@@ -15,10 +15,10 @@ class AjaxsController extends ApiAppController
     }
 
     public function beforeFilter(Event $event) {
-     
+
         parent::beforeFilter($event);
     }
-  
+
     public function beforeRender(Event $event)
     {
         parent::beforeRender($event);
@@ -55,7 +55,7 @@ class AjaxsController extends ApiAppController
 
             $data_range_ini = $this->convertDate($data_range_ini);
             $results = $this->_fieldUpdateExecute($entityTable, $entity, 'data_range_ini', $data_range_ini, $debug);
-     
+
             if($results['code']==200) {
                 $data_range_fine = $this->convertDate($data_range_fine);
                 $results = $this->_fieldUpdateExecute($entityTable, $entity, 'data_range_fine', $data_range_fine, $debug);
@@ -64,7 +64,7 @@ class AjaxsController extends ApiAppController
         elseif ($this->stringStartsWith($field, 'data')) {
             $value = $this->convertDate($value);
             $results = $this->_fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
-        }        
+        }
         else {
             $results = $this->_fieldUpdateExecute($entityTable, $entity, $field, $value, $debug);
         }
@@ -77,12 +77,12 @@ class AjaxsController extends ApiAppController
         $message = $results['message'];
         $errors = $results['errors'];
         // $this->set('_serialize', ['code', 'message', 'errors']);
-        
-        return $this->_response($results);        
+
+        return $this->_response($results);
     }
 
     private function _fieldUpdateExecute($entityTable, $entity, $field, $value, $debug=false) {
-dd();
+
         $results = [];
 
         $data = [];
@@ -100,33 +100,33 @@ dd();
             $results['code'] = 500;
             $results['errors'] = $entity->getErrors();
             $results['message'] = __('ajax error');
-        }  
-dd($results);
-        return $results; 
+        }
+
+        return $results;
     }
- 
+
 
     /*
      * eventuali id da escludere
      */
     public function getList() {
         $results = [];
-    
+
         $conditions = [];
         $id = $this->request->getData('id');
         $entity = $this->request->getData('entity');
-        
-										  
-				  
-		 
+
+
+
+
         $exclude_ids = $this->request->getData('exclude_ids');
         if(!empty($exclude_ids))
             $conditions += ['id not in' => $exclude_ids];
 
         $entityTable = TableRegistry::get($entity);
 
-        $results = $entityTable->find('list', ['conditions' => $conditions, 'limit' => Configure::read('paginate.limit')]); 
+        $results = $entityTable->find('list', ['conditions' => $conditions, 'limit' => Configure::read('paginate.limit')]);
 
-        return $this->_response($results); 
-    }   
+        return $this->_response($results);
+    }
 }

@@ -59,7 +59,7 @@ Script.prototype = {
         });
 
         /*
-         * + / - accordion 
+         * + / - accordion
          */
         $('.collapse').on('shown.bs.collapse', function (e) {
             $(this).parent().find(".fa-plus").removeClass('fa-plus').addClass('fa-minus');
@@ -69,7 +69,7 @@ Script.prototype = {
 
         $('.onFocusAllSelect').focus(function (e) {
             $(this).select();
-        }); 
+        });
 
         /*
          * aggiorna il DB con l'ico true/flase
@@ -85,16 +85,16 @@ Script.prototype = {
         $('.fieldUpdateAjaxChange').on('change', function(e) {
             console.log('fieldUpdateAjax change()');
             e.preventDefault();
-            _this.fieldUpdateAjax(this);               
-        }); 
+            _this.fieldUpdateAjax(this);
+        });
 
         $(".navbar .menu").slimscroll({
             height: "200px",
             alwaysVisible: false,
             size: "3px"
         }).css("width", "100%");
-        
-        /* 
+
+        /*
          * Initialize Select2 Elements https://select2.github.io/
          */
         $('.select2').select2();
@@ -116,12 +116,10 @@ Script.prototype = {
             language: 'it',
             changeMonth: true,
             changeYear: true,
-            showAnim: 'slideDown', 
-            changeMonth: true, 
-            changeYear: true,
+            showAnim: 'slideDown',
             yearRange: (_this.year - 110) + ":" + (_this.year + 1),
             todayBtn: "linked",
-            todayHighlight: true      
+            todayHighlight: true
         });
 
         // se .daterangepicker mi prende il css /admin_l_t_e/bower_components/bootstrap-daterangepicker/daterangepicker.css
@@ -133,10 +131,10 @@ Script.prototype = {
           isInvalidDate: function(ele) {
               var currDate = moment(ele._d).format('DD/MM/Y');
               return ["01-01-2019"].indexOf(currDate) != -1;
-          }          
-          //startDate: moment().subtract(3, 'month'), 
-          //endDate: moment().subtract(1, 'month'),  
-        });        
+          }
+          //startDate: moment().subtract(3, 'month'),
+          //endDate: moment().subtract(1, 'month'),
+        });
     },
     /*
      * aggiorna il DB con il valore gestiti da data-attr
@@ -154,21 +152,27 @@ Script.prototype = {
             console.error('fieldUpdateAjax data-attr-id undefined!');
             return;
         }
-             
+
         if (typeof entity === 'undefined') {
             console.error('fieldUpdateAjax data-attr-entity undefined!');
             return;
         }
-             
+
         if (typeof field === 'undefined') {
             console.error('fieldUpdateAjax data-attr-field undefined!');
-            return;                
+            return;
         }
 
         var value = '';
         var type = $(obj).attr('type');
-        // console.log('type '+type);
-        if (typeof type === 'undefined') 
+        /*
+        console.log('obj '+obj);
+        console.log('id '+id);
+        console.log('entity '+entity);
+        console.log('field '+field);
+        console.log('type '+type);
+        */
+        if (typeof type === 'undefined')
             type = 'icon-true-false';
 
         switch(type) {
@@ -181,15 +185,23 @@ Script.prototype = {
           break;
           case 'icon-true-false':
                 value = $(obj).attr('data-attr-value');
-                value=='1' ? value='0' : value='1';
+                if (typeof value !== 'undefined')
+                    value=='1' ? value='0' : value='1';
+                else {
+                    /*
+                     * il campo e' un select
+                     */
+                    value = $(obj).val();
+                }
           break;
           default:
             value = $(obj).val();
-        } 
+              break;
+        }
 
-        $(obj).after('<div class="response-ajax" id="'+entity+'-'+id+'"></div>'); 
+        $(obj).after('<div class="response-ajax" id="'+entity+'-'+id+'"></div>');
         var responseHtml = $('#'+entity+'-'+id);
-        if (typeof responseHtml === 'undefined') 
+        if (typeof responseHtml === 'undefined')
             console.error('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
         else
             console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
@@ -203,19 +215,19 @@ Script.prototype = {
         };
         console.log(data);
 
-        $.ajax({url: _this.fieldUpdateAjaxUrl, 
-                data: data, 
+        $.ajax({url: _this.fieldUpdateAjaxUrl,
+                data: data,
                 method: 'POST',
                 dataType: 'json',
                 cache: false,
                 headers: {
                   'X-CSRF-Token': csrfToken
-                },                
+                },
                 success: function (response) {
                     console.log(response);
                     if (response.code) {
                     }
-                    
+
                     responseHtml.removeClass(_this.ico_spinner);
                     responseHtml.addClass(_this.ico_ok);
 
@@ -224,23 +236,23 @@ Script.prototype = {
                         var value = $(_obj).data('attr-value');
                         if(value==0) {
                             $(_obj).data('attr-value', '1');
-                            $(_obj).attr('data-attr-value', '1'); 
+                            $(_obj).attr('data-attr-value', '1');
                         }
                         else
-                        if(value==1) { 
-                            $(_obj).data('attr-value', '0'); 
-                            $(_obj).attr('data-attr-value', '0'); 
+                        if(value==1) {
+                            $(_obj).data('attr-value', '0');
+                            $(_obj).attr('data-attr-value', '0');
                         }
-                                                
+
                         if($(_obj).hasClass('glyphicon-ok'))
                             $(_obj).removeClass('glyphicon-ok').removeClass('icon-true').addClass('glyphicon-remove').addClass('icon-false');
-                        else 
+                        else
                         if($(_obj).hasClass('glyphicon-remove'))
                             $(_obj).removeClass('glyphicon-remove').removeClass('icon-false').addClass('glyphicon-ok').addClass('icon-true');
-                        else 
+                        else
                         if($(_obj).hasClass('fa-lock'))
-                            $(_obj).removeClass('fa-lock').removeClass('icon-true').addClass('fa-unlock-alt').addClass('icon-false');                        
-                        else 
+                            $(_obj).removeClass('fa-lock').removeClass('icon-true').addClass('fa-unlock-alt').addClass('icon-false');
+                        else
                         if($(_obj).hasClass('fa-unlock-alt'))
                             $(_obj).removeClass('fa-unlock-alt').removeClass('icon-false').addClass('fa-lock').addClass('icon-true');
                     }
@@ -254,7 +266,7 @@ Script.prototype = {
                     setTimeout( function() {responseHtml.removeClass(_this.ico_ok).removeClass(_this.ico_ko);} , 2500);
                 }
             });
-    },      
+    },
     tooglePriceCollaborator: function (obj) {
         var _this = this;
         var value = $(obj).val();
@@ -267,7 +279,7 @@ Script.prototype = {
             $(data_target).hide();
             // $(data_target).val('0,00');
         }
-    },     
+    },
     /*
      * prende gli id nel div passato e lo concatena in ids, all'evento change di un chekbox
      */
@@ -300,7 +312,7 @@ Script.prototype = {
              var current_label = $("label[for='"+field_class+"']").text();
              var next_label = $(this).attr('data-attr-label');
              $(this).attr('data-attr-label', current_label);
-             
+
              var html = $("label[for='"+field_class+"']").html();
              var pos = html.lastIndexOf(current_label);
              */
@@ -317,7 +329,7 @@ Script.prototype = {
     },
     /*
      * inserisce nel campo hidden i checkox selezionati separati da virgola all'evento change()
-     */ 
+     */
     ChangeCheckboxCheckedTohidden: function(prefix_field) {
         var _this = this;
 
@@ -335,7 +347,7 @@ Script.prototype = {
         console.log('formatImportToDb AFTER value '+value);
         $(obj).val(value);
     },
-    /* 
+    /*
      * formatta data da inserimento utente
      */
     formatImport: function(obj) {
@@ -361,15 +373,15 @@ Script.prototype = {
     },
     /*
      * inserisce nel campo hidden i checkox selezionati separati da virgola => evento submit()
-     */ 
+     */
     checkboxCheckedTohidden: function(prefix_field) {
         var _this = this;
 
         var ids='';
         $('input[name="'+prefix_field+'.ids"]').val(ids);
-        
+
         $('.'+prefix_field).each(function(index) {
-            
+
             if($(this).is(':checked')) {
                 ids = ids + $(this).val() + ',';
                 // console.log(index+' CHECKED value '+$(this).val()+' ids '+ids);
@@ -380,7 +392,7 @@ Script.prototype = {
                 console.log(index+' NOT CHECKED value '+$(this).val()+' ids '+ids);
             }
         });
-                
+
         if(ids!='')
             ids = ids.substring(0, ids.length-1);
 
@@ -426,24 +438,24 @@ Script.prototype = {
 
         $('.importo').each(function(index) {
             _this.formatImportToDb(this);
-        });        
+        });
 
         $('.price-type-id').each(function(index) {
             _this.tooglePriceCollaborator(this);
         });
     }
-};        
+};
 
 
 /*
  * ridefinisco alert
  */
-function alert(message) { 
+function alert(message) {
 
 	$("#modalAlertWindow").remove();
-	
+
 	var html = '';
-	
+
 	html =  '<div class="modal fade" id="modalAlertWindow" role="dialog">';
 	html += '<div class="modal-dialog">';
 	html += '<div class="modal-content">';
@@ -456,10 +468,10 @@ function alert(message) {
 	html += message;
 	html += '</div>';
 	html += '<div class="modal-footer">';
-	html += '<button type="button" class="btn btn-warning" data-dismiss="modal">Chiudi</button>'; 
-	html += '</div>'; 
-	html += '</div>'; 
-	
+	html += '<button type="button" class="btn btn-warning" data-dismiss="modal">Chiudi</button>';
+	html += '</div>';
+	html += '</div>';
+
 	$(html).appendTo('body');
 	$("#modalAlertWindow").modal('show');
 }

@@ -28,7 +28,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
     <?= $this->Html->script('jquery.min.js') ?>
-	<?= $this->Html->script('scripts.js') ?>
+	<?= $this->Html->script('scripts.js?v=20250326') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken')); ?>
