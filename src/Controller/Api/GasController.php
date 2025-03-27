@@ -23,6 +23,9 @@ class GasController extends ApiAppController
         $this->Authentication->allowUnauthenticated(['gets', 'page']);
     }
 
+    /*
+     * elenco voci di menu
+     */
     public function gets() {
        // debug($this->_user);
        // dd($this->_user->organization);
@@ -37,34 +40,42 @@ class GasController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $menus = Cache::read('menus');
+        $menus = Cache::read('cms-menus');
         if ($menus !== false) {
             $results['results'] =  $menus;
         }
         else {
-            /*
-            $menuTable = TableRegistry::get('Menus');
+            $cmsMenuTable = TableRegistry::get('CmsMenus');
 
-            $menus = $menuTable->find()
+            $where = ['organization_id' => $organization->id, 'is_active' => true];
+            if(empty($this->_user))
+                $where = ['is_public' => true];
+
+            $menus = $cmsMenuTable->find()
+                                ->contain(['CmsMenuTypes', 'CmsDocs'])
+                                ->where($where)
                                 ->order(['sort' => 'asc'])
                                 ->all();
-
-            Cache::write('menus', $menus);
+            if($menus->count()>0) {
+                $menus = $menus->toArray();
+                Cache::write('cms-menus', $menus);
+            }
 
             $results['results'] = $menus;
-            */
         }
-
-        $results['results'] = [
-            ['id' => 1, 'slug' => 'home', 'label' => 'Home'],
-            ['id' => 2, 'slug' => 'regolamento', 'label' => 'Regolamento']
-        ];
 
         return $this->_response($results);
     }
 
+    /*
+     * contenuto pagina
+     */
     public function page() {
+
         $debug = false;
+
+        $content = '';
+
         $results = [];
         $results['code'] = 200;
         $results['message'] = 'OK';
@@ -77,12 +88,24 @@ class GasController extends ApiAppController
         $slug_page = $this->request->getParam('slugPage');
         if($slug_page=='home')
             $content = $this->Gas->getHomeByContentId($organization);
-        else
-            $content = 'todo';
+        else {
+            $cmsMenuTable = TableRegistry::get('CmsMenus');
 
-        $results['results'] = [
-            'organization' => $organization,
-            'content' => $content];
+            $where = ['organization_id' => $organization->id, 'is_active' => true, 'slug' => $slug_page];
+            if(empty($this->_user))
+                $where = ['is_public' => true];
+
+            $menu = $cmsMenuTable->find()
+                ->contain(['CmsPages'])
+                ->where($where)
+                ->first();
+            if(!empty($menu) && !empty($menu->cms_pages) && isset($menu->cms_pages[0])) {
+                $content = $menu->cms_pages[0]->body;
+            }
+        }
+
+        $results['results'] = ['organization' => $organization,
+                               'content' => $content];
 
         return $this->_response($results);
     }

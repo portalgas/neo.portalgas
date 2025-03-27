@@ -2,7 +2,9 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
+use Sluggable\Utility\Slug;
 
 /**
  * CmsMenus Controller
@@ -21,28 +23,30 @@ class CmsMenusController extends AppController
     public function index()
     {
         if ($this->request->is('post')) {
-            $data = $this->request->getData();
+            $datas = $this->request->getData();
             if(!empty($datas['ids'])) {
                 $error = false;
-                foreach($data['ids'] as $numResult => $id) {
+                foreach($datas['ids'] as $numResult => $id) {
                     $cmsMenu = $this->CmsMenus->get($id);
 
-                    $datas = [];
-                    $datas['sort'] = $numResult;
-                    $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
+                    $_datas = [];
+                    $_datas['sort'] = $numResult;
+                    $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $_datas);
                     if (!$this->CmsMenus->save($cmsMenu)) {
                         $error = true;
                         $this->Flash->error($cmsMenu->getErrors());
                         break;
                     }
                 }
+
+                Cache::delete('cms-menus');
             }
             if(!$error)
                 $this->Flash->success("L'ordinamento delle voci di menù è stato salvato");
         }
 
-        $cmsMenus = $this->CmsMenus->find()->where(['organization_id' => $this->_organization->id])
-            ->contain(['CmsMenuTypes', 'CmsMenusDocs', 'CmsPages'])
+        $cmsMenus = $this->CmsMenus->find()->where(['CmsMenus.organization_id' => $this->_organization->id])
+            ->contain(['CmsMenuTypes', 'CmsDocs', 'CmsPages'])
             ->order(['sort'])
             ->all();
 
@@ -58,8 +62,39 @@ class CmsMenusController extends AppController
     {
         $cmsMenu = $this->CmsMenus->newEntity();
         if ($this->request->is('post')) {
-            $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $this->request->getData());
+
+            $datas = [];
+            $datas = $this->request->getData();
+            $datas['organization_id'] = $this->_organization->id;
+            $datas['slug'] = Slug::generate($datas['name']);
+            $datas['sort'] = $this->CmsMenus->getSort('CmsMenus', ['organization_id' => $this->_organization->id, 'is_active' => 1]);
+            $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
             if ($this->CmsMenus->save($cmsMenu)) {
+
+                switch ($cmsMenu->cms_menu_type_id) {
+                    case 1: // PAGE
+                        $cmsPagesTable = TableRegistry::get('CmsPages');
+                        $cmsPage = $cmsPagesTable->get($datas['cms_page_id']);
+
+                        $datas = [];
+                        $datas['cms_menu_id'] = $cmsMenu->id;
+                        $cmsPage = $cmsPagesTable->patchEntity($cmsPage, $datas);
+                        $cmsPagesTable->save($cmsPage);
+                        break;
+                    case 2: // DOC
+                        $cmsDocsTable = TableRegistry::get('CmsDocs');
+                        $cmsDoc = $cmsDocsTable->get($datas['cms_doc_id']);
+
+                        $datas = [];
+                        $datas['cms_menu_id'] = $cmsMenu->id;
+                        $cmsDoc = $cmsDocsTable->patchEntity($cmsDoc, $datas);
+                        $cmsDocsTable->save($cmsDoc);
+
+                        break;
+                }
+
+                Cache::delete('cms-menus');
+
                 $this->Flash->success(__('The {0} has been saved.', 'Cms Menu'));
 
                 return $this->redirect(['action' => 'index']);
@@ -91,8 +126,14 @@ class CmsMenusController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $this->request->getData());
+            $datas = $this->request->getData();
+            $datas['organization_id'] = $this->_organization->id;
+            $datas['slug'] = Slug::generate($datas['name']);
+            $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
             if ($this->CmsMenus->save($cmsMenu)) {
+
+                Cache::delete('cms-menus');
+
                 $this->Flash->success(__('The {0} has been saved.', 'Cms Menu'));
 
                 return $this->redirect(['action' => 'index']);
@@ -114,10 +155,10 @@ class CmsMenusController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        // $this->request->allowMethod(['post', 'delete']);
         $cmsMenu = $this->CmsMenus->get($id);
         if ($this->CmsMenus->delete($cmsMenu)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Cms Menu'));
+            $this->Flash->success("La voce di menù è stata eliminata");
         } else {
             $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Cms Menu'));
         }

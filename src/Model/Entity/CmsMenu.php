@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  * @property int $organization_id
  * @property int $cms_menu_type_id
  * @property string $name
+ * @property string|null $slug
  * @property string|null $options
  * @property int|null $sort
  * @property bool $is_public
@@ -20,8 +21,8 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Organization $organization
  * @property \App\Model\Entity\CmsMenuType $cms_menu_type
- * @property \App\Model\Entity\CmsDoc[] $cms_docs
- * @property \App\Model\Entity\CmsPage[] $cms_pages
+ * @property \App\Model\Entity\CmsDoc $cms_doc
+ * @property \App\Model\Entity\CmsPage $cms_page
  */
 class CmsMenu extends Entity
 {
@@ -38,6 +39,7 @@ class CmsMenu extends Entity
         'organization_id' => true,
         'cms_menu_type_id' => true,
         'name' => true,
+        'slug' => true,
         'options' => true,
         'sort' => true,
         'is_public' => true,
@@ -47,7 +49,7 @@ class CmsMenu extends Entity
         'modified' => true,
         'organization' => true,
         'cms_menu_type' => true,
-        'cms_docs' => true,
-        'cms_pages' => true,
+        'cms_doc' => true,
+        'cms_page' => true,
     ];
 }

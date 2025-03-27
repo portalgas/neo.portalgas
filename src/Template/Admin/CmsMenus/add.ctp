@@ -68,7 +68,7 @@ use Cake\Core\Configure;
                 echo $this->Form->control('is_public', ['label' => __('Cms Menu Is Public')]);
                 echo '</div>';
                 echo '<div class="col col-md-6">';
-                echo $this->Form->control('is_active');
+                echo $this->Form->control('is_active', ['checked' => true]);
                 echo '</div>';
                 echo '</div>';
 

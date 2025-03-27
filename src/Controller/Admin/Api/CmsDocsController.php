@@ -40,7 +40,7 @@ class CmsDocsController extends ApiAppController
              */
             $cmsPagesDocsTable = TableRegistry::get('CmsPagesDocs');
             $tmp_assets = $cmsPagesDocsTable->find()
-                ->contain(['CmsPages', 'CmsDocs' => ['CmsMenusDocs' => ['CmsMenus']]])
+                ->contain(['CmsPages', 'CmsDocs' => ['CmsMenus']])
                 ->where(['CmsPagesDocs.organization_id' => $this->_organization->id,
                         ['CmsPagesDocs.cms_page_id' => $cms_page_id]])
                 ->all();
@@ -63,9 +63,7 @@ class CmsDocsController extends ApiAppController
 
         $cmsDocsTable = TableRegistry::get('CmsDocs');
         $tmp_assets = $cmsDocsTable->find()
-            ->contain([
-                'CmsMenusDocs' => ['CmsMenus'],
-                'CmsPagesDocs' => ['CmsPages']])
+            ->contain(['CmsMenus', 'CmsPagesDocs' => ['CmsPages']])
             ->where($where)
             ->all();
         if($tmp_assets->count()>0) {

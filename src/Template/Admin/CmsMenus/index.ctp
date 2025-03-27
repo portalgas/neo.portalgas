@@ -39,7 +39,22 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
 
                 echo '<ul id="sortable">';
                 foreach ($cmsMenus as $cmsMenu) {
-                    echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' . h($cmsMenu->name) . ' - <small>tipologia ' . $cmsMenu->cms_menu_type->name . '</small>';
+                    echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
+                    echo h($cmsMenu->name) . ' - ';
+
+                    echo '<small>tipologia ';
+                    switch ($cmsMenu->cms_menu_type->code) {
+                        case 'PAGE':
+                            echo '<i class="fa fa-file-o"></i> ';
+                            break;
+                        case 'DOC':
+                            echo '<i class="fa fa-file-pdf-o"></i> ';
+                            break;
+                        case 'LINK_EXT':
+                            echo '<i class="fa fa-external-link"></i> ';
+                            break;
+                    }
+                    echo $cmsMenu->cms_menu_type->name . '</small>';
 
                     if($cmsMenu->cms_menu_type->code=='PAGE' && empty($cmsMenu->cms_pages))
                         echo '  <span class="label label-danger label-danger">Nessuna pagina associata!</span>';

@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $organization_id
+ * @property int|null $cms_menu_id
  * @property string $name
  * @property string|null $path
  * @property string $ext
@@ -16,7 +17,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $modified
  *
  * @property \App\Model\Entity\Organization $organization
- * @property \App\Model\Entity\CmsMenu $cms_menu
+ * @property \App\Model\Entity\CmsPagesDoc[] $cms_pages_docs
  */
 class CmsDoc extends Entity
 {
@@ -31,6 +32,7 @@ class CmsDoc extends Entity
      */
     protected $_accessible = [
         'organization_id' => true,
+        'cms_menu_id' => true,
         'name' => true,
         'path' => true,
         'ext' => true,
@@ -38,6 +40,6 @@ class CmsDoc extends Entity
         'created' => true,
         'modified' => true,
         'organization' => true,
-        'cms_menu' => true,
+        'cms_pages_docs' => true,
     ];
 }

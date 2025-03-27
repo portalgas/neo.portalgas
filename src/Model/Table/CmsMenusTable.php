@@ -5,13 +5,14 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use App\Traits;
 
 /**
  * CmsMenus Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
  * @property \App\Model\Table\CmsMenuTypesTable&\Cake\ORM\Association\BelongsTo $CmsMenuTypes
- * @property &\Cake\ORM\Association\HasMany $CmsMenusDocs
+ * @property \App\Model\Table\CmsDocsTable&\Cake\ORM\Association\HasMany $CmsDocs
  * @property \App\Model\Table\CmsPagesTable&\Cake\ORM\Association\HasMany $CmsPages
  *
  * @method \App\Model\Entity\CmsMenu get($primaryKey, $options = [])
@@ -27,6 +28,8 @@ use Cake\Validation\Validator;
  */
 class CmsMenusTable extends Table
 {
+    use Traits\SqlTrait;
+
     /**
      * Initialize method
      *
@@ -51,7 +54,7 @@ class CmsMenusTable extends Table
             'foreignKey' => 'cms_menu_type_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('CmsMenusDocs', [
+        $this->hasMany('CmsDocs', [
             'foreignKey' => 'cms_menu_id',
         ]);
         $this->hasMany('CmsPages', [
@@ -73,9 +76,14 @@ class CmsMenusTable extends Table
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 75)
+            ->maxLength('name', 100)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator
+            ->scalar('slug')
+            ->maxLength('slug', 100)
+            ->allowEmptyString('slug');
 
         $validator
             ->scalar('options')
@@ -122,8 +130,29 @@ class CmsMenusTable extends Table
 
         $resultList = [];
         $results = $this->find('all', [
-                                'conditions' => ['organization_id' => $organization_id, 'cms_menu_type_id' => 1],
-                                'contain' => ['CmsPages']]);
+            'conditions' => ['organization_id' => $organization_id, 'cms_menu_type_id' => 1],
+            'contain' => ['CmsPages']]);
+
+        if(!empty($results)) {
+            /*
+             * verifico se la voce di menu' è associata ad una pagina
+             */
+            $results = $results->toArray();
+            foreach ($results as $numResult => $result) {
+                if(empty($result->cms_pages)) {
+                    $resultList[$result->id] = $result->name;
+                }
+            }
+        }
+        return $resultList;
+    }
+
+    public function getLastSort($organization_id) {
+
+        $resultList = [];
+        $results = $this->find()
+            ->where(['organization_id' => $organization_id, 'is_active' => 1])
+            ->all();
 
         if(!empty($results)) {
             /*
