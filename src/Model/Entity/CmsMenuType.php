@@ -31,6 +31,7 @@ class CmsMenuType extends Entity
         'name' => true,
         'descri' => true,
         'created' => true,
+        'is_system' => true,
         'modified' => true,
         'cms_menus' => true,
     ];

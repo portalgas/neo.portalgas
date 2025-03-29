@@ -69,9 +69,10 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                         echo '<div class="label label-warning label-stato">Non visibile</div>';
                     else {
                         if ($cmsMenu->is_public)
-                            echo '<div class="label label-success label-stato">Visibile solo ai propri gasisti autenticati</div>';
+                            echo '<div class="label label-warning label-stato">Visibile a tutti (senza autenticazione)</div>';
                         else
-                            echo '<div class="label label-warming label-stato">Visibile a tutti (senza autenticazione)</div>';
+                            echo '<div class="label label-success label-stato">Visibile solo ai propri gasisti autenticati</div>';
+
                     }
                     // echo $this->Html->link(__('View'), ['action' => 'view', $cmsMenu->id], ['class'=>'btn btn-info']);
                     echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> '.__('Edit'), ['action' => 'edit', $cmsMenu->id], ['class' => 'btn btn-success', 'style' => 'margin-left: 5px', 'escape' => false]);
@@ -91,48 +92,6 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
             else {
                 echo $this->element('msg', ['msg' => "Non ci sono ancora voci di menù", 'class' => 'warning']);
             }
-          /*
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                  <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('cms_menu_type_id') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('name') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('sort') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('is_public') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('is_system') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
-              </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($cmsMenus as $cmsMenu) :
-                ?>
-                <tr>
-                  <td><?= $this->Number->format($cmsMenu->id) ?></td>
-                  <td><?= $cmsMenu->has('organization') ? $this->Html->link($cmsMenu->organization->name, ['controller' => 'Organizations', 'action' => 'view', $cmsMenu->organization->id]) : '' ?></td>
-                  <td><?= $cmsMenu->has('cms_menu_type') ? $this->Html->link($cmsMenu->cms_menu_type->name, ['controller' => 'CmsMenuTypes', 'action' => 'view', $cmsMenu->cms_menu_type->id]) : '' ?></td>
-                  <td><?= h($cmsMenu->name) ?></td>
-                  <td><?= $this->Number->format($cmsMenu->sort) ?></td>
-                  <td><?= h($cmsMenu->is_public) ?></td>
-                  <td><?= h($cmsMenu->is_system) ?></td>
-                  <td><?= h($cmsMenu->is_active) ?></td>
-                  <td><?= h($cmsMenu->created) ?></td>
-                  <td><?= h($cmsMenu->modified) ?></td>
-                  <td class="actions text-right">
-                      <?= $this->Html->link(__('View'), ['action' => 'view', $cmsMenu->id], ['class'=>'btn btn-info btn-xs']) ?>
-                      <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cmsMenu->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                      <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenu->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenu->id), 'class'=>'btn btn-danger btn-xs']) ?>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-            */
             ?>
         </div>
         <!-- /.box-body -->

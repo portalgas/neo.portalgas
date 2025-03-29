@@ -73,6 +73,10 @@ class CmsMenuTypesTable extends Table
             ->scalar('descri')
             ->allowEmptyString('descri');
 
+        $validator
+            ->boolean('is_system')
+            ->notEmptyString('is_system');
+
         return $validator;
     }
 

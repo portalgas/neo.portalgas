@@ -3,6 +3,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use Cake\Event\Event;
 
 /**
  * CmsDocs Controller
@@ -13,6 +14,26 @@ use Cake\Core\Configure;
  */
 class CmsDocsController extends AppController
 {
+    public function initialize()
+    {
+        parent::initialize();
+
+    }
+
+    public function beforeFilter(Event $event) {
+        parent::beforeFilter($event);
+
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
+        if($this->_organization->paramsConfig['hasDocuments']=='N') {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+    }
+
     /**
      * Index method
      *
@@ -38,5 +59,30 @@ class CmsDocsController extends AppController
             $this->Flash->error(__('File non trovato.'));
             return $this->redirect(['action' => 'index']);
         }
+    }
+
+    public function delete($id = null)
+    {
+        // $this->request->allowMethod(['post', 'delete']);
+        $cmsDoc = $this->CmsDocs->get($id);
+
+        if ($this->CmsDocs->delete($cmsDoc)) {
+
+            /*
+             * elimino fisicamente il file
+             */
+
+            $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $this->_organization->id);
+            $filePath = $asset_path . '/' . $cmsDoc->path;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            $this->Flash->success("Il documento è stato eliminato");
+        } else {
+            $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Cms Page'));
+        }
+
+        return $this->redirect(['action' => 'index']);
     }
 }

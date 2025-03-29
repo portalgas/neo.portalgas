@@ -24,7 +24,8 @@ class GasComponent extends Component {
 
         $organizationsTable = TableRegistry::get('Organizations');
         $organization = $organizationsTable->find()
-            ->where (['j_seo' => $slug])
+            ->select(['id', 'name', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'www', 'www2', 'cf', 'lat', 'lng', 'img1', 'template_id', 'j_seo'])
+            ->where (['j_seo' => $slug, 'type' => 'GAS', 'stato' => 'Y'])
             ->first();
 
         return $organization;
@@ -42,9 +43,12 @@ class GasComponent extends Component {
         if(!empty($content)) {
             $content = $content->introtext . $content->fulltext;
 
-            $content = str_replace('src="images', 'src="https://www.portalgas.it/images', $content);
+            $config = Configure::read('Config');
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
 
-            $content = str_replace('contattaci?contactOrganizationId', 'https://www.portalgas.it/contattaci?contactOrganizationId', $content);
+            $content = str_replace('src="images', 'src="'.$portalgas_fe_url.'/images', $content);
+
+            $content = str_replace('contattaci?contactOrganizationId', $portalgas_fe_url.'/contattaci?contactOrganizationId', $content);
 
             $content = str_replace('<p>{flike}</p>', '', $content);
         }

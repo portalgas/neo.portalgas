@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 
 /**
  * CmsImages Controller
@@ -101,10 +102,19 @@ class CmsImagesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        // $this->request->allowMethod(['post', 'delete']);
         $cmsImage = $this->CmsImages->get($id);
         if ($this->CmsImages->delete($cmsImage)) {
-            $this->Flash->success(__('The {0} has been deleted.', 'Cms Image'));
+            /*
+             * elimino fisicamente il file
+             */
+            $asset_path = WWW_ROOT . sprintf(Configure::read('Cms.img.paths'), $this->_organization->id);
+            $filePath = $asset_path . '/' . $cmsImage->path;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            $this->Flash->success("L'immagine è stata eliminata");
         } else {
             $this->Flash->error(__('The {0} could not be deleted. Please, try again.', 'Cms Image'));
         }

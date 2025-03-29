@@ -1,14 +1,14 @@
 <?php
 use Cake\Core\Configure;
 ?>
-<!-- Content Header (Page header) -->
+
   <section class="content-header">
     <h1>
         <?php echo __('Cms Menu');?>
       <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> Elenco <?php echo __('Cms Menus'); ?></a></li>
     </ol>
   </section>
 
@@ -26,7 +26,7 @@ use Cake\Core\Configure;
           <?php echo $this->Form->create($cmsMenu, ['role' => 'form']); ?>
             <div class="box-body">
               <?php
-                echo $this->Form->control('cms_menu_type_id', ['options' => $cmsMenuTypes, 'id' => 'cms_menu_type_id', 'label' => __('Cms MenuType'), 'empty' => Configure::read('HtmlOptionEmpty')]);
+                echo $this->Form->control('cms_menu_type_id', ['options' => $cmsMenuTypes, 'id' => 'cms_menu_type_id', 'label' => __('Cms MenuType'), 'empty' => Configure::read('HtmlOptionEmpty'), 'required' => true]);
                 echo $this->Form->control('name', ['label' => __('Cms MenuName'), 'required' => true]);
 
                 /*
@@ -37,7 +37,7 @@ use Cake\Core\Configure;
                 if(count($cmsDocs->toArray())==0)
                     echo $this->element('msg', ['msg' => "Non ci sono documenti caricati da poter associare alla voce di menù", 'class' => 'warning']);
                 else
-                    echo $this->Form->control('cms_docs_id', ['options' => $cmsDocs, 'label' => __('Cms Docs'), 'empty' => Configure::read('HtmlOptionEmpty')]);
+                    echo $this->Form->control('cms_doc_id', ['options' => $cmsDocs, 'label' => __('Cms Docs'), 'empty' => Configure::read('HtmlOptionEmpty')]);
                 echo '</div>';
                 echo '<div class="col col-md-4"><br />';
                 echo '<a href="'.$this->Url->build(['controller' => 'cmsDocs', 'action' => 'index']).'" class="btn btn-primary btn-block">'.__('Cms Add Doc').'</a>';
@@ -60,15 +60,17 @@ use Cake\Core\Configure;
                 echo '</div>';
 
                 echo '<div id="link-ext" style="display:none;">';
-                echo $this->Form->control('options', ['type' => 'text', 'label' => __('Cms LinkExt Options')]);
+                echo $this->Form->control('options', ['type' => 'text', 'label' => __('Cms LinkExt Options'), 'placeholder' => 'https:///www.']);
                 echo '</div>';
 
                 echo '<div class="row">';
                 echo '<div class="col col-md-6">';
                 echo $this->Form->control('is_public', ['label' => __('Cms Menu Is Public')]);
+                echo $this->element('msg', ['msg' => __('Note-is-public'), 'class' => 'info']);
                 echo '</div>';
                 echo '<div class="col col-md-6">';
                 echo $this->Form->control('is_active', ['checked' => true]);
+                echo $this->element('msg', ['msg' => __('Note-is-active'), 'class' => 'info']);
                 echo '</div>';
                 echo '</div>';
 

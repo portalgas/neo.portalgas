@@ -66,7 +66,7 @@ echo $this->Html->script('vue/cms-image.js?v=20250316', ['block' => 'scriptPageI
                                         </div>
                                     </td>
                                     <td>
-                                        <a :href="'/admin/cms-images/delete/'+image.id" target="_blank">
+                                        <a :href="'/admin/cms-images/delete/'+image.id">
                                             <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
                                         </a>
                                     </td>

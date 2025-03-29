@@ -39,7 +39,7 @@ class CmsMenusController extends AppController
                     }
                 }
 
-                Cache::delete('cms-menus');
+                Cache::delete('cms-menus-'.$this->_organization->id);
             }
             if(!$error)
                 $this->Flash->success("L'ordinamento delle voci di menù è stato salvato");
@@ -68,34 +68,21 @@ class CmsMenusController extends AppController
             $datas['organization_id'] = $this->_organization->id;
             $datas['slug'] = Slug::generate($datas['name']);
             $datas['sort'] = $this->CmsMenus->getSort('CmsMenus', ['organization_id' => $this->_organization->id, 'is_active' => 1]);
+
+            $datas['options'] = trim($datas['options']);
+            if($datas['cms_menu_type_id']==3) { // LINK_EXT
+                if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
+                    $datas['options'] = 'https://'.$datas['options'];
+            }
+
             $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
             if ($this->CmsMenus->save($cmsMenu)) {
 
-                switch ($cmsMenu->cms_menu_type_id) {
-                    case 1: // PAGE
-                        $cmsPagesTable = TableRegistry::get('CmsPages');
-                        $cmsPage = $cmsPagesTable->get($datas['cms_page_id']);
+                $this->_updatePagesOrDocs($this->_organization->id, $cmsMenu, $datas);
 
-                        $datas = [];
-                        $datas['cms_menu_id'] = $cmsMenu->id;
-                        $cmsPage = $cmsPagesTable->patchEntity($cmsPage, $datas);
-                        $cmsPagesTable->save($cmsPage);
-                        break;
-                    case 2: // DOC
-                        $cmsDocsTable = TableRegistry::get('CmsDocs');
-                        $cmsDoc = $cmsDocsTable->get($datas['cms_doc_id']);
+                Cache::delete('cms-menus-'.$this->_organization->id);
 
-                        $datas = [];
-                        $datas['cms_menu_id'] = $cmsMenu->id;
-                        $cmsDoc = $cmsDocsTable->patchEntity($cmsDoc, $datas);
-                        $cmsDocsTable->save($cmsDoc);
-
-                        break;
-                }
-
-                Cache::delete('cms-menus');
-
-                $this->Flash->success(__('The {0} has been saved.', 'Cms Menu'));
+                $this->Flash->success("La voce di menù è stata salvata");
 
                 return $this->redirect(['action' => 'index']);
             }
@@ -123,28 +110,68 @@ class CmsMenusController extends AppController
     public function edit($id = null)
     {
         $cmsMenu = $this->CmsMenus->get($id, [
-            'contain' => []
+            'contain' => ['CmsMenuTypes', 'CmsDocs', 'CmsPages']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $datas = $this->request->getData();
             $datas['organization_id'] = $this->_organization->id;
             $datas['slug'] = Slug::generate($datas['name']);
+
+            $datas['options'] = trim($datas['options']);
+            if($datas['cms_menu_type_id']==3) { // LINK_EXT
+                if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
+                    $datas['options'] = 'https://'.$datas['options'];
+            }
+
             $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
             if ($this->CmsMenus->save($cmsMenu)) {
 
-                Cache::delete('cms-menus');
+                $this->_updatePagesOrDocs($this->_organization->id, $cmsMenu, $datas);
 
-                $this->Flash->success(__('The {0} has been saved.', 'Cms Menu'));
+                Cache::delete('cms-menus-'.$this->_organization->id);
+
+                $this->Flash->success("La voce di menù è stata salvata");
 
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Cms Menu'));
         }
-        $organizations = $this->CmsMenus->Organizations->find('list', ['limit' => 200]);
-        $cmsMenuTypes = $this->CmsMenus->CmsMenuTypes->find('list', ['limit' => 200]);
-        $this->set(compact('cmsMenu', 'organizations', 'cmsMenuTypes'));
+
+        $cmsDocsTable = TableRegistry::get('CmsDocs');
+        $cmsDocs = $cmsDocsTable->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
+
+        $cmsPagesTable = TableRegistry::get('CmsPages');
+        $cmsPages = $cmsPagesTable->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
+
+        $this->set(compact('cmsMenu', 'cmsDocs', 'cmsPages'));
     }
 
+    private function _updatePagesOrDocs($organization_id, $cmsMenu, $datas) {
+        switch ($cmsMenu->cms_menu_type_id) {
+            case 1: // PAGE
+                if(!empty($datas['cms_page_id'])) {
+                    $cmsPagesTable = TableRegistry::get('CmsPages');
+                    $cmsPage = $cmsPagesTable->find()->where(['organization_id' => $organization_id, 'id' => $datas['cms_page_id']])->first();
+
+                    $datas = [];
+                    $datas['cms_menu_id'] = $cmsMenu->id;
+                    $cmsPage = $cmsPagesTable->patchEntity($cmsPage, $datas);
+                    $cmsPagesTable->save($cmsPage);
+                }
+                break;
+            case 2: // DOC
+                if(!empty($datas['cms_page_id'])) {
+                    $cmsDocsTable = TableRegistry::get('CmsDocs');
+                    $cmsDoc = $cmsDocsTable->find()->where(['organization_id' => $organization_id, 'id' => $datas['cms_doc_id']])->first();
+
+                    $datas = [];
+                    $datas['cms_menu_id'] = $cmsMenu->id;
+                    $cmsDoc = $cmsDocsTable->patchEntity($cmsDoc, $datas);
+                    $cmsDocsTable->save($cmsDoc);
+                }
+                break;
+        }
+    }
 
     /**
      * Delete method

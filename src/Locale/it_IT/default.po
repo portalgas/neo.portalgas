@@ -1462,6 +1462,9 @@ msgstr "Se attivo sarà visibile a front-end"
 msgid "Note-sort"
 msgstr "Gli elementi saranno ordinati in ordine crescente rispetto al numero indicato"
 
+msgid "Note-is-public"
+msgstr "Se pubblico sarà visibile a front-end anche a chi non è autenticato"
+
 #
 # socialmarket
 #
@@ -6916,6 +6919,12 @@ msgstr "E' di sistema"
 #
 # CMS
 #
+msgid "Cms Menu Types"
+msgstr "Tipologie di menù"
+
+msgid "Cms Menu Type"
+msgstr "Tipologia di menù"
+
 msgid "Cms Menu"
 msgstr "Voce del menù"
 

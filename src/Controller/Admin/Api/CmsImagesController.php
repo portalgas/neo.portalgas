@@ -23,7 +23,7 @@ class CmsImagesController extends ApiAppController
         $this->loadComponent('Upload');
     }
 
-    public function index($cms_page_id) {
+    public function index($cms_page_id=0) {
 
         $results = [];
         $results['code'] = 200;
@@ -138,8 +138,8 @@ class CmsImagesController extends ApiAppController
         $asset_path = $asset_path.'/'.$file_name;
         $imageOperations = [
             'thumbnail' => [
-                'height' => Configure::read('App.web.img.upload.width.article'),
-                'width' => Configure::read('App.web.img.upload.width.article')
+                'height' => Configure::read('App.web.img.upload.width.cms'),
+                'width' => Configure::read('App.web.img.upload.width.cms')
             ]];
         $this->CmsImages->processImage(
             $asset_path,

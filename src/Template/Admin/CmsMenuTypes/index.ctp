@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-    Cms Menu Types
+    <?php echo __('Cms Menu Types');?>
 
     <div class="pull-right"><?php echo $this->Html->link(__('New'), ['action' => 'add'], ['class'=>'btn btn-success btn-xs']) ?></div>
   </h1>
@@ -46,7 +46,9 @@
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $cmsMenuType->id], ['class'=>'btn btn-info btn-xs']) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cmsMenuType->id], ['class'=>'btn btn-warning btn-xs']) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenuType->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenuType->id), 'class'=>'btn btn-danger btn-xs']) ?>
+                        <?php
+                        if(!$cmsMenuType->is_system) $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenuType->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenuType->id), 'class'=>'btn btn-danger btn-xs']);
+                        ?>
                     </td>
                   <td><?= $this->Number->format($cmsMenuType->id) ?></td>
                   <td><?= h($cmsMenuType->code) ?></td>

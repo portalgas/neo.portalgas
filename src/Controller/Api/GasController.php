@@ -20,13 +20,35 @@ class GasController extends ApiAppController
 
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['gets', 'page']);
+        $this->Authentication->allowUnauthenticated(['organization', 'menu', 'page']);
+    }
+
+    /*
+     * dati GAS
+     */
+    public function organization() {
+
+        $debug = false;
+
+        $content = '';
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $slug_gas = $this->request->getParam('slugGas');
+        $organization = $this->Gas->getBySlug($slug_gas);
+        $results['results'] = $organization;
+
+        return $this->_response($results);
     }
 
     /*
      * elenco voci di menu
      */
-    public function gets() {
+    public function menu() {
        // debug($this->_user);
        // dd($this->_user->organization);
         $debug = false;
@@ -40,7 +62,7 @@ class GasController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $menus = Cache::read('cms-menus');
+        $menus = Cache::read('cms-menus-'.$organization->id);
         if ($menus !== false) {
             $results['results'] =  $menus;
         }
@@ -56,10 +78,20 @@ class GasController extends ApiAppController
                                 ->where($where)
                                 ->order(['sort' => 'asc'])
                                 ->all();
-            if($menus->count()>0) {
+            if($menus->count()>0)
                 $menus = $menus->toArray();
-                Cache::write('cms-menus', $menus);
+            else {
+                /*
+                 * veco di menu di default con la pagina home di default
+                 */
+                $menus = [];
+                $menus[0] = [];
+                $menus[0]['slug'] = 'home';
+                $menus[0]['cms_menu_type'] = [];
+                $menus[0]['cms_menu_type']['code'] = 'PAGE';
+                $menus[0]['name'] = 'Home del G.A.S.';
             }
+            Cache::write('cms-menus-'.$organization->id, $menus);
 
             $results['results'] = $menus;
         }
@@ -86,26 +118,39 @@ class GasController extends ApiAppController
         $organization = $this->Gas->getBySlug($slug_gas);
 
         $slug_page = $this->request->getParam('slugPage');
-        if($slug_page=='home')
-            $content = $this->Gas->getHomeByContentId($organization);
+        $cmsMenuTable = TableRegistry::get('CmsMenus');
+
+        $where = ['organization_id' => $organization->id, 'is_active' => true, 'slug' => $slug_page];
+        if(empty($this->_user))
+            $where = ['is_public' => true];
+
+        $menu = $cmsMenuTable->find()
+            ->contain(['CmsPages' => [
+                'CmsPagesImages' => ['CmsImages'],
+                'CmsPagesDocs' => ['CmsDocs']]])
+            ->where($where)
+            ->first();
+
+        $content = '';
+        $images = [];
+        $docs = [];
+
+        if(!empty($menu) && !empty($menu->cms_pages) && isset($menu->cms_pages[0])) {
+            $content = $menu->cms_pages[0]->body;
+            if(!empty($menu->cms_pages[0]->cms_pages_images))
+                $images =  $menu->cms_pages[0]->cms_pages_images;
+            if(!empty($menu->cms_pages[0]->cms_pages_docs))
+                $docs =  $menu->cms_pages[0]->cms_pages_docs;
+        }
         else {
-            $cmsMenuTable = TableRegistry::get('CmsMenus');
-
-            $where = ['organization_id' => $organization->id, 'is_active' => true, 'slug' => $slug_page];
-            if(empty($this->_user))
-                $where = ['is_public' => true];
-
-            $menu = $cmsMenuTable->find()
-                ->contain(['CmsPages'])
-                ->where($where)
-                ->first();
-            if(!empty($menu) && !empty($menu->cms_pages) && isset($menu->cms_pages[0])) {
-                $content = $menu->cms_pages[0]->body;
-            }
+            $content = $this->Gas->getHomeByContentId($organization);
+            $images = [];
+            $docs = [];
         }
 
-        $results['results'] = ['organization' => $organization,
-                               'content' => $content];
+        $results['results']['content'] = $content;
+        $results['results']['images'] = $images;
+        $results['results']['docs'] = $docs;
 
         return $this->_response($results);
     }

@@ -42,8 +42,10 @@ Dropzone.options.myDropzoneDoc = {
             if(response.esito) {
 
             }
-
             vueCmsDocs.gets();
+            if (this.files.length > 1) {
+                this.removeFile(this.files[0]);
+            }
             // window.location.reload();
             // console.log(response, 'success response');
         });

@@ -53,16 +53,14 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                     <td>{{ doc.name }}</td>
                                     <td>{{ doc.size }} kb</td>
                                     <td>
-                                        <ul v-if="doc.cms_menus_docs.length>0" style="margin:0px; padding:0px;">
-                                            <li v-for="cms_menus_doc in doc.cms_menus_docs">{{ cms_menus_doc.cms_menu.name }} </li>
-                                        </ul>
+                                        <div v-if="doc.cms_menu">{{ doc.cms_menu.name }} </div>
                                     <td>
                                         <ul v-if="doc.cms_pages_docs.length>0" style="margin:0px; padding:0px;">
                                             <li v-for="cms_pages_doc in doc.cms_pages_docs">{{ cms_pages_doc.cms_page.name }} </li>
                                         </ul>
                                     </td>
                                     <td>
-                                        <a :href="'/admin/cms-docs/delete/'+doc.id" target="_blank">
+                                        <a :href="'/admin/cms-docs/delete/'+doc.id">
                                             <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
                                         </a>
                                     </td>

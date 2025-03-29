@@ -209,7 +209,8 @@ Router::prefix('api', function (RouteBuilder $routes) {
      * gas
      */
     $routes->scope('/gas', ['controller' => 'Gas'], function (RouteBuilder $routes) {
-        $routes->connect('/menu/:slugGas', ['action' => 'gets', '_method' => 'GET']);
+        $routes->connect('/organization/:slugGas', ['action' => 'organization', '_method' => 'GET']);
+        $routes->connect('/menu/:slugGas', ['action' => 'menu', '_method' => 'GET']);
         $routes->connect('/page/:slugGas/:slugPage', ['action' => 'page', '_method' => 'GET'],
             [
                 'pass' => ['slug']

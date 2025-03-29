@@ -23,7 +23,7 @@ class CmsDocsController extends ApiAppController
         parent::beforeFilter($event);
     }
 
-    public function index($cms_page_id) {
+    public function index($cms_page_id=0) {
 
         $results = [];
         $results['code'] = 200;

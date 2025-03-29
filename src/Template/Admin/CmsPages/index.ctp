@@ -17,8 +17,11 @@
           <div class="box-tools">
           </div>
         </div>
-        <!-- /.box-header -->
+
         <div class="box-body table-responsive no-padding">
+        <?php
+        if($cmsPages->count()>0) {
+        ?>
           <table class="table table-hover">
             <thead>
               <tr>
@@ -48,6 +51,12 @@
               <?php endforeach; ?>
             </tbody>
           </table>
+        <?php
+        }
+        else {
+            echo $this->element('msg', ['msg' => "Non ci sono ancora pagine", 'class' => 'warning']);
+        }
+        ?>
         </div>
         <!-- /.box-body -->
       </div>

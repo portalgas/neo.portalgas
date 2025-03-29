@@ -1,6 +1,6 @@
 <template>
   <main>
- 
+
 <ul class="link-top">
   <li>
     <router-link to="/site/produttori" class="btn btn-primary">Torna all'elenco dei produttori</router-link>
@@ -9,11 +9,11 @@
 
 <div class="clearfix"></div>
 
-<div v-if="isLoading" class="box-spinner"> 
+<div v-if="isLoading" class="box-spinner">
   <div class="spinner-border text-info" role="status">
     <span class="sr-only">Loading...</span>
-  </div>  
-</div> 
+  </div>
+</div>
 
 <section id="about" class="about" v-if="!isLoading && modalContent!=null && modalContent.entity!=null">
     <div class="content container aos-init aos-animate" data-aos="fade-up">
@@ -33,7 +33,7 @@
           </div>
           <div class="col-lg-9 pt-4 pt-lg-0 content">
             <h3 v-if="modalContent.entity.categories_supplier!=null">Categoria: {{ modalContent.entity.categories_supplier.name }}</h3>
-            
+
               <div class="row" v-if="modalContent.entity.nota">
                   <div class="col-lg-12">
                     {{ modalContent.entity.nota }}
@@ -45,7 +45,7 @@
                   <div class="col-lg-12" v-html="$options.filters.html(modalContent.entity.content.fulltext)"></div>
               </div> <!-- row -->
 
-              
+
               <div class="row">
                 <div class="col-lg-12">
                     <ul>
@@ -101,10 +101,10 @@
                               :alt="suppliers_organization.organization.name" />
                           </div>
                       </a>
-                      
-                      <strong>{{ suppliers_organization.organization.name }}</strong> 
-                      {{ suppliers_organization.organization.indirizzo }} {{ suppliers_organization.organization.localita }} <span v-if="suppliers_organization.organization.provincia">({{ suppliers_organization.organization.provincia }})</span>                 
-                  </li>              
+
+                      <strong>{{ suppliers_organization.organization.name }}</strong>
+                      {{ suppliers_organization.organization.indirizzo }} {{ suppliers_organization.organization.localita }} <span v-if="suppliers_organization.organization.provincia">({{ suppliers_organization.organization.provincia }})</span>
+                  </li>
               </ul>
             </div>
           </div> <!-- row -->
@@ -118,7 +118,7 @@
               <h2>Prodotti</h2>
 
 
-              <div class="row pb-2" 
+              <div class="row pb-2"
                 v-for="(article, index) in modalContent.entity.articles"
                 :article="article"
                 :key="article.id"
@@ -148,7 +148,7 @@
     </div>
   </section>
 
-  
+
   </main>
 </template>
 
@@ -160,7 +160,7 @@ export default {
   name: "app-supplier",
   components: {
     GoogleMap,
-    GoogleMapMarkers,   /* non utilizzato */ 
+    GoogleMapMarkers,   /* non utilizzato */
   },
   data() {
     return {
@@ -176,24 +176,24 @@ export default {
       this.slug = to.params.slug;
   },  */
   mounted() {
-    console.log('mounted');
+    // console.log('mounted');
     this.get();
-  },  
+  },
   computed: {
     mapConfig() {
         return {
             zoom: 10,
             center: {
-               lat: parseFloat(this.modalContent.entity.lat), 
+               lat: parseFloat(this.modalContent.entity.lat),
                lng: parseFloat(this.modalContent.entity.lng)
-            }        
+            }
         }
       },
     mapMarkers() {
       let lat = '';
       if(this.modalContent.entity.lat!='')
         lat = parseFloat(this.modalContent.entity.lat);
-        
+
       let lng = '';
       if(this.modalContent.entity.lng!='')
         lng = parseFloat(this.modalContent.entity.lng);
@@ -201,15 +201,15 @@ export default {
       return [
         {
            name: this.modalContent.entity.name,
-           lat: lat, 
-           lng: lng       
+           lat: lat,
+           lng: lng
         }
       ]
-    }    
+    }
   },
   methods: {
     get:function() {
-      
+
       console.log('slug '+this.$route.params.slug);
       this.slug = this.$route.params.slug;
       if(this.slug=='')
@@ -222,18 +222,18 @@ export default {
       };
 
       let url = "/api/suppliers/getBySlug";
-      
+
       axios
         .post(url, params)
         .then(response => {
-            
-            console.log(response.data); 
-            
+
+            console.log(response.data);
+
             if(typeof response.data !== "undefined") {
 
               this.modalContent = {
                 entity: response.data.results,
-              }            
+              }
 
               this.isLoading=false;
 
@@ -243,7 +243,7 @@ export default {
           this.isLoading=false;
           console.error("Error: " + error);
         });
-    },      
+    },
   },
   filters: {
       html(text) {
@@ -254,15 +254,15 @@ export default {
         locale = 'it-IT';
         const amt = Number(amount);
         return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
-      },       
+      },
       shortDescription(value) {
         if (value && value.length > 75) {
           return value.substring(0, 75) + "...";
         } else {
           return value;
         }
-      },      
-  }  
+      },
+  }
 };
 </script>
 
@@ -270,7 +270,7 @@ export default {
 /* images */
 .content-img-article-small {
   width: 75px;
-  text-align: center;  
+  text-align: center;
 }
 .img-article {
     max-width: 75px;
@@ -327,7 +327,7 @@ ul.link-top {
 }
 ul.link-top li {
   list-style: none;
-  padding: 5px; 
+  padding: 5px;
 }
 ul.link-top li a {
   color: #fff !important;
