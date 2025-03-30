@@ -22,7 +22,7 @@ echo $this->Html->script('vue/cms-image.js?v=20250316', ['block' => 'scriptPageI
                 </div>
                 <div class="box-body">
                     <?php
-                    echo $this->Form->create($cmsImage, ['role' => 'form']);
+                    echo $this->Form->create(null, ['role' => 'form']);
                     echo '<div class="dropzone" id="myDropzoneImage"></div>';
                     echo $this->Form->end(); ?>
 

@@ -22,7 +22,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                 </div>
                 <div class="box-body">
                     <?php
-                    echo $this->Form->create($cmsDoc, ['role' => 'form']);
+                    echo $this->Form->create(null, ['role' => 'form']);
                     echo '<div class="dropzone" id="myDropzoneDoc"></div>';
                     echo $this->Form->end(); ?>
 

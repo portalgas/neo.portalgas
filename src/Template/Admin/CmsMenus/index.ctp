@@ -35,7 +35,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
 
             <?php
             if(count($cmsMenus)>0) {
-                echo $this->Form->create($cmsMenu, ['role' => 'form']);
+                echo $this->Form->create($cmsMenus, ['role' => 'form']);
 
                 echo '<ul id="sortable">';
                 foreach ($cmsMenus as $cmsMenu) {
