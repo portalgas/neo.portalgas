@@ -43,16 +43,14 @@ Dropzone.options.myDropzoneDoc = {
 
             }
             vueCmsDocs.gets();
-            if (this.files.length > 1) {
-                this.removeFile(this.files[0]);
-            }
+            this.removeFile(this.files[0]);
             // window.location.reload();
             // console.log(response, 'success response');
         });
         this.on('removedfile', function(file) {
             // console.log(file, 'removedfile');
             $.ajax({
-                url: '/admin/api/cms-docs/doc1Delete/',
+                url: '/admin/api/cms-docs/delete/',
                 type: 'post',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrfToken"]').attr('content')

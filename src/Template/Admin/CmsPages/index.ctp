@@ -28,6 +28,7 @@
                   <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('cms_menu_id', __('Cms Menu')) ?></th>
                   <th scope="col"><?= $this->Paginator->sort('name', __('Cms Page Name')) ?></th>
+                  <th scope="col"><?= $this->Paginator->sort('body') ?></th>
                   <th scope="col" class="text-center">Totale immagini</th>
                   <th scope="col" class="text-center">Totale documenti</th>
                   <th scope="col"><?= $this->Paginator->sort('created') ?></th>
@@ -42,7 +43,8 @@
                         <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsPage->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsPage->id), 'class'=>'btn btn-danger']) ?>
                     </td>
                   <td><?= $cmsPage->has('cms_menu') ? $this->Html->link($cmsPage->cms_menu->name, ['controller' => 'CmsMenus', 'action' => 'edit', $cmsPage->cms_menu->id]) : '' ?></td>
-                  <td><?= h($cmsPage->name) ?></td>
+                    <td><?= h($cmsPage->name) ?></td>
+                    <td><?= strip_tags(substr($cmsPage->body,0, 150)) ?>...</td>
                   <td class="text-center"><?= count($cmsPage->cms_pages_images) ?></td>
                   <td class="text-center"><?= count($cmsPage->cms_pages_docs) ?></td>
                   <td><?= h($cmsPage->created) ?></td>

@@ -104,7 +104,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                         <input type="checkbox" name="docs" v-model="selected_docs" :value="doc.id" />
                                     </td>
                                     <td>
-                                        <a :href="'/admin/cms-docs/download/'+doc.id" target="_blank">
+                                        <a :href="'/pages/download/'+doc.uuid" target="_blank">
                                             <button class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> <?php echo __('Cms Doc Download');?></button>
                                         </a>
                                     </td>

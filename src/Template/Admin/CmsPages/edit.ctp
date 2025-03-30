@@ -36,7 +36,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
             <div class="box-body">
               <?php
               if(!empty($cmsPage->cms_menu))
-                  echo $this->Form->control('cms_menu_id', ['type' => 'text', 'value' => $cmsPage->cms_menu->name, 'readonly' => true]);
+                  echo $this->Form->control('cms_menu_id', ['type' => 'text', 'value' => $cmsPage->cms_menu->name, 'disabled' => 'disabled']);
               else
                   echo $this->element('msg', ['msg' => __('Non assegnata ad una voce di menù'), 'class' => 'warning']);
                 echo $this->Form->control('name');
@@ -107,7 +107,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                                             <input type="checkbox" name="docs" v-model="selected_docs" :value="doc.id" />
                                         </div>
                                         <div class="col col-md-10">
-                                            <a :href="'/admin/cms-docs/download/'+doc.id" target="_blank">
+                                            <a :href="'/pages/download/'+doc.uuid" target="_blank">
                                                 {{ doc.name }}
                                             </a>
                                         </div>

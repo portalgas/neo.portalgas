@@ -49,20 +49,20 @@ Dropzone.options.myDropzoneImage = {
             this.removeAllFiles();
         });
         this.on('success', function(file, response) {
+            // console.log(file, 'images-upload success file');
+            // console.log(response, 'images-upload success response');
             if(response.esito) {
 
             }
             vueCmsImages.gets();
-            if (this.files.length > 1) {
-                this.removeFile(this.files[0]);
-            }
+            this.removeFile(this.files[0]);
             // window.location.reload();
             // console.log(response, 'success response');
         });
         this.on('removedfile', function(file) {
             // console.log(file, 'removedfile');
             $.ajax({
-                url: '/admin/api/cms-images/image1Delete/',
+                url: '/admin/api/cms-images/delete/',
                 type: 'post',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrfToken"]').attr('content')

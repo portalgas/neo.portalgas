@@ -1,8 +1,8 @@
-<?php 
+<?php
 /*
  * link menu' su portalas rimappati in /templates/v01/index.php
  */
-use Cake\Core\Configure; 
+use Cake\Core\Configure;
 
 $user = $this->Identity->get();
 $socialMarketIsActive = $config['SocialMarket.isActive'];
@@ -17,47 +17,52 @@ $menus[$i]['target'] = '';
 $i=0;
 $menus[$i]['label'] = __('Cos\'è un G.A.S.');
 $menus[$i]['url'] = $config['Portalgas.fe.url'].'/cos-e-un-g-a-s-gruppo-d-acquisto-solidale';
-$menus[$i]['target'] = ''; 
+$menus[$i]['target'] = '';
 
 if(!isset($user) || empty($user)) {
   $i++;
   $menus[$i]['label'] = __('Scrivici');
   $menus[$i]['url'] = $config['Portalgas.fe.url'].'/contattaci';
-  $menus[$i]['target'] = ''; 
+  $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = __('Notizie');
   $menus[$i]['url'] = $config['Portalgas.fe.url'].'/notizie';
-  $menus[$i]['target'] = ''; 
+  $menus[$i]['target'] = '';
   $i++;
   $menus[$i]['label'] = __('Login');
   $menus[$i]['url'] = $config['Portalgas.fe.url'].'/login';
-  $menus[$i]['target'] = ''; 
+  $menus[$i]['target'] = '';
 }
 
 if(!empty($organization)) {
-  
+
   if($socialMarketIsActive) {
     $i++;
     $menus[$i]['label'] = __('SocialMarket');
     $menus[$i]['url'] = '/social-market';
-    $menus[$i]['target'] = '';   
+    $menus[$i]['target'] = '';
   }
 
   if($hasGasUsersPromotions) {
     $i++;
     $menus[$i]['label'] = __('ProdGasPromotions');
     $menus[$i]['url'] = '/promozioni';
-    $menus[$i]['target'] = '';    
+    $menus[$i]['target'] = '';
   }
 
     if(!empty($organization->j_seo)) {
 
-      if(!isset($user->organization->paramsConfig['hasGasGroups']) || $user->organization->paramsConfig['hasGasGroups']=='N') {
+    $i++;
+    $menus[$i]['label'] = "Home del G.A.S.";
+    $menus[$i]['url'] = '/gas/'.$organization->j_seo.'/home';
+    $menus[$i]['target'] = '';
+
+     if(!isset($user->organization->paramsConfig['hasGasGroups']) || $user->organization->paramsConfig['hasGasGroups']=='N') {
         $i++;
         $menus[$i]['label'] = __('Deliveries');
         // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
         $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
-        $menus[$i]['target'] = '';  
+        $menus[$i]['target'] = '';
       }
 
       if (isset($user->organization->paramsConfig['hasStoreroom']) && $user->organization->paramsConfig['hasStoreroom'] == 'Y' &&
@@ -153,7 +158,7 @@ foreach($menus as $numResults => $menu) {
 if(isset($user) && !empty($user)) {
   echo '<li class="nav-item">';
   echo '<a href="" class="nav-link" data-toggle="modal" data-target="#cashesUserModal">'.$user->get('username').'</a>';
-  echo '</li>';  
+  echo '</li>';
 }
 
 echo '</ul>';

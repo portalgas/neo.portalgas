@@ -40,12 +40,12 @@ class PagesController extends AppController
         $this->loadComponent('ProdGasPromotion');
     }
 
-    /* 
+    /*
      * vue login
      *
      * $routes->connect('/', ['controller' => 'Pages', 'action' => 'vue', 'vue']); ...
      *
-     * view src\Template\Pages\vue.ctp => $this->layout = 'vue';   
+     * view src\Template\Pages\vue.ctp => $this->layout = 'vue';
      */
     public function vue() {
         // $user = $this->Authentication->getIdentity();
@@ -77,7 +77,7 @@ class PagesController extends AppController
         $this->set(compact('hasGasUsersPromotions', 'hasSocialMarketOrders'));
     }
 
-    /* 
+    /*
      * site - vue without login
      *
      * $routes->connect('/site', ['controller' => 'Pages', 'action' => 'vueGuest', 'vueGuest']);  ...
@@ -87,7 +87,7 @@ class PagesController extends AppController
      * view src\Template\Pages\vue_guest.ctp => $this->layout = 'vue';
      */
     public function vueGuest() {
-      
+
         $hasGasUsersPromotions = false;
 
         $user = $this->Authentication->getIdentity();
@@ -99,10 +99,10 @@ class PagesController extends AppController
             $hasGasUsersPromotions = $prodGasPromotionsOrganizationsTable->hasGasUsersPromotions($organization_id);
         }
 
-        $this->set(compact('hasGasUsersPromotions')); 
+        $this->set(compact('hasGasUsersPromotions'));
     }
 
-    /* 
+    /*
      * vue without login
     public function socialMarket() {
         $hasGasUsersPromotions = false;
@@ -110,6 +110,39 @@ class PagesController extends AppController
     }
      */
 
+    /*
+    * senza auth perche' potrebbe essere pubblico
+    */
+    public function download($uuid)
+    {
+        $continue = true;
+
+        /*
+         * non filtro per organization_id perche' potrebbe essere un doc pubblico
+         */
+        $cmsDocsTable = TableRegistry::get('CmsDocs');
+        $asset = $cmsDocsTable->find()->where(['uuid' => $uuid])->first();
+        if(!empty($asset)) {
+            $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $asset->organization_id);
+            $filePath = $asset_path . '/' . $asset->path;
+            if (file_exists($filePath)) {
+                $response = $this->response->withFile($filePath, [
+                    'download' => true,
+                    'name' => $asset->name,
+                ]);
+                return $response;
+            } else {
+                $continue = false;
+            }
+        }
+        else
+            $continue = false;
+
+        if(!$continue) {
+            $this->Flash->error(__('File non trovato.'));
+            return $this->redirect(['action' => 'index']);
+        }
+    }
 
     /**
      * Displays a view
@@ -121,7 +154,7 @@ class PagesController extends AppController
      *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
      */
     public function display(...$path)
-    {  
+    {
         $count = count($path);
         if (!$count) {
             return $this->redirect('/');
@@ -147,5 +180,5 @@ class PagesController extends AppController
             }
             throw new NotFoundException();
         }
-    }  
+    }
 }

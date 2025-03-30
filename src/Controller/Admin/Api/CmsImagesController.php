@@ -42,7 +42,8 @@ class CmsImagesController extends ApiAppController
             $tmp_assets = $cmsPagesImagesTable->find()
                             ->contain(['CmsPages', 'CmsImages'])
                             ->where(['CmsPagesImages.organization_id' => $this->_organization->id,
-                                    ['CmsPagesImages.cms_page_id' => $cms_page_id]])
+                                    'CmsPagesImages.cms_page_id' => $cms_page_id])
+                            ->order(['CmsPagesImages.sort'])
                             ->all();
             if($tmp_assets->count()>0) {
                 foreach ($tmp_assets as $tmp_asset) {

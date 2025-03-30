@@ -44,23 +44,6 @@ class CmsDocsController extends AppController
 
     }
 
-    public function download($id)
-    {
-        $asset = $this->CmsDocs->get($id);
-        $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $this->_organization->id);
-        $filePath = $asset_path . '/' . $asset->path;
-        if (file_exists($filePath)) {
-            $response = $this->response->withFile($filePath, [
-                'download' => true,
-                'name' => $asset->name,
-            ]);
-            return $response;
-        } else {
-            $this->Flash->error(__('File non trovato.'));
-            return $this->redirect(['action' => 'index']);
-        }
-    }
-
     public function delete($id = null)
     {
         // $this->request->allowMethod(['post', 'delete']);

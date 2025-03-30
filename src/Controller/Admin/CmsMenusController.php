@@ -160,7 +160,7 @@ class CmsMenusController extends AppController
                 }
                 break;
             case 2: // DOC
-                if(!empty($datas['cms_page_id'])) {
+                if(!empty($datas['cms_doc_id'])) {
                     $cmsDocsTable = TableRegistry::get('CmsDocs');
                     $cmsDoc = $cmsDocsTable->find()->where(['organization_id' => $organization_id, 'id' => $datas['cms_doc_id']])->first();
 

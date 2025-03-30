@@ -10,7 +10,7 @@ use Cake\Validation\Validator;
  * CmsDocs Model
  *
  * @property \App\Model\Table\OrganizationsTable&\Cake\ORM\Association\BelongsTo $Organizations
- * @property &\Cake\ORM\Association\BelongsTo $CmsMenus
+ * @property \App\Model\Table\CmsMenusTable&\Cake\ORM\Association\BelongsTo $CmsMenus
  * @property \App\Model\Table\CmsPagesDocsTable&\Cake\ORM\Association\HasMany $CmsPagesDocs
  *
  * @method \App\Model\Entity\CmsDoc get($primaryKey, $options = [])
@@ -65,6 +65,12 @@ class CmsDocsTable extends Table
         $validator
             ->nonNegativeInteger('id')
             ->allowEmptyString('id', null, 'create');
+
+        $validator
+            ->scalar('uuid')
+            ->maxLength('uuid', 13)
+            ->requirePresence('uuid', 'create')
+            ->notEmptyString('uuid');
 
         $validator
             ->scalar('name')

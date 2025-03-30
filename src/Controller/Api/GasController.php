@@ -20,7 +20,7 @@ class GasController extends ApiAppController
 
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['organization', 'menu', 'page']);
+        $this->Authentication->allowUnauthenticated(['organization', 'menu', 'page', 'download']);
     }
 
     /*
@@ -122,7 +122,7 @@ class GasController extends ApiAppController
 
         $where = ['organization_id' => $organization->id, 'is_active' => true, 'slug' => $slug_page];
         if(empty($this->_user))
-            $where = ['is_public' => true];
+            $where += ['is_public' => true];
 
         $menu = $cmsMenuTable->find()
             ->contain(['CmsPages' => [
@@ -154,5 +154,4 @@ class GasController extends ApiAppController
 
         return $this->_response($results);
     }
-
 }

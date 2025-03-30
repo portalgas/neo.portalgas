@@ -87,13 +87,15 @@ class CmsPagesController extends AppController
             if(isset($datas['img_ids'])) {
                 $cmsPagesImagesTable = TableRegistry::get('CmsPagesImages');
                 $cmsPagesImagesTable->setImgs($this->_organization->id, $cmsPage->id, $datas['img_ids']);
+                unset($datas['img_ids']);
             }
             if(isset($datas['doc_ids'])) {
                 $cmsPagesDocsTable = TableRegistry::get('CmsPagesDocs');
                 $cmsPagesDocsTable->setDocs($this->_organization->id, $cmsPage->id, $datas['doc_ids']);
+                unset($datas['doc_ids']);
             }
 
-            $cmsPage = $this->CmsPages->patchEntity($cmsPage, $this->request->getData());
+            $cmsPage = $this->CmsPages->patchEntity($cmsPage, $datas);
             if ($this->CmsPages->save($cmsPage)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Cms Page'));
 

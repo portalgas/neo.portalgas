@@ -38,11 +38,11 @@
 </template>
 
 <script>
+import axios from "axios";
 import Organizations from "../components/common/Organizations.vue";
 import Menu from "../components/cms/Menu.vue";
 import Content from "../components/cms/Content.vue";
 import SchedaGas from "../components/cms/SchedaGas.vue";
-import axios from "axios";
 
 export default {
   name: "app-gas",

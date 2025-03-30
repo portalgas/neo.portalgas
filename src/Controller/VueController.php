@@ -35,7 +35,7 @@ class VueController extends AppController
 
         $this->Authentication->allowUnauthenticated(['index']);
         $this->Authorization->skipAuthorization(['index']);
-    }  
+    }
 
     public function index() {
     	debug($this->Authentication->getIdentity());

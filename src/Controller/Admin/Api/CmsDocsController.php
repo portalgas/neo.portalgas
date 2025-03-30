@@ -42,7 +42,8 @@ class CmsDocsController extends ApiAppController
             $tmp_assets = $cmsPagesDocsTable->find()
                 ->contain(['CmsPages', 'CmsDocs' => ['CmsMenus']])
                 ->where(['CmsPagesDocs.organization_id' => $this->_organization->id,
-                        ['CmsPagesDocs.cms_page_id' => $cms_page_id]])
+                        'CmsPagesDocs.cms_page_id' => $cms_page_id])
+                ->order(['CmsPagesDocs.sort'])
                 ->all();
             if($tmp_assets->count()>0) {
                 foreach ($tmp_assets as $tmp_asset) {
@@ -151,6 +152,7 @@ class CmsDocsController extends ApiAppController
 
         $datas = [];
         $datas['organization_id'] = $this->_organization->id;
+        $datas['uuid'] = uniqid();
         $datas['name'] = $upload_results['file_name'];
         $datas['path'] = $upload_results['file_name'];
         $datas['ext'] = $upload_results['file_ext'];

@@ -75,8 +75,10 @@ use Cake\Core\Configure;
                         echo $this->element('msg', ['msg' => __('Note-is-public'), 'class' => 'info']);
                         echo '</div>';
                         echo '<div class="col col-md-6">';
-                        echo $this->Form->control('is_active', ['checked' => true]);
-                        echo $this->element('msg', ['msg' => __('Note-is-active'), 'class' => 'info']);
+                        if(!$cmsMenu->is_system) {
+                            echo $this->Form->control('is_active');
+                            echo $this->element('msg', ['msg' => __('Note-is-active'), 'class' => 'info']);
+                        }
                         echo '</div>';
                         echo '</div>';
 
