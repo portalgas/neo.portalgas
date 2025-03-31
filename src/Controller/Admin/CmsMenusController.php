@@ -40,6 +40,7 @@ class CmsMenusController extends AppController
                 }
 
                 Cache::delete('cms-menus-'.$this->_organization->id);
+                Cache::delete('cms-menus-auth-'.$this->_organization->id);
             }
             if(!$error)
                 $this->Flash->success("L'ordinamento delle voci di menù è stato salvato");
@@ -81,6 +82,7 @@ class CmsMenusController extends AppController
                 $this->_updatePagesOrDocs($this->_organization->id, $cmsMenu, $datas);
 
                 Cache::delete('cms-menus-'.$this->_organization->id);
+                Cache::delete('cms-menus-auth-'.$this->_organization->id);
 
                 $this->Flash->success("La voce di menù è stata salvata");
 
@@ -129,6 +131,7 @@ class CmsMenusController extends AppController
                 $this->_updatePagesOrDocs($this->_organization->id, $cmsMenu, $datas);
 
                 Cache::delete('cms-menus-'.$this->_organization->id);
+                Cache::delete('cms-menus-auth-'.$this->_organization->id);
 
                 $this->Flash->success("La voce di menù è stata salvata");
 

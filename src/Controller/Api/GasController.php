@@ -64,7 +64,10 @@ class GasController extends ApiAppController
         if(empty($organization))
             return $this->_response($results);
 
-        $menus = Cache::read('cms-menus-'.$organization->id);
+        if(empty($this->_user))
+            $menus = Cache::read('cms-menus-'.$organization->id);
+        else
+            $menus = Cache::read('cms-menus-auth-'.$organization->id);
         if ($menus !== false) {
             $results['results'] =  $menus;
         }
@@ -93,7 +96,11 @@ class GasController extends ApiAppController
                 $menus[0]['cms_menu_type']['code'] = 'PAGE';
                 $menus[0]['name'] = 'Home del G.A.S.';
             }
-            Cache::write('cms-menus-'.$organization->id, $menus);
+
+            if(empty($this->_user))
+                Cache::write('cms-menus-'.$organization->id, $menus);
+            else
+                Cache::write('cms-menus-auth-'.$organization->id, $menus);
 
             $results['results'] = $menus;
         }
