@@ -6,24 +6,6 @@ $icon = ''; // '<i class="fa fa-circle"></i> ';
 $config = Configure::read('Config');
 $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
 ?>
-<li class="treeview">
-    <a href="#">
-        <i class="fa fa-files-o"></i> <span><?php echo __('Cms');?></span>
-        <span class="pull-right-container">
-        <i class="fa fa-angle-left pull-right"></i>
-      </span>
-        <ul class="treeview-menu">
-            <?php
-            echo '<li><a href="'.$this->Url->build('/admin/cms-menu-types').'">'.$icon.__('Cms MenuType').' <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-menus').'">'.$icon.__('Cms Menus').'</a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-pages').'">'.$icon.__('Cms Pages').'</a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-images').'">'.$icon.__('Cms Images').'</a></li>';
-            echo '<li><a href="'.$this->Url->build('/admin/cms-docs').'">'.$icon.__('Cms Docs').'</a></li>';
-            ?>
-        </ul>
-    </a>
-</li>
-
   <li class="treeview">
     <a href="#">
       <i class="fa fa-cog"></i> <span><?php echo __('Administrator');?></span>

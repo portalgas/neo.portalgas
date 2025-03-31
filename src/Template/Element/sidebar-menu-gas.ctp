@@ -289,6 +289,8 @@ if($user->organization->paramsConfig['hasCms']=='Y') { ?>
       </span>
         <ul class="treeview-menu">
             <?php
+            if($user->acl['isRoot'])
+                echo '<li><a href="'.$this->Url->build('/admin/cms-menu-types').'">'.$icon.__('Cms MenuType').' <span class="pull-right-container"><small class="label pull-right bg-red">root</small></span></a></li>';
             echo '<li><a href="'.$this->Url->build('/admin/cms-menus').'">'.$icon.__('Cms Menus').'</a></li>';
             echo '<li><a href="'.$this->Url->build('/admin/cms-pages').'">'.$icon.__('Cms Pages').'</a></li>';
             echo '<li><a href="'.$this->Url->build('/admin/cms-images').'">'.$icon.__('Cms Images').'</a></li>';

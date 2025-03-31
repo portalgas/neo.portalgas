@@ -53,15 +53,16 @@ class GasController extends ApiAppController
        // dd($this->_user->organization);
         // dd($this->_organization); gas scalto dopo il login
         $debug = false;
-
-        $slug_gas = $this->request->getParam('slugGas');
-        $organization = $this->Gas->getBySlug($slug_gas);
-
         $results = [];
         $results['code'] = 200;
         $results['message'] = 'OK';
         $results['errors'] = '';
         $results['results'] = [];
+
+        $slug_gas = $this->request->getParam('slugGas');
+        $organization = $this->Gas->getBySlug($slug_gas);
+        if(empty($organization))
+            return $this->_response($results);
 
         $menus = Cache::read('cms-menus-'.$organization->id);
         if ($menus !== false) {
@@ -72,7 +73,7 @@ class GasController extends ApiAppController
 
             $where = ['organization_id' => $organization->id, 'is_active' => true];
             if(empty($this->_user))
-                $where = ['is_public' => true];
+                $where += ['is_public' => true];
 
             $menus = $cmsMenuTable->find()
                                 ->contain(['CmsMenuTypes', 'CmsDocs'])

@@ -54,8 +54,11 @@ use Cake\Core\Configure;
                             echo '<div class="col col-md-8">';
                             if (count($cmsPages->toArray()) == 0)
                                 echo $this->element('msg', ['msg' => "Non ci sono pagine da poter associare alla voce di menù", 'class' => 'warning']);
-                            else
-                                echo $this->Form->control('cms_page_id', ['options' => $cmsPages, 'value' => $cmsMenu->cms_pages[0]->id, 'label' => __('Cms Pages'), 'empty' => Configure::read('HtmlOptionEmpty')]);
+                            else {
+                                $value = null;
+                                if(isset($cmsMenu->cms_pages) && isset($cmsMenu->cms_pages[0])) $value = $cmsMenu->cms_pages[0]->id;
+                                echo $this->Form->control('cms_page_id', ['options' => $cmsPages, 'value' => $value, 'label' => __('Cms Pages'), 'empty' => Configure::read('HtmlOptionEmpty')]);
+                            }
                             echo '</div>';
                             echo '<div class="col col-md-4"><br />';
                             echo '<a href="' . $this->Url->build(['controller' => 'cmsPages', 'action' => 'add']) . '" class="btn btn-primary btn-block">' . __('Cms Add Page') . '</a>';
