@@ -45,7 +45,10 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                     echo '<small>tipologia ';
                     switch ($cmsMenu->cms_menu_type->code) {
                         case 'PAGE':
-                            echo '<i class="fa fa-file-o"></i> ';
+                            if($cmsMenu->is_home)
+                                echo '<i class="fa fa-home"></i> ';
+                            else
+                                echo '<i class="fa fa-file-o"></i> ';
                             break;
                         case 'DOC':
                             echo '<i class="fa fa-file-pdf-o"></i> ';
@@ -78,7 +81,8 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
 
                     }
                     // echo $this->Html->link(__('View'), ['action' => 'view', $cmsMenu->id], ['class'=>'btn btn-info']);
-                    echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> '.__('Edit'), ['action' => 'edit', $cmsMenu->id], ['class' => 'btn btn-success', 'style' => 'margin-left: 5px', 'escape' => false]);
+                    if(!$cmsMenu->is_home)
+                        echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> '.__('Edit'), ['action' => 'edit', $cmsMenu->id], ['class' => 'btn btn-success', 'style' => 'margin-left: 5px', 'escape' => false]);
                     if (!$cmsMenu->is_system)
                         echo $this->Html->link('<i aria-hidden="true" class="fa fa-trash"></i> '.__('Delete'), ['action' => 'delete', $cmsMenu->id], ['class' => 'btn btn-danger btn-xs-', 'escape' => false]);
                     // echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenu->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenu->id), 'class'=>'btn btn-danger btn-xs']);

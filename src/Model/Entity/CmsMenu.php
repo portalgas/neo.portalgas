@@ -42,6 +42,7 @@ class CmsMenu extends Entity
         'slug' => true,
         'options' => true,
         'sort' => true,
+        'is_home' => true,
         'is_public' => true,
         'is_system' => true,
         'is_active' => true,

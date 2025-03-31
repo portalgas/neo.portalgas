@@ -94,6 +94,10 @@ class CmsMenusTable extends Table
             ->allowEmptyString('sort');
 
         $validator
+            ->boolean('is_home')
+            ->notEmptyString('is_home');
+
+        $validator
             ->boolean('is_public')
             ->notEmptyString('is_public');
 

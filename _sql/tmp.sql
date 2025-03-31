@@ -1,0 +1,2 @@
+ALTER TABLE `cms_menus`
+    ADD COLUMN `is_home` TINYINT(1) NOT NULL DEFAULT 0 AFTER `sort`;

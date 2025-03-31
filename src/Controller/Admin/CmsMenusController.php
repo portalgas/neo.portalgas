@@ -22,7 +22,7 @@ class CmsMenusController extends AppController
      */
     public function index()
     {
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
             $datas = $this->request->getData();
             if(!empty($datas['ids'])) {
                 $error = false;
