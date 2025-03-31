@@ -70,7 +70,7 @@ class CmsMenusController extends AppController
             $datas['sort'] = $this->CmsMenus->getSort('CmsMenus', ['organization_id' => $this->_organization->id, 'is_active' => 1]);
 
             $datas['options'] = trim($datas['options']);
-            if($datas['cms_menu_type_id']==3) { // LINK_EXT
+            if($datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
                 if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
                     $datas['options'] = 'https://'.$datas['options'];
             }
@@ -118,7 +118,7 @@ class CmsMenusController extends AppController
             $datas['slug'] = Slug::generate($datas['name']);
 
             $datas['options'] = trim($datas['options']);
-            if($datas['cms_menu_type_id']==3) { // LINK_EXT
+            if($datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
                 if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
                     $datas['options'] = 'https://'.$datas['options'];
             }

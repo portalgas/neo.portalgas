@@ -51,6 +51,7 @@ class GasController extends ApiAppController
     public function menu() {
        // debug($this->_user);
        // dd($this->_user->organization);
+        // dd($this->_organization); gas scalto dopo il login
         $debug = false;
 
         $slug_gas = $this->request->getParam('slugGas');

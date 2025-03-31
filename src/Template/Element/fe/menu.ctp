@@ -14,119 +14,133 @@ $menus[$i]['label'] = 'Home';
 $menus[$i]['url'] = $config['Portalgas.fe.url'];
 $menus[$i]['target'] = '';
 */
-$i=0;
-$menus[$i]['label'] = __('Cos\'è un G.A.S.');
-$menus[$i]['url'] = $config['Portalgas.fe.url'].'/cos-e-un-g-a-s-gruppo-d-acquisto-solidale';
-$menus[$i]['target'] = '';
+$i=-1;
 
+/*
+ * public
+ */
 if(!isset($user) || empty($user)) {
-  $i++;
-  $menus[$i]['label'] = __('Scrivici');
-  $menus[$i]['url'] = $config['Portalgas.fe.url'].'/contattaci';
-  $menus[$i]['target'] = '';
-  $i++;
-  $menus[$i]['label'] = __('Notizie');
-  $menus[$i]['url'] = $config['Portalgas.fe.url'].'/notizie';
-  $menus[$i]['target'] = '';
-  $i++;
-  $menus[$i]['label'] = __('Login');
-  $menus[$i]['url'] = $config['Portalgas.fe.url'].'/login';
-  $menus[$i]['target'] = '';
+    $i++;
+    $menus[$i]['label'] = __('Scrivici');
+    $menus[$i]['url'] = $config['Portalgas.fe.url'].'/contattaci';
+    $menus[$i]['target'] = '';
+    $i++;
+    $menus[$i]['label'] = __('Notizie');
+    $menus[$i]['url'] = $config['Portalgas.fe.url'].'/notizie';
+    $menus[$i]['target'] = '';
+    $i++;
+    $menus[$i]['label'] = __('Cos\'è un G.A.S.');
+    $menus[$i]['url'] = $config['Portalgas.fe.url'].'/cos-e-un-g-a-s-gruppo-d-acquisto-solidale';
+    $menus[$i]['target'] = '';
+    $i++;
+    $menus[$i]['label'] = 'Produttori';
+    $menus[$i]['url'] = '/site/produttori';
+    $menus[$i]['target'] = '';
+    $i++;
+    $menus[$i]['label'] = __('Login');
+    $menus[$i]['url'] = $config['Portalgas.fe.url'].'/login';
+    $menus[$i]['target'] = '';
 }
+else {
+    /*
+     * autentication
+     */
+    if(!empty($organization)) {
 
-if(!empty($organization)) {
+        if($socialMarketIsActive) {
+            if(isset($hasSocialMarketOrders) && $hasSocialMarketOrders) {
+                $i++;
+                $menus[$i]['label'] = 'Acquista SocialMarket';
+                $menus[$i]['url'] = '/social-market';
+                $menus[$i]['target'] = '';
+                $menus[$i]['star'] = true;
+            }
+            else {
+                $i++;
+                $menus[$i]['label'] = __('SocialMarket');
+                $menus[$i]['url'] = '/social-market';
+                $menus[$i]['target'] = '';
+            }
+        }
 
-  if($socialMarketIsActive) {
-    $i++;
-    $menus[$i]['label'] = __('SocialMarket');
-    $menus[$i]['url'] = '/social-market';
-    $menus[$i]['target'] = '';
-  }
+        if($hasGasUsersPromotions) {
+            $i++;
+            $menus[$i]['label'] = __('ProdGasPromotions');
+            $menus[$i]['url'] = '/promozioni';
+            $menus[$i]['target'] = '';
+        }
 
-  if($hasGasUsersPromotions) {
-    $i++;
-    $menus[$i]['label'] = __('ProdGasPromotions');
-    $menus[$i]['url'] = '/promozioni';
-    $menus[$i]['target'] = '';
-  }
+        if(!empty($organization->j_seo)) {
 
-    if(!empty($organization->j_seo)) {
+            $i++;
+            $menus[$i]['label'] = "Home del G.A.S.";
+            $menus[$i]['url'] = '/gas/'.$organization->j_seo.'/home';
+            $menus[$i]['target'] = '';
 
-    $i++;
-    $menus[$i]['label'] = "Home del G.A.S.";
-    $menus[$i]['url'] = '/gas/'.$organization->j_seo.'/home';
-    $menus[$i]['target'] = '';
+            if(!isset($user->organization->paramsConfig['hasGasGroups']) || $user->organization->paramsConfig['hasGasGroups']=='N') {
+                $i++;
+                $menus[$i]['label'] = __('Deliveries');
+                // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+                $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+                $menus[$i]['target'] = '';
+            }
 
-     if(!isset($user->organization->paramsConfig['hasGasGroups']) || $user->organization->paramsConfig['hasGasGroups']=='N') {
-        $i++;
-        $menus[$i]['label'] = __('Deliveries');
-        // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
-        $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
-        $menus[$i]['target'] = '';
-      }
-
-      if (isset($user->organization->paramsConfig['hasStoreroom']) && $user->organization->paramsConfig['hasStoreroom'] == 'Y' &&
-          isset($user->organization->paramsConfig['hasStoreroomFrontEnd']) && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
-          $i++;
-          $menus[$i]['label'] = __('Storeroom');
-          // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/dispensa-'.$organization->j_seo;
-          $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/dispensa-' . $organization->j_seo;
-          $menus[$i]['target'] = '';
-      }
-    } // end if(!empty($organization->j_seo))
-
-    $i++;
-  $menus[$i]['label'] = 'Acquista';
-  // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
-  // $menus[$i]['url'] = 'admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
-  $menus[$i]['url'] = '/fai-la-spesa';
-  $menus[$i]['target'] = '';
-
-  if(isset($hasSocialMarketOrders) && $hasSocialMarketOrders) {
-      $i++;
-      $menus[$i]['label'] = 'Acquista SocialMarket';
-      $menus[$i]['url'] = '/social-market';
-      $menus[$i]['target'] = '';
-      $menus[$i]['star'] = true;
-  }
-
-  if(!empty($organization->j_seo)) {
-      $i++;
-      $menus[$i]['label'] = 'Stampe';
-      // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
-      $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
-      $menus[$i]['target'] = '';
-  }
-
-}
-
-$i++;
-$menus[$i]['label'] = 'Produttori';
-$menus[$i]['url'] = '/site/produttori';
-$menus[$i]['target'] = '';
-
-if(!empty($organization)) {
-
-    if(!empty($organization->j_seo)) {
+            if (isset($user->organization->paramsConfig['hasStoreroom']) && $user->organization->paramsConfig['hasStoreroom'] == 'Y' &&
+                isset($user->organization->paramsConfig['hasStoreroomFrontEnd']) && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
+                $i++;
+                $menus[$i]['label'] = __('Storeroom');
+                // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/dispensa-'.$organization->j_seo;
+                $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/dispensa-' . $organization->j_seo;
+                $menus[$i]['target'] = '';
+            }
+        } // end if(!empty($organization->j_seo))
 
         $i++;
-        $menus[$i]['label'] = 'Produttori del G.A.S.';
-        // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/gmaps-produttori';
-        $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps-produttori';
-        // $menus[$i]['url'] = '/site/gas-produttori';
+        $menus[$i]['label'] = 'Acquista';
+        // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
+        // $menus[$i]['url'] = 'admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/fai-la-spesa-'.$organization->j_seo;
+        $menus[$i]['url'] = '/fai-la-spesa';
         $menus[$i]['target'] = '';
-        $i++;
-        $menus[$i]['label'] = 'Gasisti';
-        // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/gmaps';
-        $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps';
-        $menus[$i]['target'] = '';
+
+        if(!empty($organization->j_seo)) {
+            $i++;
+            $menus[$i]['label'] = 'Stampe';
+            // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
+            $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/stampe-'.$organization->j_seo;
+            $menus[$i]['target'] = '';
+        }
+
     }
 
+    if(!empty($organization)) {
+
+        if(!empty($organization->j_seo)) {
+
+            $i++;
+            $menus[$i]['label'] = 'Produttori del G.A.S.';
+            // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/gmaps-produttori';
+            $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps-produttori';
+            // $menus[$i]['url'] = '/site/gas-produttori';
+            $menus[$i]['target'] = '';
+            $i++;
+            $menus[$i]['label'] = 'Gasisti';
+            // $menus[$i]['url'] = $config['Portalgas.fe.url'].'/home-'.$organization->j_seo.'/gmaps';
+            $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps';
+            $menus[$i]['target'] = '';
+        }
+
+        $i++;
+        $menus[$i]['label'] = 'Carrello';
+        $menus[$i]['url'] = '/user-cart';
+        $menus[$i]['target'] = '';
+    } // end if(!empty($organization))
+
     $i++;
-    $menus[$i]['label'] = 'Carrello';
-    $menus[$i]['url'] = '/user-cart';
+    $menus[$i]['label'] = 'Produttori';
+    $menus[$i]['url'] = '/site/produttori';
     $menus[$i]['target'] = '';
-} // end if(!empty($organization))
+
+} // end if(!isset($user) || empty($user))
 // debug($menus);
 
 echo '<nav class="navbar navbar-expand-lg static-top">';

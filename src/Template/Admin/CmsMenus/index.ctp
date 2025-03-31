@@ -61,6 +61,9 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                     else
                     if($cmsMenu->cms_menu_type->code=='DOC' && empty($cmsMenu->cms_docs))
                         echo '  <span class="label label-danger label-danger">Nessun documento associato!</span>';
+                    else
+                    if($cmsMenu->cms_menu_type->code=='LINK_EXT' && empty($cmsMenu->options))
+                        echo '  <span class="label label-danger label-danger">Nessun url configurato</span>';
 
                     echo $this->Form->control('id', ['type' => 'hidden', 'name' => 'ids[]', 'value' => $cmsMenu->id]);
 
