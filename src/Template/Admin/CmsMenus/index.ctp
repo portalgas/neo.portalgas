@@ -39,9 +39,12 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
 
                 echo '<ul id="sortable">';
                 foreach ($cmsMenus as $cmsMenu) {
-                    echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
-                    echo h($cmsMenu->name) . ' - ';
+                    echo '<li class="ui-state-default">';
+                    echo '<div class="row">';
+                    
+                    echo '<div class="col col-md-4"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> '.h($cmsMenu->name) . '</div>';
 
+                    echo '<div class="col col-md-4">';
                     echo '<small>tipologia ';
                     switch ($cmsMenu->cms_menu_type->code) {
                         case 'PAGE':
@@ -69,8 +72,9 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                         echo '  <span class="label label-danger label-danger">Nessun url configurato</span>';
 
                     echo $this->Form->control('id', ['type' => 'hidden', 'name' => 'ids[]', 'value' => $cmsMenu->id]);
+                    echo '</div>';
 
-                    echo '<div class="actions text-right">';
+                    echo ' <div class="col col-md-2">';
                     if (!$cmsMenu->is_active)
                         echo '<div class="label label-warning label-stato">Non visibile</div>';
                     else {
@@ -80,12 +84,18 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                             echo '<div class="label label-success label-stato">Visibile solo ai propri gasisti autenticati</div>';
 
                     }
+                    echo '</div>';
+                    echo ' <div class="col col-md-2 text-right">';
+                    if($cmsMenu->cms_menu_type->code=='PAGE' && !empty($cmsMenu->cms_pages) && isset($cmsMenu->cms_pages[0]))
+                        echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> Modifica la pagina', ['controller' => 'CmsPages', 'action' => 'edit', $cmsMenu->cms_pages[0]->id], ['class' => 'btn-action btn btn-success', 'escape' => false]).'<br >';
+
                     // echo $this->Html->link(__('View'), ['action' => 'view', $cmsMenu->id], ['class'=>'btn btn-info']);
                     if(!$cmsMenu->is_home)
-                        echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> '.__('Edit'), ['action' => 'edit', $cmsMenu->id], ['class' => 'btn btn-success', 'style' => 'margin-left: 5px', 'escape' => false]);
+                        echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> Modifica la voce di menù', ['action' => 'edit', $cmsMenu->id], ['class' => 'btn-action btn btn-success', 'escape' => false]).'<br >';
                     if (!$cmsMenu->is_system)
-                        echo $this->Html->link('<i aria-hidden="true" class="fa fa-trash"></i> '.__('Delete'), ['action' => 'delete', $cmsMenu->id], ['class' => 'btn btn-danger btn-xs-', 'escape' => false]);
+                        echo $this->Html->link('<i aria-hidden="true" class="fa fa-trash"></i> '.__('Delete'), ['action' => 'delete', $cmsMenu->id], ['class' => 'btn-action btn btn-danger', 'escape' => false]).'<br >';
                     // echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsMenu->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsMenu->id), 'class'=>'btn btn-danger btn-xs']);
+                    echo '</div>';
                     echo '</div>';
                     echo '</li>';
                 }
@@ -115,6 +125,10 @@ $( function() {
 $this->Html->scriptBlock($js, ['block' => true]);
 ?>
 <style>
+    .btn-action {
+        min-width: 225px;
+        margin: 0 0 5px;
+    }
     .label-stato {
         min-width: 300px;
         display: inline-block;
