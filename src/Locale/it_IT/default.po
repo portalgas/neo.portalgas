@@ -814,6 +814,9 @@ msgstr "il valore è già utilizzato, scegliere un valore univoco"
 msgid "This value does not exist"
 msgstr "il valore non esiste"
 
+msgid "File does not exist"
+msgstr "il file non esiste"
+
 msgid "This field is required"
 msgstr "campo obbligatorio"
 

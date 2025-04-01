@@ -23,7 +23,8 @@ class CmsDocsController extends ApiAppController
         parent::beforeFilter($event);
     }
 
-    public function index($cms_page_id=0) {
+    public function index($cms_page_id=0)
+    {
 
         $results = [];
         $results['code'] = 200;
@@ -31,10 +32,10 @@ class CmsDocsController extends ApiAppController
         $results['errors'] = '';
         $results['results'] = [];
 
-        $i=0;
+        $i = 0;
         $doc_ids = [];
         $assets = [];
-        if(!empty($cms_page_id)) {
+        if (!empty($cms_page_id)) {
             /*
              * estraggo prima gli assets associati alla pagina
              */
@@ -42,10 +43,10 @@ class CmsDocsController extends ApiAppController
             $tmp_assets = $cmsPagesDocsTable->find()
                 ->contain(['CmsPages', 'CmsDocs' => ['CmsMenus']])
                 ->where(['CmsPagesDocs.organization_id' => $this->_organization->id,
-                        'CmsPagesDocs.cms_page_id' => $cms_page_id])
+                    'CmsPagesDocs.cms_page_id' => $cms_page_id])
                 ->order(['CmsPagesDocs.sort'])
                 ->all();
-            if($tmp_assets->count()>0) {
+            if ($tmp_assets->count() > 0) {
                 foreach ($tmp_assets as $tmp_asset) {
                     $doc_ids[] = $tmp_asset->cms_doc_id;
 
@@ -59,7 +60,7 @@ class CmsDocsController extends ApiAppController
         } // emd if(!empty($cms_page_id))
 
         $where = ['CmsDocs.organization_id' => $this->_organization->id];
-        if(!empty($doc_ids))
+        if (!empty($doc_ids))
             $where += ['CmsDocs.id not in ' => $doc_ids];
 
         $cmsDocsTable = TableRegistry::get('CmsDocs');
@@ -67,7 +68,7 @@ class CmsDocsController extends ApiAppController
             ->contain(['CmsMenus', 'CmsPagesDocs' => ['CmsPages']])
             ->where($where)
             ->all();
-        if($tmp_assets->count()>0) {
+        if ($tmp_assets->count() > 0) {
             foreach ($tmp_assets as $tmp_asset) {
                 $assets[$i] = $tmp_asset;
                 $assets[$i]['cms_page'] = null;
@@ -75,6 +76,19 @@ class CmsDocsController extends ApiAppController
                 $i++;
             }
         }
+
+        /*
+         * controllo se il file esiste fisicamente
+         */
+        if (!empty($assets))
+            foreach ($assets as $numResult => $asset) {
+                $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $asset->organization_id) . '/' . $asset->path;
+                if (!file_exists($asset_path)) {
+                    $assets[$numResult]->file_exists = false;
+                } else
+                    $assets[$numResult]->file_exists = true;
+            }
+
 
         $results['results'] = $assets;
         return $this->_response($results);

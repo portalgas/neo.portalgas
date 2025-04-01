@@ -12,7 +12,7 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
         <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Cms Pages'); ?></a></li>
+        <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> Elenco  <?php echo __('Cms Pages'); ?></a></li>
     </ol>
 </section>
 

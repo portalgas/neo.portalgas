@@ -25,7 +25,7 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                  <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
+                  <th scope="col" class="actions text-left"><?= __('Actions') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('cms_menu_id', __('Cms Menu')) ?></th>
                   <th scope="col"><?= $this->Paginator->sort('name', __('Cms Page Name')) ?></th>
                   <th scope="col"><?= $this->Paginator->sort('body') ?></th>
@@ -38,9 +38,11 @@
             <tbody>
               <?php foreach ($cmsPages as $cmsPage): ?>
                 <tr>
-                    <td class="actions text-center">
+                    <td class="actions text-left">
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cmsPage->id], ['class'=>'btn btn-primary']) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsPage->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsPage->id), 'class'=>'btn btn-danger']) ?>
+                        <?php
+                        if(!$cmsPage->cms_menu->is_home)
+                            echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsPage->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsPage->id), 'class'=>'btn btn-danger']) ?>
                     </td>
                   <td><?= $cmsPage->has('cms_menu') ? $this->Html->link($cmsPage->cms_menu->name, ['controller' => 'CmsMenus', 'action' => 'edit', $cmsPage->cms_menu->id]) : '' ?></td>
                     <td><?= h($cmsPage->name) ?></td>

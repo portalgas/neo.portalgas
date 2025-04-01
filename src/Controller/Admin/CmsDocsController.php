@@ -54,7 +54,6 @@ class CmsDocsController extends AppController
             /*
              * elimino fisicamente il file
              */
-
             $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $this->_organization->id);
             $filePath = $asset_path . '/' . $cmsDoc->path;
             if (file_exists($filePath)) {

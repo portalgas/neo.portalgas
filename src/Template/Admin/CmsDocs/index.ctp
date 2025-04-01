@@ -46,9 +46,15 @@ echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInc
                                     :key="doc.id"
                                 >
                                     <td>
-                                        <a :href="'/pages/download/'+doc.uuid" target="_blank">
-                                            <button class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> <?php echo __('Cms Doc Download');?></button>
-                                        </a>
+                                        <div v-if="doc.file_exists">
+                                            <a :href="'/pages/download/'+doc.uuid" target="_blank">
+                                                <button class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> <?php echo __('Cms Doc Download');?></button>
+                                            </a>
+                                        </div>
+                                        <div v-else class="alert alert-danger">
+                                            <?php echo __('File does not exist');?>
+                                        </div>
+                                    </td>
                                     </td>
                                     <td>{{ doc.name }}</td>
                                     <td>{{ doc.size }} kb</td>

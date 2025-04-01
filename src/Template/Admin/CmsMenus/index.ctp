@@ -41,7 +41,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                 foreach ($cmsMenus as $cmsMenu) {
                     echo '<li class="ui-state-default">';
                     echo '<div class="row">';
-                    
+
                     echo '<div class="col col-md-4"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> '.h($cmsMenu->name) . '</div>';
 
                     echo '<div class="col col-md-4">';

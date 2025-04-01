@@ -148,8 +148,22 @@ class GasController extends ApiAppController
             $content = $menu->cms_pages[0]->body;
             if(!empty($menu->cms_pages[0]->cms_pages_images))
                 $images =  $menu->cms_pages[0]->cms_pages_images;
-            if(!empty($menu->cms_pages[0]->cms_pages_docs))
+            if(!empty($menu->cms_pages[0]->cms_pages_docs)) {
                 $docs =  $menu->cms_pages[0]->cms_pages_docs;
+
+                /*
+                 * controllo se il file esiste fisicamente
+                 */
+                $new_docs = [];
+                if (!empty($docs)) {
+                    foreach ($docs as $numResult => $doc) {
+                        $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $doc['cms_doc']['organization_id']) . '/' . $doc['cms_doc']['path'];
+                        if (file_exists($asset_path))
+                            $new_docs[] = $doc;
+                    }
+                    $docs = $new_docs;
+                }
+            }
         }
         else {
             $content = $this->Gas->getHomeByContentId($organization);

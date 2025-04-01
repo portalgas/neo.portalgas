@@ -14,7 +14,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
       <small><?php echo __('Edit'); ?></small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> Elenco  <?php echo __('Cms Pages'); ?></a></li>
     </ol>
   </section>
 
@@ -104,12 +104,22 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                                     >
 
                                         <div class="col col-md-1">
-                                            <input type="checkbox" name="docs" v-model="selected_docs" :value="doc.id" />
+                                            <div v-if="doc.file_exists">
+                                                <input type="checkbox" name="docs" v-model="selected_docs" :value="doc.id" />
+                                            </div>
                                         </div>
                                         <div class="col col-md-10">
-                                            <a :href="'/pages/download/'+doc.uuid" target="_blank">
+                                            <div v-if="doc.file_exists">
+                                                <a :href="'/pages/download/'+doc.uuid" target="_blank">
+                                                    {{ doc.name }}
+                                                </a>
+                                            </div>
+                                            <div v-else>
                                                 {{ doc.name }}
-                                            </a>
+                                                <div class="alert alert-danger">
+                                                    <?php echo __('File does not exist');?>
+                                                </div>
+                                            </div>
                                         </div>
                                     </li>
                                 </ul>
