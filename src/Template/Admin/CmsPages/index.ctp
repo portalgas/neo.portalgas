@@ -41,7 +41,7 @@
                     <td class="actions text-left">
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $cmsPage->id], ['class'=>'btn btn-primary']) ?>
                         <?php
-                        if(!$cmsPage->cms_menu->is_home)
+                        if(!empty($cmsPage->cms_menu) && !$cmsPage->cms_menu->is_home)
                             echo $this->Form->postLink(__('Delete'), ['action' => 'delete', $cmsPage->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cmsPage->id), 'class'=>'btn btn-danger']) ?>
                     </td>
                   <td><?= $cmsPage->has('cms_menu') ? $this->Html->link($cmsPage->cms_menu->name, ['controller' => 'CmsMenus', 'action' => 'edit', $cmsPage->cms_menu->id]) : '' ?></td>
