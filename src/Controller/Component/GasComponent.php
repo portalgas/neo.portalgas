@@ -24,10 +24,11 @@ class GasComponent extends Component {
 
         $organizationsTable = TableRegistry::get('Organizations');
         $organization = $organizationsTable->find()
-            ->select(['id', 'name', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'www', 'www2', 'cf', 'lat', 'lng', 'img1', 'template_id', 'j_seo'])
+            ->select(['id', 'name', 'descrizione', 'indirizzo', 'localita', 'cap', 'provincia', 'www', 'www2', 'cf', 'lat', 'lng', 'img1', 'template_id', 'j_seo', 'paramsConfig'])
             ->where (['j_seo' => $slug, 'type' => 'GAS', 'stato' => 'Y'])
             ->first();
 
+        $organization->paramsConfig = json_decode($organization->paramsConfig, true);
         return $organization;
 	}
 

@@ -86,15 +86,41 @@ class GasController extends ApiAppController
             if($menus->count()>0)
                 $menus = $menus->toArray();
             else {
-                /*
-                 * veco di menu di default con la pagina home di default
-                 */
+                $i=0;
                 $menus = [];
-                $menus[0] = [];
-                $menus[0]['slug'] = 'home';
-                $menus[0]['cms_menu_type'] = [];
-                $menus[0]['cms_menu_type']['code'] = 'PAGE';
-                $menus[0]['name'] = 'Home del G.A.S.';
+                $menus[$i] = [];
+                $menus[$i]['slug'] = '';
+                $menus[$i]['cms_menu_type'] = [];
+                $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
+                $menus[$i]['name'] = 'Home del G.A.S.';
+            }
+
+            /*
+             * voci di menu di default con la pagina home di default
+             */
+            $i = count($menus);
+            if(!isset($organization->paramsConfig['hasGasGroups']) || $organization->paramsConfig['hasGasGroups']=='N') {
+                $i++;
+                $menus[$i]['slug'] = '';
+                $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+                $menus[$i]['cms_menu_type'] = [];
+                $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
+                $menus[$i]['name'] = __('Deliveries');
+            }
+
+            $i++;
+            $menus[$i]['slug'] = '';
+            $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps-produttori';
+            $menus[$i]['cms_menu_type'] = [];
+            $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
+            $menus[$i]['name'] = 'Produttori del G.A.S.';
+            if(!empty($this->_user) && $organization->id==$this->_user->organization->id) {
+                $i++;
+                $menus[$i]['slug'] = '';
+                $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps';
+                $menus[$i]['cms_menu_type'] = [];
+                $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
+                $menus[$i]['name'] = 'Gasisti';
             }
 
             if(empty($this->_user))

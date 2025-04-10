@@ -37,8 +37,8 @@ class AppController extends Controller
 
     protected $application_env; // development
     protected $_user = null;
-    protected $_organization = null; // gas scelto
-    
+    protected $_organization = null;
+
     public $helpers = [
         'Modal' => [
             'className' => 'Bootstrap.Modal'
@@ -65,12 +65,12 @@ class AppController extends Controller
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
-        //$this->loadComponent('Security'); 
+        //$this->loadComponent('Security');
         $this->loadComponent('Authentication.Authentication', Configure::read('Auth'));
         $this->loadComponent('Authorization.Authorization', [
                         'skipAuthorization' => ['login']
                     ]); // definito come middleware in src/Application.php
-        
+
         /*
          * gestione float nella serializzazione json
          * se no gli importi divengono 10.00000000000000
@@ -82,39 +82,39 @@ class AppController extends Controller
 
         $this->_user = $this->Authentication->getIdentity();
         if(!empty($this->_user) && isset($this->_user->organization))
-            $this->_organization = $this->_user->organization; // gas scelto
+            $this->_organization = $this->_user->organization; // gas scelto dopo il login
 
         /* autenticazione non + gestita qui
-        if(!isset($this->_user->acl) && 
-            $this->request->params['controller']!='site' && 
-            $this->request->params['action']!='vueGuest') { 
+        if(!isset($this->_user->acl) &&
+            $this->request->params['controller']!='site' &&
+            $this->request->params['action']!='vueGuest') {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             Log::error('AppController '.$this->request->params['controller'].'->'.$this->request->params['action'].' '.__('routes_msg_stop'));
             return $this->redirect(Configure::read('routes_msg_stop'));
-        } 
-        */          
+        }
+        */
     }
 
     public function beforeFilter(Event $event) {
-     
-        parent::beforeFilter($event); 
+
+        parent::beforeFilter($event);
 
         $this->set('user', $this->_user);
         // debug($user);
-       
+
         $prefix = $this->request->getParam('prefix');
         // debug($this->prefix);
     }
-    
+
     public function beforeRender(Event $event)
     {
         parent::beforeRender($event);
-        
+
         /*
-         * cosi' faccio l'ovveride degli Elements 
+         * cosi' faccio l'ovveride degli Elements
          * con json/pdf devo fare l'ovveride con $this->viewBuilder()->setClassName('Json/CakePdf.Pdf');
          */
-        $this->viewBuilder()->setClassName('AdminLTE.AdminLTE'); 
-        $this->viewBuilder()->setTheme('AdminLTE'); 
+        $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
+        $this->viewBuilder()->setTheme('AdminLTE');
     }
 }
