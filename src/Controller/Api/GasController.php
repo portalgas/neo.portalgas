@@ -101,11 +101,14 @@ class GasController extends ApiAppController
             /*
              * voci di menu di default con la pagina home di default
              */
+            $config = Configure::read('Config');
+            $portalgas_fe_url = $config['Portalgas.fe.url'];
+
             $i = count($menus);
             if(!isset($organization->paramsConfig['hasGasGroups']) || $organization->paramsConfig['hasGasGroups']=='N') {
                 $i++;
                 $menus[$i]['slug'] = '';
-                $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+                $menus[$i]['url'] = $portalgas_fe_url.'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
                 $menus[$i]['cms_menu_type'] = [];
                 $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
                 $menus[$i]['name'] = __('Deliveries');
@@ -113,14 +116,14 @@ class GasController extends ApiAppController
 
             $i++;
             $menus[$i]['slug'] = '';
-            $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps-produttori';
+            $menus[$i]['url'] = $portalgas_fe_url.'/home-' . $organization->j_seo . '/gmaps-produttori';
             $menus[$i]['cms_menu_type'] = [];
             $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
             $menus[$i]['name'] = 'Produttori del G.A.S.';
             if(!empty($this->_user) && $organization->id==$this->_user->organization->id) {
                 $i++;
                 $menus[$i]['slug'] = '';
-                $menus[$i]['url'] = '/admin/joomla25Salts?scope=FE&c_to=/home-' . $organization->j_seo . '/gmaps';
+                $menus[$i]['url'] = $portalgas_fe_url.'/home-' . $organization->j_seo . '/gmaps';
                 $menus[$i]['cms_menu_type'] = [];
                 $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
                 $menus[$i]['name'] = 'Gasisti';
