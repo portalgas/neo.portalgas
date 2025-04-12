@@ -355,6 +355,10 @@ $(function () {
                   $responseHtml.addClass('fa-lg text-red fa fa-thumbs-o-down');
                   console.error(response.data.errors);
                   alert(response.data.errors);
+
+                  if(field_name=='stato' && field_value=='N') {
+                    this.articles[index].stato = 'Y';
+                  }
                 }
 
                 setTimeout( function() {$responseHtml.remove()} , 2500);
@@ -385,15 +389,28 @@ $(function () {
         toggleFlagPresenteArticlesOrders: function(field_id, index) {
           console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
           if(this.articles[index].flag_presente_articlesorders=='Y')
-            this.articles[index].flag_presente_articlesorders = 'N';
+              this.articles[index].flag_presente_articlesorders = 'N';
           else
-            this.articles[index].flag_presente_articlesorders = 'Y';
+              this.articles[index].flag_presente_articlesorders = 'Y';
 
-            console.log(field_id, 'field_id');
-            let field_name = 'flag_presente_articlesorders';
-            let field_value = this.articles[index].flag_presente_articlesorders;
+          console.log(field_id, 'field_id');
+          let field_name = 'flag_presente_articlesorders';
+          let field_value = this.articles[index].flag_presente_articlesorders;
 
-            this.setValue(field_id, field_name, field_value, index);
+          this.setValue(field_id, field_name, field_value, index);
+        },
+        toggleStato: function(field_id, index) {
+          console.log(this.articles[index].stato, 'toggleStato');
+          if(this.articles[index].stato=='Y')
+              this.articles[index].stato = 'N';
+          else
+              this.articles[index].stato = 'Y';
+
+          console.log(field_id, 'field_id');
+          let field_name = 'stato';
+          let field_value = this.articles[index].stato;
+
+          this.setValue(field_id, field_name, field_value, index);
         },
         toggleSearchFlagPresenteArticlesOrders: function() {
           this.search_flag_presente_articlesorders = !this.search_flag_presente_articlesorders;

@@ -15,7 +15,7 @@
   border: 1px solid #eeeeee;
   height: 120px;
   min-height: 1em;
-  max-height: 6em;    
+  max-height: 6em;
   overflow: auto;
   width: 500px;
 }
@@ -29,14 +29,14 @@
 .autocomplete-result:hover {
   background-color:#367fa9;
   color: white;
-}  
+}
 .modal-title {
   color: #3c8dbc;
   font-size: 22px;
   font-weight: bold;
 }
 </style>
-<?php 
+<?php
 use Cake\Core\Configure;
 use App\Traits;
 
@@ -49,10 +49,10 @@ $js = "var categories_articles = $js_categories_articles;";
 if(!empty($search_supplier_organization_id))
   $js .= "var search_supplier_organization_id_default = $search_supplier_organization_id;";
 $this->Html->scriptBlock($js, ['block' => true]);
-echo $this->Html->script('vue/articles.js?v=20240224', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articles.js?v=20250411', ['block' => 'scriptPageInclude']);
 
-echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']); 
-echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']); 
+echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
+echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
 <section class="content-header">
   <h1>
@@ -61,16 +61,16 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
       <a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'context_articles_add');?>" title="Aggiungi un nuovo articolo" target="_blank">
         <button class="btn btn-success"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo</button></a>
     </div>
-  </h1>  
+  </h1>
 </section>
 
 <div id="vue-articles">
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
-      <?php 
+      <?php
         echo $this->element('search/articles', ['search_orders' => $search_orders]);
-      ?>        
+      ?>
       <div class="box">
         <div class="box-header">
           <h3 class="box-title"><?php echo __('List'); ?></h3>
@@ -94,9 +94,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
           <div class="loader-global" v-if="is_run">
             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </div>
-  
+
           <?php
-          echo '<div v-if="articles.length==0">'; 
+          echo '<div v-if="articles.length==0">';
           echo $this->element('msg', ['msg' => "Non sono stati trovati articoli", 'class' => 'warning']);
           echo '</div>';
           ?>
@@ -106,14 +106,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
               <tr>
                   <th scope="col" colspan="2" class="actions text-center"></th>
                   <th scope="col"><?= __('Name') ?></th>
-                  <th scope="col"><?= __('Code') ?></th>                  
-                  <?php 
+                  <th scope="col"><?= __('Code') ?></th>
+                  <?php
                   if(empty($search_supplier_organization_id))
                     echo '<th scope="col">'.__('supplier_organization_id').'</th>';
                   if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                     echo '<th scope="col">';
                     echo __('Category');
-                    echo ' <label style="cursor: pointer;" class="label label-primary" 
+                    echo ' <label style="cursor: pointer;" class="label label-primary"
                           data-toggle="modal" data-target="#modalCategorie">?</label>';
                     echo '</th>';
                   }
@@ -123,8 +123,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <th scope="col" style="width:100px">
                       <?= __('Prezzo') ?>
                       <br />
-                      <label style="cursor: pointer;" class="label" 
-                            :class="open_box_price ? 'label-success' : 'label-info'"  
+                      <label style="cursor: pointer;" class="label"
+                            :class="open_box_price ? 'label-success' : 'label-info'"
                             @click="openBoxPrice()">
                         <span v-if="open_box_price">Prezzo senza IVA</span>
                         <span v-if="!open_box_price">Prezzo compreso IVA</span>
@@ -132,7 +132,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   </th>
                   <th scope="col" style="width:100px">
                     <?= __('qta') ?>
-                    <label style="cursor: pointer;" class="label label-primary" 
+                    <label style="cursor: pointer;" class="label label-primary"
                           data-toggle="modal" data-target="#modalQta">?</label>
                   </th>
                   <th scope="col" style="width:150px"><?= __('UM') ?></th>
@@ -149,19 +149,36 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <td class="actions text-center">
                           <!-- {{ article.organization_id }} {{ article.id }} -->
                           <div class="btn-group-vertical">
-                            <button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
-                            <button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
-                            <button title="elimina articolo" class="btn btn-danger"  @click="goToDelete(index)"><i aria-hidden="true" ><i aria-hidden="true" class="fa fa-trash"></i></button>
+                              <?php
+                              if($user->organization->type=='GAS')
+                                echo '<button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>';
+                              echo '<button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>';
+                              if($user->organization->type=='GAS')
+                                  echo '<button title="elimina articolo" class="btn btn-danger"  @click="goToDelete(index)"><i aria-hidden="true" ><i aria-hidden="true" class="fa fa-trash"></i></button>';
+                              ?>
                           </div>
-                        </td>                       
+                        </td>
                         <td class="actions text-center">
-                          <button class="btn-block btn" 
-                                :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
-                                :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'" 
+                          <button class="btn-block btn"
+                                :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'"
+                                :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'"
                                 @click="toggleFlagPresenteArticlesOrders('flag_presente_articlesorders-'+article.organization_id+'-'+article.id, index)">
                             <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
                           </button>
+                            <?php
+                            if($user->organization->type=='GAS') {
+                            ?>
+                                <button class="btn-block btn"
+                                        :class="article.stato=='Y' ? 'btn-success' : 'btn-danger'"
+                                        :title="article.stato=='Y' ? 'Articolo visibile' : 'Articolo NON visibile'"
+                                        @click="toggleStato('stato-'+article.organization_id+'-'+article.id, index)">
+                                    <span v-if="article.stato=='Y'">Visibile</span>
+                                    <span v-if="article.stato=='N'">Non visibile</span>
+                                </button>
+                            <?php
+                            }
+                            ?>
                         </td>
                         <td>
                           <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
@@ -169,34 +186,34 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         </td>
                         <td>
                           <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
-                        </td>                         
-                        <?php 
+                        </td>
+                        <?php
                         if(empty($search_supplier_organization_id))
                             echo '<td>
                               {{ article.owner_supplier_organization.name }}
                               <div class="small">
                                 <b>'.__('organization_owner_article_short').'</b>:
                                 <div v-if="article.can_edit">Il referente del tuo G.A.S.</div>
-                                <div v-if="!article.can_edit">{{ article.organization.name }}</div>                                    
+                                <div v-if="!article.can_edit">{{ article.organization.name }}</div>
                               </div>
                             </td>';
-                        
+
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                         ?>
                           <td>
                             <span v-if="article.categories_article!=null">{{ article.categories_article.name }}</span>
-                            <select 
+                            <select
                                 v-if="Object.keys(categories_articles).length>1"
-                                name="category_article_id" 
-                                class="form-control extend" 
-                                :required="true" 
-                                v-model="article.category_article_id" 
+                                name="category_article_id"
+                                class="form-control extend"
+                                :required="true"
+                                v-model="article.category_article_id"
                                 @change="changeValue(event, index)" :id="'category_article_id-'+article.organization_id+'-'+article.id">
-                              <option v-for="(categories_article, id) in categories_articles" :value="id" v-html="$options.filters.html(categories_article)">
+                              <option v-for="categories_article in categories_articles" :value="categories_article.id" v-html="$options.filters.html(categories_article.name)">
                               </option>
-                            </select>  
+                            </select>
                           </td>
-                        <?php 
+                        <?php
                         }
                         ?>
                         <td>
@@ -211,24 +228,24 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <!-- price -->
                         <td>
                           <template v-if="!open_box_price">
-                            <input type="text" class="form-control" 
-                                    v-model="article.prezzo_"                                   
+                            <input type="text" class="form-control"
+                                    v-model="article.prezzo_"
                                     @change="changeValue(event, index)"
-                                    :id="'prezzo-'+article.organization_id+'-'+article.id" 
+                                    :id="'prezzo-'+article.organization_id+'-'+article.id"
                                     name="prezzo" />
                           </template>
                           <template v-if="open_box_price">
                             <div class="input form-group">
                               <label for="iva">Prezzo senza IVA</label>
-                              <input type="text" class="form-control" 
+                              <input type="text" class="form-control"
                                     @change="setPriceConIva(index)"
-                                    :id="'prezzo_no_iva-'+article.organization_id+'-'+article.id" 
+                                    :id="'prezzo_no_iva-'+article.organization_id+'-'+article.id"
                                     name="prezzo_no_iva" />
                             </div>
                             <div class="input form-group select">
                               <!-- label for="iva">Iva</label -->
                               <select name="iva"
-                                v-model="iva" 
+                                v-model="iva"
                                 @change="setPriceConIva(index)"
                                 :id="'iva-'+article.organization_id+'-'+article.id" class="form-control">
                                 <!-- option value="0" selected="selected">Compresa nel prezzo</option -->
@@ -240,12 +257,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
                             <div class="input form-group">
                               <label for="iva">Prezzo finale</label>
-                              <input type="text" class="form-control" 
-                                      v-model="article.prezzo_"                                   
+                              <input type="text" class="form-control"
+                                      v-model="article.prezzo_"
                                       @change="changeValue(event, index)"
-                                      :id="'prezzo-'+article.organization_id+'-'+article.id" 
+                                      :id="'prezzo-'+article.organization_id+'-'+article.id"
                                       name="prezzo" />
-                            </div>                        
+                            </div>
                           </template>
                         </td>
                         <td>
@@ -258,23 +275,23 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                               {{ um }}
                             </option>
                           </select>
-                        
+
                           <!-- select class="form-control" :required="true" v-model="article.um_riferimento" @change="changeValue(event, index)" :id="'um_riferimento-'+article.organization_id+'-'+article.id" name="um_riferimento">
                             <option v-for="um in ums"
                                v-bind:value="um" >
                               {{ um }}
                             </option>
-                          </select --> 
+                          </select -->
 
                           <div v-if="article.um_rif_values.length>0">
                             <div class="form-check" v-for="um_rif_value in article.um_rif_values">
-                              <input class="form-check-input" type="radio" 
-                                     name="um_riferimento" 
-                                     v-model="article.um_riferimento" 
+                              <input class="form-check-input" type="radio"
+                                     name="um_riferimento"
+                                     v-model="article.um_riferimento"
                                      @change="changeValue(event, index)"
-                                     :id="'um_rif_values-'+um_rif_value.id" 
+                                     :id="'um_rif_values-'+um_rif_value.id"
                                      :value="um_rif_value.id">
-                              <label class="form-check-label" 
+                              <label class="form-check-label"
                                      :for="'um_rif_values-'+um_rif_value.id"
                                      v-html="$options.filters.html(um_rif_value.value)">
                               </label>
@@ -283,17 +300,17 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <div v-if="article.um_rif_values.length==0">
                             {{ article.um_rif_label }}
                           </div>
-  
-                          <!-- select class="form-control" 
-                              v-if="article.um_rif_values.length>0" 
-                              :required="true" 
-                              v-model="article.um_riferimento" 
+
+                          <!-- select class="form-control"
+                              v-if="article.um_rif_values.length>0"
+                              :required="true"
+                              v-model="article.um_riferimento"
                               @change="changeValue(event, index)"
                               :id="'um_riferimento-'+article.organization_id+'-'+article.id" name="um_riferimento">
-                            <option v-for="um_rif_value in article.um_rif_values" 
-                                    :value="um_rif_value.id" 
-                                    v-html="$options.filters.html(um_rif_value.value)"></option>                            
-                          </select --> 
+                            <option v-for="um_rif_value in article.um_rif_values"
+                                    :value="um_rif_value.id"
+                                    v-html="$options.filters.html(um_rif_value.value)"></option>
+                          </select -->
                         </td>
 
                       </tr>
@@ -307,7 +324,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
-                        <?php 
+                        <?php
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
                           echo '<td></td>';
                         ?>
@@ -323,7 +340,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <div><label><?= __('qta_minima') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_minima" @change="changeValue(event, index)" :id="'qta_minima-'+article.organization_id+'-'+article.id" name="qta_minima" /></div>
                           <div><label><?= __('qta_massima') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima" @change="changeValue(event, index)" :id="'qta_massima-'+article.organization_id+'-'+article.id" name="qta_massima" /></div>
                           <div><label><?= __('qta_minima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" @change="changeValue(event, index)" :id="'qta_minima_order-'+article.organization_id+'-'+article.id" name="qta_minima_order" /></div>
-                          <div><label><?= __('qta_massima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" @change="changeValue(event, index)" :id="'qta_massima_order-'+article.organization_id+'-'+article.id" name="qta_massima_order" /></div> 
+                          <div><label><?= __('qta_massima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" @change="changeValue(event, index)" :id="'qta_massima_order-'+article.organization_id+'-'+article.id" name="qta_massima_order" /></div>
                         </td>
                       </tr>
                     </template>
@@ -337,11 +354,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>
                             <button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>
                           </div>
-                        </td>                       
+                        </td>
                         <td class="actions text-center">
-                          <button style="cursor: auto !important" 
-                                class="btn-block btn" 
-                                :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'" 
+                          <button style="cursor: auto !important"
+                                class="btn-block btn"
+                                :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'"
                                 :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'">
                             <span v-if="article.flag_presente_articlesorders=='Y'">Ordinabile</span>
                             <span v-if="article.flag_presente_articlesorders=='N'">Non ordinabile</span>
@@ -352,15 +369,15 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         </td>
                         <td>
                           {{ article.codice }}
-                        </td>                         
-                        <?php 
+                        </td>
+                        <?php
                         if(empty($search_supplier_organization_id))
                             echo '<td>
                               {{ article.owner_supplier_organization.name }}
                               <div class="small">
                                 <b>'.__('organization_owner_article_short').'</b>:
                                 <div v-if="article.can_edit">Il referente del tuo G.A.S.</div>
-                                <div v-if="!article.can_edit">{{ article.organization.name }}</div>                                    
+                                <div v-if="!article.can_edit">{{ article.organization.name }}</div>
                               </div>
                             </td>';
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
@@ -368,7 +385,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <td>
                             <span v-if="article.categories_article!=null">{{ article.categories_article.name }}</span>
                           </td>
-                        <?php 
+                        <?php
                         }
                         ?>
                         <td>
@@ -406,12 +423,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           {{ article.ingredienti }}
                         </td>
                         <td colspan="4">
-                          <div><label><?= __('qta_multipli') ?></label>: {{ article.qta_multipli }}</div> 
-                          <div><label><?= __('pezzi_confezione') ?></label>: {{ article.pezzi_confezione }}</div> 
-                          <div><label><?= __('qta_minima') ?></label>: {{ article.qta_minima }}</div> 
-                          <div><label><?= __('qta_massima') ?></label>: {{ article.qta_massima }}</div> 
-                          <div><label><?= __('qta_minima_order') ?></label>: {{ article.qta_minima_order }}</div> 
-                          <div><label><?= __('qta_massima_order') ?></label>: {{ article.qta_massima_order }}</div> 
+                          <div><label><?= __('qta_multipli') ?></label>: {{ article.qta_multipli }}</div>
+                          <div><label><?= __('pezzi_confezione') ?></label>: {{ article.pezzi_confezione }}</div>
+                          <div><label><?= __('qta_minima') ?></label>: {{ article.qta_minima }}</div>
+                          <div><label><?= __('qta_massima') ?></label>: {{ article.qta_massima }}</div>
+                          <div><label><?= __('qta_minima_order') ?></label>: {{ article.qta_minima_order }}</div>
+                          <div><label><?= __('qta_massima_order') ?></label>: {{ article.qta_massima_order }}</div>
                         </td>
                       </tr>
                     </template>
@@ -419,12 +436,12 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
             </tbody>
           </table>
 
-          <div v-if="is_run_paginator" class="box-spinner"> 
+          <div v-if="is_run_paginator" class="box-spinner">
               <div class="spinner-border text-info" role="status">
                   <span class="sr-only">Loading...</span>
-              </div>  
+              </div>
           </div>
-                    
+
         </div>
         <!-- /.box-body -->
       </div>
@@ -499,7 +516,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   </tr>
                 </tbody>
               </table>
-            </div> <!-- table-responsive -->          
+            </div> <!-- table-responsive -->
 
           </div>
           <div class="modal-footer">
@@ -521,7 +538,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
             </button>
           </div>
           <div class="modal-body">
-            <?php 
+            <?php
             if($user->acl['isManager'] || $user->acl['isSuperReferente']) {
               echo '<a href="'.$this->HtmlCustomSite->jLink('CategoriesArticles', 'index').'" title="gestisci le categorie degli articoli" target="_blank">';
               echo '<button class="btn btn-info"><i aria-hidden="true" class="fa fa-tags"></i> Clicca qui se vuoi gestire le categorie degli articoli</button></a>';
@@ -549,8 +566,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
             </button>
           </div>
           <div class="modal-body">
-    
-    
+
+
           <table class="table table-hover" v-if="article_in_carts.length>0">
                 <thead>
                   <tr>
@@ -559,7 +576,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     <th scope="col" class="text-center">Importo</th>
                     <th scope="col">Acquistato il</th>
                   </tr>
-                </thead> 
+                </thead>
                 <tbody>
                   <template v-for="(article_in_cart, delivery_id) in article_in_carts"
                           :key="delivery_id">
@@ -568,27 +585,27 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           Consegna: {{ article_in_cart.delivery.label }}
                         </td>
                     </tr>
-                    <tr v-for="(cart, index) in article_in_cart.delivery.carts"> 
+                    <tr v-for="(cart, index) in article_in_cart.delivery.carts">
                       <td>{{ cart.user.name}}</td>
                       <td class="text-center">{{ cart.final_qta}}</td>
                       <td class="text-center">{{ cart.final_price | currency }} &euro;</td>
                       <td>{{ cart.date_human}}</td>
                     </tr>
-                  </template>    
+                  </template>
                 </tbody>
               </table>
 
               <div class="alert alert-info" v-if="article_in_carts.length==0">
                 Non ci sono acquisti associati all'articolo
-              </div>  
- 
+              </div>
+
           </div> <!-- modal-body -->
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
           </div>
         </div>
       </div>
-    </div>  
+    </div>
 
 
 </div> <!-- vue-articles -->

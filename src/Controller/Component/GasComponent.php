@@ -28,7 +28,9 @@ class GasComponent extends Component {
             ->where (['j_seo' => $slug, 'type' => 'GAS', 'stato' => 'Y'])
             ->first();
 
-        $organization->paramsConfig = json_decode($organization->paramsConfig, true);
+        if(!empty($organization))
+            $organization->paramsConfig = json_decode($organization->paramsConfig, true);
+        
         return $organization;
 	}
 

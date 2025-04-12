@@ -9,6 +9,7 @@ use Cake\Cache\Cache;
 
 class GasController extends ApiAppController
 {
+    private $_has_cache = false;
     public function initialize(): void
     {
         parent::initialize();
@@ -49,9 +50,7 @@ class GasController extends ApiAppController
      * elenco voci di menu
      */
     public function menu() {
-       // debug($this->_user);
-       // dd($this->_user->organization);
-        // dd($this->_organization); gas scalto dopo il login
+
         $debug = false;
         $results = [];
         $results['code'] = 200;
@@ -64,10 +63,14 @@ class GasController extends ApiAppController
         if(empty($organization))
             return $this->_response($results);
 
-        if(empty($this->_user))
-            $menus = Cache::read('cms-menus-'.$organization->id);
-        else
-            $menus = Cache::read('cms-menus-auth-'.$organization->id);
+        $menus = false;
+        if($this->_has_cache) {
+            if(empty($this->_user))
+                $menus = Cache::read('cms-menus-'.$organization->id);
+            else
+                $menus = Cache::read('cms-menus-auth-'.$organization->id);
+        }
+
         if ($menus !== false) {
             $results['results'] =  $menus;
         }
@@ -123,10 +126,12 @@ class GasController extends ApiAppController
                 $menus[$i]['name'] = 'Gasisti';
             }
 
-            if(empty($this->_user))
-                Cache::write('cms-menus-'.$organization->id, $menus);
-            else
-                Cache::write('cms-menus-auth-'.$organization->id, $menus);
+            if($this->_has_cache) {
+                if(empty($this->_user))
+                    Cache::write('cms-menus-'.$organization->id, $menus);
+                else
+                    Cache::write('cms-menus-auth-'.$organization->id, $menus);
+            }
 
             $results['results'] = $menus;
         }
