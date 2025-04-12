@@ -78,7 +78,7 @@ class GasController extends ApiAppController
             $cmsMenuTable = TableRegistry::get('CmsMenus');
 
             $where = ['organization_id' => $organization->id, 'is_active' => true];
-            if(empty($this->_user))
+            if(empty($this->_user) || $organization->id!=$this->_user->organization->id)
                 $where += ['is_public' => true];
 
             $menus = $cmsMenuTable->find()
@@ -164,7 +164,7 @@ class GasController extends ApiAppController
         $cmsMenuTable = TableRegistry::get('CmsMenus');
 
         $where = ['organization_id' => $organization->id, 'is_active' => true, 'slug' => $slug_page];
-        if(empty($this->_user))
+        if(empty($this->_user) || $organization->id!=$this->_user->organization->id)
             $where += ['is_public' => true];
 
         $menu = $cmsMenuTable->find()
