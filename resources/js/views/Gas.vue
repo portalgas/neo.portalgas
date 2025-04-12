@@ -73,7 +73,17 @@ export default {
         this.slugPage=='home';
 
     this.getOrganization();
-  },
+    },
+    watch: {
+        '$route'(to, from) {
+            this.slugGas = this.$route.params.slugGas;
+            this.slugPage = this.$route.params.slugPage;
+            if(this.slugPage=='')
+                this.slugPage=='home';
+
+            this.getOrganization();
+        },
+    },
     methods: {
         getOrganization:function() {
             this.isLoading = true;
