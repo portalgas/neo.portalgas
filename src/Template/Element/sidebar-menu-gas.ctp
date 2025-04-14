@@ -280,7 +280,7 @@ if($user->acl['isTesoriere']) {
 <?php
 } // if($user->acl['isTesoriere'])
 
-if($user->organization->paramsConfig['hasCms']=='Y') { ?>
+if(isset($user->organization->paramsConfig['hasCms']) && $user->organization->paramsConfig['hasCms']=='Y') { ?>
 <li class="treeview">
     <a href="#">
         <i class="fa fa-files-o"></i> <span><?php echo __('Cms');?></span>
