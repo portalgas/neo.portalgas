@@ -70,11 +70,13 @@ class CmsMenusController extends AppController
             $datas['slug'] = Slug::generate($datas['name']);
             $datas['sort'] = $this->CmsMenus->getSort('CmsMenus', ['organization_id' => $this->_organization->id, 'is_active' => 1]);
 
-            $datas['options'] = trim($datas['options']);
-            if($datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
-                if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
-                    $datas['options'] = 'https://'.$datas['options'];
-            }
+            if(isset($datas['options'])) {
+                $datas['options'] = trim($datas['options']);
+                if(isset($datas['cms_menu_type_id']) && $datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
+                    if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
+                        $datas['options'] = 'https://'.$datas['options'];
+                }
+            } // end if(isset($datas['options']))
 
             $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
             if ($this->CmsMenus->save($cmsMenu)) {
@@ -119,11 +121,13 @@ class CmsMenusController extends AppController
             $datas['organization_id'] = $this->_organization->id;
             $datas['slug'] = Slug::generate($datas['name']);
 
-            $datas['options'] = trim($datas['options']);
-            if($datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
-                if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
-                    $datas['options'] = 'https://'.$datas['options'];
-            }
+            if(isset($datas['options'])) {
+                $datas['options'] = trim($datas['options']);
+                if(isset($datas['cms_menu_type_id']) && $datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
+                    if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
+                        $datas['options'] = 'https://'.$datas['options'];
+                }
+            } // end if(isset($datas['options']))
 
             $cmsMenu = $this->CmsMenus->patchEntity($cmsMenu, $datas);
             if ($this->CmsMenus->save($cmsMenu)) {
