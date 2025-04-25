@@ -42,9 +42,9 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                     echo '<li class="ui-state-default">';
                     echo '<div class="row">';
 
-                    echo '<div class="col col-md-4"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> '.h($cmsMenu->name) . '</div>';
+                    echo '<div class="col col-md-3"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> '.h($cmsMenu->name) . '</div>';
 
-                    echo '<div class="col col-md-4">';
+                    echo '<div class="col col-md-3">';
                     echo '<small>tipologia ';
                     switch ($cmsMenu->cms_menu_type->code) {
                         case 'PAGE':
@@ -74,7 +74,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
                     echo $this->Form->control('id', ['type' => 'hidden', 'name' => 'ids[]', 'value' => $cmsMenu->id]);
                     echo '</div>';
 
-                    echo ' <div class="col col-md-2">';
+                    echo ' <div class="col col-md-3">';
                     if (!$cmsMenu->is_active)
                         echo '<div class="label label-warning label-stato">Non visibile</div>';
                     else {
@@ -85,7 +85,7 @@ echo $this->Html->css('https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.c
 
                     }
                     echo '</div>';
-                    echo ' <div class="col col-md-2 text-right">';
+                    echo ' <div class="col col-md-3 text-right">';
                     if($cmsMenu->cms_menu_type->code=='PAGE' && !empty($cmsMenu->cms_pages) && isset($cmsMenu->cms_pages[0]))
                         echo $this->Html->link('<i aria-hidden="true" class="fa fa-edit"></i> Modifica la pagina', ['controller' => 'CmsPages', 'action' => 'edit', $cmsMenu->cms_pages[0]->id], ['class' => 'btn-action btn btn-success', 'escape' => false]).'<br >';
 
