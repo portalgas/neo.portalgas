@@ -35,7 +35,7 @@ class PagesController extends AppController
         parent::beforeFilter($event);
 
         $this->Authentication->allowUnauthenticated(['display', 'vueGuest']);
-        $this->Authorization->skipAuthorization(['display', 'vueGuest']);
+        $this->Authorization->skipAuthorization(['display', 'vueGuest', 'download']);
 
         $this->loadComponent('ProdGasPromotion');
     }
