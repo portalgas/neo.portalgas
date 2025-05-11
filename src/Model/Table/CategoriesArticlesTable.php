@@ -214,4 +214,15 @@ class CategoriesArticlesTable extends Table
 
         return $results;
     }
+
+    public function getsList($user=null, $organization_id) {
+
+        $results = $this->find('treeList', [
+            'spacer' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+            'conditions' => ['Organization_id' => $organization_id],
+            'order' => ['name']
+        ]);
+
+        return $results;
+    }
 }

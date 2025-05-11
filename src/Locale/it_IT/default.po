@@ -358,9 +358,6 @@ msgstr "Conf"
 msgid "Package"
 msgstr "Conf"
 
-msgid "pezzi_confezione"
-msgstr "Pezzi conf"
-
 msgid "flag_presente_articlesorders"
 msgstr "Ordinabile"
 
@@ -1204,11 +1201,14 @@ msgstr "Prezzo/UM"
 msgid "UnitOfMeasure"
 msgstr "Unità di misura"
 
-msgid "pezzi_confezione"
+msgid "pezzi_confezione_long"
 msgstr "Num di pezzi in una confezione"
 
 msgid "pezzi_confezione_short"
 msgstr "N. pezzi in conf."
+
+msgid "pezzi_confezione"
+msgstr "Pezzi conf"
 
 msgid "Conf"
 msgstr "Conf."

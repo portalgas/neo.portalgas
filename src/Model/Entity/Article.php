@@ -3,39 +3,6 @@ namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
 
-/**
- * Article Entity
- *
- * @property int $id
- * @property int $organization_id
- * @property int $supplier_organization_id
- * @property int $category_article_id
- * @property string|null $name
- * @property string|null $codice
- * @property string|null $nota
- * @property string|null $ingredienti
- * @property float $prezzo
- * @property float $qta
- * @property string $um
- * @property string $um_riferimento
- * @property int $pezzi_confezione
- * @property int $qta_minima
- * @property int $qta_massima
- * @property int $qta_minima_order
- * @property int $qta_massima_order
- * @property int $qta_multipli
- * @property int $alert_to_qta
- * @property string $bio
- * @property string|null $img1
- * @property string $stato
- * @property string $flag_presente_articlesorders
- * @property \Cake\I18n\FrozenTime|null $created
- * @property \Cake\I18n\FrozenTime|null $modified
- *
- * @property \App\Model\Entity\Organization $organization
- * @property \App\Model\Entity\SupplierOrganization $supplier_organization
- * @property \App\Model\Entity\CategoryArticle $category_article
- */
 class Article extends Entity
 {
     /**
@@ -52,6 +19,7 @@ class Article extends Entity
         'organization_id' => true,
         'supplier_organization_id' => true,
         'category_article_id' => true,
+        'parent_id' => true,
         'name' => true,
         'codice' => true,
         'nota' => true,

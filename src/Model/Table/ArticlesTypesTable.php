@@ -71,4 +71,9 @@ class ArticlesTypesTable extends Table
 
         return $validator;
     }
+
+    public function getsList($user=null, $organization_id) {
+        $results = $this->find()->order(['sort'])->all(); // ->toArray();
+        return $results;
+    }
 }

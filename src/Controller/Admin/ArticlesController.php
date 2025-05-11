@@ -7,6 +7,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use App\Traits;
 use Cake\Log\Log;
+use Cake\Cache\Cache;
 use Cake\Http\CallbackStream;
 
 class ArticlesController extends AppController
@@ -217,5 +218,34 @@ class ArticlesController extends AppController
         $import_fields['IGNORE'] = 'Ignore questa colonna';
         $import_fields += $this->ArticlesImportExport->getImportSupplierFields($this->_user);
         $this->set(compact('import_fields'));
+    }
+
+    /*
+     * $article_id=null se add
+     * $supplier_organization_id!=null se scelto un produttore
+     */
+    public function view($article_organization_id, $article_id=null, $supplier_organization_id=null)
+    {
+        $this->set(compact('article_organization_id', 'article_id', 'supplier_organization_id'));
+
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+        $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
+        $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+        $this->set(compact('suppliersOrganizations'));
+
+        $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
+        $categoriesArticles = $categoriesArticlesTable->getsList($this->_user, $this->_organization->id);
+        $this->set(compact('categoriesArticles'));
+
+        if(Cache::read('articlesTypes')===false) {
+            $articlesTypesTable = TableRegistry::get('ArticlesTypes');
+            $articlesTypes = $articlesTypesTable->getsList($this->_user, $this->_organization->id);
+            Cache::write('articlesTypes',$articlesTypes);
+        }
+        else
+            $articlesTypes = Cache::read('articlesTypes');
+        $this->set(compact('articlesTypes'));
+
+        $this->set('ums', $this->Articles->enum('um'));
     }
 }

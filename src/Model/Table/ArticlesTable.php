@@ -14,7 +14,7 @@ use App\Traits;
 class ArticlesTable extends Table
 {
     use Traits\SqlTrait;
-  
+
     const UM_PZ = 'PZ';
     const UM_GR = 'GR';
     const UM_HG = 'HG';
@@ -46,7 +46,7 @@ class ArticlesTable extends Table
         ]]);
 
         $this->addBehavior('Burzum/Imagine.Imagine');
-        
+
         $this->belongsTo('Organizations', [
             'foreignKey' => 'organization_id',
             'joinType' => 'INNER'
@@ -62,11 +62,16 @@ class ArticlesTable extends Table
             // campi in SupplierOrganizations
             'bindingKey' => ['owner_organization_id', 'owner_supplier_organization_id'],
             'joinType' => 'INNER'
-        ]);        
+        ]);
         $this->belongsTo('CategoriesArticles', [
             'foreignKey' => 'category_article_id',
             'joinType' => 'LEFT'
-        ]);        
+        ]);
+        $this->belongsTo('Parent', [
+            'className' => 'Articles',
+            'foreignKey' => 'parent_id',
+            'joinType' => 'LEFT'
+        ]);
     }
 
     /**
@@ -197,7 +202,7 @@ class ArticlesTable extends Table
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
         $rules->add($rules->existsIn(['organization_id', 'supplier_organization_id'], 'SuppliersOrganizations'));
         /*
-         * disabilita perche' all'insert e' 0        
+         * disabilita perche' all'insert e' 0
         $rules->add($rules->existsIn(['category_article_id'], 'CategoriesArticles'));
         */
 
@@ -205,7 +210,7 @@ class ArticlesTable extends Table
     }
 
     public function gets($user, $where, $order=[]) {
-        
+
         if(empty($order))
             $order = ['Articles.name asc'];
 
@@ -218,10 +223,10 @@ class ArticlesTable extends Table
         return $articles;
     }
 
-    /* 
+    /*
      * articoli in base all'ordine: ordine erediata own del produttore
      * per sapere chi gestisce il listino articoli
-     */ 
+     */
     public function getsToArticleOrders($user, $organization_id, $supplier_organization_id, $where=[], $debug = false) {
 
         /*
@@ -241,16 +246,16 @@ class ArticlesTable extends Table
                     'Articles.stato' => 'Y',
                     'Articles.flag_presente_articlesorders' => 'Y'];
         if($debug) debug($where);
-   
+
         $results = $this->gets($user, $where);
 
         return $results;
-    }   
+    }
 
-    /* 
+    /*
      * articoli in base al produttore: in base al own del produttore
      * so chi gestisce il listino articoli
-     */ 
+     */
     public function getsToArticleSupplierOrganization($user, $organization_id, $supplier_organization_id, $where=[], $debug = false) {
 
         /*
@@ -268,16 +273,16 @@ class ArticlesTable extends Table
                     'Articles.supplier_organization_id' => $ownArticles->owner_supplier_organization_id,
                     ];
         if($debug) debug($where);
-   
+
         $results = $this->gets($user, $where);
 
         return $results;
-    }   
-    
+    }
+
     /*
      * dato un articolo controllo eventuali acquisti
      *  se associato non posso eliminarlo
-     * 
+     *
      * article_organization_id = puo' essere diverso dal GAS perche' e' chi gestisce l'articolo
      */
     public function getArticleInCarts($user, $organization_id, $article_organization_id, $article_id, $where=[], $orders=[], $debug = false) {
@@ -287,7 +292,7 @@ class ArticlesTable extends Table
                   'Carts.article_id' => $article_id];
 
         if($debug) debug($where);
-   
+
         if(empty($orders))
             $orders = ['Deliveries.data asc'];
 
@@ -301,7 +306,7 @@ class ArticlesTable extends Table
                             'Orders' => [
                                 'Deliveries',
                                 'SuppliersOrganizations' => ['Suppliers', 'OwnerOrganizations', 'OwnerSupplierOrganizations']
-                            ], 
+                            ],
                             'Users'])
                         ->all();
 
@@ -311,8 +316,8 @@ class ArticlesTable extends Table
             $results[$numResult] = $cart2->results;
         }
         return $results;
-    }   
-    
+    }
+
     /*
      * dato un articolo controllo se associato ad evenuali ordini
      * article_organization_id = puo' essere diverso dal GAS perche' e' chi gestisce l'articolo
@@ -328,7 +333,7 @@ class ArticlesTable extends Table
                   'ArticlesOrders.article_id' => $article_id];
 
         if($debug) debug($where);
-   
+
         if(empty($orders))
             $orders = ['Deliveries.data asc'];
 
@@ -346,5 +351,5 @@ class ArticlesTable extends Table
                         ->all();
 
         return $articles_orders;
-    }    
+    }
 }

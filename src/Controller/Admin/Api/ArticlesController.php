@@ -333,7 +333,10 @@ class ArticlesController extends ApiAppController
         return $this->_response($results);
     }
 
-    public function img1Upload($organization_id, $article_id) {
+    /*
+     * $article_id=null se add
+     */
+    public function img1Upload($organization_id, $article_id=null) {
 
         $debug = false;
 
@@ -407,31 +410,34 @@ class ArticlesController extends ApiAppController
             $imageOperations);
 
         /*
-        * aggiorno db
+        * aggiorno db se $article_id != null
+         * se $article_id == null sono in add
         */
-        $where = ['organization_id' => $this->_organization->id,
-                  'id' => $article_id];
-        $article = $this->Articles->find()
-                    ->where($where)
-                    ->first();
-        if(empty($article)) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
-            $results['results'] = [];
-            return $this->_response($results);
-        }
+        if(!empty($article_id) && $article_id!=='null') {
+            $where = ['organization_id' => $this->_organization->id,
+                'id' => $article_id];
+            $article = $this->Articles->find()
+                ->where($where)
+                ->first();
+            if(empty($article)) {
+                $results['code'] = 500;
+                $results['message'] = 'KO';
+                $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
+                $results['results'] = [];
+                return $this->_response($results);
+            }
 
-        $datas = [];
-        $datas['img1'] = $file_name;
-        $article = $this->Articles->patchEntity($article, $datas);
-        if (!$this->Articles->save($article)) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = $article->getErrors();
-            $results['results'] = [];
-            return $this->_response($results);
-        }
+            $datas = [];
+            $datas['img1'] = $file_name;
+            $article = $this->Articles->patchEntity($article, $datas);
+            if (!$this->Articles->save($article)) {
+                $results['code'] = 500;
+                $results['message'] = 'KO';
+                $results['errors'] = $article->getErrors();
+                $results['results'] = [];
+                return $this->_response($results);
+            }
+        } // end if(!empty($article_id))
 
         $results['code'] = 200;
         $results['message'] = $upload_results;
@@ -577,5 +583,249 @@ class ArticlesController extends ApiAppController
 
         $delivery_id_old=$cart['order']['delivery_id'];
         */
+    }
+
+    public function store() {
+        $debug = false;
+
+        $continua = true;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $request = $this->request->getData();
+
+        if(empty($request['article_variants'])) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = 'Parametri errati!';
+            return $this->_response($results);
+        }
+
+        $articlesTable = TableRegistry::get('Articles');
+
+        $datas = [];
+        $datas['organization_id'] = $this->_organization->id;
+        $datas['supplier_organization_id'] = $request['article']['supplier_organization_id'];
+        $datas['category_article_id'] = $request['article']['category_article_id'];
+        $datas['name'] = $request['article']['name'];
+        $datas['bio'] = $request['article']['bio'];
+        $datas['nota'] = $request['article']['nota'];
+        $datas['ingredienti'] = $request['article']['ingredienti'];
+        $datas['img1'] = $request['article']['img1'];
+
+
+        $parent_id = null; // per la prima variazione e' null
+        foreach($request['article_variants'] as $numResult => $article_variant) {
+            $datas['parent_id'] = $parent_id;
+            $datas['codice'] = $article_variant['codice'];
+            $datas['qta'] = $article_variant['qta'];
+            $datas['um'] = $article_variant['um'];
+            $datas['prezzo'] = $article_variant['prezzo'];
+            $datas['iva'] = $article_variant['iva'];
+            $datas['prezzo_finale'] = $article_variant['prezzo_finale'];
+            $datas['um_riferimento'] = $article_variant['um_riferimento'];
+            $datas['pezzi_confezione'] = $article_variant['pezzi_confezione'];
+            $datas['qta'] = $article_variant['qta'];
+            $datas['qta_minima'] = $article_variant['qta_minima'];
+            $datas['qta_massima'] = $article_variant['qta_massima'];
+            $datas['qta_minima_order'] = $article_variant['qta_minima_order'];
+            $datas['qta_multipli'] = $article_variant['qta_multipli'];
+            $datas['qta_massima_order'] = $article_variant['qta_massima_order'];
+            $datas['stato'] = $article_variant['stato'];
+            $datas['flag_presente_articlesorders'] = $article_variant['flag_presente_articlesorders'];
+
+            $datas['alert_to_qta'] = 0;
+
+            if(empty($datas['article']['id'])) {
+                $article = $articlesTable->newEntity();
+                $id = $this->getMax($articlesTable, 'id', ['organization_id' => $this->_organization->id]);
+                $datas['id'] = ($id + 1);
+            }
+
+            $article = $articlesTable->patchEntity($article, $datas);
+            if (!$articlesTable->save($article)) {
+                Log::error($article->getErrors());
+                // dd($article);
+
+                $results['code'] = 500;
+                $results['message'] = 'KO';
+                $errors = $article->getErrors();
+                // trasformo in stringa per js
+                $msg = '';
+                foreach($errors as $field => $error) {
+                    foreach($error as $type => $err) {
+                        $msg .= __($field) . ': ' . $err ."\r\n";
+                    }
+                }
+                $results['errors'] = $msg;
+                return $this->_response($results);
+            }
+
+            if($numResult==0) {
+                $parent_id = $article->id;
+            }
+        } // end foreach($request['article_variants'] as $numResult => $article_variant)
+
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+        return $this->_response($results);
+    }
+
+    /*
+     * $article_id=null se add
+     * $supplier_organization_id!=null se scelto un produttore
+     */
+    public function get($article_organization_id, $article_id=null, $supplier_organization_id=null) {
+
+        $debug = false;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $article = [];
+        $article_variants = [];
+
+        if(empty($article_id)) {
+            /*
+             * add
+             */
+            $category_article_id = null;
+            $categoriesArticlesTable = TableRegistry::get('CategoriesArticles');
+            $categoriesArticles = $categoriesArticlesTable->getsList($this->_user, $this->_organization->id);
+            $categoriesArticles = $categoriesArticles->toArray();
+            if(count($categoriesArticles)==1)
+                $category_article_id = key($categoriesArticles);
+
+            $article['organization_id'] = $article_organization_id;
+            $article['category_article_id'] = $category_article_id;
+            $article['bio'] = 'N';
+            $article['articles_types_ids'] = [];
+
+            $i=0;
+            $article_variants[$i]['id'] = null;
+            $article_variants[$i]['parent_id'] = null;
+            $article_variants[$i]['codice'] = '';
+            $article_variants[$i]['qta'] = '0,00';
+            $article_variants[$i]['um'] = 'PZ';
+            $article_variants[$i]['prezzo'] = '0,00';
+            $article_variants[$i]['iva'] = 'inclusa';
+            $article_variants[$i]['prezzo_finale'] = '0,00';
+            $article_variants[$i]['um_riferimento'] = 'PZ';
+            $article_variants[$i]['pezzi_confezione'] = 1;
+            $article_variants[$i]['qta_minima'] = 1;
+            $article_variants[$i]['qta_massima'] = 0;
+            $article_variants[$i]['qta_minima_order'] = 0;
+            $article_variants[$i]['qta_multipli'] = 1;
+            $article_variants[$i]['qta_massima_order'] = 0;
+            $article_variants[$i]['stato'] = 'Y';
+            $article_variants[$i]['flag_presente_articlesorders'] = 'Y';
+            $article_variants[$i]['um_rif_values'] = [];
+        }
+        else {
+            /*
+             * edit
+             */
+            $where = ['organization_id' => $article_organization_id, 'id' => $article_id];
+            $article = $this->Articles->find()
+                                        ->where($where)
+                                        ->first();
+            if(empty($article)) {
+                $results['code'] = 500;
+                $results['message'] = 'KO';
+                $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
+                $results['results'] = [];
+                return $this->_response($results);
+            }
+
+            /*
+             * se parent_id e' valorizzato ho preso un figlio, recupero il padre
+             */
+            if(!empty($article->parent_id)) {
+                $where = ['organization_id' => $article_organization_id, 'id' => $article->parent_id];
+                $article = $this->Articles->find()
+                                            ->where($where)
+                                            ->first();
+                if(empty($article)) {
+                    $results['code'] = 500;
+                    $results['message'] = 'KO';
+                    $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
+                    $results['results'] = [];
+                    return $this->_response($results);
+                }
+            }
+
+            /*
+             * creo varianti di default
+             */
+            $i=0;
+            $article_variants[$i]['id'] = $article->id;
+            $article_variants[$i]['parent_id'] = $article->parent_id;
+            $article_variants[$i]['codice'] = $article->codice;
+            $article_variants[$i]['um'] = $article->um;
+            $article_variants[$i]['prezzo'] = $article->prezzo;
+            $article_variants[$i]['iva'] = 'inclusa';
+            $article_variants[$i]['prezzo_finale'] = $article->prezzo;
+            $article_variants[$i]['um_riferimento'] = $article->um_riferimento;
+            $article_variants[$i]['pezzi_confezione'] = $article->pezzi_confezione;
+            $article_variants[$i]['qta'] = $article->qta;
+            $article_variants[$i]['qta_minima'] = $article->qta_minima;
+            $article_variants[$i]['qta_massima'] = $article->qta_massima;
+            $article_variants[$i]['qta_minima_order'] = $article->qta_minima_order;
+            $article_variants[$i]['qta_multipli'] = $article->qta_multipli;
+            $article_variants[$i]['qta_massima_order'] = $article->qta_massima_order;
+            $article_variants[$i]['stato'] = $article->stato;
+            $article_variants[$i]['flag_presente_articlesorders'] = $article->flag_presente_articlesorders;
+            $article_variants[$i]['um_rif_values'] = [];
+
+            /*
+             * cerco eventuali varianti
+             */
+            $where = ['organization_id' => $article_organization_id, 'parent_id' => $article->id];
+            $parent_article_variants = $this->Articles->find()
+                ->where($where)
+                ->all();
+
+            if($parent_article_variants->count()>0) {
+                foreach($parent_article_variants as $article_variant) {
+                    $i++;
+                    $article_variants[$i]['id'] = $article_variant->id;
+                    $article_variants[$i]['parent_id'] = $article_variant->parent_id;
+                    $article_variants[$i]['codice'] = $article_variant->codice;
+                    $article_variants[$i]['um'] = $article_variant->um;
+                    $article_variants[$i]['prezzo'] = $article_variant->prezzo;
+                    $article_variants[$i]['iva'] = 'inclusa';
+                    $article_variants[$i]['prezzo_finale'] = $article_variant->prezzo;
+                    $article_variants[$i]['um_riferimento'] = $article_variant->um_riferimento;
+                    $article_variants[$i]['pezzi_confezione'] = $article_variant->pezzi_confezione;
+                    $article_variants[$i]['qta'] = $article_variant->qta;
+                    $article_variants[$i]['qta_minima'] = $article_variant->qta_minima;
+                    $article_variants[$i]['qta_massima'] = $article_variant->qta_massima;
+                    $article_variants[$i]['qta_minima_order'] = $article_variant->qta_minima_order;
+                    $article_variants[$i]['qta_multipli'] = $article_variant->qta_multipli;
+                    $article_variants[$i]['qta_massima_order'] = $article_variant->qta_massima_order;
+                    $article_variants[$i]['stato'] = $article_variant->stato;
+                    $article_variants[$i]['flag_presente_articlesorders'] = $article_variant->flag_presente_articlesorders;
+                    $article_variants[$i]['um_rif_values'] = [];
+                }
+            }
+        } // end if(empty($article_id))
+
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results']['article'] = $article;
+        $results['results']['article_variants'] = $article_variants;
+
+        return $this->_response($results);
+
     }
 }
