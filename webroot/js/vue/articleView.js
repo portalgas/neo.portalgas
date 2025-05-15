@@ -13,21 +13,22 @@ $(function () {
         router,
         el: '#vue-articles-view',
         data: {
-        article: {},
-        article_variants: [],
-        ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
-        ivas: ['inclusa', 4, 10, 22],
-        supplier_organization_id: '',
-        supplier_organization: {
-          id: null,
-          name: null,
-          img1: null,
-          owner_articles: null,
-          supplier: {
-            img1: null
-          }
-        },
-        is_run: true,
+            errors: {},
+            article: {},
+            article_variants: [],
+            ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
+            ivas: ['inclusa', 4, 10, 22],
+            supplier_organization_id: '',
+            supplier_organization: {
+                id: null,
+                name: null,
+                img1: null,
+                owner_articles: null,
+                supplier: {
+                    img1: null
+                }
+            },
+            is_run: true,
       },
       methods: {
           init: function() {
@@ -140,10 +141,23 @@ $(function () {
           },
           toggleIsBio: function() {
               // console.log(this.article.bio, 'toggleIsBio');
-              if(this.article.bio=='Y')
+              if(this.article.bio=='Y') {
                   this.article.bio = 'N';
-              else
+                  if(this.article.articles_types_ids.includes("1"))
+                      this.article.articles_types_ids = this.article.articles_types_ids.filter(elemento => elemento !== "1");
+              }
+              else {
                   this.article.bio = 'Y';
+                  if(!this.article.articles_types_ids.includes("1"))
+                      this.article.articles_types_ids.push("1");
+              }
+          },
+          toggleTypes: function() {
+               console.log(this.article.articles_types_ids, 'toggleTypes');
+               if(this.article.articles_types_ids.includes("1"))
+                   this.article.bio = 'Y';
+               else
+                   this.article.bio = 'N';
           },
           toggleFlagPresenteArticlesOrders: function(index) {
               // console.log(this.article_variants[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
@@ -159,123 +173,36 @@ $(function () {
               else
                   this.article_variants[index].stato = 'Y';
           },
-          setPrezzoFinale: function(event, index) {
-              console.log(event.target, 'setPrezzoFinale');
-              console.log('setPrezzoFinale index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
-
-              if(this.article_variants[index].iva!='inclusa')
-                  this.article_variants[index].prezzo_finale = (this.article_variants[index].prezzo + (this.article_variants[index].prezzo * this.article_variants[index].iva) / 100);
-              else
-                  this.article_variants[index].prezzo_finale = this.article_variants[index].prezzo;
-          },
           /*
-          * valore in 1000.50
-          */
-          numberToJs: function(number) {
+           * setta
+           *    um riferimento
+           *    prezzo finale
+           */
+          changeArticleVariant: function(event, index) {
+              let um = this.article_variants[index].um;
+              let prezzo = numberToJs(this.article_variants[index].prezzo);
+              let qta = numberToJs(this.article_variants[index].qta);
 
-              if(typeof number==='undefined' || number=='undefined') return '0.00';
+              console.log('changeUM index '+index+' um '+um+" prezzo "+prezzo+" qta "+qta);
+              if(prezzo==0 || qta==0 || um=='') {
+                  this.article_variants[index].um_rif_values = [];
+                  return;
+              }
 
-              /* elimino le migliaia */
-              number = number.replace('.','');
-
-              /* converto eventuali decimanali */
-              number = number.replace(',','.');
-
-              return number;
-          },
-          /*
-            da 1000.5678 in 1.000,57
-            da 1000 in 1.000,00
-          */
-          numberFormat: function(number, decimals, dec_point, thousands_sep) {
-
-              var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
-              var d = dec_point == undefined ? "." : dec_point;
-              var t = thousands_sep == undefined ? "," : thousands_sep, s = n < 0 ? "-" : "";
-              var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
-
-              return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-          },
-          changeUM: function(event, index) {
-
-              console.log('changeUM index '+index+' value '+event.target.value);
-
-              let um = event.target.value;
-              let prezzo = this.article_variants[index].prezzo_finale;
-             // prezzo = this.numberToJs(prezzo);
-              let qta = this.article_variants[index].qta;
-             // qta = this.numberToJs(qta);
               let prezzo_um_riferimento = (prezzo / qta);
               console.log(prezzo_um_riferimento, 'changeUM prezzo_um_riferimento');
 
-              let um_rif_values = [];
-              let um_rif_values_prezzo = 0;
-              if (um == 'PZ') {
-                  um_rif_values_prezzo = prezzo_um_riferimento;
-                  um_rif_values.push({id: 'PZ', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;'});
-              } else
-              if (um == 'KG') {
-                  um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
-                  um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento / 10);
-                  um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento);
-                  um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
-              } else
-              if (um == 'HG') {
-                  um_rif_values_prezzo = (prezzo_um_riferimento / 100);
-                  um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento);
-                  um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento * 10);
-                  um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
-              } else
-              if (um == 'GR') {
-                  um_rif_values_prezzo = (prezzo_um_riferimento);
-                  um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento * 100);
-                  um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento * 1000);
-                  um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
-              } else
-              if (um == 'LT') {
-                  um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
-                  um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento / 10);
-                  um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento);
-                  um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
-              } else
-              if (um == 'DL') {
-                  um_rif_values_prezzo = (prezzo_um_riferimento / 100);
-                  um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento);
-                  um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento * 10);
-                  um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
-              } else
-              if (um == 'ML') {
-                  um_rif_values_prezzo = (prezzo_um_riferimento);
-                  um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento * 100);
-                  um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
-
-                  um_rif_values_prezzo = (prezzo_um_riferimento * 1000);
-                  um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
+              let prezzo_finale = 0;
+              if(this.article_variants[index].iva!='inclusa') {
+                  let iva = this.article_variants[index].iva;
+                  let delta_iva = (prezzo/100)*iva;
+                  prezzo_finale = (parseFloat(prezzo) + parseFloat(delta_iva));
               }
+              else
+                  prezzo_finale = prezzo;
+              this.article_variants[index].prezzo_finale = numberFormat(prezzo_finale,2,',','.');;
 
-              this.article_variants[index].um_rif_values = um_rif_values;
+              this.article_variants[index].um_rif_values = getUmRifValues(um, prezzo_um_riferimento);
           },
           setDropzone: async function() {
               let _this = this;
@@ -346,9 +273,42 @@ $(function () {
                   }
               });
           },
-          frmSubmit: function(e) {
+          setValidate: function(event) {
+                let _this = this;
+                console.log(event);
+                console.log('setValidate id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
 
+                this.validate(event.target.name);
+          },
+          validate(field_name) {
+              // console.log('validate field_name ['+field_name+']: value ['+this.article[field_name]+']');
+              if(typeof this.article[field_name]==='undefined' || this.article[field_name]=='') {
+                  let msg = '';
+                  switch (field_name) {
+                      case 'name':
+                          msg =  "Indica il nome dell'articolo";
+                          break;
+                      case 'supplier_organization_id':
+                          msg =  "Scegli il produttore";
+                          break;
+                      default:
+                          msg =  "Campo obbligatorio";
+                  }
+                  // this.errors[field_name] = msg; workaround perche' non era reattivo
+                  this.$set(this.errors, field_name, msg);
+              }
+              else {
+                  // delete this.errors[field_name]; workaround perche' non era reattivo
+                  this.$delete(this.errors, field_name);
+              }
+          },
+          frmSubmit: function(e) {
             let _this = this;
+
+            this.validate('name');
+            this.validate('supplier_organization_id');
+            if(Object.keys(_this.errors).length>0)
+                return false;
 
             let params = {
                 article: _this.article,
@@ -391,6 +351,9 @@ $(function () {
       },
       mounted: function() {
         console.log('mounted articles-view');
+
+          numberToJs('1000,50');
+
         this.is_run = false;
         this.get();
         this.setDropzone();
@@ -426,28 +389,6 @@ $(function () {
           const amt = Number(amount);
           return amt && amt.toLocaleString(locale, {maximumFractionDigits:2}) || '0'
         },
-        /*
-         * formatta l'importo float che arriva dal database
-         * da 1000.5678 in 1.000,57
-         * da 1000 in 1.000,00
-         */
-        formatImportToDb: function(number) {
-              var decimals = 2;
-              var dec_point = ',';
-              var thousands_sep = '.';
-
-              // console.log('formatImportToDb BEFORE number '+number);
-
-              var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
-              var d = dec_point == undefined ? "." : dec_point;
-              var t = thousands_sep == undefined ? "," : thousands_sep, s = n < 0 ? "-" : "";
-              var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
-
-              number = s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-              // console.log('formatImportToDb AFTER number '+number);
-
-              return number;
-          },
         formatDate(value) {
           if (value) {
             let locale = window.navigator.userLanguage || window.navigator.language;

@@ -44,33 +44,41 @@ class ArticlesController extends ApiAppController
         $where += ['OwnerSupplierOrganizations.owner_organization_id = Articles.organization_id',
                   'OwnerSupplierOrganizations.owner_supplier_organization_id = Articles.supplier_organization_id'];
         */
-        if(isset($jsonData->search_flag_presente_articlesorders)) {
-            $search_flag_presente_articlesorders = $jsonData->search_flag_presente_articlesorders;
-            ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N';
-            $where += ['Articles.flag_presente_articlesorders' => $search_flag_presente_articlesorders];
-        }
-        if(!empty($jsonData->search_name)) {
-            $search_name = $jsonData->search_name;
-            $where += ['Articles.name LIKE ' => '%'.$search_name.'%'];
-        }
-        if(!empty($jsonData->search_codice)) {
-            $search_codice = $jsonData->search_codice;
-            $where += ['Articles.codice LIKE ' => '%'.$search_codice.'%'];
-        }
-        if(!empty($jsonData->search_categories_article_id)) {
-            $search_categories_article_id = $jsonData->search_categories_article_id;
-            $where += ['Articles.category_article_id' => $search_categories_article_id];
-        }
-        if(!empty($jsonData->search_supplier_organization_id)) {
-            $search_supplier_organization_id = $jsonData->search_supplier_organization_id;
-            $where += ['OwnerSupplierOrganizations.id' => $search_supplier_organization_id];
+        if(!empty($jsonData->search_id)) {
+            /*
+             * arrivo da add
+             */
+            $where += ['Articles.id' => $jsonData->search_id, 'Articles.organization_id' => $this->_organization->id];
         }
         else {
-            // non ho scelto il produttore, filtro per ACL
-            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
-            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
-            $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-            $where += ['OwnerSupplierOrganizations.id IN ' => array_keys($suppliersOrganizations)];
+            if(isset($jsonData->search_flag_presente_articlesorders)) {
+                $search_flag_presente_articlesorders = $jsonData->search_flag_presente_articlesorders;
+                ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N';
+                $where += ['Articles.flag_presente_articlesorders' => $search_flag_presente_articlesorders];
+            }
+            if(!empty($jsonData->search_name)) {
+                $search_name = $jsonData->search_name;
+                $where += ['Articles.name LIKE ' => '%'.$search_name.'%'];
+            }
+            if(!empty($jsonData->search_codice)) {
+                $search_codice = $jsonData->search_codice;
+                $where += ['Articles.codice LIKE ' => '%'.$search_codice.'%'];
+            }
+            if(!empty($jsonData->search_categories_article_id)) {
+                $search_categories_article_id = $jsonData->search_categories_article_id;
+                $where += ['Articles.category_article_id' => $search_categories_article_id];
+            }
+            if(!empty($jsonData->search_supplier_organization_id)) {
+                $search_supplier_organization_id = $jsonData->search_supplier_organization_id;
+                $where += ['OwnerSupplierOrganizations.id' => $search_supplier_organization_id];
+            }
+            else {
+                // non ho scelto il produttore, filtro per ACL
+                $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+                $suppliersOrganizations = $suppliersOrganizationsTable->ACLgets($this->_user, $this->_organization->id, $this->_user->id);
+                $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
+                $where += ['OwnerSupplierOrganizations.id IN ' => array_keys($suppliersOrganizations)];
+            }
         }
 
         $search_orders = [];
@@ -597,7 +605,7 @@ class ArticlesController extends ApiAppController
         $results['results'] = [];
 
         $request = $this->request->getData();
-
+dd($request);
         if(empty($request['article_variants'])) {
             $results['code'] = 500;
             $results['message'] = 'KO';
@@ -622,11 +630,11 @@ class ArticlesController extends ApiAppController
         foreach($request['article_variants'] as $numResult => $article_variant) {
             $datas['parent_id'] = $parent_id;
             $datas['codice'] = $article_variant['codice'];
-            $datas['qta'] = $article_variant['qta'];
+            $datas['qta'] = $this->convertImport($article_variant['qta']);
             $datas['um'] = $article_variant['um'];
-            $datas['prezzo'] = $article_variant['prezzo'];
-            $datas['iva'] = $article_variant['iva'];
-            $datas['prezzo_finale'] = $article_variant['prezzo_finale'];
+            // $datas['prezzo'] = $article_variant['prezzo'];
+            // $datas['iva'] = $article_variant['iva'];
+            $datas['prezzo'] = $this->convertImport($article_variant['prezzo_finale']);
             $datas['um_riferimento'] = $article_variant['um_riferimento'];
             $datas['pezzi_confezione'] = $article_variant['pezzi_confezione'];
             $datas['qta'] = $article_variant['qta'];

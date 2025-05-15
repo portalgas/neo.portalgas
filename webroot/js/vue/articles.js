@@ -21,6 +21,7 @@ $(function () {
         search_codice: '',
         search_categories_articles: [],
         search_categories_article_id: 0,
+        search_id: null,
         search_flag_presente_articlesorders: true,
         search_order: 'Articles.name ASC',
         article_in_carts: [],
@@ -168,116 +169,19 @@ $(function () {
         /*
          * autocomplete end
          */
-
-        /*
-        * valore in 1000.50
-        */
-        numberToJs: function(number) {
-
-          if(number==undefined) return '0.00';
-
-          /* elimino le migliaia */
-          number = number.replace('.','');
-
-          /* converto eventuali decimanali */
-          number = number.replace(',','.');
-
-          return number;
-        },
-        /*
-          da 1000.5678 in 1.000,57
-          da 1000 in 1.000,00
-        */
-        numberFormat: function(number, decimals, dec_point, thousands_sep) {
-
-            var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
-            var d = dec_point == undefined ? "." : dec_point;
-            var t = thousands_sep == undefined ? "," : thousands_sep, s = n < 0 ? "-" : "";
-            var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
-
-            return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-        },
         changeUM: function(event, index) {
 
-          console.log(event.target, 'changeUM');
-          console.log('changeUM index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
-
+            // console.log(event.target, 'changeUM');
+            // console.log('changeUM index '+index+' id '+event.target.id+' name '+event.target.name+' value '+event.target.value);
           let um = event.target.value;
           let prezzo = this.articles[index].prezzo_;
-          prezzo = this.numberToJs(prezzo);
+          prezzo = numberToJs(prezzo);
           let qta = this.articles[index].qta;
-          qta = this.numberToJs(qta);
+          qta = numberToJs(qta);
           let prezzo_um_riferimento = (prezzo / qta);
-          console.log(prezzo_um_riferimento, 'changeUM prezzo_um_riferimento');
+            // console.log(prezzo_um_riferimento, 'changeUM prezzo_um_riferimento');
 
-          let um_rif_values = [];
-          let um_rif_values_prezzo = 0;
-          if (um == 'PZ') {
-            um_rif_values_prezzo = prezzo_um_riferimento;
-            um_rif_values.push({id: 'PZ', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;'});
-          } else
-          if (um == 'KG') {
-              um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
-              um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento / 10);
-              um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento);
-              um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
-          } else
-          if (um == 'HG') {
-              um_rif_values_prezzo = (prezzo_um_riferimento / 100);
-              um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento);
-              um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento * 10);
-              um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
-          } else
-          if (um == 'GR') {
-              um_rif_values_prezzo = (prezzo_um_riferimento);
-              um_rif_values.push({id: 'GR', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Grammo'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento * 100);
-              um_rif_values.push({id: 'HG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento * 1000);
-              um_rif_values.push({id: 'KG', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Chilo'});
-          } else
-          if (um == 'LT') {
-              um_rif_values_prezzo = (prezzo_um_riferimento / 1000);
-              um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento / 10);
-              um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento);
-              um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
-          } else
-          if (um == 'DL') {
-              um_rif_values_prezzo = (prezzo_um_riferimento / 100);
-              um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento);
-              um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento * 10);
-              um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
-          } else
-          if (um == 'ML') {
-              um_rif_values_prezzo = (prezzo_um_riferimento);
-              um_rif_values.push({id: 'ML', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Millilitro'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento * 100);
-              um_rif_values.push({id: 'DL', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Decilitro'});
-
-              um_rif_values_prezzo = (prezzo_um_riferimento * 1000);
-              um_rif_values.push({id: 'LT', value: this.numberFormat(um_rif_values_prezzo, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Litro'});
-          }
-
-          this.articles[index].um_rif_values = um_rif_values;
+          this.articles[index].um_rif_values = getUmRifValues(um, prezzo_um_riferimento);
         },
         openBoxPrice: function() {
           this.open_box_price = !this.open_box_price;
@@ -285,19 +189,19 @@ $(function () {
         setPriceConIva: function(index) {
 
           let iva = this.iva;
-          console.log(iva, 'changePrice iva');
+            // console.log(iva, 'changePrice iva');
 
           let prezzo_no_iva = $('#prezzo_no_iva-'+this.articles[index].organization_id+'-'+this.articles[index].id).val();
 
           if(iva!=0 && prezzo_no_iva!=='') {
-            prezzo_no_iva = this.numberToJs(prezzo_no_iva);
+            prezzo_no_iva = numberToJs(prezzo_no_iva);
             let delta_iva = (prezzo_no_iva/100)*iva;
-            console.log("delta_iva "+delta_iva);
+            // console.log("delta_iva "+delta_iva);
             //delta_iva = Math.round(delta_iva);
             //console.log("Math.round(delta_iva) "+delta_iva);
 
             let prezzo = (parseFloat(prezzo_no_iva) + parseFloat(delta_iva));
-            let prezzo_ = this.numberFormat(prezzo,2,',','.');
+            let prezzo_ = numberFormat(prezzo,2,',','.');
             this.articles[index].prezzo = prezzo;
             this.articles[index].prezzo_ = prezzo_;
 
@@ -308,8 +212,8 @@ $(function () {
           }
         },
         changeValue: function(event, index) {
-          console.log(event.target, 'changeValue');
-          console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
+          // console.log(event.target, 'changeValue');
+          // console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
 
           let field_id = event.target.id;  // um_rif_values-DL
           let field_name = event.target.name; // um_riferimento
@@ -320,8 +224,8 @@ $(function () {
         setValue: function(field_id, field_name, field_value, index) {
 
           let field = $('#'+field_id);
-          console.log(field, 'changeValue field');
-          console.log(field.parent(), 'changeValue field.parent()');
+          // console.log(field, 'changeValue field');
+          // console.log(field.parent(), 'changeValue field.parent()');
           field.parent().append('<div id="esito-'+field_id+'"></div>');
           let $responseHtml = $('#esito-'+field_id);
           $responseHtml.addClass('fa-lg fa fa-spinner');
@@ -337,14 +241,14 @@ $(function () {
               name: field_name,
               value: field_value
           };
-          console.log(params, 'setValue params');
+          // console.log(params, 'setValue params');
 
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
 
           axios.post('/admin/api/articles/setValue', params)
               .then(response => {
-                console.log(response.data, 'set');
+                  // console.log(response.data, 'set');
 
                 $responseHtml.removeClass('fa-lg fa fa-spinner');
 
@@ -374,7 +278,7 @@ $(function () {
           window.location.href = url;
         },
         toggleIsBio: function(field_id, index) {
-          console.log(this.articles[index].bio, 'toggleIsBio');
+          // console.log(this.articles[index].bio, 'toggleIsBio');
           if(this.articles[index].bio=='Y')
             this.articles[index].bio = 'N';
           else
@@ -387,26 +291,26 @@ $(function () {
           this.setValue(field_id, field_name, field_value, index);
         },
         toggleFlagPresenteArticlesOrders: function(field_id, index) {
-          console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
+          // console.log(this.articles[index].flag_presente_articlesorders, 'toggleFlagPresenteArticlesOrders');
           if(this.articles[index].flag_presente_articlesorders=='Y')
               this.articles[index].flag_presente_articlesorders = 'N';
           else
               this.articles[index].flag_presente_articlesorders = 'Y';
 
-          console.log(field_id, 'field_id');
+            // console.log(field_id, 'field_id');
           let field_name = 'flag_presente_articlesorders';
           let field_value = this.articles[index].flag_presente_articlesorders;
 
           this.setValue(field_id, field_name, field_value, index);
         },
         toggleStato: function(field_id, index) {
-          console.log(this.articles[index].stato, 'toggleStato');
+            // console.log(this.articles[index].stato, 'toggleStato');
           if(this.articles[index].stato=='Y')
               this.articles[index].stato = 'N';
           else
               this.articles[index].stato = 'Y';
 
-          console.log(field_id, 'field_id');
+            // console.log(field_id, 'field_id');
           let field_name = 'stato';
           let field_value = this.articles[index].stato;
 
@@ -416,7 +320,7 @@ $(function () {
           this.search_flag_presente_articlesorders = !this.search_flag_presente_articlesorders;
         },
         toggleExtra: function(index) {
-          console.log('.extra-'+index, 'toggleExtra');
+            // console.log('.extra-'+index, 'toggleExtra');
           $('.extra-'+index).toggle('slow');
         },
         modalInCarts: function(index) {
@@ -427,14 +331,14 @@ $(function () {
             article_organization_id: this.articles[index].organization_id,
             article_id: this.articles[index].id
           };
-          console.log(params, 'modalInCarts');
+            // console.log(params, 'modalInCarts');
 
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
 
           axios.post('/admin/api/articles/getInCarts', params)
               .then(response => {
-                console.log(response.data, 'getInCarts');
+                  // console.log(response.data, 'getInCarts');
 
                 if(response.data.code=='200') {
                   $('#modalArticleInCarts').modal('show');
@@ -542,6 +446,7 @@ $(function () {
               search_name: this.search_name,
               search_codice: this.search_codice,
               search_categories_article_id: search_categories_article_id,
+              search_id: search_id, // definito in index_quick.ctp
               search_flag_presente_articlesorders: this.search_flag_presente_articlesorders,
               search_order: this.search_order,
               page: this.page
@@ -553,7 +458,7 @@ $(function () {
 
           await axios.post('/admin/api/articles/gets', params)
               .then(response => {
-                console.log(response.data, 'gets');
+                  // console.log(response.data, 'gets');
 
                 this.is_run_paginator = false;
                 this.isScrollFinish = false;
@@ -695,7 +600,7 @@ $(function () {
         }
       },*/
       mounted: function(){
-        console.log('mounted articles');
+          // console.log('mounted articles');
         /*
          * se l'elenco dei produttori ha un solo elemente (ex produttore) lo imposto gia'
          */

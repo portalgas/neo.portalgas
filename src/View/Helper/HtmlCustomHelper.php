@@ -14,6 +14,7 @@ class HtmlCustomHelper extends FormHelper
 	public  $helpers = ['Html', 'Form'];
 
     use Traits\UtilTrait;
+    use Traits\HelperTrait;
 
     public function initialize(array $config)
     {
@@ -36,7 +37,7 @@ class HtmlCustomHelper extends FormHelper
         $str = $data->i18nFormat($format);
         // $str = $data->format($format);
         return $str;
-    } 
+    }
 
     public function noteMore($value) {
 
@@ -58,7 +59,7 @@ class HtmlCustomHelper extends FormHelper
             $str .= $value;
             $str .= '</div>';
         }
-        else 
+        else
             $str = '<div class="note" style="max-width:200px;">'.$value.'</div>';
 
         return $str;
@@ -69,10 +70,8 @@ class HtmlCustomHelper extends FormHelper
         return $str;
     }
 
-
-
     public function alert($msg, $level_alert='info') {
-        $str = ''; 
+        $str = '';
         $str .= '<div class="alert alert-'.$level_alert.' alert-dismissible">';
         $str .= '  <button type="button" class="close" data-dismiss="alert">&times;</button>';
         $str .= $msg;
@@ -100,7 +99,7 @@ class HtmlCustomHelper extends FormHelper
             $str = '<a href="mailto:'.$value.'" target="_blank">'.$label.'</a>';
         }
         return $str;
-    }    
+    }
 
     public function mailIco($value) {
         return $this->mail($value, '<i class="fa fa-fw fa-envelope"></i>');
@@ -118,7 +117,7 @@ class HtmlCustomHelper extends FormHelper
     	}
     	return $str;
     }
-  
+
     public function drawBagde($name, $html_class, $options=[]) {
 
         $html = '';
@@ -130,7 +129,7 @@ class HtmlCustomHelper extends FormHelper
 
         return $html;
     }
-    
+
     public function drawState($state, $options=[]) {
 
         $html = '';
@@ -141,7 +140,7 @@ class HtmlCustomHelper extends FormHelper
         if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
             $controller = $matches[1].'s';
         }
-        
+
         if(!empty($state->css_color))
            $html .=  '<span class="badge" style="background-color:'.$state->css_color.'">&nbsp;</span> ';
         if(isset($options['no-label']) && $options['no-label']) {
@@ -155,13 +154,13 @@ class HtmlCustomHelper extends FormHelper
         }
 
         return $html;
-    }             
+    }
 
     public function drawDocumentPreview($document, $options=[]) {
 
         if(isset($options['width']))
             $width = $options['width'];
-        else 
+        else
             $width = '150px';
 
         $results = '';
@@ -181,9 +180,9 @@ class HtmlCustomHelper extends FormHelper
 
         return $results;
     }
-    
+
     /*
-     * Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']); 
+     * Configure::write('icon_is_system', ['OK' => 'fa fa-lock', 'KO' => 'fa fa-unlock-alt']);
      */
     public function drawTrueFalse($model, $field, $icons=[]) {
 
@@ -198,7 +197,7 @@ class HtmlCustomHelper extends FormHelper
 
         $value = $model->{$field};
 
-        if($value===true) 
+        if($value===true)
             $data_attr_value = '1';
         else
             $data_attr_value = '0';
@@ -221,11 +220,11 @@ class HtmlCustomHelper extends FormHelper
                 $icon = 'glyphicon glyphicon-remove';
             $html .= '<span '.$data_attrs.' class="'.$class.' trueFalse '.$icon.' icon-false" title="'.__('No').'"></span>';
         }
-        else 
+        else
             $html .= '';
 
         return $html;
-    } 
+    }
 
     public function drawTrueFalseReadOnly($value) {
 
@@ -242,7 +241,7 @@ class HtmlCustomHelper extends FormHelper
         }
 
         return $html;
-    }   
+    }
 
     public function importo($value, $default_value=null) {
     	$str = '';
@@ -266,12 +265,12 @@ class HtmlCustomHelper extends FormHelper
         $html .= '<label for="'.__($fieldName).'" class="control-label">'.__($fieldName).'</label>';
         $html .= '<div class="input-group">
                   <div class="input-group-addon"><i class="fa fa-shield"></i></div>';
-        $html .= '<input type="text" name="'.$fieldName.'" 
-                                     placeholder="'.__($fieldName).'" 
+        $html .= '<input type="text" name="'.$fieldName.'"
+                                     placeholder="'.__($fieldName).'"
                                      data-attr-id="'.$id.'"
-                                     value="'.$value.'" 
-                                     id="'.$fieldName.'" 
-                                     class="form-control" 
+                                     value="'.$value.'"
+                                     id="'.$fieldName.'"
+                                     class="form-control"
                                      @blur="ctrlExist($event, \''.$fieldName.'\');" />';
         $html .= '</div>';
         $html .= '<div v-if="isRun_'.$fieldName.'" class="fa-lg fa fa-spinner"></div>';
@@ -280,7 +279,7 @@ class HtmlCustomHelper extends FormHelper
         return $html;
     }
 
-    /* 
+    /*
      * '@change' => $select1 ['change'] metodo definito in file vue
      */
     public function selectOnChange($select1, $select2, $options=[]) {
@@ -303,14 +302,14 @@ class HtmlCustomHelper extends FormHelper
         $html .= '<div class="form-group input select">';
         $html .= '<label for="'.$select2['label'].'" class="control-label">'.$select2['label'].'</label>';
         $html .= '<select id="'.$select2['id'].'" name="'.$select2['id'].'" class="form-control" v-model="'.$select2['id'].'" required='.$select1['required'].'>';
-        $html .= '<option 
+        $html .= '<option
                   v-for="(row, index) in '.$select2['model'].'"
                   :value="index">{{ row }}</option>';
         $html .= '</select>';
         $html .= '<div v-if="isRun_'.$select2['model'].'" class="fa-lg fa fa-spinner"></div>';
         $html .= '</div>'; // form-group
         $html .= '</div>'; // col
-        
+
         return $html;
     }
 
@@ -335,7 +334,7 @@ class HtmlCustomHelper extends FormHelper
     	$html = '';
     	$html .= "
               <div class=\"form-group\">";
-        
+
         if(!isset($options['label']) || $options['label']==true)
 	         $html .= "<label>".__($fieldName)."</label>";
 
@@ -373,10 +372,10 @@ class HtmlCustomHelper extends FormHelper
     		if(isset($options['class']))
     			$optionDefault['class'] = 'form-control bootstrap-daterangepicker pull-right '.$options['class'];
     	}
-    
+
     	$html = '';
     	$html .= "<div class=\"form-group\">";
-        
+
         if(!isset($options['label']) || $options['label']==true)
 	         $html .= "<label>".__($fieldName)."</label>";
 
@@ -392,15 +391,15 @@ class HtmlCustomHelper extends FormHelper
         return $html;
     }
 
-    public function checkbox($results, $editResults=[], $options=[], $debug=false) {    
-        
+    public function checkbox($results, $editResults=[], $options=[], $debug=false) {
+
         $html = '';
         foreach($results as $result) {
 
             /*
              * gestione valori gia' salvati per edit
              */
-            $checked=''; 
+            $checked='';
             if(!empty($editResults))
             foreach($editResults as $numResult => $editResult) {
                 $checked='';
@@ -408,17 +407,17 @@ class HtmlCustomHelper extends FormHelper
                     $checked='checked';
                     unset($editResults[$numResult]);
                     break;
-                }   
+                }
             }
 
-            $html .= $this->Form->control('checkbox['.$result->id.']', 
-                                        ['type' => 'checkbox', 
-                                         'name' => 'checkbox.id['.$result->id.']', 
-                                         'class' => 'checkbox-inline', 
+            $html .= $this->Form->control('checkbox['.$result->id.']',
+                                        ['type' => 'checkbox',
+                                         'name' => 'checkbox.id['.$result->id.']',
+                                         'class' => 'checkbox-inline',
                                          'inline' => 'checkbox',
-                                        'value' => $result->id, 
-                                        'label' => $result->name, 
-                                        'hiddenField'=>false, 
+                                        'value' => $result->id,
+                                        'label' => $result->name,
+                                        'hiddenField'=>false,
                                         'checked' => $checked]);
         }
 
@@ -443,7 +442,7 @@ class HtmlCustomHelper extends FormHelper
 			case "jpeg":
 			case "png":
 			case "gif":
-				$ico = 'image.png';		
+				$ico = 'image.png';
 			break;
 			case "txt":
 				$ico = 'txt.png';
@@ -462,18 +461,18 @@ class HtmlCustomHelper extends FormHelper
 		}
 
 		$tmp = Configure::read('App.img.cake').'/minetypes/'.$dim.'/'.$ico;
-				
+
 		return $tmp;
-	}  
-    
+	}
+
     /*
      * per ogni campo passato crea campi hidden
      * ex parametri di ricerca passati da index a edit per il ritorno con imedesimi valori
-     * 
+     *
      * $prefix tratta solo le chiavi della request che iniziano per $prefix (ex search_)
      */
     public function drawHiddenToSearch($request, $prefix='') {
-        
+
         $results = '';
         foreach($request as $key => $value) {
 
@@ -491,5 +490,9 @@ class HtmlCustomHelper extends FormHelper
         }
 
         return $results;
+    }
+
+    public function drawModal($id, $title, $body, $options=[]) {
+        return $this->modal($id, $title, $body, $options);
     }
 }

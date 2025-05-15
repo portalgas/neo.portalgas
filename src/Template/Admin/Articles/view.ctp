@@ -5,6 +5,7 @@ $js = "var article_organization_id = $article_organization_id
 var article_id = $article_id";
 $this->Html->scriptBlock($js, ['block' => true]);
 
+echo $this->Html->script('vue/utils.js?v=20250505', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('vue/articleView.js?v=20250505', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
@@ -16,7 +17,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
       <small><?php echo __('Add'); ?></small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="<?php echo $this->Url->build(['action' => 'index']); ?>"><i class="fa fa-dashboard"></i> <?php echo __('Home'); ?></a></li>
+      <li><a href="<?php echo $this->Url->build(['action' => 'index_quick']); ?>"><i class="fa fa-list"></i> <?php echo __('List Articles'); ?></a></li>
     </ol>
   </section>
 
@@ -27,13 +28,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
         <!-- general form elements -->
         <div class="box box-primary">
           <div class="box-header with-border">
-            <h3 class="box-title"><?php echo __('Form'); ?></h3>
+            <h3 class="box-title">Dati articolo</h3>
           </div>
           <!-- /.box-header -->
           <!-- form start -->
           <?php echo $this->Form->create($article, ['role' => 'form']); ?>
-
-            <pre>{{ article }} </pre>
 
             <div class="box-body">
               <?php
@@ -45,8 +44,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   'label' => __('SupplierOrganization'),
                   'empty' => Configure::read('HtmlOptionEmpty'),
                   'v-model' => 'article.supplier_organization_id',
-                  '@change' => 'getSuppliersOrganization(event)'];
+                  'required' => true,
+                  '@change' => 'getSuppliersOrganization(event); setValidate(event)'];
               echo $this->Form->control('supplier_organization_id', $options);
+              echo '<div class="errors" v-if="errors.supplier_organization_id" v-html="errors.supplier_organization_id"></div>';
               echo '</div>';
               echo '<div class="col-md-4">';
               echo '<img style="max-width:250px" class="img-responsive" v-bind:src="supplier_organization.img1" v-if="supplier_organization.name!=null && supplier_organization.supplier.img1!=\'\'" />';
@@ -64,12 +65,13 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
                 echo '<div class="row">';
                 echo '<div class="col-md-12">';
-                echo $this->Form->control('category_article_id', ['options' => $categoriesArticles, 'v-model' => 'article.category_article_id']);
+                echo $this->Form->control('category_article_id', ['options' => $categoriesArticles, 'v-model' => 'article.category_article_id', 'required' => true]);
                 echo '</div>';
                 echo '</div>';
                 echo '<div class="row">';
                 echo '<div class="col-md-12">';
-                echo $this->Form->control('name', ['v-model' => 'article.name']);
+                echo $this->Form->control('name', ['v-model' => 'article.name', 'required' => true, '@change' => 'setValidate(event)']);
+                echo '<div class="errors" v-if="errors.name" v-html="errors.name"></div>';
                 echo '</div>';
                 echo '</div>';
                 echo '<div class="row">';
@@ -95,13 +97,18 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                 echo '<div class="col-md-10">';
                 foreach ($articlesTypes as $articlesType) {
                     echo $this->Form->checkbox('articles_types_ids[]',  [
-                      'value' => $articlesType->id,
-                      'id' => 'articlesType-' . $articlesType->id,
+                        'value' => $articlesType->id,
+                        'id' => 'articlesType-' . $articlesType->id,
+                        'v-model' => 'article.articles_types_ids',
+                        '@change' => "toggleTypes()"
                     ]);
                     echo $this->Form->label('articles_types_ids[]', $articlesType->label, ['for' => 'articlesType-' . $articlesType->id]);
                 }
                 echo '</div>';
                 echo '</div>';
+?>
+                <pre>{{ article.articles_types_ids }}</pre>
+                <?php
 
                 echo '<div class="row" style="margin:15px 0 15px;">';
                 echo '<div class="col-md-12">';
@@ -112,9 +119,26 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
 
 <pre>{{ article_variants }} </pre>
-                <div class="btn btn-primary btn-block" @click="addRow">
-                    <i class="fa fa-plus"></i> Aggiungi variante
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="btn btn-primary btn-block" @click="addRow">
+                            <i class="fa fa-plus"></i> Aggiungi variante
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#info-variants">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i> Come gestire le varianti</button>
+                            <?php
+                            $html = '<h4>Esempio con i pacchi di pasta</h4>
+                                    <div class="row"><div class="col-md-2"><b>Quantità</b></div><div class="col-md-3"><b>Unità di misura</b></div> <div class="col-md-3"><b>Prezzo finale</b></div><div class="col-md-4"><b>Prezzo/UM</b></div></div>
+                                    <div class="row"><div class="col-md-2"><input type="text" class="form-control" value="3,80" readonly></div><div class="col-md-3"><input type="text" class="form-control" value="GR" readonly></div><div class="col-md-3"><input type="text" readonly class="form-control" value="1,40"></div><div class="col-md-4"><input type="text" class="form-control" readonly value="0,34 al Grammo"></div></div>
+                                    <div class="row"><div class="col-md-2"><input type="text" class="form-control" value="0,50" readonly></div><div class="col-md-3"><input type="text" class="form-control" value="KG" readonly></div><div class="col-md-3"><input type="text" readonly class="form-control" value="1,20"></div><div class="col-md-4"><input type="text" class="form-control" readonly value="0,34 al Grammo"></div></div>
+                                    <div class="row"><div class="col-md-2"><input type="text" class="form-control" value="1,00" readonly></div><div class="col-md-3"><input type="text" class="form-control" value="KG" readonly></div><div class="col-md-3"><input type="text" readonly class="form-control" value="1,20"></div><div class="col-md-4"><input type="text" class="form-control" readonly value="0,34 al Grammo"></div></div>
+                               ';
+                            echo $this->HtmlCustom->drawModal('info-variants', 'Come gestire le variazioni', $html);?>
+                    </div>
                 </div>
+
 
                 <template v-if="article_variants.length>0">
                     <div class="box-variant"
@@ -142,11 +166,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control" v-model="article_variant.qta" placeholder="qta" @change="changeUM(event, index);" />
+                                <input type="number" class="form-control" v-model="article_variant.qta" placeholder="qta" @change="changeArticleVariant(event, index);" />
                             </div>
                             <div class="col-md-2">
                                 <select class="form-control" :required="true" v-model="article_variant.um"
-                                        @change="changeUM(event, index);">
+                                        @change="changeArticleVariant(event, index);">
                                     <option v-for="um in ums"
                                             v-bind:value="um" >
                                         {{ um }}
@@ -154,10 +178,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control" v-model="article_variant.prezzo" placeholder="Prezzo" @change="setPrezzoFinale(event, index)" />
+                                <input type="number" class="form-control" v-model="article_variant.prezzo" placeholder="Prezzo" @change="changeArticleVariant(event, index);" />
                             </div>
                             <div class="col-md-1">
-                                <select class="form-control" :required="true" v-model="article_variant.iva" @change="setPrezzoFinale(event, index)" >
+                                <select class="form-control" :required="true" v-model="article_variant.iva" @change="changeArticleVariant(event, index)" >
                                     <option v-for="iva in ivas"
                                             v-bind:value="iva" >
                                         {{ iva }}
@@ -165,7 +189,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control" v-model="article_variant.prezzo_finale" placeholder="Prezzo finale" @change="changeUM(event, index);" />
+                                <input type="number" class="form-control" v-model="article_variant.prezzo_finale" placeholder="Prezzo finale" @change="changeArticleVariant(event, index);" />
                             </div>
                             <div class="col-md-2">
                                 <div v-if="article_variant.um_rif_values.length>0">
@@ -197,13 +221,25 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <?php echo $this->Form->control('pezzi_confezione', ['type' => 'number', 'label' => __('pezzi_confezione_long'), 'v-model' => 'article_variant.pezzi_confezione']);?>
+                                <?php
+                                $label = __('pezzi_confezione_long'). ' <span data-toggle="modal" data-target="#pezzi_confezione" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>';
+                                echo $this->Form->control('pezzi_confezione', ['type' => 'number', 'label' => $label, 'min' => 1, 'v-model' => 'article_variant.pezzi_confezione', 'escape' => false]);
+                                echo $this->HtmlCustom->drawModal('pezzi_confezione', 'Num di pezzi in una confezione', "Se il numero di pezzi per confezione è maggiore di 1 potrai gestire i colli con la funzione di 'validazione ordine'");
+                                ?>
                             </div>
                             <div class="col-md-3">
-                                <?php echo $this->Form->control('qta_minima', ['type' => 'number', 'label' => __('qta_minima'), 'v-model' => 'article_variant.qta_minima']);?>
+                                <?php
+                                $label = __('qta_minima'); //. ' <span data-toggle="modal" data-target="#qta_minima" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>';
+                                echo $this->Form->control('qta_minima', ['type' => 'number', 'label' => $label, 'min' => 1, 'v-model' => 'article_variant.qta_minima', 'escape' => false]);
+                                // echo $this->HtmlCustom->drawModal('qta_minima', 'Qta minima', "");
+                                ?>
                             </div>
                             <div class="col-md-4">
-                                <?php echo $this->Form->control('qta_massima', ['type' => 'number', 'label' => __('qta_massima'), 'v-model' => 'article_variant.qta_massima']);?>
+                                <?php
+                                $label = __('qta_massima'); //. ' <span data-toggle="modal" data-target="#qta_massima" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>';
+                                echo $this->Form->control('qta_massima', ['type' => 'number', 'label' => $label, 'min' => 0, 'v-model' => 'article_variant.qta_massima', 'escape' => false]);
+                                // echo $this->HtmlCustom->drawModal('qta_massima', 'Qta massima', "");
+                                ?>
                             </div>
                         </div> <!-- row -->
                         <div class="row">
@@ -217,13 +253,25 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <?php echo $this->Form->control('qta_minima_order', ['type' => 'number', 'label' => __('qta_minima_order'), 'v-model' => 'article_variant.qta_minima_order']);?>
+                                <?php
+                                $label = __('qta_multipli'). ' <span data-toggle="modal" data-target="#qta_multipli" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>';
+                                echo $this->Form->control('qta_multipli', ['type' => 'number', 'label' => $label, 'min' => 1, 'v-model' => 'article_variant.qta_multipli', 'escape' => false]);
+                                echo $this->HtmlCustom->drawModal('qta_multipli', 'Multipli di', "Gli utenti potranno acquistare nella quantità multipla indicata, per esempio se indichi 2, potranno acquistarne 2 o 4 o 6 ...");
+                                ?>
                             </div>
                             <div class="col-md-3">
-                                <?php echo $this->Form->control('qta_multipli', ['type' => 'number', 'label' => __('qta_multipli'), 'v-model' => 'article_variant.qta_multipli']);?>
+                                <?php
+                                $label = __('qta_minima_order'). ' <span data-toggle="modal" data-target="#qta_minima_order" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>';
+                                echo $this->Form->control('qta_minima_order', ['type' => 'number', 'label' => $label, 'min' => 0, 'v-model' => 'article_variant.qta_minima_order', 'escape' => false]);
+                                echo $this->HtmlCustom->drawModal('qta_minima_order', 'Qtà minima rispetto a tutti gli acquisti', "Indicare la quantità minima che l'articolo deve raggiungere nel totale di tutti gli acquisti");
+                                ?>
                             </div>
                             <div class="col-md-4">
-                                <?php echo $this->Form->control('qta_massima_order', ['type' => 'number', 'label' => __('qta_massima_order'), 'v-model' => 'article_variant.qta_massima_order']);?>
+                                <?php
+                                $label = __('qta_massima_order'). ' <span data-toggle="modal" data-target="#qta_massima_order" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>';
+                                echo $this->Form->control('qta_massima_order', ['type' => 'number', 'label' => $label, 'min' => 0, 'v-model' => 'article_variant.qta_massima_order', 'escape' => false]);
+                                echo $this->HtmlCustom->drawModal('qta_massima_order', 'Qtà massima rispetto a tutti gli acquisti', "Arrivati alla quantità indicata, l'ordine sull'articolo sarà bloccato");
+                                ?>
                             </div>
                         </div> <!-- row -->
                     </div>  <!-- v-for -->
@@ -231,6 +279,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
                 <div class="btn-success btn pull-right" style="margin-top: 25px"
                      @click="frmSubmit(event)">Salva dati dell'articolo
+                </div>
+
+                <pre>{{ errors }}</pre>
+                <div class="alert alert-danger alert-errors" v-if="Object.keys(errors).length>0">
+                    <h3>Trovati {{Object.keys(errors).length}} errori!</h3>
+                    <ul v-for="error in errors">
+                        <li>{{ error }}</li>
+                    </ul>
                 </div>
 
             </div>
@@ -250,6 +306,15 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
         margin-right: 25px;
         font-weight: normal;
     }
+    .errors {
+        color: #fff;
+        background-color: #dd4b39;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    alert-errors ul li {
+        list-style-type: none;
+    }
     .no-bio {
         opacity: 0.1
     }
@@ -262,5 +327,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
     .btn-custom {
         min-width: 110px;
         margin-top: 25px;
+    }
+    .badge-info {
+        cursor: pointer;
+        margin-left: 5px;
     }
 </style>

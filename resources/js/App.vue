@@ -1,10 +1,10 @@
 <template>
-  
+
   <div>
 
       <modal-component></modal-component>
-      <cashes-user></cashes-user>
- 
+      <cashes-user :is_guest="false"></cashes-user>
+
       <transition name="leave">
         <router-view></router-view>
       </transition>
@@ -23,7 +23,7 @@ export default {
   components: {
     modalComponent: modal,
     cashesUser: cashesUser
-  } 
+  }
 };
 </script>
 

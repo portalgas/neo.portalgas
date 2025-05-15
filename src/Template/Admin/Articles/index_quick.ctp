@@ -1,41 +1,3 @@
-<style>
-.no-bio {
-  opacity: 0.1
-}
-.extend:focus{
-  width:320px;
-}
-
-.autocomplete {
-  position: relative;
-}
-.autocomplete-results {
-  padding: 0;
-  margin: 0;
-  border: 1px solid #eeeeee;
-  height: 120px;
-  min-height: 1em;
-  max-height: 6em;
-  overflow: auto;
-  width: 500px;
-}
-.autocomplete-result {
-  list-style: none;
-  text-align: left;
-  padding: 4px 2px;
-  cursor: pointer;
-}
-.autocomplete-result.is-active,
-.autocomplete-result:hover {
-  background-color:#367fa9;
-  color: white;
-}
-.modal-title {
-  color: #3c8dbc;
-  font-size: 22px;
-  font-weight: bold;
-}
-</style>
 <?php
 use Cake\Core\Configure;
 use App\Traits;
@@ -44,13 +6,17 @@ $user = $this->Identity->get();
 
 $js = "var categories_articles = $js_categories_articles;";
 /*
-  * se l'elenco dei produttori ha un solo elemente (ex produttore) lo imposto gia'
+  * se l'elenco dei produttori ha un solo elemento (ex produttore) lo imposto gia'
   */
 if(!empty($search_supplier_organization_id))
-  $js .= "var search_supplier_organization_id_default = $search_supplier_organization_id;";
+    $js .= "var search_supplier_organization_id_default = $search_supplier_organization_id;";
+if(!empty($search_id))
+    $js .= "var search_id = $search_id;";
+else
+    $js .= "var search_id = '';";
 $this->Html->scriptBlock($js, ['block' => true]);
+echo $this->Html->script('vue/utils.js?v=20250505', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('vue/articles.js?v=20250411', ['block' => 'scriptPageInclude']);
-
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
@@ -335,12 +301,21 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="ingredienti" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
                         </td>
                         <td colspan="4">
-                          <div><label><?= __('qta_multipli') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_multipli" @change="changeValue(event, index)" :id="'qta_multipli-'+article.organization_id+'-'+article.id" name="qta_multipli" /></div>
-                          <div><label><?= __('pezzi_confezione') ?></label> <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" @change="changeValue(event, index)" :id="'pezzi_confezione-'+article.organization_id+'-'+article.id" name="pezzi_confezione" /></div>
+                          <div>
+                              <label><?= __('qta_multipli'). ' <span data-toggle="modal" data-target="#qta_multipli" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>'; ?></label>&nbsp;
+                              <input type="number" class="form-control" min="1" v-model="article.qta_multipli" @change="changeValue(event, index)" :id="'qta_multipli-'+article.organization_id+'-'+article.id" name="qta_multipli" />
+                          </div>
+                          <div>
+                              <label><?= __('pezzi_confezione_long'). ' <span data-toggle="modal" data-target="#pezzi_confezione" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>'; ?></label>&nbsp;
+                              <input type="number" class="form-control" min="1" v-model="article.pezzi_confezione" @change="changeValue(event, index)" :id="'pezzi_confezione-'+article.organization_id+'-'+article.id" name="pezzi_confezione" /></div>
                           <div><label><?= __('qta_minima') ?></label> <input type="number" class="form-control" min="1" v-model="article.qta_minima" @change="changeValue(event, index)" :id="'qta_minima-'+article.organization_id+'-'+article.id" name="qta_minima" /></div>
                           <div><label><?= __('qta_massima') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima" @change="changeValue(event, index)" :id="'qta_massima-'+article.organization_id+'-'+article.id" name="qta_massima" /></div>
-                          <div><label><?= __('qta_minima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" @change="changeValue(event, index)" :id="'qta_minima_order-'+article.organization_id+'-'+article.id" name="qta_minima_order" /></div>
-                          <div><label><?= __('qta_massima_order') ?></label> <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" @change="changeValue(event, index)" :id="'qta_massima_order-'+article.organization_id+'-'+article.id" name="qta_massima_order" /></div>
+                          <div>
+                              <label><?= __('qta_minima_order'). ' <span data-toggle="modal" data-target="#qta_minima_order" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>'; ?></label>&nbsp;
+                              <input type="number" class="form-control" min="0" v-model="article.qta_minima_order" @change="changeValue(event, index)" :id="'qta_minima_order-'+article.organization_id+'-'+article.id" name="qta_minima_order" /></div>
+                          <div>
+                              <label><?= __('qta_massima_order'). ' <span data-toggle="modal" data-target="#qta_massima_order" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>'; ?></label>&nbsp;
+                              <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" @change="changeValue(event, index)" :id="'qta_massima_order-'+article.organization_id+'-'+article.id" name="qta_massima_order" /></div>
                         </td>
                       </tr>
                     </template>
@@ -449,6 +424,15 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
     </div>
   </div>
 </section>
+
+    <?php
+    echo $this->HtmlCustom->drawModal('pezzi_confezione', 'Num di pezzi in una confezione', "Se il numero di pezzi per confezione è maggiore di 1 potrai gestire i colli con la funzione di 'validazione ordine'");
+
+    echo $this->HtmlCustom->drawModal('qta_multipli', 'Multipli di', "Gli utenti potranno acquistare nella quantità multipla indicata, per esempio se indichi 2, potranno acquistarne 2 o 4 o 6 ...");
+    echo $this->HtmlCustom->drawModal('qta_minima_order', 'Qtà minima rispetto a tutti gli acquisti', "Indicare la quantità minima che l'articolo deve raggiungere nel totale di tutti gli acquisti");
+    echo $this->HtmlCustom->drawModal('qta_massima_order', 'Qtà massima rispetto a tutti gli acquisti', "Arrivati alla quantità indicata, l'ordine sull'articolo sarà bloccato");
+
+    ?>
 
     <!-- Modal qta -->
     <div class="modal fade" id="modalQta" tabindex="-1" aria-labelledby="modalQtaLabel" aria-hidden="true">
@@ -609,3 +593,46 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
 
 </div> <!-- vue-articles -->
+
+<style>
+    .no-bio {
+        opacity: 0.1
+    }
+    .extend:focus{
+        width:320px;
+    }
+
+    .autocomplete {
+        position: relative;
+    }
+    .autocomplete-results {
+        padding: 0;
+        margin: 0;
+        border: 1px solid #eeeeee;
+        height: 120px;
+        min-height: 1em;
+        max-height: 6em;
+        overflow: auto;
+        width: 500px;
+    }
+    .autocomplete-result {
+        list-style: none;
+        text-align: left;
+        padding: 4px 2px;
+        cursor: pointer;
+    }
+    .autocomplete-result.is-active,
+    .autocomplete-result:hover {
+        background-color:#367fa9;
+        color: white;
+    }
+    .modal-title {
+        color: #3c8dbc;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .badge-info {
+        cursor: pointer;
+        margin-left: 5px;
+    }
+</style>

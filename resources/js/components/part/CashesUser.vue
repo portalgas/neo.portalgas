@@ -12,28 +12,28 @@
       <div class="modal-body">
 
           <div class="btn-group">
-             
-              <div v-if="datas.user_cash_e!=null && datas.user_cash < 0" 
-                    class="alert alert-danger" 
+
+              <div v-if="datas.user_cash_e!=null && datas.user_cash < 0"
+                    class="alert alert-danger"
                     v-html="$options.filters.debito_cassa(datas.user_cash_e)">
               </div>
 
               <div v-if="datas.user_cash_e!=null && datas.user_cash >= 0"
-                   @click="getCashHistoryByUser"  
-                   class="alert alert-primary cursor-pointer"> 
+                   @click="getCashHistoryByUser"
+                   class="alert alert-primary cursor-pointer">
                 <i class="fas fa-search"></i>
                 <span v-html="$options.filters.credito_cassa(datas.user_cash_e)"></span>
               </div>
 
               <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.fe_msg!=null" class="alert alert-warning" v-html="$options.filters.html(datas.ctrl_limit.fe_msg)"></div>
 
-              <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.fe_msg_tot_acquisti != ''" 
-                    class="alert alert-warning" 
+              <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.fe_msg_tot_acquisti != ''"
+                    class="alert alert-warning"
                     v-html="$options.filters.html(datas.ctrl_limit.fe_msg_tot_acquisti)">
               </div>
 
-              <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.has_fido" 
-                    class="alert alert-info" 
+              <div v-if="datas.user_cash_e!=null && datas.ctrl_limit.has_fido"
+                    class="alert alert-info"
                     v-html="$options.filters.fido(datas.ctrl_limit.importo_fido_e)">
               </div>
 
@@ -42,10 +42,10 @@
           <!--  cash history  -->
           <!--  cash history  -->
           <!--  cash history  -->
-          <div v-if="isRunCashHistory" class="box-spinner"> 
+          <div v-if="isRunCashHistory" class="box-spinner">
             <div class="spinner-border text-info" role="status">
               <span class="sr-only">Loading...</span>
-            </div>    
+            </div>
           </div>
 
           <div v-if="dataNotFound===false" class="alert alert-warning">
@@ -60,13 +60,13 @@
                 <th>Nota</th>
                 <th>Inserito</th>
             </tr></thead><tbody>
-            <tr  
+            <tr
               v-for="(cashHistory, index) in cashHistories"
               :key="cashHistory.id">
                   <td>{{ index + 1 }}</td>
-                  <td 
-                    style="width:10px;" 
-                    :style="'background-color:'+cashHistory.color_alert"></td>         
+                  <td
+                    style="width:10px;"
+                    :style="'background-color:'+cashHistory.color_alert"></td>
                   <td v-html="$options.filters.html(cashHistory.importo_e)">
                   </td>
                   <td>
@@ -96,7 +96,7 @@
                class="btn btn-blue">Personalizza le mail</a>
             </li>
             <li class="list-group-item">
-              <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/carts-history'" 
+              <a :href="'/admin/joomla25Salts?scope=FE&c_to=/home-'+j_seo+'/carts-history'"
               class="btn btn-blue">Storico acquisti</a>
             </li>
           </ul>
@@ -116,7 +116,10 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "casches-user",
+    name: "casches-user",
+    props: {
+        is_guest: false
+    },
   data() {
     return {
       j_seo: '',
@@ -141,7 +144,7 @@ export default {
     ...mapGetters(["cashesUserReload"]),
     host() {
       /*
-       * bisognerebbe compilare nei vari ambiati npm run next 
+       * bisognerebbe compilare nei vari ambiati npm run next
        * appConfig.$siteUrl
        */
       // const full = window.location.protocol + '//' + window.location.host;
@@ -160,7 +163,7 @@ export default {
         break;
       }
     }
-  }, 
+  },
   watch: {
     /*
      * carica i dati in base all'url settato nel tabs e lo passa al componente
@@ -168,23 +171,23 @@ export default {
      */
     cashesUserReload (newValue, oldValue) {
       // console.log('cashesUserReload '+newValue+' - '+oldValue);
-      
+
       if(newValue)
         this.getCashCtrlLimit();
 
       this.cashesUserReloadFinish();
     }
-  },   
+  },
   methods: {
     ...mapActions(["cashesUserReloadFinish"]),
     getGlobals() {
       /*
-       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window. 
+       * variabile che arriva da cake, dichiarata come variabile in Layout/vue.ctp, in app.js settata a window.
        * recuperata nei components con getGlobals()
        */
       this.j_seo = window.j_seo;
       this.organizationTemplatePayToDelivery = window.organizationTemplatePayToDelivery;
-    },     
+    },
     getCashHistoryByUser() {
 
       this.cashHistories = null;
@@ -210,8 +213,11 @@ export default {
           this.isRunCashHistory=false;
           console.error("Error: " + error);
         });
-    },    
+    },
     getCashCtrlLimit() {
+
+      if(this.is_guest)
+        return true;
 
       let url = "/admin/api/users/cash-ctrl-limit";
       axios
@@ -225,7 +231,7 @@ export default {
         .catch(error => {
           console.error("Error: " + error);
         });
-    },  
+    },
   },
   filters: {
     debito_cassa(text) {
@@ -249,8 +255,8 @@ export default {
         moment.locale(locale);
         return moment(String(value)).format('DD MMMM YYYY')
       }
-    },    
-  }  
+    },
+  }
 };
 </script>
 

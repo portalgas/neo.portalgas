@@ -47,11 +47,14 @@ class ArticlesController extends AppController
         $where = [];
 
         /*
-         * se arrivo da import
+         * search_supplier_organization_id: se arrivo da import
+         * search_id: se arrivo da add filtro per articoli e parent
          * */
         $request = $this->request->getQuery();
         (!empty($request['search_supplier_organization_id'])) ? $search_supplier_organization_id = $request['search_supplier_organization_id']: $search_supplier_organization_id = '';
-        $this->set(compact('search_supplier_organization_id'));
+        (!empty($request['search_id'])) ? $search_id = $request['search_id']: $search_id = '';
+        $this->set(compact('search_supplier_organization_id', 'search_id'));
+
 
         /*
          * in api/ArticlesController
@@ -224,8 +227,9 @@ class ArticlesController extends AppController
      * $article_id=null se add
      * $supplier_organization_id!=null se scelto un produttore
      */
-    public function view($article_organization_id, $article_id=null, $supplier_organization_id=null)
+    public function view($article_organization_id=0, $article_id=0, $supplier_organization_id=null)
     {
+        if(empty($article_organization_id)) $article_organization_id = $this->_organization->id;
         $this->set(compact('article_organization_id', 'article_id', 'supplier_organization_id'));
 
         $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
