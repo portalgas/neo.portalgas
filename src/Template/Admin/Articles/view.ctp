@@ -32,7 +32,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
           </div>
           <!-- /.box-header -->
           <!-- form start -->
-          <?php echo $this->Form->create($article, ['role' => 'form']); ?>
+          <?php echo $this->Form->create(null, ['role' => 'form']); ?>
 
             <div class="box-body">
               <?php
