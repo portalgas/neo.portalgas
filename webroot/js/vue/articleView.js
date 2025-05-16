@@ -133,6 +133,7 @@ $(function () {
                   stato: 'Y',
                   flag_presente_articlesorders:  'Y',
                   um_rif_values: [],
+                  errors: {}
               };
               this.article_variants.push(new_article_variant);
           },
@@ -180,17 +181,13 @@ $(function () {
            */
           changeArticleVariant: function(event, index) {
               let um = this.article_variants[index].um;
-              let prezzo = numberToJs(this.article_variants[index].prezzo);
-              let qta = numberToJs(this.article_variants[index].qta);
-
-              console.log('changeUM index '+index+' um '+um+" prezzo "+prezzo+" qta "+qta);
+              let prezzo = this.article_variants[index].prezzo; // numberToJs(this.article_variants[index].prezzo); arriva gia' con il .
+              let qta = this.article_variants[index].qta;// numberToJs(this.article_variants[index].qta); arriva gia' con il .
+              console.log('Tratto varianzione con index ['+index+'] um ['+um+"] prezzo ["+prezzo+"] qta ["+qta+']', 'changeArticleVariant');
               if(prezzo==0 || qta==0 || um=='') {
                   this.article_variants[index].um_rif_values = [];
                   return;
               }
-
-              let prezzo_um_riferimento = (prezzo / qta);
-              console.log(prezzo_um_riferimento, 'changeUM prezzo_um_riferimento');
 
               let prezzo_finale = 0;
               if(this.article_variants[index].iva!='inclusa') {
@@ -202,6 +199,8 @@ $(function () {
                   prezzo_finale = prezzo;
               this.article_variants[index].prezzo_finale = numberFormat(prezzo_finale,2,',','.');;
 
+              let prezzo_um_riferimento = (prezzo_finale / qta);
+              console.log('prezzo_um_riferimento ['+prezzo_um_riferimento+']', 'changeArticleVariant');
               this.article_variants[index].um_rif_values = getUmRifValues(um, prezzo_um_riferimento);
           },
           setDropzone: async function() {
@@ -302,11 +301,60 @@ $(function () {
                   this.$delete(this.errors, field_name);
               }
           },
+          validateVariants(field_name) {
+              let _this = this;
+              // console.log('validateVariants field_name ['+field_name+']: value ['+this.article[field_name]+']');
+              _this.article_variants.forEach(function (article_variant, index) {
+                  let is_err = false;
+
+                  switch (field_name) {
+                      case 'qta':
+                      case 'prezzo_finale':
+                          if(typeof article_variant[field_name]==='undefined' || article_variant[field_name]=='')
+                              is_err = true;
+                          else {
+                              let value = numberToJs(article_variant[field_name])
+                              if(value==0)
+                                  is_err = true;
+                          }
+                          break;
+                      default:
+                          if(typeof article_variant[field_name]==='undefined' || article_variant[field_name]=='')
+                            is_err = true;
+                          break;
+                  }
+
+                  if(is_err) {
+                      let msg = '';
+                      switch (field_name) {
+                          case 'qta':
+                              msg =  "Indica la quantità";
+                              break;
+                          case 'prezzo_finale':
+                              msg =  "Indica il prezzo finale";
+                              break;
+                          default:
+                              msg =  "Campo obbligatorio";
+                      }
+
+                    //  console.log(_this.article_variants[index]);
+                     //  _this.article_variants[index].errors[field_name] = msg; // workaround perche' non era reattivo
+                     _this.$set(_this.article_variants[index].errors, field_name, msg);
+                  }
+                  else {
+                      // delete this.errors[field_name]; workaround perche' non era reattivo
+                      _this.$delete(_this.article_variants[index].errors, field_name);
+                  }
+              });
+          },
           frmSubmit: function(e) {
             let _this = this;
 
             this.validate('name');
             this.validate('supplier_organization_id');
+              this.validateVariants('qta');
+              this.validateVariants('prezzo_finale');
+
             if(Object.keys(_this.errors).length>0)
                 return false;
 

@@ -24,7 +24,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
   <h1>
     Gestione articoli
     <div class="pull-right">
-      <a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'context_articles_add');?>" title="Aggiungi un nuovo articolo" target="_blank">
+      <!-- a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'context_articles_add');?>" title="Aggiungi un nuovo articolo" target="_blank">
+        <button class="btn btn-success"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo</button></a -->
+        <a href="/admin/articles/view/" title="Aggiungi un nuovo articolo">
         <button class="btn btn-success"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo</button></a>
     </div>
   </h1>

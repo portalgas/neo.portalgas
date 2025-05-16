@@ -605,7 +605,7 @@ class ArticlesController extends ApiAppController
         $results['results'] = [];
 
         $request = $this->request->getData();
-dd($request);
+
         if(empty($request['article_variants'])) {
             $results['code'] = 500;
             $results['message'] = 'KO';
@@ -737,6 +737,7 @@ dd($request);
             $article_variants[$i]['stato'] = 'Y';
             $article_variants[$i]['flag_presente_articlesorders'] = 'Y';
             $article_variants[$i]['um_rif_values'] = [];
+            $article_variants[$i]['errors'] = new \stdClass();
         }
         else {
             /*

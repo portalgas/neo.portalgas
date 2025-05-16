@@ -85,7 +85,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                 echo '</div>';
                 echo '</div>';
                 echo '<div class="row">';
-                echo '<div class="col-md-2">';
+                echo '<div class="col-md-3">';
                 ?>
                 <a @click="toggleIsBio()" style="cursor: pointer;">
                     <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
@@ -94,7 +94,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                 </a>
                 <?php
                 echo '</div>';
-                echo '<div class="col-md-10">';
+                echo '<div class="col-md-9">';
                 foreach ($articlesTypes as $articlesType) {
                     echo $this->Form->checkbox('articles_types_ids[]',  [
                         'value' => $articlesType->id,
@@ -106,9 +106,6 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                 }
                 echo '</div>';
                 echo '</div>';
-?>
-                <pre>{{ article.articles_types_ids }}</pre>
-                <?php
 
                 echo '<div class="row" style="margin:15px 0 15px;">';
                 echo '<div class="col-md-12">';
@@ -116,9 +113,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                 echo '<small>Estensioni dei file consentiti: .png .jpg</small>';
                 echo '</div>';
                 echo '</div>'; // row
-?>
+            ?>
 
-<pre>{{ article_variants }} </pre>
                 <div class="row">
                     <div class="col-md-10">
                         <div class="btn btn-primary btn-block" @click="addRow">
@@ -167,6 +163,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <div class="col-md-1"></div>
                             <div class="col-md-2">
                                 <input type="number" class="form-control" v-model="article_variant.qta" placeholder="qta" @change="changeArticleVariant(event, index);" />
+                                <div class="errors" v-if="article_variant.errors.qta" v-html="article_variant.errors.qta"></div>
                             </div>
                             <div class="col-md-2">
                                 <select class="form-control" :required="true" v-model="article_variant.um"
@@ -178,7 +175,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control" v-model="article_variant.prezzo" placeholder="Prezzo" @change="changeArticleVariant(event, index);" />
+                                <div class="input-group">
+                                    <input type="number" class="form-control" v-model="article_variant.prezzo" placeholder="Prezzo" @change="changeArticleVariant(event, index);" />
+                                    <span class="input-group-addon"><i class="fa fa-euro"></i></span>
+                                </div>
                             </div>
                             <div class="col-md-1">
                                 <select class="form-control" :required="true" v-model="article_variant.iva" @change="changeArticleVariant(event, index)" >
@@ -189,7 +189,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control" v-model="article_variant.prezzo_finale" placeholder="Prezzo finale" @change="changeArticleVariant(event, index);" />
+                                <div class="input-group">
+                                    <input type="number" class="form-control" v-model="article_variant.prezzo_finale" placeholder="Prezzo finale" @change="changeArticleVariant(event, index);" />
+                                    <span class="input-group-addon"><i class="fa fa-euro"></i></span>
+                                </div>
+                                <div class="errors" v-if="article_variant.errors.prezzo_finale" v-html="article_variant.errors.prezzo_finale"></div>
                             </div>
                             <div class="col-md-2">
                                 <div v-if="article_variant.um_rif_values.length>0">
@@ -277,16 +281,23 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     </div>  <!-- v-for -->
                 </template>
 
-                <div class="btn-success btn pull-right" style="margin-top: 25px"
-                     @click="frmSubmit(event)">Salva dati dell'articolo
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="btn-success btn pull-right" style="margin-top: 25px"
+                             @click="frmSubmit(event)">Salva dati dell'articolo
+                        </div>
+                    </div>
                 </div>
 
-                <pre>{{ errors }}</pre>
-                <div class="alert alert-danger alert-errors" v-if="Object.keys(errors).length>0">
-                    <h3>Trovati {{Object.keys(errors).length}} errori!</h3>
-                    <ul v-for="error in errors">
-                        <li>{{ error }}</li>
-                    </ul>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger alert-errors clearfix" v-if="Object.keys(errors).length>0">
+                            <h3>Trovati {{Object.keys(errors).length}} errori!</h3>
+                            <ul v-for="error in errors">
+                                <li>{{ error }}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
             </div>
