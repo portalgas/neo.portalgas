@@ -64,7 +64,36 @@ class ArticlesArticlesTypesTable extends Table
             Log::error($e->getMessage());
             return false;
         }
-        
+
         return true;
-   }    
+   }
+
+    public function store($user=null, $article_organization_id, $article_id, $articles_types_ids) {
+
+        $articles_type_ids = [];
+
+        if(!empty($articles_types_ids))
+            foreach($articles_types_ids as $articles_type_id) {
+                $where = ['organization_id' => $article_organization_id, 'article_id' => $article_id, 'article_type_id' => $articles_type_id];
+                $articles_type = $this->find()->where($where)->first();
+                if(empty($articles_type)) {
+                    $articles_type = $this->newEntity();
+                    $datas['organization_id'] = $article_organization_id;
+                    $datas['article_id'] = $article_id;
+                    $datas['article_type_id'] = $articles_type_id;
+                    $articles_type = $this->patchEntity($articles_type, $datas);
+                    $this->save($articles_type);
+                }
+
+                $articles_type_ids[] = $articles_type_id;
+            }
+
+        /*
+         * eliminiamo i tipi di articolo non piu' associati
+         */
+        $where = ['organization_id' => $article_organization_id, 'article_id' => $article_id, 'article_type_id NOT IN ' => $articles_type_ids];
+        $this->deleteAll($where);
+
+        return true;
+    }
 }

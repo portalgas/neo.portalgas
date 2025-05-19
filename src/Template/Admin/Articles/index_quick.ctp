@@ -24,10 +24,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
   <h1>
     Gestione articoli
     <div class="pull-right">
-      <!-- a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'context_articles_add');?>" title="Aggiungi un nuovo articolo" target="_blank">
-        <button class="btn btn-success"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo</button></a -->
+      <a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'context_articles_add');?>" title="Aggiungi un nuovo articolo" target="_blank">
+        <button class="btn btn-success" style="opacity: 0.8;"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo (precedente versione)</button></a>
         <a href="/admin/articles/view/" title="Aggiungi un nuovo articolo">
-        <button class="btn btn-success"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo</button></a>
+        <button class="btn btn-success"><i aria-hidden="true" class="fa fa-plus"></i> Aggiungi un nuovo articolo (nuova versione)</button></a>
     </div>
   </h1>
 </section>
@@ -89,6 +89,11 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                   <th scope="col"><?= __('Bio') ?></th>
                   <th scope="col"></th>
                   <th scope="col" style="width:100px">
+                      <?= __('qta') ?>
+                      <label style="cursor: pointer;" class="label label-primary"
+                             data-toggle="modal" data-target="#modalQta">?</label>
+                  </th>
+                  <th scope="col" style="width:100px">
                       <?= __('Prezzo') ?>
                       <br />
                       <label style="cursor: pointer;" class="label"
@@ -97,11 +102,6 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <span v-if="open_box_price">Prezzo senza IVA</span>
                         <span v-if="!open_box_price">Prezzo compreso IVA</span>
                       </label>
-                  </th>
-                  <th scope="col" style="width:100px">
-                    <?= __('qta') ?>
-                    <label style="cursor: pointer;" class="label label-primary"
-                          data-toggle="modal" data-target="#modalQta">?</label>
                   </th>
                   <th scope="col" style="width:150px"><?= __('UM') ?></th>
               </tr>
@@ -193,6 +193,9 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <!-- img :src="article.img1" :title="article.img1" width="50" / -->
                           <div class="dropzone" :id="'my-dropzone'+article.organization_id+'-'+article.id" :data-attr-index="index"></div>
                         </td>
+                          <td>
+                              <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
+                          </td>
                         <!-- price -->
                         <td>
                           <template v-if="!open_box_price">
@@ -232,9 +235,6 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                       name="prezzo" />
                             </div>
                           </template>
-                        </td>
-                        <td>
-                          <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
                         </td>
                         <td>
                           <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index); changeUM(event, index);" :id="'um-'+article.organization_id+'-'+article.id" name="um">
@@ -436,82 +436,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
     ?>
 
-    <!-- Modal qta -->
-    <div class="modal fade" id="modalQta" tabindex="-1" aria-labelledby="modalQtaLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalQtaLabel">Esempi di quantità</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-
-          <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th colspan="2">Confezione</th>
-                    <th>Quantità</th>
-                    <th>Unità di misura</th>
-                    <th>Prezzo</th>
-                    <th style="min-width: 125px;">U/M<br />di riferimento</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <img src="/img/helps/article-qta-750-ml.jpg">
-                    </td>
-                    <td>Flacone 750 ml</td>
-                    <td><input type="text" class="form-control" style="max-width: 75px;" maxlength="4" value="750" disabled /></td>
-                    <td><input type="text" class="form-control" style="max-width: 50px;" maxlength="3" value="ML" disabled /></td>
-                    <td>4,50 &euro;</td>
-                    <td>7,33 &euro; al Litro</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img src="/img/helps/article-qta-400-gr.jpg">
-                    </td>
-                    <td>Forma da 400 gr</td>
-                    <td><input type="text" class="form-control" style="max-width: 75px;" maxlength="4" value="400" disabled /></td>
-                    <td><input type="text" class="form-control" style="max-width: 50px;" maxlength="3" value="GR" disabled /></td>
-                    <td>6 &euro;</td>
-                    <td>15 &euro; al Chilo</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img src="/img/helps/article-qta-verdura.jpg">
-                    </td>
-                    <td>Insalata</td>
-                    <td><input type="text" class="form-control" style="max-width: 75px;" maxlength="5" value="0,40" disabled /></td>
-                    <td><input type="text" class="form-control" style="max-width: 50px;" maxlength="3" value="HG" disabled /></td>
-                    <td>4,00 &euro;</td>
-                    <td>12,00 &euro; al Kilo</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img src="/img/helps/article-qta-zafferano.jpg">
-                    </td>
-                    <td>Bustina zafferano</td>
-                    <td><input type="text" class="form-control" style="max-width: 75px;" maxlength="4" value="25" disabled /></td>
-                    <td><input type="text" class="form-control" style="max-width: 50px;" maxlength="3" value="GR" disabled /></td>
-                    <td>25,00 &euro;</td>
-                    <td>25,00 &euro; al Grammo</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div> <!-- table-responsive -->
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Chiudi</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <?php echo $this->element('helps/modal-article-qta'); ?>
 
     <!-- Modal categorie -->
     <div class="modal fade" id="modalCategorie" tabindex="-1" aria-labelledby="modalCategorieLabel" aria-hidden="true">

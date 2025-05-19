@@ -625,7 +625,6 @@ class ArticlesController extends ApiAppController
         $datas['ingredienti'] = $request['article']['ingredienti'];
         $datas['img1'] = $request['article']['img1'];
 
-
         $parent_id = null; // per la prima variazione e' null
         foreach($request['article_variants'] as $numResult => $article_variant) {
             $datas['parent_id'] = $parent_id;
@@ -635,14 +634,14 @@ class ArticlesController extends ApiAppController
             // $datas['prezzo'] = $article_variant['prezzo'];
             // $datas['iva'] = $article_variant['iva'];
             $datas['prezzo'] = $this->convertImport($article_variant['prezzo_finale']);
-            $datas['um_riferimento'] = $article_variant['um_riferimento'];
-            $datas['pezzi_confezione'] = $article_variant['pezzi_confezione'];
+            !empty($article_variant['um_riferimento']) ? $datas['um_riferimento'] = $article_variant['um_riferimento']: $datas['um_riferimento'] = $article_variant['um'];
             $datas['qta'] = $article_variant['qta'];
-            $datas['qta_minima'] = $article_variant['qta_minima'];
-            $datas['qta_massima'] = $article_variant['qta_massima'];
-            $datas['qta_minima_order'] = $article_variant['qta_minima_order'];
-            $datas['qta_multipli'] = $article_variant['qta_multipli'];
-            $datas['qta_massima_order'] = $article_variant['qta_massima_order'];
+            !empty($article_variant['pezzi_confezione']) ? $datas['pezzi_confezione'] = $article_variant['pezzi_confezione']: $datas['pezzi_confezione'] = 1;
+            !empty($article_variant['qta_minima']) ? $datas['qta_minima'] = $article_variant['qta_minima']: $datas['qta_minima'] = 1;
+            !empty($article_variant['qta_massima']) ? $datas['qta_massima'] = $article_variant['qta_massima']: $datas['qta_massima'] = 0;
+            !empty($article_variant['qta_multipli']) ? $datas['qta_multipli'] = $article_variant['qta_multipli']: $datas['qta_multipli'] = 1;
+            !empty($article_variant['qta_minima_order']) ? $datas['qta_minima_order'] = $article_variant['qta_minima_order']: $datas['qta_minima_order'] = 0;
+            !empty($article_variant['qta_massima_order']) ? $datas['qta_massima_order'] = $article_variant['qta_massima_order']: $datas['qta_massima_order'] = 0;
             $datas['stato'] = $article_variant['stato'];
             $datas['flag_presente_articlesorders'] = $article_variant['flag_presente_articlesorders'];
 
@@ -673,6 +672,11 @@ class ArticlesController extends ApiAppController
                 return $this->_response($results);
             }
 
+            if(isset($request['article']['articles_types_ids'])) {
+                $articlesArticlesTypesTable = TableRegistry::get('ArticlesArticlesTypes');
+                $articlesArticlesTypesTable->store($this->_user, $article->organization_id, $article->id, $request['article']['articles_types_ids']);
+            }
+
             if($numResult==0) {
                 $parent_id = $article->id;
             }
@@ -681,7 +685,7 @@ class ArticlesController extends ApiAppController
         $results['code'] = 200;
         $results['message'] = 'OK';
         $results['errors'] = '';
-        $results['results'] = [];
+        $results['results']['article_id'] = $parent_id; // gli passo l'id del padre per il redirect su index-quick con filtro
         return $this->_response($results);
     }
 

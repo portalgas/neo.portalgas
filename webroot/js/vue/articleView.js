@@ -18,7 +18,6 @@ $(function () {
             article_variants: [],
             ums: ['PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'],
             ivas: ['inclusa', 4, 10, 22],
-            supplier_organization_id: '',
             supplier_organization: {
                 id: null,
                 name: null,
@@ -28,11 +27,21 @@ $(function () {
                     img1: null
                 }
             },
-            is_run: true,
+            is_run: false,
       },
       methods: {
           init: function() {
-              this.article_variants = []
+              this.supplier_organization =  {
+                  id: null,
+                  name: null,
+                  img1: null,
+                  owner_articles: null,
+                  supplier: {
+                      img1: null
+                  }
+              }
+              this.article_variants = [];
+              this.addRow();
           },
           get: function() {
               let _this = this;
@@ -45,7 +54,7 @@ $(function () {
                       'X-CSRF-Token': csrfToken
                   },
                   success: async function (response) {
-                      console.log(response, 'get');
+                      // console.log(response, 'get');
                       if (response.code == 200) {
                           _this.article = response.results.article;
                           if(response.results.article_variants.length>0)
@@ -65,6 +74,8 @@ $(function () {
           },
           getSuppliersOrganization: function() {
 
+              this.init();
+
               /*
                * chi gestisce il listino articoli
                * se e' valorizzato order_id => order.edit
@@ -72,16 +83,15 @@ $(function () {
                * se non e' valorizzato order_id => order.add
                * 		owner_articles da SuppliersOrganizations
                */
-              // console.log('getSuppliersOrganization supplier_organization_id '+this.supplier_organization_id);
-              if(typeof this.supplier_organization_id==='undefined') {
-                this.init();
+              // console.log('getSuppliersOrganization supplier_organization_id '+this.article.supplier_organization_id);
+              if(typeof this.article.supplier_organization_id==='undefined' || this.article.supplier_organization_id==null || this.article.supplier_organization_id=='') {
                 return;
               }
 
               var _this = this;
 
               let params = {
-                supplier_organization_id: this.supplier_organization_id
+                supplier_organization_id: this.article.supplier_organization_id
               };
 
               $.ajax({url: '/admin/api/SuppliersOrganizations/getById',
@@ -94,7 +104,7 @@ $(function () {
                   },
                   success: async function (response) {
                     response = JSON.parse(response);
-                      /* console.log(response); */
+                      // console.log(response);
                       if (response.code==200) {
                         // console.log(response.results.name, '_getSuppliersOrganization');
                         _this.supplier_organization.id = response.results.id;
@@ -108,6 +118,8 @@ $(function () {
                       console.error(e, '_getSuppliersOrganization');
                       if(typeof e.responseText!=='undefined')
                         console.error(e.responseText.message, '_getSuppliersOrganization');
+
+                      _this.init();
                   },
                   complete: function (e) {
                   }
@@ -183,7 +195,7 @@ $(function () {
               let um = this.article_variants[index].um;
               let prezzo = this.article_variants[index].prezzo; // numberToJs(this.article_variants[index].prezzo); arriva gia' con il .
               let qta = this.article_variants[index].qta;// numberToJs(this.article_variants[index].qta); arriva gia' con il .
-              console.log('Tratto varianzione con index ['+index+'] um ['+um+"] prezzo ["+prezzo+"] qta ["+qta+']', 'changeArticleVariant');
+              console.log('Tratto variazione con index ['+index+'] um ['+um+"] prezzo ["+prezzo+"] qta ["+qta+']', 'changeArticleVariant');
               if(prezzo==0 || qta==0 || um=='') {
                   this.article_variants[index].um_rif_values = [];
                   return;
@@ -274,8 +286,8 @@ $(function () {
           },
           setValidate: function(event) {
                 let _this = this;
-                console.log(event);
-                console.log('setValidate id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
+                // console.log(event);
+                // console.log('setValidate id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
 
                 this.validate(event.target.name);
           },
@@ -301,6 +313,13 @@ $(function () {
                   this.$delete(this.errors, field_name);
               }
           },
+          setValidateVariants: function(event) {
+              let _this = this;
+              // console.log(event);
+               console.log('setValidateVariants id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
+
+              this.validateVariants(event.target.name);
+          },
           validateVariants(field_name) {
               let _this = this;
               // console.log('validateVariants field_name ['+field_name+']: value ['+this.article[field_name]+']');
@@ -313,8 +332,8 @@ $(function () {
                           if(typeof article_variant[field_name]==='undefined' || article_variant[field_name]=='')
                               is_err = true;
                           else {
-                              let value = numberToJs(article_variant[field_name])
-                              if(value==0)
+                              let value = article_variant[field_name]; // numberToJs(article_variant[field_name]) ; arriva gia' con il .
+                              if(value==0 || value==0.00 || value=='0,00' || value=='0.00')
                                   is_err = true;
                           }
                           break;
@@ -363,7 +382,7 @@ $(function () {
                 article_variants: _this.article_variants
             };
 
-            _this.is_run = true;
+          _this.is_run = true;
 
           $.ajax({url: '/admin/api/articles/store',
               data: params,
@@ -374,9 +393,11 @@ $(function () {
                 'X-CSRF-Token': csrfToken
               },
               success: function (response) {
-                  console.log(response, 'store');
-                  if (response.esito) {
+                  // console.log(response, 'store');
+                  response = JSON.parse(response);
+                  if (response.code==200) {
                       _this.is_run = false;
+                      window.location.href = '/admin/articles/index-quick/?search_id='+response.results.article_id;
                   }
                   else {
                     _this.validazioneResults = response.errors;
@@ -397,11 +418,30 @@ $(function () {
           });
         }
       },
+        computed: {
+            display_errors: function () {
+                let errs = [];
+                if(Object.keys(this.errors).length>0)
+                    Object.keys(this.errors).forEach(function (key) {
+                        if(this.errors[key].length>0)
+                            errs.push(this.errors[key]);
+                    }, this);
+
+                this.article_variants.forEach(function (article_variant, index) {
+                    if(Object.keys(article_variant.errors).length>0)
+                        Object.keys(article_variant.errors).forEach(function (key) {
+                            if(article_variant.errors[key].length>0) {
+                                let msg = article_variant.errors[key] + ' della variante num° '+(index+1);
+                                errs.push(msg);
+                            }
+                        }, this);
+                });
+
+                return errs;
+            },
+        },
       mounted: function() {
-        console.log('mounted articles-view');
-
-          numberToJs('1000,50');
-
+         // console.log('mounted articles-view');
         this.is_run = false;
         this.get();
         this.setDropzone();
