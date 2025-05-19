@@ -166,7 +166,7 @@ $(function () {
               }
           },
           toggleTypes: function() {
-               console.log(this.article.articles_types_ids, 'toggleTypes');
+               // console.log(this.article.articles_types_ids, 'toggleTypes');
                if(this.article.articles_types_ids.includes("1"))
                    this.article.bio = 'Y';
                else
@@ -195,7 +195,7 @@ $(function () {
               let um = this.article_variants[index].um;
               let prezzo = this.article_variants[index].prezzo; // numberToJs(this.article_variants[index].prezzo); arriva gia' con il .
               let qta = this.article_variants[index].qta;// numberToJs(this.article_variants[index].qta); arriva gia' con il .
-              console.log('Tratto variazione con index ['+index+'] um ['+um+"] prezzo ["+prezzo+"] qta ["+qta+']', 'changeArticleVariant');
+              // console.log('Tratto variazione con index ['+index+'] um ['+um+"] prezzo ["+prezzo+"] qta ["+qta+']', 'changeArticleVariant');
               if(prezzo==0 || qta==0 || um=='') {
                   this.article_variants[index].um_rif_values = [];
                   return;
@@ -212,7 +212,7 @@ $(function () {
               this.article_variants[index].prezzo_finale = numberFormat(prezzo_finale,2,',','.');;
 
               let prezzo_um_riferimento = (prezzo_finale / qta);
-              console.log('prezzo_um_riferimento ['+prezzo_um_riferimento+']', 'changeArticleVariant');
+              // console.log('prezzo_um_riferimento ['+prezzo_um_riferimento+']', 'changeArticleVariant');
               this.article_variants[index].um_rif_values = getUmRifValues(um, prezzo_um_riferimento);
           },
           setDropzone: async function() {
@@ -316,8 +316,7 @@ $(function () {
           setValidateVariants: function(event) {
               let _this = this;
               // console.log(event);
-               console.log('setValidateVariants id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
-
+              // console.log('setValidateVariants id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
               this.validateVariants(event.target.name);
           },
           validateVariants(field_name) {

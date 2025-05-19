@@ -441,6 +441,12 @@ $(function () {
           let search_categories_article_id = $('select[name=search_categories_article_id]').val();
           this.search_categories_article_id = search_categories_article_id;
 
+          /*
+           * se scelgo un campo di ricerca non considero search_id
+           */
+          if(this.search_supplier_organization_id!='' || this.search_name!='' || this.search_codice!='')
+              search_id = null;
+
           let params = {
               search_supplier_organization_id: this.search_supplier_organization_id,
               search_name: this.search_name,

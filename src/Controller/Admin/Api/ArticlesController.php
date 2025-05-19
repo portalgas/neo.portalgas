@@ -37,6 +37,12 @@ class ArticlesController extends ApiAppController
 
         $jsonData = $this->request->input('json_decode');
         $where = [];
+        if(isset($jsonData->search_flag_presente_articlesorders)) {
+            $search_flag_presente_articlesorders = $jsonData->search_flag_presente_articlesorders;
+            ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N';
+            $where += ['Articles.flag_presente_articlesorders' => $search_flag_presente_articlesorders];
+        }
+
         /*
         prenderei solo quelli gestiti dal referente
         $where += ['Articles.organization_id' => $this->_organization->id];
@@ -46,16 +52,30 @@ class ArticlesController extends ApiAppController
         */
         if(!empty($jsonData->search_id)) {
             /*
-             * arrivo da add
+             * arrivo da view (add) controllo se l'articolo ha varianti
              */
-            $where += ['Articles.id' => $jsonData->search_id, 'Articles.organization_id' => $this->_organization->id];
+            $where_variants = ['Articles.id' => $jsonData->search_id, 'Articles.organization_id' => $this->_organization->id];
+            $article_variant = $this->Articles->find()->where($where_variants)->first();
+            if(!empty($article_variant)) {
+                if($article_variant->parent_id==null) {
+                    $where += ['Articles.organization_id' => $this->_organization->id,
+                        'OR' => [
+                            'Articles.id' => $jsonData->search_id,
+                            'Articles.parent_id' => $jsonData->search_id]
+                    ];
+                }
+                else {
+                    $where += ['Articles.organization_id' => $this->_organization->id,
+                        'OR' => [
+                            'Articles.id' => $article_variant->parent_id,
+                            'Articles.parent_id' => $article_variant->parent_id]
+                    ];
+                }
+            }
+            else
+                $where += ['Articles.id' => $jsonData->search_id, 'Articles.organization_id' => $this->_organization->id];
         }
         else {
-            if(isset($jsonData->search_flag_presente_articlesorders)) {
-                $search_flag_presente_articlesorders = $jsonData->search_flag_presente_articlesorders;
-                ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N';
-                $where += ['Articles.flag_presente_articlesorders' => $search_flag_presente_articlesorders];
-            }
             if(!empty($jsonData->search_name)) {
                 $search_name = $jsonData->search_name;
                 $where += ['Articles.name LIKE ' => '%'.$search_name.'%'];

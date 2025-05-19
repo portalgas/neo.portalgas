@@ -15,8 +15,8 @@ if(!empty($search_id))
 else
     $js .= "var search_id = '';";
 $this->Html->scriptBlock($js, ['block' => true]);
-echo $this->Html->script('vue/utils.js?v=20250505', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/articles.js?v=20250411', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/utils.js?v=20250519', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articles.js?v=20250519', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
