@@ -277,6 +277,15 @@ $(function () {
           let url = portalgas_bo_url+'/administrator/index.php?option=com_cake&controller=Articles&action=context_articles_delete&id='+article_id+'&article_organization_id='+article_organization_id;
           window.location.href = url;
         },
+        goToCopy: function(index) {
+            if(!confirm('Sei sicuro di voler copiare l\'articolo?'))
+                return false;
+
+              let article_organization_id = this.articles[index].organization_id;
+              let article_id = this.articles[index].id;
+              let url = '/admin/articles/copy/'+article_organization_id+'/'+article_id;
+              window.location.href = url;
+        },
         toggleIsBio: function(field_id, index) {
           // console.log(this.articles[index].bio, 'toggleIsBio');
           if(this.articles[index].bio=='Y')

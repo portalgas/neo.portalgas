@@ -252,4 +252,73 @@ class ArticlesController extends AppController
 
         $this->set('ums', $this->Articles->enum('um'));
     }
+
+    /*
+     * $article_organization_id non lo considero, prendo $this->_organization->id
+     */
+    public function copy($article_organization_id, $article_id) {
+        $articlesTable = TableRegistry::get('Articles');
+
+        $where = ['organization_id' => $this->_organization->id, 'id' => $article_id];
+        $article = $this->Articles->find()
+                                    ->where($where)
+                                    ->first();
+        if(empty($article)) {
+            $this->Flash->error('Articolo non trovato!', ['escape' => false]);
+            return $this->redirect(['action' => 'indexQuick']);
+        }
+        $article_orig = $article->toArray();
+
+        $article = $articlesTable->newEntity();
+        $id = $this->getMax($articlesTable, 'id', ['organization_id' => $this->_organization->id]);
+        $article_orig['id'] = ($id + 1);
+        $article_orig['flag_presente_articlesorders'] = 'Y';  // lo imposto a SI se no in index_quick non e' visibile
+
+        $article = $articlesTable->patchEntity($article, $article_orig);
+        if (!$articlesTable->save($article)) {
+            Log::error($article->getErrors());
+            // dd($article);
+
+            $errors = $article->getErrors();
+            // trasformo in stringa per js
+            $msg = '';
+            foreach($errors as $field => $error) {
+                foreach($error as $type => $err) {
+                    $msg .= __($field) . ': ' . $err ."\r\n";
+                }
+            }
+            $this->Flash->error($msg, ['escape' => false]);
+            return $this->redirect(['action' => 'indexQuick']);
+        }
+
+        /*
+         * img1
+         */
+        if(!empty($article_orig['img1'])) {
+            $config = Configure::read('Config');
+            $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.paths'), $this->_organization->id);
+            if (file_exists($img_path . DS . $article_orig['img1'])) {
+                if(copy($img_path . DS . $article_orig['img1'], $img_path . DS . $article_orig['id'].'_'.$article_orig['img1']))
+                    $article_orig['img1'] = $article_orig['id'].'_'.$article_orig['img1'];
+            }
+        }
+
+        /*
+         * articles_types_ids
+         */
+        $articlesArticlesTypesTable = TableRegistry::get('ArticlesArticlesTypes');
+        $articlesArticlesTypes = $articlesArticlesTypesTable->find()
+                                                            ->where(['organization_id' => $this->_organization->id, 'article_id' => $article_id])
+                                                            ->all();
+        if($articlesArticlesTypes->count() > 0) {
+            $ids = [];
+            foreach ($articlesArticlesTypes as $articlesArticlesType) {
+                $ids[] = $articlesArticlesType->article_type_id;
+            }
+            if(!empty($ids))
+                $articlesArticlesTypesTable->store($this->_user, $article->organization_id, $article_orig['id'], $ids);
+        }
+
+        return $this->redirect(['action' => 'indexQuick', '?' => ['search_id' => $article->id]]);
+    }
 }
