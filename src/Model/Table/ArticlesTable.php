@@ -173,11 +173,6 @@ class ArticlesTable extends Table
             ->notEmptyString('bio');
 
         $validator
-            ->scalar('img1')
-            ->maxLength('img1', 50)
-            ->allowEmptyString('img1');
-
-        $validator
             ->scalar('stato')
             ->inList('stato', ['Y', 'N'], "Valore consentito si, no")
             ->notEmptyString('stato');

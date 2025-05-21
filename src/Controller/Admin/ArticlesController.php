@@ -274,6 +274,19 @@ class ArticlesController extends AppController
         $article_orig['id'] = ($id + 1);
         $article_orig['flag_presente_articlesorders'] = 'Y';  // lo imposto a SI se no in index_quick non e' visibile
 
+        /*
+         * img1
+         */
+        if(!empty($article_orig['img1'])) {
+            $config = Configure::read('Config');
+            $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.paths'), $this->_organization->id);
+            if (file_exists($img_path . DS . $article_orig['img1'])) {
+                if(copy($img_path . DS . $article_orig['img1'], $img_path . DS . $article_orig['id'].'_'.$article_orig['img1']))
+                    $article_orig['img1'] = $article_orig['id'].'_'.$article_orig['img1'];
+            }
+        }
+
+
         $article = $articlesTable->patchEntity($article, $article_orig);
         if (!$articlesTable->save($article)) {
             Log::error($article->getErrors());
@@ -289,18 +302,6 @@ class ArticlesController extends AppController
             }
             $this->Flash->error($msg, ['escape' => false]);
             return $this->redirect(['action' => 'indexQuick']);
-        }
-
-        /*
-         * img1
-         */
-        if(!empty($article_orig['img1'])) {
-            $config = Configure::read('Config');
-            $img_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.paths'), $this->_organization->id);
-            if (file_exists($img_path . DS . $article_orig['img1'])) {
-                if(copy($img_path . DS . $article_orig['img1'], $img_path . DS . $article_orig['id'].'_'.$article_orig['img1']))
-                    $article_orig['img1'] = $article_orig['id'].'_'.$article_orig['img1'];
-            }
         }
 
         /*
