@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use App\Model\Entity\Log;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -78,9 +79,11 @@ class ArticlesArticlesTypesTable extends Table
                 $articles_type = $this->find()->where($where)->first();
                 if(empty($articles_type)) {
                     $articles_type = $this->newEntity();
+                    $datas = [];
                     $datas['organization_id'] = $article_organization_id;
                     $datas['article_id'] = $article_id;
                     $datas['article_type_id'] = $articles_type_id;
+                    Log::debug($datas);
                     $articles_type = $this->patchEntity($articles_type, $datas);
                     $this->save($articles_type);
                 }
