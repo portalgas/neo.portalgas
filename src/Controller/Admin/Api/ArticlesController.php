@@ -641,7 +641,7 @@ class ArticlesController extends ApiAppController
         $datas['category_article_id'] = $request['article']['category_article_id'];
         $datas['name'] = $request['article']['name'];
         $datas['bio'] = $request['article']['bio'];
-        isset($request['article']['img1']) ? $datas['nota'] = $request['article']['nota']: $datas['nota'] = null;
+        isset($request['article']['nota']) ? $datas['nota'] = $request['article']['nota']: $datas['nota'] = null;
         $datas['ingredienti'] = $request['article']['ingredienti'];
         if(isset($request['article']['img1'])) $datas['img1'] = $request['article']['img1'];
 
