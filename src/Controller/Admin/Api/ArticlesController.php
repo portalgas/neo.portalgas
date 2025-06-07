@@ -642,7 +642,7 @@ class ArticlesController extends ApiAppController
         $datas['name'] = $request['article']['name'];
         $datas['bio'] = $request['article']['bio'];
         isset($request['article']['nota']) ? $datas['nota'] = $request['article']['nota']: $datas['nota'] = null;
-        $datas['ingredienti'] = $request['article']['ingredienti'];
+        isset($request['article']['ingredienti']) ? $datas['ingredienti'] = $request['article']['ingredienti']: $datas['ingredienti'] = null;
         if(isset($request['article']['img1'])) $datas['img1'] = $request['article']['img1'];
 
         $parent_id = null; // per la prima variazione e' null
