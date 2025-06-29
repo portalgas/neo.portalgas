@@ -122,8 +122,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                                 echo '<button title="dettaglio acquisti" class="btn btn-info" @click="modalInCarts(index)"><i aria-hidden="true" class="fa fa-info"></i></button>';
                               echo '<button title="campi aggiuntivi" class="btn btn-info" @click="toggleExtra(index)"><i aria-hidden="true" class="fa fa-search-plus"></i></button>';
                               echo '<button title="copia aticolo" class="btn btn-success" @click="goToCopy(index)"><i aria-hidden="true" class="fa fa-copy"></i></button>';
-                              if($user->organization->type=='GAS')
-                                  echo '<button title="elimina articolo" class="btn btn-danger"  @click="goToDelete(index)"><i aria-hidden="true" ><i aria-hidden="true" class="fa fa-trash"></i></button>';
+                              echo '<button title="elimina articolo" class="btn btn-danger"  @click="goToDelete(index)"><i aria-hidden="true" ><i aria-hidden="true" class="fa fa-trash"></i></button>';
                               ?>
                           </div>
                         </td>
