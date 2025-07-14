@@ -73,7 +73,7 @@ class CmsMenusController extends AppController
             if(isset($datas['options'])) {
                 $datas['options'] = trim($datas['options']);
                 if(isset($datas['cms_menu_type_id']) && $datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
-                    if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
+                    if(strpos($datas['options'], 'http')===false && strpos($datas['options'], 'https')===false)
                         $datas['options'] = 'https://'.$datas['options'];
                 }
             } // end if(isset($datas['options']))
@@ -124,7 +124,7 @@ class CmsMenusController extends AppController
             if(isset($datas['options'])) {
                 $datas['options'] = trim($datas['options']);
                 if(isset($datas['cms_menu_type_id']) && $datas['cms_menu_type_id']==3 && !empty($datas['options'])) { // LINK_EXT
-                    if(strpos('http', $datas['options'])===false && strpos('https', $datas['options'])===false)
+                    if(strpos($datas['options'], 'http')===false && strpos($datas['options'], 'https')===false)
                         $datas['options'] = 'https://'.$datas['options'];
                 }
             } // end if(isset($datas['options']))
