@@ -20,26 +20,26 @@ class LoopsOrdersController extends AppController
         parent::initialize();
         $this->loadComponent('SuppliersOrganization');
 
-        if(!isset($this->_user->acl)) { 
+        if(!isset($this->_user->acl)) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
     }
 
     public function beforeFilter(Event $event) {
-        
+
         parent::beforeFilter($event);
 
         if(empty($this->_user)) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
         }
-                
-        if(!$this->_user->acl['isSuperReferente']  && 
-           !$this->_user->acl['isReferentGeneric']) { 
+
+        if(!$this->_user->acl['isSuperReferente']  &&
+           !$this->_user->acl['isReferentGeneric']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
-        } 
+        }
     }
 
     /**
@@ -50,6 +50,7 @@ class LoopsOrdersController extends AppController
     public function index()
     {
         $this->paginate = [
+            'conditions' => ['LoopsOrders.organization_id' => $this->_organization->id],
             'contain' => ['LoopsDeliveries', 'SuppliersOrganizations', 'Users', 'Orders'],
         ];
         $loopsOrders = $this->paginate($this->LoopsOrders);
@@ -67,7 +68,7 @@ class LoopsOrdersController extends AppController
         $loopsOrder = $this->LoopsOrders->newEntity();
         if ($this->request->is('post')) {
             $datas = $this->request->getData();
-            
+
             $datas['organization_id'] = $this->_organization->id;
             $datas['user_id'] = $this->_user->id;
             $datas['flag_send_mail'] = 'N';
@@ -82,7 +83,7 @@ class LoopsOrdersController extends AppController
                 return $this->redirect(['action' => 'index']);
             }
         } // end post
- 
+
         $loopsDeliveries = $this->LoopsOrders->LoopsDeliveries->getsList($this->_user, $this->_organization->id);
         if($loopsDeliveries->count()==0) {
             $this->Flash->error(__('msg_loops_orders_not_loops_deliveries'));
@@ -90,12 +91,12 @@ class LoopsOrdersController extends AppController
         }
 
         $order_type_id = Configure::read('Order.type.gas');
-        
+
         $ordersTable = TableRegistry::get('Orders');
         $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-        
+
         $this->set(compact('order_type_id', 'loopsOrder', 'loopsDeliveries', 'suppliersOrganizations'));
     }
 
@@ -109,12 +110,15 @@ class LoopsOrdersController extends AppController
      */
     public function edit($id = null)
     {
-        $loopsOrder = $this->LoopsOrders->get($id, [
-            'contain' => []
-        ]);
+        $loopsOrder = $this->LoopsOrders->find()->where(['id' => $id, 'organization_id' => $this->_organization->id])->first();
+        if(empty($loopsOrder)) {
+            $this->Flash->error(__('msg_search_no_parameter'));
+            return $this->redirect(['action' => 'index']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $datas = $this->request->getData();
-            
+
             $datas['organization_id'] = $this->_organization->id;
             $datas['user_id'] = $this->_user->id;
             $datas['flag_send_mail'] = 'N';
@@ -137,12 +141,12 @@ class LoopsOrdersController extends AppController
         }
 
         $order_type_id = Configure::read('Order.type.gas');
-        
+
         $ordersTable = TableRegistry::get('Orders');
         $ordersTable = $ordersTable->factory($this->_user, $this->_organization->id, $order_type_id);
-        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);                      
+        $suppliersOrganizations = $ordersTable->getSuppliersOrganizations($this->_user, $this->_organization->id, $this->_user->id);
         $suppliersOrganizations = $this->SuppliersOrganization->getListByResults($this->_user, $suppliersOrganizations);
-    
+
         $this->set(compact('order_type_id', 'loopsOrder', 'loopsDeliveries', 'suppliersOrganizations'));
     }
 
