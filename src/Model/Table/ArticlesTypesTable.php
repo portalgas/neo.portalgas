@@ -1,9 +1,11 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -72,8 +74,33 @@ class ArticlesTypesTable extends Table
         return $validator;
     }
 
+    /*
+     * aggiungo un id contatore perche' se no cambia l'ordinamento
+     */
+    public function jsListGets($user=null, $organization_id) {
+
+        $articles_types = $this->getsList($user=null, $organization_id);
+
+        $results = [];
+        $i = 0;
+        foreach($articles_types->toArray() as $articles_type) {
+            $results[$i] = ['id' => $articles_type->id, 'name' => $articles_type->label];
+            $i++;
+        }
+        // $results = json_encode($results);
+
+        return $results;
+    }
+
     public function getsList($user=null, $organization_id) {
-        $results = $this->find()->order(['sort'])->all(); // ->toArray();
+
+        if(Cache::read('articlesTypes')===false) {
+            $results = $this->find()->order(['sort'])->all(); // ->toArray();
+            Cache::write('articlesTypes',$results);
+        }
+        else
+            $results = Cache::read('articlesTypes');
+
         return $results;
     }
 }

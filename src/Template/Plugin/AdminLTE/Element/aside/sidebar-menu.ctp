@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 
-echo '<ul class="sidebar-menu" data-widget="tree">'; 
+echo '<ul class="sidebar-menu" data-widget="tree">';
 
 if(!isset($user->organization->type))
     $user->organization->type = '';
@@ -15,7 +15,13 @@ switch($user->organization->type) {
     break;
 }
 
-if($this->Identity->get()->acl['isRoot']) 
+echo '<li>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdsK0XsvAB6Anmje4Rac5rF9qazrwbmd9qJIvQVjfUQFdk_Tw/viewform?vc=0&c=0&w=1&flr=0" target="_blank">
+      <i class="fa fa-support"></i> <span>Assistenza</span>
+    </a>
+  </li>';
+
+if($this->Identity->get()->acl['isRoot'])
   echo $this->element('sidebar-menu-root');
 
 if($application_env==='development') {
@@ -191,5 +197,5 @@ if($application_env==='development') {
   <li><a href="<?php echo $this->Url->build('/pages/debug'); ?>"><i class="fa fa-bug"></i> <span>Debug</span></a></li>
   <?php
   } // end if($application_env==='development')
-  ?>  
+  ?>
 </ul>

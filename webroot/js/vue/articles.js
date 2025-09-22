@@ -212,8 +212,8 @@ $(function () {
           }
         },
         changeValue: function(event, index) {
-          // console.log(event.target, 'changeValue');
-          // console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
+          console.log(event.target, 'changeValue');
+          console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
 
           let field_id = event.target.id;  // um_rif_values-DL
           let field_name = event.target.name; // um_riferimento
@@ -233,6 +233,13 @@ $(function () {
           if(!this.articles[index].can_edit) {
             alert("L'articolo non è modificabile perchè gestito da <b>"+this.articles[index].organization.name+'</b>');
             return;
+          }
+
+          /*
+           * passo l'array completo delle tipologie
+           */
+          if(field_name=='article_type_ids') {
+              field_value = this.articles[index].articles_types
           }
 
           let params = {
@@ -286,12 +293,31 @@ $(function () {
               let url = '/admin/articles/copy/'+article_organization_id+'/'+article_id;
               window.location.href = url;
         },
+          toggleArticleTypes: function(index) {
+              // console.log(this.articles[index].articles_types, 'toggleArticleTypes');
+              let is_bio = this.articles[index].articles_types.indexOf(1);
+              if (is_bio > -1) {
+                  this.articles[index].bio = 'Y';
+              }
+              else
+                  this.articles[index].bio = 'N';
+          },
         toggleIsBio: function(field_id, index) {
           // console.log(this.articles[index].bio, 'toggleIsBio');
-          if(this.articles[index].bio=='Y')
-            this.articles[index].bio = 'N';
-          else
-            this.articles[index].bio = 'Y';
+          if(this.articles[index].bio=='Y') {
+              this.articles[index].bio = 'N';
+
+              // elimino article_type = 1 BIO
+              let indexToRemove = this.articles[index].articles_types.indexOf(1);
+              if (indexToRemove > -1) {
+                  this.articles[index].articles_types.splice(indexToRemove, 1);
+              }
+          }
+          else {
+              this.articles[index].bio = 'Y';
+              // aggiungi article_type = 1 BIO
+              this.articles[index].articles_types.push(1);
+          }
 
           // console.log(field_id, 'field_id');
           let field_name = 'bio';

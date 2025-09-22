@@ -115,7 +115,7 @@ class ArticlesController extends ApiAppController
 
         // dd($where);
         $articles = $this->Articles->find()
-                    ->contain(['OwnerSupplierOrganizations', 'Organizations', 'CategoriesArticles'])
+                    ->contain(['OwnerSupplierOrganizations', 'Organizations', 'CategoriesArticles', 'ArticlesArticlesTypes' => ['ArticlesTypes']])
                     ->where($where)
                     ->limit($limit)
                     ->page($page)
@@ -206,15 +206,14 @@ class ArticlesController extends ApiAppController
      */
     public function setValue() {
 
-        $debug = false;
-
-        $continua = true;
-
         $results = [];
         $results['code'] = 200;
         $results['message'] = 'OK';
         $results['errors'] = '';
 
+        /*
+         * recupero i dati
+         */
         $jsonData = $this->request->input('json_decode');
         $id = $jsonData->id;
         $organization_id = $jsonData->organization_id;
@@ -228,6 +227,9 @@ class ArticlesController extends ApiAppController
             return $this->_response($results);
         }
 
+        /*
+         * ricerco l'articolo
+         */
         $where = ['id' => $id,
                   'organization_id' => $organization_id];
         $article = $this->Articles->find()
@@ -242,24 +244,40 @@ class ArticlesController extends ApiAppController
         }
 
         /*
-         * se cambia lo stato a N
-         * prima di aggiornarlo controllo eventuali ordini associati all'articolo
+         * campi
          */
-        if($name=='stato' && $value=='N') {
+        switch(strtolower($name)) {
+            case 'stato':
+                /*
+                 * se cambia lo stato a N
+                 * prima di aggiornarlo controllo eventuali ordini associati all'articolo
+                 */
+                if($value=='N') {
 
-            $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
-            $order_codes = $lifeCycleOrdersTable->getStateCodeNotUpdateArticle($this->_user);
-            $where = [];
-            $where['Orders'] = ['Orders.state_code NOT IN' => $order_codes];
-            $articlesTable = TableRegistry::get('Articles');
-            $articles_orders = $articlesTable->getArticleInOrders($this->_user, $this->_organization->id, $article->organization_id, $article->id, $where);
-            if($articles_orders->count()>0) {
-                $results['code'] = 500;
-                $results['message'] = 'KO';
-                $results['errors'] = 'L\'articolo non può essere disattivato perchè è presente in ordini già effettuati!';
+                    $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+                    $order_codes = $lifeCycleOrdersTable->getStateCodeNotUpdateArticle($this->_user);
+                    $where = [];
+                    $where['Orders'] = ['Orders.state_code NOT IN' => $order_codes];
+                    $articlesTable = TableRegistry::get('Articles');
+                    $articles_orders = $articlesTable->getArticleInOrders($this->_user, $this->_organization->id, $article->organization_id, $article->id, $where);
+                    if($articles_orders->count()>0) {
+                        $results['code'] = 500;
+                        $results['message'] = 'KO';
+                        $results['errors'] = 'L\'articolo non può essere disattivato perchè è presente in ordini già effettuati!';
+                        return $this->_response($results);
+                    } // end if($articles_orders->count()>0) {
+                } // if($value=='N')
+                break;
+            case 'article_type_ids':
+                $articlesArticlesTypesTable = TableRegistry::get('ArticlesArticlesTypes');
+                $articlesArticlesTypes = $articlesArticlesTypesTable->store($this->_user, $this->_organization->id, $article->id, $value);
+                $results['code'] = 200;
+                $results['message'] = 'OK';
+                $results['errors'] = '';
+
                 return $this->_response($results);
-            } // end if($articles_orders->count()>0) {
-        } // if($name=='name' || $name=='prezzo')
+                break;
+        } // switch(strtolower($name))
 
         /*
          * trasforma
@@ -293,66 +311,69 @@ class ArticlesController extends ApiAppController
          * aggiorno eventuali ordini associati all'articolo
          */
         // $this->Auths->isUserPermissionArticlesOrder($this->_user);
-        if($name=='name' || $name=='prezzo') {
+        switch(strtolower($name)) {
+            case 'name':
+            case 'prezzo':
+                    $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
+                    $order_codes = $lifeCycleOrdersTable->getStateCodeNotUpdateArticle($this->_user);
 
-            $lifeCycleOrdersTable = TableRegistry::get('LifeCycleOrders');
-            $order_codes = $lifeCycleOrdersTable->getStateCodeNotUpdateArticle($this->_user);
+                    $where = [];
+                    $where['Orders'] = ['Orders.state_code NOT IN' => $order_codes];
+                    $articlesTable = TableRegistry::get('Articles');
+                    $articles_orders = $articlesTable->getArticleInOrders($this->_user, $this->_organization->id, $article->organization_id, $article->id, $where);
+                    if($articles_orders->count()>0) {
+                        $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
+                        foreach($articles_orders as $articles_order) {
 
-            $where = [];
-            $where['Orders'] = ['Orders.state_code NOT IN' => $order_codes];
-            $articlesTable = TableRegistry::get('Articles');
-            $articles_orders = $articlesTable->getArticleInOrders($this->_user, $this->_organization->id, $article->organization_id, $article->id, $where);
-            if($articles_orders->count()>0) {
-                $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
-                foreach($articles_orders as $articles_order) {
+                            if($articles_order->organization_id!=$articles_order->article_organization_id) {
+                                // articolo non gestito dal GAS (ex produttore / des)
+                                continue;
+                            }
 
-                    if($articles_order->organization_id!=$articles_order->article_organization_id) {
-                        // articolo non gestito dal GAS (ex produttore / des)
-                        continue;
-                    }
-
-                    $articleOrder = $articlesOrdersTable->find()
-                                        ->where([
-                                            'organization_id' => $articles_order->organization_id,
-                                            'order_id' => $articles_order->order_id,
-                                            'article_organization_id' => $articles_order->article_organization_id,
-                                            'article_id' => $articles_order->article_id])
-                                        ->first();
-                    $datas = [];
-                    $datas[$name] = $value;
-                    $articlesOrder = $articlesOrdersTable->patchEntity($articleOrder, $datas);
-                    if (!$articlesOrdersTable->save($articlesOrder)) {
-                        Log::write('error', $articlesOrder->getErrors());
-                    }
-                } // end foreach($articles_orders as $articles_order)
-            } // end if($articles_orders->count()>0) {
-        } // if($name=='name' || $name=='prezzo')
-        elseif($name=='bio') {
-
-            // cerco se in k_articles_types e' settato a BIO (article_type_id = 1)
-            $articlesArticlesTypesTable = TableRegistry::get('ArticlesArticlesTypes');
-            $articlesArticlesType = $articlesArticlesTypesTable->find()->where([
-                'organization_id' => $organization_id,
-                'article_id' => $id,
-                'article_type_id' => 1])->first();
+                            $articleOrder = $articlesOrdersTable->find()
+                                ->where([
+                                    'organization_id' => $articles_order->organization_id,
+                                    'order_id' => $articles_order->order_id,
+                                    'article_organization_id' => $articles_order->article_organization_id,
+                                    'article_id' => $articles_order->article_id])
+                                ->first();
+                            $datas = [];
+                            $datas[$name] = $value;
+                            $articlesOrder = $articlesOrdersTable->patchEntity($articleOrder, $datas);
+                            if (!$articlesOrdersTable->save($articlesOrder)) {
+                                Log::write('error', $articlesOrder->getErrors());
+                            }
+                        } // end foreach($articles_orders as $articles_order)
+                    } // end if($articles_orders->count()>0) {
+            break;
+            case 'bio':
+                // cerco se in k_articles_types e' settato a BIO (article_type_id = $articlesArticlesTypesTable::BIO)
+                $articlesArticlesTypesTable = TableRegistry::get('ArticlesArticlesTypes');
+                $articlesArticlesType = $articlesArticlesTypesTable->find()->where([
+                    'organization_id' => $organization_id,
+                    'article_id' => $id,
+                    'article_type_id' => $articlesArticlesTypesTable::BIO])->first();
                 // debug($articlesArticlesType);
-            if($value=='N' && !empty($articlesArticlesType)) {
-                if(!empty($articlesArticlesType))
-                    $articlesArticlesTypesTable->delete($articlesArticlesType);
-            }
-            else
-            if($value=='Y'&& empty($articlesArticlesType)) {
-                $datas = [];
-                $datas['organization_id'] = $organization_id;
-                $datas['article_id'] = $id;
-                $datas['article_type_id'] = 1;
-                $articlesArticlesType = $articlesArticlesTypesTable->newEntity();
-                $articlesArticlesType = $articlesArticlesTypesTable->patchEntity($articlesArticlesType, $datas);
-                if (!$articlesArticlesTypesTable->save($articlesArticlesType)) {
-                    Log::write('error', $articlesArticlesType->getErrors());
+                if($value=='N' && !empty($articlesArticlesType)) {
+                    if(!empty($articlesArticlesType))
+                        $articlesArticlesTypesTable->delete($articlesArticlesType);
                 }
-            }
-        }
+                else
+                    if($value=='Y'&& empty($articlesArticlesType)) {
+                        $datas = [];
+                        $datas['organization_id'] = $organization_id;
+                        $datas['article_id'] = $id;
+                        $datas['article_type_id'] = $articlesArticlesTypesTable::BIO;
+                        $articlesArticlesType = $articlesArticlesTypesTable->newEntity();
+                        $articlesArticlesType = $articlesArticlesTypesTable->patchEntity($articlesArticlesType, $datas);
+                        if (!$articlesArticlesTypesTable->save($articlesArticlesType)) {
+                            Log::write('error', $articlesArticlesType->getErrors());
+                        }
+                    }
+            break;
+            default:
+            break;
+        } // switch(strtolower($name))
 
         $results['code'] = 200;
         $results['message'] = 'OK';

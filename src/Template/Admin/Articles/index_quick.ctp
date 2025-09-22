@@ -5,6 +5,7 @@ use App\Traits;
 $user = $this->Identity->get();
 
 $js = "var categories_articles = $js_categories_articles;";
+$js .= "var articles_types = $js_articles_types;";
 /*
   * se l'elenco dei produttori ha un solo elemento (ex produttore) lo imposto gia'
   */
@@ -14,9 +15,25 @@ if(!empty($search_id))
     $js .= "var search_id = $search_id;";
 else
     $js .= "var search_id = '';";
+
+$js .= "
+        function matchArticleTypes(articles_type_id, articles_articles_types) {
+            console.log(articles_type_id);
+            console.table(articles_articles_types);
+            let esito = false;
+            if(articles_articles_types.length>0) {
+                articles_articles_types.forEach(function(item, index) {
+                    if(item.articles_type.id==articles_type_id)
+                        esito = true;
+                });
+
+            }
+            return esito;
+        }
+";
 $this->Html->scriptBlock($js, ['block' => true]);
 echo $this->Html->script('vue/utils.js?v=20250520', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/articles.js?v=20250520', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articles.js?v=20250922', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
@@ -285,10 +302,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <!-- extra -->
                       <tr style="display: none;" :class="'extra-'+index">
                         <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col" colspan="<?php echo ($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') ? '4': '3';?>"><?= __('Nota') ?></th>
-                        <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
-                        <th scope="col" colspan="2"></th>
+                        <?php
+                        if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
+                            echo '<th scope="col"></th>';
+                        ?>
+                        <th scope="col" colspan="2"><?= __('Nota') ?></th>
+                        <th scope="col" colspan="2"><?= __('Ingredienti') ?></th>
+                        <th scope="col" colspan="4"></th>
+                        <th scope="col" colspan="2">Tipologia</th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
@@ -296,10 +317,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
                           echo '<td></td>';
                         ?>
-                        <td colspan="3">
+                        <td colspan="2">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="nota" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
                         </td>
-                        <td colspan="3">
+                        <td colspan="2">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="ingredienti" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
                         </td>
                         <td colspan="4">
@@ -319,6 +340,20 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                               <label><?= __('qta_massima_order'). ' <span data-toggle="modal" data-target="#qta_massima_order" class="badge badge-info"><i aria-hidden="true" class="fa fa-info"></i></span>'; ?></label>&nbsp;
                               <input type="number" class="form-control" min="0" v-model="article.qta_massima_order" @change="changeValue(event, index)" :id="'qta_massima_order-'+article.organization_id+'-'+article.id" name="qta_massima_order" /></div>
                         </td>
+                          <td colspan="2">
+                               <label v-for="articles_type in articles_types"
+                                     v-if="Object.keys(articles_types).length>1"
+                                     :for="'article_type_id-'+article.organization_id+'-'+article.id+'-'+articles_type.id"
+                              >
+                                  <input class="form-check-input" type="checkbox"
+                                         :id="'article_type_id-'+article.organization_id+'-'+article.id+'-'+articles_type.id"
+                                         name="article_type_ids"
+                                         v-model="article.articles_types"
+                                         @change="changeValue(event, index); toggleArticleTypes(index);"
+                                         :value="articles_type.id"
+                                         > {{ articles_type.name }}
+                              </label> <!-- :checked="matchArticleTypes(articles_type.id, article.articles_articles_types)" -->
+                          </td>
                       </tr>
                     </template>
 
@@ -387,16 +422,25 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                       <!-- extra -->
                       <tr style="display: none;" :class="'extra-'+index">
                         <th scope="col"></th>
-                        <th scope="col" colspan="<?php echo ($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') ? '4': '3';?>"><?= __('Nota') ?></th>
-                        <th scope="col" colspan="3"><?= __('Ingredienti') ?></th>
-                        <th scope="col" colspan="4"></th>
+                          <?php
+                          if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
+                              echo '<th scope="col"></th>';
+                          ?>
+                          <th scope="col" colspan="2"><?= __('Nota') ?></th>
+                          <th scope="col" colspan="2"><?= __('Ingredienti') ?></th>
+                          <th scope="col" colspan="4"></th>
+                          <th scope="col" colspan="2">Tipologia</th>
                       </tr>
                       <tr style="display: none;" :class="'extra-'+index">
                         <td></td>
-                        <td colspan="<?php echo ($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') ? '4': '3';?>">
+                          <?php
+                          if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
+                              echo '<td></td>';
+                          ?>
+                          <td colspan="2">
                           {{ article.nota }}
                         </td>
-                        <td colspan="3">
+                        <td colspan="2">
                           {{ article.ingredienti }}
                         </td>
                         <td colspan="4">
@@ -407,6 +451,17 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <div><label><?= __('qta_minima_order') ?></label>: {{ article.qta_minima_order }}</div>
                           <div><label><?= __('qta_massima_order') ?></label>: {{ article.qta_massima_order }}</div>
                         </td>
+                          <td colspan="2">
+                              <label v-for="articles_type in articles_types"
+                                     v-if="Object.keys(articles_types).length>1"
+                                     :for="'article_type_id-'+article.id+'-'+articles_type.id"
+                              >
+                                  <input class="form-check-input" type="checkbox"
+                                         disabled
+                                         :id="'article_type_id-'+article.id+'-'+articles_type.id"
+                                         :checked="matchArticleTypes(articles_type.id, article.articles_articles_types)"> {{ articles_type.name }}
+                              </label>
+                          </td>
                       </tr>
                     </template>
                 </template>

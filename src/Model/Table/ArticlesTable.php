@@ -72,6 +72,10 @@ class ArticlesTable extends Table
             'foreignKey' => 'parent_id',
             'joinType' => 'LEFT'
         ]);
+
+        $this->hasMany('ArticlesArticlesTypes', [
+            'foreignKey' => ['organization_id', 'article_id'],
+        ]);
     }
 
     /**

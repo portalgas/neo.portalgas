@@ -113,6 +113,11 @@ class ArticlesController extends AppController
         $si_no = ['Y' => 'Si', 'N' => 'No'];
         $this->set(compact('si_no'));
 
+        $articlesTypesTable = TableRegistry::get('ArticlesTypes');
+        $js_articles_types = $articlesTypesTable->jsListGets($this->_user, $this->_organization->id);
+        $js_articles_types = json_encode($js_articles_types);
+        $this->set(compact('js_articles_types'));
+
         /*
          * ordinamento, di default 'Articles.name ASC'
          * definito in article.js
@@ -241,13 +246,8 @@ class ArticlesController extends AppController
         $categoriesArticles = $categoriesArticlesTable->getsList($this->_user, $this->_organization->id);
         $this->set(compact('categoriesArticles'));
 
-        if(Cache::read('articlesTypes')===false) {
-            $articlesTypesTable = TableRegistry::get('ArticlesTypes');
-            $articlesTypes = $articlesTypesTable->getsList($this->_user, $this->_organization->id);
-            Cache::write('articlesTypes',$articlesTypes);
-        }
-        else
-            $articlesTypes = Cache::read('articlesTypes');
+        $articlesTypesTable = TableRegistry::get('ArticlesTypes');
+        $articlesTypes = $articlesTypesTable->getsList($this->_user, $this->_organization->id);
         $this->set(compact('articlesTypes'));
 
         $this->set('ums', $this->Articles->enum('um'));
