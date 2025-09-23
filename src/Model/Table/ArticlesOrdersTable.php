@@ -639,7 +639,9 @@ class ArticlesOrdersTable extends Table
         /*
          * se ho filtrato per tipologia non posso avere il limit perche' dopo escludo gli articoli che non hanno la tipologia
          */
-        if(!isset($where['ArticlesArticlesTypes']))
+        if(isset($where['ArticlesArticlesTypes']))
+            $results = $results->limit(Configure::read('sql.no.limit'));
+        else
             $results = $results->limit($this->_limit);
 
         $results = $results->page($this->_page)
@@ -724,7 +726,7 @@ class ArticlesOrdersTable extends Table
                          * senza limite perche' sotto ritratto i dati
                          * ->limit($this->_limit)
                          * */
-                        ->limit(1000)
+                        ->limit(Configure::read('sql.no.limit'))
                         ->page($this->_page)
                         ->all()
                         ->toArray();
