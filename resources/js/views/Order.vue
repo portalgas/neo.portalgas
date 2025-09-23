@@ -218,9 +218,18 @@
             <app-view-article-orders :viewList="viewList" @changeView="onChangeView" />
         </div>
     </div>
-    <div class="row" v-if="order_type_id!=9">
+    <div class="row" v-if="order_type_id!=9"> <!-- SOCIALMARKET -->
         <div class="col-12 col-md-12 col-lg-12">
             <app-search-category-articles @searchCategoryArticles="onSearchCategoryArticles" :order="order" />
+        </div>
+    </div>
+    <div class="row" v-if="order_type_id!=9"> <!-- SOCIALMARKET -->
+        <div class="col-12 col-md-12 col-lg-10">
+            <app-search-article-types @searchArticleTypes="onSearchArticleTypes" :order="order" />
+        </div>
+        <div class="col-12 col-md-12 col-lg-2 text-right">
+            <span v-if="articles.length==1" class="badge badge-pill badge-primary">Visualizzato {{ articles.length }} articolo</span>
+            <span v-else="articles.length>0" class="badge badge-pill badge-primary">Visualizzati {{ articles.length }} articoli</span>
         </div>
     </div>
 
@@ -269,7 +278,10 @@
           <div class="col-sm-12 col-xs-12 col-md-12" v-if="!isRunArticles && articles.length==0">
             <div class="alert alert-warning" role="alert">
                 <span v-if="order!=null && order.order_state_code.code=='RI-OPEN-VALIDATE'">Tutti i colli dell'ordine sono completati</span>
-                <span v-if="order!=null && order.order_state_code.code!='RI-OPEN-VALIDATE'">L'ordine non ha articoli ordinabili</span>
+                <span v-if="order!=null && order.order_state_code.code!='RI-OPEN-VALIDATE'">
+                    <span v-if="q!='' || search_categories_article_id>0 || search_article_types_ids.length>0">Nessun articolo trovato con i filtri impostati</span>
+                    <span v-else>L'ordine non ha articoli ordinabili</span>
+                </span>
             </div>
           </div>
 
@@ -298,6 +310,7 @@ import articleOrder from "../components/part/ArticleOrder.vue";
 import articleOrderList from "../components/part/ArticleOrderList.vue";
 import searchArticleOrders from "../components/part/SearchArticleOrders.vue";
 import searchCategoryArticles from "../components/part/SearchCategoryArticles.vue";
+import searchArticleTypes from "../components/part/SearchArticleTypes.vue";
 import sortArticleOrders from "../components/part/SortArticleOrders.vue";
 import viewArticleOrders from "../components/part/ViewArticleOrders.vue";
 import Referents from "../components/part/Referents.vue";
@@ -323,6 +336,7 @@ export default {
       displayList: false,
       q: null, // parola ricerca
       search_categories_article_id: 0, // filtro categoria
+      search_article_types_ids: [], // filtro tipologia
       viewList: false, // di default e' vista griglia
 
       cookie_name: 'tour',
@@ -364,6 +378,7 @@ export default {
     appArticleOrderList: articleOrderList,
     appSearchArticleOrders: searchArticleOrders,
     appSearchCategoryArticles: searchCategoryArticles,
+    appSearchArticleTypes: searchArticleTypes,
     appViewArticleOrders: viewArticleOrders,
     appSortArticleOrders: sortArticleOrders,
     referents: Referents
@@ -459,6 +474,14 @@ export default {
       this.isScrollFinish = false;
       /* console.log('onSearchCategoryArticles '+search_categories_article_id); */
     },
+    onSearchArticleTypes: function(search_article_types_ids) {
+        this.articles = [];
+        this.page = 1;
+        this.search_article_types_ids = search_article_types_ids;
+        this.scroll();
+        this.isScrollFinish = false;
+        console.log('onSearchArticleTypes '+search_article_types_ids);
+    },
     onChangeView: function(viewList) {
       this.viewList = viewList;
       /* console.log('onChangeView '+this.viewList); */
@@ -542,6 +565,7 @@ export default {
         page: this.page,
         q: this.q,
         search_categories_article_id: this.search_categories_article_id,
+        search_article_types_ids: this.search_article_types_ids,
         sort: this.sort
       };
       // console.log('getsAjaxArticles url '+url)

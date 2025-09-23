@@ -623,12 +623,17 @@ class ArticlesOrdersTable extends Table
         if(!isset($where['Carts']))
            $where['Carts'] = [];
 
+        $contains = ['Articles' => ['conditions' => $where['Articles']],
+                    'Carts' => [
+                        'conditions' => $where['Carts'],
+                        'Users']
+        ];
+
+        if(isset($where['ArticlesArticlesTypes']))
+            $contains['Articles'] += ['ArticlesArticlesTypes' => ['conditions' => $where['ArticlesArticlesTypes']]];
+
         $results = $this->find()
-                        ->contain([
-                            'Articles' => ['conditions' => $where['Articles']],
-                            'Carts' => [
-                                'conditions' => $where['Carts'],
-                                'Users']])
+                        ->contain($contains)
                         ->where($where['ArticlesOrders'])
                         ->order($this->_sort)
                         ->limit($this->_limit)
@@ -636,6 +641,19 @@ class ArticlesOrdersTable extends Table
                         ->all()
                         ->toArray();
    // debug($where);
+        if(isset($where['ArticlesArticlesTypes']) && count($results)>0) {
+            $i = 0;
+            $new_results = [];
+            foreach($results as $numResult => $result) {
+                if(!empty($result['article']['articles_articles_types'])) {
+                    $new_results[$i] = $results[$numResult];
+                    $i++;
+                }
+            }
+
+            $results = [];
+            $results = $new_results;
+        }
 
         return $results;
     }

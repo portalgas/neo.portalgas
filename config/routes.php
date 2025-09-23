@@ -387,6 +387,9 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/categories-articles', ['controller' => 'CategoriesArticles'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
         });
+        $routes->scope('/article-types', ['controller' => 'ArticleTypes'], function (RouteBuilder $routes) {
+            $routes->connect('/gets', ['action' => 'gets', '_method' => 'GET']);
+        });
         $routes->scope('/promotions', ['controller' => 'ProdGasPromotions'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);

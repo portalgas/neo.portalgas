@@ -21,7 +21,7 @@ class OrdersController extends ApiAppController
     public function beforeFilter(Event $event) {
         parent::beforeFilter($event);
     }
-  
+
     /*
      * dettaglio ordine x fe
      * /admin/api/orders/get
@@ -30,7 +30,7 @@ class OrdersController extends ApiAppController
 
         $debug = false;
         $results = [];
-    
+
         $user = $this->Authentication->getIdentity();
 
         $order_id = $this->request->getData('order_id');
@@ -56,11 +56,11 @@ class OrdersController extends ApiAppController
          */
         if(!empty($results)) {
             $distance = $this->Distance->get($user, $results->suppliers_organization);
-            $results->distance = $distance;            
+            $results->distance = $distance;
         }
 
-        return $this->_response($results); 
-    } 
+        return $this->_response($results);
+    }
 
     /*
      * elenco ordini x fe
@@ -69,20 +69,20 @@ class OrdersController extends ApiAppController
 
         $debug = false;
         $results = [];
-    
+
         $user = $this->Authentication->getIdentity();
 
         ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
-        
+
         $delivery_id = $this->request->getData('delivery_id');
 
-        /* 
+        /*
          * escludo Order.type.gas_parent_groups perche' li non posso fare acquisti
          * solo Order.type.gas_groups
          */
         $where = ['Orders.organization_id' => $organization_id,
                   'Orders.isVisibleBackOffice' => 'Y',
-                  'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),          
+                  'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
                   'Orders.state_code in ' => ['OPEN', 'RI-OPEN-VALIDATE']];
 
         if(!empty($delivery_id)) {
@@ -93,18 +93,18 @@ class OrdersController extends ApiAppController
         }
 
         if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
-            // ctrl che l'utente appartertenga al gruppo 
+            // ctrl che l'utente appartertenga al gruppo
             $gasGroupsTable = TableRegistry::get('GasGroups');
             $gasGroups = $gasGroupsTable->findMyLists($user, $organization_id, $user->id);
             if(empty($gasGroups))
-                $where += ['Orders.gas_group_id' => 0]; // utente non associato in alcun gruppo, prendo ordini non del gruppo 
+                $where += ['Orders.gas_group_id' => 0]; // utente non associato in alcun gruppo, prendo ordini non del gruppo
             else {
                 $acls = array_keys($gasGroups);
                 // $acls = array_merge($acls, [0]);
                 $where += ['Orders.gas_group_id IN ' => $acls];
             }
-        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y') 
-       
+        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y')
+
         $ordersTable = TableRegistry::get('Orders');
 
         /*
@@ -136,8 +136,8 @@ class OrdersController extends ApiAppController
                 ->all();
         }
 
-        return $this->_response($results); 
-    } 
+        return $this->_response($results);
+    }
 
     /*
      * /admin/api/orders/user-cart-gets
@@ -164,12 +164,12 @@ class OrdersController extends ApiAppController
         }
         // debug($results);
 
-        return $this->_response($results);  
-    } 
+        return $this->_response($results);
+    }
 
-    /* 
-     * /admin/api/orders/getArticlesOrdersByOrderId 
-     * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user  
+    /*
+     * /admin/api/orders/getArticlesOrdersByOrderId
+     * front-end - estrae gli articoli associati ad un ordine ed evenuali acquisti per user
      */
     public function getArticlesOrdersByOrderId() {
 
@@ -188,6 +188,7 @@ class OrdersController extends ApiAppController
         $page = $this->request->getData('page');
         $q = trim($this->request->getData('q'));
         $search_categories_article_id = $this->request->getData('search_categories_article_id');
+        $search_article_types_ids = $this->request->getData('search_article_types_ids');
         $sort = $this->request->getData('sort');
         // debug($order_id);
 
@@ -195,23 +196,24 @@ class OrdersController extends ApiAppController
         $options['page'] = $page;
         $options['q'] = $q;
         $options['search_categories_article_id'] = $search_categories_article_id;
+        $options['search_article_types_ids'] = $search_article_types_ids;
         $options['sort'] = $sort;
         $options['sql_limit'] = Configure::read('sql.limit');
 
         $results = [];
         $results = $this->Order->getArticlesOrdersByOrderId($user, $organization_id, $order_id, $order_type_id, $options, $debug);
 
-        return $this->_response($results); 
-    } 
+        return $this->_response($results);
+    }
 
-    /* 
+    /*
      * aggiornamento produttori per gestione chi e' escluso dal prepagato
      */
     public function getByDelivery() {
 
         $debug = false;
         $results = [];
-    
+
         $user = $this->Authentication->getIdentity();
         $organization_id = $user->organization->id;
 
@@ -231,6 +233,6 @@ class OrdersController extends ApiAppController
                                 ->order(['SuppliersOrganizations.name', 'Orders.data_inizio'])
                                 ->all();
 
-        return $this->_response($results);  
-    }     
+        return $this->_response($results);
+    }
 }

@@ -56,7 +56,7 @@ export default {
         search_order_id: this.order_id,
         search_order_type_id: this.order_type_id,
       };
-      console.log(params, '/admin/api/categories-articles/gets');
+      /* console.log(params, '/admin/api/categories-articles/gets'); */
 
       axios
         .post(url, params)
@@ -64,7 +64,7 @@ export default {
 
           this.is_run = false;
 
-          console.log(response.data);
+          /* console.log(response.data); */
           if(typeof response.data !== "undefined") {
             this.search_categories_articles = response.data.results;
           }
@@ -91,7 +91,7 @@ export default {
 		}
 	},
   mounted() {
-    console.log('mounted searchCategoryArticles');
+    /* console.log('mounted searchCategoryArticles'); */
     this.gets();
   },
   filters: {

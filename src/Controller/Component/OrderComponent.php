@@ -193,12 +193,14 @@ class OrderComponent extends Component {
              */
             isset($options['q'])? $q = $options['q'] : $q = '';
             isset($options['search_categories_article_id'])? $search_categories_article_id = $options['search_categories_article_id'] : $search_categories_article_id = 0;
+            isset($options['search_article_types_ids'])? $search_article_types_ids = $options['search_article_types_ids'] : $search_article_types_ids = [];
             isset($options['sort'])? $sort = $options['sort'] : $sort = '';
             isset($options['page'])?  $page = $options['page'] : $page = '1';
             isset($options['sql_limit'])?  $sql_limit = $options['sql_limit'] : $sql_limit = Configure::read('sql.limit');
 
             $where=[];
             $where['Articles'] = [];
+            $where['Articles'] += ['Articles.organization_id' => $orderResults->owner_organization_id];
             if(!empty($q)) {
                 $where_q = [];
                 if(strpos($q, ' ')!==false) {
@@ -217,8 +219,12 @@ class OrderComponent extends Component {
 
             if(!empty($search_categories_article_id)) {
                 $where['Articles'] += ['Articles.category_article_id' => $search_categories_article_id];
-
             } // end if(!empty($search_categories_article_id))
+
+            if(!empty($search_article_types_ids)) {
+                $where['ArticlesArticlesTypes'] = [];
+                $where['ArticlesArticlesTypes'] += ['ArticlesArticlesTypes.organization_id' => $orderResults->owner_organization_id, 'ArticlesArticlesTypes.article_type_id IN ' => $search_article_types_ids];
+            } // end if(!empty($search_article_types_ids))
 
             $options = [];
             $options['sort'] = $sort;
