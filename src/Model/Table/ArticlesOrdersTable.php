@@ -640,10 +640,11 @@ class ArticlesOrdersTable extends Table
          * se ho filtrato per tipologia non posso avere il limit perche' dopo escludo gli articoli che non hanno la tipologia
          */
         if(!isset($where['ArticlesArticlesTypes']))
-            $results->limit($this->_limit);
-        $results->page($this->_page)
-                ->all()
-                ->toArray();
+            $results = $results->limit($this->_limit);
+
+        $results = $results->page($this->_page)
+                            ->all()
+                            ->toArray();
    // debug($where);
         if(isset($where['ArticlesArticlesTypes']) && count($results)>0) {
             $i = 0;
