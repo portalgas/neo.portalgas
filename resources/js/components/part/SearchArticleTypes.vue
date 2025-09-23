@@ -59,6 +59,7 @@ export default {
         });
     },
 	search() {
+        /* console.log(this.search_article_types_ids, 'searchArticleTypes'); */
 		this.$emit('searchArticleTypes', this.search_article_types_ids); /* definito in <app-search-article-types @search="onSearch"> */
     },
 },

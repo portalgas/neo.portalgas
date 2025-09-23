@@ -480,7 +480,7 @@ export default {
         this.search_article_types_ids = search_article_types_ids;
         this.scroll();
         this.isScrollFinish = false;
-        console.log('onSearchArticleTypes '+search_article_types_ids);
+        /* console.log('onSearchArticleTypes '+search_article_types_ids); */
     },
     onChangeView: function(viewList) {
       this.viewList = viewList;
@@ -492,7 +492,7 @@ export default {
       this.onSearch();
     },
     scroll() {
-      // console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles+' isScrollFinish '+this.isScrollFinish);
+      /* console.log('scroll page '+this.page+' isRunArticles '+this.isRunArticles+' isScrollFinish '+this.isScrollFinish); */
       if(this.isScrollFinish || this.isRunArticles)
         return;
 
@@ -577,7 +577,7 @@ export default {
           this.isRunArticles = false;
 
           // console.log('getsAjaxArticles');
-          // console.log(response.data);
+          // console.log(response.data.length);
           // console.log(response.data[0]);
           // console.log(response.data[0].ids);
           if(response.data.length>0) {
@@ -591,7 +591,13 @@ export default {
               }
           }
           else {
-            this.isScrollFinish = true;
+            /*
+             * se ho effettuato una ricerca e non ho trovato nulla
+             */
+             if(this.q!='' || this.search_categories_article_id>0 || this.search_article_types_ids.length>0)
+                 this.isScrollFinish = false;
+             else
+                this.isScrollFinish = true;
           }
 
         })
