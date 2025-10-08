@@ -91,11 +91,11 @@ class ArticlesArticlesTypesTable extends Table
                     // Log::debug($datas);
                     $articles_type = $this->patchEntity($articles_type, $datas);
                     $this->save($articles_type);
-                }
+                } // if(empty($articles_type))
                 $articles_type_ids[] = $articles_type_id;
 
                 if($articles_type_id==self::BIO) $article_is_bio = 'Y';
-            }
+            } // foreach($articles_types_ids as $articles_type_id)
 
         /*
          * eliminiamo i tipi di articolo non piu' associati

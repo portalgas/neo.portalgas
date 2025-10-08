@@ -9,22 +9,22 @@ echo $this->Html->script('vue/cashierDeliveries', ['block' => 'scriptPageInclude
 echo $this->HtmlCustomSite->boxTitle(['title' => "Gestisci pagamenti dell'intera consegna", 'subtitle' => '']);
 
 if(!empty($deliveries)) {
-	
+
 	echo '<div id="vue-cashiers">';
 
   echo $this->Form->create(null, ['role' => 'form']);
 
-  echo '<div class="row">'; 
-  echo '<div class="col-md-12">'; 
+  echo '<div class="row">';
+  echo '<div class="col-md-12">';
   echo $this->Form->control('is_cash', ['type' => 'radio', 'label' => 'Prendi in considerazione la cassa', 'options' => $is_cashs, // 'default' => $is_cash_default,
     'v-model' => "is_cash"
    ]);
   echo '</div>';
   echo '</div>';
 
-  echo '<div class="row">'; 
-  echo '<div class="col-md-12">'; 
-	echo $this->Form->control('delivery_id', ['options' => $deliveries, 'class' => 'form-control select2-', 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty'), 
+  echo '<div class="row">';
+  echo '<div class="col-md-12">';
+	echo $this->Form->control('delivery_id', ['options' => $deliveries, 'class' => 'form-control select2-', 'escape' => false, 'empty' => Configure::read('HtmlOptionEmpty'),
 		// '@change' => 'getOrdersByDelivery'
 		// '@change' => 'getUsersByDelivery'
 		//'@change' => 'getCompleteUsersByDelivery'
@@ -53,8 +53,8 @@ if(!empty($deliveries)) {
           v-for="order in orders"
           :order="order.id"
           :key="order.id"
-        > 
-          <td> 
+        >
+          <td>
           	<img v-if="order.suppliers_organization.supplier.img1 != null" class="img-supplier" width="<?php echo Configure::read('Supplier.img.preview.width');?>" :src="'<?php echo $portalgas_fe_url.Configure::read('Supplier.img.path.fulljs');?>'+order.suppliers_organization.supplier.img1" alt="" /></td>
           <td>{{ order.suppliers_organization.name }}</td>
           <td>{{ order.state_code | orderStateCode }}</td>
@@ -91,23 +91,23 @@ if(!empty($deliveries)) {
         >
           <td>
             <a style="cursor: pointer;" data-toggle="collapse" :data-target="'#user-' + user.id">{{ user.name }}</a>
-            <div v-bind:id="['user-'+user.id]" class="collapse box-collapse" 
+            <div v-bind:id="['user-'+user.id]" class="collapse box-collapse"
                   style="max-width: 75%; box-shadow: 5px 5px #e6e1e1;">
                 <div v-for="summary_order in user.summary_orders"
                 :summary_order="summary_order.id"
                 :key="summary_order.id"
-                > 
+                >
                   <div>{{ summary_order.order.suppliers_organization.name }}</div>
                   <div class="pull-right"><?php echo __('Importo');?> {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
                   <div class="clearfix"></div>
                 </div>
-            </div>            
+            </div>
           </td>
           <td class="hidden-xs">
             <div v-for="summary_order in user.summary_orders"
             :summary_order="summary_order.id"
             :key="summary_order.id"
-            > 
+            >
               <div>{{ summary_order.order.suppliers_organization.name }}</div>
               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo __('Importo');?> {{ (summary_order.importo - summary_order.importo_pagato) | currency }} &euro;</div>
             </div>
@@ -128,15 +128,15 @@ if(!empty($deliveries)) {
       </tbody>
     </table>
     <?php
-    echo '<div class="row">'; 
-    echo '<div class="col-md-12">'; 
+    echo '<div class="row">';
+    echo '<div class="col-md-12">';
     echo $this->Form->control('nota', ['type' => 'textarea', 'label' => __('Cash-Nota')]);
     echo '</div>';
     echo '</div>';
     echo '</div>';
 
-    echo '<div v-if="users==null || users.length==0" class="row">'; 
-    echo '<div class="col-md-12">';    
+    echo '<div v-if="users==null || users.length==0" class="row">';
+    echo '<div class="col-md-12">';
     echo $this->element('msg', ['msg' => "Non sono presenti gasisti che devono saldare"]);
     echo '</div>';
     echo '</div>';
@@ -148,7 +148,7 @@ if(!empty($deliveries)) {
 
     echo '</div>'; // is_found_users
 
-	
+
     echo $this->Form->end();
 	  echo '</div>'; // vue-cashiers
 }

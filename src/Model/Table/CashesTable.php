@@ -7,6 +7,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Cake\Core\Configure;
+use Cake\I18n\FrozenTime;
 
 class CashesTable extends Table
 {
@@ -88,30 +89,30 @@ class CashesTable extends Table
 
         if(!empty($results)) {
             $results->importo_ = number_format($results->importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-            $results->importo_e = number_format($results->importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';          
+            $results->importo_e = number_format($results->importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
         }
 
         if($debug) debug($results);
-        
-        return $results;
-    }
 
-    /* 
-     * dato un importo, calcolo il nuovo valore di cassa di uno user
-     * ex SummaryOrders.importo 
-     */
-    public function getNewImport($user, $importo_da_pagare, $cash_importo, $debug=false) {
-
-        $results = ($cash_importo - $importo_da_pagare);       
-                
         return $results;
     }
 
     /*
-     * il saldo precedente lo metto in cashes_histories 
+     * dato un importo, calcolo il nuovo valore di cassa di uno user
+     * ex SummaryOrders.importo
+     */
+    public function getNewImport($user, $importo_da_pagare, $cash_importo, $debug=false) {
+
+        $results = ($cash_importo - $importo_da_pagare);
+
+        return $results;
+    }
+
+    /*
+     * il saldo precedente lo metto in cashes_histories
      */
     public function insert($user, $data, $debug=false) {
-    
+
         // $debug=true;
 
         if($debug) debug($data);
@@ -126,9 +127,9 @@ class CashesTable extends Table
             if($debug) debug("importo_da_pagare = 0 => esco");
             return true;
         }
-           
+
         /*
-         * ricerco la cassa per lo user per persisterlo in cashes_histories 
+         * ricerco la cassa per lo user per persisterlo in cashes_histories
          * solo se ho gia' occorrenza in Cashs
          */
         $options = [];
@@ -144,39 +145,42 @@ class CashesTable extends Table
             else
                 debug("cash importo before 0");
         }
-            
+
          /*
          * valori della cash corrente da persistere in k_cashes_histories
-         */             
-        $cash_importo = 0;            
-        $cash_nota = '';             
-        $cash_modified = '';            
+         */
+        $cash_importo = 0;
+        $cash_nota = '';
+        $cash_modified = '';
+        $cash_created = '';
         if(isset($data['importo_da_pagare'])) {
-            
+
             /*
              * lo devo calcolare: importo_da_pagare - importo in cassa
-             */ 
+             */
             if(isset($cashResults['importo']))
                 $cash_importo = $cashResults['importo'];
             else
-                $cash_importo = 0;            
- 
+                $cash_importo = 0;
+
              /*
              * recupero la nota della cash corrente per persisterla in k_cashes_histories
-             */ 
+             */
             if(isset($cashResults['nota']))
                 $cash_nota = $cashResults['nota'];
             else
-                $cash_nota = ''; 
+                $cash_nota = '';
 
             if(isset($cashResults['modified']))
                 $cash_modified = $cashResults['modified'];
-            
-            $importo_new = $this->getNewImport($user, $data['importo_da_pagare'], $cash_importo, $debug);   
+            if(isset($cashResults['created']))
+                $cash_created = $cashResults['created'];
+
+            $importo_new = $this->getNewImport($user, $data['importo_da_pagare'], $cash_importo, $debug);
             $data['importo'] = $importo_new;
         }
-                    
-        if(!isset($data['importo'])) 
+
+        if(!isset($data['importo']))
             $data['importo'] = 0;
 
         /*
@@ -190,6 +194,10 @@ class CashesTable extends Table
         if(empty($cashResults))
             $cashResults = $this->newEntity();
 
+        // workaround created e' errata
+        $data['created'] = FrozenTime::now();
+        $data['modified'] = FrozenTime::now();
+
         $cash = $this->patchEntity($cashResults, $data);
         if($debug) debug("cash importo after ".$cash->importo);
         if (!$this->save($cash)) {
@@ -197,14 +205,13 @@ class CashesTable extends Table
             return false;
         }
         else {
-
             /*
              * la prima volta che inserisco in Cashes non creo CashesHistories
              */
             if($cash_history_save) {
                 $id = $cash->id;
 
-               // $cash = $this->Cashes->get($id);
+                // $cash = $this->Cashes->get($id);
 
                 $data = [];
                 $data['id'] = null;
@@ -213,23 +220,24 @@ class CashesTable extends Table
                 $data['user_id'] = $cash->user_id;
                 $data['nota'] = $cash_nota;
                 $data['importo'] = $cash_importo; // importo precedente al salvataggio
-                if(!empty($cash_modified))
-                    $data['modified'] = $cash_modified;
-                
+                // la data di creazione e' la medesima di quando e' stato creato il movimemto di cassa (Cash)
+                // l'export della cassa per anno filtra per 'YEAR(CashesHistory.created) >= ' => $year
+                if(!empty($cash_modified)) $data['modified'] = $cash_modified;
+                if(!empty($cash_created)) $data['created'] = $cash_created;
                 if($debug) debug($data);
-                
+
                 /*
                  * CashesHistories
-                 */ 
+                 */
                 $cashesHistoriesTable = TableRegistry::get('CashesHistories');
                 $cashesHistories = $cashesHistoriesTable->newEntity();
                 $cashesHistories = $cashesHistoriesTable->patchEntity($cashesHistories, $data);
                 if (!$cashesHistoriesTable->save($cashesHistories)) {
                     debug($cashesHistories->getErrors());
                     return false;
-                }                
-
+                }
             } // end if(!$user_cash_empty)
+
         }
 
         return true;
@@ -253,19 +261,19 @@ class CashesTable extends Table
 
         return $results;
     }
-    
+
     /*
      *      calcolare il totale in cassa di un utente
      *      le voci di cassa generiche (user_id=0) possono avere + occorrenze
      *      le voci di cassa degli utenti hanno una sola occorrenza
     */
     public function getTotaleCashToUser($user, $user_id, $debug = false) {
-    
+
         $results = [];
 
         if(!isset($user->organization))
             return 0;
-        
+
         $organization_id = $user->organization->id;
 
         $where = ['Cashes.organization_id' => $organization_id,
@@ -291,5 +299,5 @@ class CashesTable extends Table
         if($debug) debug($results);
 
         return $results;
-    }    
+    }
 }

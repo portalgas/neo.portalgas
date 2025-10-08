@@ -18,7 +18,7 @@ class CashiersController extends AppController
     }
 
     public function beforeFilter(Event $event) {
-     
+
         parent::beforeFilter($event);
 
         if(empty($this->_user)) {
@@ -29,15 +29,15 @@ class CashiersController extends AppController
         if(!$this->_user->acl['isCassiere']) {
             $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
             return $this->redirect(Configure::read('routes_msg_stop'));
-        }        
-    }    
+        }
+    }
 
     public function deliveries()
-    {   
+    {
         $debug = false;
 
         if ($this->request->is('post')) {
-            
+
             /*
              * LifeCycleOrdersTable
              * registro tutti gli order_id trattati per poi verificare stato successivo
@@ -48,7 +48,7 @@ class CashiersController extends AppController
 
             $delivery_id = $this->request->getData('delivery_id');
             $nota = $this->request->getData('nota');
-            
+
             /*
              * $is_cash = 1 considero la cassa
              * $is_cash = 0 non considero la cassa
@@ -64,13 +64,13 @@ class CashiersController extends AppController
                 if(!empty($userResults)) {
 
                     $summaryOrdersTable = TableRegistry::get('SummaryOrders');
-                    
+
                     foreach($userResults as $numResult => $userResult) {
 
                         /*
                          * dettaglio acquisto per user (SummaryOrders)
                          */
-                        $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->_user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);     
+                        $summaryOrderResults = $this->SummaryOrder->getByUserByDelivery($this->_user, $userResult->organization_id, $userResult->id, $delivery_id, $options, $debug);
 
                         /*
                          * per ogni ordine/user saldo il pagamento
@@ -81,19 +81,19 @@ class CashiersController extends AppController
                              * lo faccio prina di salvare summaryOrders se no importo_pagato = importo
                              */
                             $summaryDeliveryResults = $this->SummaryOrder->getSummaryDeliveryByUser($this->_user, $userResult->organization_id, $userResult->id, $delivery_id, $summaryOrderResults, $debug);
-                            // debug($summaryDeliveryResults);                            
+                            // debug($summaryDeliveryResults);
 
                             foreach($summaryOrderResults as $summaryOrderResult) {
 
                                 unset($summaryOrderResult->order);
                                 unset($summaryOrderResult->user);
 
-                                $order_ids[$summaryOrderResult->order_id] = $summaryOrderResult->order_id; 
+                                $order_ids[$summaryOrderResult->order_id] = $summaryOrderResult->order_id;
 
                                 $data = [];
                                 $data['importo_pagato'] = $summaryOrderResult->importo;
                                 $data['modalita'] = $this->SummaryOrder::MODALITA_CONTANTI;
-                                $data['saldato_a'] = $this->SummaryOrder::SALDATO_A_CASSIERE; 
+                                $data['saldato_a'] = $this->SummaryOrder::SALDATO_A_CASSIERE;
 
                                 $summaryOrderResult = $summaryOrdersTable->patchEntity($summaryOrderResult, $data);
                                 // debug($summaryOrderResult);
@@ -130,12 +130,12 @@ class CashiersController extends AppController
                             $data['importo_da_pagare'] = $importo_da_pagare;
                             $data['nota'] = $nota;
                             $cashesTable->insert($this->_user, $data, $debug);
-                                          
-                       } // end if($is_cash==1)             
+
+                       } // end if($is_cash==1)
                     } // end foreach($userResults as $numResult => $userResult)
                 } // if(!empty($userResults))
 
-                /* 
+                /*
                  * se tutti i gasisti hanno saldato aggiorno stato dell'ordine
                  */
                 // debug($order_ids);
@@ -145,22 +145,22 @@ class CashiersController extends AppController
 
                     foreach($order_ids as $order_id) {
                         $state_code_next = $lifeCycleOrdersTable->stateCodeAfter($this->_user, $order_id, 'PROCESSED-ON-DELIVERY', $debug);
-                        
+
                         $lifeCycleOrdersTable->stateCodeUpdate($this->_user, $order_id, $state_code_next, [], $debug);
-                    } // foreach($order_ids as $order_id)      
+                    } // foreach($order_ids as $order_id)
                 }
 
             } // end if(!empty($delivery_id))
 
             $delivery_id = '';
         } // if ($this->request->is('post'))
-      
+
         $deliveries = $this->Cashier->getListDeliveries($this->_user);
-        
+
         $is_cashs = [1 => __('Si'), 0 => __('No')];
         $is_cash_default = 1;
 
-        $this->set(compact('deliveries', 'is_cashs', 'is_cash_default'));                  
+        $this->set(compact('deliveries', 'is_cashs', 'is_cash_default'));
     }
 
     public function massive() {
@@ -185,9 +185,9 @@ class CashiersController extends AppController
 
            if(strpos($user_ids, ',')!==false)
                $user_ids = explode(',', $user_ids);
-            else 
+            else
                 $user_ids = [$user_ids];
-                
+
            foreach($user_ids as $user_id) {
 
                 $datas = [];
@@ -208,7 +208,7 @@ class CashiersController extends AppController
         } // if ($this->request->is('post'))
 
         $usersTable = TableRegistry::get('Users');
-        $users = $usersTable->getList($this->_user, $this->_organization->id);        
+        $users = $usersTable->getList($this->_user, $this->_organization->id);
         $this->set(compact('users'));
     }
 }
