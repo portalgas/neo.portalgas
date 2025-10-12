@@ -2,8 +2,8 @@
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
-echo $this->Html->script('vue/cms-image.js?v=20250316', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/cms-doc.js?v=20250316', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/cms-image.js?v=20251012', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/cms-doc.js?v=20251012', ['block' => 'scriptPageInclude']);
 ?>
 
 <section class="content-header">
