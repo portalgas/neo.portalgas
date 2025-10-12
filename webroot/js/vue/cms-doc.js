@@ -111,10 +111,11 @@ $(function () {
                                 // console.log(response, 'success response');
                             });
                             this.on('removedfile', function(file) {
-                                // console.log(file, 'removedfile');
+                                /* console.log(file, 'removedfile'); */
                                 $.ajax({
                                     url: '/admin/api/cms-docs/doc1Delete/',
                                     type: 'post',
+                                    data: {name: file.name},
                                     headers: {
                                         'X-CSRF-TOKEN': $('meta[name="csrfToken"]').attr('content')
                                     }

@@ -2,6 +2,8 @@
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
+use Cake\Event\Event;
 
 /**
  * CmsMenuTypes Controller
@@ -12,6 +14,21 @@ use App\Controller\AppController;
  */
 class CmsMenuTypesController extends AppController
 {
+    public function initialize()
+    {
+        parent::initialize();
+
+    }
+
+    public function beforeFilter(Event $event) {
+        parent::beforeFilter($event);
+
+        if(empty($this->_user)) {
+            $this->Flash->error(__('msg_not_permission'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+    }
+
     /**
      * Index method
      *

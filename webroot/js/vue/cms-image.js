@@ -115,6 +115,7 @@ $(function () {
                             $.ajax({
                                 url: '/admin/api/cms-images/img1Delete/',
                                 type: 'post',
+                                data: {name: file.name},
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrfToken"]').attr('content')
                                 }

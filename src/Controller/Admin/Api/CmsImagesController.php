@@ -175,4 +175,43 @@ class CmsImagesController extends ApiAppController
         $results['results'] = [];
         return $this->_response($results);
     }
+
+    /*
+     * elimino img dopo upload cliccando su "Elimina documento"
+     */
+    public function img1Delete() {
+
+        $debug = false;
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        if($debug) debug('organization_id passato al metodo ['.$this->_organization->id.'] user ['.$this->_organization->id.']');
+        $request = $this->request->getData();
+        if($debug) debug($request);
+        $file_name = $request['name'];
+        if(empty($file_name)) {
+            $results['code'] = 500;
+            $results['message'] = 'KO';
+            $results['errors'] = "Immagine non trovata! [".$file_name."]";
+            $results['results'] = [];
+            return $this->_response($results);
+        }
+
+        $config = Configure::read('Config');
+        $asset_path = WWW_ROOT . sprintf(Configure::read('Cms.img.paths'), $this->_organization->id) . DS . $file_name;
+        if($debug) debug('img_path '.$asset_path);
+
+        // elimino file
+        unlink($asset_path);
+
+        $results['code'] = 200;
+        $results['message'] = '';
+        $results['errors'] = '';
+        $results['results'] = [];
+        return $this->_response($results);
+    }
 }

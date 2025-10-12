@@ -25,7 +25,6 @@ class CmsDocsController extends ApiAppController
 
     public function index($cms_page_id=0)
     {
-
         $results = [];
         $results['code'] = 200;
         $results['message'] = 'OK';
@@ -188,6 +187,9 @@ class CmsDocsController extends ApiAppController
         return $this->_response($results);
     }
 
+    /*
+     * elimino doc dopo upload cliccando su "Elimina documento"
+     */
     public function doc1Delete() {
 
         $debug = false;
@@ -199,47 +201,23 @@ class CmsDocsController extends ApiAppController
         $results['results'] = [];
 
         if($debug) debug('organization_id passato al metodo ['.$this->_organization->id.'] user ['.$this->_organization->id.']');
-
-        if($this->_organization->id!=$this->_organization->id) {
+        $request = $this->request->getData();
+        if($debug) debug($request);
+        $file_name = $request['name'];
+        if(empty($file_name)) {
             $results['code'] = 500;
             $results['message'] = 'KO';
-            $results['errors'] = "L'articolo non è gestito da te!";
+            $results['errors'] = "Documento non trovato! [".$file_name."]";
             $results['results'] = [];
             return $this->_response($results);
         }
 
-        $where = ['organization_id' => $this->_organization->id,
-                  'id' => $article_id];
-        $article = $this->Articles->find()
-                    ->where($where)
-                    ->first();
-        if(empty($article)) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = "Articolo non trovato! [".json_encode($where)."]";
-            $results['results'] = [];
-            return $this->_response($results);
-        }
+        $config = Configure::read('Config');
+        $asset_path = ROOT . sprintf(Configure::read('Cms.doc.paths'), $this->_organization->id) . DS . $file_name;
+        if($debug) debug('img_path '.$asset_path);
 
-        if(!empty($article->doc1)) {
-            $config = Configure::read('Config');
-            $asset_path = $config['Portalgas.App.root'] . sprintf(Configure::read('Article.img.path.full'), $this->_organization->id, $article->doc1);
-            if($debug) debug('img_path '.$asset_path);
-
-            // elimino file
-            unlink($asset_path);
-        } // end if(!empty($article->doc1))
-
-        $datas = [];
-        $datas['doc1'] = '';
-        $article = $this->Articles->patchEntity($article, $datas);
-        if (!$this->Articles->save($article)) {
-            $results['code'] = 500;
-            $results['message'] = 'KO';
-            $results['errors'] = $article->getErrors();
-            $results['results'] = [];
-            return $this->_response($results);
-        }
+        // elimino file
+        unlink($asset_path);
 
         $results['code'] = 200;
         $results['message'] = '';

@@ -92,7 +92,11 @@ class CmsMenusController extends AppController
             }
             $this->Flash->error(__('The {0} could not be saved. Please, try again.', 'Cms Menu'));
         }
-        $cmsMenuTypes = $this->CmsMenus->CmsMenuTypes->find('list', ['order' => 'name', 'limit' => 200]);
+
+        $where = [];
+        if($this->_organization->paramsConfig['hasDocuments']=='N')
+            $where = ['CmsMenuTypes.id not in' => [2]]; // escludo il tipo 'Doc'
+        $cmsMenuTypes = $this->CmsMenus->CmsMenuTypes->find('list', ['conditions' => $where, 'order' => 'name', 'limit' => 200]);
 
         $cmsDocsTable = TableRegistry::get('CmsDocs');
         $cmsDocs = $cmsDocsTable->find('list', ['conditions' => ['organization_id' => $this->_organization->id], 'order' => 'name', 'limit' => 200]);
