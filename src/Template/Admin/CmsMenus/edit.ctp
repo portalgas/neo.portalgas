@@ -35,7 +35,7 @@ use Cake\Core\Configure;
                         if($cmsMenu->cms_menu_type->code=='DOC') {
                             echo '<div class="row" id="doc">';
                             echo '<div class="col col-md-8">';
-                            if(count($cmsDocs->toArray())==0)
+                            if(count($cmsDocs->toArray())==0 || !isset($cmsMenu->cms_docs[0]))
                                 echo $this->element('msg', ['msg' => "Non ci sono documenti caricati da poter associare alla voce di menù", 'class' => 'warning']);
                             else
                                 echo $this->Form->control('cms_doc_id', ['options' => $cmsDocs, 'value' => $cmsMenu->cms_docs[0]->id, 'label' => __('Cms Docs'), 'empty' => Configure::read('HtmlOptionEmpty')]);
