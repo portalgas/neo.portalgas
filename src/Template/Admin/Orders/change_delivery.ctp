@@ -28,6 +28,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Order-'.$order_type_id), 's
         </div>
         <?php
           echo $this->Form->create($order, ['role' => 'form', 'id' => 'frm']);
+          echo $this->Form->hidden('gas_group_id', ['value' => $gas_group_id]);
           echo '<div class="box-body">';
 
               /*

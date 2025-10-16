@@ -7,28 +7,28 @@ use Cake\ORM\TableRegistry;
 use App\Traits;
 
 class OrderGasGroupsValidation extends Validation
-{  
+{
     use Traits\SqlTrait;
     use Traits\UtilTrait;
 
     /*
      * override di OrderValidation::orderDuplicate
-     * 
+     *
      * ctrl che non esista gia' un'ordine sulla consegna
-     * per il gruppo 
+     * per il gruppo
      */
     public static function orderDuplicate($value, $context)
-    { 
-        // debug($context); 	
+    {
+        // debug($context);
         $organization_id = $context['data']['organization_id'];
-        $delivery_id = $context['data']['delivery_id'];  
-        $order_type_id = $context['data']['order_type_id'];  
-        $supplier_organization_id = $context['data']['supplier_organization_id']; 
-        $gas_group_id = $context['data']['gas_group_id']; 
+        $delivery_id = $context['data']['delivery_id'];
+        $order_type_id = $context['data']['order_type_id'];
+        $supplier_organization_id = $context['data']['supplier_organization_id'];
+        $gas_group_id = $context['data']['gas_group_id'];
 
         /*
-            * se e' PROMOTION posso avere il medesimo ordine su una consegna 
-            * se e' ordine GasGroup posso avere il medesimo ordine (GasGroupParent) su una consegna 
+            * se e' PROMOTION posso avere il medesimo ordine su una consegna
+            * se e' ordine GasGroup posso avere il medesimo ordine (GasGroupParent) su una consegna
             */
         $type_draws = ['SIMPLE', 'COMPLETE'];
 
@@ -47,18 +47,18 @@ class OrderGasGroupsValidation extends Validation
         if(!$context['newRecord']) {
             $where += ['Orders.id !=' => $context['data']['id']];
         }
-        
+
         // debug($where);
         $results = $ordersTable->find()
                             ->where($where)
                             ->first();
-                                  
+
         // debug($results);
         if(!empty($results))
             return false;
         else
-            return true; 	
-    }    
+            return true;
+    }
 
     /*
      * ctrl l'ordine padre abbia articoli associati all'ordine
@@ -67,12 +67,12 @@ class OrderGasGroupsValidation extends Validation
     {
         // debug($context);
         $organization_id = $context['data']['organization_id'];
-        $parent_id = $context['data']['parent_id']; 
+        $parent_id = $context['data']['parent_id'];
 
         $where = ['organization_id' => $organization_id,
                   'order_id' => $parent_id,
                   'stato !=' => 'N'];
-             
+
         $articlesOrdersTable = TableRegistry::get('ArticlesOrders');
         $totale = $articlesOrdersTable->find()
                         ->where($where)
@@ -80,27 +80,27 @@ class OrderGasGroupsValidation extends Validation
         if($totale==0)
             return false;
         else
-            return true;  
+            return true;
     }
 
     public static function dateFine($value, $context)
-    { 
-        // debug($context);  
+    {
+        // debug($context);
 
         $operator = '<=';
-    	$value = $context['data']['data_fine']; 
+    	$value = $context['data']['data_fine'];
         $value2 = $context['data']['parent_data_fine']; // 15/03/2023
 
         if(empty($value2))
             return false;
 
         list($day, $month, $year) = explode('/', $value2);
-          
+
         $value = $value['year'].$value['month'].$value['day'];
         $value2 = $year.$month.$day;
         if (!Validation::comparison($value, $operator, $value2))
             return false;
-    
-        return true;           
-    }    
+
+        return true;
+    }
 }

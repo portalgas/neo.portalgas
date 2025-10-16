@@ -428,7 +428,8 @@ class OrdersController extends AppController
         $delivery_olds = $datas['delivery_olds'];
         $deliveryOptions = $datas['deliveryOptions'];
         $parent = $datas['parent'];
-        $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'delivery_olds', 'deliveryOptions'));
+        $gas_group_id = $order->gas_group_id;
+        $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'delivery_olds', 'deliveryOptions', 'gas_group_id'));
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $request = $this->request->getData();
