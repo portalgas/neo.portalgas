@@ -12,7 +12,7 @@ use Cake\I18n\Time;
 use Cake\I18n\Date;
 use App\Traits;
 use Cake\Log\Log;
-use Cake\Datasource\ConnectionManager; 
+use Cake\Datasource\ConnectionManager;
 
 class LifeCycleOrdersTable extends Table
 {
@@ -36,11 +36,11 @@ class LifeCycleOrdersTable extends Table
         $this->belongsTo('OrderStateCodes', [
             'foreignKey' => 'state_code',
             'joinType' => 'INNER',
-        ]); 
+        ]);
         $this->belongsTo('OrderTypes', [
             'foreignKey' => 'order_type_id',
             'joinType' => 'INNER',
-        ]);        
+        ]);
         $this->belongsTo('SuppliersOrganizations', [
             'foreignKey' => ['organization_id', 'supplier_organization_id'],
             'joinType' => 'INNER',
@@ -60,9 +60,9 @@ class LifeCycleOrdersTable extends Table
         $this->hasMany('Carts', [
             'foreignKey' => ['organization_id', 'order_id'],
             'joinType' => 'INNER'
-        ]);        
+        ]);
     }
-    
+
 	public function getType($user, $orderResult, $debug=false) {
 
 		$type = Configure::read('Order.type.gas');
@@ -74,41 +74,41 @@ class LifeCycleOrdersTable extends Table
 
 		return $type;
 	}
-        
+
     /*
      * richiamato a cambiamento dei dati di un ordine, ex
      *  CHANGE_DELIVERY quando l'ordine cambia di consegna
      */
     public function changeOrder($user, $orderResult, $operation='', $opts=[], $debug=false) {
-    
+
         $esito = [];
 
         if(empty($orderResult)) {
             $esito['CODE'] = "500";
             $esito['MSG'] = "Parametri errati";
-            return $esito; 
-        }   
+            return $esito;
+        }
 
         $ordersTable = TableRegistry::get('Orders');
         $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-    
+
         if($debug) debug("LifeCycleOrdersTable::changeOrder order_id [".$orderResult->id."] operation ".$operation);
-        
+
         switch($operation) {
             case 'EDIT':
                 if($orderResult->typeGest!='AGGREGATE') // SPLIT
                     $summaryOrderAggregatesTable->delete_to_order($user, $orderResult->id, $debug);
-            
+
                 /*
                  * elimina il trasporto da Orders
                 */
                 if($orderResult->hasTrasport=='N') {
-                
+
                     if($debug) debug("Order.hasTrasport == N, cancello il trasporto");
-                    
+
                     $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
 
                     $summaryOrderTrasportsTable->delete_importo_to_order($user, $orderResult->id, $debug);
@@ -118,62 +118,62 @@ class LifeCycleOrdersTable extends Table
                  * elimina il costo aggiuntivo da Orders
                 */
                 if($orderResult->hasCostMore=='N') {
-                
+
                     if($debug) debug("Order.hasCostMore == N, cancello il costo aggiuntivo");
-                        
+
                     $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
-                
+
                     $summaryOrderCostMoresTable->delete_importo_to_order($user, $orderResult->id, $debug);
                 }
-                
+
                 /*
                  * elimina lo sconto da Orders
                 */
                 if($orderResult->hasCostLess=='N') {
-                
+
                     if($debug) debug("Order.hasCostLess == N, cancello lo sconto");
-                        
-                    $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');    
-                
+
+                    $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
+
                     $summaryOrderCostLessesTable->delete_importo_to_order($user, $orderResult->id, $debug);
-                }   
+                }
             break;
             case 'CHANGE_DELIVERY':
                 /*
                  * aggiorno con il nuovo delivery_id le tabelle
                  *
-                 * k_summary_orders                      
+                 * k_summary_orders
                  * k_request_payments_orders
                  */
                 $this->_updateTablesToChangeDeliverId($user, $orderResult->id, $orderResult->delivery_id, $debug);
-                            
+
             break;
             default:
                 die("LifeCycleOrdersTable::changeOrder operation non previsto [".$operation."]");
-            break;          
+            break;
         }
-            
-        return $esito; 
+
+        return $esito;
     }
 
     /*
      * $orderResult stato attuale dell'ordine
      */
     public function beforeRendering($user, $orderResult, $controller, $action, $opts = [], $debug=false) {
-        
+
         $esito = [];
 
         if(empty($orderResult)) {
             $esito['CODE'] = "500";
             $esito['MSG'] = "Parametri errati";
-            return $esito; 
-        }   
+            return $esito;
+        }
 
         $ordersTable = TableRegistry::get('Orders');
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-    
+
         if($debug) debug("LifeCycleOrdersTable::beforeRendering order_id [".$orderResult->id."] state_code ".$orderResult->state_code);
 
         switch($orderResult->state_code) {
@@ -181,51 +181,51 @@ class LifeCycleOrdersTable extends Table
             break;
             case 'OPEN-NEXT':
             break;
-            case 'OPEN':            
+            case 'OPEN':
                 $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
             break;
             case 'RI-OPEN-VALIDATE':
-                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug); 
+                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
             break;
             case 'PROCESSED-BEFORE-DELIVERY':
-            
+
             break;
-            case 'PROCESSED-POST-DELIVERY':            
+            case 'PROCESSED-POST-DELIVERY':
                 $esito['isOrderValidateToTrasmit'] = $this->_isOrderValidateToTrasmit($user, $orderResult, $controller, $action, $debug);
-                
+
                 if(isset($opts['moduleConflicts'])) {
                     $esito['ctrlModuleConflicts'] = $this->_ctrlModuleConflicts($user, $orderResult, $opts['moduleConflicts'], $debug);
                 }
             break;
-            case 'INCOMING-ORDER':  // merce arrivata          
+            case 'INCOMING-ORDER':  // merce arrivata
                 $esito['isOrderValidateToTrasmit'] = $this->_isOrderValidateToTrasmit($user, $orderResult, $controller, $action, $debug);
-                
+
                 if(isset($opts['moduleConflicts'])) {
                     $esito['ctrlModuleConflicts'] = $this->_ctrlModuleConflicts($user, $orderResult, $opts['moduleConflicts'], $debug);
                 }
-                
+
                 $esito['msgOrderToClose'] = $this->_msgOrderToClose($user, $orderResult, $controller, $action, $debug);
             break;
-            case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere            
-                $esito['isOrderValidateToTrasmit'] = $this->_isOrderValidateToTrasmit($user, $orderResult, $controller, $action, $debug);   
+            case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere
+                $esito['isOrderValidateToTrasmit'] = $this->_isOrderValidateToTrasmit($user, $orderResult, $controller, $action, $debug);
 
-                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);     
+                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
 
-                $esito['msgOrderToClose'] = $this->_msgOrderToClose($user, $orderResult, $controller, $action, $debug);             
+                $esito['msgOrderToClose'] = $this->_msgOrderToClose($user, $orderResult, $controller, $action, $debug);
             break;
             /*
              * tesoriere
-             */             
+             */
             case 'WAIT-PROCESSED-TESORIERE':
                 $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
             break;
             case 'PROCESSED-TESORIERE':  // in carico al Tesoriere
                 $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
-            break;              
-            case 'TO-REQUEST-PAYMENT':                  
+            break;
+            case 'TO-REQUEST-PAYMENT':
             break;
             case 'TO-PAYMENT':
-                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug); 
+                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
             break;
             case 'USER-PAID':
             break;
@@ -234,16 +234,16 @@ class LifeCycleOrdersTable extends Table
             case 'WAIT-REQUEST-PAYMENT-CLOSE':
             break;
             case 'CLOSE':
-                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);             
+                $esito['msgExportDocs'] = $this->_msgExportDocs($user, $orderResult, $controller, $action, $debug);
             break;
             default:
                 die("LifeCycleOrdersTable::beforeRendering Order.state_code non previsto [".$orderResult->state_code."]");
-            break;              
+            break;
         }
 
         return $esito;
     }
-    
+
     /*
      * $orderResult stato attuale dell'ordine
      * $state_code_next stato succesivo, se non valorizzato non ho ancora richiesto il cambio stato
@@ -255,20 +255,20 @@ class LifeCycleOrdersTable extends Table
         if(empty($orderResult) || empty($state_code_next)) {
             $esito['CODE'] = "500";
             $esito['MSG'] = "Parametri errati";
-            return $esito; 
-        }   
+            return $esito;
+        }
 
         $ordersTable = TableRegistry::get('Orders');
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-    
+
         if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] state_code ".$orderResult->state_code." state_code_next ".$state_code_next);
 
         if($state_code_next==$orderResult->state_code) {
             if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] state_code ".$orderResult->state_code." == state_code_next ".$state_code_next." => NON aggiorno");
             $esito['CODE'] = "200";
-            return $esito;      
+            return $esito;
         }
 
         /*
@@ -291,30 +291,30 @@ class LifeCycleOrdersTable extends Table
             break;
             case 'PROCESSED-BEFORE-DELIVERY':
                 /*
-                 * cancello eventuali dati aggregati / trasporto ..., la merce non e' arrivata e il referente 
+                 * cancello eventuali dati aggregati / trasporto ..., la merce non e' arrivata e il referente
                  *      puo' modificare acquisti
                  *      dati aggregato / trasporto ... gia' calcolati possono essere errati
                  */
                 if($orderResult->typeGest=='AGGREGATE') {
                     $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
-                
+
                     $summaryOrderAggregatesTable->delete_to_order($user, $orderResult->id, $debug);
                 }
-                if($orderResult->hasTrasport=='N') {  
-                    $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');              
+                if($orderResult->hasTrasport=='N') {
+                    $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
                     $summaryOrderTrasportsTable->delete_importo_to_order($user, $orderResult->id, $debug);
                 }
-                if($orderResult->hasCostMore=='N') {  
-                    $summaryOrderCostMoreTable = TableRegistry::get('SummaryOrderCostMores');                 
+                if($orderResult->hasCostMore=='N') {
+                    $summaryOrderCostMoreTable = TableRegistry::get('SummaryOrderCostMores');
                     $summaryOrderCostMoreTable->delete_importo_to_order($user, $orderResult->id, $debug);
                 }
                 if($orderResult->hasCostLess=='N') {
                     $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
 
                     $summaryOrderCostLessesTable->delete_importo_to_order($user, $orderResult->id, $debug);
-                }   
-                 
-                $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');      
+                }
+
+                $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
             break;
             case 'PROCESSED-POST-DELIVERY':
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
@@ -322,26 +322,26 @@ class LifeCycleOrdersTable extends Table
             case 'INCOMING-ORDER':  // merce arrivata
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
             break;
-            case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere     
+            case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
             break;
             /*
              * tesoriere
-             */             
+             */
             case 'WAIT-PROCESSED-TESORIERE':
-                // $Tesoriere->sendMailToUpload($user, $this->request->data, $orderResult, 'REFERENTE', $debug);        
+                // $Tesoriere->sendMailToUpload($user, $this->request->data, $orderResult, 'REFERENTE', $debug);
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
             break;
-            case 'PROCESSED-TESORIERE':  // in carico al Tesoriere  
+            case 'PROCESSED-TESORIERE':  // in carico al Tesoriere
                 /*
                  * se l'ordine e' associato ad una richiesta di pagamento (ordine e' tornato indietro), lo elimino dalla rich di pagamento
-                 */ 
+                 */
                 if($user->organization->template->payToDelivery=='POST' || $user->organization->template->payToDelivery=='ON-POST') {
                     /*
                      * estraggo RequestPaymentsOrder da cancellare
                      */
-                    $requestPaymentsOrdersTable = TableRegistry::get('RequestPaymentsOrders'); 
-        
+                    $requestPaymentsOrdersTable = TableRegistry::get('RequestPaymentsOrders');
+
                     $options =  [];
                     $options['conditions'] = ['RequestPaymentsOrder.organization_id'=>(int)$user->organization->id,
                                               'RequestPaymentsOrder.order_id'=> $orderResult->id];
@@ -356,20 +356,20 @@ class LifeCycleOrdersTable extends Table
                         $summaryPaymentsTable->delete_order($user, $orderResult->id, $requestPaymentsOrderResults['RequestPaymentsOrder']['request_payment_id'], $debug);
                     }
                 }
-                
+
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
-            break;              
-            case 'TO-REQUEST-PAYMENT':  // Possibilità di richiederne il pagamento  
+            break;
+            case 'TO-REQUEST-PAYMENT':  // Possibilità di richiederne il pagamento
                 $monitoringOrdersTable = TableRegistry::get('MonitoringOrders');
 
-                $monitoringOrdersTable->delete_to_order($user, $orderResult->id);              
+                $monitoringOrdersTable->delete_to_order($user, $orderResult->id);
 
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
             break;
             case 'TO-PAYMENT':  // Associato ad una richiesta di pagamento
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
             break;
-            case 'USER-PAID':                   
+            case 'USER-PAID':
                 // da TO-PAYMENT a USER-PAID per in pagamenti POST
                 // da PROCESSED-ON-DELIVERY a USER-PAID  per in pagamenti ON
                 $orderResult->data_state_code_close = Configure::read('DB.field.date.empty');
@@ -381,17 +381,17 @@ class LifeCycleOrdersTable extends Table
             break;
             case 'CLOSE':
                 /*
-                 * posso chiudere un ordine 
+                 * posso chiudere un ordine
                  *      senza aver saldato tutti i gasisit
                  *      senza aver pagato il produttore
-                 */ 
+                 */
                 if($orderResult->delivery->sys=='Y') {
-                    $msg = __("Lo stato dell'ordine non è stato aggiornato perchè non associato ad una consegna valida.");  
+                    $msg = __("Lo stato dell'ordine non è stato aggiornato perchè non associato ad una consegna valida.");
                     $esito['CODE'] = "500";
                     $esito['MSG'] = $msg;
-                    return $esito; 
+                    return $esito;
                 }
-        
+
                 /*
                  * se order_just_pay = Y forzo il pagamento di un produttore
                  */
@@ -399,12 +399,12 @@ class LifeCycleOrdersTable extends Table
                     $order_just_pay = true;
                 else
                     $order_just_pay = false;
-                
+
                 /*
-                 * setto i campi tesoriere anche per i template ON 
+                 * setto i campi tesoriere anche per i template ON
                  *
                  * calcolo il totale degli importi degli acquisti dell'ordine
-                 */ 
+                 */
                 $importo_totale = $ordersTable->getTotImporto($user, $orderResult->organization_id, $orderResult->id);
                 $orderResult->tot_importo = $importo_totale;
 
@@ -413,7 +413,7 @@ class LifeCycleOrdersTable extends Table
                         $orderResult->tesoriere_importo_pay = $importo_totale;
                     if(empty($orderResult->tesoriere_importo_pay) || $order_just_pay)
                         $orderResult->tesoriere_importo_pay = $importo_totale;
-            
+
                     if(empty($orderResult->inviato_al_tesoriere_da) || $order_just_pay)
                         $orderResult->inviato_al_tesoriere_da = 'REFERENTE';
                     if(empty($orderResult->tesoriere_data_pay) || $order_just_pay)
@@ -423,28 +423,28 @@ class LifeCycleOrdersTable extends Table
                 } // if($user->organization->template->orderSupplierPaid=='Y')
 
                 if($user->organization->template->orderUserPaid=='Y') {
-                
+
                 } // if($user->organization->template->orderUserPaid=='Y')
-                
+
                 /*
-                 * da questa data va in STATISTICHE dopo Configure::read('GGArchiveStatics') gg 
-                 */         
+                 * da questa data va in STATISTICHE dopo Configure::read('GGArchiveStatics') gg
+                 */
                 $orderResult->data_state_code_close = date("Y-m-d");
             break;
             default:
                 die("LifeCycleOrdersTable::stateCodeUpdate Order.state_code_next non previsto [".$state_code_next."]");
-            break;              
+            break;
         }
-  
+
         $orderResult->state_code = $state_code_next;
 
         /*
-         * add other fields 
-         */      
+         * add other fields
+         */
         $orderResult = $this->_orderAddValue($orderResult, $state_code_next, $opts, $debug);
         if(isset($orderResult->CODE)) {
             if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate _orderAddValue() order_id [".$orderResult->id."] ERROR salvando l'ordine ".$orderResult->CODE);
-            return $orderResult; 
+            return $orderResult;
         }
 
         if($debug) debug("LifeCycleOrdersTable::stateCodeUpdate order_id [".$orderResult->id."] salvo l'ordine");
@@ -461,12 +461,12 @@ class LifeCycleOrdersTable extends Table
             if($debug) debug($orderResult>getErrors());
             $esito['CODE'] = "500";
             $esito['MSG'] = $orderResult>getErrors();
-            return $esito; 
+            return $esito;
         }
 
         /*
-         * add other fields 
-         */          
+         * add other fields
+         */
         switch($orderResult->state_code) {
             case 'CREATE-INCOMPLETE':
             break;
@@ -477,37 +477,37 @@ class LifeCycleOrdersTable extends Table
             case 'RI-OPEN-VALIDATE':
             break;
             case 'PROCESSED-BEFORE-DELIVERY':
-            
+
             break;
             case 'PROCESSED-POST-DELIVERY':
-            
+
             break;
             case 'INCOMING-ORDER':  // merce arrivata
                 $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders
             break;
             case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere
-                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => popolo k_summary_orders 
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => popolo k_summary_orders
             break;
             /*
              * tesoriere
-             */             
+             */
             case 'WAIT-PROCESSED-TESORIERE':
-                // $Tesoriere->sendMailToUpload($user, $this->request->data, $results, 'REFERENTE', $debug);    
-                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders            
+                // $Tesoriere->sendMailToUpload($user, $this->request->data, $results, 'REFERENTE', $debug);
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders
             break;
             case 'PROCESSED-TESORIERE':  // in carico al Tesoriere
-                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => popolo k_summary_orders                             
-            break;              
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => popolo k_summary_orders
+            break;
             case 'TO-REQUEST-PAYMENT':  // Possibilità di richiederne il pagamento
-                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders                        
+                $lifeCycleSummaryOrdersTable->callbackToOrder($user, $orderResult); // => pulisco k_summary_orders
             break;
             case 'TO-PAYMENT':
                  /*
                  * riporto le consegne da CLOSE e OPEN
                  */
-                $DeliveryLifeCycle->deliveriesToOpen($user, $orderResult->delivery_id, $debug);  // TODO  
+                $DeliveryLifeCycle->deliveriesToOpen($user, $orderResult->delivery_id, $debug);  // TODO
             break;
-            case 'USER-PAID':                   
+            case 'USER-PAID':
             break;
             case 'SUPPLIER-PAID':
             break;
@@ -517,14 +517,14 @@ class LifeCycleOrdersTable extends Table
             break;
             default:
                 die("LifeCycleOrdersTable::stateCodeUpdate Order.state_code non previsto [".$orderResult->state_code."]");
-            break;          
+            break;
         }
-        
+
         $esito['CODE'] = "200";
-                        
-        return $esito;         
-    }       
-    
+
+        return $esito;
+    }
+
     /*
      * ordine saldato dai gasisti
      * Organization.orderUserPaid = 'Y'
@@ -532,28 +532,28 @@ class LifeCycleOrdersTable extends Table
      * $entityOrder Order o order_id
      */
     public function getPaidUsers($user, $orderResult, $debug=false) {
-    
+
         $results = [];
-        
+
         $ordersTable = TableRegistry::get('Orders');
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
- 
+
         if($user->organization->template->orderUserPaid == 'Y' && in_array($orderResult->state_code, $this->getStateCodeManagementPayments($user))) {
-               
-            $summaryOrdersTable = TableRegistry::get('SummaryOrders');  
-            $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');        
-               
+
+            $summaryOrdersTable = TableRegistry::get('SummaryOrders');
+            $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
+
             $where = [];
             $where = ['SummaryOrders.organization_id' => $user->organization->id,
                       'SummaryOrders.order_id' => $orderResult->id];
-            $where += $lifeCycleSummaryOrdersTable->getConditionIsSaldato($user);                                         
+            $where += $lifeCycleSummaryOrdersTable->getConditionIsSaldato($user);
             $summaryOrderPaidResults = $summaryOrdersTable->find()
                                                             ->where($where)
                                                             ->all();
-            $totalSummaryOrderPaid = $summaryOrderPaidResults->count(); 
-        
+            $totalSummaryOrderPaid = $summaryOrderPaidResults->count();
+
             $where = [];
             $where = ['SummaryOrders.organization_id' => $user->organization->id,
                       'SummaryOrders.order_id' => $orderResult->id];
@@ -561,23 +561,23 @@ class LifeCycleOrdersTable extends Table
             $summaryOrderNotPaidResults = $summaryOrdersTable->find()
                                                             ->where($where)
                                                             ->all();
-            $totalSummaryOrderNotPaid = $summaryOrderNotPaidResults->count(); 
+            $totalSummaryOrderNotPaid = $summaryOrderNotPaidResults->count();
 
             $results['totalSummaryOrder'] = ($totalSummaryOrderPaid + $totalSummaryOrderNotPaid);
             $results['totalSummaryOrderPaid'] = $totalSummaryOrderPaid;
             $results['totalSummaryOrderNotPaid'] = $totalSummaryOrderNotPaid;
-            
+
             $results['summaryOrderPaid'] = $summaryOrderPaidResults;
-            $results['summaryOrderNotPaid'] = $summaryOrderNotPaidResults;          
+            $results['summaryOrderNotPaid'] = $summaryOrderNotPaidResults;
         }
-        
+
         if($debug) debug("LifeCycleOrdersTable::getPaidUsers order_id [".$orderResult->id."] ".$orderResult->state_code);
         // if(!empty($results)) if($debug) debug($results);
-                
-        return $results;     
+
+        return $results;
     }
 
-    /*  
+    /*
      * ordine pagato da tutti i gasisti produttore se Order.tesoriere_stato_pay=='Y'
      */
     public function isPaidUsers($user, $orderResult, $debug=false) {
@@ -589,19 +589,19 @@ class LifeCycleOrdersTable extends Table
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-        
+
         // ctrl se e' stato saldato da tutti i gasisti
-        if($lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug))  
+        if($lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug))
             $results = true;
         else
-            $results = false;   
-            
+            $results = false;
+
         if($debug) debug("LifeCycleOrdersTable::isPaidUsers order_id [".$orderResult->id."] ".$orderResult->state_code);
         if(!empty($results)) if($debug) debug($results);
-    
-        return $results;    
+
+        return $results;
     }
-    
+
     /*
      * ordine pagato al produttore
      * Organization.orderSupplierPaid = Y
@@ -616,18 +616,18 @@ class LifeCycleOrdersTable extends Table
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-        
-        if($user->organization->template->orderSupplierPaid == 'Y' && in_array($orderResult->state_code, $this->getStateCodeManagementPayments($user))) { 
+
+        if($user->organization->template->orderSupplierPaid == 'Y' && in_array($orderResult->state_code, $this->getStateCodeManagementPayments($user))) {
                 $results['isPaid'] = $this->isPaidSupplier($user, $orderResult, $debug);
         }
-    
+
         if($debug) debug("LifeCycleOrdersTable::getPaidSupplier order_id [".$orderResult->id."] ".$orderResult->state_code);
         if(!empty($results) && isset($results['isPaid']) && !empty($results['isPaid'])) if($debug) debug($results);
-    
-        return $results;    
-    }   
-    
-    /*  
+
+        return $results;
+    }
+
+    /*
      * ordine pagato al produttore se Order.tesoriere_stato_pay=='Y'
      */
     public function isPaidSupplier($user, $orderResult, $debug=false) {
@@ -638,37 +638,37 @@ class LifeCycleOrdersTable extends Table
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-        
-        if($orderResult->tesoriere_stato_pay=='Y') 
+
+        if($orderResult->tesoriere_stato_pay=='Y')
             $results = true;
-        else 
+        else
             $results = false;
-    
+
         if($debug) debug("LifeCycleOrdersTable::isPaidSupplier order_id [".$orderResult->id."] ".$orderResult->state_code." - order.tesoriere_stato_pay ".$orderResult->tesoriere_stato_pay." => esito ".$results);
 
-        return $results;    
+        return $results;
     }
-    
+
     public function msgGgArchiveStatics($user, $orderResult, $debug=false) {
 
         $ordersTable = TableRegistry::get('Orders');
 
         $results = [];
         $delta_gg = 0;
-        
+
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
-        
-        if($orderResult->state_code=='CLOSE' && $orderResult->data_state_code_close!=Configure::read('DB.field.date.empty')) { 
-            
-            $data_state_code_close = $orderResult->data_state_code_close;            
-            $new_data_state_code_close = $data_state_code_close->addDay($user->organization->template->ggArchiveStatics);          
+
+        if($orderResult->state_code=='CLOSE' && $orderResult->data_state_code_close!=Configure::read('DB.field.date.empty')) {
+
+            $data_state_code_close = $orderResult->data_state_code_close;
+            $new_data_state_code_close = $data_state_code_close->addDay($user->organization->template->ggArchiveStatics);
             $now = new Date();
             $interval = $now->diff($new_data_state_code_close);
             $interval_gg = $interval->format('%R%a');
 
             if($interval_gg<0) {
-                // non visualizzo perche' data maggiore di 
+                // non visualizzo perche' data maggiore di
                 $results['mailto'] = Configure::read('SOC.mail');
                 $results['mgs'] = 'Dovrebbe essere in statistiche, segnalalo!';
                 $results['class'] = 'label label-danger';
@@ -678,22 +678,22 @@ class LifeCycleOrdersTable extends Table
                 $results['mgs'] = "In statistiche oggi";
                 $results['class'] = 'label label-info';
             }
-            else 
+            else
             if($interval_gg>0) {
                 $results['mgs'] = "In statistiche tra ".(int)$interval_gg." gg";
                 $results['class'] = 'label label-info';
             }
-                
+
             if($debug) debug("LifeCycleOrdersTable::msgGgArchiveStatics order_id [".$orderResult->id."] ".$orderResult->state_code." data_statistiche ".$data_statistiche);
         }
 
-        return $results;    
+        return $results;
     }
-    
+
     /*
      * ctrl se in Order::index far compare il btn che consiglia il passagio allo stato successivo
      * escludo i gas con payToDelivery ON-POST
-     */ 
+     */
     public function getOrderStateNext($user, $orderResult, $isReferenteTesoriere=false, $debug=false) {
 
         $ordersTable = TableRegistry::get('Orders');
@@ -701,9 +701,9 @@ class LifeCycleOrdersTable extends Table
         $results = [];
 
         if($user->organization->template->payToDelivery!='ON-POST') {
-        
+
             $class_css = 'label label-info';
-            
+
             if(!is_object($orderResult))
                 $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
 
@@ -718,33 +718,33 @@ class LifeCycleOrdersTable extends Table
                     $class_css = 'label label-danger';
                 }
             }
-        
+
             /*
-             * il btn "Riportalo 'in carico al referente' solo se sono WAIT-PROCESSED-TESORIERE 
+             * il btn "Riportalo 'in carico al referente' solo se sono WAIT-PROCESSED-TESORIERE
              */
             if($orderResult->state_code=='RI-OPEN-VALIDATE' && ($user->organization->template->payToDelivery=='ON' || $user->organization->template->payToDelivery=='POST')) {
                 $stateCodeAfter = '';
             }
-            else 
+            else
             if($orderResult->state_code=='PROCESSED-BEFORE-DELIVERY') {
                 $stateCodeAfter = '';
             }
-            else 
+            else
             if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { //  In carico al cassiere durante la consegna
                 $stateCodeAfter = '';
             }
-            else 
+            else
             if($orderResult->state_code=='WAIT-PROCESSED-TESORIERE') {
                 $stateCodeAfter = 'PROCESSED-POST-DELIVERY';
             }
-            
+
             /*
              * ottengo i dati del controller per creare il link
              */
             if(!empty($stateCodeAfter)) {
-                        
+
                 $ordersActionsTable = TableRegistry::get('OrdersActions');
-        
+
                 $where = ['OrdersActions.state_code_next' => $stateCodeAfter];
                 $ordersAction = $ordersActionsTable->find()->where($where)->first();
                 if(!empty($ordersAction)) {
@@ -757,10 +757,10 @@ class LifeCycleOrdersTable extends Table
                 }
             }
         } // end if($user->organization->template->payToDelivery!='ON-POST')
-                
-        return $results;  
+
+        return $results;
     }
-    
+
     /*
      * ctrl se si puo' forzare la chiusura di un ordine
      *  Organization.orderForceClose=='Y'
@@ -771,12 +771,12 @@ class LifeCycleOrdersTable extends Table
         $ordersTable = TableRegistry::get('Orders');
 
         $results = false;
-        
+
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
 
         if($debug) debug("LifeCycleOrdersTable::canStateCodeToClose order_id [".$orderResult->id."] ".$orderResult->state_code);
-        
+
         if($user->organization->template->orderForceClose=='Y') {
             /*
              * in base al template ctrl chi ha abilitato Orders::close
@@ -786,15 +786,15 @@ class LifeCycleOrdersTable extends Table
             $where = ['TemplatesOrdersStatesOrdersActions.template_id' =>  $user->organization->template_id,
                     'TemplatesOrdersStatesOrdersActions.group_id' => Configure::read('group_id_super_referent'), // prendo quello di un gruppo tanto solo =
                     'OrdersActions.controller' => 'Orders',
-                    'OrdersActions.action' => 'CLOSE'];  
+                    'OrdersActions.action' => 'CLOSE'];
             $options['fields'] = ['TemplatesOrdersStatesOrdersActions.state_code'];
             $options['recursive'] = 0;
             $templatesOrdersStatesOrdersActionResults = $templatesOrdersStatesOrdersActionsTable->find()
                                     ->contain(['OrdersActions'])
                                     ->where($where)->all();
-            
+
             if($debug) debug($templatesOrdersStatesOrdersActionResults);
-            
+
             if(!empty($templatesOrdersStatesOrdersActionResults)) {
                 foreach($templatesOrdersStatesOrdersActionResults as $templatesOrdersStatesOrdersActionResult) {
                     if($templatesOrdersStatesOrdersActionResult->state_code==$orderResult->state_code) {
@@ -802,24 +802,24 @@ class LifeCycleOrdersTable extends Table
                         break;
                     }
                 }
-            } // if(!empty($templatesOrdersStatesOrdersActionResults)) 
-            
-        } // end if($user->organization->template->orderForceClose=='Y')        
-        
-        return $results;    
+            } // if(!empty($templatesOrdersStatesOrdersActionResults))
+
+        } // end if($user->organization->template->orderForceClose=='Y')
+
+        return $results;
     }
-    
+
     public function canOrdersClose($user, $orderResult, $debug=false) {
-    
+
         $ordersTable = TableRegistry::get('Orders');
 
         $results = false;
-            
+
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
 
         if($debug) debug("LifeCycleOrdersTable::canOrdersClose order_id [".$orderResult->id."] ".$orderResult->state_code);
-        
+
         if(!isset($user->organization->paramsConfig['canOrdersClose']))
             $user->organization->paramsConfig['canOrdersClose'] = 'ALL';
 
@@ -827,7 +827,7 @@ class LifeCycleOrdersTable extends Table
          * calcolo il totale degli importi degli acquisti dell'ordine
          * se ZERO => non puo' chiuderlo => Si DELETE
          */
-        $ordersTable = TableRegistry::get('Orders');    
+        $ordersTable = TableRegistry::get('Orders');
 
         $importo_totale = $ordersTable->getTotImporto($user, $orderResult->organization_id, $orderResult->id);
         if($importo_totale==0 || $importo_totale==Configure::read('DB.field.double.empty') || $importo_totale=='0,00')
@@ -836,25 +836,25 @@ class LifeCycleOrdersTable extends Table
             /*
              * salvo totImporto cosi' il msg in beforeRendering e' aggiornato
              */
-            $orderResult->tot_importo = $importo_totale;         
+            $orderResult->tot_importo = $importo_totale;
             if(!$ordersTable->save($orderResult)) {
                 $errors = $this->validationErrors;
                 if($debug) debug("LifeCycleOrdersTable::canOrdersClose order_id [".$orderResult->id."] ERROR salvando l'ordine");
                 if($debug) debug($errors);
-                
+
                 $esito['CODE'] = "500";
                 $esito['MSG'] = $errors;
-                return $esito;  
+                return $esito;
             }
         }
-        
+
         if($orderResult->delivery->sys=='Y')
             return false;
-        
-        if($debug) debug('canOrdersClose '.$user->organization->paramsConfig['canOrdersClose']); 
-        if($debug) debug($user->getAuthorisedGroups()); 
+
+        if($debug) debug('canOrdersClose '.$user->organization->paramsConfig['canOrdersClose']);
+        if($debug) debug($user->getAuthorisedGroups());
         if($debug) debug(['group_id_super_referent '.Configure::read('group_id_super_referent'), 'group_id_referent '.Configure::read('group_id_referent')]);
-            
+
         switch($user->organization->paramsConfig['canOrdersClose']) {
             case 'ALL':
                 $results = true;
@@ -864,25 +864,25 @@ class LifeCycleOrdersTable extends Table
                     $results = true;
             break;
             case 'REFERENT':
-                if (in_array(Configure::read('group_id_referent'), $user->getAuthorisedGroups())) 
+                if (in_array(Configure::read('group_id_referent'), $user->getAuthorisedGroups()))
                     $results = true;
             break;
         }
-        
+
         return $results;
     }
-    
+
     public function canOrdersDelete($user, $debug=false) {
-        
+
         $results = false;
-    
+
         if(!isset($user->organization->paramsConfig['canOrdersDelete']))
             $user->organization->paramsConfig['canOrdersDelete'] = 'ALL';
-            
-        if($debug) debug('canOrdersDelete '.$user->organization->paramsConfig['canOrdersDelete']); 
-        if($debug) debug($user->getAuthorisedGroups()); 
+
+        if($debug) debug('canOrdersDelete '.$user->organization->paramsConfig['canOrdersDelete']);
+        if($debug) debug($user->getAuthorisedGroups());
         if($debug) debug(['group_id_super_referent '.Configure::read('group_id_super_referent'), 'group_id_referent '.Configure::read('group_id_referent')]);
-            
+
         switch($user->organization->paramsConfig['canOrdersDelete']) {
             case 'ALL':
                 $results = true;
@@ -896,10 +896,10 @@ class LifeCycleOrdersTable extends Table
                     $results = true;
             break;
         }
-        
-        return $results;    
+
+        return $results;
     }
-    
+
    /*
      * Ajax::admin_view_orders
      * in base allo stato dell'ordine
@@ -926,14 +926,14 @@ class LifeCycleOrdersTable extends Table
                     default:
                         $actionToEditOrder = [];
                     break;
-                    
+
                 }
             }
             else {  // l'utente non gestisce l'associazione degli articoli con l'ordine
                 switch ($results['Order']['state_code']) {
                     case 'WAIT-PROCESSED-TESORIERE':
                     case 'PROCESSED-TESORIERE':
-                    case 'TO-REQUEST-PAYMENT':              
+                    case 'TO-REQUEST-PAYMENT':
                     case 'TO-PAYMENT':
                     case 'USER-PAID':
                     case 'SUPPLIER-PAID':
@@ -944,7 +944,7 @@ class LifeCycleOrdersTable extends Table
                     default:
                         $actionToEditOrder = ['controller' => 'Articles', 'action' => 'context_order_index', 'title' => __('List Articles')];
                     break;
-                }     
+                }
             }
         }
 
@@ -976,14 +976,14 @@ class LifeCycleOrdersTable extends Table
                     default:
                         $actionToEditOrder = [];
                     break;
-                    
+
                 }
             }
             else { // l'utente non gestisce l'associazione degli articoli con l'ordine
                 switch ($results['Order']['state_code']) {
                     case 'WAIT-PROCESSED-TESORIERE':
                     case 'PROCESSED-TESORIERE':
-                    case 'TO-REQUEST-PAYMENT':              
+                    case 'TO-REQUEST-PAYMENT':
                     case 'TO-PAYMENT':
                     case 'USER-PAID':
                     case 'SUPPLIER-PAID':
@@ -994,13 +994,13 @@ class LifeCycleOrdersTable extends Table
                     default:
                         $actionToEditArticle = ['controller' => 'Articles', 'action' => 'admin_context_order_edit', 'title' => __('Edit Article')];
                     break;
-                } 
+                }
             }
         }
 
         return $actionToEditArticle;
     }
-    
+
     /*
      * estrae lo stato SUCCESSIVO di un Ordine in base al template
      */
@@ -1010,7 +1010,7 @@ class LifeCycleOrdersTable extends Table
         $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
 
         $state_code_next = '';
-        $rule_sort_next = 1; 
+        $rule_sort_next = 1;
 
         if(!is_object($orderResult))
             $orderResult = $ordersTable->getById($user, $user->organization->id, $orderResult, $debug);
@@ -1022,97 +1022,97 @@ class LifeCycleOrdersTable extends Table
         if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' Order.state_code CURRENT '.$state_code);
 
         switch ($state_code) {
-            
+
             case 'PROCESSED-ON-DELIVERY':  // In carico al cassiere durante la consegna
-           
+
                 if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
                     // rimane invariato
                     if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
-                    
+
                     $state_code_next = $orderResult->state_code;
-                }   
-                else {          
+                }
+                else {
                     if($user->organization->template->orderSupplierPaid=='Y') {
 
                         /*
                          * ctrl se il produttore e' pagato
-                         */ 
+                         */
                         $isPaidSupplier = $this->isPaidSupplier($user, $orderResult, $debug);
 
                         if($isPaidSupplier) {
                             $state_code_next = 'CLOSE';
                             if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
                         }
-                        else { 
-                            $state_code_next = 'SUPPLIER-PAID'; 
+                        else {
+                            $state_code_next = 'SUPPLIER-PAID';
                             if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore NON PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
                         }
                     }
-                    else 
+                    else
                         $state_code_next = 'CLOSE';
-                } // end if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) 
+                } // end if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug))
             break;
-            /* 
-             * Template.payToDelivery = POST / ON-POST 
+            /*
+             * Template.payToDelivery = POST / ON-POST
              *  da USER-PAID => saldato da tutti i gasisti = N => rimane USER-PAID
-             *  da USER-PAID => saldato da tutti i gasisti = Y => WAIT-REQUEST-PAYMENT-CLOSE 
+             *  da USER-PAID => saldato da tutti i gasisti = Y => WAIT-REQUEST-PAYMENT-CLOSE
              *
              * Template.payToDelivery = ON => mai, ha gli stati (PROCESSED-ON-DELIVERY, SUPPLIER-PAID)
-             */             
-            case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere) 
-            
+             */
+            case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere)
+
                 if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
                     // rimane invariato
                     if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
-                    
+
                     $state_code_next = 'USER-PAID';
-                }   
+                }
                 else {
                     if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE");
-                
+
                     $state_code_next = 'WAIT-REQUEST-PAYMENT-CLOSE';
-                } 
+                }
             break;
             /*
-             * 
-             * Template.payToDelivery = POST / ON-POST 
              *
-             * in $RequestPaymentsOrder->setOrdersStateCodeByRequestPaymentId() calcolato che 
+             * Template.payToDelivery = POST / ON-POST
+             *
+             * in $RequestPaymentsOrder->setOrdersStateCodeByRequestPaymentId() calcolato che
              * tutti gli ordini della rich sono in state_code WAIT-REQUEST-PAYMENT-CLOSE => calcolo se SUPPLIER-PAID o CLOSE
              *
              * Template.payToDelivery = ON => mai, ha gli stati (PROCESSED-ON-DELIVERY, SUPPLIER-PAID)
-             */                             
+             */
             case 'WAIT-REQUEST-PAYMENT-CLOSE':     //  (solo per gestione con Tesoriere)
-            case 'WAIT-REQUEST-PAYMENT-CLOSE-ALL': //  (solo per gestione con Tesoriere)    
-            
+            case 'WAIT-REQUEST-PAYMENT-CLOSE-ALL': //  (solo per gestione con Tesoriere)
+
                 if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti");
-            
+
                 if($user->organization->template->orderSupplierPaid=='Y') {
-                    
+
                     /*
                      * ctrl se il produttore e' pagato
-                     */                      
+                     */
                      $isPaidSupplier = $this->isPaidSupplier($user, $orderResult, $debug);
 
-                     if($isPaidSupplier) 
+                     if($isPaidSupplier)
                         $state_code_next = 'CLOSE';
-                     else 
+                     else
                         $state_code_next = 'SUPPLIER-PAID';
-                
+
                      if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template");
                 }
-                else 
+                else
                     $state_code_next = 'CLOSE';
-            break;          
+            break;
             case 'SUPPLIER-PAID':
                 if($user->organization->template->orderUserPaid=='Y') {
-     
+
                     /*
                      * ctrl se il produttore e' pagato
-                     */ 
+                     */
                      $paidUsersResults = $this->getPaidUsers($user, $orderResult, $debug);
                      if($debug) debug($paidUsersResults);
-                     
+
                      if(!empty($paidUsersResults) && $paidUsersResults['totalSummaryOrderNotPaid']==0) {
                         if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template");
                         $rule_sort_next = 1;
@@ -1125,7 +1125,7 @@ class LifeCycleOrdersTable extends Table
             break;
             default:
                 if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." Order.state_code [".$state_code."] non previsto");
-            break;          
+            break;
         }
 
         if(empty($state_code_next)) {
@@ -1133,13 +1133,13 @@ class LifeCycleOrdersTable extends Table
              * non ancora definito, lo calcolo con calcolo del sort precedente o successivo
              */
             if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." ricerco Order.state_code posizionato con SORT $rule_sort_next a ".$state_code);
-                
-            $templatesOrdersStatesTable = TableRegistry::get('TemplatesOrdersStates'); 
-    
+
+            $templatesOrdersStatesTable = TableRegistry::get('TemplatesOrdersStates');
+
             $where = [];
             $where = ['TemplatesOrdersStates.template_id' => $template_id,
                       'TemplatesOrdersStates.state_code' => $state_code,
-                      'TemplatesOrdersStates.group_id' => Configure::read('group_id_super_referent')]; // prendo quello di un gruppo tanto solo = 
+                      'TemplatesOrdersStates.group_id' => Configure::read('group_id_super_referent')]; // prendo quello di un gruppo tanto solo =
             $results = $templatesOrdersStatesTable->find()
                                                   ->select(['TemplatesOrdersStates.sort'])
                                                   ->where($where)
@@ -1148,60 +1148,60 @@ class LifeCycleOrdersTable extends Table
              * calcolo il sort precedente o successivo
              */
             $sort_next = ($results->sort + ($rule_sort_next));
-             
+
             /*
              * ottengo i successivi e restituisco il primo
              */
             $where = [];
             $where = ['TemplatesOrdersStates.template_id' => $template_id,
                       'TemplatesOrdersStates.sort' => $sort_next,
-                      'TemplatesOrdersStates.group_id' => Configure::read('group_id_super_referent')]; // prendo quello di un gruppo tanto solo = 
+                      'TemplatesOrdersStates.group_id' => Configure::read('group_id_super_referent')]; // prendo quello di un gruppo tanto solo =
             $results = $templatesOrdersStatesTable->find()
                                                   ->where($where)
                                                   ->order(['TemplatesOrdersStates.sort asc'])
                                                   ->all();
             foreach($results as $result) {
-                $state_code_next = $result->state_code;   
+                $state_code_next = $result->state_code;
                 break; // restituisco il primo
             }
 
             if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." state_code_next ".$state_code_next." => ctrl se e' valido o lo ricalcolo");
-                    
+
             /*
              * ctrl se state_code_next e' valido, ex SUPPLIER-PAID ma e' gia' saldato
              */
             switch ($state_code_next) {
-                
-                /* 
-                 * Templates.payToDelivery = POST / ON-POST 
+
+                /*
+                 * Templates.payToDelivery = POST / ON-POST
                  *  da USER-PAID => saldato da tutti i gasisti = N => rimane USER-PAID
-                 *  da USER-PAID => saldato da tutti i gasisti = Y => WAIT-REQUEST-PAYMENT-CLOSE 
+                 *  da USER-PAID => saldato da tutti i gasisti = Y => WAIT-REQUEST-PAYMENT-CLOSE
                  *
                  * Templates.payToDelivery = ON => mai, ha gli stati (PROCESSED-ON-DELIVERY, SUPPLIER-PAID)
-                 */             
-                case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere) 
-                
+                 */
+                case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere)
+
                     if(!$lifeCycleSummaryOrdersTable->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
                         // rimane invariato
                         if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult->state_code);
-                        
+
                         $state_code_next = 'USER-PAID';
-                    }   
+                    }
                     else {
                         if($debug) debug("LifeCycleOrdersTable::stateCodeAfter - Order.id ".$orderResult->id." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE");
-                    
+
                         $state_code_next = 'WAIT-REQUEST-PAYMENT-CLOSE';
-                    } 
+                    }
                 break;
                 case 'SUPPLIER-PAID':
                     if($user->organization->template->orderUserPaid=='Y') {
-                        
+
                         /*
                          * ctrl se il produttore e' pagato
-                         */ 
+                         */
                          $paidUsersResults = $this->getPaidUsers($user, $orderResult, $debug);
                          if($debug) debug($paidUsersResults);
-                         
+
                          if(!empty($paidUsersResults) && $paidUsersResults['totalSummaryOrderNotPaid']==0) {
                             if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template");
                             $state_code_next = 'CLOSE';
@@ -1213,28 +1213,28 @@ class LifeCycleOrdersTable extends Table
                     }
                 break;
                 default:
-                break;          
-            }            
+                break;
+            }
         }
-                
+
         if($debug) debug('LifeCycleOrdersTable::stateCodeAfter Order.id '.$orderResult->id.' template_id '.$template_id." state_code_next ".$state_code_next);
-    
-        return $state_code_next;        
+
+        return $state_code_next;
     }
-    
+
     private function _orderAddValue($orderResult, $state_code_next, $opts=[], $debug) {
-        
+
         $esito = [];
-        
+
         switch($state_code_next) {
             case 'RI-OPEN-VALIDATE':
                 if(!isset($opts['data_fine_validation'])) {
                     $esito['CODE'] = "500";
                     $esito['MSG'] = "data_fine_validation non valorizzato";
-                    return $esito; 
-                }   
-                    
-                $orderResult->data_fine_validation = $opts['data_fine_validation'];              
+                    return $esito;
+                }
+
+                $orderResult->data_fine_validation = $opts['data_fine_validation'];
             break;
             case 'WAIT-PROCESSED-TESORIERE':
                 if(isset($opts['tesoriere_doc1']))
@@ -1243,30 +1243,30 @@ class LifeCycleOrdersTable extends Table
             case 'PROCESSED-POST-DELIVERY':
             break;
             case 'INCOMING-ORDER':  // merce arrivata
-                if(!isset($opts['data_incoming_order'])) 
+                if(!isset($opts['data_incoming_order']))
                     $opts['data_incoming_order'] = date('Y-m-d');
-                    
+
                 $orderResult->data_incoming_order = $opts['data_incoming_order'];
 
-            break;          
+            break;
             case 'CLOSE':
-                if(isset($opts['tot_importo'])) 
+                if(isset($opts['tot_importo']))
                     $orderResult->tot_importo = $opts['tot_importo'];
-                
-                if(isset($opts['inviato_al_tesoriere_da'])) 
+
+                if(isset($opts['inviato_al_tesoriere_da']))
                     $orderResult->inviato_al_tesoriere_da = $opts['inviato_al_tesoriere_da'];
-                
+
                 if(empty($orderResult->tot_importo)) {
                     $esito['CODE'] = "500";
                     $esito['MSG'] = "Order.tot_importo non valorizzato";
-                    return $esito; 
+                    return $esito;
                 }
                 if(empty($orderResult->inviato_al_tesoriere_da)) {
                     $esito['CODE'] = "500";
                     $esito['MSG'] = "Order.inviato_al_tesoriere_da non valorizzato";
-                    return $esito; 
-                }   
-                             
+                    return $esito;
+                }
+
                 if(isset($opts['tesoriere_data_pay']))
                     $orderResult->tesoriere_data_pay = $opts['tesoriere_data_pay'];
                 if(isset($opts['tesoriere_importo_pay']))
@@ -1277,77 +1277,78 @@ class LifeCycleOrdersTable extends Table
                     $orderResult->tesoriere_stato_pay = $opts['tesoriere_stato_pay'];
             break;
             default:
-                
-            break;          
+
+            break;
         }
-        
+
         return $orderResult;
     }
-    
+
     /*
      * stati dell'ordine che non permettono l'aggiornamneto dell'anagrafica di un articolo
      *  Article::syncronizeArticlesOrder()
      */
     public function getStateCodeNotUpdateArticle($user) {
-        
+
+        $results[] = 'PROCESSED-ON-DELIVERY'; // In carico al cassiere durante la consegna, il totale ordine e' stato gia' calcolato
         $results[] = 'PROCESSED-TESORIERE';
-        $results[] = 'TO-REQUEST-PAYMENT';      
-        $results[] = 'TO-PAYMENT';  
+        $results[] = 'TO-REQUEST-PAYMENT';
+        $results[] = 'TO-PAYMENT';
         $results[] = 'WAIT-REQUEST-PAYMENT-CLOSE';
-        $results[] = 'USER-PAID';               
-        $results[] = 'SUPPLIER-PAID';       
+        $results[] = 'USER-PAID';
+        $results[] = 'SUPPLIER-PAID';
         $results[] = 'CLOSE';
-        
+
         return $results;
     }
-    
+
     /*
      * stati dell'ordine che indicano la gestione dei pagamenti
-     */ 
+     */
     public function getStateCodeManagementPayments($user) {
 
         $results[] = 'PROCESSED-ON-DELIVERY';
-        $results[] = 'TO-PAYMENT';      
+        $results[] = 'TO-PAYMENT';
         $results[] = 'WAIT-REQUEST-PAYMENT-CLOSE';
-        $results[] = 'USER-PAID';               
-        $results[] = 'SUPPLIER-PAID';   
-        
+        $results[] = 'USER-PAID';
+        $results[] = 'SUPPLIER-PAID';
+
         return $results;
     }
 
     /*
      * stati dell'ordine che li escludono per calcolare gli acquisti di un gasista
-     */     
+     */
     public function getStateCodeUsersCash($user) {
 
-        $results[] = 'CLOSE';   
-        
+        $results[] = 'CLOSE';
+
         return $results;
     }
-    
+
     public function getStateCodeNotUpdateArticleToSql($user) {
-        
+
         $results = $this->getStateCodeNotUpdateArticle($user);
-        
+
         $tmp = "";
         foreach($results as $result) {
             $tmp .= "'".$result."',";
         }
 
         $tmp = substr($tmp, 0, (strlen($tmp)-1));
-        
+
         return $tmp;
     }
-     
-    /* 
+
+    /*
      * ctrl se e' ordine chiuso agli acquisti
      * se true l'importo e' carts.qta * article_orders.prezzo
      * se false l'importo e' carts.final_price
-     */     
+     */
     public function isOpenToPurchasable($user, $order_state_code) {
-        
-        if($order_state_code == 'OPEN' ||  
-            $order_state_code == 'RI-OPEN-VALIDATE') 
+
+        if($order_state_code == 'OPEN' ||
+            $order_state_code == 'RI-OPEN-VALIDATE')
             return true;
         else
             return false;
@@ -1355,15 +1356,15 @@ class LifeCycleOrdersTable extends Table
 
     /*
      * $modulo: sono in quel modulo e ctrl se ho anche altri moduli che possono andare in conflitto
-     *          managementCartsOne (Gestisci gli acquisti nel dettaglio) con 
+     *          managementCartsOne (Gestisci gli acquisti nel dettaglio) con
      *              Order.typeGest.AGGREGATE per SummaryOrder
      *              Order.typeGest.SPLIT     per Order.qta
-     * 
+     *
      *              Order.trasport
      *              Order.hasCostMore
      *              Order.hasCostLess
-     * 
-     *          managementCartsGroupByUsers (Gestisci gli acquisti aggregati per importo) con 
+     *
+     *          managementCartsGroupByUsers (Gestisci gli acquisti aggregati per importo) con
      *              Order.trasport
      *              Order.hasCostMore
      *              Order.hasCostLess
@@ -1383,7 +1384,7 @@ class LifeCycleOrdersTable extends Table
                     $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
 
                     $summaryOrderAggregateorderResult = $summaryOrderAggregatesTable->select_to_order($user, $orderResult->id);
-                    if (!empty($summaryOrderAggregateorderResult)) 
+                    if (!empty($summaryOrderAggregateorderResult))
                         $results['alertModuleConflicts'] = 'summary_order_just_populate';
                 }
                 else
@@ -1410,7 +1411,7 @@ class LifeCycleOrdersTable extends Table
             $results['orderHasSummaryOrderAggregate'] = 'Y';
         else
             $results['orderHasSummaryOrderAggregate'] = 'N';
-        
+
         if ($orderResult->hasTrasport == 'Y' && $orderResult->trasport != '0.00')
             $results['orderHasTrasport'] = 'Y';
         else
@@ -1434,30 +1435,30 @@ class LifeCycleOrdersTable extends Table
 
         return $results;
     }
-        
+
     /*
      * al'ordine e' cambiata la consegna,
      * aggiorno con il nuovo delivery_id le tabelle
      *
-     * k_summary_orders                      
+     * k_summary_orders
      * k_request_payments_orders
-     */             
+     */
     private function _updateTablesToChangeDeliverId($user, $order_id, $delivery_id, $debug=false) {
 
         try {
-            $sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders  
+            $sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders
                     SET delivery_id = $delivery_id
-                    WHERE 
+                    WHERE
                         organization_id = ".(int)$user->organization->id."
                         and order_id = ".(int)$order_id;
             if($debug) debug($sql);
             $connection = ConnectionManager::get('default');
             $results = $connection->execute($sql);
-            
 
-            $sql = "UPDATE ".Configure::read('DB.prefix')."request_payments_orders 
+
+            $sql = "UPDATE ".Configure::read('DB.prefix')."request_payments_orders
                     SET delivery_id = $delivery_id
-                    WHERE 
+                    WHERE
                         organization_id = ".(int)$user->organization->id."
                         and order_id = ".(int)$order_id;
             if($debug) debug($sql);
@@ -1467,13 +1468,13 @@ class LifeCycleOrdersTable extends Table
             Log::error($e->getMessage());
             return false;
         }
-        
+
         return true;
     }
-    
+
     /*
      * ctrl se il referente puo' trasmettre al cassiere / tesoriere
-     * se configurati 
+     * se configurati
      *  i dati aggragati => se li ha compilati
      *  trasporto => se li ha compilati ...
      */
@@ -1484,21 +1485,21 @@ class LifeCycleOrdersTable extends Table
         $controller_action_validates = [['Referente', 'admin_order_state_in_WAIT_PROCESSED_TESORIERE'], // referente => tesoriere
                                         ['Referente', 'admin_order_state_in_PROCESSED_ON_DELIVERY'],    // referente => cassiere
                                         ['Cassiere', 'admin_order_state_in_WAIT_PROCESSED_TESORIERE']]; // cassiere => tesoriere
-        
-        if(!$this->_ctrlMethodValid($controller_action_validates, $controller, $action)) 
+
+        if(!$this->_ctrlMethodValid($controller_action_validates, $controller, $action))
             return $esito;
-        
+
         $ajaxGasCodesTable = TableRegistry::get('AjaxGasCodes');
-            
+
         /*
          * TESORIERE - Se Delivery.sys == 'Y' (consegna da definire) in 'WAIT-PROCESSED-TESORIERE' non posso editare l'ordine
          * CASSIERE -  Se Delivery.sys == 'Y' (consegna da definire) in 'PROCESSED-ON-DELIVERY' non posso editare l'ordine
          */
         if($orderResult->delivery->sys=='Y') {
             $esito['msg'] = "L'ordine è associato ad una consegna ancora da definire<br />e non può essere trasmesso al cassiere/tesoriere";
-            return $esito; 
+            return $esito;
         }
-            
+
         switch ($orderResult->state_code) {
             case 'PROCESSED-POST-DELIVERY':
             case 'PROCESSED-ON-DELIVERY':   // in carico al cassiere durante la consegna
@@ -1513,14 +1514,14 @@ class LifeCycleOrdersTable extends Table
         }
 
         if($continua && $orderResult->typeGest=='AGGREGATE') {
-                
+
             if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] typeGest ".$orderResult->typeGest);
-        
+
             /*
              *  dati aggregati
-             */     
+             */
             $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');
-         
+
             $totale = $summaryOrderAggregatesTable->select_totale_importo_to_order($user, $orderResult->id, $debug);
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
@@ -1536,21 +1537,21 @@ class LifeCycleOrdersTable extends Table
                     $esito['actions'][1]['action_label']= __('Management Carts Group By Users Short');
                 }
                 $continua = false;
-                
+
                 if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati aggregati NON completi => KO");
             }
             else {
                 if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati aggregati completi => OK");
             }
         }
-        
+
         if($continua && $orderResult->hasTrasport=='Y' && floatval($orderResult->trasport) > 0) {
-                
+
             if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasTrasport ".$orderResult->hasTrasport." ".$orderResult->trasport);
-        
+
             /*
              *  trasporto
-             */     
+             */
             $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
 
             $totale = $summaryOrderTrasportsTable->select_totale_importo_trasport($user, $orderResult->id, $debug);
@@ -1561,22 +1562,22 @@ class LifeCycleOrdersTable extends Table
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
-                else {                  
+                else {
                     $esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
                     $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionTrasport';
                     $esito['actions'][1]['action_label']= __('Management trasport');
                 }
                 $continua = false;
-                
+
                 if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto NON completi => KO");
             }
-            
+
             if($continua) {
                 /*
                  * ctrl che i calcoli effettuati siano coerenti con il totale acquisti (non fatte modifiche successive)
-                 * if($totImporto_ != $results['SummaryOrder...']['importo_']) 
-                 */             
+                 * if($totImporto_ != $results['SummaryOrder...']['importo_'])
+                 */
                 $results = $ajaxGasCodesTable->getSummaryOrderTrasportValidate($user, $orderResult, $debug);
                 if(isset($results['results']) && !empty($results['results'])) {
                     if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
@@ -1585,28 +1586,28 @@ class LifeCycleOrdersTable extends Table
                         $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                         $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                     }
-                    else {                  
+                    else {
                         $esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui correggere quelli evidenziati in <b>rosso</b>";
-                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id; 
+                        $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionTrasport';
                         $esito['actions'][1]['action_label']= __('Management trasport');
                     }
-                    $continua = false;                  
-                }           
+                    $continua = false;
+                }
             }
-            else  
-                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto completi => OK");          
+            else
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati trasporto completi => OK");
         }
-                
+
         if($continua && $orderResult->hasCostMore=='Y' && floatval($orderResult->cost_more) > 0) {
-            
+
             if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasCostMore ".$orderResult->hasCostMore." ".$orderResult->cost_more);
 
             /*
              *  costo aggiuntivo
              */
             $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
-             
+
             $totale = $summaryOrderCostMoresTable->select_totale_importo_cost_more($user, $orderResult->id, $debug);
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
@@ -1615,23 +1616,23 @@ class LifeCycleOrdersTable extends Table
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
-                else {              
+                else {
                     $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
                     $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionCostMore';
                     $esito['actions'][1]['action_label'] = __('Management cost_more');
                 }
                 $continua = false;
-                
+
                 if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo NON completi => KO");
             }
-            
+
             if($continua) {
                 /*
                  * ctrl che i calcoli effettuati siano coerenti con il totale acquisti (non fatte modifiche successive)
-                 * if($totImporto_ != $results['SummaryOrder...']['importo_']) 
+                 * if($totImporto_ != $results['SummaryOrder...']['importo_'])
                  */
-                $results = $ajaxGasCodesTable->getSummaryOrderCostMoreValidate($user, $orderResult, $debug);  
+                $results = $ajaxGasCodesTable->getSummaryOrderCostMoreValidate($user, $orderResult, $debug);
                 if(isset($results['results']) && !empty($results['results'])) {
                     if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
                         $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui rimandare l'ordine al referente";
@@ -1639,19 +1640,19 @@ class LifeCycleOrdersTable extends Table
                         $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                         $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                     }
-                    else {                          
+                    else {
                         $esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui correggere quelli evidenziati in <b>rosso</b>";
                         $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionCostMore';
                         $esito['actions'][1]['action_label'] = __('Management cost_more');
                     }
-                    $continua = false;                  
-                }           
+                    $continua = false;
+                }
             }
-            else 
-                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo completi => OK");                   
+            else
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati costo aggiuntivo completi => OK");
         }
-        
+
         if($continua && $orderResult->hasCostLess=='Y' && floatval($orderResult->cost_less) > 0) {
 
             if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] hasCostLess ".$orderResult->hasCostLess." ".$orderResult->cost_less);
@@ -1660,7 +1661,7 @@ class LifeCycleOrdersTable extends Table
              *  sconto
              */
             $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
-             
+
             $totale = $summaryOrderCostLessesTable->select_totale_importo_cost_less($user, $orderResult->id, $debug);
             if(floatval($totale)==0) {
                 if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
@@ -1669,22 +1670,22 @@ class LifeCycleOrdersTable extends Table
                     $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                     $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                 }
-                else {              
+                else {
                     $esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
                     $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                     $esito['actions'][1]['action_class'] = 'actionCostLess';
                     $esito['actions'][1]['action_label'] = __('Management cost_less');
                 }
                 $continua = false;
-                
+
                 if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto NON completi => KO");
             }
 
             if($continua) {
                 /*
                  * ctrl che i calcoli effettuati siano coerenti con il totale acquisti (non fatte modifiche successive)
-                 * if($totImporto_ != $results['SummaryOrder...']['importo_']) 
-                 */             
+                 * if($totImporto_ != $results['SummaryOrder...']['importo_'])
+                 */
                 $results = $ajaxGasCodesTable->getSummaryOrderCostLessValidate($user, $orderResult, $debug);
                 if(isset($results['results']) && !empty($results['results'])) {
                     if($orderResult->state_code=='PROCESSED-ON-DELIVERY') { /* se PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) devo rimandare l'ordine al referente per completarlo */
@@ -1693,22 +1694,22 @@ class LifeCycleOrdersTable extends Table
                         $esito['actions'][1]['action_class'] = 'actionFromTesToRef';
                         $esito['actions'][1]['action_label']= __('OrderGoBackReferente');
                     }
-                    else {                      
+                    else {
                         $esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma alcuni calcoli si riferiscono a dati che sono stati modificati, clicca qui correggere quelli evidenziati in <b>rosso</b>";
                         $esito['actions'][1]['url'] = '/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
                         $esito['actions'][1]['action_class'] = 'actionCostLess';
                         $esito['actions'][1]['action_label'] = __('Management cost_less');
                     }
-                    $continua = false;                  
-                }           
+                    $continua = false;
+                }
             }
-            else 
-                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto completi => OK");     
+            else
+                if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] dati sconto completi => OK");
         }
-        
+
         if(!$continua) {
             $esito['msg'] = "L'ordine non può essere trasmesso al $destinatario perchè non è completo!<br />";
-            
+
             if($orderResult->state_code!='PROCESSED-ON-DELIVERY') {
                 $esito['actions'][0]['msg'] = "Oppure non desideri più gestirlo, clicca qui per modificare l'anagrafica dell'ordine";
                 $esito['actions'][0]['url'] = '/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id='.$orderResult->delivery_id.'&order_id='.$orderResult->id;
@@ -1716,15 +1717,15 @@ class LifeCycleOrdersTable extends Table
                 $esito['actions'][0]['action_label'] = __('Edit Order');
             }
         }
-                
+
         if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id ".$orderResult->id);
-        if(!empty($esito))  
+        if(!empty($esito))
             if($debug) debug("LifeCycleOrdersTable::_isOrderValidateToTrasmit order_id [".$orderResult->id."] esito ".print_r($esito, true));
-                
+
         return $esito;
     }
-            
-    /* 
+
+    /*
      * quando chiudo un ordine avviso l'utente che non potra' +...
      */
     private function _msgOrderToClose($user, $orderResult, $controller, $action, $debug) {
@@ -1733,10 +1734,10 @@ class LifeCycleOrdersTable extends Table
         $controller_action_validates = [['Orders', 'admin_close']];
 
         if(!$this->_ctrlMethodValid($controller_action_validates, $controller, $action))
-            return $esito;  
+            return $esito;
 
         if($debug) debug($orderResult->state_code);
-        
+
         if($orderResult->delivery->sys=='Y') {
             $esito = "Per poter chiudere l'ordine dovrai prima associarlo ad una <b>consegna valida</b>, clicca qui per <a href=\"".$this->drawJLink('orders', 'edit', ['delivery_id' => $orderResult->delivery_id,'order_id' => $orderResult->id])."\"><b>modificare</b> la consegna associata</a>";
         }
@@ -1751,7 +1752,7 @@ class LifeCycleOrdersTable extends Table
                             $esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE per gestire i pagamenti";
                         else
                         if($user->organization->template->payToDelivery=='ON-POST')
-                            $esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE o al TESORIERE per gestire i pagamenti";           
+                            $esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE o al TESORIERE per gestire i pagamenti";
                     break;
                     case 'PROCESSED-ON-DELIVERY':
                         if($user->organization->template->payToDelivery=='POST')
@@ -1768,13 +1769,13 @@ class LifeCycleOrdersTable extends Table
             else
                 $esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".$this->drawJLink('orders', 'delete', ['delivery_id' => $orderResult->delivery_id, 'order_id' => $orderResult->id])."\"><b>cancellalo</b></a>";
         }
-            
+
         return $esito;
     }
-                
+
     /*
      * quando stampo i dati di un doc visualizzo eventuale messaggio se i dati sono consistenti
-     */ 
+     */
     private function _msgExportDocs($user, $orderResult, $controller, $action, $debug) {
 
         $esito = [];
@@ -1786,47 +1787,47 @@ class LifeCycleOrdersTable extends Table
                                         ['Docs', 'admin_referentDocsExport'],
                                         ['Docs', 'admin_referentDocsExportHistory'],
                                         ['Docs', 'admin_cassiere_docs_export']];
-        
+
         if(!$this->_ctrlMethodValid($controller_action_validates, $controller, $action))
-            return $esito;  
-    
+            return $esito;
+
         $msg_visible=false;
         $msgIni='';
         $msgEnd='';
-        
-        if($action=='admin_managementCartsOne' || $action=='admin_managementCartsGroupByUsers'|| $action=='admin_managementCartsSplit' || $action=='admin_validationCarts' || $action=='admin_trasport') { 
+
+        if($action=='admin_managementCartsOne' || $action=='admin_managementCartsGroupByUsers'|| $action=='admin_managementCartsSplit' || $action=='admin_validationCarts' || $action=='admin_trasport') {
             $msgIni = "Elaborazione dell'ordine";
-            
+
             if(!$orderResult->permissionToEditReferente) {
                 $msgEnd = '<br />Non si potranno modificare i dati.';
                 $msg_visible=true;
-            }   
+            }
             else {
                 $msgEnd = "<br />Si pu&ograve; proseguire con la gestione dell'ordine.";
                 $msg_visible=false;
             }
         }
         else
-        if($action=='admin_referentDocsExport') { 
+        if($action=='admin_referentDocsExport') {
             $msgIni = "Esportazione dell'ordine";
-        
+
         /*  if(!$isReferentGeneric)
                 $msgEnd = "<br />Non sei referente dell'ordine, non si potr&agrave; esportare i dati.";
             else */
             if(!$orderResult->permissionToEditReferente) {
                 $msgEnd = "<br />L'esportazione dell'ordine sar&agrave; parziale";
                 $msg_visible=true;
-            }   
+            }
             else {
                 $msgEnd = "<br />Si pu&ograve; proseguire con l'esportazione dell'ordine.";
                 $msg_visible=false;
             }
         }
-        
+
         $msg = '';
         if($orderResult->state_code=='OPEN') {
             $msg .= "<br />L'ordine&nbsp;non&nbsp;e&grave;&nbsp;ancora&nbsp;chiuso,&nbsp;";
-            
+
             if($orderResult->dayDiffToDateFine==0) $msg .= 'chiuderà&nbsp;oggi';
             else {
                 $msg .= 'chiuderà&nbsp;tra&nbsp;'.(-1 * $orderResult->dayDiffToDateFine).'&nbsp;gg,';
@@ -1836,44 +1837,44 @@ class LifeCycleOrdersTable extends Table
         else
         if($orderResult->state_code=='RI-OPEN-VALIDATE') {
             $msg .= "<br />L'ordine&nbsp;e&grave;&nbsp;stato riaperto,&nbsp;";
-        
+
             if($orderResult->dayDiffToDateFine==0) $msg .= 'chiuderà&nbsp;oggi';
             else {
                 $msg .= 'chiuderà&nbsp;tra&nbsp;'.(-1 * $orderResult->dayDiffToDateFine).'&nbsp;gg,';
                 $msg .= '&nbsp;il&nbsp;'.CakeTime::format($orderResult->data_fine_validation,"%A %e %B %Y");
             }
         }
-        else        
+        else
         if($orderResult->state_code=='WAIT-PROCESSED-TESORIERE')
             $msg .= "<br />".__($orderResult->state_code.'-label');
-        else    
+        else
         if($orderResult->state_code=='PROCESSED-ON-DELIVERY')
             $msg .= "<br />".__($orderResult->state_code.'-label');
-        else 
+        else
         if($orderResult->state_code=='PROCESSED-TESORIERE')
             $msg .= "<br />".__($orderResult->state_code.'-label');
         else
-        if($orderResult->state_code=='CLOSE' || 
+        if($orderResult->state_code=='CLOSE' ||
            $orderResult->state_code=='TO-PAYMENT') {
             $msg .= "<br />".__($orderResult->state_code.'-label');
             $msgEnd = '';
         }
-        
+
         $msgFinale = $msgIni.$msg.$msgEnd;
-        if($msg_visible) 
+        if($msg_visible)
             return $msgFinale;
         else
             return $esito;
     }
-    
+
     /*
      * il metodo chiamate puo' essere eseguito solo per alcuni controller/action => qui li ctrl
      */
     private function _ctrlMethodValid($controller_action_validates, $controller, $action) {
-        
+
         if($debug) debug(["controller ".$controller, "action ".$action]);
         if($debug) debug($controller_action_validates);
-        
+
         foreach($controller_action_validates as $controller_action_validate) {
             $controller_acl = $controller_action_validate[0];
             $action_acl = $controller_action_validate[1];
@@ -1882,29 +1883,29 @@ class LifeCycleOrdersTable extends Table
                 return true;
             }
         }
-        
+
         return false;
     }
-                
+
     public function afterFind($results, $primary = true) {
-        
+
         foreach ($results as $key => $val) {
 
             if(!empty($val)) {
                 if (isset($val['Order']['data_inizio'])) {
                     $results[$key]['Order']['dayDiffToDateInizio'] = $this->utilsCommons->dayDiffToDate($val['Order']['data_inizio']);
-                    if(!empty($val['Order']['data_fine_validation']) && $val['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty')) 
+                    if(!empty($val['Order']['data_fine_validation']) && $val['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty'))
                         $results[$key]['Order']['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['Order']['data_fine_validation']);
                     else
                         $results[$key]['Order']['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['Order']['data_fine']);
-                    
+
                     $results[$key]['Order']['data_inizio_'] = date('d',strtotime($val['Order']['data_inizio'])).'/'.date('n',strtotime($val['Order']['data_inizio'])).'/'.date('Y',strtotime($val['Order']['data_inizio']));
                     $results[$key]['Order']['data_fine_'] = date('d',strtotime($val['Order']['data_fine'])).'/'.date('n',strtotime($val['Order']['data_fine'])).'/'.date('Y',strtotime($val['Order']['data_fine']));
                     $results[$key]['Order']['data_fine_validation_'] = date('d',strtotime($val['Order']['data_fine_validation'])).'/'.date('n',strtotime($val['Order']['data_fine_validation'])).'/'.date('Y',strtotime($val['Order']['data_fine_validation']));
                     $results[$key]['Order']['tesoriere_data_pay_'] = date('d',strtotime($val['Order']['tesoriere_data_pay'])).'/'.date('n',strtotime($val['Order']['tesoriere_data_pay'])).'/'.date('Y',strtotime($val['Order']['tesoriere_data_pay']));
 
                     $results[$key]['Order']['trasport_'] = number_format($val['Order']['trasport'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-                    $results[$key]['Order']['trasport_e'] = $results[$key]['Order']['trasport_'].' &euro;';             
+                    $results[$key]['Order']['trasport_e'] = $results[$key]['Order']['trasport_'].' &euro;';
 
                     $results[$key]['Order']['cost_more_'] = number_format($val['Order']['cost_more'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['Order']['cost_more_e'] = $results[$key]['Order']['cost_more_'].' &euro;';
@@ -1920,9 +1921,9 @@ class LifeCycleOrdersTable extends Table
 
 
                     $results[$key]['Order']['tot_importo_'] = number_format($val['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-                    $results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';                   
+                    $results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';
                 }
-                else 
+                else
                 /*
                  * se il find() arriva da $hasAndBelongsToMany
                  */
@@ -1932,22 +1933,22 @@ class LifeCycleOrdersTable extends Table
                         $results[$key]['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['data_fine']);
                     else
                         $results[$key]['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['data_fine']);
-                        
+
                     $results[$key]['data_inizio_'] = date('d',strtotime($val['data_inizio'])).'/'.date('n',strtotime($val['data_inizio'])).'/'.date('Y',strtotime($val['data_inizio']));
                     $results[$key]['data_fine_'] = date('d',strtotime($val['data_fine'])).'/'.date('n',strtotime($val['data_fine'])).'/'.date('Y',strtotime($val['data_fine']));
                     $results[$key]['data_fine_validation_'] = date('d',strtotime($val['data_fine_validation'])).'/'.date('n',strtotime($val['data_fine_validation'])).'/'.date('Y',strtotime($val['data_fine_validation']));
                     $results[$key]['tesoriere_data_pay_'] = date('d',strtotime($val['tesoriere_data_pay'])).'/'.date('n',strtotime($val['tesoriere_data_pay'])).'/'.date('Y',strtotime($val['tesoriere_data_pay']));
-                }   
-                
+                }
+
                 if(isset($val['Order']['trasport'])) {
                     $results[$key]['Order']['trasport_'] = number_format($val['Order']['trasport'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['Order']['trasport_e'] = $results[$key]['Order']['trasport_'].' &euro;';
                 }
-                else 
+                else
                 if(isset($val['trasport'])) {
                     $results[$key]['trasport_'] = number_format($val['trasport'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['trasport_e'] = $results['Order']['trasport_'].' &euro;';
-                }       
+                }
 
                 if(isset($val['Order']['cost_more'])) {
                     $results[$key]['Order']['cost_more_'] = number_format($val['Order']['cost_more'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
@@ -1968,7 +1969,7 @@ class LifeCycleOrdersTable extends Table
                     $results[$key]['cost_less_'] = number_format($val['cost_less'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['cost_less_e'] = $results['Order']['cost_less_'].' &euro;';
                 }
-                
+
                 if(isset($val['Order']['tesoriere_importo_pay'])) {
                     $results[$key]['Order']['tesoriere_importo_pay_'] = number_format($val['Order']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['Order']['tesoriere_importo_pay_e'] = $results[$key]['Order']['tesoriere_importo_pay_'].' &euro;';
@@ -1978,7 +1979,7 @@ class LifeCycleOrdersTable extends Table
                     $results[$key]['tesoriere_importo_pay_'] = number_format($val['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['tesoriere_importo_pay_e'] = $results['Order']['tesoriere_importo_pay_'].' &euro;';
                 }
-                
+
                 if(isset($val['Order']['tesoriere_fattura_importo'])) {
                     $results[$key]['Order']['tesoriere_fattura_importo_'] = number_format($val['Order']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['Order']['tesoriere_fattura_importo_e'] = $results[$key]['Order']['tesoriere_fattura_importo_'].' &euro;';
@@ -1988,7 +1989,7 @@ class LifeCycleOrdersTable extends Table
                     $results[$key]['tesoriere_fattura_importo_'] = number_format($val['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['tesoriere_fattura_importo_e'] = $results['Order']['tesoriere_fattura_importo_'].' &euro;';
                 }
-                
+
                 if(isset($val['Order']['tot_importo'])) {
                     $results[$key]['Order']['tot_importo_'] = number_format($val['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';
@@ -1998,9 +1999,9 @@ class LifeCycleOrdersTable extends Table
                     $results[$key]['tot_importo_'] = number_format($val['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
                     $results[$key]['tot_importo_e'] = $results['Order']['tot_importo_'].' &euro;';
                 }
-            }               
+            }
         }
-        
+
         return $results;
-    }       
+    }
 }
