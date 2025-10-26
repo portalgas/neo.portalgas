@@ -27,14 +27,14 @@ if(!empty($orderParent->suppliers_organization->supplier->mail))
 	$html .= $orderParent->suppliers_organization->supplier->mail.' ';
 $html .= '</small>';
 if(isset($opts['delivery_order_parent']) && $opts['delivery_order_parent']=='Y')
-	$html .= '<h4><b>'.__('Delivery').'</b>: '.$orderParent->delivery->luogo.' '.$orderParent->delivery->data->i18nFormat('eeee d MMMM').'</h4>';	
+	$html .= '<h4><b>'.__('Delivery').'</b>: '.$orderParent->delivery->luogo.' '.$orderParent->delivery->data->i18nFormat('eeee d MMMM').'</h4>';
 $html .='</h3>';
 
 if(!empty($orders)) {
 
 	$totale = 0;
 	foreach($orders as $order) {
-		
+
 		$html .= '<h3><b>'.__('Gas Group').'</b>: '.$order->gas_group->name.'</h3>';
 		if(isset($opts['deliveries_orders']) && $opts['deliveries_orders']=='Y')
 			$html .= '<h4><b>'.__('Delivery').'</b>: '.$order->delivery->luogo.' '.$order->delivery->data->i18nFormat('eeee d MMMM').'</h4>';
@@ -59,7 +59,7 @@ if(!empty($orders)) {
 		foreach($order->article_orders as $numResult => $article_order) {
 
 			$totale_ordine += $article_order->cart->final_price;
-			
+
 			$article_order->article->is_bio ? $is_bio = '<img src="'.$img_path.'/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
 			$html .= '<tr>';
@@ -85,7 +85,7 @@ if(!empty($orders)) {
 		($format=='HTML')? $html .= '6' : $html .= '5';
 		$html .= '" class="no-border"></td>';
 		$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale ordine') . '</th>';
-		$html .= '		<th class="text-left no-border">' .$this->HtmlCustom->importo($totale_ordine);
+		$html .= '		<th class="text-left no-border">&nbsp;' .$this->HtmlCustom->importo($totale_ordine);
 		if($order->hasTrasport=='Y' && $order->trasport>0)
 			$html .= '<br />'.$this->HtmlCustom->importo($order->trasport).' '.__('CostTrasport');
 		if($order->hasCostMore=='Y' && $order->cost_more>0)
@@ -93,8 +93,8 @@ if(!empty($orders)) {
 		if($order->hasCostLess=='Y' && $order->cost_less>0)
 			$html .= '<br />'.$this->HtmlCustom->importo($order->cost_less).' '.__('CostLess');
 		if(
-			($order->hasTrasport=='Y' && $order->trasport>0) || 
-			($order->hasCostMore=='Y' && $order->cost_more>0) || 
+			($order->hasTrasport=='Y' && $order->trasport>0) ||
+			($order->hasCostMore=='Y' && $order->cost_more>0) ||
 			($order->hasCostLess=='Y' && $order->cost_less>0)
 		) {
 			if($order->hasTrasport=='Y' && $order->trasport>0)
@@ -103,19 +103,19 @@ if(!empty($orders)) {
 				$totale_ordine = ($totale_ordine + $order->cost_more);
 			if($order->hasCostLess=='Y' && $order->cost_less>0)
 				$totale_ordine = ($totale_ordine + (-1 * $order->cost_less));
-			
+
 			$html .= '<br />-------------------------';
-			$html .= '<br />'.$this->HtmlCustom->importo($totale_ordine);	
+			$html .= '<br />'.$this->HtmlCustom->importo($totale_ordine);
 		}
 		$html .= '</th>';
 		$html .= '	</tr>';
 
 		$html .= '	</tbody>';
-		$html .= '	</table>';	
+		$html .= '	</table>';
 
 		$totale += $totale_ordine;
 
-	} // end foreach($orders as $order) 
+	} // end foreach($orders as $order)
 
 	$html .= '<h3 class="text-center">'.__('Totale').' '.$this->HtmlCustom->importo($totale). '</h3>';
 }
