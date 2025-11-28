@@ -18,8 +18,8 @@ else
 
 $js .= "
         function matchArticleTypes(articles_type_id, articles_articles_types) {
-            console.log(articles_type_id);
-            console.table(articles_articles_types);
+            // console.log(articles_type_id);
+            // console.table(articles_articles_types);
             let esito = false;
             if(articles_articles_types.length>0) {
                 articles_articles_types.forEach(function(item, index) {
@@ -33,7 +33,7 @@ $js .= "
 ";
 $this->Html->scriptBlock($js, ['block' => true]);
 echo $this->Html->script('vue/utils.js?v=20250520', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/articles.js?v=20250922', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articles.js?v=20251128', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>

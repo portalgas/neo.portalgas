@@ -122,6 +122,7 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
     echo '</div>';
     echo '<div class="col col-md-3">';
     echo '<br />';
+    /*
     echo '<a class="btn-block btn"
             :class="search_flag_presente_articlesorders ? \'btn-success\' : \'btn-danger\'"
             :title="search_flag_presente_articlesorders ? \'Articolo ordinabile\' : \'Articolo NON ordinabile\'"
@@ -129,6 +130,27 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
         <span v-if="search_flag_presente_articlesorders">Ordinabile</span>
         <span v-if="!search_flag_presente_articlesorders">Non ordinabile</span>
         </a>';
+    */
+        ?>
+        <div class="btn-group" role="group" aria-label="">
+            <button type="button" class="btn btn-success"
+                  title="Articolo ordinabile" style="min-width:150px"
+                  :style="search_flag_presente_articlesorders=='Y' ? 'opacity:1' : 'opacity:0.2'"
+                  @click="search_flag_presente_articlesorders='Y'; gets(); getArticles()">Ordinabile
+            </button>
+            <button type="button" class="btn btn-danger"
+                  title="Articolo non ordinabile" style="min-width:150px"
+                  :style="search_flag_presente_articlesorders=='N' ? 'opacity:1' : 'opacity:0.2'"
+                  @click="search_flag_presente_articlesorders='N'; gets(); getArticles()">Non ordinabile
+            </button>
+            <button type="button" class="btn btn-success"
+                  title="Entrambi" style="min-width:150px"
+                  :style="search_flag_presente_articlesorders=='ALL' ? 'opacity:1' : 'opacity:0.2'"
+                  @click="search_flag_presente_articlesorders='ALL'; gets(); getArticles()">Entrambi
+            </button>
+        </div>            
+
+        <?php
     echo '</div>';
     echo '<div class="col col-md-2 text-right">';
     echo '<br />';

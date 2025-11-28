@@ -22,7 +22,7 @@ $(function () {
         search_categories_articles: [],
         search_categories_article_id: 0,
         search_id: null,
-        search_flag_presente_articlesorders: true,
+        search_flag_presente_articlesorders: 'Y',
         search_order: 'Articles.name ASC',
         article_in_carts: [],
         articles: [],
@@ -430,6 +430,8 @@ $(function () {
         },
         changeSearchSupplierOrganizationId: function() {
             this.getCategoriesArticles();
+            this.gets();
+            this.getArticles();
         },
         /*
          * estraggo le categorie degli articoli
@@ -475,7 +477,7 @@ $(function () {
           // workaround per la class select2
           let search_categories_article_id = $('select[name=search_categories_article_id]').val();
           this.search_categories_article_id = search_categories_article_id;
-
+    
           /*
            * se scelgo un campo di ricerca non considero search_id
            */
@@ -492,8 +494,7 @@ $(function () {
               search_order: this.search_order,
               page: this.page
           };
-          // console.log(params, 'getArticles params');
-
+    
           axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
           axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
 

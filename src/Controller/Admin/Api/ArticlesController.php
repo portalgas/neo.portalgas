@@ -36,10 +36,10 @@ class ArticlesController extends ApiAppController
         $results['results'] = [];
 
         $jsonData = $this->request->input('json_decode');
-        $where = [];
-        if(isset($jsonData->search_flag_presente_articlesorders)) {
+        $where = []; 
+        if(isset($jsonData->search_flag_presente_articlesorders) && $jsonData->search_flag_presente_articlesorders!=='ALL') {
             $search_flag_presente_articlesorders = $jsonData->search_flag_presente_articlesorders;
-            ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N';
+            // ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N'; non arriva + boolean
             $where += ['Articles.flag_presente_articlesorders' => $search_flag_presente_articlesorders];
         }
 
