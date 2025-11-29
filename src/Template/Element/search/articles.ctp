@@ -18,19 +18,21 @@ $user = $this->Identity->get();
     <div class="box-body">
 
 <?php
-echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
-<fieldset>
-    <legend><?= __('Search {0}', ['Articles']) ?></legend>
-    <?php
+echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']);
+echo '<fieldset>
+    <legend>';
+    echo __('Search {0}', ['Articles']);
+    echo '</legend>';
     echo '<div class="row-no-margin">';
     echo '<div class="col col-md-4">';
     $options = [];
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
-    (count($suppliersOrganizations)==1) ? $options['empty'] = false: $options['empty'] = true;
+    (count($suppliersOrganizations)==1) ? $options['empty'] = false: $options['empty'] = false; // sempre false perche' select2
     $options['v-model'] = 'search_supplier_organization_id';
-    $options['@change'] = 'changeSearchSupplierOrganizationId';
+    $options['@change'] = 'changeSearchSupplierOrganizationId';  // con select2 non funziona, triggerato nel mount di articles.js
+    $options['select2'] = true;
     echo $this->HtmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
     echo '<div class="col col-md-4 autocomplete">';
@@ -39,6 +41,7 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
                     '@keydown.down' => 'onArrowDownSearchName',
                     '@keydown.up' => 'onArrowUpSearchName',
                     '@keydown.enter' => 'onEnterSearchName',
+                    '@change' => 'gets()',
                     'autocomplete' => 'off',
                     'placeholder' => __('Name')]);
     echo '    <ul
@@ -68,6 +71,7 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
                     '@keydown.down' => 'onArrowDownSearchCodice',
                     '@keydown.up' => 'onArrowUpSearchCodice',
                     '@keydown.enter' => 'onEnterSearchCodice',
+                    '@change' => 'gets()',
                     'autocomplete' => 'off',
                     'placeholder' => __('Code')]);
     echo '    <ul
@@ -110,6 +114,7 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
               id="search-categories-article_id"
               class="form-control select2"
               :required="true"
+              @change="gets()"
               v-model="search_categories_article_id" >
               <option value="">-------</option>
               <option v-for="(categories_article, id) in search_categories_articles" :value="categories_article.id" v-html="$options.filters.html(categories_article.name)"></option>
@@ -117,10 +122,10 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
         echo '</div>';
     } // if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
 
-    echo '<div class="col col-md-3">';
-    echo $this->Form->control('search_order', ['label' => __('Order'), 'v-model' => 'search_order', 'options' => $search_orders, 'escape' => false, 'class' => 'form-control']);
+    echo '<div class="col col-md-4">';
+    echo $this->Form->control('search_order', ['label' => __('Order'), 'v-model' => 'search_order', '@change' => "gets()", 'options' => $search_orders, 'escape' => false, 'class' => 'form-control']);
     echo '</div>';
-    echo '<div class="col col-md-3">';
+    echo '<div class="col col-md-4">';
     echo '<br />';
     /*
     echo '<a class="btn-block btn"
@@ -136,26 +141,28 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
             <button type="button" class="btn btn-success"
                   title="Articolo ordinabile" style="min-width:150px"
                   :style="search_flag_presente_articlesorders=='Y' ? 'opacity:1' : 'opacity:0.2'"
-                  @click="search_flag_presente_articlesorders='Y'; gets(); getArticles()">Ordinabile
+                  @click="search_flag_presente_articlesorders='Y'; gets();">Ordinabile
             </button>
             <button type="button" class="btn btn-danger"
                   title="Articolo non ordinabile" style="min-width:150px"
                   :style="search_flag_presente_articlesorders=='N' ? 'opacity:1' : 'opacity:0.2'"
-                  @click="search_flag_presente_articlesorders='N'; gets(); getArticles()">Non ordinabile
+                  @click="search_flag_presente_articlesorders='N'; gets();">Non ordinabile
             </button>
             <button type="button" class="btn btn-success"
                   title="Entrambi" style="min-width:150px"
                   :style="search_flag_presente_articlesorders=='ALL' ? 'opacity:1' : 'opacity:0.2'"
-                  @click="search_flag_presente_articlesorders='ALL'; gets(); getArticles()">Entrambi
+                  @click="search_flag_presente_articlesorders='ALL'; gets();">Entrambi
             </button>
         </div>            
 
         <?php
     echo '</div>';
+    /*
     echo '<div class="col col-md-2 text-right">';
     echo '<br />';
-    echo '<button type="button" class="btn btn-primary pull-right" @click="gets()">'.__('Search').'</button>';
+    echo '<button type="button" class="btn btn-primary pull-right" @click="gets();">'.__('Search').'</button>';
     echo '</div>';
+    */
     echo '</div>';
     ?>
 </fieldset>
@@ -165,5 +172,5 @@ echo $this->Form->create(null, ['id' => 'frmSearch', 'type' => 'GET']); ?>
     </div -->
 </div>
 <?php
-echo $this->Form->end()
+echo $this->Form->end();
 ?>

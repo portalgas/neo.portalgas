@@ -6,7 +6,7 @@ var article_id = $article_id";
 $this->Html->scriptBlock($js, ['block' => true]);
 
 echo $this->Html->script('vue/utils.js?v=20250519', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/articleView.js?v=20250519', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articleView.js?v=20251129', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
@@ -46,12 +46,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
               echo '<div class="col-md-8">';
               $options = ['options' => $suppliersOrganizations,
                   'escape' => false,
-                  'class' => 'select2- form-control',
+                  'id' => 'supplier_organization_id',
+                  'class' => 'select2 form-control',
                   'label' => __('SupplierOrganization'),
-                  'empty' => Configure::read('HtmlOptionEmpty'),
+                  'empty' => false,
                   'v-model' => 'article.supplier_organization_id',
                   'required' => true,
-                  '@change' => 'getSuppliersOrganization(event); setValidate(event)'];
+                  '@change' => 'getSuppliersOrganization(event); setValidate(event)',  // con select2 non funziona, triggerato nel mount di articlesView.js
+                ]; 
               echo $this->Form->control('supplier_organization_id', $options);
               echo '<div class="errors" v-if="errors.supplier_organization_id" v-html="errors.supplier_organization_id"></div>';
               echo '</div>';
@@ -212,7 +214,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             <div class="col-md-2">
                                 <label for="prezzo_finale">Prezzo finale</label>
                                 <div class="input-group">
-                                    <input type="number" id="prezzo_finale" name="prezzo_finale" class="form-control" v-model="article_variant.prezzo_finale" placeholder="Prezzo finale" @change="changeArticleVariant(event, index);setValidateVariants(event);" />
+                                    <input type="text" id="prezzo_finale" name="prezzo_finale" class="form-control" v-model="article_variant.prezzo_finale" placeholder="Prezzo finale" disabled="disabled" />
                                     <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                                 </div>
                                 <div class="errors" v-if="article_variant.errors.prezzo_finale" v-html="article_variant.errors.prezzo_finale"></div>

@@ -90,71 +90,74 @@ $(function () {
         },
         onChangeSearchAutoComplete: function(autocomplete_field) {
 
-          let _this = this;
-          _this.autocomplete_field = autocomplete_field;
+              let _this = this;
+              _this.autocomplete_field = autocomplete_field;
 
-          // console.log('onChangeSearchAutoComplete autocomplete_field '+autocomplete_field);
+              // console.log('onChangeSearchAutoComplete autocomplete_field '+autocomplete_field);
 
-          this.autocomplete_name_is_loading = true;
-          let params = {}
-          if(autocomplete_field=='name') {
-            if(this.search_name.length<=3)
-              return;
+              this.autocomplete_name_is_loading = true;
+              let params = {}
+              if(autocomplete_field=='name') {
+                if(this.search_name.length<=3)
+                  return;
 
-            params = {
-              search_supplier_organization_id: this.search_supplier_organization_id,
-              search_name: this.search_name,
-              field: 'name'
-            };
-          }
-          else
-          if(autocomplete_field=='codice') {
-            if(this.search_codice.length<=3)
-              return;
+                params = {
+                  search_supplier_organization_id: this.search_supplier_organization_id,
+                  search_name: this.search_name,
+                  field: 'name'
+                };
+              }
+              else
+              if(autocomplete_field=='codice') {
+                if(this.search_codice.length<=3)
+                  return;
 
-            params = {
-              search_supplier_organization_id: this.search_supplier_organization_id,
-              search_codice: this.search_codice,
-              field: 'codice'
-            };
-          }
+                params = {
+                  search_supplier_organization_id: this.search_supplier_organization_id,
+                  search_codice: this.search_codice,
+                  field: 'codice'
+                };
+              }
 
-          axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+              axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+              axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
 
-          axios.post('/admin/api/articles/getAutocomplete', params)
-              .then(response => {
-                // console.log(response.data, 'get');
+              axios.post('/admin/api/articles/getAutocomplete', params)
+                  .then(response => {
+                    // console.log(response.data, 'get');
 
+                    this.autocomplete_name_is_loading = false;
+
+                    if(response.data.code=='200') {
+                      if(response.data.results.length==0) {
+                        this.autocomplete_name_is_open = false;
+                      }
+                      else {
+                        if(_this.autocomplete_field=='name') {
+                          this.autocomplete_name_items = response.data.results;
+                          this.filterSearchAutoCompleteResults(_this.autocomplete_field);
+                          this.autocomplete_name_is_open = true;
+                        }
+                        else
+                        if(_this.autocomplete_field=='codice') {
+                          this.autocomplete_codice_items = response.data.results;
+                          this.filterSearchAutoCompleteResults(_this.autocomplete_field);
+                          this.autocomplete_codice_is_open = true;
+                        }
+                      }
+                    }
+                    else {
+                      console.error(response.data.errors);
+                    }
+                  })
+              .catch(error => {
                 this.autocomplete_name_is_loading = false;
-
-                if(response.data.code=='200') {
-                  if(response.data.results.length==0) {
-                    this.autocomplete_name_is_open = false;
-                  }
-                  else {
-                    if(_this.autocomplete_field=='name') {
-                      this.autocomplete_name_items = response.data.results;
-                      this.filterSearchAutoCompleteResults(_this.autocomplete_field);
-                      this.autocomplete_name_is_open = true;
-                    }
-                    else
-                    if(_this.autocomplete_field=='codice') {
-                      this.autocomplete_codice_items = response.data.results;
-                      this.filterSearchAutoCompleteResults(_this.autocomplete_field);
-                      this.autocomplete_codice_is_open = true;
-                    }
-                  }
-                }
-                else {
-                  console.error(response.data.errors);
-                }
-              })
-          .catch(error => {
-            this.autocomplete_name_is_loading = false;
-            console.error("Error: " + error);
-          });
+                console.error("Error: " + error);
+              });
         },
+        /*
+         * scelto un suggerimento di autocpmplete 
+         */
         setSearchAutoCompleteResult(result, field) {
           if(field=='name') {
             this.search_name = result;
@@ -165,6 +168,7 @@ $(function () {
             this.search_codice = result;
             this.autocomplete_codice_is_open = false;
           }
+          this.gets();
         },
         /*
          * autocomplete end
@@ -429,9 +433,10 @@ $(function () {
           };
         },
         changeSearchSupplierOrganizationId: function() {
-            this.getCategoriesArticles();
-            this.gets();
-            this.getArticles();
+
+          this.search_supplier_organization_id = $('#search_supplier_organization_id').val();
+          this.getCategoriesArticles();
+          this.gets();
         },
         /*
          * estraggo le categorie degli articoli
@@ -641,7 +646,10 @@ $(function () {
           deep: true
         }
       },*/
-      mounted: function(){
+      mounted: function() {
+
+        let _this = this;
+
           // console.log('mounted articles');
         /*
          * se l'elenco dei produttori ha un solo elemente (ex produttore) lo imposto gia'
@@ -649,7 +657,9 @@ $(function () {
         if(typeof search_supplier_organization_id_default!=='undefined')
           this.search_supplier_organization_id = search_supplier_organization_id_default;
         this.gets();
-        document.addEventListener('click', this.handleClickOutsideAutocomplete);
+        document.addEventListener('click', _this.handleClickOutsideAutocomplete);
+
+        $('.select2').on('change', function (e) { _this.changeSearchSupplierOrganizationId() });
 
         this.getCategoriesArticles();
       },
@@ -696,7 +706,7 @@ $(function () {
             return moment(String(value)).format('DD MMMM YYYY')
           }
         },
-          counter: function (index) {
+        counter: function (index) {
             return index+1
         }
       }

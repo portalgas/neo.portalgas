@@ -44,6 +44,10 @@ $(function () {
               this.addRow();
           },
           get: function() {
+              /*
+               * se article_id = 0 gestisco gli articoli nuovi
+               */
+
               let _this = this;
               $.ajax({
                   url: '/admin/api/articles/get/'+article_organization_id+'/'+article_id,
@@ -75,6 +79,8 @@ $(function () {
           getSuppliersOrganization: function() {
 
               this.init();
+
+              this.article.supplier_organization_id = $('#supplier_organization_id').val();
 
               /*
                * chi gestisce il listino articoli
@@ -209,8 +215,8 @@ $(function () {
               }
               else
                   prezzo_finale = prezzo;
-              this.article_variants[index].prezzo_finale = numberFormat(prezzo_finale,2,',','.');;
 
+              this.article_variants[index].prezzo_finale = numberFormat(prezzo_finale,2,',','.');;
               let prezzo_um_riferimento = (prezzo_finale / qta);
               // console.log('prezzo_um_riferimento ['+prezzo_um_riferimento+']', 'changeArticleVariant');
               this.article_variants[index].um_rif_values = getUmRifValues(um, prezzo_um_riferimento);
@@ -394,15 +400,16 @@ $(function () {
               success: function (response) {
                   // console.log(response, 'store');
                   response = JSON.parse(response);
+                  console.log(response.code, 'store');
                   if (response.code==200) {
                       _this.is_run = false;
                       window.location.href = '/admin/articles/index-quick/?search_id='+response.results.article_id;
                   }
                   else {
-                    _this.validazioneResults = response.errors;
-                    if(response.errors.length==0) {
-                        _this.is_run = false;
-                    }
+                        _this.$set(_this.errors, response.errors.split(':')[0], response.errors);
+                        if(Object.keys(_this.errors).length>0) {
+                            _this.is_run = false;
+                        }
                   }
 
               },
@@ -441,8 +448,10 @@ $(function () {
         },
       mounted: function() {
          // console.log('mounted articles-view');
+         let _this = this;
         this.is_run = false;
         this.get();
+        $('.select2').on('change', function (e) { _this.getSuppliersOrganization(e); _this.setValidate(e) });
         this.setDropzone();
       },
       filters: {
