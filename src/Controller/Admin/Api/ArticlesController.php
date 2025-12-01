@@ -78,7 +78,7 @@ class ArticlesController extends ApiAppController
             /*
              * per escludere gli articoli dove l'owner e' un DES
              * */
-            $where += ['OwnerSupplierOrganizations' => $this->_organization->id];
+            $where += ['OwnerSupplierOrganizations.organization_id' => $this->_organization->id];
         }
         else {
             if(!empty($jsonData->search_name)) {
