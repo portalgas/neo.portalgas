@@ -286,7 +286,6 @@ class ArticlesController extends AppController
             }
         }
 
-
         $article = $articlesTable->patchEntity($article, $article_orig);
         if (!$articlesTable->save($article)) {
             Log::error($article->getErrors());

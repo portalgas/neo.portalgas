@@ -403,7 +403,7 @@ $(function () {
                   console.log(response.code, 'store');
                   if (response.code==200) {
                       _this.is_run = false;
-                      window.location.href = '/admin/articles/index-quick/?search_id='+response.results.article_id;
+                      window.location.href = '/admin/articles/index-quick/?search_id='+response.results.article_id+'&search_flag_presente_articlesorders=ALL';
                   }
                   else {
                         _this.$set(_this.errors, response.errors.split(':')[0], response.errors);

@@ -42,7 +42,7 @@ class ArticlesController extends ApiAppController
             // ($search_flag_presente_articlesorders) ? $search_flag_presente_articlesorders = 'Y': $search_flag_presente_articlesorders = 'N'; non arriva + boolean
             $where += ['Articles.flag_presente_articlesorders' => $search_flag_presente_articlesorders];
         }
-
+        
         /*
         prenderei solo quelli gestiti dal referente
         $where += ['Articles.organization_id' => $this->_organization->id];
@@ -74,6 +74,11 @@ class ArticlesController extends ApiAppController
             }
             else
                 $where += ['Articles.id' => $jsonData->search_id, 'Articles.organization_id' => $this->_organization->id];
+            
+            /*
+             * per escludere gli articoli dove l'owner e' un DES
+             * */
+            $where += ['OwnerSupplierOrganizations' => $this->_organization->id];
         }
         else {
             if(!empty($jsonData->search_name)) {
