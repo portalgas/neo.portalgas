@@ -152,7 +152,7 @@ class DeliveriesTable extends Table
             if($results->sys=='Y')
                 $results->label = $results->luogo;
             else
-                $results->label = $results->data->i18nFormat('eeee d MMMM Y').' - '.$results->luogo;
+                $results->label = $results->data->i18nFormat('eeee d MMMM yyyy').' - '.$results->luogo;
         }
 
         return $results;
@@ -246,7 +246,7 @@ class DeliveriesTable extends Table
                     $listResults[$result->id] = $result->luogo;
                 else {
                     // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-                    $listResults[$result->id] = $result->luogo.' - '.$result->data->i18nFormat('eeee d MMMM Y');                    
+                    $listResults[$result->id] = $result->luogo.' - '.$result->data->i18nFormat('eeee d MMMM yyyy');                    
                 }
             }
         }

@@ -425,6 +425,7 @@ Configure::write('GGOrderCloseNext', -3);        // giorni che mancano alla chiu
 Configure::write('GGDeliveryCloseNext', -3);     // giorni che mancano alla chiusura della consegna (non utilizzato)
 Configure::write('GGDesOrdersOld', 90);       // gg dopo la DesOrsers.data_fine_max per considerare un DesOrders vecchio
 Configure::write('GGArchiveStatics', 35);     // dopo quanti giorni il Cron::archiveStatistics() cancella le consegne / richieste di pagamento
+Configure::write('GGDeleteOrdersTypeGasParentGroups', 35);     // dopo quanti giorni il Cron::OrdersTypeGasParentGroups() cancella gli ordini titolari senza ordini figli
 
 Configure::write('GGDeleteLogs', 6);          // dopo quanti giorni il Cron::filesystemLogDelete() cancella i log dei cron => ne aggiunge uno
 Configure::write('GGDeleteBackup', 1);        // dopo quanti giorni il Cron::filesystemLogDelete() cancella i backup del codice => ne aggiunge uno

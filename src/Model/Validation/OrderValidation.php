@@ -55,7 +55,7 @@ class OrderValidation extends Validation
         $value = self::dateFrozenToArray($value); 
         $value = $value['year'].$value['month'].$value['day'];
         // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-        // $value2 = $results->data->i18nFormat('Ymd');        
+        // $value2 = $results->data->i18nFormat('yyyymd');        
         $value2 = $results->data->format('Ymd');
         // debug('dateComparisonToDelivery '.$value.' '.$operator.' '.$value2);
         // debug(Validation::comparison($value, $operator, $value2));

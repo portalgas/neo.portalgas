@@ -276,7 +276,7 @@ class HtmlCustomSiteOrdersHelper extends Helper
                 * l'aggiungo
                 * */
                 if(!array_key_exists($this->_order->delivery_id, $deliveries['N']))
-                    $deliveries['N'][$this->_order->delivery_id] = $this->_order->delivery->luogo.' - '.$this->_order->delivery->data->i18nFormat('eeee d MMMM Y');
+                    $deliveries['N'][$this->_order->delivery_id] = $this->_order->delivery->luogo.' - '.$this->_order->delivery->data->i18nFormat('eeee d MMMM yyyy');
             }
         }
 

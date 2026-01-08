@@ -49,10 +49,9 @@ class OrdersTypeGasParentGroupsCommand extends Command
         }
 
         $organization_id = $args->getArgument('organization_id');
-        if(empty($organization_id)) 
-            dd('organization_id required!');
+        if(empty($organization_id)) dd('organization_id required!');
 
-        $giorniFa = new FrozenTime('-60 days');
+        $giorniFa = new FrozenTime('-'.Configure::read('GGDeleteOrdersTypeGasParentGroups').' days');
         Log::info("Per organization_id [$organization_id] Elimino gli ordini titolari di gruppo ('Order.type.gas_parent_groups') piu' vecchi di ".$giorniFa." e che non hanno piu' ordini", ['scope' => ['shell']]);
 
         $this->loadModel('Orders');

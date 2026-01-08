@@ -62,7 +62,7 @@ class ApiCartDecorator  extends AppDecorator {
 
         // https://api.cakephp.org/3.8/class-Cake.View.Helper.TimeHelper.html
         // eeee d MMMM Y = mercoledì 8 febbraio 2023
-        $results['date_human'] = $cart->date->i18nFormat('eeee d MMMM Y');
+        $results['date_human'] = $cart->date->i18nFormat('eeee d MMMM yyyy');
 
         switch($cart->stato) {
             case 'Y':

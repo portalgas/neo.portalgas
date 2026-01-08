@@ -315,6 +315,8 @@ class CronMailsComponent extends Component {
 
     /*
      *  invio mail x notificare la consegna
+     * richiamato da /var/www/neo.portalgas/bin/cake MailUsersDelivery 156
+     * gestisce solo organization_id 156 Le Giare A.P.S.
      */    
     public function mailUsersDelivery($organization_id, $debug=false) {
 

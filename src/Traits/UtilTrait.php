@@ -219,7 +219,7 @@ trait UtilTrait
         if($delivery['sys']=='Y')
             $results = $delivery['luogo'];
         else
-            $results = $delivery['data']->i18nFormat('Y-MM-dd');
+            $results = $delivery['data']->i18nFormat('yyyy-MM-dd');
         
         return $results;
     } 
@@ -235,7 +235,7 @@ trait UtilTrait
             $results = $delivery['luogo'].' - '.$delivery['data']->i18nFormat('eeee d MMMM');
             if(!empty($opts)) {
                 if(isset($opts['year']))
-                    $results = $delivery['luogo'].' - '.$delivery['data']->i18nFormat('eeee d MMMM YYYY');
+                    $results = $delivery['luogo'].' - '.$delivery['data']->i18nFormat('eeee d MMMM yyyy');
             }
             
         }

@@ -62,7 +62,7 @@ class OrderPromotionValidation extends Validation
 
         $value = $value['year'].$value['month'].$value['day'];
         // https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-        // $value2 = $results->data->i18nFormat('Ymd');        
+        // $value2 = $results->data->i18nFormat('yyyymd');        
         $value2 = $results->data_fine->format('Ymd');
         // debug('dateComparisonToParent '.$value.' '.$operator.' '.$value2);
         // debug(Validation::comparison($value, $operator, $value2));

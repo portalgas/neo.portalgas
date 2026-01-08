@@ -81,7 +81,7 @@ class GasGroupDeliveriesTable extends Table
                             return $gas_group_delivery->delivery->get('id');
                         },
                         'valueField' => function ($gas_group_delivery) {
-                            return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data')->i18nFormat('eeee d MMMM YYYY');
+                            return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data')->i18nFormat('eeee d MMMM yyyy');
                         }])
                         ->where($where)
                         ->contain(['Deliveries' => ['conditions' => [
@@ -119,7 +119,7 @@ class GasGroupDeliveriesTable extends Table
                 return $gas_group_delivery->delivery->get('id');
             },
             'valueField' => function ($gas_group_delivery) {
-                return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data')->i18nFormat('eeee d MMMM YYYY');
+                return $gas_group_delivery->delivery->get('luogo').' - '.$gas_group_delivery->delivery->get('data')->i18nFormat('eeee d MMMM yyyy');
             }])
             ->where($where)
             ->contain(['Deliveries' => ['conditions' => [

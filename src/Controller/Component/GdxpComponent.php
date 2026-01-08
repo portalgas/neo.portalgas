@@ -184,8 +184,8 @@ class GdxpComponent extends Component {
         $results = [];
         $results = [
                 "phase" => "booking",
-                "openDate" => $orderResults->data_inizio->i18nFormat('Y-MM-dd'),
-                "closeDate" => $orderResults->data_fine->i18nFormat('Y-MM-dd'),
+                "openDate" => $orderResults->data_inizio->i18nFormat('yyyy-MM-dd'),
+                "closeDate" => $orderResults->data_fine->i18nFormat('yyyy-MM-dd'),
                 "deliveryDate" => $this->getDeliveryDate($orderResults->delivery)
             ];
 

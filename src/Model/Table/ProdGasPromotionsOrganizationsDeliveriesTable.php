@@ -88,7 +88,7 @@ class ProdGasPromotionsOrganizationsDeliveriesTable extends Table
                  /*
                   * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
                   * key array non per id, nel json perde l'ordinamento della data
-                  * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM Y');
+                  * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM yyyy');
                   */                
                 $listResults[$result->delivery->id] = $result->delivery->data->i18nFormat('eeee d MMMM').' - '.$result->delivery->luogo;
             }

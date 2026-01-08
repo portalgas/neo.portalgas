@@ -33,7 +33,7 @@ class HtmlCustomHelper extends FormHelper
 
     // https://api.cakephp.org/3.8/class-Cake.View.Helper.TimeHelper.html
     // eeee d MMMM Y = mercoledì 8 febbraio 2023
-    public function data($data, $format='eeee d MMMM Y') {
+    public function data($data, $format='eeee d MMMM yyyy') {
         $str = $data->i18nFormat($format);
         // $str = $data->format($format);
         return $str;
