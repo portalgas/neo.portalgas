@@ -49,7 +49,7 @@ class ArticlesArticlesTypesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['organization_id'], 'Organizations'));
-        $rules->add($rules->existsIn(['article_id'], 'Articles'));
+        $rules->add($rules->existsIn(['organization_id', 'article_id'], 'Articles'));
         $rules->add($rules->existsIn(['article_type_id'], 'ArticlesTypes'));
 
         return $rules;
