@@ -34,7 +34,7 @@ class MailUsersOrdersOpenCommand extends Command
 
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $debug = false;
+        $debug = true;
 
         /*
          * cancello file di log

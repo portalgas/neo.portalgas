@@ -324,7 +324,7 @@ class CronMailsComponent extends Component {
         if(empty($_user)) 
             return; 
 
-        if($debug) echo "Estraggo le consegne che si apriranno domani \n";
+        if($debug) echo "Estraggo le consegne che si chiudono domani \n";
 
         if(isset($_user->organization->paramsConfig['hasGasGroups']) && 
         $_user->organization->paramsConfig['hasGasGroups']=='Y') 
@@ -421,11 +421,11 @@ class CronMailsComponent extends Component {
                             ->all();
 
         if($gasGroupDeliveries->count()==0) {
-            if($debug) echo "non ci sono consegne che apriranno tra ".Configure::read('GGMailToAlertDeliveryOn')." giorni \n";
+            if($debug) echo "non ci sono consegne che si chiuderanno tra ".Configure::read('GGMailToAlertDeliveryOn')." giorni \n";
             return false;
         }
 
-        if($debug) echo "Trovati ".$gasGroupDeliveries->count()." consegne \n";  
+        if($debug) echo "Trovate ".$gasGroupDeliveries->count()." consegne \n";  
         
         foreach($gasGroupDeliveries as $gasGroupDelivery) {
 
@@ -482,8 +482,14 @@ class CronMailsComponent extends Component {
 
         if($this->_debug) {
             $to = 'francesco.actis@gmail.com';
-            $addTo = 'francesco.actis@gmail.com';    
+            $addTo = null;    
         }
+        /*
+         * forzo per i test
+         */
+        $to = 'francesco.actis@gmail.com';
+        $addTo = null;  
+
 
         /*
         * subject
@@ -518,6 +524,11 @@ class CronMailsComponent extends Component {
         }  
 
         if($this->_debug) exit;
+
+        /*
+         * forzo per i test
+         */
+        exit;
     } 
     
     /*
