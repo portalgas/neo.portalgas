@@ -486,10 +486,9 @@ class CronMailsComponent extends Component {
         }
         /*
          * forzo per i test
-         */
         $to = 'francesco.actis@gmail.com';
         $addTo = null;  
-
+         */
 
         /*
         * subject
@@ -527,8 +526,8 @@ class CronMailsComponent extends Component {
 
         /*
          * forzo per i test
+         * exit;
          */
-        exit;
     } 
     
     /*
