@@ -6820,7 +6820,7 @@ msgstr "Gestione gasisti"
 msgid "Gas Group Parent Orders"
 msgstr "Ordini titolari per gruppi"
 
-msgid "Gas Group Parent Orders"
+msgid "Gas Group Parent Order"
 msgstr "Ordine titolare per gruppi"
 
 msgid "Gas Group Orders"

@@ -74,7 +74,7 @@ class GasGroupDeliveriesController extends AppController
                     'conditions' => ['type' => 'GAS-GROUP'],
                     'Orders']],
             'conditions' => $where,
-            'order' => ['Deliveries.data']
+            'order' => ['Deliveries.data desc']
         ];
        
         $gasGroupDeliveries = $this->paginate($this->GasGroupDeliveries);

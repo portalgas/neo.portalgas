@@ -342,7 +342,7 @@ trait UtilTrait
             $results = 'Oggi';
           }
           else {
-            $diff_label = 'Passati '.$gg;
+            $results = 'Passati '.$gg;
             ($gg==1) ? $results .= ' giorno': $results .= ' giorni';  
           }
         }

@@ -89,14 +89,33 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<td>'.h($delivery->luogo).'</td>';
                   echo '<td>';
                   if($delivery->sys=='N')
-                    echo $delivery->data->i18nFormat('eeee d MMMM');
+                    echo $delivery->data->i18nFormat('eeee d MMMM YYYY');
                     // echo $this->Time->nice($delivery->data);
                   echo '</td>';
                   echo '<td>';
                   if($delivery->sys=='N')
                     echo $diff_label;
                   echo '</td>';
-                  echo '<td class="text-center">'.count($delivery->orders).'</td>';
+                  $tot_orders = count($delivery->orders);
+                  echo '<td class="text-center">';
+                  if($tot_orders==1) {
+                      $order = $delivery->orders[0];  
+                      
+                      $label = $tot_orders.' ';
+                      switch($order->order_type_id) {
+                        case Configure::read('Order.type.gas_parent_groups'):
+                            $label .= __('Gas Group Parent Order');
+                          break;
+                        case Configure::read('Order.type.gas_groups'):
+                            $label .= __('Gas Group Order');
+                          break;
+                      }
+                      
+                      echo $this->Html->link($label, ['controller' => 'Orders', 'action' => 'home', $order->order_type_id, $order->id], ['class'=>'btn btn-primary', 'title' => __('Order home')]);
+                  }
+                  else
+                    echo $tot_orders;
+                  echo '</td>';
                   if($delivery->sys=='N')
                     echo '<td title="'.h($delivery->created).'">'.$delivery->created->i18nFormat('eeee d MMMM').'</td>';
                   else 

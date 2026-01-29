@@ -11,7 +11,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\I18n\FrozenTime;
 
 /*
- * creo ordini ricorsivi
+ * per il GAS dei gruppi elimina gli ordini titolari senza ordini figli
  * /var/www/neo.portalgas/src/Command/Sh/ordersTypeGasParentGroups.sh
  * /var/www/neo.portalgas/bin/cake OrdersTypeGasParentGroups {organization_id}
  * 

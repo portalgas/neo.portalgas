@@ -13,6 +13,8 @@ use App\Controller\Component\CronMailsComponent;
 /*
  * /var/www/neo.portalgas/src/Command/Sh/mailUsersDelivery.sh
  * /var/www/neo.portalgas/bin/cake MailUsersDelivery {organization_id}
+ * 
+ * in /var/www/neo.portalgas/bin/cake MailUsersDelivery 156 gli passo organization_id = 156 (gas gruppi)
  */ 
 class MailUsersDeliveryCommand extends Command
 {
