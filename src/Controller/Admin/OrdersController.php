@@ -528,6 +528,51 @@ class OrdersController extends AppController
 
     }
 
+    public function view($order_type_id, $id = null, $parent_id=0)
+    {
+        $debug = false;
+
+        $this->_ordersTable = $this->Orders->factory($this->_user, $this->_organization->id, $order_type_id);
+        $this->_ordersTable->addBehavior('Orders');
+
+        $order = $this->_ordersTable->getById($this->_user, $this->_organization->id, $id);
+        if(empty($order)) {
+            $this->Flash->error(__('msg_error_params'), ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
+        $datas = $this->_getData($order, $order_type_id, $parent_id);
+        $suppliersOrganizations = $datas['suppliersOrganizations'];
+        $deliveries = $datas['deliveries'];
+        $delivery_olds = $datas['delivery_olds'];
+        $deliveryOptions = $datas['deliveryOptions'];
+        $parent = $datas['parent'];
+        $this->set(compact('order_type_id', 'parent', 'suppliersOrganizations', 'deliveries', 'delivery_olds', 'deliveryOptions'));
+        $this->set(compact('order'));
+
+		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->_user);
+		$orderActions = $this->ActionsOrder->getOrderActionsToMenu($this->_user, $group_id, $order, $debug);
+
+		/*
+		 * elimino l'item Order home (id=0) perche' sono già in home
+		 */
+		if($orderActions[0]['id']==0)
+			unset($orderActions[0]);
+		$this->set('orderActions', $orderActions);
+
+		/*
+		 * creo degli OrderActions di raggruppamento per controller (Orders, Carts, etc)
+		*/
+		$raggruppamentoOrderActions = [];
+		/*
+		 * bugs, per questi stati non raggruppo perche' ho 2 OrderController con conseguenziali
+		 */
+		if($order->state_code!='PROCESSED-ON-DELIVERY' && $order->prod_gas_promotion_id==0)
+			$raggruppamentoOrderActions = $this->ActionsOrder->getRaggruppamentoOrderActions($orderActions, $debug);
+		$this->set('raggruppamentoOrderActions', $raggruppamentoOrderActions);
+
+    }
+
     /*
      * return
      *  suppliersOrganizations produttori

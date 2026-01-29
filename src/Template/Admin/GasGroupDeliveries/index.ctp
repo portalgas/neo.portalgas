@@ -111,7 +111,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                           break;
                       }
                       
-                      echo $this->Html->link($label, ['controller' => 'Orders', 'action' => 'home', $order->order_type_id, $order->id], ['class'=>'btn btn-primary', 'title' => __('Order home')]);
+                      echo $this->Html->link($label, ['controller' => 'Orders', 'action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-primary', 'title' => __('Order home')]);
                   }
                   else
                     echo $tot_orders;
