@@ -72,7 +72,7 @@ class DeliveriesTypeGasParentGroupsCommand extends Command
                                 ->contain(['Deliveries' => ['conditions' => $where_deliveires, 'Orders']])
                                 ->where(['Deliveries.organization_id' => $organization_id,
                                         'GasGroupDeliveries.organization_id' => $organization_id])
-                                  ->limit(1)
+                                  //->limit(1)
                                   ->order(['GasGroupDeliveries.id' => 'desc'])
                                   ->all();
 
