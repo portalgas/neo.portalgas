@@ -48,7 +48,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Cash'), 'subtitle' => 'mass
                     <div class="col-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-minus" aria-hidden="true"></i></span>
-                            <input type="number" class="form-control" min="0" name="minus" id="minus" placeholder="importo da sottrarre">
+                            <input type="number" class="form-control" min="0" step="0.01" placeholder="0,00" name="minus" id="minus" placeholder="importo da sottrarre">
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ echo $this->HtmlCustomSite->boxTitle(['title' => __('Cash'), 'subtitle' => 'mass
                   <div class="col-10">
                       <div class="input-group">
                           <span class="input-group-addon"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i></span>
-                          <input type="number" class="form-control" min="0" name="plus" id="plus" placeholder="importo da aggiungere">
+                          <input type="number" class="form-control" min="0" step="0.01" placeholder="0,00" name="plus" id="plus" placeholder="importo da aggiungere">
                       </div>
                   </div>
               </div>
