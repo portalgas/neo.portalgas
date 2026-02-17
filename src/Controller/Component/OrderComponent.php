@@ -169,7 +169,7 @@ class OrderComponent extends Component {
     public function getArticlesOrdersByOrderId($user, $organization_id, $order_id, $order_type_id, $options=[], $debug=false) {
 
         $results = [];
-
+      
         $ordersTable = TableRegistry::get('Orders');
         $ordersTable = $ordersTable->factory($user, $organization_id, $order_type_id);
         if($ordersTable===false) {

@@ -58,7 +58,7 @@ class ApiSuppliersOrganizationsReferentDecorator  extends AppDecorator {
         } // end foreach ($referent->user->user_profiles as $user_profile)
 
         if($satispay) {
-           if(!isset($results['phone_satispay']))
+           if(!isset($results['phone_satispay']) && isset($results['phone']))
              $results['phone_satispay'] = $results['phone'];
         }
         
