@@ -58,7 +58,7 @@ class ExportsController extends AppController {
     /*
      * https://dompdf.net/examples.php
      */
-    public function userCart($delivery_id, $debug=false) { 
+    public function userCart($delivery_id, $tmpl=null, $debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
             return false;
@@ -73,7 +73,7 @@ class ExportsController extends AppController {
         $delivery = $deliveriesTable->getById($this->_user, $this->_organization->id, $delivery_id);
         if(!empty($delivery)) {
             
-            $title = "Carrello della consegna ".$delivery->label.'<br />di '.$this->_user->username;
+            $title = "Carrello della consegna ".$delivery->label.' <br />di '.$this->_user->username;
             Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));
 
             $options = [];
@@ -94,15 +94,24 @@ class ExportsController extends AppController {
         $this->set(compact('results', 'storeroomResults', 'delivery', 'title'));
         $this->set('user', $this->_user);
 
+        switch($tmpl) {
+            case 'compact':
+                $tmpl = '/Admin/Api/Exports/pdf/user_cart_compact';
+                break;
+            default:
+                $tmpl = '/Admin/Api/Exports/pdf/user_cart';
+                break;
+        }
+
         if($this->_debug) {
             $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
             $this->layout = 'pdf/default';
-            $this->render('/Admin/Api/Exports/pdf/user_cart');
+            $this->render($tmpl);
         } 
         else {
             $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
                                 // Template/Admin/Api/Exports/pdf/user_cart.ctp 
-                                ->setTemplate('/Admin/Api/Exports/pdf/user_cart') 
+                                ->setTemplate($tmpl) 
                                 // Template/Layout/pdf/default.ctp
                                 ->setLayout('../../Layout/pdf/default') 
                                 // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');

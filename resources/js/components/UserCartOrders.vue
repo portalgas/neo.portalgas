@@ -3,7 +3,19 @@
 	<main>
 
         <div class="box-btn-pdf">
-           <a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
+			<div class="btn-group" role="group">
+				<button id="btnGroupDropCart" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="fas fa-file-pdf"></i> Stampa carrello della consegna
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDropCart">
+				<a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa carrello in versione completa" class="dropdown-item">Versione completa</a>
+				<a :href="'/admin/api/exports/user-cart/'+results.delivery_id+'/compact'" target="_blank" title="Stampa carrello in versione compatta" class="dropdown-item">Versione compatta</a>
+				</div>
+			</div>
+			<!-- 
+			<a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa carrello" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna</a>
+			<a class="btn btn-primary"><i class="fas fa-file-pdf"></i> Stampa carrello della consegna in versione compatta</a>
+		   -->
         </div>
 
         <p 

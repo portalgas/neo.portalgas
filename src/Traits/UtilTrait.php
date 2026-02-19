@@ -195,6 +195,10 @@ trait UtilTrait
 
     public function setFileName($filename) {
         
+        $filename = str_replace('<br>', '', $filename);
+        $filename = str_replace('<br/>', '', $filename);
+        $filename = str_replace('<br />', '', $filename);
+
         $filename = str_replace(' ', '_', $filename);
         $filename = str_replace('_-_', '_', $filename);
         $filename = str_replace('@', '-', $filename);
