@@ -14,19 +14,19 @@
                         <h2>
                             <span style="float:left;">{{ organization.name }}</span>
                             <span style="float:right;">
-                        <Organizations :slug="slugGas" :organization="organization" />
-                    </span>
+                                <Organizations :slug="slugGas" :organization="organization" />
+                            </span>
                         </h2>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col col-2">
+                    <div class="col-md-2">
                         <Menu :slugGas="slugGas"></Menu>
                     </div>
-                    <div class="col col-7">
+                    <div class="col-md-7">
                         <Content :slugGas="slugGas" :slugPage="slugPage"></Content>
                     </div>
-                    <div class="col col-3 text-center">
+                    <div class="col-md-3 text-center">
                         <SchedaGas :organization="organization"></SchedaGas>
                     </div>
                 </div>
