@@ -64,8 +64,12 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
             <thead>
               <tr>
                   <th scope="col" class="hidden-xs hidden-sm"></th>
-                  <th scope="col" colspan="2"><?= $this->Paginator->sort('supplier_organization_id', __('supplier_organization_id')) ?></th>
-                  <?php 
+                  <?php
+                  if($order_type_id==Configure::read('Order.type.gas_groups')) 
+                    echo '<th>Titolare</th>';
+
+                  echo '<th scope="col" colspan="2">'.$this->Paginator->sort('supplier_organization_id', __('supplier_organization_id')).'</th>';
+                  
                   /*  
                   <th scope="col"><?= $this->Paginator->sort('owner_organization_id') ?></th>
                   <th scope="col"><?= $this->Paginator->sort('owner_supplier_organization_id') ?></th>
@@ -82,7 +86,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
             </thead>
             <tbody>
               <?php 
-              $colspan = 10;
+              $colspan = 11;
               $delivery_id_old = 0;
               foreach ($orders as $order) {
            
@@ -122,6 +126,12 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                   echo '<i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>';
                   echo '</a>';                   
                   echo '</td>';
+                  if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                    // x ogni ordine titolare creo il medesimo colore
+                    $hash = md5($order->parent->id); 
+                    $style_color =  '#' . substr($hash, 0, 6);
+                    echo '<td class="text-center">'.$this->Html->link('<i class="fa fa-users"></i>', ['controller' => 'Orders', 'action' => 'view', $order->parent->order_type_id, $order->parent->id], ['style' => 'color:'.$style_color ,'escape' => false]).'</td>';
+                  }
                   echo '<td>';
                   echo $this->HtmlCustomSite->drawSupplierImage($order->suppliers_organization->supplier);
                   echo '</td>';

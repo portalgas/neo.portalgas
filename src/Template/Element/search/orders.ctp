@@ -31,14 +31,24 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
     $options['ctrlDesACL'] = false;
     $options['id'] = 'search_supplier_organization_id'; // non c'e' il bind in supplierOrganization.js
     $options['default'] = $search_supplier_organization_id;
-    $options['empty'] = false;
+    $options['empty'] = true;
     $options['select2'] = true;
     echo $htmlCustomSiteOrders->supplierOrganizations($suppliersOrganizations, $options);
     echo '</div>';
-    echo '<div class="col-md-5">';
-    echo $this->Form->control('order_delivery_date', ['label' => __('Sort'), 'options' => $order_delivery_dates, 'default' => $order_delivery_date]);
-    echo '</div>';
-    echo '<div class="col col-md-2 text-right">';
+    if(in_array($order_type_id, [Configure::read('Order.type.gas_groups')])) {
+        echo '<div class="col-md-3">';
+        echo $this->Form->control('order_delivery_date', ['label' => __('Sort'), 'options' => $order_delivery_dates, 'default' => $order_delivery_date]);
+        echo '</div>';
+        echo '<div class="col-md-3">';
+        echo $this->Form->control('order_group_by_parent', ['label' => 'Raggruppa per ordine titolare', 'options' => $si_no, 'default' => $order_group_by_parent]);
+        echo '</div>';
+    }
+    else {
+        echo '<div class="col-md-6">';
+        echo $this->Form->control('order_delivery_date', ['label' => __('Sort'), 'options' => $order_delivery_dates, 'default' => $order_delivery_date]);
+        echo '</div>';
+    }
+    echo '<div class="col col-md-1 text-right">';
     echo '<br />';
     echo $this->Form->button(__('Search'), ['class' => 'btn btn-primary pull-right']);
     echo '</div>';

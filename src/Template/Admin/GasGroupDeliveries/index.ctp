@@ -98,23 +98,53 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '</td>';
                   $tot_orders = count($delivery->orders);
                   echo '<td class="text-center">';
-                  if($tot_orders==1) {
-                      $order = $delivery->orders[0];  
-                      
-                      $label = $tot_orders.' ';
-                      switch($order->order_type_id) {
-                        case Configure::read('Order.type.gas_parent_groups'):
-                            $label .= __('Gas Group Parent Order');
-                          break;
-                        case Configure::read('Order.type.gas_groups'):
-                            $label .= __('Gas Group Order');
-                          break;
-                      }
-                      
-                      echo $this->Html->link($label, ['controller' => 'Orders', 'action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-primary', 'title' => __('Order home')]);
+                  switch($tot_orders) {
+                    case 0:
+                        echo '<div class="btn btn-danger btn-block">Nessun ordine associato</div>';
+                      break;
+                    case 1:
+                        $order = $delivery->orders[0];  
+                        
+                        $label = $tot_orders.' ';
+                        switch($order->order_type_id) {
+                          case Configure::read('Order.type.gas_parent_groups'):
+                              $label .= __('Gas Group Parent Order');
+                            break;
+                          case Configure::read('Order.type.gas_groups'):
+                              $label .= __('Gas Group Order');
+                            break;
+                        }
+                        
+                        echo $this->Html->link($label, ['controller' => 'Orders', 'action' => 'view', $order->order_type_id, $order->id], ['class'=>'btn btn-primary btn-block', 'title' => __('Order home')]);
+                      break;
+                    default:
+                        echo '<div class="btn-group" style="width: 100%;">';
+                        echo '<button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                        echo $tot_orders.' ordini associati&nbsp;&nbsp;<span class="caret"></span>';
+                        echo '</button>';
+                        echo '<ul class="dropdown-menu">';
+                        foreach($delivery->orders as $order) {
+                          echo '<li>';
+                          $label = ' ';
+                          switch($order->order_type_id) {
+                            case Configure::read('Order.type.gas_parent_groups'):
+                                $label .= __('Gas Group Parent Order');
+                              break;
+                            case Configure::read('Order.type.gas_groups'): {
+                              $label .= __('Gas Group Order').' '.$order->gas_group->name;
+                            }
+                              break;
+                          }
+                          
+                          echo $this->Html->link($label, ['controller' => 'Orders', 'action' => 'view', $order->order_type_id, $order->id], ['title' => __('Order home')]);
+  
+                          echo '</li>';
+                        }
+                        echo '</ul>';
+                        echo '</div>';
+                    break;
                   }
-                  else
-                    echo $tot_orders;
+                    
                   echo '</td>';
                   if($delivery->sys=='N')
                     echo '<td title="'.h($delivery->created).'">'.$delivery->created->i18nFormat('eeee d MMMM').'</td>';

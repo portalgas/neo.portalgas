@@ -80,7 +80,7 @@ class GasGroupsController extends AppController
             $this->set(compact('users')); 
 
             $gasGroups = $this->GasGroups->find()->contain([
-                'GasGroupDeliveries', 
+                'GasGroupDeliveries' => ['Deliveries' => 'Orders'], 
                 'Users', // chi l'ha creato
                 'GasGroupUsers' => [
                     'conditions' => $where_gas_groups_user]])
@@ -98,6 +98,14 @@ class GasGroupsController extends AppController
                     if(empty($gasGroup->gas_group_users)) 
                         unset($gasGroups[$numResult]);
                 }
+            }
+
+            foreach($gasGroups as $numResult => $gasGroup) {
+                $tot_orders = 0;
+                foreach($gasGroup->gas_group_deliveries as $gas_group_deliveries) {
+                    $tot_orders += count($gas_group_deliveries->delivery->orders);
+                }
+                $gasGroups[$numResult]['tot_orders'] = $tot_orders;
             }
         }
         else

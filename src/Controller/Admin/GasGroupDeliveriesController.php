@@ -72,7 +72,7 @@ class GasGroupDeliveriesController extends AppController
             'contain' => ['GasGroups' => ['GasGroupUsers'], 
                 'Deliveries' => [
                     'conditions' => ['type' => 'GAS-GROUP'],
-                    'Orders']],
+                    'Orders' => ['GasGroups']]],
             'conditions' => $where,
             'order' => ['Deliveries.data desc']
         ];

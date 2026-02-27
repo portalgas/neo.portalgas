@@ -64,7 +64,7 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<th scope="col" class="text-center">'.__('Totate gasisti').'</th>';
                 ?>
                 <th scope="col" class="text-center"><?= __('Totate consegne') ?></th>
-                <!-- th scope="col" class="text-center"><?= __('Totate ordini') ?></th -->
+                <th scope="col" class="text-center"><?= __('Totate ordini') ?></th>
                 <th scope="col" class="text-center"><?= __('Is Active') ?></th>
                 <th scope="col" class=""><?= __('Created by') ?></th>
                 <th scope="col" class=""><?= __('Created') ?></th>
@@ -89,7 +89,8 @@ $this->assign('tb_sidebar', $this->fetch('tb_actions'));
                   echo '<td>'.$this->Text->autoParagraph($gasGroup->descri).'</td>'; 
                   if(!empty($request['search_user_id']))
                     echo '<td class="text-center">'.count($gasGroup->gas_group_users).'</td>';
-                  echo '<td class="text-center">'.count($gasGroup->gas_group_deliveries).'</td>';
+                    echo '<td class="text-center">'.count($gasGroup->gas_group_deliveries).'</td>';
+                    echo '<td class="text-center">'.$gasGroup->tot_orders.'</td>';
                   echo '<td class="text-center">'.$this->HtmlCustom->drawTrueFalse($gasGroup, 'is_active').'</td>';
                   echo '<td>'.$gasGroup->user->name.'</td>';
                   echo '<td title="'.h($gasGroup->created).'">'.$this->Time->nice($gasGroup->created).'</td>';

@@ -70,6 +70,12 @@ class OrdersTable extends Table
             'foreignKey' => ['gas_group_id'],
             'joinType' => 'LEFT',
         ]);
+        // ordine titolare (per gas group)
+        $this->belongsTo('Parent', [
+            'className' => 'Orders',
+            'foreignKey' => ['organization_id', 'parent_id'],
+            'joinType' => 'LEFT',
+        ]);
         // ordini associati all'ordine parent
         $this->hasMany('GasGroupsChilds', [
             'className' => 'Orders',

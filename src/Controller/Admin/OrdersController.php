@@ -56,7 +56,7 @@ class OrdersController extends AppController
         $this->getEventManager()->dispatch($event);
 
         $where = [];
-        $sorts = ['Deliveries.data asc'];
+        $sorts = [];
 
         /*
          * filters
@@ -64,7 +64,18 @@ class OrdersController extends AppController
         $request = $this->request->getQuery();
         $search_supplier_organization_id = '';
         $order_delivery_date = '';
+        $order_group_by_parent = 'Y';
 
+        /*
+         * se ho scelto di raggruppare per ordine titolare ordino prima per Orders.parent_id asc
+         * */
+        if(!empty($request['order_group_by_parent'])) {
+            $order_group_by_parent = $request['order_group_by_parent'];
+            if($order_group_by_parent=='Y') 
+                $sorts += ['Orders.parent_id asc'];
+        }
+        $sorts += ['Deliveries.data asc'];
+        
         if(!empty($request['search_supplier_organization_id'])) {
             $search_supplier_organization_id = $request['search_supplier_organization_id'];
             $where += ['Orders.supplier_organization_id' => $search_supplier_organization_id];
@@ -84,8 +95,8 @@ class OrdersController extends AppController
             if(!in_array($request['order_delivery_date'], $sorts))
                 array_push($sorts, $request['order_delivery_date']);
         }
-        $this->set(compact('search_supplier_organization_id', 'order_delivery_date'));
-
+        $this->set(compact('search_supplier_organization_id', 'order_delivery_date', 'order_group_by_parent'));
+        debug($sorts);
         $where += ['Orders.organization_id' => $this->_organization->id,
                     'Deliveries.organization_id' => $this->_organization->id,
                     'Deliveries.isVisibleBackOffice' => 'Y',
@@ -122,8 +133,12 @@ class OrdersController extends AppController
 
         $contains = ['OrderTypes', 'SuppliersOrganizations' => ['Suppliers'],
                      'OwnerOrganizations', 'OwnerSupplierOrganizations', 'Deliveries'];
-        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y')
+        if(isset($this->_user->organization->paramsConfig['hasGasGroups']) && $this->_user->organization->paramsConfig['hasGasGroups']=='Y') {
             $contains = array_merge($contains, ['GasGroups']);
+            if(!empty($order_type_id)) 
+                if($order_type_id==Configure::read('Order.type.gas_groups')) 
+                    $contains = array_merge($contains, ['Parent']);
+        }
 
         $this->paginate = [
             'order' => $sorts,
@@ -149,6 +164,9 @@ class OrdersController extends AppController
                                  'Deliveries.data desc' => 'Data di consegna discendente'];
 
         $this->set(compact('suppliersOrganizations', 'order_delivery_dates'));
+        
+        $si_no = ['Y' => 'Si', 'N' => 'No'];
+        $this->set(compact('si_no'));
 
 		/*
 		 * legenda profilata
@@ -382,8 +400,7 @@ class OrdersController extends AppController
                 /*
                  * redirect home ordine
                  */
-                if($order_type_id==Configure::read('Order.type.gas_parent_groups') ||
-                   $order_type_id==Configure::read('Order.type.gas_groups')) {
+                if(in_array($order_type_id, [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')])) {
                     $url = ['controller' => 'Orders', 'action' => 'index', $order_type_id];
                 }
                 else
@@ -449,8 +466,7 @@ class OrdersController extends AppController
                 /*
                  * redirect home ordine
                  */
-                if($order_type_id==Configure::read('Order.type.gas_parent_groups') ||
-                    $order_type_id==Configure::read('Order.type.gas_groups')) {
+                if(in_array($order_type_id, [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')])) {
                     $url = ['controller' => 'Orders', 'action' => 'index', $order_type_id];
                 }
                 else
