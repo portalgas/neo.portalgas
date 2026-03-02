@@ -721,7 +721,7 @@ class ExportsDeliveryController extends AppController {
 
         } // end if(!empty($delivery->orders))
         
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti<br>';
+        $title = 'Doc. con acquisti della consegna raggruppati per gasista e dettaglio acquisti<br>';
         $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'title'));
 
