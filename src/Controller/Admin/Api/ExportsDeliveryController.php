@@ -210,8 +210,8 @@ class ExportsDeliveryController extends AppController {
             
         } // foreach($delivery->orders as $order) 
 
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore<br>';
-        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore<br />';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).'<br />'.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'title'));
         $this->set(compact('delivery_tot_order_only_cart', 'delivery_tot_trasport', 'delivery_tot_cost_more', 'delivery_tot_cost_less', 'delivery_tot_importo'));
 
@@ -404,8 +404,8 @@ class ExportsDeliveryController extends AppController {
             }  // foreach($users as $user)          
         } // end if($users->count()>0)
         // dd($results);
-        $title = 'Doc. con acquisti della consegna raggruppati per gasista<br>';
-        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
+        $title = 'Doc. con acquisti della consegna raggruppati per gasista<br />';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).'<br />'.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'title'));
         $this->set(compact('delivery_tot_only_cart', 'delivery_tot_trasport', 'delivery_tot_cost_more', 'delivery_tot_cost_less', 'delivery_tot_importo'));
 
@@ -539,8 +539,8 @@ class ExportsDeliveryController extends AppController {
 
         } // foreach($delivery->orders as $order) 
 
-        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti<br>';
-        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
+        $title = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti<br />';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).'<br />'.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'delivery_tot_importo', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-produttore-e-acquisti';
@@ -721,8 +721,8 @@ class ExportsDeliveryController extends AppController {
 
         } // end if(!empty($delivery->orders))
         
-        $title = 'Doc. con acquisti della consegna raggruppati per gasista e dettaglio acquisti<br>';
-        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).' '.$this->getDeliveryDateLabel($delivery);
+        $title = 'Doc. con acquisti della consegna raggruppati per gasista e dettaglio acquisti<br />';
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).'<br />'.$this->getDeliveryDateLabel($delivery);
         $this->set(compact('delivery', 'results', 'title'));
 
         $this->_filename = 'acquisti-consegna-raggruppati-gasista-e-acquisti';
