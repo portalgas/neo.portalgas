@@ -29,7 +29,7 @@ if(!empty($results)) {
 	if(isset($opts['users_detail_importo']) && $opts['users_detail_importo']=='Y') 
 		$html .= '<th scope="col" class="text-center">'. __('ImportoTotaleOrdine').'</th>';
 	if(isset($opts['users_detail_qta']) && $opts['users_detail_qta']=='Y') 
-		$html .= '<th scope="col" class="text-center">'.__('QuantitaTotaleOrdineShort').'</th>';
+		$html .= '<th scope="col" class="text-center">'.__('QuantitaTotaleOrdine').'</th>';
 	$html .= '</tr>';
 	$html .= '</thead><tbody>';
 
