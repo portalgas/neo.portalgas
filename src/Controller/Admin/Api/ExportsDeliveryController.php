@@ -316,7 +316,15 @@ class ExportsDeliveryController extends AppController {
                             $results[$i_user]['user']['name'] = $user->name;
                             $results[$i_user]['user']['username'] = $user->username;
                             $results[$i_user]['user']['email'] = $user->email;
-                            $results[$i_user]['user']['phone'] = $user->phone;
+                            isset($user->user_profiles['phone']) ? $results[$i_user]['user']['phone'] = $user->user_profiles['phone']: $results[$i_user]['user']['phone'] = null;
+                            if(isset($user->user_profiles['address']) && !empty($user->user_profiles['address'])) {
+                                $address = $user->user_profiles['address'];
+                                if(isset($user->user_profiles['city']) && !empty($user->user_profiles['acitydress']))
+                                    $address .= ' '.$user->user_profiles['city']; 
+                                if(isset($user->user_profiles['postal_code']) && !empty($user->user_profiles['postal_code']))
+                                    $address .= ' ('.$user->user_profiles['postal_code'].')'; 
+                                $results[$i_user]['user']['address'] = $address;
+                            } 
                         }
                         if($i_order==0) {
                             $results[$i_user]['orders'] = [];
@@ -739,6 +747,189 @@ class ExportsDeliveryController extends AppController {
         return true;
     }  
 
+    // Doc. l'elenco dei gasisti presenti alla consegna
+    private function _toDeliveryByPresentUsers($format, $delivery_id, $debug=false) {
+
+        $results = [];
+
+        /* 
+        * dati consegna
+        */
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $where = ['Deliveries.organization_id' => $this->_organization->id,
+                    'Deliveries.id' => $delivery_id];
+        $delivery = $deliveriesTable->find()
+                                ->where($where)
+                                ->first();
+        /*
+        * ordini delle consegna
+        */
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Orders.organization_id' => $this->_user->organization->id,
+                    'Orders.isVisibleBackOffice' => 'Y',
+                    'Orders.state_code NOT IN' => ['CREATE-INCOMPLETE', 'OPEN'],
+                    'Orders.delivery_id' => $delivery->id];
+        /* 
+        * profilazione $user->acl['isReferentGeneric'] 
+        */
+        if(!$this->_user->acl['isSuperReferente'] && $this->_user->acl['isReferentGeneric']) { 
+            $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+            $suppliersOrganizations = $suppliersOrganizationsTable->ACLgetsList($this->_user, $this->_organization->id, $this->_user->id);
+            // debug($suppliersOrganizations);
+            if(empty($suppliersOrganizations))
+                $where += ['Orders.supplier_organization_id' => '-1']; // utente senza referenze
+            else
+                $where += ['Orders.supplier_organization_id IN ' => array_keys($suppliersOrganizations)];
+        }    
+        // $where += ['Orders.id' => 40396]; 
+
+        $orders = $ordersTable->find()
+                                ->contain(['SuppliersOrganizations' => ['Suppliers']])    
+                                    ->where($where)
+                                    ->order(['SuppliersOrganizations.name'])
+                                    ->all();
+        /*
+        * elenco gasisti
+        */
+        $cartsTable = TableRegistry::get('Carts');
+        $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
+        $summaryOrderCostMoresTable = TableRegistry::get('SummaryOrderCostMores');
+        $summaryOrderCostLessesTable = TableRegistry::get('SummaryOrderCostLesses');
+        $summaryOrderAggregatesTable = TableRegistry::get('SummaryOrderAggregates');          
+                            
+        $usersTable = TableRegistry::get('Users');
+        $where = ['username NOT LIKE' => '%portalgas.it'];    
+        $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
+        if($users->count()>0) {
+            $i_user=0;
+            $delivery_tot_trasport = 0;
+            $delivery_tot_cost_more = 0;
+            $delivery_tot_cost_less = 0;
+            $delivery_tot_importo = 0; 
+            foreach($users as $user) {
+
+                $tot_user_importo = 0;
+                $tot_user_qta = 0;
+                foreach($orders as $order) {
+
+                    $where = ['Carts.user_id' => $user->id,
+                                'Carts.organization_id' => $this->_user->organization->id,
+                                'Carts.order_id' => $order->id,
+                                'Carts.deleteToReferent' => 'N',
+                                'Carts.stato' => 'Y'];
+                    $carts = $cartsTable->find()
+                                ->contain(['ArticlesOrders' => ['Articles']])
+                                ->where($where)
+                                ->all();
+                    // debug('order id '.$order->id.' totale acquisti '.$carts->count());     
+                    if($carts->count()>0) {
+                        // debug($carts);
+                        if(!isset($results[$i_user])) {
+                            $results[$i_user] = [];
+                            $results[$i_user]['user']['id'] = $user->id;
+                            $results[$i_user]['user']['name'] = $user->name.$user->id;
+                            $results[$i_user]['user']['username'] = $user->username;
+                            $results[$i_user]['user']['email'] = $user->email;
+                            isset($user->user_profiles['phone']) ? $results[$i_user]['user']['phone'] = $user->user_profiles['phone']: $results[$i_user]['user']['phone'] = null;
+                            if(isset($user->user_profiles['address']) && !empty($user->user_profiles['address'])) {
+                                $address = $user->user_profiles['address'];
+                                if(isset($user->user_profiles['city']) && !empty($user->user_profiles['acitydress']))
+                                    $address .= ' '.$user->user_profiles['city']; 
+                                if(isset($user->user_profiles['postal_code']) && !empty($user->user_profiles['postal_code']))
+                                    $address .= ' ('.$user->user_profiles['postal_code'].')'; 
+                                $results[$i_user]['user']['address'] = $address;
+                            }  
+                        }
+    
+                        $tot_user_order_importo = 0;
+                        $tot_user_order_qta = 0;
+                        foreach($carts as $cart) {
+                            $final_price = $this->getCartFinalPrice($cart);
+                            $tot_user_order_importo += $final_price; 
+                            ($cart->qta_forzato>0) ? $tot_user_order_qta += $cart->qta_forzato: $tot_user_order_qta += $cart->qta;
+                        }
+                     
+                        // costi aggiuntivi
+                        $where = ['organization_id' => $this->_user->organization->id,
+                                'order_id' => $order->id,
+                                'user_id' => $user->id];
+
+                        $tot_user_order_trasport = 0;
+                        if($order->hasTrasport=='Y' && $order->trasport>0) {
+                            $summaryOrderTrasport = $summaryOrderTrasportsTable->find()->where($where)->first();
+                            if(!empty($summaryOrderTrasport) && $summaryOrderTrasport->importo_trasport>0)
+                                $tot_user_order_trasport = $summaryOrderTrasport->importo_trasport;
+                            else 
+                             $tot_user_order_trasport = 0;
+                        }
+                        
+                        $tot_user_order_cost_more = 0;
+                        if($order->hasCostMore=='Y' && $order->cost_more>0) {
+                            $summaryOrderCostMore = $summaryOrderCostMoresTable->find()->where($where)->first();
+                            if(!empty($summaryOrderCostMore) && $summaryOrderCostMore->importo_cost_more>0)
+                             $tot_user_order_cost_more = $summaryOrderCostMore->importo_cost_more;
+                            else 
+                             $tot_user_order_cost_more = 0;
+                        }
+
+                        $tot_user_order_cost_less = 0;
+                        if($order->hasCostLess=='Y' && $order->cost_less>0) {
+                            $summaryOrderCostLess = $summaryOrderCostLessesTable->find()->where($where)->first();
+                            if(!empty($summaryOrderCostLess) && !empty($summaryOrderCostLess->importo_cost_less))
+                                $tot_user_order_cost_less = $summaryOrderCostLess->importo_cost_less;
+                            else 
+                                $tot_user_order_cost_less = 0;
+                        }
+                        
+                        /* 
+                        * ordine gestito "Gestisci gli acquisti aggregati per l'importo degli utenti"
+                        *   => ricalcolo totali
+                        */
+                        if($order->typeGest=='AGGREGATE') {
+                            $importo_aggregate = $summaryOrderAggregatesTable->getByUserSummaryAggregates($this->_user, $this->_organization->id, $user->id, $order->id);
+                            if(!empty($importo_aggregate)) {
+                                $tot_user_order_importo = $importo_aggregate;
+                            }
+                        }
+                        
+                        $tot_user_importo += ($tot_user_order_importo + $tot_user_order_trasport + $tot_user_order_cost_more + $tot_user_order_cost_less);
+                       
+                        $tot_user_qta += $tot_user_order_qta;
+                        
+                    } // end if($carts->count()>0)
+                } // foreach($orders as $order)
+                
+                if($tot_user_qta>0) {
+                    $results[$i_user]['user']['tot_user_importo'] = $tot_user_importo;
+                    $results[$i_user]['user']['tot_user_qta'] = $tot_user_qta;
+    
+                    $delivery_tot_importo += $tot_user_importo;  
+                    $delivery_tot_qta += $tot_user_qta;
+                    $i_user++;    
+                }
+
+            }  // foreach($users as $user)          
+        } // end if($users->count()>0)
+        // dd($results);
+        $title = "Doc. l'elenco dei gasisti presenti alla consegna<br />";
+        $title .= __('Delivery').' '.$this->getDeliveryLabel($delivery, ['year'=> true]).'<br />'.$this->getDeliveryDateLabel($delivery);
+        $this->set(compact('delivery', 'results', 'title'));
+        $this->set(compact('delivery_tot_importo', 'delivery_tot_qta'));
+
+        $this->_filename = 'elenco-gasisti-presenti-alla-consegna';
+        switch($format) {
+            case 'XLSX':
+                $this->_filename .= '.xlsx';
+            break;
+            case 'PDF':
+                $this->response->header('filename', $this->_filename.'.pdf');
+                Configure::write('CakePdf.filename', $this->_filename.'.pdf');
+            break;
+        }
+        
+        return true;
+    }
+    
     private function _getUserImportoTrasport($_user, $organization_id, $user_id, $order_id) {
         $summaryOrderTable = TableRegistry::get('SummaryOrderTrasports');
         $where = ['organization_id' => $organization_id,

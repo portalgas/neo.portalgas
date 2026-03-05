@@ -28,6 +28,7 @@ else {
                                             'class' => 'form-control select2-', 
                                             'escape' => false, 
                                             'empty' => Configure::read('HtmlOptionEmpty'),
+                                            'default' => $delivery_id,
                                             '@change' => 'setInit']);
   echo '</div>';
   echo '</div>';	
@@ -109,6 +110,29 @@ else {
                                                     '@click' => 'htmlGets']);
   echo '</div>';
   echo '</div>';
+
+  // toDeliveryByPresentUsers
+  echo '<div v-show="print_id==\'toDeliveryByPresentUsers\'">';
+  echo '<div>';
+  echo '<label class="radio-label">Visualizza contatti gasista</label><br />'; 
+  echo $this->Form->radio('users_present_contacts', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'Y', 
+                                                    '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '<div>';
+  echo '<label class="radio-label">Visualizza totale importo</label><br />'; 
+  echo $this->Form->radio('users_detail_importo', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'N', 
+                                                      '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '<div>';
+  echo '<label class="radio-label">Visualizza totale quantità</label><br />'; 
+  echo $this->Form->radio('users_detail_qta', ['Y' => 'Si', 'N' => 'No'], 
+                                                    ['class' => 'options', 'default' => 'Y', 
+                                                      '@click' => 'htmlGets']);
+  echo '</div>';
+  echo '</div>';
+  
   echo '</div>'; // col-md-5
   
   /* 

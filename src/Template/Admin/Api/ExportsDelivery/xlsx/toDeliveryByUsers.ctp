@@ -34,7 +34,7 @@ foreach($results as $numResult => $result) {
 	$sheet->setCellValue('A'.($num_row), ($numResult+1));
 	$sheet->setCellValue('B'.($num_row), $result['user']['name']);
 	if(isset($opts['users_contacts']) && $opts['users_contacts']=='Y') 
-		$sheet->setCellValue('C'.($num_row), $result['user']['email'].' '.$result['user']['phone']);
+		$sheet->setCellValue('C'.($num_row), $result['user']['email'].' '.$result['user']['phone'].' '.$result['user']['address']);
 	
 	if($opts['users_detail_orders']=='Y')
 	foreach($result['orders'] as $order) {

@@ -52,7 +52,9 @@ if(!empty($results)) {
 			$html .= '	<td rowspan="'.($rowspan+1).'">';
 			$html .= $this->HtmlCustom->mail($result['user']['email']);
 			if(!empty($result['user']['phone']))
-				$html .= $result['user']['phone'];
+				$html .= ' '.$result['user']['phone'];
+			if(!empty($result['user']['address']))
+				$html .= ' '.$result['user']['address'];
 			$html .= '</td>';	
 		}	
 		

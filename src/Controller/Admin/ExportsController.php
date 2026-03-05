@@ -40,7 +40,13 @@ class ExportsController extends AppController
         $exports['toDeliveryByUsers'] = 'Doc. con acquisti della consegna raggruppati per gasista';
         $exports['toDeliveryBySuppliersAndCarts'] = 'Doc. con acquisti della consegna raggruppati per produttore e dettaglio acquisti';
         $exports['toDeliveryByUsersAndCarts'] = 'Doc. con acquisti della consegna raggruppati per gasista e dettaglio acquisti';
+        $exports['toDeliveryByPresentUsers'] = "Doc. l'elenco dei gasisti presenti alla consegna";
         
-        $this->set(compact('deliveries', 'exports'));
+        /*
+         * se arrivo dalla pagina delle consegne
+         * */
+        $delivery_id = $this->request->getQuery('delivery_id');
+
+        $this->set(compact('deliveries', 'exports', 'delivery_id'));
     }
 }

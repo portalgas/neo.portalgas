@@ -415,6 +415,12 @@ msgstr "Importo totale dell'ordine"
 msgid "ImportoTotaleOrdineShort"
 msgstr "Imp. ord."
 
+msgid "QuantitaTotaleOrdine"
+msgstr "Quantità totale dell'ordine"
+
+msgid "QuantitaTotaleOrdineShort"
+msgstr "Qta ord."
+
 msgid "Total Carts"
 msgstr "Totale acquisti"
 
