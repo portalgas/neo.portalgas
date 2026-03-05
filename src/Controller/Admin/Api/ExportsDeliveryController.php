@@ -802,9 +802,7 @@ class ExportsDeliveryController extends AppController {
         $users = $usersTable->gets($this->_user, $this->_user->organization->id, $where);
         if($users->count()>0) {
             $i_user=0;
-            $delivery_tot_trasport = 0;
-            $delivery_tot_cost_more = 0;
-            $delivery_tot_cost_less = 0;
+            $delivery_tot_qta = 0;
             $delivery_tot_importo = 0; 
             foreach($users as $user) {
 
