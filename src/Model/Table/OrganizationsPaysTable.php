@@ -234,11 +234,17 @@ class OrganizationsPaysTable extends Table
              else
              if($tot_users>225 && $tot_users<=250)
                  $results = 225;
-             else
-             if($tot_users>250 && $tot_users<=275)
-                 $results = 250;
+            else
+            if($tot_users>250 && $tot_users<=275)
+                $results = 250;
+            else
+            if($tot_users>275 && $tot_users<=300)
+                $results = 275;
         }
-
+        
+        if(empty($results)) {
+            dd('organization_id '.$organization_id.' tot users '.$tot_users.' OrganizationsPays->getImporto() non ha trovato l importo della quota annuale');
+        }
         return $results;
     }
 }

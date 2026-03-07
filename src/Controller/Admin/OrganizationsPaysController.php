@@ -100,10 +100,9 @@ class OrganizationsPaysController extends AppController
                     if($debug) debug('CHILD '.$childOrganization->name.' ('.$childOrganization->id.')');
 
                     /*
-                    * totale users
+                     * totale users attivi
                     */
-                    $where = ['organization_id' => $childOrganization->id, 'block' => 0];
-                    $_tot_users = $this->Total->totUsers($this->Authentication->getIdentity(), $where, $debug);
+                    $_tot_users = $this->Total->totAttivi($this->Authentication->getIdentity(), $childOrganization->id, $debug);
 
                     /*
                     * tolgo info@nomegas.portalgas.it
@@ -157,15 +156,13 @@ class OrganizationsPaysController extends AppController
                 $type_pay = strtoupper($this->OrganizationsPays::TYPE_PAY_RICEVUTA);
 
             /*
-             * totale users
+             * totale users attivi
              */
-            $where = ['organization_id' => $organization->id,
-                      'block' => 0];
-            $tot_users = $this->Total->totUsers($this->Authentication->getIdentity(), $where, $debug);
+            $tot_users = $this->Total->totAttivi($this->Authentication->getIdentity(), $organization->id, $debug);
 
             // fractis anche su controller=OrganizationsPays&action=index
             if($organization->id==37)
-                $tot_users = 21;
+                $tot_users = 22;
 
             /*
              * tolgo info@nomegas.portalgas.it

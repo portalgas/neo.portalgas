@@ -29,6 +29,26 @@ class TotalComponent extends Component {
 		return $results;
 	}
 
+	/*
+	 * utenti attivi, serve per i pagamenti annuali
+	 *   se block = 1 non e' piu' visibile nelle stmape etc
+	 * 	 se can_login = 1 non puo' accedere ma e' visibile nelle stmape etc
+	 */
+	public function totAttivi($user, $organization_id, $debug=false) {
+
+		$where = ['organization_id' => $organization_id,
+				//	'block' => 0,
+					'can_login' => 0
+				];
+
+		$model = TableRegistry::get('Users');
+        $results = $this->getCount($model, $where, $debug);
+
+		// debug($results);
+		
+		return $results;
+	}
+
 	public function getLastVisitDateByGroups($user, $where_groups, $where, $debug=false) {
 
 		$model = TableRegistry::get('Users');
