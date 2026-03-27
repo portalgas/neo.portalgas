@@ -14,8 +14,7 @@
               </div>
               <div class="modal-body">
 
-
-<section id="about" class="about" v-if="modalContent.entity!=null">
+<section id="about" class="about" v-if="modalContent.entity!=null && modalContent.entity.order!=null && modalContent.entity.order.order_type!=null">
 
     <div class="content container aos-init aos-animate" data-aos="fade-up" :class="modalContent.entity.order.order_type.name">
 

@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Order from "../views/Order.vue";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
+import Deliveries from "../views/Deliveries.vue";
 import Promotion from "../views/Promotion.vue";
 import Suppliers from "../views/Suppliers.vue";
 import Supplier from "../views/Supplier.vue";
@@ -37,6 +38,11 @@ const routes = [
     name: "UserCart",
     component: UserCart
   },
+  {
+    path: "/consegne",
+    name: "Deliveries",
+    component: Deliveries
+  },  
   {
     path: "/site/produttori",
     name: "Suppliers",

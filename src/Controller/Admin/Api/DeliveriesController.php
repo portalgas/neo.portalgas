@@ -24,6 +24,7 @@ class DeliveriesController extends ApiAppController
   
     /* 
      * front-end - estrae le consegne anche senza ordine e l'eventuale "da definire" con ordini
+     * per user-cart
      */
     public function gets($order_type_id) {
 
@@ -94,7 +95,40 @@ class DeliveriesController extends ApiAppController
         return $this->_response($results);
     } 
 
-  
+     /* 
+     * front-end - estrae le consegne anche senza ordine e l'eventuale "da definire" con ordini
+     * consegne
+     */
+    public function getAlls() {
+
+        $results = [];
+        $deliveriesTable = TableRegistry::get('Deliveries');
+
+        $where = ['Deliveries.organization_id' => $this->_organization->id,
+                'Deliveries.isVisibleFrontEnd' => 'Y',
+                'Deliveries.stato_elaborazione' => 'OPEN',
+                'Deliveries.sys' => 'N',
+                'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+        ];
+        
+        $deliveries = $deliveriesTable->find()->where($where)->order(['Deliveries.data'])->all();
+        if($deliveries->count()>0) {
+            foreach($deliveries as $delivery) {
+                /*
+                 * https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
+                 * key array non per id, nel json perde l'ordinamento della data
+                 * $results[$delivery->id] = $delivery->data->i18nFormat('eeee d MMMM yyyy');
+                 */
+                $results[] = ['id' => $delivery->id, 'label' => $delivery->data->i18nFormat('eeee d MMMM').' - '.$delivery->luogo];
+            }
+        }
+
+        $sysDelivery = $deliveriesTable->getDeliverySys($this->_user, $this->_organization->id, []);
+        $results[] = ['id' => $sysDelivery->id, 'label' => $sysDelivery->luogo];
+        
+        return $this->_response($results);
+    } 
+
     /* 
      * front-end - estrae
      * le consegne legato al carrello dell'user

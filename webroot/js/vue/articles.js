@@ -216,8 +216,8 @@ $(function () {
           }
         },
         changeValue: function(event, index) {
-          console.log(event.target, 'changeValue');
-          console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
+          // console.log(event.target, 'changeValue');
+          // console.log('changeValue index ['+index+'] id ['+event.target.id+'] name ['+event.target.name+'] value ['+event.target.value+']');
 
           let field_id = event.target.id;  // um_rif_values-DL
           let field_name = event.target.name; // um_riferimento
@@ -662,6 +662,8 @@ $(function () {
         $('.select2').on('change', function (e) { _this.changeSearchSupplierOrganizationId() });
 
         this.getCategoriesArticles();
+
+
       },
       destroyed() {
         document.removeEventListener('click', this.handleClickOutsideAutocomplete);

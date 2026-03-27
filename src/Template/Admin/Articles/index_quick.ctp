@@ -33,7 +33,7 @@ $js .= "
 ";
 $this->Html->scriptBlock($js, ['block' => true]);
 echo $this->Html->script('vue/utils.js?v=20250520', ['block' => 'scriptPageInclude']);
-echo $this->Html->script('vue/articles.js?v=20251128', ['block' => 'scriptPageInclude']);
+echo $this->Html->script('vue/articles.js?v=20260326', ['block' => 'scriptPageInclude']);
 echo $this->Html->script('dropzone/dropzone.min', ['block' => 'scriptInclude']);
 echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 ?>
@@ -130,8 +130,8 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                     >
                       <!-- EDIT -->
                       <template v-if="article.can_edit">
-                      <tr :id="'frm-'+article.id" >
-                        <td class="actions text-center">
+                      <tr :id="'frm-'+article.id" class="row-article">
+                        <td class="actions text-center" rowspan="2">
                           <!-- {{ article.organization_id }} {{ article.id }} -->
                           <div class="btn-group-vertical">
                               <?php
@@ -143,7 +143,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                               ?>
                           </div>
                         </td>
-                        <td class="actions text-center">
+                        <td class="actions text-center" rowspan="2">
                           <button class="btn-block btn"
                                 :class="article.flag_presente_articlesorders=='Y' ? 'btn-success' : 'btn-danger'"
                                 :title="article.flag_presente_articlesorders=='Y' ? 'Articolo ordinabile' : 'Articolo NON ordinabile'"
@@ -165,16 +165,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             }
                             ?>
                         </td>
-                        <td>
-                          <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
-                          <span class="label label-primary" style="white-space: unset;font-size: 85%;">{{ article.name }}</span>
-                        </td>
-                        <td>
-                          <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
-                        </td>
+                        <td colspan="2"><span class="label label-primary article-name" style="white-space: unset;font-size: 85%;">{{ article.name }}</span></td>
                         <?php
                         if(empty($search_supplier_organization_id))
-                            echo '<td>
+                            echo '<td rowspan="2">
                               {{ article.owner_supplier_organization.name }}
                               <div class="small">
                                 <b>'.__('organization_owner_article_short').'</b>:
@@ -185,7 +179,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y') {
                         ?>
-                          <td>
+                          <td class="td-article" rowspan="2">
                             <span v-if="article.categories_article!=null">{{ article.categories_article.name }}</span>
                             <select
                                 v-if="Object.keys(categories_articles).length>1"
@@ -201,20 +195,20 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         <?php
                         }
                         ?>
-                        <td>
+                        <td rowspan="2">
                           <a @click="toggleIsBio('bio-'+article.organization_id+'-'+article.id, index)" :id="'bio-'+article.organization_id+'-'+article.id" style="cursor: pointer;">
                             <img :class="article.bio=='N' ? 'no-bio': ''" :title="article.bio=='N' ? 'Articolo non biologico': 'Articolo biologico'" src="/img/is-bio.png" width="35" />
                           </a>
                         </td>
-                        <td>
+                        <td rowspan="2">
                           <!-- img :src="article.img1" :title="article.img1" width="50" / -->
                           <div class="dropzone" :id="'my-dropzone'+article.organization_id+'-'+article.id" :data-attr-index="index"></div>
                         </td>
-                          <td>
+                          <td rowspan="2">
                               <input type="text" class="form-control" v-model="article.qta" @change="changeValue(event, index)" :id="'qta-'+article.organization_id+'-'+article.id" name="qta" />
                           </td>
                         <!-- price -->
-                        <td>
+                        <td rowspan="2">
                           <template v-if="!open_box_price">
                             <input type="text" class="form-control"
                                     v-model="article.prezzo_"
@@ -253,7 +247,7 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                             </div>
                           </template>
                         </td>
-                        <td>
+                        <td rowspan="2">
                           <select class="form-control" :required="true" v-model="article.um" @change="changeValue(event, index); changeUM(event, index);" :id="'um-'+article.organization_id+'-'+article.id" name="um">
                             <option v-for="um in ums"
                                v-bind:value="um" >
@@ -299,6 +293,14 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         </td>
 
                       </tr>
+                      <tr>
+                        <td class="td-article">
+                          <input type="text" class="form-control extend" v-model="article.name" @change="changeValue(event, index)" :id="'name-'+article.organization_id+'-'+article.id" name="name" />
+                        </td>
+                        <td class="td-article">
+                          <input type="text" class="form-control extend" v-model="article.codice" @change="changeValue(event, index)" :id="'codice-'+article.organization_id+'-'+article.id" name="codice" size="5" />
+                        </td>
+                      </tr>
                       <!-- extra -->
                       <tr style="display: none;" :class="'extra-'+index">
                         <th scope="col"></th>
@@ -317,10 +319,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                         if($user->organization->paramsFields['hasFieldArticleCategoryId']=='Y')
                           echo '<td></td>';
                         ?>
-                        <td colspan="2">
+                        <td colspan="2" class="td-article">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="nota" :id="'nota-'+article.organization_id+'-'+article.id" >{{ article.nota }}</textarea>
                         </td>
-                        <td colspan="2">
+                        <td colspan="2" class="td-article">
                           <textarea rows="10" class="form-control extend" @change="changeValue(event, index)" name="ingredienti" :id="'ingredienti-'+article.organization_id+'-'+article.id" >{{ article.ingredienti }}</textarea>
                         </td>
                         <td colspan="4">
@@ -577,13 +579,23 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
 </div> <!-- vue-articles -->
 
 <style>
+    .row-article {
+    }
+    .td-article {
+    }
+    .extend {
+    }
     .no-bio {
         opacity: 0.1
     }
     .extend:focus{
         width:320px;
     }
-
+    /*
+    body:has(.extend:focus) .article-name {
+        display: none;
+    }    
+    */    
     .autocomplete {
         position: relative;
     }

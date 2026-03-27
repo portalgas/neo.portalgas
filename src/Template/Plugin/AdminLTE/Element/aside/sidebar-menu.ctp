@@ -21,7 +21,7 @@ echo '<li>
     </a>
   </li>';
 
-if($this->Identity->get()->acl['isRoot'])
+if($this->Identity->get()!==null && $this->Identity->get()->acl['isRoot'])
   echo $this->element('sidebar-menu-root');
 
 if($application_env==='development') {

@@ -5,11 +5,13 @@ export const modal = {
       body: null,
       footer: null,
       entity: null,
+      order: null,
       msg: null
     },
     run: false,
     showModal: false,
     showModalArticleOrder: false,
+    showModalArticleOrdersCart: false,
     showModalSupplier: false,
     showModalSupplierImport: false,
   },
@@ -19,6 +21,7 @@ export const modal = {
     },    
     getShowModal: state => state.showModal,
     getShowModalArticleOrder: state => state.showModalArticleOrder,
+    getShowModalArticleOrdersCart: state => state.showModalArticleOrdersCart,
     getShowModalSupplier: state => state.showModalSupplier,
     getShowModalSupplierImport: state => state.showModalSupplierImport,
   },  
@@ -26,12 +29,13 @@ export const modal = {
     RUN_CONTENT: state => {
       state.run = true;
     },
-    ADD_CONTENT: (state, { title, body, footer, entity, msg }) => {
+    ADD_CONTENT: (state, { title, body, footer, entity, order, msg }) => {
       state.content = {
         title,
         body,
         footer,
         entity,
+        order,
         msg
       };
     }, 
@@ -41,6 +45,7 @@ export const modal = {
         body: null,
         footer: null,
         entity: null,
+        order: null,
         msg: null
       };
     },
@@ -56,6 +61,12 @@ export const modal = {
     SHOW_MODAL_ARTICLE_ORDER: (state) => {
       state.showModalArticleOrder = !state.showModalArticleOrder;
       if(!state.showModalArticleOrder) {
+      
+      }
+    },  
+    SHOW_MODAL_ARTICLE_ORDERS_CART: (state) => {
+      state.showModalArticleOrdersCart = !state.showModalArticleOrdersCart;
+      if(!state.showModalArticleOrdersCart) {
       
       }
     },  
@@ -83,6 +94,9 @@ export const modal = {
     },
     showOrHiddenModalArticleOrder: (context) => {
       context.commit('SHOW_MODAL_ARTICLE_ORDER');
+    },
+    showOrHiddenModalArticleOrdersCart: (context) => {
+      context.commit('SHOW_MODAL_ARTICLE_ORDERS_CART');
     },
     showOrHiddenModalSupplier: (context) => {
       context.commit('SHOW_MODAL_SUPPLIER');
