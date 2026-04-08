@@ -144,7 +144,7 @@ class OrganizationsPaysTable extends Table
 
         $results = [];
 
-        if($year < Configure::read('OrganizationPayFasceYearStart')) {
+        if($year < Configure::read('OrganizationPayFasceYearStart')) {  // OrganizationPayFasceYearStart = 2018
             /*
              * calcolo a persona
              */
@@ -190,6 +190,9 @@ class OrganizationsPaysTable extends Table
              else
              if($tot_users>250 && $tot_users<=275)
                  $importo = 250;
+            else
+            if($tot_users>275 && $tot_users<=300)
+                $importo = 275;                
 
             $results['importo'] = $importo;
             $results['importo_e'] = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
