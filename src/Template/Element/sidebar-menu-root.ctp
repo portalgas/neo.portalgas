@@ -94,7 +94,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       </span>
     <ul class="treeview-menu">
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'mail');?>" target="">Mail manager / tesorieri </a></li>
-      <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'index');?>" target="">Prospetto</a></li>
+      <!-- li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'index');?>" target="">Prospetto</a></li -->
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('Gestisci pagamenti').' '.date('Y');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?>1 Genera i pagamenti <?php echo date('Y');?></a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'invoice_create_pdfs');?>" target="">2 Genera tutte le fatture</a></li>
