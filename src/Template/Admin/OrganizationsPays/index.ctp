@@ -62,23 +62,23 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
           <table class="table table-hover">
             <thead>
               <tr>
-                  <th scope="col"><?= $this->Paginator->sort('organization_id') ?></th>
+                  <th scope="col"><?= __('organization_id') ?></th>
                   <?php
                   if(empty($search_year))
-                      echo '<th scope="col">'.$this->Paginator->sort('year').'</th>';
+                      echo '<th scope="col">'.__('year').'</th>';
                   ?>
                   <th scope="col"><?= __('mail') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('lastVisitDate') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('tot_users') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('tot_orders') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('tot_suppliers_organizations', 'tot prod.') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('tot_articles') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('beneficiario_pay') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('importo') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('import_additional_cost', 'Costo agg.') ?></th>
+                  <th scope="col"><?= __('lastVisitDate') ?></th>
+                  <th scope="col"><?= __('tot_users') ?></th>
+                  <th scope="col"><?= __('tot_orders') ?></th>
+                  <th scope="col"><?= __('tot_suppliers_organizations', 'tot prod.') ?></th>
+                  <th scope="col"><?= __('tot_articles') ?></th>
+                  <th scope="col"><?= __('beneficiario_pay') ?></th>
+                  <th scope="col"><?= __('importo') ?></th>
+                  <th scope="col"><?= __('import_additional_cost', 'Costo agg.') ?></th>
                   <th scope="col">Bollo</th>
-                  <th scope="col"><?= $this->Paginator->sort('type_pay') ?></th>
-                  <th scope="col"><?= $this->Paginator->sort('data_pay') ?></th>
+                  <th scope="col"><?= __('type_pay') ?></th>
+                  <th scope="col"><?= __('data_pay') ?></th>
                   <th scope="col"><?= __('Is Saldato') ?></th>
                   <th scope="col"><?= __('doc') ?></th>
                   <th scope="col" style="width: 85px;"><?= __('Msg attivato') ?></th>
@@ -267,17 +267,6 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
-
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
 
 
     </div>

@@ -16,26 +16,29 @@
 <fieldset>
     <legend><?= __('Search {0}', ['OrganizationPay']) ?></legend>
     <?php
+    echo '<div class="row-">';
     if(!empty($search_year)) {
-        echo '<div class="row-">';
-        echo '<div class="col-md-12">';    
-        echo $this->Form->control('search_year', ['options' => $years, 'class' => 'form-control', 'default' => $search_year]);
-        echo '</div>';
-        echo '</div>';    
+        echo '<div class="col-md-10">';    
+        echo $this->Form->control('search_year', ['options' => $years, 'class' => 'form-control', 'default' => $search_year, 'label' => "Anno"]);
+        echo '</div>';  
     }
+    echo '<div class="col-md-2">';    
+    echo $this->Form->control('search_order', ['options' => ['Organizations.name' => 'Nome', 'Organizations.id' => 'Id del GAS'], 'class' => 'form-control', 'default' => 'Organizations.name', 'label' => "Ordina"]);
+    echo '</div>';  
+    echo '</div>';  
 
     echo '<div class="row-">';
     echo '<div class="col-md-3">';    
-    echo $this->Form->control('search_beneficiario_pay', ['options' => $beneficiario_pays, 'default' => $search_beneficiario_pay, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_beneficiario_pay', ['options' => $beneficiario_pays, 'default' => $search_beneficiario_pay, 'class' => 'form-control select2', 'empty' => [0 => __('FrmListEmpty')], 'label' => "Beneficiario"]);
     echo '</div>';
     echo '<div class="col-md-2">';    
     echo $this->Form->control('search_hasMsg', ['options' => $hasMsgs, 'default' => $search_hasMsg, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Msg attivato')]);
     echo '</div>';
     echo '<div class="col-md-3">';    
-    echo $this->Form->control('search_organization_id', ['options' => $organizations, 'default' => $search_organization_id, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_organization_id', ['options' => $organizations, 'default' => $search_organization_id, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => "G.A.S."]);
     echo '</div>';
     echo '<div class="col-md-2">';    
-    echo $this->Form->control('search_type_pay', ['options' => $type_pays, 'default' => $search_type_pay, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')]]);
+    echo $this->Form->control('search_type_pay', ['options' => $type_pays, 'default' => $search_type_pay, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => "Tipologia pagamento"]);
     echo '</div>';
     echo '<div class="col-md-2">';    
     echo $this->Form->control('search_hasPdf', ['options' => $hasPdfs, 'default' => $search_hasPdf, 'class' => 'form-control select2','empty' => [0 => __('FrmListEmpty')], 'label' => __('Pdf')]);

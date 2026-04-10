@@ -289,20 +289,38 @@ class OrganizationsPaysController extends AppController
         if(!empty($search_organization_id)) {
             array_push($where, ['OrganizationsPays.organization_id' => $search_organization_id]);
         }
+
+        /*
+         * orders
+         * */
+        $orders = [];
+        $orders += ['OrganizationsPays.year' => 'desc'];
+        if(!empty($request['search_order']) || !empty($this->request->getQuery('search_order')))
+            !empty($request['search_order']) ? $search_order = $request['search_order']: $search_order = $this->request->getQuery('search_order');
+        switch($search_order) {
+            case 'Organizations.name':
+                $orders += ['Organizations.name' => 'asc'];
+                break;
+            case 'Organizations.id':
+                $orders += ['Organizations.id' => 'asc'];
+                break;
+            default:
+                $orders += ['Organizations.id' => 'asc'];
+                break;
+        }
+
         // debug($where);
-        $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_hasPdf', 'search_type_pay', 'search_organization_id'));
+        $this->set(compact('search_year', 'search_beneficiario_pay', 'search_hasMsg', 'search_hasPdf', 'search_type_pay', 'search_organization_id', 'search_order'));
 
         // gia' non associato $this->OrganizationsPays->Organizations->removeBehavior('OrganizationsParams');
-
-        $this->paginate = [
-            'conditions' => [$where],
-            'contain' => ['Organizations' => [
-                                'conditions' => ['Organizations.type' => 'GAS', 'Organizations.stato' => 'Y'],
-                                'sort' => ['Organizations.name' => 'asc']]],
-            'order' => ['OrganizationsPays.year' => 'desc', 'Organizations.name' => 'asc'],
-            'limit' => 100
-        ];
-        $organizationsPays = $this->paginate($this->OrganizationsPays);
+       $organizationsPays = $this->OrganizationsPays->find()
+                                ->contain(['Organizations' => [
+                                            'conditions' => ['Organizations.type' => 'GAS', 'Organizations.stato' => 'Y'],
+                                            'sort' => ['Organizations.name' => 'asc']]])
+                                ->where($where)
+                                ->order($orders)
+                                ->limit(250)
+                                ->all();
 
         foreach($organizationsPays as $numResult => $organizationsPay) {
 
