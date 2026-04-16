@@ -7,7 +7,13 @@
             
               <span v-if="referent.type!='referente'">({{ referent.type }})</span>
                 {{ referent.name }} 
-                <a v-if="referent.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.email">{{ referent.email }}</a>
+                <a v-if="referent.email!=''" class="a-mailto" target="_blank" :href="'mailto:'+referent.email">
+                  <span v-if="email_visible">
+                    {{ referent.email }}
+                  </span>
+                  <span v-else>
+                    <a class="fas fa-envelope fa-lg"></a>
+                  </span></a>
                 <span v-if="referent.phone_satispay">
                     &nbsp;{{ referent.phone_satispay }}  
                   <img src="/img/satispay-ico.png" title="il referente ha Satispy" />
@@ -25,7 +31,7 @@
 <script>
 export default {
   name: "referents",
-  props: ['referents']
+  props: ['referents', 'email_visible']
 };
 </script>
 

@@ -101,14 +101,25 @@ class GasController extends ApiAppController
             /*
              * voci di menu di default con la pagina home di default
              */
+
             $config = Configure::read('Config');
             $portalgas_fe_url = $config['Portalgas.fe.url'];
 
             $i = count($menus);
+            /*
             if(!isset($organization->paramsConfig['hasGasGroups']) || $organization->paramsConfig['hasGasGroups']=='N') {
                 $i++;
                 $menus[$i]['slug'] = '';
                 $menus[$i]['url'] = $portalgas_fe_url.'/home-'.$organization->j_seo.'/consegne-'.$organization->j_seo;
+                $menus[$i]['cms_menu_type'] = [];
+                $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
+                $menus[$i]['name'] = __('Deliveries');
+            }
+            */
+            if(!isset($organization->paramsConfig['hasGasGroups']) || $organization->paramsConfig['hasGasGroups']=='N') {
+                $i++;
+                $menus[$i]['slug'] = '';
+                $menus[$i]['url'] = '/gas/' . $organization->j_seo . '/consegne';
                 $menus[$i]['cms_menu_type'] = [];
                 $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
                 $menus[$i]['name'] = __('Deliveries');

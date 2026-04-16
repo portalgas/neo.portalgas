@@ -215,8 +215,18 @@ Router::prefix('api', function (RouteBuilder $routes) {
         $routes->connect('/page/:slugGas/:slugPage', ['action' => 'page', '_method' => 'GET'],
             [
                 'pass' => ['slug']
-            ]);
+            ]);         
     });
+
+    /*
+     * eelenco consegne e ordini per FE, gestito anche se non autenticato
+     */
+    $routes->scope('/deliveries', ['controller' => 'Deliveries'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+    });
+    $routes->scope('/orders', ['controller' => 'Orders'], function (RouteBuilder $routes) {
+        $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
+    });       
 });
 
 Router::prefix('admin', function (RouteBuilder $routes) {
@@ -335,12 +345,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
          */
         $routes->scope('/deliveries', ['controller' => 'Deliveries'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
-            $routes->connect('/getAlls', ['action' => 'getAlls', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
         });
         $routes->scope('/orders', ['controller' => 'Orders'], function (RouteBuilder $routes) {
             $routes->connect('/gets', ['action' => 'gets', '_method' => 'POST']);
-            $routes->connect('/getAlls', ['action' => 'getAlls', '_method' => 'POST']);
             $routes->connect('/user-cart-gets', ['action' => 'userCartGets', '_method' => 'POST']);
             $routes->connect('/getArticlesOrdersByOrderId', ['action' => 'getArticlesOrdersByOrderId', '_method' => 'POST']);
         });

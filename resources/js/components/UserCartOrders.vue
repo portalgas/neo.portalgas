@@ -53,7 +53,8 @@
 		        			></user-cart-articles>
 		
 				<referents v-if="order.referents!=null"
-							:referents="order.referents" />
+							:referents="order.referents"
+							:email_visible=true />
         </p> <!-- loop orders -->
 
 		<!-- 		  		-->

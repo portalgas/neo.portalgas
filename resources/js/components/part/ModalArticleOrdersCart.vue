@@ -16,209 +16,71 @@
 
                 <section id="about" class="about" v-if="modalContent.order!=null && modalContent.order.articles_orders!=null">
 
-                  <div class="content container aos-init aos-animate" data-aos="fade-up" :class="modalContent.order.order_type.name">
+                  <div class="content container aos-init aos-animate" data-aos="fade-up" :class="modalContent.order.order.order_type.name">
 
-                    <div class="box-supplier-organization">
+                    <div class="box-supplier-organization" style="margin-bottom: 15px;">
                         <span class="box-img">
-                          <img :src="modalContent.order.suppliers_organization.supplier.img1" :alt="modalContent.order.suppliers_organization.supplier.name" :title="modalContent.order.suppliers_organization.supplier.name" width="50px" class="img-supplier" />
+                          <img :src="appConfig.$siteUrl+'/images/organizations/contents/'+modalContent.order.order.suppliers_organization.supplier.img1" :alt="modalContent.order.order.suppliers_organization.supplier.name" :title="modalContent.order.order.suppliers_organization.supplier.name" width="50px" class="img-supplier" />
                         </span> 
 
-                        <span class="box-name" v-if="modalContent.order.suppliers_organization.supplier.www!=''">
-                            <a :href="modalContent.order.suppliers_organization.supplier.www" target="_blank" title="vai al sito del produttore">
-                              {{ modalContent.order.suppliers_organization.supplier.name }}
+                        <span class="box-name" v-if="modalContent.order.order.suppliers_organization.supplier.www!=''">
+                            <a :href="modalContent.order.order.suppliers_organization.supplier.www" target="_blank" title="vai al sito del produttore">
+                              {{ modalContent.order.order.suppliers_organization.supplier.name }}
                             </a>
                         </span> 
 
-                        <span class="box-name" v-if="modalContent.order.suppliers_organization.supplier.www==''">
-                            {{ modalContent.order.suppliers_organization.supplier.name }}
+                        <span class="box-name" v-if="modalContent.order.order.suppliers_organization.supplier.www==''">
+                            {{ modalContent.order.order.suppliers_organization.supplier.name }}
                         </span> 
                     </div>
 
+                    <h2>
+                      <strong>Consegna</strong>
+                      <span v-if="modalContent.order.order.delivery.sys=='Y'">
+                          {{ modalContent.order.order.delivery.luogo }}
+                      </span>
+                      <span v-if="modalContent.order.order.delivery.sys!='Y'">
+                          {{ modalContent.order.order.delivery.luogo }} il {{ modalContent.order.order.delivery.data | formatDate }}
+                      </span>
+                    </h2>
 
-                    <strong>Consegna</strong>
-                  <span v-if="modalContent.order.delivery.sys=='Y'">
-                      {{ modalContent.order.delivery.luogo }}
-                  </span>
-                  <span v-if="modalContent.order.delivery.sys!='Y'">
-                      {{ modalContent.order.delivery.luogo }} il {{ modalContent.order.delivery.data | formatDate }}
-                  </span>
-       
+                    <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</div>
+                    <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</div>
 
-                    <span v-if="modalContent.order.order_type_id!=9 && modalContent.order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</span>
-                    <span v-if="modalContent.order.order_type_id!=9 && modalContent.order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</span>
-
-                    <span v-if="modalContent.order.order_type_id!=9 && modalContent.order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
-                    <span v-if="modalContent.order.order_type_id!=9 && modalContent.order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>
+                    <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</div>
+                    <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</div>
                           
 
-                    <span class="badge badge-pill" :class="'text-color-background-'+modalContent.order.order_state_code.css_color" :style="'background-color:'+modalContent.order.order_state_code.css_color">{{ modalContent.order.order_state_code.name }}</span>
-                    <span v-if="modalContent.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ modalContent.order.order_type.descri }}</span>
+                    <div class="badge badge-pill" :class="'text-color-background-'+modalContent.order.order.order_state_code.css_color" :style="'background-color:'+modalContent.order.order.order_state_code.css_color">{{ modalContent.order.order.order_state_code.name }}</div>
 
-                        <span v-for="(articles_order, index) in modalContent.order.articles_orders">
-                        <ul v-if="articles_order.carts.length>0" v-for="(cart, index) in articles_order.carts"> 
+                    <p v-if="modalContent.order.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ modalContent.order.order.order_type.descri }}</p>
+
+                    <p v-for="(articles_order, index) in modalContent.order.articles_orders">
+                        <ul v-if="articles_order.carts.length>0" v-for="(cart, index) in articles_order.carts" style="margin-top:25px;list-style-type: none;"> 
                           <li>
 
                             <div class="row" v-if="articles_order.is_bio!='' || articles_order.img1!=''">
-                              <div class="col-4 col-label">
-                                <span class="box-bio" v-if="articles_order.is_bio!=''">
-                              <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
-                              </span>
-                              </div>
-                              <div class="col-8">
+                              <div class="col-md-2">
                                 <span class="box-img" v-if="articles_order.img1!=''">
-                                    <img :src="articles_order.img1" class="img-article" />
+                                    <img :src="articles_order.img1" class="img-article" width="100px" />
                                 </span>
+                              </div>
+                              <div class="col-md-9">
+                                <b>{{ articles_order.name }}</b> - {{ cart.final_qta }} di {{ articles_order.conf }} <!-- * {{ articles_order.price| currency }}&euro;--> {{ cart.final_price| currency }}&euro;
+                              </div>
+                              <div class="col-md-1 col-label">
+                                  <span class="box-bio" v-if="articles_order.is_bio!=''">
+                                    <img class="responsive" src="/img/is-bio.png" alt="Agricoltura Biologica" title="Agricoltura Biologica">
+                                  </span>
                               </div>
                             </div>
 
-                            <b>{{ articles_order.name }}</b> - {{ cart.final_qta }} di {{ articles_order.conf }} * {{ articles_order.price  | currency  }}&euro;={{ cart.final_price  | currency }}&euro;
-
                           </li>
                         </ul>
-                      </span>
+                    </p>
+
                </div>           
               </section>
-
-           <!--  
-                <section id="about" class="about" v-if="modalContent.entity!=null && modalContent.order!=null && modalContent.order.order_type!=null">
-
-<div class="content container aos-init aos-animate" data-aos="fade-up" :class="modalContent.order.order_type.name">
-
-
-
-<div class="row" v-if="articles_order.article.codice!=null">
-<div class="col-4 col-label">Codice</div>
-<div class="col-8">{{ articles_order.article.codice }}</div>
-</div>
-
-<div class="row">
-<div class="col-4 col-label">Prezzo</div>
-<div class="col-8">
- {{ articles_order.price | currency }}
-
-  <span v-if="articles_order.price_pre_discount!='' && articles_order.price_pre_discount>0">
-    <del>
-      {{ articles_order.price_pre_discount | currency }}
-    </del>
-
-    <span class="price-promotion"></span>
-  </span> 
-
-</div>
-</div>
-
-<div class="row">
-  <div class="col-4 col-label">Pezzi confezione</div>
-  <div class="col-8">{{ articles_order.conf }}</div>
-  </div>
-
-<div class="row">
-  <div class="col-4 col-label">Unità di misura di riferimento</div>
-  <div class="col-8">{{ articles_order.um_rif_label }}</div>
-</div>
-
-<div class="row" v-if="articles_order.qta_multipli > 1">
-  <div class="col-4 col-label">Multipli</div>
-  <div class="col-8">{{ articles_order.qta_multipli }}</div>
-</div>
-
-<div class="row" v-if="articles_order.qta_minima > 0">
-  <div class="col-4 col-label">Quantità minima</div>
-  <div class="col-8">{{ articles_order.qta_minima }}</div>
-</div>
-
-<div class="row" v-if="articles_order.qta_massima > 0">
-  <div class="col-4 col-label">Quantità massima</div>
-  <div class="col-8">{{ articles_order.qta_massima }}</div>
-</div>
-
-<div v-if="modalContent.order.order_type.code=='PROMOTION'">
-    <div class="row" v-if="articles_order.qta_massima_order > 0">
-      <div class="col-4 col-label">Promozione valida</div>
-      <div class="col-8">se sull'ordine totale si raggiungerà la quantità di <strong>{{ articles_order.qta_massima_order }}</strong> acquisti</div>
-    </div>
-</div>   
-
- <div v-if="modalContent.order.order_type.code!='PROMOTION'">
-    <div class="row" v-if="articles_order.qta_minima_order > 0">
-      <div class="col-4 col-label">Quantità minima rispetto all'ordine</div>
-      <div class="col-8">{{ articles_order.qta_minima_order }}</div>
-    </div>
-    <div class="row" v-if="articles_order.qta_massima_order > 0">
-      <div class="col-4 col-label">Quantità massima rispetto all'ordine</div>
-      <div class="col-8">{{ articles_order.qta_massima_order }} (acquistati ora {{ articles_order.qta_cart }})</div>
-    </div>
- </div>
-
-
-<div class="row" v-if="articles_order.stato != 'Y'">
-<div class="col-4 col-label">Stato</div>
-<div class="col-8">{{ articles_order.stato }}</div>
-</div>
-
-<div class="row" v-if="articles_order.article.nota!=null">
-<div class="col-4 col-label">Nota</div>
-<div class="col-8" v-html="$options.filters.html(articles_order.article.nota)"></div>
-</div>
-
-<div class="row" v-if="articles_order.article.ingredienti!=null">
-<div class="col-4 col-label">Ingredienti</div>
-<div class="col-8" v-html="$options.filters.html(articles_order.article.ingredienti)"></div>
-</div>
-       
-<div class="row" v-if="modalContent.order.suppliers_organization.frequenza!=null">
-<div class="col-4 col-label">Ordine con frequenza</div>
-<div class="col-8">{{ modalContent.order.suppliers_organization.frequenza }}</div>
-</div> 
-
-<div class="row" v-if="modalContent.order.referents!=null">
-<div class="col-4 col-label">Referenti</div>
-<div class="col-8">
-
-    <dl class="row">
-      <template v-for="(referent, index) in modalContent.order.referents">
-          <dt class="col-sm-3">
-            <span v-if="referent.type!='referente'">{{referent.type}} </span>
-            {{ referent.name }}
-          </dt>
-          <dd class="col-sm-9">
-            <span v-if="referent.email!=''"><a :href="'mailto:'+referent.email">{{referent.email}}</a></span>
-            <span v-if="referent.phone_satispay!=null">{{referent.phone_satispay}} <img src="/img/satispay-ico.png" title="il referente ha Satispy" /></span>
-            <span v-if="referent.phone!=null">{{referent.phone}}</span>
-          </dd>
-      </template>
-    </dl>
-</div>
-</div>
-
-<form v-if="modalContent.cart!=null && modalContent.cart.hasFieldCartNote=='Y'">
-<div class="row">
-  <div class="col-12">
-    <div class="form-group">
-      <label for="cart-note">Nota per il referente</label>
-      <textarea cols="100" rows="10" id="cart-nota" name="cart-nota" ref="cart-nota" class="form-control" 
-        v-model="modalContent.cart.nota">
-      </textarea>
-
-    </div>
-  </div>
-</div>
-
-<div v-if="modalContent.msg!=null && modalContent.msg!=''" class="alert alert-info">{{ modalContent.msg }}</div>
-
-<button type="button" v-on:click="sendCartNota()" class="btn btn-primary">Invia nota al referente
-
-  <span v-if="isLoading" class="box-spinner"> 
-    <div class="spinner-border text-info" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>  
-  </span>
-</button>
-</form>
-
-</div>
-</section>
--->
 
 
 

@@ -39,7 +39,7 @@ const routes = [
     component: UserCart
   },
   {
-    path: "/consegne",
+    path: "/gas/:slugGas/consegne",
     name: "Deliveries",
     component: Deliveries
   },  

@@ -5,7 +5,6 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use App\Decorator\ApiArticleOrderDecorator;
 
 class OrdersController extends ApiAppController
 {
@@ -137,69 +136,6 @@ class OrdersController extends ApiAppController
                 ->all();
         }
 
-        return $this->_response($results);
-    }
-
-    /*
-     * elenco ordini x fe da consegne
-     */
-    public function getAlls() {
-
-        $debug = false;
-        $results = [];
-
-        $user = $this->Authentication->getIdentity();
-        $delivery_id = $this->request->getData('delivery_id');
-
-        /*
-         * escludo Order.type.gas_parent_groups perche' li non posso fare acquisti
-         * solo Order.type.gas_groups
-         */
-        $where = ['Orders.organization_id' => $this->_organization->id,
-                  'Orders.isVisibleBackOffice' => 'Y',
-                  'Orders.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')
-                ];
-
-        if(!empty($delivery_id)) {
-            /*
-             * per gli ordini per produttore non ho la consegna
-             */
-            $where += ['Orders.delivery_id' => $delivery_id];
-        }
-
-        if(isset($user->organization->paramsConfig['hasGasGroups']) && $user->organization->paramsConfig['hasGasGroups']=='Y') {
-            // ctrl che l'utente appartertenga al gruppo
-            $gasGroupsTable = TableRegistry::get('GasGroups');
-            $gasGroups = $gasGroupsTable->findMyLists($user, $this->_organization->id, $user->id);
-            if(empty($gasGroups))
-                $where += ['Orders.gas_group_id' => 0]; // utente non associato in alcun gruppo, prendo ordini non del gruppo
-            else {
-                $acls = array_keys($gasGroups);
-                // $acls = array_merge($acls, [0]);
-                $where += ['Orders.gas_group_id IN ' => $acls];
-            }
-        } // end if($user->organization->paramsConfig['hasGasGroups']=='Y')
-
-        $ordersTable = TableRegistry::get('Orders');
-        $results = $ordersTable->find()
-            ->contain(['OrderStateCodes', 'OrderTypes', 'Deliveries',
-                'SuppliersOrganizations' => [
-                    'Suppliers',
-                    /* 'SuppliersOrganizationsReferents' => ['Users' => ['UserProfiles']]*/
-                ],
-                'ArticlesOrders' => [
-                    'sort' => ['ArticlesOrders.name'],
-                    'Carts' => ['conditions' => ['Carts.user_id' => $user->id]], 'Articles']
-            ])
-            ->where($where)
-            ->order(['Orders.data_fine' => 'desc'])
-            ->all();
-         
-        foreach($results as $result) {
-            $articles_orders = new ApiArticleOrderDecorator($this->_user, $result->articles_orders, $result);
-            $result->articles_orders = $articles_orders->results;
-        }
- 
         return $this->_response($results);
     }
 

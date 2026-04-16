@@ -96,7 +96,7 @@ class OrdersController extends AppController
                 array_push($sorts, $request['order_delivery_date']);
         }
         $this->set(compact('search_supplier_organization_id', 'order_delivery_date', 'order_group_by_parent'));
-        debug($sorts);
+        // debug($sorts);
         $where += ['Orders.organization_id' => $this->_organization->id,
                     'Deliveries.organization_id' => $this->_organization->id,
                     'Deliveries.isVisibleBackOffice' => 'Y',
