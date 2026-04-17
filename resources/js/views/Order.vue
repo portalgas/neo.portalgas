@@ -174,6 +174,9 @@
 
                     <span v-if="order.order_type_id!=9 && order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</span>
                     <span v-if="order.order_type_id!=9 && order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</span>
+
+                    <span v-if="order.order_type_id!=9 && order.hasLessMore=='N'" class="badge badge-secondary">Non ha sconti aggiuntivi</span>
+                    <span v-if="order.order_type_id!=9 && order.hasLessMore=='Y'" class="badge badge-warning">Ha sconti aggiuntivi</span>
                   </p>
 
                   <p v-if="order.order_type_id!=9 && order.suppliers_organization.frequenza!=''" class="card-text">

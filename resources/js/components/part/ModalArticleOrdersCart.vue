@@ -13,7 +13,7 @@
                 </button>
               </div>
               <div class="modal-body">
-
+                
                 <section id="about" class="about" v-if="modalContent.order!=null && modalContent.order.articles_orders!=null">
 
                   <div class="content container aos-init aos-animate" data-aos="fade-up" :class="modalContent.order.order.order_type.name">
@@ -30,8 +30,11 @@
                         </span> 
 
                         <span class="box-name" v-if="modalContent.order.order.suppliers_organization.supplier.www==''">
-                            {{ modalContent.order.order.suppliers_organization.supplier.name }}
+                            {{ modalContent.order.order.suppliers_organization.supplier.name }} 
                         </span> 
+
+                        <div class="badge badge-pill" :class="'text-color-background-'+modalContent.order.order.order_state_code.css_color" :style="'background-color:'+modalContent.order.order.order_state_code.css_color">{{ modalContent.order.order.order_state_code.name }}</div>
+
                     </div>
 
                     <h2>
@@ -49,10 +52,10 @@
 
                     <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</div>
                     <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</div>
-                          
 
-                    <div class="badge badge-pill" :class="'text-color-background-'+modalContent.order.order.order_state_code.css_color" :style="'background-color:'+modalContent.order.order.order_state_code.css_color">{{ modalContent.order.order.order_state_code.name }}</div>
-
+                    <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasCostLess=='N'" class="badge badge-secondary">Non ha sconti aggiuntivi</div>
+                    <div v-if="modalContent.order.order.order_type_id!=9 && modalContent.order.order.hasCostLess=='Y'" class="badge badge-warning">Ha sconti aggiuntivi</div>
+              
                     <p v-if="modalContent.order.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ modalContent.order.order.order_type.descri }}</p>
 
                     <p v-for="(articles_order, index) in modalContent.order.articles_orders">
@@ -77,6 +80,9 @@
 
                           </li>
                         </ul>
+
+                        <div class="alert alert-info text-right">Totale {{ modalContent.order.order_final_price| currency }}&euro;</div>
+
                     </p>
 
                </div>           

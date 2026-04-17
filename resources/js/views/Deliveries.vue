@@ -22,7 +22,10 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col-md-2">
+                        <Menu :slugGas="slugGas"></Menu>
+                    </div>					
+					<div class="col-md-10">
 
 						<div v-if="isRunDeliveries" class="box-spinner"> 
 							<div class="spinner-border text-info" role="status">
@@ -74,19 +77,20 @@
 										<div class="col col-1 div-th">
 										Frequenza
 										</div>
-										<div class="col col-2 div-th">
+										<div class="col col-2 div-th" v-if="results.user!==null">
 										Referenti
 										</div>
-										<div class="col col-1 div-th">
+										<div class="col col-1 div-th" v-if="results.user!==null">
 										Acquisti
 										</div>
+										<div class="col col-3 div-th" v-if="results.user==null"></div>
 									</div> <!-- row -->
 									<div class="row" 
 										v-for="(order, index) in results.datas" v-if="!isRunOrders && results.delivery_id===delivery.id"
 										:order="order"
 										:key="order.id"
 										:class="'order-row type-'+order.order.order_type.name">
-							
+				
 										<div class="col col-1">
 											<img style="max-width:50px" v-if="order.order.suppliers_organization.supplier.img1 != ''" 
 												class="img-supplier-disabled" 
@@ -94,11 +98,15 @@
 												:alt="order.order.suppliers_organization.name">
 										</div>
 										<div class="col col-4">
-											<a  v-if="order.order.order_state_code.code=='OPEN' || order.order.order_state_code.code=='RI-OPEN-VALIDATE'"
+											<a  v-if="order.user!==null && order.user.organization_id==organization.id &&(order.order.order_state_code.code=='OPEN' || order.order.order_state_code.code=='RI-OPEN-VALIDATE')"
 												v-on:click="selectOrder(order.order)" 
 												href="#">{{ order.order.suppliers_organization.name }}</a>
 											<span v-else>{{ order.order.suppliers_organization.name }}</span>
 
+											<span v-if="order.order.suppliers_organization.supplier.slug!='' && order.order.suppliers_organization.supplier.slug!=null">
+												<a :href="'/site/produttore/'+order.order.suppliers_organization.supplier.slug" title="link alla pagina del produttore"><i class="fas fa-link"></i></a>
+											</span>
+											
 											<span v-if="order.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order.order_type.descri }}</span>
 											
 											<div v-if="order.order.nota!=''" class="alert alert-info">{{ order.order.nota }}</div>
@@ -113,12 +121,12 @@
 										<div class="col col-1">
 											{{  order.order.suppliers_organization.frequenza  }}
 										</div>
-										<div class="col col-2">
+										<div class="col col-2" v-if="results.user!==null">
 											<referents v-if="order.user!==null && order.user.organization_id==organization.id && order.order.suppliers_organization.suppliers_organizations_referents!=null"
 											:referents="order.order.suppliers_organization.suppliers_organizations_referents" 
 											:email_visible=false />
 										</div>
-										<div class="col col-1">
+										<div class="col col-1" v-if="results.user!==null">
 											<span v-if="order.user!==null && order.user.organization_id==organization.id">
 												<span v-if="order.articles_orders.length>0">
 													<a v-on:click="clickShowOrHiddenModalArticleOrdersCart(order)" 
@@ -162,6 +170,7 @@
 <script>
 import { mapActions } from "vuex";
 import modalArticleOrdersCart from "../components/part/ModalArticleOrdersCart.vue";
+import Menu from "../components/cms/Menu.vue";
 import Organizations from "../components/common/Organizations.vue";
 import Referents from "../components/part/Referents.vue";
 
@@ -169,6 +178,7 @@ export default {
   name: "deliveries",
   components: {
     modalArticleOrdersCart: modalArticleOrdersCart,
+	Menu: Menu,
 	Organizations: Organizations,
 	Referents: Referents
   },
