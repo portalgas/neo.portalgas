@@ -14,24 +14,25 @@ class ApiSuppliersOrganizationsReferentDecorator  extends AppDecorator {
     public function __construct($user, $referents, $order=[])
     {
     	$results = [];
-	    // debug($referents);
+      // debug($referents);
+      if(!empty($referents)) {
+        if($referents instanceof \Cake\ORM\ResultSet) {
+          foreach($referents as $numResult => $referent) {
+            $results[$numResult] = $this->_decorate($user, $referent, $order);
+          }
+          }
+          else 
+          if($referents instanceof \App\Model\Entity\SuppliersOrganizationsReferent) {
+            $results = $this->_decorate($user, $referents, $order);  	
+          }
+          else {
+              foreach($referents as $numResult => $referent) {
+                  $results[$numResult] = $this->_decorate($user, $referent, $order);
+              }
+          }    
+      } // end if(!empty($referents))
 
-	    if($referents instanceof \Cake\ORM\ResultSet) {
-			foreach($referents as $numResult => $referent) {
-				$results[$numResult] = $this->_decorate($user, $referent, $order);
-			}
-	    }
-	    else 
-	    if($referents instanceof \App\Model\Entity\SuppliersOrganizationsReferent) {
-			$results = $this->_decorate($user, $referents, $order);  	
-	    }
-        else {
-            foreach($referents as $numResult => $referent) {
-                $results[$numResult] = $this->_decorate($user, $referent, $order);
-            }
-        }
-
-		$this->results = $results;
+		  $this->results = $results;
     }
 
 	private function _decorate($user, $referent, $order) {
