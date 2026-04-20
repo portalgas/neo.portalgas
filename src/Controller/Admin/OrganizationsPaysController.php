@@ -293,6 +293,7 @@ class OrganizationsPaysController extends AppController
         /*
          * orders
          * */
+        $search_order = '';
         $orders = [];
         $orders += ['OrganizationsPays.year' => 'desc'];
         if(!empty($request['search_order']) || !empty($this->request->getQuery('search_order')))
