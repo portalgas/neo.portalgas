@@ -112,7 +112,7 @@ class OrdersController extends ApiAppController
             $articles_orders = [];
             foreach($order->articles_orders as $articles_order) {
                 if(!empty($articles_order->carts)) {
-                    $art_orders = new ApiArticleOrderDecorator($user, $articles_order, $result);
+                    $art_orders = new ApiArticleOrderDecorator($user, $articles_order, $order);
                     $art_orders = $art_orders->results;
 
                     $order_final_price += $art_orders['carts'][0]['final_price'];
