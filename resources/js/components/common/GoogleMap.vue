@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <div id="map" ref="map">
           <template v-if="!!this.google">
               <slot/>

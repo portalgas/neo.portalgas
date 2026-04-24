@@ -203,6 +203,9 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                             ['class' => 'button', 'target' => '_blank']
                         );
                     }
+                    else 
+                      echo '<div class="label label-danger">File PDF non presente</div>';
+                    
                     echo '</td>';
 
                     /*
@@ -223,6 +226,7 @@ echo $this->element('msg', ['msg' => "Se il messaggio è attivato il manager/tes
                         $options += ['disabled' => 'disabled', 'title' => 'File PDF non presente'];
 
                         echo $this->Form->control('hasMsg', $options, ['class' => 'width-75']);
+
                         echo '</td>';
                     echo '<td id="OrganizationsPays-'.$organizationsPay->id.'"></td>';
 

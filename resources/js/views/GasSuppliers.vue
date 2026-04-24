@@ -1,35 +1,83 @@
 <template>
 
-<main>
- 
+    <main>
 
-    <div v-if="isRunSuppliers" class="box-spinner"> 
-        <div class="spinner-border text-info" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>  
-    </div>
+      <div v-if="isLoading" class="box-spinner">
+          <div class="spinner-border text-info" role="status">
+              <span class="sr-only">Loading...</span>
+          </div>
+      </div>
+      <div v-else>
+          <section v-if="organization!=null">
+              <div class="row">
+                  <div class="col-md-12">
+                      <h2>
+                          <span style="float:left;">Produttori</span>
+                          <span style="float:right;">
+                              <Organizations :slug="slugGas" :organization="organization" />
+                          </span>
+                      </h2>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-2">
+                      <Menu :slugGas="slugGas"></Menu>
+                  </div>
+                  <div class="col-md-10">
+
+                    <div v-if="isRunSuppliers" class="box-spinner"> 
+                        <div class="spinner-border text-info" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>  
+                    </div>
+                    <div v-else>
+
+                      <p>
+                        <google-map
+                            v-if="organization.lat!='' && organization.lng!=''"
+                            :config="mapConfig"
+                            :apikey="apikey"
+                            :markers="mapMarkers"
+                        >
+                            <!-- GoogleMapMarkers :markers="mapMarkers"/ -->
+                        </google-map>
+                      </p>
+
+                      <div class="container-item">
+                        <div class="item" v-for="(suppliers_organization, index)  in suppliers_organizations">
+                          <img v-if="suppliers_organization.supplier.img1!=''" width="50px" 
+                               :src="'https://www.portalgas.it/images/organizations/contents/'+suppliers_organization.supplier.img1" /> {{ suppliers_organization.name }}
+                        </div>
+                      </div>
+                    </div>
 
 
-    <!-- google-map
-      :config="mapConfig">
-      <GoogleMapMarkers :markers="mapMarkers"/>
-    </google-map -->
 
-    <div id="map" style="width:500px;height:500px;"></div>
+                    <!-- google-map
+                      :config="mapConfig">
+                      <GoogleMapMarkers :markers="mapMarkers"/>
+                    </google-map -->
 
-    <!-- div class="google-map" ref="googleMap"></div>
-    <template v-if="Boolean(this.google) && Boolean(this.map)">
-      <slot
-        :google="google"
-        :map="map"
-      />
-    </template -->
+                    <div id="map" style="width:500px;height:500px;"></div>
 
-    <div v-if="!isRunSuppliers && suppliers.length==0" class="alert alert-warning">
-        Nessun produttore trovato
-    </div>
+                    <!-- div class="google-map" ref="googleMap"></div>
+                    <template v-if="Boolean(this.google) && Boolean(this.map)">
+                      <slot
+                        :google="google"
+                        :map="map"
+                      />
+                    </template -->
 
-</main> 
+                    <div v-if="!isRunSuppliers && suppliers_organizations.length==0" class="alert alert-warning">
+                        Nessun produttore trovato
+                    </div>                    
+
+                  </div>
+              </div>
+          </section>
+      </div>
+
+    </main>
 
 </template>
 
@@ -37,6 +85,10 @@
 // @ is an alias to /src
 import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
+import Organizations from "../components/common/Organizations.vue";
+import Menu from "../components/cms/Menu.vue";
+import GoogleMap from "../components/common/GoogleMap.vue";
+
 // import { Loader } from '@googlemaps/js-api-loader';
 // import GoogleMap from '../common/GoogleMap';
 // import GoogleMapMarkers from '../common/GoogleMapMarkers';
@@ -67,36 +119,98 @@ loader
 
 export default {
   name: "app-gas-suppliers",
+  components: {
+      Organizations,
+      Menu,
+      GoogleMap
+  },  
   data() {
     return {
+      isLoading: false,
+      organization: null,
+      slugGas: null,
       isRunSuppliers: false,
-      suppliers: [],
-      mapConfig: {
-        zoom: 12,
-        center: {
-          lat: -6.1753871,
-          lng: 106.8249641
-        },
-      },
-      mapMarkers: [
-        {
-          name: 'GBK',
-          lat: -6.218605,
-          long: 106.802612,
-        },
-        {
-          name: 'Ancol',
-          lat: -6.1229209,
-          long: 106.8228804,
-        },
-        {
-          name: 'Monas',
-          lat: -6.1753871,
-          long: 106.8249641,
-        }
-      ],
+      suppliers_organizations: [],
+      apikey: this.appConfig.$googlemap_api_key
     };
   },  
+  mounted() {
+    // console.log('mounted gas');
+    // console.log('slugGas '+this.$route.params.slugGas);
+    this.slugGas = this.$route.params.slugGas;
+    if(this.slugGas=='')
+        return;
+
+    this.getOrganization();
+    },  
+    methods: {
+        getOrganization:function() {
+            this.isLoading = true;
+
+            let url = "/api/gas/organization/"+this.slugGas;
+            axios
+                .get(url)
+                .then(response => {
+                    // console.log(response.data, 'getOrganization');
+                    if(typeof response.data !== "undefined") {
+                        this.organization = response.data.results;
+                    }
+                    this.isLoading=false;
+
+                    this.getSuppliers();
+                })
+                .catch(error => {
+                    this.isLoading=false;
+                    console.error("Error: " + error, 'getOrganization');
+                });
+        },
+        ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
+        initializeMap() {
+          const mapContainer = this.$refs.googleMap
+          this.map = new this.google.maps.Map(
+            mapContainer, this.mapConfig
+          )
+        },    
+        getSuppliers() {
+          this.isRunSuppliers = true;
+
+          let url = "/api/gas/suppliers/"+this.slugGas;
+          axios
+            .get(url)
+            .then(response => {
+
+              this.isRunSuppliers = false;
+
+              // console.log(response.data);
+              if(typeof response.data !== "undefined") {
+                this.suppliers_organizations = response.data.results;
+              }
+              // console.log(this.suppliers_organizations);
+            })
+            .catch(error => {
+              this.isRunSuppliers = false;
+              console.error("Error: " + error);
+            });    
+        }                 
+    }, 
+    computed: {
+        mapConfig() {
+            return {
+                zoom: 10,
+                center: {
+                    lat: parseFloat(this.organization.lat),
+                    lng: parseFloat(this.organization.lng)
+                }
+            }
+        },
+        mapMarkers() {
+            return this.suppliers_organizations.map(suppliers_organization => ({
+              marker: suppliers_organization.name,
+              lat: parseFloat(suppliers_organization.supplier.lat),
+              lng: parseFloat(suppliers_organization.supplier.lng)
+            })); 
+        }
+    },       
   /*
   data() {
     return {
@@ -125,56 +239,6 @@ export default {
     this.initializeMap()
   }, 
   */
-  components: {
-  },  
-  mounted() {
-  },
-  methods: {
-    ...mapActions(["showModal", "showOrHiddenModal", "addModalContent"]),
-    initializeMap() {
-      const mapContainer = this.$refs.googleMap
-      this.map = new this.google.maps.Map(
-        mapContainer, this.mapConfig
-      )
-    },    
-    getSuppliers() {
-      this.isRunSuppliers = true;
-
-      let url = "/api/suppliers/gets";
-      let data = {
-        q: this.q,
-        category_id: this.category_id,
-        region_id: this.region_id,
-        province_id: this.province_id,
-      }
-      console.log(url, data);
-
-      axios
-        .post(url, data)
-        .then(response => {
-
-          this.isRunSuppliers = false;
-
-           // console.log(response.data);
-           if(typeof response.data !== "undefined") {
-             this.suppliers = response.data.results;
-           }
-           console.log(this.suppliers);
-        })
-        .catch(error => {
-          this.isRunSuppliers = false;
-          console.error("Error: " + error);
-        });    
-    },   
-    sortByValue(jsObj) {
-        var sortedArray = [];
-        for(var i in jsObj) {
-            sortedArray.push([jsObj[i], i]);
-            // sortedArray.push([i, jsObj[i]]); sortByKey
-        }
-        return sortedArray.sort();
-    }            
-  },
   filters: {
       currency(amount) {
         let locale = window.navigator.userLanguage || window.navigator.language;
@@ -206,4 +270,17 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+    height: 65px;
+}
+.container-item {
+  display: flex;       /* Attiva il layout flex */
+  flex-wrap: wrap;    /* Permette agli elementi di andare a capo */
+  gap: 10px;          /* Crea spazio tra i div (senza usare i margini) */
+}
+
+.item {
+  width: 200px;       /* Ogni div avrà una larghezza base */
+  height: 100px;
+}
 </style>

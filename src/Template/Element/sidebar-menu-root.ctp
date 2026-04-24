@@ -98,6 +98,7 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/index'); ?>"><?php echo $icon;?><?php echo __('Gestisci pagamenti').' '.date('Y');?></a></li>
       <li><a href="<?php echo $this->Url->build('/admin/organizations-pays/generate'); ?>"><?php echo $icon;?>1 Genera i pagamenti <?php echo date('Y');?></a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'invoice_create_pdfs');?>" target="">2 Genera tutte le fatture</a></li>
+      <li><a href="<?php echo $this->Url->build('/admin/organizationsPays/generateMsg');?>" target="">3 Genera i messaggi e abilitali</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('organizationsPays', 'invoice_create_form');?>" target="">Genera fattura</a></li>
       <li><a href="<?php echo $this->HtmlCustomSite->jLink('pages', 'export_docs_root');?>" target="">Stampa documenti</a></li>
     </ul>

@@ -229,6 +229,34 @@ class OrganizationsPaysController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    /*
+     * genera i messaggi per il FE e li attiva
+     * si puo' eseguite singolarmente con /admin/api/OrganizationsPays/setMsgText
+     * */
+    public function generateMsg()
+    {
+        $debug = false;
+        $continue = true;
+        $year = date('Y');
+       
+        /*
+         * ctrl se per l'anno corrente e' gia' stato creato
+         */
+        $organizationsPays = $this->OrganizationsPays->find()
+                                    ->where(['OrganizationsPays.year' => date('Y')])
+                                    ->all();
+        if($organizationsPays->count()==0) {
+            $this->Flash->error("OrganizationsPays per l'anno ".$year.' non sono stati generati', ['escape' => false]);
+            return $this->redirect(Configure::read('routes_msg_stop'));
+        }
+
+        foreach($organizationsPays as $organizationsPay) {
+            $this->OrganizationsPay->setMsgText($this->Authentication->getIdentity(), $organizationsPay->id, 'Y');
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
     /**
      * Index method
      *

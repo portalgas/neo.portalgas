@@ -133,6 +133,9 @@ msgstr "Tipologie"
 msgid "Type Pay"
 msgstr "Tipologie di pagamento"
 
+msgid "Beneficiario Pay"
+msgstr "Beneficiario del pagamento"
+
 msgid "Year"
 msgstr "Anno"
 
@@ -414,6 +417,9 @@ msgstr "Importo totale dell'ordine"
 
 msgid "ImportoTotaleOrdineShort"
 msgstr "Imp. ord."
+
+msgid "import_additional_cost"
+msgstr "Importo aggiuntivo"
 
 msgid "QuantitaTotaleOrdine"
 msgstr "Quantità totale dell'ordine"
@@ -1498,6 +1504,8 @@ msgstr "Consegna"
 msgid "supplier_organization_id"
 msgstr "Produttore"
 
+msgid "organization_id"
+msgstr "Organizzazione"
 
 #
 # O R D E R - S T A T E S
@@ -4475,6 +4483,18 @@ msgstr "Saldo in cassa"
 msgid "totImportoUserAcquistato"
 msgstr "Totale acquistato"
 
+msgid "tot_users"
+msgstr "Totale utenti"
+
+msgid "tot_orders"
+msgstr "Totale ordini"
+
+msgid "tot_suppliers_organizations"
+msgstr "Totale produttori"
+
+msgid "tot_articles"
+msgstr "Totale articoli"
+ 	 	 	
 msgid "Nominative"
 msgstr "Nominativo"
 
@@ -4893,6 +4913,9 @@ msgid "RegisterDate"
 msgstr "Registrato il"
 
 msgid "LastvisitDate"
+msgstr "Ultima visita"
+
+msgid "lastVisitDate"
 msgstr "Ultima visita"
 
 msgid "LastCart"
@@ -6950,6 +6973,12 @@ msgid "Cms Menu Is Public"
 msgstr "E' visibile a tutti"
 
 msgid "Cms Doc"
+msgstr "Documento"
+
+msgid "Doc"
+msgstr "Documento"
+
+msgid "doc"
 msgstr "Documento"
 
 msgid "Cms Docs"

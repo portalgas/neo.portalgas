@@ -21,7 +21,7 @@ class GasController extends ApiAppController
 
         parent::beforeFilter($event);
 
-        $this->Authentication->allowUnauthenticated(['organization', 'menu', 'page', 'download']);
+        $this->Authentication->allowUnauthenticated(['organization', 'menu', 'page', 'suppliers', 'download']);
     }
 
     /*
@@ -95,6 +95,7 @@ class GasController extends ApiAppController
                 $menus[$i]['slug'] = '';
                 $menus[$i]['cms_menu_type'] = [];
                 $menus[$i]['cms_menu_type']['code'] = 'LINK_INT';
+                $menus[$i]['url'] = '/gas/'.$slug_gas.'/home';
                 $menus[$i]['name'] = 'Home del G.A.S.';
             }
 
@@ -222,4 +223,39 @@ class GasController extends ApiAppController
 
         return $this->_response($results);
     }
+
+    /*
+     * dati GAS
+     */
+    public function suppliers() {
+
+        $debug = false;
+
+        $content = '';
+
+        $results = [];
+        $results['code'] = 200;
+        $results['message'] = 'OK';
+        $results['errors'] = '';
+        $results['results'] = [];
+
+        $slug_gas = $this->request->getParam('slugGas');
+        $organization = $this->Gas->getBySlug($slug_gas);
+
+        $suppliersOrganizationsTable = TableRegistry::get('SuppliersOrganizations');
+
+        $where = ['SuppliersOrganizations.organization_id' => $organization->id, 'SuppliersOrganizations.stato' => 'Y'];
+//        if(empty($this->_user) || $organization->id!=$this->_user->organization->id)
+  //          $where += ['is_public' => true];
+
+        $suppliersOrganizations = $suppliersOrganizationsTable->find()
+                            ->contain(['Suppliers', 'SuppliersOrganizationsReferents', 'OwnerSupplierOrganizations', 'OwnerOrganizations'])
+                            ->where($where)
+                            ->order(['SuppliersOrganizations.name' => 'asc'])
+                            ->all();
+
+        $results['results'] = $suppliersOrganizations;
+
+        return $this->_response($results);
+    }    
 }

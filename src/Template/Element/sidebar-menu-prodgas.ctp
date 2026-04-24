@@ -39,7 +39,6 @@ $joomla25Salts_isActive = $config['Joomla25Salts.isActive'];
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'gest_categories');?>" target=""><?php echo $icon;?>Gestisci categorie</a></li>
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_default');?>" target=""><?php echo $icon;?>Modifica prezzi</a></li>
             <li><a href="<?php echo $this->HtmlCustomSite->jLink('Articles', 'index_edit_prices_percentuale');?>" target=""><?php echo $icon;?>Modifica prezzi in %</a></li>
-            <li><a href="<?php echo $this->HtmlCustomSite->jLink('ArticlesOrders', 'order_choice');?>" target=""><?php echo $icon;?>Modifica prezzo degli articolo associati agli ordini</a></li>
             <li><a href="<?php echo $this->Url->build('/admin/articles/export'); ?>"><?php echo $icon;?><?php echo __('Export to EXCEL');?> <label class="label label-success">new</label></a></li>
             <li><a href="<?php echo $this->Url->build('/admin/articles/import'); ?>"><?php echo $icon;?><?php echo __('Import from EXCEL');?> <label class="label label-success">new</label></a></li>
             <!-- 

@@ -37,11 +37,6 @@ const routes = [
     path: "/user-cart",
     name: "UserCart",
     component: UserCart
-  },
-  {
-    path: "/gas/:slugGas/consegne",
-    name: "Deliveries",
-    component: Deliveries
   },  
   {
     path: "/site/produttori",
@@ -54,20 +49,25 @@ const routes = [
     component: Supplier
   },
   {
-    path: "/site/gas-produttori",
-    name: "GasSuppliers",
-    component: GasSuppliers
-  },
-  {
     path: "/site/gmaps",
     name: "Gmaps",
     component: Gmaps
   },
   {
+    path: "/gas/:slugGas/consegne",
+    name: "Deliveries",
+    component: Deliveries
+  },
+  {
+    path: "/gas/:slugGas/produttori",
+    name: "GasSuppliers",
+    component: GasSuppliers
+  },
+  {
     path: "/gas/:slugGas/:slugPage",
     name: "Gas",
     component: Gas
-  },
+  },    
   {
     path: "/promozioni",
     name: "Promotion",

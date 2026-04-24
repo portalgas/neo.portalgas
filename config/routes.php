@@ -215,7 +215,8 @@ Router::prefix('api', function (RouteBuilder $routes) {
         $routes->connect('/page/:slugGas/:slugPage', ['action' => 'page', '_method' => 'GET'],
             [
                 'pass' => ['slug']
-            ]);         
+            ]);
+        $routes->connect('/suppliers/:slugGas', ['action' => 'suppliers', '_method' => 'GET']);             
     });
 
     /*

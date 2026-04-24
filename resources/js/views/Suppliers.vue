@@ -20,7 +20,7 @@
                 </span>
               </div>
               <input type="text" class="form-control input-lg" id="q" autocomplete="off"  placeholder="Cerca per nome..."
-                    v-model="q" /> <!-- v-on:keyup="searchByName()" -->
+                    v-model="q" v-on:keyup="searchByName()" />
             </div>
             <!-- div class="panel-footer" v-if="suppliers.length">
               <ul class="list-group">
@@ -77,9 +77,9 @@
         </div>
       </div> <!-- col-sm-6 col-xs-6 col-md-4 -->
 
-      <div class="col-sm-12 col-xs-12 col-md-12 pb-5"> 
+      <!-- div class="col-sm-12 col-xs-12 col-md-12 pb-5"> 
           <a class="btn btn-primary btn-block" v-on:click="onSearch()">Ricerca</a>
-      </div>
+      </div -->
     </div> <!-- row -->     
     </form> 
 
@@ -253,7 +253,7 @@ export default {
       event.preventDefault();
     },
     searchByName() {
-      console.log('searchByName() q '+this.q);
+      // console.log('searchByName() q '+this.q);
       if(this.q=='') 
         return;
 
@@ -345,7 +345,7 @@ export default {
         province_id: this.province_id,
         page: this.page
       }
-      console.log(url, data);
+      // console.log(url, data);
 
       axios
         .post(url, data)
