@@ -97,6 +97,18 @@ class PagesController extends AppController
 
             $prodGasPromotionsOrganizationsTable = TableRegistry::get('ProdGasPromotionsOrganizations');
             $hasGasUsersPromotions = $prodGasPromotionsOrganizationsTable->hasGasUsersPromotions($organization_id);
+
+			if($user->organization->paramsConfig['hasUserRegistrationExpire']=='Y') {
+				
+				$cookies_value = $this->request->getCookie(Configure::read('Cookies.user.registration.expire'));
+				
+				/*
+				 * se $_COOKIE['hasUserRegistrationExpire']=='Y' ha gia' letto il messaggio
+				 */
+				if(isset($user->user_profiles['hasUserRegistrationExpire']) && $user->user_profiles['hasUserRegistrationExpire']=='N' && empty($cookies_value)) {
+					$this->set('hasUserRegistrationExpire', 'N');
+				}
+			}
         }
 
         $this->set(compact('hasGasUsersPromotions'));

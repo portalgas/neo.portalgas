@@ -497,3 +497,7 @@ Configure::write('DOMPDF_DEBUG_IMG_PATH', '/img/pdf');
  */
 Configure::write('social_market_organization_id', 142);
 Configure::write('social_market_delivery_id', 9511);
+
+Configure::write('Cookies.user.registration.expire', 'hasUserRegistrationExpire');
+Configure::write('Cookies.expire', 'time + 86400');  // time + 86400*30 30 gg  var time = now.getTime();
+Configure::write('Cookies.path', 'https://neo.portalgas.it'); 

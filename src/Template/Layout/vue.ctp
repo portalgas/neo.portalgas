@@ -9,7 +9,6 @@ $portalgas_fe_url = $config['Portalgas.fe.url'];
 $portalgas_ping_session = $config['Portalgas.ping.session.FE'];
 
 $organization = $this->Identity->get('organization');
-// debug($organization);
 ?>
 <!DOCTYPE html>
 <html lang=en>
@@ -106,6 +105,37 @@ $organization = $this->Identity->get('organization');
         httpRequest.withCredentials = true;
         httpRequest.send(null);
     }
+	
+	<?php 
+	if($hasUserRegistrationExpire=='N') {
+	?>
+		let html =  '<div class="modal fade" id="modalWindow" role="dialog">';
+		html += '<div class="modal-dialog">';
+		html += '<div class="modal-content">';
+		html += '<div class="modal-header">';
+		html += '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+		//html += '<h4 class="modal-title">Messaggio</h4>';
+		html += '</div>';
+		html += '<div class="modal-body">';
+		html += '<p>';
+		html += "<?php echo __('msg_fe_user_registration_expire_modal');?>";
+		html += '</div>';
+		html += '<div class="modal-footer">';
+		html += '<button type="button" class="btn btn-danger" data-dismiss="modal"><?php echo __('Chiudi');?></button>'; 
+		html += '</div>'; 
+		html += '</div>'; 
+		
+		$(html).appendTo('body');
+		$("#modalWindow").modal('show');
+		
+        $("#modalWindow").on("hide.bs.modal", function () {
+			document.cookie = '<?php echo Configure::read('Cookies.user.registration.expire');?>=<?php echo $user->id;?>;expires:<?php echo Configure::read('Cookies.expire');?>;path=<?php echo Configure::read('Cookies.path');?>';
+			$("#modalWindow").detach();
+        });		
+</script>	
+	<?php 
+	}
+	?>
     </script>
 </main>
    </body>
