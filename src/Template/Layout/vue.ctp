@@ -107,7 +107,7 @@ $organization = $this->Identity->get('organization');
     }
 	
 	<?php 
-	if($hasUserRegistrationExpire=='N') {
+	if(isset($hasUserRegistrationExpire) && $hasUserRegistrationExpire=='N') {
 	?>
 		let html =  '<div class="modal fade" id="modalWindow" role="dialog">';
 		html += '<div class="modal-dialog">';
