@@ -230,7 +230,7 @@ export default {
 		this.isLoading = true;
 
 		let url = "/api/gas/organization/"+this.slugGas;
-		console.log(url, 'getOrganization url');
+		// console.log(url, 'getOrganization url');
 		axios
 			.get(url)
 			.then(response => {
