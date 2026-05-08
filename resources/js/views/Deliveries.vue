@@ -65,25 +65,25 @@
 									<div class="row">
 										<div class="col col-1 div-th">
 										</div>
-										<div class="col col-4 div-th">
+										<div class="col col-md-4 div-th">
 										Produttore
 										</div>
 										<div class="col col-2 div-th">
 										Chiusura ordine
 										</div>
-										<div class="col col-1 div-th">
+										<div class="col col-1 div-th d-none d-md-table-cell">
 										Stato
 										</div>
-										<div class="col col-1 div-th">
+										<div class="col col-1 div-th d-none d-md-table-cell">
 										Frequenza
 										</div>
-										<div class="col col-2 div-th" v-if="results.user!==null">
+										<div class="col col-2 div-th d-none d-md-table-cell" v-if="results.user!==null">
 										Referenti
 										</div>
-										<div class="col col-1 div-th" v-if="results.user!==null">
+										<div class="col col-1 div-th d-none" v-if="results.user!==null">
 										Acquisti
 										</div>
-										<div class="col col-3 div-th" v-if="results.user==null"></div>
+										<div class="col col-3 div-th d-none" v-if="results.user==null"></div>
 									</div> <!-- row -->
 									<div class="row" 
 										v-for="(order, index) in results.datas" v-if="!isRunOrders && results.delivery_id===delivery.id"
@@ -97,7 +97,7 @@
 												:src="appConfig.$siteUrl+'/images/organizations/contents/'+order.order.suppliers_organization.supplier.img1"
 												:alt="order.order.suppliers_organization.name">
 										</div>
-										<div class="col col-4">
+										<div class="col col-md-4">
 											<a  v-if="order.user!==null && order.user.organization_id==organization.id &&(order.order.order_state_code.code=='OPEN' || order.order.order_state_code.code=='RI-OPEN-VALIDATE')"
 												v-on:click="selectOrder(order.order)" 
 												href="#">{{ order.order.suppliers_organization.name }}</a>
@@ -114,14 +114,14 @@
 										<div class="col col-2">
 											{{ order.order.data_fine | formatDate }}
 										</div>
-										<div class="col col-1">
+										<div class="col col-1 d-none d-md-table-cell">
 											<span v-if="missingDays(order.order.data_fine) < 0" style="color: red;">Chiuso</span>
 											<span v-else>Mancano {{ missingDays(order.order.data_fine) }} giorni.</span>
 										</div>
-										<div class="col col-1">
+										<div class="col col-1 d-none d-md-table-cell">
 											{{  order.order.suppliers_organization.frequenza  }}
 										</div>
-										<div class="col col-2" v-if="results.user!==null">
+										<div class="col col-2 d-none d-md-table-cell" v-if="results.user!==null">
 											<referents v-if="order.user!==null && order.user.organization_id==organization.id && order.order.suppliers_organization.suppliers_organizations_referents!=null"
 											:referents="order.order.suppliers_organization.suppliers_organizations_referents" 
 											:email_visible=false />

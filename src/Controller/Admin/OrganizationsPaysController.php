@@ -272,7 +272,7 @@ class OrganizationsPaysController extends AppController
         $where = [];
         $request = $this->request->getData();
         $q = $this->getStringToRequest($request, 'search_'); // se utilizzati i filtri sono in POST
-        if(empty($q)) // dopo edit soon in querystring
+        if(empty($q)) // dopo edit sono in querystring
             $q = $this->getStringToRequest($this->request->getQuery(), 'search_');
         $this->set(compact('q'));
 
