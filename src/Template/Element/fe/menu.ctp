@@ -80,6 +80,11 @@ else {
             $menus[$i]['url'] = '/gas/'.$organization->j_seo.'/home';
             $menus[$i]['target'] = '';
 
+            $i++;
+            $menus[$i]['label'] = "Consegne";
+            $menus[$i]['url'] = '/gas/'.$organization->j_seo.'/consegne';
+            $menus[$i]['target'] = '';
+
             if (isset($user->organization->paramsConfig['hasStoreroom']) && $user->organization->paramsConfig['hasStoreroom'] == 'Y' &&
                 isset($user->organization->paramsConfig['hasStoreroomFrontEnd']) && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
                 $i++;

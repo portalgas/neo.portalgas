@@ -127,7 +127,7 @@
 														:title="'acquitati '+order.articles_orders.length+' articoli'"
 														href="#"><img class="img-responsive-disabled" src="/images/cake/cesta-piena.png" border="0"></a>
 
-														<p>Totale {{ order.order_final_price| currency }}&euro;</p>
+														<p><span class=" d-none d-md-table-cell">Totale </span>{{ order.order_final_price| currency }}&euro;</p>
 												</span>
 												<span v-else>
 													<img class="img-responsive-disabled" src="/images/cake/cesta-vuota.png" title="Nessun prodotto ordinato" border="0">
