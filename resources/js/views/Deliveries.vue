@@ -109,7 +109,7 @@
 											
 											<span v-if="order.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order.order_type.descri }}</span>
 											
-											<div v-if="order.order.nota!=''" class="alert alert-info">{{ order.order.nota }}</div>
+											<div v-if="order.order.nota!='' && results.user!==null" class="alert alert-info">{{ order.order.nota }}</div>
 										</div>
 										<div class="col col-2">
 											{{ order.order.data_fine | formatDate }}
