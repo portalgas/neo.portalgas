@@ -71,18 +71,10 @@
 										<div class="col col-md-2 col-sm-3 div-th">
 										Chiusura ordine
 										</div>
-										<div class="col col-1 div-th d-none d-md-table-cell">
+										<div class="col col-3 div-th d-none d-md-table-cell">
 										Stato
 										</div>
-										<div class="col col-1 div-th d-none d-md-table-cell">
-										Frequenza
-										</div>
-										<div class="col col-md-2 div-th d-none d-md-table-cell" v-if="results.user!==null">
-										Referenti
-										</div>
-										<div class="col col-1 div-th" v-if="results.user!==null">
-										Acquisti
-										</div>
+										<div class="col col-2 div-th" v-if="results.user!==null"></div>
 									</div> <!-- row -->
 									<div class="row" 
 										v-for="(order, index) in results.datas" v-if="!isRunOrders && results.delivery_id===delivery.id"
@@ -109,23 +101,26 @@
 											<span v-if="order.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order.order_type.descri }}</span>
 											
 											<div v-if="order.order.nota!='' && results.user!==null" class="alert alert-info">{{ order.order.nota }}</div>
+
+											<div v-if="order.order.suppliers_organization.frequenza!=''">
+												{{  order.order.suppliers_organization.frequenza  }}
+											</div>
+
+											<div v-if="results.user!==null" style="margin-top:15px">
+												<referents v-if="order.user!==null && order.user.organization_id==organization.id && order.order.suppliers_organization.suppliers_organizations_referents!=null"
+												:referents="order.order.suppliers_organization.suppliers_organizations_referents" 
+												:email_visible=false />
+											</div>
+
 										</div>
 										<div class="col col-md-2 col-sm-3 ">
 											{{ order.order.data_fine | formatDate }}
 										</div>
-										<div class="col col-1 d-none d-md-table-cell">
+										<div class="col col-3 d-none d-md-table-cell">
 											<span v-if="missingDays(order.order.data_fine) < 0" style="color: red;">Chiuso</span>
 											<span v-else>Mancano {{ missingDays(order.order.data_fine) }} giorni.</span>
 										</div>
-										<div class="col col-1 d-none d-md-table-cell">
-											{{  order.order.suppliers_organization.frequenza  }}
-										</div>
-										<div class="col col-md-2 d-none d-md-table-cell" v-if="results.user!==null">
-											<referents v-if="order.user!==null && order.user.organization_id==organization.id && order.order.suppliers_organization.suppliers_organizations_referents!=null"
-											:referents="order.order.suppliers_organization.suppliers_organizations_referents" 
-											:email_visible=false />
-										</div>
-										<div class="col col-1" v-if="results.user!==null">
+										<div class="col col-2" v-if="results.user!==null">
 											<span v-if="order.user!==null && order.user.organization_id==organization.id">
 												<span v-if="order.articles_orders.length>0">
 													<a v-on:click="clickShowOrHiddenModalArticleOrdersCart(order)" 
