@@ -6,9 +6,16 @@ echo '  <url>';
 echo '      <loc>'.$fullbaseUrl.'</loc>';
 echo '      <changefreq>'.$changefreq.'</changefreq>';
 echo '  </url>';
-foreach ($results as $result) {
+foreach ($suppliers as $supplier) {
     echo '<url>';
-    echo '    <loc>'.$fullbaseUrl.'/site/produttore/'.$result->slug.'</loc>';
+    echo '    <loc>'.$fullbaseUrl.'/site/produttore/'.$supplier->slug.'</loc>';
+    echo '    <changefreq>'.$changefreq.'</changefreq>';
+    echo '</url>';
+}
+foreach ($organizations as $organization) {
+    echo '<url>';
+    echo '    <loc>'.$fullbaseUrl.'/gas/'.$organization->j_seo.'/home</loc>';
+    echo '    <loc>'.$fullbaseUrl.'/gas/'.$organization->j_seo.'/consegne</loc>';
     echo '    <changefreq>'.$changefreq.'</changefreq>';
     echo '</url>';
 }

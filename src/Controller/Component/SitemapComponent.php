@@ -9,6 +9,9 @@ use Cake\Log\Log;
 use Cake\Utility\Xml;
 use Cake\Filesystem\File;
 
+/*
+ * crea sitemap sotto https://www.portalgas.it
+ */
 class SitemapComponent extends Component {
 
 	private $_portalgas_fe_url = '';
@@ -54,8 +57,10 @@ class SitemapComponent extends Component {
         foreach($organizationGas as $organization) {
             // dd($organization);
             $options['lastmod'] = $organization->modified->i18nFormat('yyyy-MM-dd');
-            $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo, $options);
-            $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo . '/consegne-' . $organization->j_seo, $options);
+            // $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo, $options);
+            // $sitemap .= $this->_getTagUrl($baseUrl . '/home-' . $organization->j_seo . '/consegne-' . $organization->j_seo, $options);
+            $sitemap .= $this->_getTagUrl($this->_neo_portalgas_fe_url . '/gas/'.$organization->j_seo.'/home', $options);
+            $sitemap .= $this->_getTagUrl($this->_neo_portalgas_fe_url . '/gas/'.$organization->j_seo.'/consegne', $options);
         }
 
         /*

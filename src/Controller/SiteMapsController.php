@@ -42,12 +42,21 @@ class SiteMapsController extends AppController
        $suppliersTable = TableRegistry::get('Suppliers');
 
        $where = ['Suppliers.stato' => 'Y'];
-       $results = $suppliersTable->find()
+       $suppliers = $suppliersTable->find()
                                 ->select(['Suppliers.slug', 'Suppliers.name'])
                                 ->where($where)
                                 ->all();
 
-       $this->set(compact('results'));
+       $this->set(compact('suppliers'));
+
+       $organizationsTable = TableRegistry::get('Organizations');
+
+       $where = ['Organizations.stato' => 'Y'];
+       $organizations = $organizationsTable->find()
+                                ->where($where)
+                                ->all();
+
+       $this->set(compact('organizations'));
 
        $this->set('fullbaseUrl', $this->_fullbaseUrl);
        $this->set('changefreq', $this->_changefreq);
