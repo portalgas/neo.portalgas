@@ -14,10 +14,6 @@ $organization = $this->Identity->get('organization');
 <html lang=en>
 <head>
     <?= $this->Html->charset() ?>
-   <?php
-    if(!Configure::read('Site.robots'))
-      echo '<meta name="robots" content="noindex">';
-    ?>
     <?php echo $this->element('fe/metatag');?>
     <title><?php echo Configure::read('html.title'); ?></title>
     <?= $this->Html->meta('icon') ?>
