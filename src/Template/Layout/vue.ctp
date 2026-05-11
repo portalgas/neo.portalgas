@@ -13,8 +13,13 @@ $organization = $this->Identity->get('organization');
 <!DOCTYPE html>
 <html lang=en>
 <head>
-    <?= $this->Html->charset() ?>
-    <?php echo $this->element('fe/metatag');?>
+    <?php
+    echo $this->Html->charset();
+
+    if($config['Robots.noindex'])
+      echo '<meta name="robots" content="noindex">';
+    
+    echo $this->element('fe/metatag');?>
     <title><?php echo Configure::read('html.title'); ?></title>
     <?= $this->Html->meta('icon') ?>
 
