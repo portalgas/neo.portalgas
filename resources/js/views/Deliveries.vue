@@ -61,7 +61,7 @@
 								Non ci sono ordini associati
 								</div>
 								<div v-else>
-									
+			
 									<div class="row">
 										<div class="col col-1 div-th d-none d-md-table-cell">
 										</div>
@@ -74,7 +74,7 @@
 										<div class="col col-3 div-th d-none d-md-table-cell">
 										Stato
 										</div>
-										<div class="col col-2 div-th" v-if="results.user!==null"></div>
+										<div class="col col-2 div-th" v-if="results!==null && results.user!==null"></div>
 									</div> <!-- row -->
 									<div class="row" 
 										v-for="(order, index) in results.datas" v-if="!isRunOrders && results.delivery_id===delivery.id"
@@ -136,12 +136,12 @@
 										</div>
 
 									</div> <!-- row --> 
-									<div class="alert alert-info text-right" v-if="results.user!=null && results.user.organization_id==organization.id"> 
-										<span v-if="results.user.organization.template.payToDelivery==='ON' || user.template.organization.payToDelivery==='ON-POST'">
+									<div class="alert alert-info text-right" v-if="results!=null && results.user!=null && results.user.organization_id==organization.id"> 
+										<span v-if="results!=null && (results.user.organization.template.payToDelivery==='ON' || results.user.organization.template.payToDelivery==='ON-POST')">
 											Totale presunto della consegna: {{ results.delivery_final_price| currency  }}&euro;<br />
 											(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)
 										</span>
-										<span v-if="results.user.organization.template.payToDelivery==='POST'">
+										<span v-if="results!=null && results.user.organization.template.payToDelivery==='POST'">
 											Totale presunto della consegna: {{ results.delivery_final_price| currency  }}&euro;<br />
 											(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)
 										</span>
@@ -187,7 +187,7 @@ export default {
       	id: null,
       	datas: [],
 		delivery_final_price: null,
-		user: null
+		user: {}
 
       },
       isRunOrders: false,
