@@ -116,10 +116,12 @@ class OrdersController extends ApiAppController
                     $art_orders = $art_orders->results;
 
                     $order_final_price += $art_orders['carts'][0]['final_price'];
-                    $delivery_final_price += $order_final_price;
                     $articles_orders[] = $art_orders;
                 }
             }
+
+            $delivery_final_price += $order_final_price;
+
             $results[$numResult]['order_final_price'] = $order_final_price;
             $results[$numResult]['order'] = $order;
             unset($results[$numResult]['order']['articles_orders']);
@@ -128,7 +130,7 @@ class OrdersController extends ApiAppController
             /* per ogni ordine aggiunge le info dell'utente (autenticato o null)
              */
             $results[$numResult]['user'] = $user;
-        }                
+        }
 
         return $this->_response(['delivery_final_price' => $delivery_final_price, 'user' => $user, 'datas' => $results]);
     }
