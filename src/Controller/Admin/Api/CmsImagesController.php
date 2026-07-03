@@ -192,7 +192,7 @@ class CmsImagesController extends ApiAppController
         if($debug) debug('organization_id passato al metodo ['.$this->_organization->id.'] user ['.$this->_organization->id.']');
         $request = $this->request->getData();
         if($debug) debug($request);
-        $file_name = $request['name'];
+        isset($request['name']) ? $file_name = $request['name']: $file_name = '';
         if(empty($file_name)) {
             $results['code'] = 500;
             $results['message'] = 'KO';
