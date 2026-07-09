@@ -15,7 +15,7 @@ if(!empty($search_id))
     $js .= "var search_id = $search_id;";
 else
     $js .= "var search_id = '';";
-
+   
 $js .= "
         function matchArticleTypes(articles_type_id, articles_articles_types) {
             // console.log(articles_type_id);

@@ -6924,8 +6924,14 @@ msgstr "Ingredienti"
 msgid "import-article-qta_minima"
 msgstr "Quantità minima che un gasista può acquistare"
 
+msgid "import-article-qta_massima"
+msgstr "Quantità massima che un gasista può acquistare"
+
 msgid "import-article-qta_minima-order"
 msgstr "Quantità minima rispetto a tutti gli acquisti"
+
+msgid "import-article-qta_massima-order"
+msgstr "Quantità massima rispetto a tutti gli acquisti"
 
 msgid "import-article-qta_multipli"
 msgstr "Multipli di"

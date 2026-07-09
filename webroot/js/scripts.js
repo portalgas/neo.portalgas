@@ -21,7 +21,7 @@ Script.prototype = {
     bindEvents: function () {
         var _this = this;
 
-        console.log("Script bindEvents");
+        /* console.log("Script bindEvents"); */
 
         $(".price-type-id").on('change', function(e) {
             _this.tooglePriceCollaborator(this);
@@ -75,7 +75,7 @@ Script.prototype = {
          * aggiorna il DB con l'ico true/flase
          */
         $('.fieldUpdateAjax').on('click', function(e) {
-            console.log('fieldUpdateAjax click()');
+            /* console.log('fieldUpdateAjax click()'); */
             _this.fieldUpdateAjax(this);
         });
 
@@ -83,7 +83,7 @@ Script.prototype = {
          * aggiorna il DB con il valore del campo
          */
         $('.fieldUpdateAjaxChange').on('change', function(e) {
-            console.log('fieldUpdateAjax change()');
+            /* console.log('fieldUpdateAjax change()'); */
             e.preventDefault();
             _this.fieldUpdateAjax(this);
         });
@@ -203,8 +203,10 @@ Script.prototype = {
         var responseHtml = $('#'+entity+'-'+id);
         if (typeof responseHtml === 'undefined')
             console.error('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+'] undefined!');
+        /*
         else
             console.log('fieldUpdateAjax responseHtml ['+'#'+entity+'-'+id+']');
+        */
         responseHtml.addClass(_this.ico_spinner);
 
         var data = {
@@ -213,7 +215,7 @@ Script.prototype = {
             field: field,
             value: value,
         };
-        console.log(data);
+        /* console.log(data); */
 
         $.ajax({url: _this.fieldUpdateAjaxUrl,
                 data: data,
@@ -224,7 +226,7 @@ Script.prototype = {
                   'X-CSRF-Token': csrfToken
                 },
                 success: function (response) {
-                    console.log(response);
+                    /* console.log(response); */
                     if (response.code) {
                     }
 
@@ -271,7 +273,7 @@ Script.prototype = {
         var _this = this;
         var value = $(obj).val();
         var data_target = $(obj).attr('data-target');
-        console.log('tooglePriceCollaborator '+value+' data_target '+data_target);
+        /* console.log('tooglePriceCollaborator '+value+' data_target '+data_target); */
         if(value==_this.da_calcolare) {
             $(data_target).show();
         }
@@ -342,9 +344,9 @@ Script.prototype = {
 	 */
     formatImportToDb: function(obj) {
         let value = $(obj).val();
-        console.log('formatImportToDb BEFORE value '+value);
+        /* console.log('formatImportToDb BEFORE value '+value); */
         value = this.numberFormat(value, 2, ',', '.');
-        console.log('formatImportToDb AFTER value '+value);
+        /* console.log('formatImportToDb AFTER value '+value); */
         $(obj).val(value);
     },
     /*
@@ -352,12 +354,12 @@ Script.prototype = {
      */
     formatImport: function(obj) {
         let value = $(obj).val();
-        console.log('formatImport BEFORE.replace value '+value);
+        /* console.log('formatImport BEFORE.replace value '+value); */
         value = value.replace('.', '');
         value = value.replace(',', '.');
-        console.log('formatImport BEFORE value '+value);
+        /* console.log('formatImport BEFORE value '+value); */
         value = this.numberFormat(value, 2, ',', '.');
-        console.log('formatImport AFTER value '+value);
+        /* console.log('formatImport AFTER value '+value); */
         $(obj).val(value);
     },
     numberFormat: function (number, decimals, dec_point, thousands_sep) {
@@ -385,11 +387,9 @@ Script.prototype = {
             if($(this).is(':checked')) {
                 ids = ids + $(this).val() + ',';
                 // console.log(index+' CHECKED value '+$(this).val()+' ids '+ids);
-                console.log(index+' CHECKED value '+$(this).val()+' ids '+ids);
             }
             else {
                 // console.log(index+' NOT CHECKED value '+$(this).val()+' ids '+ids);
-                console.log(index+' NOT CHECKED value '+$(this).val()+' ids '+ids);
             }
         });
 
@@ -430,7 +430,7 @@ Script.prototype = {
         httpRequest.send(null);
     },
     init: function () {
-        console.log("Script.init");
+        /* console.log("Script.init"); */
         var _this = this;
 
         _this.year = new Date().getFullYear();

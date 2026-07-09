@@ -45,6 +45,8 @@ class ArticlesImportExportComponent extends Component {
             'ingredienti' => __('import-article-ingredienti'),
             'qta_minima' => __('import-article-qta_minima'),
             'qta_minima_order' => __('import-article-qta_minima-order'),
+            'qta_massima' => __('import-article-qta_massima'),
+            'qta_massima_order' => __('import-article-qta_massima-order'),
             'qta_multipli' => __('import-article-qta_multipli')
         ];
 
@@ -152,16 +154,31 @@ class ArticlesImportExportComponent extends Component {
             foreach($arr_export_fields as $numResult2 => $arr_export_field) {
                 $numCol = $alphabet[$numResult2].$numRow;
                 $value = $article->{$arr_export_field};
+                /* 
+                 se value = 1 entra nel case 'Y'!!!
                 switch($value) {
                     case 'Y':
-                        $value = 'si';
+                        debug('arr_export_field '.$article->{$arr_export_field}.' >>> '.$value);
+                        $value_decorate = 'si';
                     break;
                     case 'N':
-                        $value = 'no';
+                        $value_decorate = 'no';
+                    break;
+                    default:
+                        $value_decorate = $value;
                     break;
                 }
-                if($debug) debug($numCol.' '.$arr_export_field.' '.$value);
-                $sheet->setCellValue($numCol, $value);
+                */
+                if($value==='Y') 
+                    $value_decorate = 'si';
+                else 
+                if($value==='N') 
+                    $value_decorate = 'no';
+                else 
+                    $value_decorate = $value;
+                
+                if($debug) debug($numCol.' '.$arr_export_field.' valore originale ['.$value.'] valore ['.$value_decorate.']');
+                $sheet->setCellValue($numCol, $value_decorate);
             } // foreach($arr_export_fields as $numResult2 => $arr_export_field)
         } // foreach($articles as $numResult => $article)
 

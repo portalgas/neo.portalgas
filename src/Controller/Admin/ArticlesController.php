@@ -203,7 +203,7 @@ class ArticlesController extends AppController
 
         $import_fields = [];
         $import_fields[''] = 'A quale campo corrisponde?';
-        $import_fields['IGNORE'] = 'Ignore questa colonna';
+        $import_fields['IGNORE'] = 'Ignora questa colonna';
         $import_fields += $this->ArticlesImportExport->getImportFields($this->_user);
         $this->set(compact('import_fields'));
     }
@@ -223,7 +223,7 @@ class ArticlesController extends AppController
 
         $import_fields = [];
         $import_fields[''] = 'A quale campo corrisponde?';
-        $import_fields['IGNORE'] = 'Ignore questa colonna';
+        $import_fields['IGNORE'] = 'Ignora questa colonna';
         $import_fields += $this->ArticlesImportExport->getImportSupplierFields($this->_user);
         $this->set(compact('import_fields'));
     }

@@ -243,7 +243,7 @@ $(function () {
                     init: function() {
                       this.on('success', function(file, response) {
 
-                        console.log(response, 'upload');
+                        /* console.log(response, 'upload'); */
 
                         _this.file_errors = [];
                         _this.file_contents = [];
@@ -368,7 +368,7 @@ $(function () {
         }
       },
       mounted: function() {
-        console.log('mounted articles-import');
+        /* console.log('mounted articles-import'); */
         this.is_run = false;
       },
       computed: {

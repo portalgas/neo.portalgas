@@ -169,7 +169,7 @@ $(function () {
         },
       },       
       mounted: function(){
-        console.log('mounted exports-delivery');
+        /* console.log('mounted exports-delivery'); */
       }
     });
 });
