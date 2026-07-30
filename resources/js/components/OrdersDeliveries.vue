@@ -51,8 +51,8 @@
 					    <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
 					    
 					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span>  
-
-					    <div v-if="order.nota!=null && order.nota!=''" class="col-10 alert alert-info ml-auto mr-1 no-decoration" 
+						
+					    <div v-if="order.nota!=null && order.nota.trim()!=''" class="col-10 alert alert-info ml-auto mr-1 no-decoration" 
 					     	v-html="$options.filters.html(order.nota)">
 					    </div>
 					</a>

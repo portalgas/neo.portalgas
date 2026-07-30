@@ -12,8 +12,8 @@
              v-html="$options.filters.html(order.nota)">
         </div>
 
-        <div v-if="order.mail_open_testo!=null && order.mail_open_testo!=''" class="col-10 alert alert-info ml-auto mr-1"
-             v-html="$options.filters.html(order.mail_open_testo)">{{ order.mail_open_testo }}
+        <div v-if="order.mail_open_testo!=null && order.mail_open_testo.trim()!=''" class="col-10 alert alert-info ml-auto mr-1"
+             v-html="$options.filters.html(order.mail_open_testo)">
         </div>
       </a>
 

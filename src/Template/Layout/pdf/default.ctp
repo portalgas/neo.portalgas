@@ -29,6 +29,22 @@ use Cake\Core\Configure;
 		.list-inline-item:not(:last-child) {margin-right: .5rem;}
 		.list-inline-item {display: inline-block;margin-right: .5rem;}		
 		.box-totali {text-align:center;background-color:#c3d2e5;padding:3px;margin:3px 0px;font-weight: bold;font-size: 14px;}
+		.alert-warning {
+			color: #8a6d3b;
+			background-color: #fcf8e3;
+			border-color: #faebcc;
+		}
+		.alert {
+			padding: 15px;
+			padding-right: 15px;
+			margin-bottom: 20px;
+			border: 1px solid transparent;
+			border-top-color: transparent;
+			border-right-color: transparent;
+			border-bottom-color: transparent;
+			border-left-color: transparent;
+			border-radius: 4px;
+		}
 
 		@page {
            /* margin: 0cm 0cm; */

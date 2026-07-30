@@ -90,6 +90,8 @@ class OrdersController extends ApiAppController
                 ];
         }
         
+        $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
+
         $ordersTable = TableRegistry::get('Orders');
         $orders = $ordersTable->find()
             ->contain($contains)
@@ -101,10 +103,24 @@ class OrdersController extends ApiAppController
         $delivery_final_price = 0;
         foreach($orders as $numResult => $order) {
             
+            $order_final_price_only_carts = 0;
             $order_final_price = 0;
 
             $referents = new ApiSuppliersOrganizationsReferentDecorator($user, $order->suppliers_organization->suppliers_organizations_referents);
             $order->suppliers_organization->suppliers_organizations_referents = $referents->results;
+
+            /*
+             * dati aggiuntivi (trasporto, sconti, aggiuntivi)
+             * */
+            if(!empty($user)) {
+                $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $order, $user->id);
+
+                $results[$numResult]['summary_order'] = $resultsSummaryOrderPlus->summary_order;
+                $results[$numResult]['summary_order_aggregate'] = $resultsSummaryOrderPlus->summary_order_aggregate;
+                $results[$numResult]['summary_order_trasport'] = $resultsSummaryOrderPlus->summary_order_trasport;
+                $results[$numResult]['summary_order_cost_more'] = $resultsSummaryOrderPlus->summary_order_cost_more;
+                $results[$numResult]['summary_order_cost_less'] = $resultsSummaryOrderPlus->summary_order_cost_less;    
+            }
 
             /*
              * prendo solo quelli con acquisti
@@ -115,13 +131,32 @@ class OrdersController extends ApiAppController
                     $art_orders = new ApiArticleOrderDecorator($user, $articles_order, $order);
                     $art_orders = $art_orders->results;
 
-                    $order_final_price += $art_orders['carts'][0]['final_price'];
+                    $order_final_price_only_carts += $art_orders['carts'][0]['final_price'];
                     $articles_orders[] = $art_orders;
                 }
             }
 
+            if(!empty($results[$numResult]['summary_order_aggregate'])) {
+                $order_final_price_only_carts = $results[$numResult]['summary_order_aggregate']['importo'];
+            }
+            $order_final_price = $order_final_price_only_carts;
+
+            /*
+             * dati aggiuntivi (trasporto, sconti, aggiuntivi)
+             * */
+            if(!empty($results[$numResult]['summary_order_trasport'])) {
+                $order_final_price += $results[$numResult]['summary_order_trasport']['importo_trasport'];
+            }
+            if(!empty($results[$numResult]['summary_order_cost_more'])) {
+                $order_final_price += $results[$numResult]['summary_order_cost_more']['importo_cost_more'];
+            }
+            if(!empty($results[$numResult]['summary_order_cost_less'])) {
+                $order_final_price += $results[$numResult]['summary_order_cost_less']['importo_cost_less'];
+            }
+
             $delivery_final_price += $order_final_price;
 
+            $results[$numResult]['order_final_price_only_carts'] = $order_final_price_only_carts;
             $results[$numResult]['order_final_price'] = $order_final_price;
             $results[$numResult]['order'] = $order;
             unset($results[$numResult]['order']['articles_orders']);

@@ -9,15 +9,13 @@
       </div>
       <div v-else>
           <section v-if="organization!=null">
-              <div class="row">
-                  <div class="col-md-12">
-                      <h2>
-                          <span style="float:left;">Produttori</span>
-                          <span style="float:right;">
-                              <Organizations :slug="slugGas" :organization="organization" />
-                          </span>
-                      </h2>
-                  </div>
+              <div class="row row-header">
+                <div class="col-md-8">
+                  Produttori
+                </div>
+                <div class="col-md-4" style="text-align:right;">
+                  <Organizations :slug="slugGas" :organization="organization" />
+                </div>
               </div>
               <div class="row">
                   <div class="col-md-2">

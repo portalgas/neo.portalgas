@@ -9,16 +9,14 @@
         </div>
         <div v-else>
             <section v-if="organization!=null">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2>
-                            <span style="float:left;">{{ organization.name }}</span>
-                            <span style="float:right;">
-                                <Organizations :slug="slugGas" :organization="organization" />
-                            </span>
-                        </h2>
-                    </div>
-                </div>
+				<div class="row row-header">
+					<div class="col-md-8">
+						{{ organization.name }}
+					</div>
+					<div class="col-md-4" style="text-align:right;">
+						<Organizations :slug="slugGas" :organization="organization" />
+					</div>
+				</div>
                 <div class="row">
                     <div class="col-md-2">
                         <Menu :slugGas="slugGas"></Menu>

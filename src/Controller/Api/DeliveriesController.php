@@ -33,6 +33,8 @@ class DeliveriesController extends ApiAppController
         $user = $this->Authentication->getIdentity();
 
         $organization_id = $this->request->getData('organization_id');
+        $all = $this->request->getQuery('all');
+        if($all==1) $all = true; else $all = false;
 
         $results = [];
         $deliveriesTable = TableRegistry::get('Deliveries');
@@ -40,10 +42,11 @@ class DeliveriesController extends ApiAppController
         $where = ['Deliveries.organization_id' => $organization_id,
                 'Deliveries.isVisibleFrontEnd' => 'Y',
                 'Deliveries.stato_elaborazione' => 'OPEN',
-                'Deliveries.sys' => 'N',
-                'DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'
+                'Deliveries.sys' => 'N'
         ];
-        
+        if(!$all)
+            $where += ['DATE(Deliveries.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY'];
+
         $deliveries = $deliveriesTable->find()->where($where)->order(['Deliveries.data'])->all();
         if($deliveries->count()>0) {
             foreach($deliveries as $delivery) {

@@ -161,5 +161,5 @@ class ExportsController extends AppController {
                                ->setClassName('CakePdf.Pdf');            
             $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
         }
-    }         
+    }    
 }

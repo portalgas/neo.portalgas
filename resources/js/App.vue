@@ -28,4 +28,11 @@ export default {
 </script>
 
 <style>
+.row-header {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  padding: 10px;
+  background: none repeat scroll 0 0 #1e83c2;
+  color: #fff;
+}
 </style>

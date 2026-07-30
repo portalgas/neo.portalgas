@@ -153,8 +153,9 @@
 
                   <hr style="clear: both;">
 
-                    <div v-if="order.mail_open_testo!=''" class="alert alert-info">
-                      <p v-html="$options.filters.html(order.mail_open_testo)"></p>
+                    <div v-if="order.mail_open_testo!=null && order.mail_open_testo.trim()!=''" class="alert alert-info">
+                         v-html="$options.filters.html(order.mail_open_testo)">
+                    </div>
 
                       <!--                         -->
                       <!-- S O C I A L M A R K E T -->

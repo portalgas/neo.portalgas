@@ -167,7 +167,8 @@
       </div>
     </div>
 
-    <div v-if="modalContent.msg!=null && modalContent.msg!=''" class="alert alert-info">{{ modalContent.msg }}</div>
+    <div v-if="modalContent.msg!=null && modalContent.msg.trim()!=''" class="alert alert-info"
+         v-html="$options.filters.html(modalContent.msg)"></div>
 
     <button type="button" v-on:click="sendCartNota()" class="btn btn-primary">Invia nota al referente
 

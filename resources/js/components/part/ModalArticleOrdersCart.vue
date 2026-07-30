@@ -81,14 +81,16 @@
                           </li>
                         </ul>
 
-                        <div class="alert alert-info text-right">Totale {{ modalContent.order.order_final_price| currency }}&euro;</div>
-
                     </p>
 
+                    <div>
+                      <OrderTotals :order="modalContent.order"></OrderTotals>
+                    </div>
+
+                    <div class="alert alert-info">Legenda: (*) Valore modificato dal referente</div>
+                    
                </div>           
               </section>
-
-
 
 
               </div> <!-- modal-body --> 
@@ -110,11 +112,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import mask from "./Mask.vue";
+import OrderTotals from "./OrderTotals.vue";
 
 export default {
   name: "app-modal-article-orders-cart",
   components: {
     maskComponent: mask,
+    OrderTotals: OrderTotals
   },
   data() {
     return {

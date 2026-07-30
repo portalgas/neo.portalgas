@@ -11,174 +11,180 @@ if(!empty($delivery)) {
 
 	$html .= '<h2>Consegna '.$delivery->label.'</h2>';
 
-	$totale_consegna = 0;
-	foreach($results as $result) {
-		$html .= '<h4>Produttore '.$result->suppliers_organization->name.'</h4>';
-
-		$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
-		$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
-		$html .= '	<tr>';
-		$html .= '			<th width="40%" class="text-left">' . __('Name') . '</th>';
-		$html .= '			<th width="10%">' . __('Conf') . '</th>';
-		$html .= '			<th width="20%">&nbsp;' . __('PrezzoUnita') . '</th>';
-		$html .= '			<th width="10%">' . __('Qta') . '</th>';
-		$html .= '			<th width="20%">' . __('Importo') . '</th>';
-		$html .= '	</tr>';
-		$html .= '	</thead><tbody>';
-
-		$totale_ordine = 0;
-		foreach($result->article_orders as $article_order) {
-			
-			// debug($article_order);
-
-			if($result->isOpenToPurchasable)   /* aperto per acquistare */
-                $totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
-	        else {
-	              /* ordine chiuso agli acquisti */
-                $totale_ordine += $article_order['cart']['final_price'];
-	        }
-
-			$html .= '<tr>';
-			$html .= '	<td>'.$article_order['name'].'</td>';
-			$html .= '	<td class="text-center">'.$article_order['conf'].'</td>';
-			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
-			$html .= '	<td class="text-center">';
-			$html .= $article_order['cart']['final_qta'];
-			if($article_order['cart']['is_qta_mod'])
-				$html .= '<span>*</span>';
-			$html .= '  </td>';
-			$html .= '	<td class="text-center">';
-			$html .= $this->HtmlCustom->importo($article_order['cart']['final_price']);
-			if($article_order['cart']['is_import_mod'])
-				$html .= '<span>*</span>';
-			$html .= '  </td>';
-			$html .= '</tr>';
-		}
-
-		/*
-		 * totale ordine
-		 */ 
-	    if(!empty($result->summary_order_trasport)) {
-			$html .= '	<tr>';
-			$html .= '		<td colspan="2" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right no-border">' . __('CostTrasport') . '</th>';
-			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_trasport->importo_trasport). '</th>';
-			$html .= '	</tr>'; 
-
-			$totale_ordine += $result->summary_order_trasport->importo_trasport; 	
-	    }
-
-	    if(!empty($result->summary_order_cost_more)) {
-			$html .= '	<tr>';
-			$html .= '		<td colspan="2" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right no-border">' . __('CostMore') . '</th>';
-			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_more->importo_cost_more). '</th>';
-			$html .= '	</tr>'; 
-
-			$totale_ordine += $result->summary_order_cost_more->importo_cost_more;		
-	    }
-
-	    if(!empty($result->summary_order_cost_less)) {
-			$html .= '	<tr>';
-			$html .= '		<td colspan="2" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right no-border">' . __('CostLess') . '</th>';
-			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_less->importo_cost_less). '</th>';
-			$html .= '	</tr>';
-
-			$totale_ordine += $result->summary_order_cost_less->importo_cost_less;
-	    }
-
-		$html .= '	<tr>';
-		$html .= '		<td colspan="2" class="no-border"></td>';
-		$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale ordine') . '</th>';
-		$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($totale_ordine). '</th>';
-		$html .= '	</tr>';
-
-		$totale_consegna += $totale_ordine; 
-
-		$html .= '	</tbody>';
-		$html .= '	</table>';	
-
-	    /*
-	     * R E F E R E N T I 
-	    if(isset($result->referents)) {
-	    	$options = ['pdf_img_path' => $img_path, 'br' => true];
-	    	$html .= $this->HtmlCustomSite->boxOrizontalSupplierOrganizationreferents($result->referents, $options);
-		} 
-		*/ 
-
-	} // loop orders
-
-	/*
-	 * totale consegna
-	 */
-	$label = __('Totale consegna').' '.$this->HtmlCustom->importo($totale_consegna);
-	switch ($user->organization->template->payToDelivery) {
-		case 'POST':
-			$label = sprintf(__('TotaleConfirmTesoriere'), $this->HtmlCustom->importo($totale_consegna));
-		break;
-		case 'ON':
-		case 'ON-POST':
-			$label = sprintf(__('TotaleConfirmCassiere'), $this->HtmlCustom->importo($totale_consegna));
-		break;	
+	if(empty($results) && empty($storeroomResults))	 {
+		$html .= '<div class="alert alert-warning">Per questa consenga non sono stati effettuati acquisti</div>';
 	}
-	$html .= '<div class="box-totali">';
-	$html .= $label;
-	$html .= '</div>';
+	else {
 
-	$html .= '<div class="box-legenda">';
-	$html .= 'Legenda: (*) Valore modificato dal referente';
-	$html .= '</div>';
-
-	/*
-	 * storerooms
-	 */
-	// debug($storeroomResults);
-	if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
-
-		$totale_dispensa = 0;
-		if(!empty($storeroomResults) && count($storeroomResults)>0) {
-			$html .= '<h2>'.__('Storeroom').'</h2>';
+		$totale_consegna = 0;
+		foreach($results as $result) {
+			$html .= '<h4>Produttore '.$result->suppliers_organization->name.'</h4>';
 
 			$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
 			$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 			$html .= '	<tr>';
-			$html .= '		<th width="40%" class="text-left">' . __('Name') . '</th>';
-			$html .= '		<th width="15%">' . __('Conf') . '</th>';
-			$html .= '		<th width="15%">' . __('Qta') . '</th>';
-			$html .= '		<th width="20%">' . __('Importo') . '</th>';
+			$html .= '			<th width="40%" class="text-left">' . __('Name') . '</th>';
+			$html .= '			<th width="10%">' . __('Conf') . '</th>';
+			$html .= '			<th width="20%">&nbsp;' . __('PrezzoUnita') . '</th>';
+			$html .= '			<th width="10%">' . __('Qta') . '</th>';
+			$html .= '			<th width="20%">' . __('Importo') . '</th>';
 			$html .= '	</tr>';
-			$html .= '</thead><tbody>';
+			$html .= '	</thead><tbody>';
 
-			foreach($storeroomResults as $result) {
+			$totale_ordine = 0;
+			foreach($result->article_orders as $article_order) {
 				
-				// debug($result);
+				// debug($article_order);
 
-				$conf = ($result->qta.' '.$result->article->um);
-				$importo = ($result->qta * $result->prezzo);
-				$totale_dispensa += $importo;
+				if($result->isOpenToPurchasable)   /* aperto per acquistare */
+					$totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
+				else {
+					/* ordine chiuso agli acquisti */
+					$totale_ordine += $article_order['cart']['final_price'];
+				}
 
 				$html .= '<tr>';
-				$html .= '	<td>'.$result->name.'</td>';
-				$html .= '	<td class="text-center">'.$conf.'</td>';
-				$html .= '	<td class="text-center">'.$result->qta.'</td>';
-				$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($importo).'</td>';
-						
+				$html .= '	<td>'.$article_order['name'].'</td>';
+				$html .= '	<td class="text-center">'.$article_order['conf'].'</td>';
+				$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
+				$html .= '	<td class="text-center">';
+				$html .= $article_order['cart']['final_qta'];
+				if($article_order['cart']['is_qta_mod'])
+					$html .= '<span>*</span>';
+				$html .= '  </td>';
+				$html .= '	<td class="text-center">';
+				$html .= $this->HtmlCustom->importo($article_order['cart']['final_price']);
+				if($article_order['cart']['is_import_mod'])
+					$html .= '<span>*</span>';
+				$html .= '  </td>';
 				$html .= '</tr>';
+			}
 
+			/*
+			* totale ordine
+			*/ 
+			if(!empty($result->summary_order_trasport)) {
+				$html .= '	<tr>';
+				$html .= '		<td colspan="2" class="no-border"></td>';
+				$html .= '		<th colspan="2" class="text-right no-border">' . __('CostTrasport') . '</th>';
+				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_trasport->importo_trasport). '</th>';
+				$html .= '	</tr>'; 
+
+				$totale_ordine += $result->summary_order_trasport->importo_trasport; 	
+			}
+
+			if(!empty($result->summary_order_cost_more)) {
+				$html .= '	<tr>';
+				$html .= '		<td colspan="2" class="no-border"></td>';
+				$html .= '		<th colspan="2" class="text-right no-border">' . __('CostMore') . '</th>';
+				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_more->importo_cost_more). '</th>';
+				$html .= '	</tr>'; 
+
+				$totale_ordine += $result->summary_order_cost_more->importo_cost_more;		
+			}
+
+			if(!empty($result->summary_order_cost_less)) {
+				$html .= '	<tr>';
+				$html .= '		<td colspan="2" class="no-border"></td>';
+				$html .= '		<th colspan="2" class="text-right no-border">' . __('CostLess') . '</th>';
+				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_less->importo_cost_less). '</th>';
+				$html .= '	</tr>';
+
+				$totale_ordine += $result->summary_order_cost_less->importo_cost_less;
 			}
 
 			$html .= '	<tr>';
-			$html .= '		<td colspan="1" class="no-border"></td>';
-			$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale dispensa') . '</th>';
-			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($totale_dispensa). '</th>';
+			$html .= '		<td colspan="2" class="no-border"></td>';
+			$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale ordine') . '</th>';
+			$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($totale_ordine). '</th>';
 			$html .= '	</tr>';
+
+			$totale_consegna += $totale_ordine; 
 
 			$html .= '	</tbody>';
 			$html .= '	</table>';	
 
-		} 
-	}
+			/*
+			* R E F E R E N T I 
+			if(isset($result->referents)) {
+				$options = ['pdf_img_path' => $img_path, 'br' => true];
+				$html .= $this->HtmlCustomSite->boxOrizontalSupplierOrganizationreferents($result->referents, $options);
+			} 
+			*/ 
+
+		} // loop orders
+
+		/*
+		* totale consegna
+		*/
+		$label = __('Totale consegna').' '.$this->HtmlCustom->importo($totale_consegna);
+		switch ($user->organization->template->payToDelivery) {
+			case 'POST':
+				$label = sprintf(__('TotaleConfirmTesoriere'), $this->HtmlCustom->importo($totale_consegna));
+			break;
+			case 'ON':
+			case 'ON-POST':
+				$label = sprintf(__('TotaleConfirmCassiere'), $this->HtmlCustom->importo($totale_consegna));
+			break;	
+		}
+		$html .= '<div class="box-totali">';
+		$html .= $label;
+		$html .= '</div>';
+
+		$html .= '<div class="box-legenda">';
+		$html .= 'Legenda: (*) Valore modificato dal referente';
+		$html .= '</div>';
+
+		/*
+		* storerooms
+		*/
+		// debug($storeroomResults);
+		if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') {
+
+			$totale_dispensa = 0;
+			if(!empty($storeroomResults) && count($storeroomResults)>0) {
+				$html .= '<h2>'.__('Storeroom').'</h2>';
+
+				$html .= '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
+				$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+				$html .= '	<tr>';
+				$html .= '		<th width="40%" class="text-left">' . __('Name') . '</th>';
+				$html .= '		<th width="15%">' . __('Conf') . '</th>';
+				$html .= '		<th width="15%">' . __('Qta') . '</th>';
+				$html .= '		<th width="20%">' . __('Importo') . '</th>';
+				$html .= '	</tr>';
+				$html .= '</thead><tbody>';
+
+				foreach($storeroomResults as $result) {
+					
+					// debug($result);
+
+					$conf = ($result->qta.' '.$result->article->um);
+					$importo = ($result->qta * $result->prezzo);
+					$totale_dispensa += $importo;
+
+					$html .= '<tr>';
+					$html .= '	<td>'.$result->name.'</td>';
+					$html .= '	<td class="text-center">'.$conf.'</td>';
+					$html .= '	<td class="text-center">'.$result->qta.'</td>';
+					$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($importo).'</td>';
+							
+					$html .= '</tr>';
+
+				}
+
+				$html .= '	<tr>';
+				$html .= '		<td colspan="1" class="no-border"></td>';
+				$html .= '		<th colspan="2" class="text-right no-border">' . __('Totale dispensa') . '</th>';
+				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($totale_dispensa). '</th>';
+				$html .= '	</tr>';
+
+				$html .= '	</tbody>';
+				$html .= '	</table>';	
+
+			} 
+		} // end if ($user->organization->paramsConfig['hasStoreroom'] == 'Y' && $user->organization->paramsConfig['hasStoreroomFrontEnd'] == 'Y') 
+	} // end if(empty($results) && empty($storeroomResults))
 } // end if(!empty($delivery))
 
 echo $html;

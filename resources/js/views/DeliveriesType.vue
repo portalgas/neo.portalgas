@@ -1,0 +1,380 @@
+<template>
+
+	<div class="tab" v-show="isActive">
+				
+		<modal-article-orders-cart></modal-article-orders-cart>
+
+		<div v-if="isLoading" class="box-spinner"> 
+			<div class="spinner-border text-info" role="status">
+			  <span class="sr-only">Loading...</span>
+			</div>  
+		</div>
+		<div v-if="!isLoading && deliveries!==null && deliveries.length==0" class="alert alert-warning">
+			Non ci sono consegne disponibili
+		</div>
+
+		<div class="card" 
+			v-for="(delivery, index)  in deliveries"
+			:key="delivery.id+tab_id"
+			v-if="deliveries!==null && deliveries.length>0" 
+		>
+
+			<div class="card-header" data-toggle="collapse" :data-target="'#'+delivery.id+tab_id" aria-expanded="true" :aria-controls="'collapse-'+delivery.id+tab_id" v-on:click="selectDelivery(delivery.id, tab_id)">
+				{{ delivery.label }}
+				<i :id="'fas-'+delivery.id+tab_id" class="fas fa-angle-down float-right" aria-hidden="true"></i>
+			</div>
+
+			<div :id="'collapse-'+delivery.id+tab_id" class="collapse" :aria-labelledby="'heading-'+delivery.id" data-parent="#accordion-deliveries">
+			
+				<div class="card-body">
+
+					<div v-if="isRunOrders" class="box-spinner"> 
+						<div class="spinner-border text-info" role="status">
+						<span class="sr-only">Loading...</span>
+						</div>	  
+					</div>
+					
+					<div v-if="!isRunOrders && results!==null && results.datas!==null && results.datas.length===0" class="alert alert-warning">
+					Non ci sono ordini associati
+					</div>
+					<div v-else>
+
+						<div class="box-btn-pdf" v-if="results!==null && results.user!==null && results.delivery_final_price>0">
+							<a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa consegna" class="">
+								<button type="button" class="btn btn-primary">
+									<i class="fas fa-file-pdf"></i> Stampa acquisti della consegna
+								</button>
+							</a>
+						</div>
+
+						<div class="row">
+							<div class="col col-1 div-th d-none d-md-table-cell">
+							</div>
+							<div class="col col-md-4 col-sm-3 div-th">
+							Produttore
+							</div>
+							<div class="col col-md-2 col-sm-3 div-th">
+							Chiusura ordine
+							</div>
+							<div class="col col-3 div-th d-none d-md-table-cell">
+							Stato
+							</div>
+							<div class="col col-2 div-th" v-if="results!==null && results.user!==null"></div>
+						</div> <!-- row -->
+						<div class="row" 
+							v-for="(order, index) in results.datas" v-if="!isRunOrders && results.delivery_id===delivery.id"
+							:order="order"
+							:key="order.id"
+							:class="'order-row type-'+order.order.order_type.name">
+
+							<div class="col col-1 d-none d-md-table-cell">
+								<img style="max-width:50px" v-if="order.order.suppliers_organization.supplier.img1 != ''" 
+									class="img-supplier-disabled" 
+									:src="appConfig.$siteUrl+'/images/organizations/contents/'+order.order.suppliers_organization.supplier.img1"
+									:alt="order.order.suppliers_organization.name">
+							</div>
+							<div class="col col-md-4 col-sm-3">
+								<a  v-if="order.user!==null && order.user.organization_id==organization.id &&(order.order.order_state_code.code=='OPEN' || order.order.order_state_code.code=='RI-OPEN-VALIDATE')"
+									v-on:click="selectOrder(order.order)" 
+									href="#">{{ order.order.suppliers_organization.name }}</a>
+								<span v-else>{{ order.order.suppliers_organization.name }}</span>
+
+								<span v-if="order.order.suppliers_organization.supplier.slug!='' && order.order.suppliers_organization.supplier.slug!=null">
+									<a :href="'/site/produttore/'+order.order.suppliers_organization.supplier.slug" title="link alla pagina del produttore"><i class="fas fa-link"></i></a>
+								</span>
+								
+								<span v-if="order.order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order.order_type.descri }}</span>
+								
+								<div v-if="order.order.nota!=null && order.order.nota.trim()!='' && results.user!==null" 
+									class="alert alert-info"
+								    v-html="$options.filters.html(order.order.nota)"></div>
+
+								<div v-if="order.order.suppliers_organization.frequenza!=''">
+									{{  order.order.suppliers_organization.frequenza  }}
+								</div>
+
+								<div v-if="results.user!==null" style="margin-top:15px">
+									<referents v-if="order.user!==null && order.user.organization_id==organization.id && order.order.suppliers_organization.suppliers_organizations_referents!=null"
+									:referents="order.order.suppliers_organization.suppliers_organizations_referents" 
+									:email_visible=false />
+								</div>
+
+							</div>
+							<div class="col col-md-2 col-sm-3 ">
+								{{ order.order.data_fine | formatDate }}
+							</div>
+							<div class="col col-3 d-none d-md-table-cell">
+								<span v-if="missingDays(order.order.data_fine) < 0" style="color: red;">Chiuso</span>
+								<span v-else>Mancano {{ missingDays(order.order.data_fine) }} giorni.</span>
+							</div>
+							<div class="col col-2" v-if="results.user!==null" style="text-align: right;">
+								<span v-if="order.user!==null && order.user.organization_id==organization.id">
+									<span v-if="order.articles_orders.length>0">
+										<a v-on:click="clickShowOrHiddenModalArticleOrdersCart(order)" 
+											:title="'acquitati '+order.articles_orders.length+' articoli'"
+											href="#"><img class="img-responsive-disabled" src="/images/cake/cesta-piena.png" border="0"></a>
+
+											<OrderTotals :order="order"></OrderTotals>
+									</span>
+									<span v-else>
+										<img class="img-responsive-disabled" src="/images/cake/cesta-vuota.png" title="Nessun prodotto ordinato" border="0">
+									</span> 
+								</span>
+							</div>
+
+						</div> <!-- row --> 
+						<div class="alert alert-info text-right" v-if="results!=null && results.user!=null && results.user.organization_id==organization.id && results.delivery_final_price>0"> 
+							<span v-if="results!=null && (results.user.organization.template.payToDelivery==='ON' || results.user.organization.template.payToDelivery==='ON-POST')">
+								Totale presunto della consegna: {{ results.delivery_final_price| currency  }}&euro;<br />
+								(il totale effettivo per effettuare i pagamenti dev'essere confermato dal cassiere)
+							</span>
+							<span v-if="results!=null && results.user.organization.template.payToDelivery==='POST'">
+								Totale presunto della consegna: {{ results.delivery_final_price| currency  }}&euro;<br />
+								(il totale effettivo per effettuare i pagamenti dev'essere confermato dal tesoriere)
+							</span>
+
+							<div class="text-left">Legenda: (*) Valore modificato dal referente</div>
+						</div>
+
+					</div> <!-- all rows -->
+
+				</div> <!-- card-body -->
+			</div> <!-- collapse -->
+
+		</div>
+
+	</div>
+</template>
+
+<script>
+import { mapActions } from "vuex";
+import modalArticleOrdersCart from "../components/part/ModalArticleOrdersCart.vue";
+import Referents from "../components/part/Referents.vue";
+import OrderTotals from "../components/part/OrderTotals.vue";
+
+export default {
+  name: "deliveries-types",
+  components: {
+    modalArticleOrdersCart: modalArticleOrdersCart,
+	Referents: Referents,
+	OrderTotals: OrderTotals
+  },
+  props: {
+		tab_id: { required: true },
+		name: { required: true },
+		url: { required: true },
+		selected: { default: false},
+		organization: { required: true }
+	},  
+  data() {
+    return {
+      deliveries: null,
+	  isActive: false,
+	  isLoading: false,
+	  justLoading: [],
+      results: {
+      	id: null,
+      	datas: [],
+		delivery_final_price: null,
+		user: {}
+
+      },
+      isRunOrders: false,
+    };
+  }, 
+  watch: {
+		/*
+		 * carica i dati in base all'url settato nel tabs e lo passa al componente
+		 * se justLoading.includes(this.url) i dati del tab sono gia' stati caricati
+		 */
+		isLoading (newValue, oldValue) {
+			
+			// console.log('tab.watch isLoading ['+this.name+'] '+newValue+' - '+oldValue);
+			
+			if(newValue===true && !this.justLoading.includes(this.url)) {
+
+				this.datas = {};
+				this.dataNotFound = true;
+
+				let url = this.url;
+				// console.log('tab.watch url '+url);
+
+				if(this.organization===null) 
+					return;
+
+				let params = {
+					organization_id: this.organization.id
+				}
+				
+				axios
+				.post(url, params)
+				.then(response => {
+					this.isLoading=false;
+					if(typeof response.data !== "undefined") {
+						this.deliveries = response.data;
+						if(this.deliveries.length==0)
+							this.dataNotFound = false;                   
+					}
+				})
+				.catch(error => {
+				  this.isLoading=false;
+				  console.error("Error: " + error);
+				});
+
+				this.justLoading.push(this.url);
+			}
+			else {
+				this.isLoading=false;
+			}
+		}
+	},   
+	mounted() {
+		this.isActive = this.selected; 
+		this.isLoading = this.selected;  
+		// console.log('tab.mounted ['+this.name+'] isActive '+this.isActive+' isLoading '+this.isLoading);
+	},	
+  	methods: { 		
+		...mapActions(['showModalArticleOrdersCart', 'showOrHiddenModalArticleOrdersCart', 'addModalContent', 'clearModalContent']),
+		clickShowOrHiddenModalArticleOrdersCart (order) {
+
+			this.clearModalContent();
+
+			var modalContent = {
+				title: order.order.suppliers_organization.supplier.name,
+				body: 'body '+order.id,
+				order: order,
+				footer: '',
+				msg: ''
+			}            
+
+			this.addModalContent(modalContent);
+			this.showOrHiddenModalArticleOrdersCart();              
+		},
+		selectDelivery(delivery_id, tab_id) {
+			// console.log('selectDelivery ' + delivery_id + ' tab_id ' + tab_id);
+
+			let isOpen = $('#collapse-'+delivery_id+tab_id).hasClass('show');
+			// console.log('isOpen ' + isOpen);
+			$('.collapse').removeClass('show');
+			$('#accordion-deliveries .fas').removeClass("fa-angle-up");
+			$('#accordion-deliveries .fas').addClass("fa-angle-down");
+
+			if(!isOpen) {
+				// console.log('Tab chiuso => lo apro con id collapse-'+delivery_id+tab_id, 'selectDelivery');
+				$('#collapse-'+delivery_id+tab_id).addClass('show');
+				$('#accordion-deliveries #fas-'+delivery_id+tab_id).addClass("fa-angle-up");
+			}
+			else {
+				// console.log('Tab aperto => esco ', 'selectDelivery');
+				return;
+			}
+
+			this.isRunOrders=true;
+				
+			let params = {
+				organization_id: this.organization.id,
+				delivery_id: delivery_id
+			};
+
+			this.orders = [];
+
+			let url = "/api/orders/gets";
+			// console.log(url, 'selectDelivery');
+			axios
+				.post(url, params)
+				.then(response => {
+
+					this.isRunOrders=false;
+					if(typeof response.data !== "undefined") {
+							var results = {
+								delivery_id: delivery_id,
+								datas: response.data.datas,
+								delivery_final_price: response.data.delivery_final_price,
+								user: response.data.user
+							}
+							this.results = results;
+							// console.log(this.results);
+					}
+				})
+				.catch(error => {
+					this.isRunOrders=false;
+					console.error("Error: " + error);
+				});
+		},
+		selectOrder(order) {
+			let params = {}
+			params = {order_type_id: order.order_type_id, order_id: order.id, is_social_market: false}
+			this.$router.push({ name: 'Order', params: params})
+		},
+		missingDays(data_fine) {
+			const dataTarget = new Date(data_fine);
+			const oggi = new Date();
+			const differenzaInMs = dataTarget - oggi;
+			return Math.ceil(differenzaInMs / (1000 * 60 * 60 * 24));
+		}      
+  	},
+	filters: {
+    	currency(amount) {
+	      let locale = window.navigator.userLanguage || window.navigator.language;
+          locale = 'it-IT';
+	      const amt = Number(amount);
+	      return amt && amt.toLocaleString(locale, {minimumFractionDigits: 2, maximumFractionDigits:2}) || '0'
+	    },
+        formatDate(value) {
+			if (value) {
+			let locale = window.navigator.userLanguage || window.navigator.language;
+			locale = 'it-IT';
+			/* console.log(locale); */
+			moment.toLocaleString(locale)
+			moment.locale(locale);
+			return moment(String(value)).format('DD MMMM YYYY')
+			}
+		},
+		counter: function (index) {
+			return index+1
+		},
+		html(text) {
+			return text;
+		}
+    }
+};
+</script>
+
+<style scoped>
+h2 {
+    height: 65px;
+}
+.card { 
+  border: none;
+}
+.card-header {
+	cursor: pointer;
+	color: #0a659e;
+	font-weight: normal;
+}
+.card-header:hover {
+	color: #fa824f;
+}
+.div-th {
+  background-color: #0a659e;
+  border-right: 1px solid #fff;
+  font-size: 16px;
+  font-weight: normal;
+  color: #fff;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+.order-row {
+	border-bottom: 1px solid #c2c2c2;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+.box-btn-pdf {
+	text-align: right;
+	width: 100%;
+	margin-bottom: 5px;
+}
+.box-btn-pdf a {
+	font-size: 22px;
+}
+</style> 
