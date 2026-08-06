@@ -1,5 +1,6 @@
 <template>
     <main style="text-align: right;margin-top:5px;">
+
         <div v-if="order.order_final_price_only_carts===order.order_final_price">
             <div class="footer col-sm-12 col-xs-12 col-md-12 alert alert-info ">Totale {{ order.order_final_price| currency }} &euro;</div>
         </div>

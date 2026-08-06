@@ -70,6 +70,9 @@
                               </div>
                               <div class="col-md-9">
                                 <b>{{ articles_order.name }}</b> - {{ cart.final_qta }} di {{ articles_order.conf }} <!-- * {{ articles_order.price| currency }}&euro;--> {{ cart.final_price| currency }}&euro;
+
+                                <span v-if="articles_order.carts!=null && articles_order.carts[0].is_import_mod">*</span>
+                              
                               </div>
                               <div class="col-md-1 col-label">
                                   <span class="box-bio" v-if="articles_order.is_bio!=''">
