@@ -51,18 +51,23 @@ class SocialMarketsController extends ApiAppController
         $where['Orders'] = ['Orders.state_code != ' => 'CREATE-INCOMPLETE'];
         // debug($where);
         $carts = $cartsTable->find()
-                                    ->contain(['Orders'  => ['fields' => ['Orders.id'], 'conditions' => $where['Orders']]])
+                                    ->select(['Carts.order_id'])
                                     ->where($where['Carts'])
                                     ->group(['Carts.order_id'])
                                  //   ->order(['Deliveries.data' => 'desc'])
                                     ->all();
-
         if($carts->count()>0) {
 
             $ordersTable = TableRegistry::get('Orders');
 
             $supplier_organization_ids = [];
             foreach($carts as $cart) {
+
+                $cart = $cartsTable->find()
+                        ->contain(['Orders'  => ['fields' => ['Orders.id'], 'conditions' => $where['Orders']]])
+                        ->where($where['Carts'])
+                        ->first();
+
 
                 if(!array_key_exists($cart->order->id, $supplier_organization_ids)) {
 

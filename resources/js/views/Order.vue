@@ -165,7 +165,6 @@
                           <p>Ti piace questo produttore? consigliato al tuo GAS!</p>
                         </blockquote>
                       </div>
-                    </div>
 
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Escluso dal prepagato</span>
                     <span v-if="order.suppliers_organization.isSupplierOrganizationCashExcluded!=null && !order.suppliers_organization.isSupplierOrganizationCashExcluded" class="badge badge-secondary">Gestito con il prepagato</span>

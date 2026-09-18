@@ -8,8 +8,8 @@
 					<i class="fas fa-file-pdf"></i> Stampa carrello della consegna
 				</button>
 				<div class="dropdown-menu" aria-labelledby="btnGroupDropCart">
-				<a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa carrello in versione completa" class="dropdown-item">Versione completa</a>
-				<a :href="'/admin/api/exports/user-cart/'+results.delivery_id+'/compact'" target="_blank" title="Stampa carrello in versione compatta" class="dropdown-item">Versione compatta</a>
+					<a :href="'/admin/api/exports/user-cart/'+results.delivery_id" target="_blank" title="Stampa carrello in versione completa" class="dropdown-item">Versione completa</a>
+					<a :href="'/admin/api/exports/user-cart/'+results.delivery_id+'/compact'" target="_blank" title="Stampa carrello in versione compatta" class="dropdown-item">Versione compatta</a>
 				</div>
 			</div>
 			<!-- 
@@ -18,34 +18,58 @@
 		   -->
         </div>
 
-        <p 
+        <div 
           v-for="order in results.orders"
           :order="order"
           :key="order.id" class="box-order">
-
 		  
-					<a v-on:click="selectOrder(order)" href="#" class="row-gray">
+		  		<div class="row" v-if="order!=null">
+					<div class="col-9">
+						<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
-						<div class="content-img-supplier-small">
-							<img v-if="order.suppliers_organization.supplier.img1 != ''" 
-								class="img-supplier-small" 
-								:src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
-								:alt="order.suppliers_organization.name">
-						</div>
+							<div class="content-img-supplier-small">
+								<img v-if="order.suppliers_organization.supplier.img1 != ''" 
+									class="img-supplier-small" 
+									:src="appConfig.$siteUrl+'/images/organizations/contents/'+order.suppliers_organization.supplier.img1"
+									:alt="order.suppliers_organization.name">
+							</div>
 
-						{{ order.suppliers_organization.name }}
-						<small v-if="order.suppliers_organization.supplier.descrizione!=''">{{ order.suppliers_organization.supplier.descrizione }}</small>
+							{{ order.suppliers_organization.name }}
+							<small v-if="order.suppliers_organization.supplier.descrizione!=''">{{ order.suppliers_organization.supplier.descrizione }}</small>
 
-						<span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
-			              <span v-if="order.order_state_code.code=='OPEN-NEXT'">- aprirà {{ order.data_inizio | formatDate }} </span>
-			              <span v-if="order.order_state_code.code=='OPEN'">- chiuderà {{ order.data_fine | formatDate }}</span>
-			              <span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">- data chiusura {{ order.data_fine | formatDate }}</span>
-			              <span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">- riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
-			            </span>
+							<span class="d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
+							<span v-if="order.order_state_code.code=='OPEN-NEXT'">- aprirà {{ order.data_inizio | formatDate }} </span>
+							<span v-if="order.order_state_code.code=='OPEN'">- chiuderà {{ order.data_fine | formatDate }}</span>
+							<span v-if="order.order_state_code.code=='OPEN-NEXT' && order.order_state_code.code!='OPEN'">- data chiusura {{ order.data_fine | formatDate }}</span>
+							<span v-if="order.order_state_code.code=='RI-OPEN-VALIDATE'">- riaperto fino al {{ order.data_fine_validation | formatDate }} per completare i colli</span>
+							</span>
 
-					    <span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
-					    <span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
-					</a>
+							<span class="badge badge-pill" :class="'text-color-background-'+order.order_state_code.css_color" :style="'background-color:'+order.order_state_code.css_color">{{ order.order_state_code.name }}</span>
+							<span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
+						</a>						
+					</div>
+					<div class="col-3">
+						<a :href="'/user-cart-order-split/'+order.order_type_id+'/'+order.id" title="Suddividi gli acquisti">
+							<b-button block variant="primary">
+								<svg 
+									xmlns="http://w3.org" 
+									width="24" 
+									height="24" 
+									viewBox="0 0 24 24" 
+									fill="none" 
+									stroke="currentColor" 
+									stroke-width="2" 
+									stroke-linecap="round" 
+									stroke-linejoin="round"
+								>
+									<circle cx="6" cy="6" r="3"></circle>
+									<circle cx="6" cy="18" r="3"></circle>
+									<line x1="9.8" y1="8.2" x2="22" y2="20.4"></line>
+									<line x1="9.8" y1="15.8" x2="22" y2="3.6"></line>
+								</svg> Suddividi gli acquisti
+							</b-button></a>	
+					</div>
+				</div>
 
 		        <user-cart-articles 
 		        			:order="order" 
@@ -55,7 +79,7 @@
 				<referents v-if="order.referents!=null"
 							:referents="order.referents"
 							:email_visible=true />
-        </p> <!-- loop orders -->
+        </div> <!-- loop orders -->
 
 		<!-- 		  		-->
 		<!--  TOTALE  -->
@@ -87,8 +111,8 @@
 					<div style="border-bottom:0px solid #fff;">{{ order.distance.supplierName }} da {{ order.distance.supplierLocalita }} ha percorso {{ order.distance.distance }} Km
 					</div>
 					<div class="progressBar" 
-						:style="{width: order.distance.percentuale + '%'}">&nbsp;</td>	
-						</div>
+						:style="{width: order.distance.percentuale + '%'}">&nbsp;	
+					</div>
 			</span>
 			<div class="totaleKm">per un totale di {{ totalKm() }} Km</div>
 		</p>
@@ -106,7 +130,7 @@ export default {
   name: "user-cart-orders",
   /*
    * results: {
-   * 		delivery_id: null,
+   * 	delivery_id: null,
    *   	orders: [],
    *  	promotions: []
    * },
@@ -143,7 +167,7 @@ export default {
 	    	if(typeof this.results.orders !== "undefined" && this.results.orders.length>0) {
 
 	    		this.results.orders.forEach(function (order, index) { 
-	    			/ *console.log("Tratto ordine "+(index+1)); */
+	    			/* console.log("Tratto ordine "+(index+1)); */
 
 					if(order.distance!=null) {
 						totale += order.distance.distance
@@ -201,8 +225,8 @@ export default {
 	    	return this.$options.filters.currency(totale);
 	    },
 	    selectOrder(order) {
-	    	console.log('selectOrder');
-	    	console.log(order);
+	    	// console.log('selectOrder');
+	    	// console.log(order);
 	    	
 	    	this.$router.push({ name: 'Order', params: {order_type_id: order.order_type_id, order_id: order.id}})
 	    }    

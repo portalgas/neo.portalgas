@@ -49,6 +49,10 @@ class CartsTable extends Table
             'foreignKey' => ['article_organization_id', 'article_id'],
             'joinType' => 'INNER'
         ]);
+        $this->belongsTo('CartSplits', [
+            'foreignKey' => ['organization_id', 'order_id', 'article_organization_id', 'article_id', 'user_id'],
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -255,7 +259,7 @@ class CartsTable extends Table
             $contain += ['Users'];
         }
         $where = array_merge($where_defaults, $where);
-        
+     
         if(empty($user_id)) {
             $order = ['Users.name', 'ArticlesOrders.name'];
         }

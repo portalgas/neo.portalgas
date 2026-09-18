@@ -361,6 +361,10 @@ Router::prefix('admin', function (RouteBuilder $routes) {
             $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
             $routes->connect('/getTotImportByOrderId', ['action' => 'getTotImportByOrderId', '_method' => 'POST']);
         });
+        $routes->scope('/cart-splits', ['controller' => 'CartSplits'], function (RouteBuilder $routes) {
+            $routes->connect('/getByOrder', ['action' => 'getByOrder', '_method' => 'POST']);
+            $routes->connect('/storage', ['action' => 'storage', '_method' => 'POST']);
+        });
         $routes->scope('/promotion-carts', ['controller' => 'Carts'], function (RouteBuilder $routes) {
             $routes->connect('/managementCart', ['action' => 'managementCartProdGasPromotionGasUser', '_method' => 'POST']);
         });

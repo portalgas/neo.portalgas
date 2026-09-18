@@ -204,6 +204,7 @@ class CartsController extends ApiAppController
 
         $cartsTable = TableRegistry::get('Carts');
         $results = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);
+
         /*
         if(!empty($results)) {
             // $results = new ApiArticleOrderDecorator($results);

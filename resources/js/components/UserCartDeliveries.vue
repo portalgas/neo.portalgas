@@ -31,7 +31,7 @@
 		    	</div>
 
 		      <!-- ORDERS -->
-			    <user-cart-orders v-if="!isRun && results.delivery_id===delivery.id && delivery.id>0" :results="results"></user-cart-orders> 
+			  <user-cart-orders v-if="!isRun && results.delivery_id===delivery.id && delivery.id>0" :results="results"></user-cart-orders> 
 
 			<!-- PROMOTIONS -->
 			<user-cart-promotions v-if="!isRun && results.delivery_id===delivery.id && delivery.id==0" :results="results"></user-cart-promotions> 
@@ -79,84 +79,84 @@ export default {
   }, 
   methods: {
 	    selectDelivery(delivery_id) {
-	    	console.log('selectDelivery '+delivery_id);
+	    	// console.log('selectDelivery '+delivery_id);
 
-				let isOpen = $('#collapse-'+delivery_id).hasClass('show');
+			let isOpen = $('#collapse-'+delivery_id).hasClass('show');
+			
+			$('.collapse').removeClass('show');
+			$('#accordion-deliveries .fas').removeClass("fa-angle-up");
+			$('#accordion-deliveries .fas').addClass("fa-angle-down");
+
+			if(!isOpen) {
+				// console.log('Tab chiuso => lo apro ');
+				$('#collapse-'+delivery_id).addClass('show');
+				$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
+			}
+			else {
+				// console.log('Tab aperto => esco ');
+				return;
+			}
+
+			this.isRun=true;
 				
-				$('.collapse').removeClass('show');
-				$('#accordion-deliveries .fas').removeClass("fa-angle-up");
-				$('#accordion-deliveries .fas').addClass("fa-angle-down");
+			let params = {
+				delivery_id: delivery_id
+			};
 
-				if(!isOpen) {
-					// console.log('Tab chiuso => lo apro ');
-					$('#collapse-'+delivery_id).addClass('show');
-					$('#accordion-deliveries #fas-'+delivery_id).addClass("fa-angle-up");
-				}
-				else {
-					// console.log('Tab aperto => esco ');
-					return;
-				}
+			this.orders = [];
 
-				this.isRun=true;
-					
-				let params = {
-					delivery_id: delivery_id
-				};
-
-				this.orders = [];
-
-				let url_orders = "/admin/api/orders/user-cart-gets/0";
-				axios
-					.post(url_orders, params)
-					.then(response => {
-
-						this.isRun=false;
-
-						/* console.log(response.data); */
-						if(typeof response.data !== "undefined") {
-							var data = {
-								delivery_id: delivery_id,
-								orders: response.data,
-								promotions: []
-							}
-							this.results = data;
-							// console.log(this.results);
-					}
-				})
-				.catch(error => {
+			let url_orders = "/admin/api/orders/user-cart-gets/0";
+			axios
+				.post(url_orders, params)
+				.then(response => {
 
 					this.isRun=false;
 
-					console.error("Error: " + error);
-				});
+					/* console.log(response.data); */
+					if(typeof response.data !== "undefined") {
+						var data = {
+							delivery_id: delivery_id,
+							orders: response.data,
+							promotions: []
+						}
+						this.results = data;
+						// console.log(this.results);
+				}
+			})
+			.catch(error => {
 
-				/*
-				 * storerooms
-				 * lo visualizzo solo per pdf del carrello
-				this.isRunStorerooms=true;
-					
-				this.storerooms = [];
+				this.isRun=false;
 
-				let url_storeroom = "/admin/api/storerooms/user-cart-gets";
-				axios
-					.post(url_storeroom, params)
-					.then(response => {
+				console.error("Error: " + error);
+			});
 
-						this.isRunStorerooms=false;
+			/*
+				* storerooms
+				* lo visualizzo solo per pdf del carrello
+			this.isRunStorerooms=true;
+				
+			this.storerooms = [];
 
-						console.log(response.data);
-						if(typeof response.data !== "undefined") {
-							this.storerooms = response.data;
-							console.log(this.storerooms);
-					}
-				})
-				.catch(error => {
+			let url_storeroom = "/admin/api/storerooms/user-cart-gets";
+			axios
+				.post(url_storeroom, params)
+				.then(response => {
 
 					this.isRunStorerooms=false;
 
-					console.error("Error: " + error);
-				});
-				*/
+					console.log(response.data);
+					if(typeof response.data !== "undefined") {
+						this.storerooms = response.data;
+						console.log(this.storerooms);
+				}
+			})
+			.catch(error => {
+
+				this.isRunStorerooms=false;
+
+				console.error("Error: " + error);
+			});
+			*/
 	    },
 	    selectPromotion(delivery_id) {
 	    	console.log('selectPromotion '+delivery_id);

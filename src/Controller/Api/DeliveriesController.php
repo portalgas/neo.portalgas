@@ -41,7 +41,7 @@ class DeliveriesController extends ApiAppController
 
         $where = ['Deliveries.organization_id' => $organization_id,
                 'Deliveries.isVisibleFrontEnd' => 'Y',
-                'Deliveries.stato_elaborazione' => 'OPEN',
+               // 'Deliveries.stato_elaborazione' => 'OPEN',
                 'Deliveries.sys' => 'N'
         ];
         if(!$all)

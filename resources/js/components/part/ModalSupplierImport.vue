@@ -51,7 +51,6 @@
 
         <div class="alert alert-success alert-dismissible fade show" role="alert" v-if="importFinish && msg==null">
           <h4 class="alert-heading">Produttore importato</h4>
-          <p>
           <ol>
             <li>Contatta il produttore</li>
             <li>Poi potrai accedere a <a href="https://www.portalgas.it/my" target="_blank">https://www.portalgas.it/my</a> e creare un ordine</li>

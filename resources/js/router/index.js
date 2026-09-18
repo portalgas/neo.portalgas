@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Order from "../views/Order.vue";
 import Cart from "../views/Cart.vue";
 import UserCart from "../views/UserCart.vue";
+import UserCartOrderSplit from "../views/UserCartOrderSplit.vue";
 import Deliveries from "../views/Deliveries.vue";
 import Promotion from "../views/Promotion.vue";
 import Suppliers from "../views/Suppliers.vue";
@@ -37,6 +38,11 @@ const routes = [
     path: "/user-cart",
     name: "UserCart",
     component: UserCart
+  }, 
+  {
+    path: "/user-cart-order-split/:order_type_id/:order_id",
+    name: "UserCartOrderSplit",
+    component: UserCartOrderSplit
   },  
   {
     path: "/site/produttori",
