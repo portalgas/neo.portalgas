@@ -110,7 +110,8 @@
 
           </div> <!-- quantity buttons_added -->          
 
-          trasport {{ cart_split.trasport }}
+          <!-- trasport {{ cart_split.trasport }} -->
+           
         </div>
       </div>
 

@@ -276,7 +276,7 @@ class SummaryOrderPlusTable extends Table
 		$summaryOrdersTable = TableRegistry::get('SummaryOrders');
 
 		$resultsSummaryOrder = $summaryOrdersTable->getByUserByOrder($user, $organization_id, $user_id, $order_id, $options=[], $debug);
-			
+		
         if($hasTrasport=='Y' && $trasport!=0.00) {
         	$summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
 

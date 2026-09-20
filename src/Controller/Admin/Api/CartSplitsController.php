@@ -5,7 +5,6 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
-use App\Decorator\ApiArticleOrderDecorator;
 use Cake\Log\Log;
 
 class CartSplitsController extends ApiAppController
@@ -14,6 +13,7 @@ class CartSplitsController extends ApiAppController
     {
         parent::initialize();
         $this->loadComponent('Cart');
+        $this->loadComponent('CartSplit');
     }
 
     public function beforeFilter(Event $event) {
@@ -32,8 +32,8 @@ class CartSplitsController extends ApiAppController
 
         $results = [];
 
-        $user_id = $this->Authentication->getIdentity()->id;
-        $organization_id = $this->Authentication->getIdentity()->organization->id;
+        $user_id = $this->_user->id;
+        $organization_id = $this->_organization->id;
 
         $carts = $this->request->getData();
         if(!empty($carts)) {
@@ -43,7 +43,7 @@ class CartSplitsController extends ApiAppController
             */
             $order_id = $carts[0]['order_id'];
             $summaryOrderTrasportsTable = TableRegistry::get('SummaryOrderTrasports');
-            $summaryOrderTrasport = $summaryOrderTrasportsTable->getByUserByOrder($this->_user, $this->Authentication->getIdentity()->organization->id, $this->_user->id, $order_id);
+            $summaryOrderTrasport = $summaryOrderTrasportsTable->getByUserByOrder($this->_user, $this->_organization->id, $this->_user->id, $order_id);
         
             $cartSplitsTable = TableRegistry::get('CartSplits');
             foreach($carts as $cart) {
@@ -89,7 +89,6 @@ class CartSplitsController extends ApiAppController
                             $datas['qta'] = $cart_split['qta'];    
                             $datas['trasport'] = $cart_split['trasport'];    
                             $cart_entity = $cartSplitsTable->patchEntity($cart_entity, $datas);
-                            debug($cart_entity);
                             if (!$cartSplitsTable->save($cart_entity)) {
                                 debug($datas);
                                 dd($cart_entity->getErrors());
@@ -98,7 +97,7 @@ class CartSplitsController extends ApiAppController
                         }
 
                     } // end foreach($carts as $cart)
-//dd($carts);
+
                     $where = ['CartSplits.organization_id' => $organization_id,
                                 'CartSplits.order_id' => $order_id,
                                 'CartSplits.user_id' => $user_id,
@@ -124,71 +123,11 @@ class CartSplitsController extends ApiAppController
             return $this->_respondWithUnauthorized();
         }
 
-        $results = [];
-        $where = [];
-        $order = [];
-
-        $user_id = $this->Authentication->getIdentity()->id;
+        $order_type_id = $this->request->getData('order_type_id');
         $order_id = $this->request->getData('order_id');
 
-        $cartsTable = TableRegistry::get('Carts');
-        $carts = $cartsTable->getByOrder($this->Authentication->getIdentity(), $this->Authentication->getIdentity()->organization->id, $order_id, $this->Authentication->getIdentity()->id, $where, $order);
+        $results = $this->CartSplit->getByOrder($this->_user, $this->_organization->id, $order_id, $this->_user->id); 
 
-        if(!empty($carts)) {
-
-            $ordersTable = TableRegistry::get('Orders');
-            $where = ['Orders.organization_id' => $this->Authentication->getIdentity()->organization->id, 'Orders.id' => $order_id];
-            $order = $ordersTable->find()->where($where)->first();
-            
-            $cartSplitsTable = TableRegistry::get('CartSplits');
-            $carts = $carts->toArray();
-            foreach($carts as $numResult => $cart) {
-
-                $articles_order = null;
-                $articles_order = $cart['articles_order'];
-                $articles_order['article'] = $cart['article'];
-                $articles_order_decorate = new ApiArticleOrderDecorator($this->_user, $articles_order, $order);
-                $results[$numResult] = $articles_order_decorate->results;
-
-                $where = ['organization_id' => $cart->organization_id,
-                        'order_id' => $cart->order_id,
-                        'user_id' => $user_id,
-                        'article_organization_id' => $cart->article_organization_id,
-                        'article_id' => $cart->article_id
-                ]; 
-
-                $cartSplits = $cartSplitsTable->find()->where($where)->all();
-                if($cartSplits->count()>0) {
-                    $results[$numResult]['cart_splits'] = $cartSplits;
-                }
-                else {
-                    $results[$numResult]['cart_splits'] = [];
-                    /*
-                    $results[$numResult]['cart_splits'] = [];
-                    $results[$numResult]['cart_splits'][0]['id'] = 1;
-                    $results[$numResult]['cart_splits'][0]['organization_id'] = $cart->organization_id;
-                    $results[$numResult]['cart_splits'][0]['order_id'] = $cart->order_id;
-                    $results[$numResult]['cart_splits'][0]['user_id'] = $cart->user_id;
-                    $results[$numResult]['cart_splits'][0]['article_organization_id'] = $cart->article_organization_id;
-                    $results[$numResult]['cart_splits'][0]['article_id'] = $cart->article_id;
-                    $results[$numResult]['cart_splits'][0]['name'] = 'Mio';
-                    $results[$numResult]['cart_splits'][0]['qta'] = (!empty($cart->qta_forzato)) ? $cart->qta_forzato: $cart->qta;
-                    $results[$numResult]['cart_splits'][0]['trasport'] = !empty($summaryOrderTrasport) ? $summaryOrderTrasport->importo_trasport: null;
-
-                    $results[$numResult]['cart_splits'][1]['id'] = 2;
-                    $results[$numResult]['cart_splits'][1]['organization_id'] = $cart->organization_id;
-                    $results[$numResult]['cart_splits'][1]['order_id'] = $cart->order_id;
-                    $results[$numResult]['cart_splits'][1]['user_id'] = $cart->user_id;
-                    $results[$numResult]['cart_splits'][1]['article_organization_id'] = $cart->article_organization_id;
-                    $results[$numResult]['cart_splits'][1]['article_id'] = $cart->article_id;
-                    $results[$numResult]['cart_splits'][1]['name'] = 'Test';
-                    $results[$numResult]['cart_splits'][1]['qta'] = 1;
-                    $results[$numResult]['cart_splits'][1]['trasport'] = !empty($summaryOrderTrasport) ? $summaryOrderTrasport->importo_trasport: null; 
-                    */                   
-                }
-            } // foreach($carts as $numResult => $cart)
-        } // end if(!empty($carts))
-        
         return $this->_response(['carts' => $results]);
     }
 

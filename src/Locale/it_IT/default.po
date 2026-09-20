@@ -3725,6 +3725,9 @@ msgstr "Carrello"
 msgid "Carts"
 msgstr "Carrelli"
 
+msgid "CartSplit"
+msgstr "Suddivisione"
+
 msgid "FEShop"
 msgstr "Fai la tua spesa"
 

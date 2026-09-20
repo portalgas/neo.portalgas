@@ -24,7 +24,7 @@
           :key="order.id" class="box-order">
 		  
 		  		<div class="row" v-if="order!=null">
-					<div class="col-12">
+					<div class="col-9">
 						<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
 							<div class="content-img-supplier-small">
@@ -48,7 +48,7 @@
 							<span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
 						</a>						
 					</div>
-					<!-- div class="col-3">
+					<div class="col-3">
 						<a :href="'/user-cart-order-split/'+order.order_type_id+'/'+order.id" title="Suddividi gli acquisti">
 							<b-button block variant="primary">
 								<svg 
@@ -68,7 +68,7 @@
 									<line x1="9.8" y1="15.8" x2="22" y2="3.6"></line>
 								</svg> Suddividi gli acquisti
 							</b-button></a>	
-					</div -->
+					</div>
 				</div>
 
 		        <user-cart-articles 
