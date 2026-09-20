@@ -70,7 +70,7 @@ export default {
       let url = '/admin/api/cart-splits/storage';
 
       axios
-        .post(url, this.carts)
+        .post(url, this.datas)
         .then(response => {
 
           _this.isRun = false;

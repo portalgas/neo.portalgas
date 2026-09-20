@@ -23,6 +23,16 @@
         <div v-if="order.nota!=null && order.nota.trim()!=''" class="col-10 alert alert-info ml-auto mr-1 no-decoration" 
             v-html="$options.filters.html(order.nota)">
         </div>
+
+        <div v-if="order.order_type_id!=9 && order.hasTrasport=='N'" class="badge badge-secondary">Non ha spese di trasporto</div>
+        <div v-if="order.order_type_id!=9 && order.hasTrasport=='Y'" class="badge badge-warning">Ha spese di trasporto</div>
+
+        <div v-if="order.order_type_id!=9 && order.hasCostMore=='N'" class="badge badge-secondary">Non ha costi aggiuntivi</div>
+        <div v-if="order.order_type_id!=9 && order.hasCostMore=='Y'" class="badge badge-warning">Ha costi aggiuntivi</div>
+
+        <div v-if="order.order_type_id!=9 && order.hasCostLess=='N'" class="badge badge-secondary">Non ha sconti aggiuntivi</div>
+        <div v-if="order.order_type_id!=9 && order.hasCostLess=='Y'" class="badge badge-warning">Ha sconti aggiuntivi</div>
+        
     </main>
 </template>
 

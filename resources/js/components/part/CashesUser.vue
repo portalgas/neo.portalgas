@@ -116,10 +116,7 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-    name: "casches-user",
-    props: {
-        is_guest: false
-    },
+  name: "casches-user",
   data() {
     return {
       j_seo: '',
@@ -215,9 +212,6 @@ export default {
         });
     },
     getCashCtrlLimit() {
-
-      if(this.is_guest)
-        return true;
 
       let url = "/admin/api/users/cash-ctrl-limit";
       axios

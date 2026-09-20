@@ -3,7 +3,7 @@
   <div>
 
       <modal-component></modal-component>
-      <cashes-user :is_guest="true"></cashes-user>
+      <cashes-user></cashes-user>
 
       <transition name="leave">
         <router-view></router-view>

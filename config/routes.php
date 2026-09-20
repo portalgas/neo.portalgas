@@ -300,6 +300,7 @@ Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->scope('/exports', ['controller' => 'Exports'], function (RouteBuilder $routes) {
             $routes->setExtensions(['pdf']);
             $routes->connect('/user-cart', ['action' => 'userCart', '_method' => 'GET']);
+            $routes->connect('/user-cart-split', ['action' => 'userCartSplit', '_method' => 'GET']);
             $routes->connect('/user-promotion-cart', ['action' => 'userPromotionCart', '_method' => 'GET']);
         });
         $routes->scope('/exports-referents', ['controller' => 'ExportsReferents'], function (RouteBuilder $routes) {

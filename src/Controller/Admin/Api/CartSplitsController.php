@@ -68,7 +68,7 @@ class CartSplitsController extends ApiAppController
                             $datas['id'] = null;
                         }
 
-
+                       // debug('cart_split[qta] = '.$cart_split['qta']);
                         if($cart_split['qta']==0) {
                             /*
                              * delete
@@ -89,7 +89,7 @@ class CartSplitsController extends ApiAppController
                             $datas['qta'] = $cart_split['qta'];    
                             $datas['trasport'] = $cart_split['trasport'];    
                             $cart_entity = $cartSplitsTable->patchEntity($cart_entity, $datas);
-                            // debug($cart_entity);
+                            debug($cart_entity);
                             if (!$cartSplitsTable->save($cart_entity)) {
                                 debug($datas);
                                 dd($cart_entity->getErrors());
@@ -98,8 +98,7 @@ class CartSplitsController extends ApiAppController
                         }
 
                     } // end foreach($carts as $cart)
-
-
+//dd($carts);
                     $where = ['CartSplits.organization_id' => $organization_id,
                                 'CartSplits.order_id' => $order_id,
                                 'CartSplits.user_id' => $user_id,

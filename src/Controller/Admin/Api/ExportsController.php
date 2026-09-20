@@ -121,6 +121,57 @@ class ExportsController extends AppController {
         }
     }
 
+    /*
+     * https://dompdf.net/examples.php
+     */
+    public function userCartSplits($order_type_id, $order_id, $tmpl=null, $debug=false) { 
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return false;
+        }
+
+        $debug = false;
+        $results = [];
+        $title = '';
+
+        $deliveriesTable = TableRegistry::get('Deliveries');
+        $delivery = $deliveriesTable->getById($this->_user, $this->_organization->id, $delivery_id);
+        if(!empty($delivery)) {
+            
+            $title = "Carrello della consegna ".$delivery->label.' <br />di '.$this->_user->username;
+            Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));
+
+            $options = [];
+            $options['sql_limit'] = Configure::read('sql.no.limit');
+
+            $results = $this->Order->userCartGets($this->_user, $this->_organization->id, $delivery_id, $order_id, $debug); 
+            // debug($results);
+
+        } // end if(!empty($delivery))
+        
+        $this->set(compact('results', 'delivery', 'title'));
+        $this->set('user', $this->_user);
+
+        $tmpl = '/Admin/Api/Exports/pdf/user_cart_splits';
+        
+        if($this->_debug) {
+            $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
+            $this->layout = 'pdf/default';
+            $this->render($tmpl);
+        } 
+        else {
+            $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
+                                // Template/Admin/Api/Exports/pdf/user_cart.ctp 
+                                ->setTemplate($tmpl) 
+                                // Template/Layout/pdf/default.ctp
+                                ->setLayout('../../Layout/pdf/default') 
+                                // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
+                                ->setClassName('CakePdf.Pdf'); 
+                             
+            $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
+        }
+    }
+
     public function userPromotionCart($debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
