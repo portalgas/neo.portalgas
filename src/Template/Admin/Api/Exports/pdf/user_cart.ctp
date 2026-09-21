@@ -47,7 +47,10 @@ if(!empty($delivery)) {
 					$totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
 				else {
 					/* ordine chiuso agli acquisti */
-					$totale_ordine += $article_order['cart']['final_price'];
+					if(!empty($result->summary_order_aggregate)) 
+						$totale_ordine += $result->summary_order_aggregate->importo;
+					else
+						$totale_ordine += $article_order['cart']['final_price'];
 				}
 
 				$html .= '<tr>';
@@ -62,7 +65,11 @@ if(!empty($delivery)) {
 					$html .= '<span>*</span>';
 				$html .= '  </td>';
 				$html .= '	<td class="text-center">';
-				$html .= $this->HtmlCustom->importo($article_order['cart']['final_price']);
+				if(!empty($result->summary_order_aggregate)) 
+					$final_price = $result->summary_order_aggregate->importo;
+				else 
+					$final_price = $article_order['cart']['final_price'];
+				$html .= $this->HtmlCustom->importo($final_price);
 				if($article_order['cart']['is_import_mod'])
 					$html .= '<span>*</span>';
 				$html .= '  </td>';
