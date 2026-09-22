@@ -36,7 +36,7 @@
              </span>           
               {{ cart.um_rif_label }}
         </div>
-        <div class="col-text col-1 col-sm-2 col-md-2 col-lg-1 col-xs-2 d-none d-md-block d-lg-block d-xl-block">          
+        <div class="col-text text-center col-1 col-sm-2 col-md-2 col-lg-1 col-xs-2 d-none d-md-block d-lg-block d-xl-block">          
               {{ cart.qta_cart }} 
         </div>
         <div class="col-text col-3 col-sm-3 col-md-2 col-lg-3 col-xs-3 d-none d-md-block d-lg-block d-xl-block"> 
@@ -77,6 +77,7 @@
             type="text"
             class="form-control text-center"
             v-model="cart_split.name"
+            placeholder="Famiglia"
             title="nominativo"
           />          
 

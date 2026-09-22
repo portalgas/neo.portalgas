@@ -25,15 +25,9 @@ if(!empty($order)) {
 		$html .= '			<th width="30%" class="text-left">' . __('Name') . '</th>';
 		$html .= '			<th width="10%">' . __('Conf') . '</th>';
 		$html .= '			<th width="20%">' . __('Prezzo/UM') . '</th>';
-		$html .= '			<th width="20%">&nbsp;' . __('PrezzoUnita') . '</th>';
-		if(!empty($order->summary_order_trasport)) {
-			$html .= '			<th width="5%">&nbsp;</th>';
-			$html .= '			<th width="10%">' . __('Importo') . '</th>';
-		}
-		else {
-			$html .= '			<th width="5%">&nbsp;</th>';
-			$html .= '			<th width="10%"></th>';
-		}
+		$html .= '			<th width="15%">&nbsp;' . __('PrezzoUnita') . '</th>';
+		$html .= '			<th width="10%">' . __('Importo') . '</th>';
+		$html .= '			<th width="10%">&nbsp;</th>';
 		$html .= '	</tr>';
 		$html .= '	</thead><tbody>';
 
@@ -48,7 +42,11 @@ if(!empty($order)) {
 				$totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
 			else {
 				/* ordine chiuso agli acquisti */
-				$totale_ordine += $article_order['cart']['final_price'];
+				if(!empty($result->summary_order_aggregate)) 
+					$totale_ordine += $result->summary_order_aggregate->importo;
+				else
+					$totale_ordine += $article_order['cart']['final_price'];
+								
 			}
 
 			$html .= '<tr>';
@@ -58,10 +56,7 @@ if(!empty($order)) {
 			$html .= '	<td class="text-center">'.$article_order['um_rif_label'].'</td>';
 			$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($article_order['price']).'</td>';
 			$html .= '	<td class="text-center">';
-			if(isset($article_order['cart']['qta']))
-				$html .= $article_order['cart_split']['final_qta'];
-			else
-				$html .= $article_order['cart']['final_qta'];
+			$html .= $article_order['cart']['final_qta'];
 			if($article_order['cart']['is_qta_mod'])
 				$html .= '<span>*</span>';
 			$html .= '  </td>';
@@ -72,24 +67,27 @@ if(!empty($order)) {
 			$html .= '  </td>';
 			$html .= '</tr>';
 
-			if(!empty($article_order['cart_splits'])) {
+			/*
+			 * header splits
+			 */
+			$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+			$html .= '	<tr>';
+			$html .= '			<th></th>';
+			$html .= '			<th></th>';
+			$html .= '			<th class="text-left"></th>';
+			$html .= '			<th class="text-left">'.__('CartSplit').'</th>';
+			$html .= '			<th>' . __('Qta') . '</th>';
+			$html .= '			<th>' . __('Importo') . '</th>';
+			if(!empty($order->summary_order_trasport)) {
+				$html .= '			<th>' . __('CostTrasport') . '</th>';
+			}
+			else {
+				$html .= '			<th></th>';
+			}
+			$html .= '	</tr>';
+			$html .= '	</thead><tbody>';
 
-				$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
-				$html .= '	<tr>';
-				$html .= '			<th width="5%"></th>';
-				$html .= '			<th width="30%"></th>';
-				$html .= '			<th width="20%" class="text-left"></th>';
-				$html .= '			<th width="20%" class="text-left">'.__('CartSplit').'</th>';
-				$html .= '			<th width="5%">' . __('Qta') . '</th>';
-				$html .= '			<th width="10%">' . __('Importo') . '</th>';
-				if(!empty($order->summary_order_trasport)) {
-					$html .= '			<th width="10%">' . __('CostTrasport') . '</th>';
-				}
-				else {
-					$html .= '			<th width="10%"></th>';
-				}
-				$html .= '	</tr>';
-				$html .= '	</thead><tbody>';
+			if(!empty($article_order['cart_splits'])) {
 
 				foreach($article_order['cart_splits'] as $cart_split) {
 
@@ -99,17 +97,34 @@ if(!empty($order)) {
 					$html .= '	<td></td>';
 					$html .= '	<td>'.$cart_split['name'].'</td>';
 					$html .= '	<td class="text-center">'.$cart_split['qta'].'</td>';
-					$html .= '	<td class="text-center">'.$this->HtmlCustom->importo(($cart_split['qta'] + $article_order['price'])).'</td>';
+					$html .= '	<td class="text-center">'.$this->HtmlCustom->importo(($cart_split['qta'] * $article_order['price'])).'</td>';
 					if(!empty($order->summary_order_trasport))
-						$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($order->summary_order_trasport->importo_trasport).'</td>';
+						$html .= '	<td class="text-center">'.$this->HtmlCustom->importo($cart_split['trasport']).'</td>';
 					else				
 						$html .= '	<td></td>';
 					$html .= '</tr>';
 				} // end foreach($article_order['cart_splits'] as $cart_split)
 			}
 			else {
+				!empty($article_order['cart']['qta_forzato']) ? $qta = $article_order['cart']['qta_forzato']: $qta = $article_order['cart']['qta'];
 
+				$html .= '<tr>';
+				$html .= '	<td></td>';
+				$html .= '	<td></td>';
+				$html .= '	<td></td>';
+				$html .= '	<td></td>';
+				$html .= '	<td class="text-center">'.$qta.'</td>';
+				$html .= '	<td class="text-center">'.$this->HtmlCustom->importo(($qta * $article_order['price'])).'</td>';
+				if(!empty($order->summary_order_trasport))
+					$html .= '	<td class="text-center"></td>';
+				else				
+					$html .= '	<td></td>';
+				$html .= '</tr>';
 			}
+
+			$html .= '	<tr>';
+			$html .= '		<td colspan="7" class="no-border"><hr ></td>';
+			$html .= '	</tr>'; 
 
 		} // end foreach($results->article_orders as $article_order) 
 

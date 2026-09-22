@@ -127,7 +127,99 @@ class ExportsController extends AppController {
     /*
      * https://dompdf.net/examples.php
      */
-    public function userCartSplits($order_type_id, $order_id, $tmpl=null, $debug=false) { 
+    public function userCartSplitsByFamilies($order_type_id, $order_id, $tmpl=null, $debug=false) { 
+
+        if (!$this->Authentication->getResult()->isValid()) {
+            return false;
+        }
+
+        $debug = false;
+        $results = [];
+        $order = [];
+        $title = '';
+
+        $results = $this->CartSplit->getByOrderGroupByFamilies($this->_user, $this->_organization->id, $order_id, $this->_user->id); 
+        if(!empty($results)) {
+            
+            $ordersTable = TableRegistry::get('Orders');
+            $contains = ['OrderStateCodes', 'OrderTypes', 'Deliveries',
+                        'SuppliersOrganizations' => [
+                            'Suppliers',
+                            'SuppliersOrganizationsReferents' =>
+                                ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
+            ]];
+
+            $where = ['Orders.organization_id' => $this->_organization->id, 'Orders.id' => $order_id];
+            $order = $ordersTable->find()
+                                  ->contain($contains)
+                                  ->where($where)->first();
+
+            if(!empty($order)) {
+                /*
+                 * aggiunge ad un ordine le eventuali
+                 *  SummaryOrder
+                 *  SummaryOrderTrapsort spese di trasporto
+                 *  SummaryOrderMore spese generiche
+                 *  SummaryOrderLess sconti
+                 */
+                $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
+                $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
+                // if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($this->_user, $order->state_code)) {
+
+                    $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($this->_user, $order, $this->_user->id);
+         
+                    $order->summary_order = $resultsSummaryOrderPlus->summary_order;
+                    $order->summary_order_aggregate = $resultsSummaryOrderPlus->summary_order_aggregate;
+                    $order->summary_order_trasport = $resultsSummaryOrderPlus->summary_order_trasport;
+                    $order->summary_order_cost_more = $resultsSummaryOrderPlus->summary_order_cost_more;
+                    $order->summary_order_cost_less = $resultsSummaryOrderPlus->summary_order_cost_less;
+
+                    // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);
+                // }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
+
+                /*
+                 * referenti
+                 */
+                if(isset($order->suppliers_organization->suppliers_organizations_referents)) {
+                    $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($this->_user, $order->suppliers_organization->suppliers_organizations_referents, $order);
+                    $order->referents = $referentsResult->results;
+                    unset($order->suppliers_organization->suppliers_organizations_referents);
+                }
+
+            } // end if(!empty($order)) 
+
+            $title = "Carrello dell'ordine ".$order->suppliers_organization->name.' <br />di '.$this->_user->username;
+            Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));
+
+            $options = [];
+            $options['sql_limit'] = Configure::read('sql.no.limit');
+
+        } // end if(!empty($delivery))
+        
+        $this->set(compact('results', 'order', 'title'));
+        $this->set('user', $this->_user);
+
+        $tmpl = '/Admin/Api/Exports/pdf/user_cart_splits_by_families';
+        
+        if($this->_debug) {
+            $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
+            $this->layout = 'pdf/default';
+            $this->render($tmpl);
+        } 
+        else {
+            $this->viewBuilder()->setOptions(Configure::read('CakePdf'))
+                                // Template/Admin/Api/Exports/pdf/user_cart.ctp 
+                                ->setTemplate($tmpl) 
+                                // Template/Layout/pdf/default.ctp
+                                ->setLayout('../../Layout/pdf/default') 
+                                // fa l'ovveride di AppController $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
+                                ->setClassName('CakePdf.Pdf'); 
+                             
+            $this->set('img_path', Configure::read('DOMPDF_IMG_PATH'));
+        }
+    }
+
+    public function userCartSplitsByArticles($order_type_id, $order_id, $tmpl=null, $debug=false) { 
 
         if (!$this->Authentication->getResult()->isValid()) {
             return false;
@@ -164,8 +256,7 @@ class ExportsController extends AppController {
                  */
                 $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
                 $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
-               
-                if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($this->_user, $order->state_code)) {
+                // if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($this->_user, $order->state_code)) {
 
                     $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($this->_user, $order, $this->_user->id);
          
@@ -176,7 +267,7 @@ class ExportsController extends AppController {
                     $order->summary_order_cost_less = $resultsSummaryOrderPlus->summary_order_cost_less;
 
                     // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);
-                }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
+                // }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
 
                 /*
                  * referenti
@@ -186,12 +277,6 @@ class ExportsController extends AppController {
                     $order->referents = $referentsResult->results;
                     unset($order->suppliers_organization->suppliers_organizations_referents);
                 }
-
-                /*
-                 * distance
-                 */
-                $distance = $this->Distance->get($this->_user, $order->suppliers_organization);
-                $order->distance = $distance;
 
             } // end if(!empty($order)) 
 
@@ -206,7 +291,7 @@ class ExportsController extends AppController {
         $this->set(compact('results', 'order', 'title'));
         $this->set('user', $this->_user);
 
-        $tmpl = '/Admin/Api/Exports/pdf/user_cart_splits';
+        $tmpl = '/Admin/Api/Exports/pdf/user_cart_splits_by_articles';
         
         if($this->_debug) {
             $this->set('img_path', Configure::read('DOMPDF_DEBUG_IMG_PATH'));
