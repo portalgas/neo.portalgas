@@ -135,58 +135,57 @@ class ExportsController extends AppController {
 
         $debug = false;
         $results = [];
+        $results['cart_splits'] = [];
+        $results['carts'] = [];
         $order = [];
         $title = '';
 
         $results = $this->CartSplit->getByOrderGroupByFamilies($this->_user, $this->_organization->id, $order_id, $this->_user->id); 
-        if(!empty($results)) {
             
-            $ordersTable = TableRegistry::get('Orders');
-            $contains = ['OrderStateCodes', 'OrderTypes', 'Deliveries',
-                        'SuppliersOrganizations' => [
-                            'Suppliers',
-                            'SuppliersOrganizationsReferents' =>
-                                ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
-            ]];
+        $ordersTable = TableRegistry::get('Orders');
+        $contains = ['OrderStateCodes', 'OrderTypes', 'Deliveries',
+                    'SuppliersOrganizations' => [
+                        'Suppliers',
+                        'SuppliersOrganizationsReferents' =>
+                            ['Users' => ['UserProfiles' => ['sort' => ['ordering']]]]
+        ]];
 
-            $where = ['Orders.organization_id' => $this->_organization->id, 'Orders.id' => $order_id];
-            $order = $ordersTable->find()
-                                  ->contain($contains)
-                                  ->where($where)->first();
+        $where = ['Orders.organization_id' => $this->_organization->id, 'Orders.id' => $order_id];
+        $order = $ordersTable->find()
+                                ->contain($contains)
+                                ->where($where)->first();
 
-            if(!empty($order)) {
-                /*
-                 * aggiunge ad un ordine le eventuali
-                 *  SummaryOrder
-                 *  SummaryOrderTrapsort spese di trasporto
-                 *  SummaryOrderMore spese generiche
-                 *  SummaryOrderLess sconti
-                 */
-                $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
-                $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
-                // if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($this->_user, $order->state_code)) {
+        if(!empty($order)) {
+            /*
+                * aggiunge ad un ordine le eventuali
+                *  SummaryOrder
+                *  SummaryOrderTrapsort spese di trasporto
+                *  SummaryOrderMore spese generiche
+                *  SummaryOrderLess sconti
+                */
+            $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
+            $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
+            // if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($this->_user, $order->state_code)) {
 
-                    $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($this->_user, $order, $this->_user->id);
-         
-                    $order->summary_order = $resultsSummaryOrderPlus->summary_order;
-                    $order->summary_order_aggregate = $resultsSummaryOrderPlus->summary_order_aggregate;
-                    $order->summary_order_trasport = $resultsSummaryOrderPlus->summary_order_trasport;
-                    $order->summary_order_cost_more = $resultsSummaryOrderPlus->summary_order_cost_more;
-                    $order->summary_order_cost_less = $resultsSummaryOrderPlus->summary_order_cost_less;
+                $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($this->_user, $order, $this->_user->id);
+        
+                $order->summary_order = $resultsSummaryOrderPlus->summary_order;
+                $order->summary_order_aggregate = $resultsSummaryOrderPlus->summary_order_aggregate;
+                $order->summary_order_trasport = $resultsSummaryOrderPlus->summary_order_trasport;
+                $order->summary_order_cost_more = $resultsSummaryOrderPlus->summary_order_cost_more;
+                $order->summary_order_cost_less = $resultsSummaryOrderPlus->summary_order_cost_less;
 
-                    // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);
-                // }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
+                // $newResults = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);
+            // }  // if($result->state_code=='PROCESSED-ON-DELIVERY' || $result->state_code=='CLOSE')
 
-                /*
-                 * referenti
-                 */
-                if(isset($order->suppliers_organization->suppliers_organizations_referents)) {
-                    $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($this->_user, $order->suppliers_organization->suppliers_organizations_referents, $order);
-                    $order->referents = $referentsResult->results;
-                    unset($order->suppliers_organization->suppliers_organizations_referents);
-                }
-
-            } // end if(!empty($order)) 
+            /*
+                * referenti
+                */
+            if(isset($order->suppliers_organization->suppliers_organizations_referents)) {
+                $referentsResult = new ApiSuppliersOrganizationsReferentDecorator($this->_user, $order->suppliers_organization->suppliers_organizations_referents, $order);
+                $order->referents = $referentsResult->results;
+                unset($order->suppliers_organization->suppliers_organizations_referents);
+            }
 
             $title = "Carrello dell'ordine ".$order->suppliers_organization->name.' <br />di '.$this->_user->username;
             Configure::write('CakePdf.filename', $this->setFileName($title.'.pdf'));

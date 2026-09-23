@@ -4,7 +4,7 @@
 
         <div class="box-btn-pdf">
 			<div class="btn-group" role="group">
-				<button id="btnGroupDropCart" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<button id="btnGroupDropCart" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="min-width: 325px;">
 					<i class="fas fa-file-pdf"></i> Stampa carrello della consegna
 				</button>
 				<div class="dropdown-menu" aria-labelledby="btnGroupDropCart">
@@ -24,7 +24,7 @@
           :key="order.id" class="box-order">
 		  
 		  		<div class="row" v-if="order!=null">
-					<div class="col-9">
+					<div class="col-sm-12 col-xs-9 col-md-9">
 						<a v-on:click="selectOrder(order)" href="#" class="row-gray">
 
 							<div class="content-img-supplier-small">
@@ -48,9 +48,9 @@
 							<span v-if="order.order_type.name!='GAS'" class="badge badge-pill badge-primary">{{ order.order_type.descri }}</span> 
 						</a>						
 					</div>
-					<div class="col-3">
+					<div class="col-sm-12 col-xs-3 col-md-3">
 						<a :href="'/user-cart-order-split/'+order.order_type_id+'/'+order.id" title="Suddividi gli acquisti">
-							<b-button block variant="primary">
+							<b-button block variant="primary" style="min-width: 325px;margin:5px 0">
 								<svg 
 									xmlns="http://w3.org" 
 									width="24" 

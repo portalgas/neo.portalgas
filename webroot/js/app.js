@@ -10847,7 +10847,7 @@ var render = function render() {
     }, [order != null ? _c("div", {
       staticClass: "row"
     }, [_c("div", {
-      staticClass: "col-9"
+      staticClass: "col-sm-12 col-xs-9 col-md-9"
     }, [_c("a", {
       staticClass: "row-gray",
       attrs: {
@@ -10875,13 +10875,17 @@ var render = function render() {
     }, [_vm._v(_vm._s(order.order_state_code.name))]), _vm._v(" "), order.order_type.name != "GAS" ? _c("span", {
       staticClass: "badge badge-pill badge-primary"
     }, [_vm._v(_vm._s(order.order_type.descri))]) : _vm._e()])]), _vm._v(" "), _c("div", {
-      staticClass: "col-3"
+      staticClass: "col-sm-12 col-xs-3 col-md-3"
     }, [_c("a", {
       attrs: {
         href: "/user-cart-order-split/" + order.order_type_id + "/" + order.id,
         title: "Suddividi gli acquisti"
       }
     }, [_c("b-button", {
+      staticStyle: {
+        "min-width": "325px",
+        margin: "5px 0"
+      },
       attrs: {
         block: "",
         variant: "primary"
@@ -10968,6 +10972,9 @@ var staticRenderFns = [function () {
     _c = _vm._self._c;
   return _c("button", {
     staticClass: "btn btn-primary dropdown-toggle",
+    staticStyle: {
+      "min-width": "325px"
+    },
     attrs: {
       id: "btnGroupDropCart",
       type: "button",
@@ -13986,11 +13993,7 @@ var render = function render() {
     }), _vm._v(" "), _c("div", {
       staticClass: "col-1 col-sm-1 col-md-1 col-lg-1 col-xs-1 d-none d-md-block d-lg-block d-xl-block"
     }), _vm._v(" "), _c("div", {
-      staticClass: "col-1 col-sm-1 col-md-1 col-lg-1 col-xs-1 d-none d-md-block d-lg-block d-xl-block"
-    }), _vm._v(" "), _c("div", {
-      staticClass: "col-1 col-sm-2 col-md-2 col-lg-1 col-xs-2 d-none d-md-block d-lg-block d-xl-block"
-    }), _vm._v(" "), _c("div", {
-      staticClass: "col-1 col-sm-2 col-md-2 col-lg-1 col-xs-2 d-none d-md-block d-lg-block d-xl-block"
+      staticClass: "col-3 col-sm-1 col-md-1 col-lg-3 col-xs-5 d-none d-md-block d-lg-block d-xl-block"
     }, [_c("input", {
       directives: [{
         name: "model",
@@ -13998,7 +14001,7 @@ var render = function render() {
         value: cart_split.name,
         expression: "cart_split.name"
       }],
-      staticClass: "form-control text-center",
+      staticClass: "form-control text-left",
       attrs: {
         type: "text",
         placeholder: "Famiglia",
@@ -15846,14 +15849,14 @@ var render = function render() {
   }, [_vm._m(0)]) : _c("div", [_c("div", {
     staticClass: "row"
   }, [_c("div", {
-    staticClass: "col-10 col-sm-10 col-md-10 col-lg-10 col-xs-10"
+    staticClass: "col-10 col-sm-10 col-md-10 col-lg-9 col-xs-10"
   }, [_vm.order_type_id != null ? _c("order", {
     attrs: {
       order_type_id: _vm.order_type_id,
       order_id: _vm.order_id
     }
   }) : _vm._e()], 1), _vm._v(" "), _c("div", {
-    staticClass: "col-2 col-sm-2 col-md-2 col-lg-2 col-xs-2"
+    staticClass: "col-2 col-sm-2 col-md-2 col-lg-3 col-xs-2"
   }, [_c("div", {
     staticClass: "box-btn-pdf"
   }, [_c("div", {

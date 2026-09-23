@@ -19,14 +19,14 @@
     <div v-else>
 
       <div class="row">
-          <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xs-10">
+          <div class="col-10 col-sm-10 col-md-10 col-lg-9 col-xs-10">
             <order
                 v-if="order_type_id!=null"
                 :order_type_id="order_type_id"
                 :order_id="order_id" 
             ></order>            
           </div>
-          <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xs-2">
+          <div class="col-2 col-sm-2 col-md-2 col-lg-3 col-xs-2">
             <div class="box-btn-pdf">
                 <div class="btn-group" role="group">
                   <button id="btnGroupDropCart" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

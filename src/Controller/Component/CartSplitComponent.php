@@ -7,6 +7,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\ORM\TableRegistry;
 use App\Decorator\ApiArticleOrderDecorator;
 use App\Decorator\CartDecorator;
+use App\Decorator\ApiCartDecorator;
 use Cake\Log\Log;
 
 class CartSplitComponent extends Component {
@@ -71,7 +72,15 @@ class CartSplitComponent extends Component {
 		
         $i=0;
 		$results = [];
+        $article_ids = [];
         
+        $ordersTable = TableRegistry::get('Orders');
+        $where = ['Orders.organization_id' => $organization_id, 'Orders.id' => $order_id];
+        $order = $ordersTable->find()->where($where)->first();
+
+        /*
+         * recupero famiglie
+         * */
         $cartSplitsTable = TableRegistry::get('CartSplits');
         $where = ['CartSplits.organization_id' => $organization_id,
                     'CartSplits.order_id' => $order_id,
@@ -79,6 +88,9 @@ class CartSplitComponent extends Component {
         $cartSplitNames = $cartSplitsTable->find()->select(['name'])->where($where)->group(['name'])->all();        
 
         foreach($cartSplitNames as $cartSplitName) {
+            /*
+            * dati suddivisi per la famiglia
+            * */            
             $where = ['CartSplits.organization_id' => $organization_id,
                         'CartSplits.order_id' => $order_id,
                         'CartSplits.user_id' => $user_id,
@@ -95,14 +107,9 @@ class CartSplitComponent extends Component {
             $results[$i]['name'] = $name;
             $results[$i]['cart_splits'] = $cartSplits->toArray();
             $i++;
-        }
+        } // end foreach($cartSplitNames as $cartSplitName)
 
         if(!empty($results)) {
-
-            $ordersTable = TableRegistry::get('Orders');
-            $where = ['Orders.organization_id' => $organization_id, 'Orders.id' => $order_id];
-            $order = $ordersTable->find()->where($where)->first();
-	
             foreach($results as $numResult => $result) {
                 foreach($result['cart_splits'] as $numResult2 => $cart_split) {
                     $articles_order = $cart_split['cart']['articles_order'];
@@ -113,11 +120,38 @@ class CartSplitComponent extends Component {
                     $cart_decorate = new CartDecorator($this->_user, $cart_split['cart']);
                     $results[$numResult]['cart_splits'][$numResult2]['cart'] = $cart_decorate->results;
                     
+                    $article_ids[$cart_split['article_id']] = $cart_split['article_id'];
                 } 
             } // end foreach($results as $numResult => $result)
 
         } // end if(!empty($results))
 
-		return $results;	
+        /*
+         * recupero acquisti non suddivisi
+         */
+        $where = [];
+        if(!empty($article_ids))
+            $where = ['Carts.article_id not in ' => $article_ids];
+
+        $cartsTable = TableRegistry::get('Carts');
+        $carts = $cartsTable->getByOrder($user, $organization_id, $order_id, $user_id, $where, []);
+
+        if(!empty($carts)) {
+            $carts = $carts->toArray();
+            foreach($carts as $numResult => $cart) {
+
+                $articles_order = null;
+                $articles_order = $cart['articles_order'];
+                $articles_order['article'] = $cart['article'];
+                $articles_order_decorate = new ApiArticleOrderDecorator($this->_user, $articles_order, $order);
+                $carts[$numResult]['articles_order'] = $articles_order_decorate->results;
+
+                $cart_decorate = new ApiCartDecorator($this->_user, $cart, $articles_order);
+                $carts[$numResult] = $cart_decorate->results;
+                
+            } // foreach($carts as $numResult => $cart)            
+        }
+
+		return ['cart_splits' => $results, 'carts' => $carts];	
 	}    
 }
