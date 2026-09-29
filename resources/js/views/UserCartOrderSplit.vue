@@ -33,7 +33,7 @@
                     <i class="fas fa-file-pdf"></i> Stampa carrello dell'ordine suddiviso
                   </button>
                   <div class="dropdown-menu" aria-labelledby="btnGroupDropCart">
-                    <a :href="'/admin/api/exports/user-cart-splits-by-families/'+order_type_id+'/'+order_id" target="_blank" title="Stampa carrello dell'ordine suddiviso" class="dropdown-item">Per famiglia</a>
+                    <a :href="'/admin/api/exports/user-cart-splits-by-families/'+order_type_id+'/'+order_id" target="_blank" title="Stampa carrello dell'ordine suddiviso" class="dropdown-item">Per famiglia/amico</a>
                     <a :href="'/admin/api/exports/user-cart-splits-by-articles/'+order_type_id+'/'+order_id" target="_blank" title="Stampa carrello dell'ordine suddiviso" class="dropdown-item">Per articolo</a>
                 </div>                
               </div>               
@@ -42,7 +42,7 @@
       </div>
       
       <div class="alert alert-info">
-        Suddividi le quantità acquistate per le famiglie che hanno partecipato all'acquisto
+        Suddividi le quantità acquistate per le famiglie/amici che hanno partecipato all'acquisto
       </div>
       <user-cart-split-articles
         v-if="datas!=null"

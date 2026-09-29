@@ -137,6 +137,8 @@ export default {
         else {
            /* ordine chiuso agli acquisti */
            totale = (totale + parseFloat(this.article.cart.final_price));
+           if(this.order?.summary_order_aggregate?.importo!=null)
+              totale = this.order.summary_order_aggregate.importo;
         }
 
         return this.$options.filters.currency(totale)+" €";

@@ -108,7 +108,7 @@ class OrderComponent extends Component {
                     }
                 }
             } // end if($articlesOrdersTable!==false)
-
+           
             if($found_cart) {
 
                 /*

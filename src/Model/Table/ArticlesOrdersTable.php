@@ -389,6 +389,7 @@ class ArticlesOrdersTable extends Table
 
         switch ($options['refer']) {
             case 'CART':
+                $where['Carts'] = ['Carts.user_id' => $user->id];
                 $results = $this->gets($user, $organization_id, $orderResults, $where, $options, $debug);
                 break;
             case 'ACQUISTA':

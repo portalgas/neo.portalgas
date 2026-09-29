@@ -75,7 +75,7 @@
             type="text"
             class="form-control text-left"
             v-model="cart_split.name"
-            placeholder="Famiglia"
+            placeholder="Famiglia/amico"
             title="nominativo"
           />          
 
