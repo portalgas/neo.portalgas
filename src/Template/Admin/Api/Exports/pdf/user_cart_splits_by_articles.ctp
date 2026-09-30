@@ -31,6 +31,7 @@ if(!empty($order)) {
 		$html .= '	</tr>';
 		$html .= '	</thead><tbody>';
 
+		$totale_consegna = 0;
 		$totale_ordine = 0;
 		foreach($results as $article_order) {
 			
@@ -38,12 +39,12 @@ if(!empty($order)) {
 
 			$article_order['is_bio'] ? $is_bio = '<img src="'.$img_path.'/is-bio.png" title="bio" width="20" />': $is_bio = '';
 
-			if($result->isOpenToPurchasable)   /* aperto per acquistare */
+			if($order->isOpenToPurchasable)   /* aperto per acquistare */
 				$totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
 			else {
 				/* ordine chiuso agli acquisti */
-				if(!empty($result->summary_order_aggregate)) 
-					$totale_ordine += $result->summary_order_aggregate->importo;
+				if(!empty($order->summary_order_aggregate)) 
+					$totale_ordine += $order->summary_order_aggregate->importo;
 				else
 					$totale_ordine += $article_order['cart']['final_price'];
 								

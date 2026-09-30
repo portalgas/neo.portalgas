@@ -56,7 +56,10 @@ class CartDecorator  extends AppDecorator {
             $results['is_import_mod'] = true;
         }
         else {
-            $results['final_price'] = ($final_qta * $cart->articles_order->prezzo);
+            if(!empty($cart->articles_order))
+                $results['final_price'] = ($final_qta * $cart->articles_order->prezzo);
+            else 
+            $results['final_price'] = 0;
             $results['is_import_mod'] = false;
         } 
 

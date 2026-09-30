@@ -60,7 +60,7 @@ class CartSplitsController extends ApiAppController
                         /*
                          * entity
                          * */
-                        if(strpos('NEW-', $cart_split['id'])===false) {
+                        if(strpos('NEW-', (string) $cart_split['id'])===false) {
                             $cart_entity = $cartSplitsTable->find()->where(['id' => $cart_split['id']])->first();
                         }
                         if(empty($cart_entity)) {
@@ -133,6 +133,7 @@ class CartSplitsController extends ApiAppController
 
     private function _setTrasport($cart_splits, $summaryOrderTrasport) {
 
+        $results = [];
         $debug = false;
 
         if(empty($summaryOrderTrasport))
