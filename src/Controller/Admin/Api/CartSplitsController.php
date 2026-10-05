@@ -60,7 +60,7 @@ class CartSplitsController extends ApiAppController
                         /*
                          * entity
                          * */
-                        if(strpos('NEW-', (string) $cart_split['id'])===false) {
+                        if(!empty($cart_split['id']) && strpos('NEW-', (string) $cart_split['id'])===false) {
                             $cart_entity = $cartSplitsTable->find()->where(['id' => $cart_split['id']])->first();
                         }
                         if(empty($cart_entity)) {

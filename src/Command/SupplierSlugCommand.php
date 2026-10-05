@@ -76,6 +76,7 @@ class SupplierSlugCommand extends Command
     private function _getSuppliers($supplier_id=0) {
 
         $where = [];
+        $where = ['Suppliers.stato', 'Y'];
         if(!empty($supplier_id))
             $where += ['Suppliers.id' => $supplier_id];
         else

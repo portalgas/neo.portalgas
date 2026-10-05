@@ -329,13 +329,15 @@ class CashesUsersTable extends Table
 
     /* 
      * dato un acquisto ctrl se lo user puo' acquistarlo
+     * 
+     * qta = qta totale dell'articolo di tutti gli acqusiti di tutti i gasisti
      */
     public function ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta_prima_modifica, $qta, $prezzo, $debug=false) {
 
        if($this->isSupplierOrganizationCashExcluded($user, $organization_id, $supplier_organization_id, $debug))
             return true;
 
-            $this->isSupplierOrganizationCashExcluded($user, $organization_id, $supplier_organization_id, $debug);
+        $this->isSupplierOrganizationCashExcluded($user, $organization_id, $supplier_organization_id, $debug);
 
         $results = [];  
         $results = $this->getUserData($user);

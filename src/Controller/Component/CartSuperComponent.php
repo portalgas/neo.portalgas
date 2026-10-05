@@ -19,6 +19,8 @@ class CartSuperComponent extends Component {
     /*
      * $action = INSERT
      * $action = UPDATE-DELETE
+     *
+     * qta = qta totale dell'articolo di tutti gli acqusiti di tutti i gasisti
      */
     protected function _ctrlValidita($user, $articles_order, $qta_new, $qta, $action, $debug=false) {
 

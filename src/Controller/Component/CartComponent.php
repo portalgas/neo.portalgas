@@ -47,13 +47,16 @@ class CartComponent extends CartSuperComponent {
         if(Configure::read('Logs.cart')) Log::write('debug', $articles_order);
 
         /*
-         * qta = qta originale, ma la ricalcolo nel caso fosse cambiata
+         * qta = qta totale dell'articolo di tutti gli acqusiti di tutti i gasisti
+         * $qta_prima_modifica = qta originale del carrello dell'utente
          * qta_new = qta aggiornata
          */
         $cartsTable = TableRegistry::get('Carts');
 
         $qta = $cartsTable->getQtaCartByArticle($user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
         if(Configure::read('Logs.cart')) Log::write('debug', 'Carts.qta totale acquisti '.$qta);
+        $qta_prima_modifica = (int)$articles_order['cart']['qta'];
+        if(Configure::read('Logs.cart')) Log::write('debug', "qta originale del carrello dell'utente ".$qta_prima_modifica);
         $qta_new = (int)$articles_order['cart']['qta_new'];
         if(Configure::read('Logs.cart')) Log::write('debug', 'Acquisto corrente '.$qta_new);
 
@@ -131,7 +134,7 @@ class CartComponent extends CartSuperComponent {
                     if($organization_id == Configure::read('social_market_organization_id'))
                         $esito_ctrl_limit_cart = true;
                     else
-                        $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
+                        $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta_prima_modifica, $qta_new, $articles_order['price'], $debug);
 
                     if($esito_ctrl_limit_cart) {
 
@@ -183,7 +186,7 @@ class CartComponent extends CartSuperComponent {
                      * solo se aumento la qta
                      */
                     $esito_ctrl_limit_cart = true;
-                    if($qta_new > $qta) {
+                    if($qta_new > $qta_prima_modifica) {
 
                         $cashesUsersTable = TableRegistry::get('CashesUsers');
 
@@ -195,7 +198,7 @@ class CartComponent extends CartSuperComponent {
                         if($organization_id == Configure::read('social_market_organization_id'))
                             $esito_ctrl_limit_cart = true;
                         else
-                            $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta, $qta_new, $articles_order['price'], $debug);
+                            $esito_ctrl_limit_cart = $cashesUsersTable->ctrlLimitCart($user, $organization_id, $supplier_organization_id, $qta_prima_modifica, $qta_new, $articles_order['price'], $debug);
                     }
 
                     if($esito_ctrl_limit_cart) {
@@ -288,6 +291,8 @@ class CartComponent extends CartSuperComponent {
     /*
      * RI-OPEN-VALIDATE
      * concorrenza tra users, ctrl che non sia gia' completato il collo
+     * 
+     * qta = qta totale dell'articolo di tutti gli acqusiti di tutti i gasisti
      */
     private function _ctrlValiditaRiOpen($user, $articles_order, $qta, $debug=false) {
 
