@@ -15,7 +15,7 @@
       <div v-for="data in datas">
         <user-cart-split-article 
           v-on:emitUpdate="onEmitUpdate"         
-          v-bind:cart="data" 
+          v-bind:article_order="data" 
           :key="data.id">
           </user-cart-split-article> 
       </div>

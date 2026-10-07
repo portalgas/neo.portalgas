@@ -126,7 +126,7 @@ $htmlCustomSiteOrders = $this->HtmlCustomSiteOrders->factory($order_type_id, $us
                   echo '<i class="fa fa-2x fa-search-plus" aria-hidden="true"></i>';
                   echo '</a>';                   
                   echo '</td>';
-                  if($order_type_id==Configure::read('Order.type.gas_groups')) {
+                  if($order_type_id==Configure::read('Order.type.gas_groups') && !empty($order->parent)) {
                     // x ogni ordine titolare creo il medesimo colore
                     $hash = md5($order->parent->id); 
                     $style_color =  '#' . substr($hash, 0, 6);

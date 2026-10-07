@@ -264,7 +264,7 @@ class CartsTable extends Table
             $order = ['Users.name', 'ArticlesOrders.name'];
         }
         else
-            $order = ['ArticlesOrders.name'];
+            $order = ['Articles.codice', 'ArticlesOrders.name'];
 
         $results = $this->find()
                         ->contain($contain)

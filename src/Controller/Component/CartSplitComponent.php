@@ -59,6 +59,7 @@ class CartSplitComponent extends Component {
                 }
 
                 $cart_decorate = new CartDecorator($this->_user, $cart);
+              
                 $results[$numResult]['cart'] = [];
                 $results[$numResult]['cart'] = $cart_decorate->results;
                 
