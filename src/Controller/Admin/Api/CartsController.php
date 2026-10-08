@@ -13,6 +13,7 @@ class CartsController extends ApiAppController
         parent::initialize();
         $this->loadComponent('Cart');
         $this->loadComponent('CartProdGasPromotionGasUser');
+        $this->loadComponent('CartSplit');
     }
 
     public function beforeFilter(Event $event) {
@@ -38,6 +39,8 @@ class CartsController extends ApiAppController
         ($order_type_id==Configure::read('Order.type.socialmarket')) ? $organization_id = Configure::read('social_market_organization_id'): $organization_id = $user->organization->id;
         // debug($article);
         $results = $this->Cart->managementCart($user, $organization_id, $order, $article, $debug);
+
+        $this->CartSplit->deleteArticle($user, $organization_id, $order['id'], $user->id, $article['article_organization_id'], $article['article_id']);
 
         return $this->_response($results);
     }
