@@ -29,7 +29,7 @@
             :disabled="btnSaveIsDisabled"
             @click="save()"
           >
-          <i class="fas fa-save"></i>  Salva i dati
+          <i class="fas fa-save"></i>  Salva le quantità suddivise
           </button>
           <div v-if="isRun" class="box-spinner">
               <div class="spinner-border text-info" role="status">
@@ -84,7 +84,26 @@ export default {
   },
   computed: {
       btnSaveIsDisabled()  {
-        return false;
+        let ok_cart_splits = [];
+        let all_cart_split_ok = true;
+        
+        this.datas.forEach((data, index) => {
+          ok_cart_splits[index] = true;
+          if(data.cart_splits.length>0) {
+            let totale_qta_split = 0;
+            data.cart_splits.forEach(cart_split => {
+              totale_qta_split += cart_split.qta;
+            });
+            // console.log('qta totale suddivisi '+totale_qta_split+' cart.final_qta '+data.cart.final_qta, 'delta');
+            if(totale_qta_split!=data.cart.final_qta)
+            ok_cart_splits[index] = false;
+          }
+        });
+        // console.table(ok_cart_splits, 'ok_cart_splits');
+        all_cart_split_ok = ok_cart_splits.every(valore => valore === true);
+        // console.table(all_cart_split_ok, 'all_cart_split_ok');
+
+        return !all_cart_split_ok;
       },
   },  
   filters: {
