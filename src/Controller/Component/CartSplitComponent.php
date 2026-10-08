@@ -158,6 +158,7 @@ class CartSplitComponent extends Component {
     
     /*
      * se modifico la qta di un articolo elimino eventuali suddivisioni
+     * medesimo metodo in portalgas
      * */
     public function deleteArticle($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id) {
         $cartSplitsTable = TableRegistry::get('CartSplits');
