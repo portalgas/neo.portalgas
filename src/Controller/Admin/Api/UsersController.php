@@ -31,13 +31,13 @@ class UsersController extends ApiAppController
 
         $results = [];
         $debug = false;
-
+       
         if (!$this->Authentication->getResult()->isValid()) {
             return $this->_respondWithUnauthorized();
         }
 
         $user = $this->Authentication->getIdentity();
-        if($user===null) {
+        if($user===null || empty($user)) {
             return $this->_response($results);
         }
         $organization_id = $user->organization->id;

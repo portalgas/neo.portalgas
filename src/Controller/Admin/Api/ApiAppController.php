@@ -34,10 +34,10 @@ class ApiAppController extends AppController
                 'whitelist' => Configure::read('Config')['IpFilter']['whitelist']
             ]);            
         }
-
+        
         $this->loadComponent('RequestHandler');
         $this->RequestHandler->renderAs($this, 'json');
-        $this->response = $this->response->withType('application/json');     
+        $this->response = $this->response->withType('application/json');
     }
 
     /**
@@ -53,7 +53,7 @@ class ApiAppController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-
+       
         if (!$this->request->is('ajax')) {
             throw new BadRequestException();
         }

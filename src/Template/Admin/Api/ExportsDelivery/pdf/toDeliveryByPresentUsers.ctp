@@ -41,9 +41,9 @@ if(!empty($results)) {
 		if(isset($opts['users_present_contacts']) && $opts['users_present_contacts']=='Y') {
 			$html .= '	<td>';
 			$html .= $this->HtmlCustom->mail($result['user']['email']);
-			if(!empty($result['user']['phone']))
+			if(isset($result['user']['phone']) && !empty($result['user']['phone']))
 				$html .= ' '.$result['user']['phone'];
-			if(!empty($result['user']['address']))
+			if(isset($result['user']['address']) && !empty($result['user']['address']))
 				$html .= ' '.$result['user']['address'];
 			$html .= '</td>';	
 		}	

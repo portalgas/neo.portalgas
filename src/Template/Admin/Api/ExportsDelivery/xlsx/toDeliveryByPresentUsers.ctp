@@ -33,8 +33,12 @@ foreach($results as $numResult => $result) {
 
 	$sheet->setCellValue('A'.($num_row), ($numResult+1));
 	$sheet->setCellValue('B'.($num_row), $result['user']['name']);
-	if(isset($opts['users_present_contacts']) && $opts['users_present_contacts']=='Y') 
-		$sheet->setCellValue('C'.($num_row), $result['user']['email'].' '.$result['user']['phone'].' '.$result['user']['address']);
+	if(isset($opts['users_present_contacts']) && $opts['users_present_contacts']=='Y') {
+		isset($result['user']['email']) ? $email = $result['user']['email'].' ' : $email = '';
+		isset($result['user']['phone']) ? $phone = $result['user']['phone'].' ' : $phone = '';
+		isset($result['user']['address']) ? $address = $result['user']['address'].' ' : $address = '';
+		$sheet->setCellValue('C'.($num_row), $email.$phone.$address);
+	}
 	
 	if(isset($opts['users_detail_importo']) && $opts['users_detail_importo']=='Y')			
 		$sheet->setCellValue('D'.($num_row), $this->HtmlCustomSiteExport->excelImporto($result['user']['tot_user_importo']));	
