@@ -57,7 +57,8 @@ export default {
       // this.subTotalPrice();
     },    
     subTotalPrice() {
-      var totale = 0;
+      let _this = this;
+      let totale = 0;
       this.article_orders.forEach(function (article_order, index2) { 
         // console.log(article_order); 
         // console.log(article_order.isOpenToPurchasable, 'article_order.isOpenToPurchasable');
@@ -67,7 +68,9 @@ export default {
           totale += (article_order.cart.qta_new * article_order.price);
         else {
           /* ordine chiuso agli acquisti */
-          totale = (totale + parseFloat(article_order.cart.final_price));               
+          totale = (totale + parseFloat(article_order.cart.final_price));  
+          if(_this.order?.summary_order_aggregate?.importo!=null)
+              totale = _this.order.summary_order_aggregate.importo;             
         }
 
       // totale = parseFloat(totale).toFixed(2);

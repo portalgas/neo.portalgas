@@ -47,10 +47,7 @@ if(!empty($delivery)) {
 					$totale_ordine += ($article_order['cart']['qta_new'] * $article_order['price']);
 				else {
 					/* ordine chiuso agli acquisti */
-					if(!empty($result->summary_order_aggregate)) 
-						$totale_ordine += $result->summary_order_aggregate->importo;
-					else
-						$totale_ordine += $article_order['cart']['final_price'];
+					$totale_ordine += $article_order['cart']['final_price'];
 				}
 
 				$html .= '<tr>';
@@ -65,10 +62,7 @@ if(!empty($delivery)) {
 					$html .= '<span>*</span>';
 				$html .= '  </td>';
 				$html .= '	<td class="text-center">';
-				if(!empty($result->summary_order_aggregate)) 
-					$final_price = $result->summary_order_aggregate->importo;
-				else 
-					$final_price = $article_order['cart']['final_price'];
+				$final_price = $article_order['cart']['final_price'];
 				$html .= $this->HtmlCustom->importo($final_price);
 				if($article_order['cart']['is_import_mod'])
 					$html .= '<span>*</span>';
@@ -80,6 +74,7 @@ if(!empty($delivery)) {
 			/*
 			* totale ordine
 			*/ 
+			$totale_ordine_aggr = 0;
 			if(!empty($result->summary_order_trasport)) {
 				$html .= '	<tr>';
 				$html .= '		<td colspan="4" class="no-border"></td>';
@@ -87,7 +82,7 @@ if(!empty($delivery)) {
 				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_trasport->importo_trasport). '</th>';
 				$html .= '	</tr>'; 
 
-				$totale_ordine += $result->summary_order_trasport->importo_trasport; 	
+				$totale_ordine_aggr += $result->summary_order_trasport->importo_trasport; 	
 			}
 
 			if(!empty($result->summary_order_cost_more)) {
@@ -97,7 +92,7 @@ if(!empty($delivery)) {
 				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_more->importo_cost_more). '</th>';
 				$html .= '	</tr>'; 
 
-				$totale_ordine += $result->summary_order_cost_more->importo_cost_more;		
+				$totale_ordine_aggr += $result->summary_order_cost_more->importo_cost_more;		
 			}
 
 			if(!empty($result->summary_order_cost_less)) {
@@ -107,7 +102,14 @@ if(!empty($delivery)) {
 				$html .= '		<th class="no-border">' .$this->HtmlCustom->importo($result->summary_order_cost_less->importo_cost_less). '</th>';
 				$html .= '	</tr>';
 
-				$totale_ordine += $result->summary_order_cost_less->importo_cost_less;
+				$totale_ordine_aggr += $result->summary_order_cost_less->importo_cost_less;
+			}
+
+			if(!empty($result->summary_order_aggregate)) {
+				$totale_ordine = ($totale_ordine_aggr + $result->summary_order_aggregate->importo);
+			}
+			else {
+				$totale_ordine += $totale_ordine_aggr;
 			}
 
 			$html .= '	<tr>';

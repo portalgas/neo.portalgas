@@ -120,7 +120,7 @@ class OrderComponent extends Component {
                  */
                 $lifeCycleSummaryOrdersTable = TableRegistry::get('LifeCycleSummaryOrders');
                 $summaryOrderPlusTable = TableRegistry::get('SummaryOrderPlus');
-
+               
                 if($lifeCycleSummaryOrdersTable->canAddSummaryOrder($user, $result->state_code)) {
 
                     $resultsSummaryOrderPlus = $summaryOrderPlusTable->addSummaryOrder($user, $result, $user->id);
