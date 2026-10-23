@@ -131,7 +131,6 @@ $(function () {
                   // console.log(response.data, 'get');
                   let headers = null;
                   let filename = null;
-                  console.log(_this.format, '_this.format');
                   switch(_this.format) {
                     case 'HTML':
                       _this.print_results = response.data;

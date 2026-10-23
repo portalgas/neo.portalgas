@@ -56,6 +56,7 @@ class ExportsDeliveryController extends AppController {
             break;
             case 'XLSX':
                 $this->viewBuilder()->disableAutoLayout();
+                $this->response = $this->response->withType('xlsx');
                 $this->response = $this->response->withDownload($this->_filename);            
             break;
             case 'PDF':
