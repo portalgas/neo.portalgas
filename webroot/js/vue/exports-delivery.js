@@ -114,6 +114,9 @@ $(function () {
                               'Accept': 'application/json'
                             }}
               break;
+              case 'XLSX':
+                extra = {responseType: 'blob'}
+              break;
               case 'PDF':
                 extra = {responseType: 'blob',
                             headers: {
@@ -126,14 +129,33 @@ $(function () {
             axios.post('/admin/api/exports-delivery/get', params, extra)
                 .then(response => {
                   // console.log(response.data, 'get');
+                  let headers = null;
+                  let filename = null;
+                  console.log(_this.format, '_this.format');
                   switch(_this.format) {
                     case 'HTML':
                       _this.print_results = response.data;
                     break;
-                    case 'PDF':
-                      let headers = response.headers;
+                    case 'XLSX':
+                      headers = response.headers;
                       // console.log(headers, 'headers');
-                      let filename = 'documento.pdf';
+                      filename = 'documento.xlsx';
+                      // Recupero del filename dall'header standard Content-Disposition
+                      if (headers['content-disposition']) {
+                          const match = headers['content-disposition'].match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                          if (match && match[1]) {
+                              filename = match[1].replace(/['"]/g, '');
+                          }
+                      } else if (headers.filename) {
+                          filename = headers.filename;
+                      }
+                      
+                      this.downloadBlobExcel(response.data, filename);
+                    break;
+                    case 'PDF':
+                      headers = response.headers;
+                      // console.log(headers, 'headers');
+                      filename = 'documento.pdf';
                       if(typeof headers.filename!=='undefined' && headers.filename!='') 
                         filename = headers.filename;
                                             
@@ -151,6 +173,19 @@ $(function () {
         },       
         downloadBlob(res, filename) {
           var blob = new Blob([res], { type: "application/pdf" });
+          // console.log(blob, 'blob');
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', filename);
+          document.body.appendChild(link);
+          link.click();
+          setTimeout(function () {
+            window.URL.revokeObjectURL(url)
+          }, 100)
+        },     
+        downloadBlobExcel(res, filename) {
+          var blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
           // console.log(blob, 'blob');
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');

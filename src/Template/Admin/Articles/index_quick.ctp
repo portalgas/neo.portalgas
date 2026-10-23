@@ -409,10 +409,10 @@ echo $this->Html->css('dropzone/dropzone.min', ['block' => 'css']);
                           <img :src="article.img1" :title="article.img1" width="50" />
                         </td>
                         <td>
-                          {{ article.prezzo | currency }} &euro;
+                          {{ article.qta }}
                         </td>
                         <td>
-                          {{ article.qta }}
+                          {{ article.prezzo | currency }} &euro;
                         </td>
                         <td>
                           {{ article.um }}
