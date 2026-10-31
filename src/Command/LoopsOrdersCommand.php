@@ -16,7 +16,7 @@ use Cake\Controller\ComponentRegistry;
  * 
  * cron 
  * 10 0 * * * /var/portalgas/cron/loopsOrders.sh >> /var/portalgas/cron/log/$(date +\%Y\%m\%d)_loopsOrders.log 2>&1
- * 45 0 * * * /var/www/neo.portalgas/src/Command/Sh/loops_orders.sh >> /var/portalgas/cron/log/$(date +\%Y\%m\%d)_loopsOrdersNeo.log 2>&1
+ * 45 0 * * * /var/www/neo.portalgas/src/Command/Sh/loopsOrders.sh >> /var/portalgas/cron/log/$(date +\%Y\%m\%d)_loopsOrdersNeo.log 2>&1
  */ 
 class LoopsOrdersCommand extends Command
 {
@@ -58,14 +58,15 @@ class LoopsOrdersCommand extends Command
                                   ->contain(['Deliveries'])
                                   ->where(['LoopsDeliveries.organization_id' => $organization_id,
                                            'LoopsDeliveries.delivery_id !=' => 0,
-                                           'DATE(LoopsDeliveries.modified) = CURDATE()'])
+                                           'DATE(LoopsDeliveries.modified) = CURDATE()'
+                                          ])
                                   ->all();
 
         if($loopsDeliveriesResults->count()>0) {
             $this->loadModel('LoopsOrders');
             foreach($loopsDeliveriesResults as $loopsDelivery) {   
                 // debug($loopsDelivery);
-                
+               
                 // ctrl se ci sono ordini ricorsivi associati alla consegna ricorsiva
                 $loopsOrdersResults = $this->LoopsOrders->find()
                                                 ->contain(['SuppliersOrganizations'])

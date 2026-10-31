@@ -41,8 +41,9 @@
           </div>
       </div>
       
-      <div class="alert alert-info">
+      <div class="alert alert-info mt-2">
         Suddividi le quantità acquistate per le famiglie/amici che hanno partecipato all'acquisto
+        <div class="beta-ribbon">Versione beta</div>
       </div>
       <user-cart-split-articles
         v-if="datas!=null"
@@ -124,4 +125,26 @@ methods: {
 </script>
 
 <style scoped>
+.beta-alert {
+  /* Assicura che l'overflow sia nascosto così la scritta non sborda fuori dall'alert */
+  overflow: hidden;
+}
+
+.beta-ribbon {
+  position: absolute;
+  top: 10px;
+  right: -25px;
+  transform: rotate(35deg); /* Inquina la scritta della rotazione desiderata */
+  
+  background-color: #ffc107; /* Giallo warning di Bootstrap (o un rosso/arancione) */
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100px;
+  padding: 3px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  pointer-events: none; /* Evita che interferisca con i click */
+}
 </style>
