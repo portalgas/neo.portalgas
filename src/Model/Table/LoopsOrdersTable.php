@@ -77,7 +77,7 @@ class LoopsOrdersTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->requirePresence('supplier_organization_id')
+            ->requirePresence('supplier_organization_id', 'create')
             ->notEmptyString('supplier_organization_id'); 
 
         $validator

@@ -68,6 +68,12 @@ class LoopsOrdersCommand extends Command
         if($loopsDeliveriesResults->count()>0) {
             $this->loadModel('LoopsOrders');
             foreach($loopsDeliveriesResults as $loopsDelivery) {   
+                
+                if(empty($loopsDelivery->delivery)) {
+                    echo "organization_id {$organization_id} la consegna ID ".$loopsDelivery->delivery_id." non esiste piu!\r\n"; 
+                    continue;
+                }
+
                 // debug($loopsDelivery);
                
                 // ctrl se ci sono ordini ricorsivi associati alla consegna ricorsiva
@@ -83,7 +89,7 @@ class LoopsOrdersCommand extends Command
                 if($loopsOrdersResults->count()>0)                 
                 foreach($loopsOrdersResults as $loopsOrder) { 
                     
-                    // debug($loopsOrder);
+                    debug($loopsOrder);
 
                     $datas = [];
                     $datas['organization_id'] = $organization_id;
@@ -110,7 +116,7 @@ class LoopsOrdersCommand extends Command
                     $datas = [];
                     $datas['order_id'] = $order->id;
                     $loopsOrder = $this->LoopsOrders->patchEntity($loopsOrder, $datas);
-                    debug($datas);
+                    // print_r($loopsOrder);
                     debug($loopsOrder);
                     if (!$this->LoopsOrders->save($loopsOrder)) {
                         dd($loopsOrder->getErrors());
