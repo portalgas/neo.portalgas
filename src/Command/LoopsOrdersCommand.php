@@ -47,6 +47,7 @@ class LoopsOrdersCommand extends Command
             $this->io = $io;
             $this->io->out('LoopsOrders start');
         }
+        echo "LoopsOrders start \r\n";
 
         $organization_id = $args->getArgument('organization_id');
         
@@ -62,6 +63,8 @@ class LoopsOrdersCommand extends Command
                                           ])
                                   ->all();
 
+        echo "organization_id {$organization_id} tot loopsDelivery ".$loopsDeliveriesResults->count()."\r\n";
+
         if($loopsDeliveriesResults->count()>0) {
             $this->loadModel('LoopsOrders');
             foreach($loopsDeliveriesResults as $loopsDelivery) {   
@@ -74,6 +77,9 @@ class LoopsOrdersCommand extends Command
                                                         'LoopsOrders.loops_delivery_id' => $loopsDelivery->id,
                                                         'LoopsOrders.is_active' => true])
                                                 ->all();  
+
+                echo "organization_id {$organization_id} tot loopsOrders ".$loopsOrdersResults->count()."\r\n";
+
                 if($loopsOrdersResults->count()>0)                 
                 foreach($loopsOrdersResults as $loopsOrder) { 
                     
@@ -119,5 +125,6 @@ class LoopsOrdersCommand extends Command
             $this->io = $io;
             $this->io->out('LoopsOrders end');
         }
+        echo "LoopsOrders end \r\n";
     }
 }
