@@ -107,8 +107,6 @@ class LoopsOrdersCommand extends Command
                         dd($order->getErrors());
                     }
 
-                    $loopsOrder->suppliers_organization=null; 
-
                     $datas = [];
                     $datas['order_id'] = $order->id;
                     $loopsOrder = $this->LoopsOrders->patchEntity($loopsOrder, $datas);
